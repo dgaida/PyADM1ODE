@@ -1,0 +1,1827 @@
+<?xml version="1.0" encoding="utf-8"?>
+<substrates>
+<substrate id= "maize">
+<name>Silomais</name>
+<Weender>
+<physValue symbol= "RF">
+<value>21.07</value>
+<unit>% TS</unit>
+<label>raw fiber (Rohfaser)</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "RP">
+<value>8.69</value>
+<unit>% TS</unit>
+<label>raw protein (Rohprotein)</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "RL">
+<value>3.68</value>
+<unit>% TS</unit>
+<label>raw lipids (Rohfett)</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "NDF">
+<value>43.64</value>
+<unit>% TS</unit>
+<label>neutral detergent fiber</label>
+<reference>
+  07 Einfluss der stofflichen Zusammensetzung auf die Verdaulichkeit
+  nachwachsender Rohstoffe beim anaeroben Abbau in Biogasreaktoren. S. 110 ff.
+  maize silage 1 (mean 2003)
+</reference>
+</physValue>
+<physValue symbol= "ADF">
+<value>21.86</value>
+<unit>% TS</unit>
+<label>acid detergent fiber</label>
+<reference>
+  07 Einfluss der stofflichen Zusammensetzung auf die Verdaulichkeit
+  nachwachsender Rohstoffe beim anaeroben Abbau in Biogasreaktoren. S. 110 ff.
+  maize silage 1 (mean 2003)
+</reference>
+</physValue>
+<physValue symbol= "ADL">
+<value>2.15</value>
+<unit>% TS</unit>
+<label>acid detergent lignin</label>
+<reference>
+  07 Einfluss der stofflichen Zusammensetzung auf die Verdaulichkeit
+  nachwachsender Rohstoffe beim anaeroben Abbau in Biogasreaktoren. S. 110 ff.
+  maize silage 1 (mean 2003)
+</reference>
+</physValue>
+</Weender>
+<Phys>
+<physValue symbol= "COD_S">
+<value>15.97</value>
+<unit>gCOD/l</unit>
+<label>0.3 * ( composites in need for disintegration )</label>
+<reference>war mal 55.94</reference>
+</physValue>
+<physValue symbol= "SIin">
+<value>13.03</value>
+<unit>gCOD/l</unit>
+<label>0,0600000008940697 * ( composites in need for disintegration -  -  - particulate disintegrated COD )</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "pH">
+<value>3.93</value>
+<unit>-</unit>
+<label>pH value</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "Sac">
+<value>1.18</value>
+<unit>g/l</unit>
+<label>acetic acid + acetate</label>
+<reference>alter Wert 1.58. es gibt keine Referenz dafür. setze auf 2. 
+da CCM einen wert von 3 hat (mais etwas darunter gesetzt. weil kalibrierung 
+mit 1.58 gelaufen ist. allerdings hätte in kalibrierung vfa langsam hoch 
+gefahren werden müssen um silierprozess zu simulieren -> Block Silo). 
+da TS Gehalt von Substrat gesunken ist. 
+ist vermutung. dass starke säureentwicklung eingesetzt hat.
+Referenz ist die Berechnung aus dem Datenbank Ordner</reference>
+</physValue>
+<physValue symbol= "Sbu">
+<value>0.0</value>
+<unit>g/l</unit>
+<label>butyric acid + butyrate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Spro">
+<value>0.0</value>
+<unit>g/l</unit>
+<label>propionic acid + propionate</label>
+<reference>alter Wert 0.1. es gibt keine Referenz dafür</reference>
+</physValue>
+<physValue symbol= "Sva">
+<value>0</value>
+<unit>g/l</unit>
+<label>valeric acid + valerate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Snh4">
+<value>0.66</value>
+<unit>g/l</unit>
+<label>soluble ammonium</label>
+<reference>Substrat_FermenterProben.xls: 0.26, 0.66 und 36.8 ist ein paar</reference>
+</physValue>
+<physValue symbol= "TAC">
+<value>6.0</value>
+<unit>mmol/l</unit>
+<label>total alcalic carbonate</label>
+<reference>Substrat_FermenterProben.xls: 11.0; 36.8 passt zu 0.66</reference>
+</physValue>
+<physValue symbol= "T">
+<value>13</value>
+<unit>°C</unit>
+<label>temperature</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TS">
+<value>31.97</value>
+<unit>% FM</unit>
+<label>total solids (VS + Ash)</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "VS">
+<value>96.25</value>
+<unit>% TS</unit>
+<label>volatile solids (sum of all COD containing components)</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "D_VS">
+<value>0.80</value>
+<unit>100 %</unit>
+<label>degradation level</label>
+<reference>alter Wert: 0.87</reference>
+</physValue>
+</Phys>
+<AD>
+<physValue symbol= "kdis">
+<value>0.14</value>
+<unit>1/d</unit>
+<label>disintegration rate</label>
+<reference>alter Wert 0.025, 0.03, zuletzt: 0.05, 0.16</reference>
+</physValue>
+<physValue symbol= "khyd_ch">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate carbohydrates</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_pr">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate proteins</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_li">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate lipids</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_c4">
+<value>20</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_pro">
+<value>3.8</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_ac">
+<value>4.8</value>
+<unit>1/d</unit>
+<label></label>
+<reference>letzter Wert: 4.4, 5.1</reference>
+</physValue>
+<physValue symbol= "km_h2">
+<value>35.9</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+</AD>
+<physValue symbol= "cost">
+<value>40</value>
+<unit>€/m^3</unit>
+<label>cost</label>
+<reference></reference>
+</physValue>
+<substrate_class>Mais (GPS) (EK I)</substrate_class>
+</substrate>
+<substrate id= "swinemanure">
+<name>Gülle</name>
+<Weender>
+<physValue symbol= "RF">
+<value>11.35</value>
+<unit>% TS</unit>
+<label>raw fiber (Rohfaser)</label>
+<reference>Substrat_FermenterProben.xls
+Wert vorher war 21.35 aber zu hoch, Ausreisser
+</reference>
+</physValue>
+<physValue symbol= "RP">
+<value>16.31</value>
+<unit>% TS</unit>
+<label>raw protein (Rohprotein)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RL">
+<value>4.55</value>
+<unit>% TS</unit>
+<label>raw lipids (Rohfett)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "NDF">
+<value>50.64</value>
+<unit>% TS</unit>
+<label>neutral detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADF">
+<value>35.86</value>
+<unit>% TS</unit>
+<label>acid detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADL">
+<value>3.15</value>
+<unit>% TS</unit>
+<label>acid detergent lignin</label>
+<reference>alter Wert: 16.15</reference>
+</physValue>
+</Weender>
+<Phys>
+<physValue symbol= "COD_S">
+<value>20.0</value>
+<unit>gCOD/l</unit>
+<label>0.3 * ( composites in need for disintegration )</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "SIin">
+<value>7.3</value>
+<unit>gCOD/l</unit>
+<label>0,120000001788139 * ( composites in need for disintegration -  -  - particulate disintegrated COD )</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "pH">
+<value>7.1</value>
+<unit>-</unit>
+<label>pH value</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sac">
+<value>12.43</value>
+<unit>g/l</unit>
+<label>acetic acid + acetate</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "Sbu">
+<value>0.0</value>
+<unit>g/l</unit>
+<label>butyric acid + butyrate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Spro">
+<value>0.8</value>
+<unit>g/l</unit>
+<label>propionic acid + propionate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sva">
+<value>0</value>
+<unit>g/l</unit>
+<label>valeric acid + valerate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Snh4">
+<value>4.0</value>
+<unit>g/l</unit>
+<label>soluble ammonium</label>
+<reference>Substrat_FermenterProben.xls: 3.9</reference>
+</physValue>
+<physValue symbol= "TAC">
+<value>212.222121</value>
+<unit>mmol/l</unit>
+<label>total alcalic carbonate</label>
+<reference>Substrat_FermenterProben.xls
+Wert schwankt stark
+früher 173.4 (im letzten Test: 103.4), alt: 222.222121</reference>
+</physValue>
+<physValue symbol= "T">
+<value>16.37</value>
+<unit>°C</unit>
+<label>temperature</label>
+<reference>online Messung</reference>
+</physValue>
+<physValue symbol= "TS">
+<value>6.1</value>
+<unit>% FM</unit>
+<label>total solids (VS + Ash)</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "VS">
+<value>71.6</value>
+<unit>% TS</unit>
+<label>volatile solids (sum of all COD containing components)</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "D_VS">
+<value>0.95</value>
+<unit>100 %</unit>
+<label>degradation level</label>
+<reference></reference>
+</physValue>
+</Phys>
+<AD>
+<physValue symbol= "kdis">
+<value>0.27</value>
+<unit>1/d</unit>
+<label>disintegration rate</label>
+<reference>alter Wert: 0.075, letzter Wert: 0.12</reference>
+</physValue>
+<physValue symbol= "khyd_ch">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate carbohydrates</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_pr">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate proteins</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_li">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate lipids</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_c4">
+<value>20</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_pro">
+<value>3.8</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_ac">
+<value>6.8</value>
+<unit>1/d</unit>
+<label></label>
+<reference>letzter Wert: 4.5</reference>
+</physValue>
+<physValue symbol= "km_h2">
+<value>36.1</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+</AD>
+<physValue symbol= "cost">
+<value>4</value>
+<unit>€/m^3</unit>
+<label>cost</label>
+<reference></reference>
+</physValue>
+<substrate_class>Schweinegülle (EK II)</substrate_class>
+</substrate>
+<substrate id= "greenrye">
+<name>Grünroggen</name>
+<Weender>
+<physValue symbol= "RF">
+<value>18.31</value>
+<unit>% TS</unit>
+<label>raw fiber (Rohfaser)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RP">
+<value>8.31</value>
+<unit>% TS</unit>
+<label>raw protein (Rohprotein)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RL">
+<value>2.55</value>
+<unit>% TS</unit>
+<label>raw lipids (Rohfett)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "NDF">
+<value>43.64</value>
+<unit>% TS</unit>
+<label>neutral detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADF">
+<value>21.86</value>
+<unit>% TS</unit>
+<label>acid detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADL">
+<value>2.15</value>
+<unit>% TS</unit>
+<label>acid detergent lignin</label>
+<reference></reference>
+</physValue>
+</Weender>
+<Phys>
+<physValue symbol= "COD_S">
+<value>69</value>
+<unit>gCOD/l</unit>
+<label>0.3 * ( composites in need for disintegration )</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "SIin">
+<value>19</value>
+<unit>gCOD/l</unit>
+<label>0,100000001490116 * ( composites in need for disintegration -  -  - particulate disintegrated COD )</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "pH">
+<value>5</value>
+<unit>-</unit>
+<label>pH value</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sac">
+<value>1</value>
+<unit>g/l</unit>
+<label>acetic acid + acetate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sbu">
+<value>0.01</value>
+<unit>g/l</unit>
+<label>butyric acid + butyrate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Spro">
+<value>0.3</value>
+<unit>g/l</unit>
+<label>propionic acid + propionate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sva">
+<value>0</value>
+<unit>g/l</unit>
+<label>valeric acid + valerate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Snh4">
+<value>0.5</value>
+<unit>g/l</unit>
+<label>soluble ammonium</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TAC">
+<value>0.01</value>
+<unit>mmol/l</unit>
+<label>total alcalic carbonate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "T">
+<value>11</value>
+<unit>°C</unit>
+<label>temperature</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TS">
+<value>19.25</value>
+<unit>% FM</unit>
+<label>total solids (VS + Ash)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "VS">
+<value>90</value>
+<unit>% TS</unit>
+<label>volatile solids (sum of all COD containing components)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "D_VS">
+<value>0.75</value>
+<unit>100 %</unit>
+<label>degradation level</label>
+<reference></reference>
+</physValue>
+</Phys>
+<AD>
+<physValue symbol= "kdis">
+<value>0.05</value>
+<unit>1/d</unit>
+<label>disintegration rate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_ch">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate carbohydrates</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_pr">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate proteins</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_li">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate lipids</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_c4">
+<value>35</value>
+<unit>1/d</unit>
+<label></label>
+<reference>Gehring 2009</reference>
+</physValue>
+<physValue symbol= "km_pro">
+<value>3.8</value>
+<unit>1/d</unit>
+<label></label>
+<reference>Gehring 2009</reference>
+</physValue>
+<physValue symbol= "km_ac">
+<value>17.9</value>
+<unit>1/d</unit>
+<label></label>
+<reference>Gehring 2009</reference>
+</physValue>
+<physValue symbol= "km_h2">
+<value>27.2</value>
+<unit>1/d</unit>
+<label></label>
+<reference>Gehring 2009</reference>
+</physValue>
+</AD>
+<physValue symbol= "cost">
+<value>32</value>
+<unit>€/m^3</unit>
+<label>cost</label>
+<reference></reference>
+</physValue>
+<substrate_class>Grünroggen (GPS) (EK I)</substrate_class>
+</substrate>
+<substrate id= "grass">
+<name>Grassilage</name>
+<Weender>
+<physValue symbol= "RF">
+<value>26.5</value>
+<unit>% TS</unit>
+<label>raw fiber (Rohfaser)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RP">
+<value>17.5</value>
+<unit>% TS</unit>
+<label>raw protein (Rohprotein)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RL">
+<value>6.6</value>
+<unit>% TS</unit>
+<label>raw lipids (Rohfett)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "NDF">
+<value>47.5</value>
+<unit>% TS</unit>
+<label>neutral detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADF">
+<value>29.8</value>
+<unit>% TS</unit>
+<label>acid detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADL">
+<value>5.3</value>
+<unit>% TS</unit>
+<label>acid detergent lignin</label>
+<reference>
+  Biogas from grass silage – Measurements and modeling with ADM1
+</reference>
+</physValue>
+</Weender>
+<Phys>
+<physValue symbol= "COD_S">
+<value>27.89</value>
+<unit>gCOD/l</unit>
+<label>0.3 * ( composites in need for disintegration )</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "SIin">
+<value>22.89</value>
+<unit>gCOD/l</unit>
+<label>0,140000002086163 * ( composites in need for disintegration -  -  - particulate disintegrated COD )</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "pH">
+<value>4.1</value>
+<unit>-</unit>
+<label>pH value</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sac">
+<value>1.53</value>
+<unit>g/l</unit>
+<label>acetic acid + acetate</label>
+<reference>
+  08 Die Korrektur des Trockensubstanzgehaltes von Grassilagen als Substrat für Biogasanlagen
+</reference>
+</physValue>
+<physValue symbol= "Sbu">
+<value>0</value>
+<unit>g/l</unit>
+<label>butyric acid + butyrate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Spro">
+<value>0.0</value>
+<unit>g/l</unit>
+<label>propionic acid + propionate</label>
+<reference>
+  08 Die Korrektur des Trockensubstanzgehaltes von Grassilagen als Substrat für Biogasanlagen
+</reference>
+</physValue>
+<physValue symbol= "Sva">
+<value>0</value>
+<unit>g/l</unit>
+<label>valeric acid + valerate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Snh4">
+<value>1.5</value>
+<unit>g/l</unit>
+<label>soluble ammonium</label>
+<reference>
+  konzeptionierung. erstellung und betrieb einer versuchsfermenteranlage zur 
+  Bearbeitung von Fragestellungen: 1.5
+</reference>
+</physValue>
+<physValue symbol= "TAC">
+<value>7.01</value>
+<unit>mmol/l</unit>
+<label>total alcalic carbonate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "T">
+<value>10</value>
+<unit>°C</unit>
+<label>temperature</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TS">
+<value>34.1</value>
+<unit>% FM</unit>
+<label>total solids (VS + Ash)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "VS">
+<value>84.6</value>
+<unit>% TS</unit>
+<label>volatile solids (sum of all COD containing components)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "D_VS">
+<value>0.75</value>
+<unit>100 %</unit>
+<label>degradation level</label>
+<reference></reference>
+</physValue>
+</Phys>
+<AD>
+<physValue symbol= "kdis">
+<value>0.04</value>
+<unit>1/d</unit>
+<label>disintegration rate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_ch">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate carbohydrates</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_pr">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate proteins</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_li">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate lipids</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_c4">
+<value>20</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_pro">
+<value>8</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_ac">
+<value>4.9</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_h2">
+<value>35.6</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+</AD>
+<physValue symbol= "cost">
+<value>25</value>
+<unit>€/m^3</unit>
+<label>cost</label>
+<reference></reference>
+</physValue>
+<substrate_class>Gras/Ackergras (EK I)</substrate_class>
+</substrate>
+<substrate id= "wheat">
+<name>Getreide</name>
+<Weender>
+<physValue symbol= "RF">
+<value>36</value>
+<unit>% TS</unit>
+<label>raw fiber (Rohfaser)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RP">
+<value>10.3</value>
+<unit>% TS</unit>
+<label>raw protein (Rohprotein)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RL">
+<value>1.6</value>
+<unit>% TS</unit>
+<label>raw lipids (Rohfett)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "NDF">
+<value>67.29</value>
+<unit>% TS</unit>
+<label>neutral detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADF">
+<value>50.4</value>
+<unit>% TS</unit>
+<label>acid detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADL">
+<value>8.4</value>
+<unit>% TS</unit>
+<label>acid detergent lignin</label>
+<reference></reference>
+</physValue>
+</Weender>
+<Phys>
+<physValue symbol= "COD_S">
+<value>95.23</value>
+<unit>gCOD/l</unit>
+<label>chemical oxygen demand of filtrate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "SIin">
+<value>35.23</value>
+<unit>gCOD/l</unit>
+<label>0,100000001490116 * ( composites in need for disintegration -  -  - particulate disintegrated COD )</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "pH">
+<value>4.4</value>
+<unit>-</unit>
+<label>pH value</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sac">
+<value>0.5</value>
+<unit>g/l</unit>
+<label>acetic acid + acetate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sbu">
+<value>0</value>
+<unit>g/l</unit>
+<label>butyric acid + butyrate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Spro">
+<value>0</value>
+<unit>g/l</unit>
+<label>propionic acid + propionate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sva">
+<value>0</value>
+<unit>g/l</unit>
+<label>valeric acid + valerate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Snh4">
+<value>0.59</value>
+<unit>g/l</unit>
+<label>soluble ammonium</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TAC">
+<value>0.001</value>
+<unit>mmol/l</unit>
+<label>total alcalic carbonate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "T">
+<value>10</value>
+<unit>°C</unit>
+<label>temperature</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TS">
+<value>30.23</value>
+<unit>% FM</unit>
+<label>total solids (VS + Ash)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "VS">
+<value>94.36</value>
+<unit>% TS</unit>
+<label>volatile solids (sum of all COD containing components)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "D_VS">
+<value>0.75</value>
+<unit>100 %</unit>
+<label>degradation level</label>
+<reference></reference>
+</physValue>
+</Phys>
+<AD>
+<physValue symbol= "kdis">
+<value>0.05</value>
+<unit>1/d</unit>
+<label>disintegration rate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_ch">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate carbohydrates</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_pr">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate proteins</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_li">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate lipids</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_c4">
+<value>20</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_pro">
+<value>4</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_ac">
+<value>5</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_h2">
+<value>35</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+</AD>
+<physValue symbol= "cost">
+<value>10</value>
+<unit>€/m^3</unit>
+<label>cost</label>
+<reference></reference>
+</physValue>
+<substrate_class>Getreide (GPS) (EK I)</substrate_class>
+</substrate>
+<substrate id= "gps">
+<name>GPS</name>
+<Weender>
+<physValue symbol= "RF">
+<value>44</value>
+<unit>% TS</unit>
+<label>raw fiber (Rohfaser)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RP">
+<value>4.3</value>
+<unit>% TS</unit>
+<label>raw protein (Rohprotein)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RL">
+<value>0.8</value>
+<unit>% TS</unit>
+<label>raw lipids (Rohfett)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "NDF">
+<value>77.29</value>
+<unit>% TS</unit>
+<label>neutral detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADF">
+<value>50.4</value>
+<unit>% TS</unit>
+<label>acid detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADL">
+<value>8.4</value>
+<unit>% TS</unit>
+<label>acid detergent lignin</label>
+<reference></reference>
+</physValue>
+</Weender>
+<Phys>
+<physValue symbol= "COD_S">
+<value>104.86</value>
+<unit>gCOD/l</unit>
+<label>chemical oxygen demand of filtrate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "SIin">
+<value>34.86</value>
+<unit>gCOD/l</unit>
+<label>0,100000001490116 * ( composites in need for disintegration -  -  - particulate disintegrated COD )</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "pH">
+<value>4.3</value>
+<unit>-</unit>
+<label>pH value</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sac">
+<value>0</value>
+<unit>g/l</unit>
+<label>acetic acid + acetate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sbu">
+<value>0</value>
+<unit>g/l</unit>
+<label>butyric acid + butyrate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Spro">
+<value>0</value>
+<unit>g/l</unit>
+<label>propionic acid + propionate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sva">
+<value>0</value>
+<unit>g/l</unit>
+<label>valeric acid + valerate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Snh4">
+<value>0.5</value>
+<unit>g/l</unit>
+<label>soluble ammonium</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TAC">
+<value>0.01</value>
+<unit>mmol/l</unit>
+<label>total alcalic carbonate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "T">
+<value>10</value>
+<unit>°C</unit>
+<label>temperature</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TS">
+<value>31.23</value>
+<unit>% FM</unit>
+<label>total solids (VS + Ash)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "VS">
+<value>94.36</value>
+<unit>% TS</unit>
+<label>volatile solids (sum of all COD containing components)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "D_VS">
+<value>0.75</value>
+<unit>100 %</unit>
+<label>degradation level</label>
+<reference></reference>
+</physValue>
+</Phys>
+<AD>
+<physValue symbol= "kdis">
+<value>0.1</value>
+<unit>1/d</unit>
+<label>disintegration rate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_ch">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate carbohydrates</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_pr">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate proteins</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_li">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate lipids</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_c4">
+<value>20</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_pro">
+<value>4</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_ac">
+<value>5</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_h2">
+<value>35</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+</AD>
+<physValue symbol= "cost">
+<value>43</value>
+<unit>€/m^3</unit>
+<label>cost</label>
+<reference></reference>
+</physValue>
+<substrate_class>Getreide (GPS) (EK I)</substrate_class>
+</substrate>
+<substrate id= "ccm">
+<name>CCM</name>
+<Weender>
+<physValue symbol= "RF">
+<value>1.8</value>
+<unit>% TS</unit>
+<label>raw fiber (Rohfaser)</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "RP">
+<value>10.54</value>
+<unit>% TS</unit>
+<label>raw protein (Rohprotein)</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "RL">
+<value>5.3</value>
+<unit>% TS</unit>
+<label>raw lipids (Rohfett)</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "NDF">
+<value>43.64</value>
+<unit>% TS</unit>
+<label>neutral detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADF">
+<value>21.86</value>
+<unit>% TS</unit>
+<label>acid detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADL">
+<value>4.01</value>
+<unit>% TS</unit>
+<label>acid detergent lignin</label>
+<reference>ADL koennte auch deutlich hoeher sein, alter Wert: 18.15</reference>
+</physValue>
+</Weender>
+<Phys>
+<physValue symbol= "COD_S">
+<value>46.30</value>
+<unit>gCOD/l</unit>
+<label>chemical oxygen demand of filtrate</label>
+<reference>alter Wert: 366.30</reference>
+</physValue>
+<physValue symbol= "SIin">
+<value>35.30</value>
+<unit>gCOD/l</unit>
+<label>0,0800000011920929 * ( composites in need for disintegration -  -  - particulate disintegrated COD )</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "pH">
+<value>4</value>
+<unit>-</unit>
+<label>pH value</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "Sac">
+<value>3.5</value>
+<unit>g/l</unit>
+<label>acetic acid + acetate</label>
+<reference>
+  Investigations and mathematical simulation on decentralized
+  anaerobic treatment of agricultural substrate from livestock
+  farming. hard cover
+  Reference for TMR. total_mixed_ratio1.xml
+  war 3 g/l
+</reference>
+</physValue>
+<physValue symbol= "Sbu">
+<value>0.0</value>
+<unit>g/l</unit>
+<label>butyric acid + butyrate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Spro">
+<value>0.6</value>
+<unit>g/l</unit>
+<label>propionic acid + propionate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sva">
+<value>0</value>
+<unit>g/l</unit>
+<label>valeric acid + valerate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Snh4">
+<value>0.55</value>
+<unit>g/l</unit>
+<label>soluble ammonium</label>
+<reference>Substrat_FermenterProben.xls: 0.43</reference>
+</physValue>
+<physValue symbol= "TAC">
+<value>5.69</value>
+<unit>mmol/l</unit>
+<label>total alcalic carbonate</label>
+<reference>keine Quelle. keine Messung, alt: 30.69</reference>
+</physValue>
+<physValue symbol= "T">
+<value>10</value>
+<unit>°C</unit>
+<label>temperature</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TS">
+<value>67.6</value>
+<unit>% FM</unit>
+<label>total solids (VS + Ash)</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "VS">
+<value>93.5</value>
+<unit>% TS</unit>
+<label>volatile solids (sum of all COD containing components)</label>
+<reference>Substrat_FermenterProben.xls</reference>
+</physValue>
+<physValue symbol= "D_VS">
+<value>0.95</value>
+<unit>100 %</unit>
+<label>degradation level</label>
+<reference></reference>
+</physValue>
+</Phys>
+<AD>
+<physValue symbol= "kdis">
+<value>0.06</value>
+<unit>1/d</unit>
+<label>disintegration rate</label>
+<reference>alt: 0.045</reference>
+</physValue>
+<physValue symbol= "khyd_ch">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate carbohydrates</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_pr">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate proteins</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_li">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate lipids</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_c4">
+<value>20</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_pro">
+<value>4</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_ac">
+<value>4.2</value>
+<unit>1/d</unit>
+<label></label>
+<reference>alter Wert 4.6</reference>
+</physValue>
+<physValue symbol= "km_h2">
+<value>35.9</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+</AD>
+<physValue symbol= "cost">
+<value>135</value>
+<unit>€/m^3</unit>
+<label>cost</label>
+<reference></reference>
+</physValue>
+<substrate_class>Corn-Cob-Mix (CCM) (EK I)</substrate_class>
+</substrate>
+<substrate id= "futterkalk">
+<name>Futterkalk</name>
+<Weender>
+<physValue symbol= "RF">
+<value>0</value>
+<unit>% TS</unit>
+<label>raw fiber (Rohfaser)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RP">
+<value>0</value>
+<unit>% TS</unit>
+<label>raw protein (Rohprotein)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RL">
+<value>0</value>
+<unit>% TS</unit>
+<label>raw lipids (Rohfett)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "NDF">
+<value>0</value>
+<unit>% TS</unit>
+<label>neutral detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADF">
+<value>0</value>
+<unit>% TS</unit>
+<label>acid detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADL">
+<value>0</value>
+<unit>% TS</unit>
+<label>acid detergent lignin</label>
+<reference></reference>
+</physValue>
+</Weender>
+<Phys>
+<physValue symbol= "COD_S">
+<value>0</value>
+<unit>gCOD/l</unit>
+<label>chemical oxygen demand of filtrate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "SIin">
+<value>0</value>
+<unit>gCOD/l</unit>
+<label>0 * ( composites in need for disintegration -  -  - particulate disintegrated COD )</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "pH">
+<value>7.5</value>
+<unit>-</unit>
+<label>pH value</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sac">
+<value>0</value>
+<unit>g/l</unit>
+<label>acetic acid + acetate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sbu">
+<value>0</value>
+<unit>g/l</unit>
+<label>butyric acid + butyrate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Spro">
+<value>0</value>
+<unit>g/l</unit>
+<label>propionic acid + propionate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sva">
+<value>0</value>
+<unit>g/l</unit>
+<label>valeric acid + valerate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Snh4">
+<value>0</value>
+<unit>g/l</unit>
+<label>soluble ammonium</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TAC">
+<value>100000</value>
+<unit>mmol/l</unit>
+<label>total alcalic carbonate</label>
+<reference>
+2.7 kg/l / 50g/mol * 1000 g/kg = 270/5 mol/l approx 50000 mmol/l     
+da beim abbau von CaCO3 2 molekuele HCO3 entsteht. mal 2 das ganze = 100000 mmol/l
+s. wikipedia calciumhydrogencarbonat
+CaCO3 + CO2 + H2O - Ca2+ + 2HCO3-
+</reference>
+</physValue>
+<physValue symbol= "T">
+<value>10</value>
+<unit>°C</unit>
+<label>temperature</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TS">
+<value>90</value>
+<unit>% FM</unit>
+<label>total solids (VS + Ash)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "VS">
+<value>0</value>
+<unit>% TS</unit>
+<label>volatile solids (sum of all COD containing components)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "D_VS">
+<value>0.7</value>
+<!-- war 0, muss aber 0.7 oder größer wg. fehler in Software der mittelwert
+aller werte nimmt für nichtgefütterten fermenter -->
+<unit>100 %</unit>
+<label>degradation level</label>
+<reference></reference>
+</physValue>
+</Phys>
+<AD>
+<physValue symbol= "kdis">
+<value>0.1</value>
+<unit>1/d</unit>
+<label>disintegration rate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_ch">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate carbohydrates</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_pr">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate proteins</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_li">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate lipids</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_c4">
+<value>20</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_pro">
+<value>4</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_ac">
+<value>5</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_h2">
+<value>35</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+</AD>
+<physValue symbol= "cost">
+<value>10</value>
+<unit>€/m^3</unit>
+<label>cost</label>
+<reference></reference>
+</physValue>
+<substrate_class>Miscellaneous</substrate_class>
+</substrate>
+<substrate id= "cowmanure">
+<name>Rindermist</name>
+<Weender>
+<physValue symbol= "RF">
+<value>18.31</value>
+<unit>% TS</unit>
+<label>raw fiber (Rohfaser)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RP">
+<value>18.31</value>
+<unit>% TS</unit>
+<label>raw protein (Rohprotein)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RL">
+<value>3.55</value>
+<unit>% TS</unit>
+<label>raw lipids (Rohfett)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "NDF">
+<value>43.64</value>
+<unit>% TS</unit>
+<label>neutral detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADF">
+<value>31.86</value>
+<unit>% TS</unit>
+<label>acid detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADL">
+<value>11.15</value>
+<unit>% TS</unit>
+<label>acid detergent lignin</label>
+<reference></reference>
+</physValue>
+</Weender>
+<Phys>
+<physValue symbol= "COD_S">
+<value>52.43</value>
+<unit>gCOD/l</unit>
+<label>chemical oxygen demand of filtrate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "SIin">
+<value>12.43</value>
+<unit>gCOD/l</unit>
+<label>0,120000001788139 * ( composites in need for disintegration -  -  - particulate disintegrated COD )</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "pH">
+<value>7</value>
+<unit>-</unit>
+<label>pH value</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sac">
+<value>0</value>
+<unit>g/l</unit>
+<label>acetic acid + acetate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sbu">
+<value>0</value>
+<unit>g/l</unit>
+<label>butyric acid + butyrate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Spro">
+<value>0</value>
+<unit>g/l</unit>
+<label>propionic acid + propionate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sva">
+<value>0</value>
+<unit>g/l</unit>
+<label>valeric acid + valerate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Snh4">
+<value>2</value>
+<unit>g/l</unit>
+<label>soluble ammonium</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TAC">
+<value>100</value>
+<unit>mmol/l</unit>
+<label>total alcalic carbonate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "T">
+<value>12</value>
+<unit>°C</unit>
+<label>temperature</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TS">
+<value>12</value>
+<unit>% FM</unit>
+<label>total solids (VS + Ash)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "VS">
+<value>85</value>
+<unit>% TS</unit>
+<label>volatile solids (sum of all COD containing components)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "D_VS">
+<value>0.7</value>
+<unit>100 %</unit>
+<label>degradation level</label>
+<reference></reference>
+</physValue>
+</Phys>
+<AD>
+<physValue symbol= "kdis">
+<value>0.1</value>
+<unit>1/d</unit>
+<label>disintegration rate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_ch">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate carbohydrates</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_pr">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate proteins</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_li">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate lipids</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_c4">
+<value>20</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_pro">
+<value>4</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_ac">
+<value>3.6</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_h2">
+<value>35</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+</AD>
+<physValue symbol= "cost">
+<value>10</value>
+<unit>€/m^3</unit>
+<label>cost</label>
+<reference></reference>
+</physValue>
+<substrate_class>Rinderfestmist (EK II)</substrate_class>
+</substrate>
+<substrate id= "onions">
+<name>Zwiebeln</name>
+<Weender>
+<physValue symbol= "RF">
+<value>18.31</value>
+<unit>% TS</unit>
+<label>raw fiber (Rohfaser)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RP">
+<value>8.31</value>
+<unit>% TS</unit>
+<label>raw protein (Rohprotein)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "RL">
+<value>2.55</value>
+<unit>% TS</unit>
+<label>raw lipids (Rohfett)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "NDF">
+<value>43.64</value>
+<unit>% TS</unit>
+<label>neutral detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADF">
+<value>21.86</value>
+<unit>% TS</unit>
+<label>acid detergent fiber</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "ADL">
+<value>2.15</value>
+<unit>% TS</unit>
+<label>acid detergent lignin</label>
+<reference></reference>
+</physValue>
+</Weender>
+<Phys>
+<physValue symbol= "COD_S">
+<value>72.80</value>
+<unit>gCOD/l</unit>
+<label>0.3 * ( composites in need for disintegration )</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "SIin">
+<value>22.80</value>
+<unit>gCOD/l</unit>
+<label>0,120000001788139 * ( composites in need for disintegration -  -  - particulate disintegrated COD )</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "pH">
+<value>5</value>
+<unit>-</unit>
+<label>pH value</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sac">
+<value>1</value>
+<unit>g/l</unit>
+<label>acetic acid + acetate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sbu">
+<value>0.01</value>
+<unit>g/l</unit>
+<label>butyric acid + butyrate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Spro">
+<value>0.3</value>
+<unit>g/l</unit>
+<label>propionic acid + propionate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Sva">
+<value>0</value>
+<unit>g/l</unit>
+<label>valeric acid + valerate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "Snh4">
+<value>0.5</value>
+<unit>g/l</unit>
+<label>soluble ammonium</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TAC">
+<value>0.01</value>
+<unit>mmol/l</unit>
+<label>total alcalic carbonate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "T">
+<value>11</value>
+<unit>°C</unit>
+<label>temperature</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "TS">
+<value>19.25</value>
+<unit>% FM</unit>
+<label>total solids (VS + Ash)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "VS">
+<value>90</value>
+<unit>% TS</unit>
+<label>volatile solids (sum of all COD containing components)</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "D_VS">
+<value>0.7</value>
+<unit>100 %</unit>
+<label>degradation level</label>
+<reference></reference>
+</physValue>
+</Phys>
+<AD>
+<physValue symbol= "kdis">
+<value>0.1</value>
+<unit>1/d</unit>
+<label>disintegration rate</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_ch">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate carbohydrates</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_pr">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate proteins</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "khyd_li">
+<value>10</value>
+<unit>1/d</unit>
+<label>hydrolysis rate lipids</label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_c4">
+<value>20</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_pro">
+<value>7</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_ac">
+<value>6</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+<physValue symbol= "km_h2">
+<value>35</value>
+<unit>1/d</unit>
+<label></label>
+<reference></reference>
+</physValue>
+</AD>
+<physValue symbol= "cost">
+<value>5</value>
+<unit>€/m^3</unit>
+<label>cost</label>
+<reference></reference>
+</physValue>
+<substrate_class>Sonstiges (EK 0)</substrate_class>
+</substrate>
+</substrates>
