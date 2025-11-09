@@ -31,9 +31,7 @@ class TestADMparams:
         T_ad = 308.15  # K (35°C)
         return R, T_base, T_ad
 
-    def test_getADMparams_returns_correct_number_of_values(
-        self, standard_conditions: Tuple[float, float, float]
-    ) -> None:
+    def test_getADMparams_returns_correct_number_of_values(self, standard_conditions: Tuple[float, float, float]) -> None:
         """
         Test that getADMparams returns exactly 73 parameter values.
 
@@ -45,9 +43,7 @@ class TestADMparams:
 
         assert len(params) == 73, "getADMparams should return 73 parameters"
 
-    def test_getADMparams_all_positive_values(
-        self, standard_conditions: Tuple[float, float, float]
-    ) -> None:
+    def test_getADMparams_all_positive_values(self, standard_conditions: Tuple[float, float, float]) -> None:
         """
         Test that all returned parameters are positive numbers.
 
@@ -61,9 +57,7 @@ class TestADMparams:
             assert param > 0, f"Parameter at index {i} should be positive, got {param}"
             assert np.isfinite(param), f"Parameter at index {i} should be finite"
 
-    def test_getADMparams_stoichiometric_fractions_sum_to_one(
-        self, standard_conditions: Tuple[float, float, float]
-    ) -> None:
+    def test_getADMparams_stoichiometric_fractions_sum_to_one(self, standard_conditions: Tuple[float, float, float]) -> None:
         """
         Test that stoichiometric fractions from sugars sum to approximately 1.
 
@@ -80,13 +74,9 @@ class TestADMparams:
         f_ac_su = params[16]
 
         fraction_sum = f_h2_su + f_bu_su + f_pro_su + f_ac_su
-        assert np.isclose(
-            fraction_sum, 1.0, rtol=1e-6
-        ), f"Sugar fractions should sum to 1.0, got {fraction_sum}"
+        assert np.isclose(fraction_sum, 1.0, rtol=1e-6), f"Sugar fractions should sum to 1.0, got {fraction_sum}"
 
-    def test_getADMparams_amino_acid_fractions_sum_to_one(
-        self, standard_conditions: Tuple[float, float, float]
-    ) -> None:
+    def test_getADMparams_amino_acid_fractions_sum_to_one(self, standard_conditions: Tuple[float, float, float]) -> None:
         """
         Test that stoichiometric fractions from amino acids sum to approximately 1.
 
@@ -104,13 +94,9 @@ class TestADMparams:
         f_ac_aa = params[27]
 
         fraction_sum = f_h2_aa + f_va_aa + f_bu_aa + f_pro_aa + f_ac_aa
-        assert np.isclose(
-            fraction_sum, 1.0, rtol=1e-6
-        ), f"Amino acid fractions should sum to 1.0, got {fraction_sum}"
+        assert np.isclose(fraction_sum, 1.0, rtol=1e-6), f"Amino acid fractions should sum to 1.0, got {fraction_sum}"
 
-    def test_getADMparams_yields_less_than_one(
-        self, standard_conditions: Tuple[float, float, float]
-    ) -> None:
+    def test_getADMparams_yields_less_than_one(self, standard_conditions: Tuple[float, float, float]) -> None:
         """
         Test that all yield coefficients are between 0 and 1.
 
@@ -126,9 +112,7 @@ class TestADMparams:
 
         for idx in yield_indices:
             yield_value = params[idx]
-            assert (
-                0 < yield_value < 1
-            ), f"Yield at index {idx} should be between 0 and 1, got {yield_value}"
+            assert 0 < yield_value < 1, f"Yield at index {idx} should be between 0 and 1, got {yield_value}"
 
     def test_getADMinhibitionparams_returns_six_values(self) -> None:
         """Test that getADMinhibitionparams returns exactly 6 values."""
@@ -144,9 +128,7 @@ class TestADMparams:
             assert param > 0, f"Inhibition parameter at index {i} should be positive"
             assert np.isfinite(param), f"Inhibition parameter at index {i} should be finite"
 
-    def test_getADMgasparams_returns_six_values(
-        self, standard_conditions: Tuple[float, float, float]
-    ) -> None:
+    def test_getADMgasparams_returns_six_values(self, standard_conditions: Tuple[float, float, float]) -> None:
         """
         Test that getADMgasparams returns exactly 6 values.
 
@@ -158,9 +140,7 @@ class TestADMparams:
 
         assert len(params) == 6, "getADMgasparams should return 6 values"
 
-    def test_getADMgasparams_henry_constants_positive(
-        self, standard_conditions: Tuple[float, float, float]
-    ) -> None:
+    def test_getADMgasparams_henry_constants_positive(self, standard_conditions: Tuple[float, float, float]) -> None:
         """
         Test that Henry's law constants are positive.
 
@@ -174,9 +154,7 @@ class TestADMparams:
         assert K_H_ch4 > 0, "Henry constant for CH4 should be positive"
         assert K_H_h2 > 0, "Henry constant for H2 should be positive"
 
-    def test_getADMgasparams_water_vapor_pressure_reasonable(
-        self, standard_conditions: Tuple[float, float, float]
-    ) -> None:
+    def test_getADMgasparams_water_vapor_pressure_reasonable(self, standard_conditions: Tuple[float, float, float]) -> None:
         """
         Test that water vapor pressure is in a reasonable range.
 
@@ -200,13 +178,9 @@ class TestADMparams:
         params_high = ADMparams.getADMgasparams(R, T_base, T_ad_high)
 
         # Water vapor pressure should increase with temperature
-        assert (
-            params_high[0] > params_low[0]
-        ), "Water vapor pressure should increase with temperature"
+        assert params_high[0] > params_low[0], "Water vapor pressure should increase with temperature"
 
-    def test_getADMKparams_equilibrium_constants(
-        self, standard_conditions: Tuple[float, float, float]
-    ) -> None:
+    def test_getADMKparams_equilibrium_constants(self, standard_conditions: Tuple[float, float, float]) -> None:
         """
         Test that acid-base equilibrium constants are in expected ranges.
 
@@ -214,9 +188,7 @@ class TestADMparams:
             standard_conditions: Fixture providing R, T_base, T_ad values.
         """
         R, T_base, T_ad = standard_conditions
-        K_w, K_a_va, K_a_bu, K_a_pro, K_a_ac, K_a_co2, K_a_IN = ADMparams._getADMKparams(
-            R, T_base, T_ad
-        )
+        K_w, K_a_va, K_a_bu, K_a_pro, K_a_ac, K_a_co2, K_a_IN = ADMparams._getADMKparams(R, T_base, T_ad)
 
         # Water dissociation constant should be around 1e-14 at 25°C
         assert 1e-15 < K_w < 1e-13, f"K_w seems unreasonable: {K_w}"
@@ -295,9 +267,7 @@ class TestADMparams:
         f_h2_aa, f_va_aa, f_bu_aa, f_pro_aa, f_ac_aa = ADMparams._getADMfaaparams()
 
         fraction_sum = f_h2_aa + f_va_aa + f_bu_aa + f_pro_aa + f_ac_aa
-        assert np.isclose(
-            fraction_sum, 1.0, rtol=1e-6
-        ), f"Amino acid fractions should sum to 1.0, got {fraction_sum}"
+        assert np.isclose(fraction_sum, 1.0, rtol=1e-6), f"Amino acid fractions should sum to 1.0, got {fraction_sum}"
 
     def test_getADMfsuparams_returns_four_values(self) -> None:
         """Test that sugar fraction parameters return 4 values."""
@@ -310,9 +280,7 @@ class TestADMparams:
         f_h2_su, f_bu_su, f_pro_su, f_ac_su = ADMparams._getADMfsuparams()
 
         fraction_sum = f_h2_su + f_bu_su + f_pro_su + f_ac_su
-        assert np.isclose(
-            fraction_sum, 1.0, rtol=1e-6
-        ), f"Sugar fractions should sum to 1.0, got {fraction_sum}"
+        assert np.isclose(fraction_sum, 1.0, rtol=1e-6), f"Sugar fractions should sum to 1.0, got {fraction_sum}"
 
 
 class TestADMparamsEdgeCases:

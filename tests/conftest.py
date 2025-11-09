@@ -40,7 +40,7 @@ def pytest_collection_modifyitems(config, items):
         "test_adm_params",
         "test_pyadm1",
         "test_simulator",
-        "test_feedstock"
+        "test_feedstock",
     ]
 
     for item in items:
@@ -48,14 +48,6 @@ def pytest_collection_modifyitems(config, items):
         module_name = item.module.__name__
         if any(dm in module_name for dm in dotnet_modules):
             item.add_marker(skip_dotnet)
-
-
-def pytest_configure(config):
-    """Register custom markers."""
-    config.addinivalue_line(
-        "markers",
-        "requires_dotnet: mark test as requiring .NET/Mono runtime"
-    )
 
 
 @pytest.fixture
@@ -153,8 +145,7 @@ def pytest_configure(config):
     Args:
         config: pytest configuration object.
     """
-    config.addinivalue_line(
-        "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
-    )
+    config.addinivalue_line("markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')")
     config.addinivalue_line("markers", "integration: marks tests as integration tests")
     config.addinivalue_line("markers", "requires_dlls: marks tests that require C# DLLs")
+    config.addinivalue_line("markers", "requires_dotnet: mark test as requiring .NET/Mono runtime")

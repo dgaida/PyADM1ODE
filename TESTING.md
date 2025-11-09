@@ -17,7 +17,8 @@ This project includes unit tests for the core ADM1 functionality. However, some 
 - All basic requirements
 - Mono runtime (Linux/macOS) or .NET Framework (Windows)
 - pythonnet
-- C# DLLs in the `dlls/` directory
+- C# DLLs in the `dlls/` directory (included in repository)
+- **Windows only**: vs2015_runtime
 
 ## Running Tests
 

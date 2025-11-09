@@ -44,7 +44,12 @@ class Simulator:
     # *** PUBLIC methods ***
 
     def determineBestFeedbyNSims(
-        self, state_zero: List[float], Q: List[float], Qch4sp: float, feeding_freq: int, n: int = 13
+        self,
+        state_zero: List[float],
+        Q: List[float],
+        Qch4sp: float,
+        feeding_freq: int,
+        n: int = 13,
     ) -> Tuple[float, float, List[float], float, float, List[float], float, float, float, float]:
         """
         Determine best substrate feed by running n simulations.
@@ -92,15 +97,11 @@ class Simulator:
 
         # simulate with Q for feeding_freq/24 days. The resulting gas flow rates can be helpful
         # information
-        q_gas_2d, q_ch4_2d = self._simulate_wosavinglaststate(
-            [0, feeding_freq / 24], state_zero, Qnew[0]
-        )
+        q_gas_2d, q_ch4_2d = self._simulate_wosavinglaststate([0, feeding_freq / 24], state_zero, Qnew[0])
 
         # simulate with best substrate feed for feeding_freq/24 days. The resulting gas flow rates can be helpful
         # information
-        q_gas_best_2d, q_ch4_best_2d = self._simulate_wosavinglaststate(
-            [0, feeding_freq / 24], state_zero, Qbest
-        )
+        q_gas_best_2d, q_ch4_best_2d = self._simulate_wosavinglaststate([0, feeding_freq / 24], state_zero, Qbest)
 
         return (
             Q_Gas_7d[ii][-1],
@@ -141,9 +142,7 @@ class Simulator:
 
     # *** PRIVATE methods ***
 
-    def _simulate_wosavinglaststate(
-        self, tstep: List[float], state_zero: List[float], Q: List[float]
-    ) -> Tuple[float, float]:
+    def _simulate_wosavinglaststate(self, tstep: List[float], state_zero: List[float], Q: List[float]) -> Tuple[float, float]:
         """
         Run a simulation with the ADM1 for tstep starting at the state state_zero and with the volumetric flow rate Q.
         The final state is not saved nor returned.

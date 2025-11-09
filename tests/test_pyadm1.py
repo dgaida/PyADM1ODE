@@ -8,8 +8,7 @@ ADM1 ODE system for anaerobic digestion simulation.
 import pytest
 import numpy as np
 import pandas as pd
-from typing import List, Tuple
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock
 from pathlib import Path
 
 from pyadm1.core.pyadm1 import PyADM1, get_state_zero_from_initial_state
@@ -218,9 +217,7 @@ class TestPyADM1CalcGas:
         Args:
             adm1_instance: PyADM1 fixture.
         """
-        q_gas, q_ch4, q_co2, p_gas = adm1_instance.calc_gas(
-            pi_Sh2=5e-6, pi_Sch4=0.55, pi_Sco2=0.42, pTOTAL=0.98
-        )
+        q_gas, q_ch4, q_co2, p_gas = adm1_instance.calc_gas(pi_Sh2=5e-6, pi_Sch4=0.55, pi_Sco2=0.42, pTOTAL=0.98)
 
         assert q_gas >= 0, "Total gas flow should be non-negative"
         assert q_ch4 >= 0, "Methane flow should be non-negative"
@@ -234,9 +231,7 @@ class TestPyADM1CalcGas:
         Args:
             adm1_instance: PyADM1 fixture.
         """
-        q_gas, q_ch4, q_co2, p_gas = adm1_instance.calc_gas(
-            pi_Sh2=5e-6, pi_Sch4=0.55, pi_Sco2=0.42, pTOTAL=0.98
-        )
+        q_gas, q_ch4, q_co2, p_gas = adm1_instance.calc_gas(pi_Sh2=5e-6, pi_Sch4=0.55, pi_Sco2=0.42, pTOTAL=0.98)
 
         assert q_ch4 <= q_gas, "Methane flow should be <= total gas flow"
         assert q_co2 <= q_gas, "CO2 flow should be <= total gas flow"
@@ -248,9 +243,7 @@ class TestPyADM1CalcGas:
         Args:
             adm1_instance: PyADM1 fixture.
         """
-        q_gas, q_ch4, q_co2, p_gas = adm1_instance.calc_gas(
-            pi_Sh2=0.0, pi_Sch4=0.0, pi_Sco2=0.0, pTOTAL=1.0
-        )
+        q_gas, q_ch4, q_co2, p_gas = adm1_instance.calc_gas(pi_Sh2=0.0, pi_Sch4=0.0, pi_Sco2=0.0, pTOTAL=1.0)
 
         # Should handle zero pressures gracefully
         assert np.isfinite(q_gas), "q_gas should be finite"
@@ -417,9 +410,7 @@ class TestPyADM1SaveFinalState:
 
         assert output_file.exists(), "CSV file should be created"
 
-    def test_save_final_state_contains_only_last_state(
-        self, mock_feedstock: Mock, tmp_path: Path
-    ) -> None:
+    def test_save_final_state_contains_only_last_state(self, mock_feedstock: Mock, tmp_path: Path) -> None:
         """
         Test that saved CSV contains only the last state.
 

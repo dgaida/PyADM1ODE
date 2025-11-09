@@ -3,11 +3,13 @@ channels:
   - conda-forge
   - defaults
 dependencies:
+  - python>=3.8
   - matplotlib
   - numpy
   - pandas
-  - python
-  - pythonnet
   - scipy
-  - vs2015_runtime
-  
+  - pip
+  - pip:
+    - pythonnet
+    # Note: vs2015_runtime is only needed on Windows
+    # Install manually on Windows with: pip install vs2015_runtime

@@ -75,11 +75,11 @@
 <value>1.18</value>
 <unit>g/l</unit>
 <label>acetic acid + acetate</label>
-<reference>alter Wert 1.58. es gibt keine Referenz dafür. setze auf 2. 
-da CCM einen wert von 3 hat (mais etwas darunter gesetzt. weil kalibrierung 
-mit 1.58 gelaufen ist. allerdings hätte in kalibrierung vfa langsam hoch 
-gefahren werden müssen um silierprozess zu simulieren -> Block Silo). 
-da TS Gehalt von Substrat gesunken ist. 
+<reference>alter Wert 1.58. es gibt keine Referenz dafür. setze auf 2.
+da CCM einen wert von 3 hat (mais etwas darunter gesetzt. weil kalibrierung
+mit 1.58 gelaufen ist. allerdings hätte in kalibrierung vfa langsam hoch
+gefahren werden müssen um silierprozess zu simulieren -> Block Silo).
+da TS Gehalt von Substrat gesunken ist.
 ist vermutung. dass starke säureentwicklung eingesetzt hat.
 Referenz ist die Berechnung aus dem Datenbank Ordner</reference>
 </physValue>
@@ -650,7 +650,7 @@ früher 173.4 (im letzten Test: 103.4), alt: 222.222121</reference>
 <unit>g/l</unit>
 <label>soluble ammonium</label>
 <reference>
-  konzeptionierung. erstellung und betrieb einer versuchsfermenteranlage zur 
+  konzeptionierung. erstellung und betrieb einer versuchsfermenteranlage zur
   Bearbeitung von Fragestellungen: 1.5
 </reference>
 </physValue>
@@ -1377,7 +1377,7 @@ früher 173.4 (im letzten Test: 103.4), alt: 222.222121</reference>
 <unit>mmol/l</unit>
 <label>total alcalic carbonate</label>
 <reference>
-2.7 kg/l / 50g/mol * 1000 g/kg = 270/5 mol/l approx 50000 mmol/l     
+2.7 kg/l / 50g/mol * 1000 g/kg = 270/5 mol/l approx 50000 mmol/l
 da beim abbau von CaCO3 2 molekuele HCO3 entsteht. mal 2 das ganze = 100000 mmol/l
 s. wikipedia calciumhydrogencarbonat
 CaCO3 + CO2 + H2O - Ca2+ + 2HCO3-

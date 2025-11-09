@@ -1,7 +1,7 @@
 # .github/workflows/tests.yml
 name: Tests
 
-on: 
+on:
   push:
     branches: [ master ]
     paths-ignore:

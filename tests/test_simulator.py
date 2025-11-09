@@ -429,12 +429,7 @@ class TestSimulatorIntegration:
                 # Create realistic solver result
                 mock_result = Mock()
                 n_points = 20
-                mock_result.y = np.array(
-                    [
-                        [current_state[j] * (1 + 0.001 * k) for k in range(n_points)]
-                        for j in range(37)
-                    ]
-                )
+                mock_result.y = np.array([[current_state[j] * (1 + 0.001 * k) for k in range(n_points)] for j in range(37)])
                 mock_solve.return_value = mock_result
 
                 tstep = [time_points[i], time_points[i + 1]]
@@ -460,11 +455,7 @@ class TestSimulatorIntegration:
         with patch("pyadm1.core.simulator.scipy.integrate.solve_ivp") as mock_solve:
             # Mock solver with varying results
             def create_mock_result(state, n_points=140):
-                return Mock(
-                    y=np.array(
-                        [[state[j] * (1 + 0.001 * k) for k in range(n_points)] for j in range(37)]
-                    )
-                )
+                return Mock(y=np.array([[state[j] * (1 + 0.001 * k) for k in range(n_points)] for j in range(37)]))
 
             mock_solve.return_value = create_mock_result(state_zero)
 
@@ -475,6 +466,4 @@ class TestSimulatorIntegration:
             # Check that best Q is reasonable (within ±5 of original)
             for i in range(len(Q)):
                 if Q[i] > 0:
-                    assert (
-                        abs(best_Q[i] - Q[i]) <= 5
-                    ), f"Best Q[{i}] should be within ±5 of original"
+                    assert abs(best_Q[i] - Q[i]) <= 5, f"Best Q[{i}] should be within ±5 of original"

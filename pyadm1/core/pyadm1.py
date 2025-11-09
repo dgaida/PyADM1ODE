@@ -5,14 +5,14 @@ Created on Fri Nov 04 09:56:06 2023
 The ADM1ODE implementation is based on:
 
 @article {Sadrimajd2021.03.03.433746,
-	author = {Sadrimajd, Peyman and Mannion, Patrick and Howley, Enda and Lens, Piet N. L.},
-	title = {PyADM1: a Python implementation of Anaerobic Digestion Model No. 1},
-	elocation-id = {2021.03.03.433746},
-	year = {2021},
-	doi = {10.1101/2021.03.03.433746},
-	URL = {https://www.biorxiv.org/content/early/2021/03/04/2021.03.03.433746},
-	eprint = {https://www.biorxiv.org/content/early/2021/03/04/2021.03.03.433746.full.pdf},
-	journal = {bioRxiv}
+        author = {Sadrimajd, Peyman and Mannion, Patrick and Howley, Enda and Lens, Piet N. L.},
+        title = {PyADM1: a Python implementation of Anaerobic Digestion Model No. 1},
+        elocation-id = {2021.03.03.433746},
+        year = {2021},
+        doi = {10.1101/2021.03.03.433746},
+        URL = {https://www.biorxiv.org/content/early/2021/03/04/2021.03.03.433746},
+        eprint = {https://www.biorxiv.org/content/early/2021/03/04/2021.03.03.433746.full.pdf},
+        journal = {bioRxiv}
 }
 
 It is changed to an ODE only implementation with no DAEs similar to the implementation in Simba (ifak e.V., 2010).
@@ -32,8 +32,9 @@ from typing import List, Tuple
 from pyadm1.core.adm_params import ADMparams
 from pyadm1.substrates.feedstock import Feedstock
 
+# CLR reference must be added before importing from DLL
 clr.AddReference("pyadm1/dlls/plant")
-from biogas import ADMstate, digester
+from biogas import ADMstate  # noqa: E402  # type: ignore
 
 
 def get_state_zero_from_initial_state(csv_file: str) -> List[float]:
@@ -138,7 +139,7 @@ def get_state_zero_from_initial_state(csv_file: str) -> List[float]:
 
 """
 Class mainly contains the ODE only implementation of the ADM1. Also contains some methods that can be used to set
-the input stream or to calculate and store a couple of process values after the simulation. 
+the input stream or to calculate and store a couple of process values after the simulation.
 
 """
 
@@ -200,7 +201,9 @@ class PyADM1:
         self._setInfluent(influent_state, i)
 
     def save_final_state_in_csv(
-        self, simulate_results: List[List[float]], filename: str = "digester_initial6.csv"
+        self,
+        simulate_results: List[List[float]],
+        filename: str = "digester_initial6.csv",
     ) -> None:
         """
         Save final ADM1 state vector to CSV file.
@@ -212,7 +215,13 @@ class PyADM1:
         filename : str, optional
             Output filename, by default "digester_initial6.csv"
         """
-        columns = [*self._feedstock.header()[:-1], "pi_Sh2", "pi_Sch4", "pi_Sco2", "pTOTAL"]
+        columns = [
+            *self._feedstock.header()[:-1],
+            "pi_Sh2",
+            "pi_Sch4",
+            "pi_Sco2",
+            "pTOTAL",
+        ]
 
         simulate_results_df = pd.DataFrame.from_records(simulate_results)
         simulate_results_df.columns = columns
@@ -221,9 +230,7 @@ class PyADM1:
         last_simulated_result = simulate_results_df[-1:]
         last_simulated_result.to_csv(filename, index=False)
 
-    def calc_gas(
-        self, pi_Sh2: float, pi_Sch4: float, pi_Sco2: float, pTOTAL: float
-    ) -> Tuple[float, float, float, float]:
+    def calc_gas(self, pi_Sh2: float, pi_Sch4: float, pi_Sco2: float, pTOTAL: float) -> Tuple[float, float, float, float]:
         """
         Calculate biogas production rates from partial pressures.
 
@@ -243,9 +250,7 @@ class PyADM1:
         Tuple[float, float, float, float]
             q_gas, q_ch4, q_co2, p_gas [m³/d, m³/d, m³/d, bar]
         """
-        p_gas_h2o, k_p, k_L_a, K_H_co2, K_H_ch4, K_H_h2 = ADMparams.getADMgasparams(
-            self._R, self._T_base, self._T_ad
-        )
+        p_gas_h2o, k_p, k_L_a, K_H_co2, K_H_ch4, K_H_h2 = ADMparams.getADMgasparams(self._R, self._T_base, self._T_ad)
 
         NQ = 44.64300
 
@@ -293,9 +298,7 @@ class PyADM1:
         """
         self._pH_l.append(np.round(ADMstate.calcPHOfADMstate(state_ADM1xp), 1))
         self._FOSTAC.append(np.round(ADMstate.calcFOSTACOfADMstate(state_ADM1xp).Value, 2))
-        self._AcvsPro.append(
-            np.round(ADMstate.calcAcetic_vs_PropionicOfADMstate(state_ADM1xp).Value, 1)
-        )
+        self._AcvsPro.append(np.round(ADMstate.calcAcetic_vs_PropionicOfADMstate(state_ADM1xp).Value, 1))
         self._VFA.append(np.round(ADMstate.calcVFAOfADMstate(state_ADM1xp, "gHAceq/l").Value, 2))
         self._TAC.append(np.round(ADMstate.calcTACOfADMstate(state_ADM1xp, "gCaCO3eq/l").Value, 1))
 
@@ -304,15 +307,9 @@ class PyADM1:
         if len(self._pH_l) < 2:
             self._pH_l.append(np.round(ADMstate.calcPHOfADMstate(state_ADM1xp), 1))
             self._FOSTAC.append(np.round(ADMstate.calcFOSTACOfADMstate(state_ADM1xp).Value, 2))
-            self._AcvsPro.append(
-                np.round(ADMstate.calcAcetic_vs_PropionicOfADMstate(state_ADM1xp).Value, 1)
-            )
-            self._VFA.append(
-                np.round(ADMstate.calcVFAOfADMstate(state_ADM1xp, "gHAceq/l").Value, 2)
-            )
-            self._TAC.append(
-                np.round(ADMstate.calcTACOfADMstate(state_ADM1xp, "gCaCO3eq/l").Value, 1)
-            )
+            self._AcvsPro.append(np.round(ADMstate.calcAcetic_vs_PropionicOfADMstate(state_ADM1xp).Value, 1))
+            self._VFA.append(np.round(ADMstate.calcVFAOfADMstate(state_ADM1xp, "gHAceq/l").Value, 2))
+            self._TAC.append(np.round(ADMstate.calcTACOfADMstate(state_ADM1xp, "gCaCO3eq/l").Value, 1))
 
         print("pH(lib) = {0}".format(self._pH_l))
         print("FOS/TAC = {0}".format(self._FOSTAC))
@@ -627,25 +624,16 @@ class PyADM1:
 
         ##differential equaitons from Rosen et al (2006) BSM2 report
         # differential equations 1 to 12 (soluble matter)
-        diff_S_su = (
-            q_ad / self.V_liq * (S_su_in - S_su) + Rho_2 + (1 - f_fa_li) * Rho_4 - Rho_5
-        )  # eq1    OK
+        diff_S_su = q_ad / self.V_liq * (S_su_in - S_su) + Rho_2 + (1 - f_fa_li) * Rho_4 - Rho_5  # eq1    OK
 
         diff_S_aa = q_ad / self.V_liq * (S_aa_in - S_aa) + Rho_3 - Rho_6  # eq2                OK
 
-        diff_S_fa = (
-            q_ad / self.V_liq * (S_fa_in - S_fa) + (f_fa_li * Rho_4) - Rho_7
-        )  # eq3        OK
+        diff_S_fa = q_ad / self.V_liq * (S_fa_in - S_fa) + (f_fa_li * Rho_4) - Rho_7  # eq3        OK
 
-        diff_S_va = (
-            q_ad / self.V_liq * (S_va_in - S_va) + (1 - Y_aa) * f_va_aa * Rho_6 - Rho_8
-        )  # eq4     OK
+        diff_S_va = q_ad / self.V_liq * (S_va_in - S_va) + (1 - Y_aa) * f_va_aa * Rho_6 - Rho_8  # eq4     OK
 
         diff_S_bu = (
-            q_ad / self.V_liq * (S_bu_in - S_bu)
-            + (1 - Y_su) * f_bu_su * Rho_5
-            + (1 - Y_aa) * f_bu_aa * Rho_6
-            - Rho_9
+            q_ad / self.V_liq * (S_bu_in - S_bu) + (1 - Y_su) * f_bu_su * Rho_5 + (1 - Y_aa) * f_bu_aa * Rho_6 - Rho_9
         )  # eq5                             OK
 
         diff_S_pro = (
@@ -689,37 +677,22 @@ class PyADM1:
 
         ## eq10 start##
         s_1 = (
-            -1 * C_xc
-            + f_sI_xc * C_sI
-            + f_ch_xc * C_ch
-            + f_pr_xc * C_pr
-            + f_li_xc * C_li
-            + f_xI_xc * C_xI
+            -1 * C_xc + f_sI_xc * C_sI + f_ch_xc * C_ch + f_pr_xc * C_pr + f_li_xc * C_li + f_xI_xc * C_xI
         )  # OK, equals -fco2Xc except that in C# we also have Xp
         s_2 = -1 * C_ch + C_su  # TODO: missing in C#
         s_3 = -1 * C_pr + C_aa  # TODO: missing in C#
         s_4 = -1 * C_li + (1 - f_fa_li) * C_su + f_fa_li * C_fa  # OK, equals -fco2,xli
         s_5 = (
-            -1 * C_su
-            + (1 - Y_su) * (f_bu_su * C_bu + f_pro_su * C_pro + f_ac_su * C_ac)
-            + Y_su * C_bac
+            -1 * C_su + (1 - Y_su) * (f_bu_su * C_bu + f_pro_su * C_pro + f_ac_su * C_ac) + Y_su * C_bac
         )  # OK, equals -fco2,su
         s_6 = (
-            -1 * C_aa
-            + (1 - Y_aa) * (f_va_aa * C_va + f_bu_aa * C_bu + f_pro_aa * C_pro + f_ac_aa * C_ac)
-            + Y_aa * C_bac
+            -1 * C_aa + (1 - Y_aa) * (f_va_aa * C_va + f_bu_aa * C_bu + f_pro_aa * C_pro + f_ac_aa * C_ac) + Y_aa * C_bac
         )  # OK, equals -fco2,aa
-        s_7 = (
-            -1 * C_fa + (1 - Y_fa) * 0.7 * C_ac + Y_fa * C_bac
-        )  # OK, equals -fco2,fa, 0.7 = fac,fa
+        s_7 = -1 * C_fa + (1 - Y_fa) * 0.7 * C_ac + Y_fa * C_bac  # OK, equals -fco2,fa, 0.7 = fac,fa
         # OK, equals -fco2,va, factors are fpro,va and facva
         s_8 = -1 * C_va + (1 - Y_c4) * 0.54 * C_pro + (1 - Y_c4) * 0.31 * C_ac + Y_c4 * C_bac
-        s_9 = (
-            -1 * C_bu + (1 - Y_c4) * 0.8 * C_ac + Y_c4 * C_bac
-        )  # OK, equals -fco2,bu, factor equals fac,bu
-        s_10 = (
-            -1 * C_pro + (1 - Y_pro) * 0.57 * C_ac + Y_pro * C_bac
-        )  # OK, equals -fco2,pro, factor equals fac,pro
+        s_9 = -1 * C_bu + (1 - Y_c4) * 0.8 * C_ac + Y_c4 * C_bac  # OK, equals -fco2,bu, factor equals fac,bu
+        s_10 = -1 * C_pro + (1 - Y_pro) * 0.57 * C_ac + Y_pro * C_bac  # OK, equals -fco2,pro, factor equals fac,pro
         s_11 = -1 * C_ac + (1 - Y_ac) * C_ch4 + Y_ac * C_bac  # OK, equals -fco2,ac
         s_12 = (1 - Y_h2) * C_ch4 + Y_h2 * C_bac  # OK, equals -fco2,h2
         s_13 = -1 * C_bac + C_xc  # OK, equals -fco2,xb
@@ -740,21 +713,12 @@ class PyADM1:
             + s_13 * (Rho_13 + Rho_14 + Rho_15 + Rho_16 + Rho_17 + Rho_18 + Rho_19)
         )  # OK, except s_2, s_3
 
-        diff_S_co2 = (
-            q_ad / self.V_liq * (S_co2_in - S_co2)
-            - Sigma
-            - self._V_gas / self.V_liq * Rho_T_10
-            + Rho_A_10
-        )
+        diff_S_co2 = q_ad / self.V_liq * (S_co2_in - S_co2) - Sigma - self._V_gas / self.V_liq * Rho_T_10 + Rho_A_10
         ## eq10 end##
 
         # TODO: in C# last term is different using fsin,xb
         diff_S_nh4_ion = (
-            q_ad
-            / self.V_liq
-            * (
-                S_nh4_in - S_nh4_ion
-            )  # + (N_xc - f_xI_xc * N_I - f_sI_xc * N_I-f_pr_xc * N_aa) * Rho_1 -
+            q_ad / self.V_liq * (S_nh4_in - S_nh4_ion)  # + (N_xc - f_xI_xc * N_I - f_sI_xc * N_I-f_pr_xc * N_aa) * Rho_1 -
             - Y_su * N_bac * Rho_5
             + (N_aa - Y_aa * N_bac) * Rho_6
             - Y_fa * N_bac * Rho_7
@@ -798,9 +762,7 @@ class PyADM1:
 
         diff_X_fa = q_ad / self.V_liq * (X_fa_in - X_fa) + Y_fa * Rho_7 - Rho_15  # eq19       OK
 
-        diff_X_c4 = (
-            q_ad / self.V_liq * (X_c4_in - X_c4) + Y_c4 * Rho_8 + Y_c4 * Rho_9 - Rho_16
-        )  # eq20    OK
+        diff_X_c4 = q_ad / self.V_liq * (X_c4_in - X_c4) + Y_c4 * Rho_8 + Y_c4 * Rho_9 - Rho_16  # eq20    OK
 
         diff_X_pro = q_ad / self.V_liq * (X_pro_in - X_pro) + Y_pro * Rho_10 - Rho_17  # eq21  OK
 
@@ -842,9 +804,7 @@ class PyADM1:
 
         diff_p_gas_co2 = Rho_T_10 * self._RT - p_gas_co2 / pTOTAL * Rho_T_11  # eq35
 
-        diff_pTOTAL = (
-            self._RT / 16 * Rho_T_8 + self._RT / 64 * Rho_T_9 + self._RT * Rho_T_10 - Rho_T_11
-        )
+        diff_pTOTAL = self._RT / 16 * Rho_T_8 + self._RT / 64 * Rho_T_9 + self._RT * Rho_T_10 - Rho_T_11
 
         return (
             diff_S_su,
@@ -988,18 +948,14 @@ class PyADM1:
             f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc, k_dis,
             k_hyd_ch, k_hyd_pr, k_hyd_li, k_m_c4, k_m_pro, k_m_ac, k_m_h2
         """
-        f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = (
-            self._feedstock.mySubstrates().calcfFactors(self._Q)
-        )
+        f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = self._feedstock.mySubstrates().calcfFactors(self._Q)
         f_xp_xc = max(f_xp_xc, 0)
 
         k_dis = self._feedstock.mySubstrates().calcDisintegrationParam(self._Q)
 
         k_hyd_ch, k_hyd_pr, k_hyd_li = self._feedstock.mySubstrates().calcHydrolysisParams(self._Q)
 
-        k_m_c4, k_m_pro, k_m_ac, k_m_h2 = self._feedstock.mySubstrates().calcMaxUptakeRateParams(
-            self._Q
-        )
+        k_m_c4, k_m_pro, k_m_ac, k_m_h2 = self._feedstock.mySubstrates().calcMaxUptakeRateParams(self._Q)
 
         return (
             f_ch_xc,

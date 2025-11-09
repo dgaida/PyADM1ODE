@@ -7,14 +7,14 @@ contains functions returning constant ADM1 params
 Most code is taken from the PyADM1 implementation of:
 
 @article {Sadrimajd2021.03.03.433746,
-	author = {Sadrimajd, Peyman and Mannion, Patrick and Howley, Enda and Lens, Piet N. L.},
-	title = {PyADM1: a Python implementation of Anaerobic Digestion Model No. 1},
-	elocation-id = {2021.03.03.433746},
-	year = {2021},
-	doi = {10.1101/2021.03.03.433746},
-	URL = {https://www.biorxiv.org/content/early/2021/03/04/2021.03.03.433746},
-	eprint = {https://www.biorxiv.org/content/early/2021/03/04/2021.03.03.433746.full.pdf},
-	journal = {bioRxiv}
+        author = {Sadrimajd, Peyman and Mannion, Patrick and Howley, Enda and Lens, Piet N. L.},
+        title = {PyADM1: a Python implementation of Anaerobic Digestion Model No. 1},
+        elocation-id = {2021.03.03.433746},
+        year = {2021},
+        doi = {10.1101/2021.03.03.433746},
+        URL = {https://www.biorxiv.org/content/early/2021/03/04/2021.03.03.433746},
+        eprint = {https://www.biorxiv.org/content/early/2021/03/04/2021.03.03.433746.full.pdf},
+        journal = {bioRxiv}
 }
 @author: Daniel Gaida
 """
@@ -137,9 +137,7 @@ class ADMparams:
         k_dec_X_h2 = 0.02  # d^-1            # OK
         ## M is kmole m^-3
 
-        K_w, K_a_va, K_a_bu, K_a_pro, K_a_ac, K_a_co2, K_a_IN = ADMparams._getADMKparams(
-            R, T_base, T_ad
-        )
+        K_w, K_a_va, K_a_bu, K_a_pro, K_a_ac, K_a_co2, K_a_IN = ADMparams._getADMKparams(R, T_base, T_ad)
 
         # acid-base kinetic parameters
         # those values all are 1e8 kmole/d in C# implementation
@@ -267,9 +265,7 @@ class ADMparams:
         return K_pH_aa, nn_aa, K_pH_ac, n_ac, K_pH_h2, n_h2
 
     @staticmethod
-    def getADMgasparams(
-        R: float, T_base: float, T_ad: float
-    ) -> Tuple[float, float, float, float, float, float]:
+    def getADMgasparams(R: float, T_base: float, T_ad: float) -> Tuple[float, float, float, float, float, float]:
         """
         Get gas phase parameters including Henry constants.
 
@@ -308,9 +304,7 @@ class ADMparams:
     # *** PRIVATE methods ***
 
     @staticmethod
-    def _getADMKparams(
-        R: float, T_base: float, T_ad: float
-    ) -> Tuple[float, float, float, float, float, float, float]:
+    def _getADMKparams(R: float, T_base: float, T_ad: float) -> Tuple[float, float, float, float, float, float, float]:
         """
         Return acid-base equilibrium coefficients.
 
@@ -328,21 +322,15 @@ class ADMparams:
         Tuple[float, float, float, float, float, float, float]
             K_w, K_a_va, K_a_bu, K_a_pro, K_a_ac, K_a_co2, K_a_IN
         """
-        K_w = 10**-14.0 * np.exp(
-            (55900 / (100 * R)) * (1 / T_base - 1 / T_ad)
-        )  # M #2.08 * 10 ^ -14  OK
+        K_w = 10**-14.0 * np.exp((55900 / (100 * R)) * (1 / T_base - 1 / T_ad))  # M #2.08 * 10 ^ -14  OK
 
         K_a_va = 10**-4.86  # M  ADM1 value = 1.38 * 10 ^ -5      OK
         K_a_bu = 10**-4.82  # M #1.5 * 10 ^ -5                    OK
         K_a_pro = 10**-4.88  # M #1.32 * 10 ^ -5                  OK
         K_a_ac = 10**-4.76  # M #1.74 * 10 ^ -5                   OK
 
-        K_a_co2 = 10**-6.35 * np.exp(
-            (7646 / (100 * R)) * (1 / T_base - 1 / T_ad)
-        )  # M #4.94 * 10 ^ -7 OK
-        K_a_IN = 10**-9.25 * np.exp(
-            (51965 / (100 * R)) * (1 / T_base - 1 / T_ad)
-        )  # M #1.11 * 10 ^ -9 OK
+        K_a_co2 = 10**-6.35 * np.exp((7646 / (100 * R)) * (1 / T_base - 1 / T_ad))  # M #4.94 * 10 ^ -7 OK
+        K_a_IN = 10**-9.25 * np.exp((51965 / (100 * R)) * (1 / T_base - 1 / T_ad))  # M #1.11 * 10 ^ -9 OK
 
         return K_w, K_a_va, K_a_bu, K_a_pro, K_a_ac, K_a_co2, K_a_IN
 

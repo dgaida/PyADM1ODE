@@ -80,7 +80,7 @@ for n, t_end in enumerate(t[1:], 1):
     adm1.createInfluent(Q, n)
     state_zero = simulator.simulateADplant([t[n-1], t_end], state_zero)
     simulate_results.append(state_zero)
-    
+
     if n % 100 == 0:
         print(f"Simulated {n} of {len(t)} steps.")
 

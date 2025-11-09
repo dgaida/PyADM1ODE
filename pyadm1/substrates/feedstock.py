@@ -10,18 +10,20 @@ Substrate parameters are defined in XML files and accessed via C# DLLs.
 """
 
 import clr
+
 # import os
 import numpy as np
 import pandas as pd
 from typing import List
 from pathlib import Path
 
+# CLR reference must be added before importing from DLL
 clr.AddReference("pyadm1/dlls/substrates")
 clr.AddReference("pyadm1/dlls/biogas")
 clr.AddReference("pyadm1/dlls/plant")
 clr.AddReference("pyadm1/dlls/physchem")
 
-from biogas import substrates, ADMstate
+from biogas import substrates, ADMstate  # noqa: E402  # type: ignore
 
 
 data_path = Path(__file__).parent.parent / "data" / "substrates"
@@ -34,7 +36,7 @@ subfolder. Inside the DLLs is also defined how the ADM1 input stream is calculat
 More information on how the substrate mix is calculated can be found in:
 Gaida, D., Dynamic real-time substrate feed optimization of anaerobic co-digestion plants, PhD thesis, Leiden, 2014.
 
-It is expected that the file 'substrate_gummersbach.xml' is in the same folder as this *.py file. 
+It is expected that the file 'substrate_gummersbach.xml' is in the same folder as this *.py file.
 """
 
 

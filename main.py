@@ -7,16 +7,14 @@ Example script demonstrating PyADM1 usage.
 @author: Daniel Gaida
 """
 
-from pathlib import Path
+# from pathlib import Path
 from pyadm1 import PyADM1, Feedstock, Simulator, get_state_zero_from_initial_state
 
 
 def main() -> None:
     """Run example ADM1 simulation."""
 
-    feeding_freq = (
-        48  # every feeding_freq hours the controller can change the substrate feed of the digester
-    )
+    feeding_freq = 48  # every feeding_freq hours the controller can change the substrate feed of the digester
 
     myfeedstock = Feedstock(feeding_freq)
 
