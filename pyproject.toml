@@ -1,6 +1,3 @@
-# ========================================
-# pyproject.toml
-# ========================================
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
@@ -82,7 +79,7 @@ pyadm1 = ["dlls/*.dll", "py.typed"]
 [tool.black]
 line-length = 100
 target-version = ["py38", "py39", "py310", "py311"]
-include = '\.pyi?
+include = '\.pyi?$'
 exclude = '''
 /(
     \.git

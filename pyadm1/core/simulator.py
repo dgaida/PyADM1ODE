@@ -24,6 +24,8 @@ substrate feed that let to a methane production rate that is closest to a given 
 
 This class only works with the class PyADM1 that implements the ADM1. 
 """
+
+
 class Simulator:
     """Handles ADM1 simulation runs with various configurations."""
 
@@ -46,14 +48,8 @@ class Simulator:
     # *** PUBLIC methods ***
 
     def determineBestFeedbyNSims(
-            self,
-            state_zero: List[float],
-            Q: List[float],
-            Qch4sp: float,
-            feeding_freq: int,
-            n: int = 13
-    ) -> Tuple[float, float, List[float], float, float, List[float],
-    float, float, float, float]:
+        self, state_zero: List[float], Q: List[float], Qch4sp: float, feeding_freq: int, n: int = 13
+    ) -> Tuple[float, float, List[float], float, float, List[float], float, float, float, float]:
         """
         Determine best substrate feed by running n simulations.
 
@@ -92,28 +88,38 @@ class Simulator:
 
         Qnew = self._adm1.feedstock().get_substrate_feed_mixtures(Q, n)
 
-        for i,q in enumerate(Qnew):
+        for i, q in enumerate(Qnew):
             Q_Gas_7d[i], Q_CH4_7d[i] = self._simulate_wosavinglaststate([0, 7], state_zero, q)
 
-        ii = np.argmin([np.sum((q - Qch4sp)**2) for q in Q_CH4_7d])
+        ii = np.argmin([np.sum((q - Qch4sp) ** 2) for q in Q_CH4_7d])
         Qbest = Qnew[ii]
 
         # simulate with Q for feeding_freq/24 days. The resulting gas flow rates can be helpful
         # information
-        q_gas_2d, q_ch4_2d = self._simulate_wosavinglaststate([0, feeding_freq/24], state_zero, Qnew[0])
+        q_gas_2d, q_ch4_2d = self._simulate_wosavinglaststate(
+            [0, feeding_freq / 24], state_zero, Qnew[0]
+        )
 
         # simulate with best substrate feed for feeding_freq/24 days. The resulting gas flow rates can be helpful
         # information
-        q_gas_best_2d, q_ch4_best_2d = self._simulate_wosavinglaststate([0, feeding_freq / 24], state_zero, Qbest)
+        q_gas_best_2d, q_ch4_best_2d = self._simulate_wosavinglaststate(
+            [0, feeding_freq / 24], state_zero, Qbest
+        )
 
-        return (Q_Gas_7d[ii][-1], Q_CH4_7d[ii][-1], Qbest, Q_Gas_7d[0][-1], Q_CH4_7d[0][-1], Qnew[0],
-                q_gas_best_2d[-1], q_ch4_best_2d[-1], q_gas_2d[-1], q_ch4_2d[-1])
+        return (
+            Q_Gas_7d[ii][-1],
+            Q_CH4_7d[ii][-1],
+            Qbest,
+            Q_Gas_7d[0][-1],
+            Q_CH4_7d[0][-1],
+            Qnew[0],
+            q_gas_best_2d[-1],
+            q_ch4_best_2d[-1],
+            q_gas_2d[-1],
+            q_ch4_2d[-1],
+        )
 
-    def simulateADplant(
-            self,
-            tstep: List[float],
-            state_zero: List[float]
-    ) -> List[float]:
+    def simulateADplant(self, tstep: List[float], state_zero: List[float]) -> List[float]:
         """
         Simulate ADM1 starting at state state_zero for time tstep. Returns final state. Also saves a couple of simulated
         values into lists. These lists are used to give biogas plant operator information about the last process values
@@ -140,10 +146,7 @@ class Simulator:
     # *** PRIVATE methods ***
 
     def _simulate_wosavinglaststate(
-            self,
-            tstep: List[float],
-            state_zero: List[float],
-            Q: List[float]
+        self, tstep: List[float], state_zero: List[float], Q: List[float]
     ) -> Tuple[float, float]:
         """
         Run a simulation with the ADM1 for tstep starting at the state state_zero and with the volumetric flow rate Q.
@@ -167,25 +170,60 @@ class Simulator:
         self._adm1.createInfluent(Q, 0)
 
         # Solve and store ODE results to calculate biogas production rate
-        (sim_S_su, sim_S_aa, sim_S_fa, sim_S_va, sim_S_bu, sim_S_pro, sim_S_ac, sim_S_h2, sim_S_ch4, sim_S_IC, sim_S_IN,
-         sim_S_I, sim_X_xc, sim_X_ch, sim_X_pr, sim_X_li, sim_X_su, sim_X_aa, sim_X_fa, sim_X_c4, sim_X_pro, sim_X_ac,
-         sim_X_h2, sim_X_I, sim_X_p, sim_S_cation, sim_S_anion, sim_S_va_ion, sim_S_bu_ion, sim_S_pro_ion,
-         sim_S_ac_ion, sim_S_hco3_ion, sim_S_nh3, sim_pi_Sh2, sim_pi_Sch4, sim_pi_Sco2, sim_pTOTAL) = (
-            self._simulate(tstep, state_zero))
+        (
+            sim_S_su,
+            sim_S_aa,
+            sim_S_fa,
+            sim_S_va,
+            sim_S_bu,
+            sim_S_pro,
+            sim_S_ac,
+            sim_S_h2,
+            sim_S_ch4,
+            sim_S_IC,
+            sim_S_IN,
+            sim_S_I,
+            sim_X_xc,
+            sim_X_ch,
+            sim_X_pr,
+            sim_X_li,
+            sim_X_su,
+            sim_X_aa,
+            sim_X_fa,
+            sim_X_c4,
+            sim_X_pro,
+            sim_X_ac,
+            sim_X_h2,
+            sim_X_I,
+            sim_X_p,
+            sim_S_cation,
+            sim_S_anion,
+            sim_S_va_ion,
+            sim_S_bu_ion,
+            sim_S_pro_ion,
+            sim_S_ac_ion,
+            sim_S_hco3_ion,
+            sim_S_nh3,
+            sim_pi_Sh2,
+            sim_pi_Sch4,
+            sim_pi_Sco2,
+            sim_pTOTAL,
+        ) = self._simulate(tstep, state_zero)
 
         # Store final ODE simulation result states
-        pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL = sim_pi_Sh2[:-1], sim_pi_Sch4[:-1], sim_pi_Sco2[:-1], sim_pTOTAL[:-1]
+        pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL = (
+            sim_pi_Sh2[:-1],
+            sim_pi_Sch4[:-1],
+            sim_pi_Sco2[:-1],
+            sim_pTOTAL[:-1],
+        )
 
         # calc final biogas production flow rates
         q_gas, q_ch4, q_co2, p_gas = self._adm1.calc_gas(pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL)
 
         return q_gas, q_ch4
 
-    def _simulate_returnlaststate(
-            self,
-            tstep: List[float],
-            state_zero: List[float]
-    ) -> List[float]:
+    def _simulate_returnlaststate(self, tstep: List[float], state_zero: List[float]) -> List[float]:
         """
         Simulate ADM1 and return final state.
 
@@ -202,28 +240,90 @@ class Simulator:
             Final ADM1 state vector
         """
         # Solve and store ODE results for next step
-        (sim_S_su, sim_S_aa, sim_S_fa, sim_S_va, sim_S_bu, sim_S_pro, sim_S_ac, sim_S_h2, sim_S_ch4, sim_S_co2, sim_S_nh4,
-         sim_S_I, sim_X_xc, sim_X_ch, sim_X_pr, sim_X_li, sim_X_su, sim_X_aa, sim_X_fa, sim_X_c4, sim_X_pro, sim_X_ac,
-         sim_X_h2, sim_X_I, sim_X_p, sim_S_cation, sim_S_anion, sim_S_va_ion, sim_S_bu_ion, sim_S_pro_ion, sim_S_ac_ion,
-         sim_S_hco3_ion, sim_S_nh3, sim_pi_Sh2, sim_pi_Sch4, sim_pi_Sco2, sim_pTOTAL) = (
-            self._simulate(tstep, state_zero))
+        (
+            sim_S_su,
+            sim_S_aa,
+            sim_S_fa,
+            sim_S_va,
+            sim_S_bu,
+            sim_S_pro,
+            sim_S_ac,
+            sim_S_h2,
+            sim_S_ch4,
+            sim_S_co2,
+            sim_S_nh4,
+            sim_S_I,
+            sim_X_xc,
+            sim_X_ch,
+            sim_X_pr,
+            sim_X_li,
+            sim_X_su,
+            sim_X_aa,
+            sim_X_fa,
+            sim_X_c4,
+            sim_X_pro,
+            sim_X_ac,
+            sim_X_h2,
+            sim_X_I,
+            sim_X_p,
+            sim_S_cation,
+            sim_S_anion,
+            sim_S_va_ion,
+            sim_S_bu_ion,
+            sim_S_pro_ion,
+            sim_S_ac_ion,
+            sim_S_hco3_ion,
+            sim_S_nh3,
+            sim_pi_Sh2,
+            sim_pi_Sch4,
+            sim_pi_Sco2,
+            sim_pTOTAL,
+        ) = self._simulate(tstep, state_zero)
 
         # Store ODE simulation result states
-        state_vector = [sim_S_su[-1], sim_S_aa[-1], sim_S_fa[-1], sim_S_va[-1],
-                        sim_S_bu[-1], sim_S_pro[-1], sim_S_ac[-1], sim_S_h2[-1], sim_S_ch4[-1], sim_S_co2[-1],
-                        sim_S_nh4[-1], sim_S_I[-1], sim_X_xc[-1], sim_X_ch[-1], sim_X_pr[-1], sim_X_li[-1],
-                        sim_X_su[-1], sim_X_aa[-1], sim_X_fa[-1], sim_X_c4[-1],
-        sim_X_pro[-1], sim_X_ac[-1], sim_X_h2[-1], sim_X_I[-1], sim_X_p[-1], sim_S_cation[-1], sim_S_anion[-1],
-        sim_S_va_ion[-1], sim_S_bu_ion[-1], sim_S_pro_ion[-1], sim_S_ac_ion[-1], sim_S_hco3_ion[-1],
-        sim_S_nh3[-1], sim_pi_Sh2[-1], sim_pi_Sch4[-1], sim_pi_Sco2[-1], sim_pTOTAL[-1]]
+        state_vector = [
+            sim_S_su[-1],
+            sim_S_aa[-1],
+            sim_S_fa[-1],
+            sim_S_va[-1],
+            sim_S_bu[-1],
+            sim_S_pro[-1],
+            sim_S_ac[-1],
+            sim_S_h2[-1],
+            sim_S_ch4[-1],
+            sim_S_co2[-1],
+            sim_S_nh4[-1],
+            sim_S_I[-1],
+            sim_X_xc[-1],
+            sim_X_ch[-1],
+            sim_X_pr[-1],
+            sim_X_li[-1],
+            sim_X_su[-1],
+            sim_X_aa[-1],
+            sim_X_fa[-1],
+            sim_X_c4[-1],
+            sim_X_pro[-1],
+            sim_X_ac[-1],
+            sim_X_h2[-1],
+            sim_X_I[-1],
+            sim_X_p[-1],
+            sim_S_cation[-1],
+            sim_S_anion[-1],
+            sim_S_va_ion[-1],
+            sim_S_bu_ion[-1],
+            sim_S_pro_ion[-1],
+            sim_S_ac_ion[-1],
+            sim_S_hco3_ion[-1],
+            sim_S_nh3[-1],
+            sim_pi_Sh2[-1],
+            sim_pi_Sch4[-1],
+            sim_pi_Sco2[-1],
+            sim_pTOTAL[-1],
+        ]
 
         return state_vector
 
-    def _simulate(
-            self,
-            t_step: List[float],
-            state_zero: List[float]
-    ) -> np.ndarray:
+    def _simulate(self, t_step: List[float], state_zero: List[float]) -> np.ndarray:
         """
         Integrate ADM1 differential equations.
 
@@ -251,8 +351,13 @@ class Simulator:
 
         # a minimum step length of 0.05 was necessary to get accurate simulation results. Whether smaller numbers lead
         # to better results was not yet tested
-        r = scipy.integrate.solve_ivp(self._adm1.ADM1_ODE, t_step, state_zero, method=self._solvermethod,
-                                      t_eval=np.arange(t_step[0], t_step[1], 0.05))
+        r = scipy.integrate.solve_ivp(
+            self._adm1.ADM1_ODE,
+            t_step,
+            state_zero,
+            method=self._solvermethod,
+            t_eval=np.arange(t_step[0], t_step[1], 0.05),
+        )
         return r.y
 
     # *** PRIVATE STATIC/CLASS methods ***
@@ -263,7 +368,7 @@ class Simulator:
 
     # Setting the solver method for the simulate function. The BDF solver seemed to be the only leading
     # to stable simulation runs. Remark: the ADM1 is a stiff ODE, so solver for non-stiff ODEs do not work
-    _solvermethod = 'BDF'  #
+    _solvermethod = "BDF"  #
 
     # object of the PyADM1 class
     _adm1 = None

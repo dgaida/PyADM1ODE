@@ -12,16 +12,21 @@ Substrate parameters are defined in XML files and accessed via C# DLLs.
 """
 
 import clr
+import os
 import numpy as np
 import pandas as pd
 from typing import List
+from pathlib import Path
 
-clr.AddReference('pyadm1/dlls/substrates')
-clr.AddReference('pyadm1/dlls/biogas')
-clr.AddReference('pyadm1/dlls/plant')
-clr.AddReference('pyadm1/dlls/physchem')
+clr.AddReference("pyadm1/dlls/substrates")
+clr.AddReference("pyadm1/dlls/biogas")
+clr.AddReference("pyadm1/dlls/plant")
+clr.AddReference("pyadm1/dlls/physchem")
 
 from biogas import substrates, ADMstate
+
+
+data_path = Path(__file__).parent.parent / "data" / "substrates"
 
 
 """
@@ -33,6 +38,8 @@ Gaida, D., Dynamic real-time substrate feed optimization of anaerobic co-digesti
 
 It is expected that the file 'substrate_gummersbach.xml' is in the same folder as this *.py file. 
 """
+
+
 class Feedstock:
     """
     Manages substrate information and creates ADM1 input streams.
@@ -43,10 +50,10 @@ class Feedstock:
 
     # *** CONSTRUCTORS ***
     def __init__(
-            self,
-            feeding_freq: int,
-            total_simtime: int = 60,
-            substrate_xml: str = "substrate_gummersbach.xml"
+        self,
+        feeding_freq: int,
+        total_simtime: int = 60,
+        substrate_xml: str = "substrate_gummersbach.xml",
     ) -> None:
         """
         Initialize Feedstock with feeding frequency and simulation time.
@@ -62,6 +69,8 @@ class Feedstock:
         """
         # the length of the total experiment here is 60 days
         self._simtime = np.arange(0, total_simtime, float(feeding_freq / 24))
+
+        print(data_path / "substrate_gummersbach.xml")
 
     # *** PUBLIC SET methods ***
 
@@ -168,26 +177,35 @@ class Feedstock:
         """
         mySubstrate = cls._mySubstrates.get(substrate_id)
 
-        pH = cls._mySubstrates.get_param_of(substrate_id, 'pH')
-        TS = cls._mySubstrates.get_param_of(substrate_id, 'TS')
-        VS = cls._mySubstrates.get_param_of(substrate_id, 'VS')
-        BMP = np.round(cls._mySubstrates.get_param_of(substrate_id, 'BMP'), 3)
-        TKN = np.round(cls._mySubstrates.get_param_of(substrate_id, 'TKN'), 2)
+        pH = cls._mySubstrates.get_param_of(substrate_id, "pH")
+        TS = cls._mySubstrates.get_param_of(substrate_id, "TS")
+        VS = cls._mySubstrates.get_param_of(substrate_id, "VS")
+        BMP = np.round(cls._mySubstrates.get_param_of(substrate_id, "BMP"), 3)
+        TKN = np.round(cls._mySubstrates.get_param_of(substrate_id, "TKN"), 2)
 
         Xc = mySubstrate.calcXc()
 
-        params = ('pH value: {0} \n'
-                  'Dry matter: {1} %FM \n'
-                  'Volatile solids content: {2} %TS \n'
-                  'Particulate chemical oxygen demand: {3} \n'
-                  'Particulate disintegrated chemical oxygen demand: {4} \n'
-                  'Total organic carbon: {5} \n'
-                  'Carbon-to-Nitrogen ratio: {6} \n'
-                  'Biochemical methane potential: {7} l/gFM \n'
-                  'Total Kjeldahl Nitrogen: {8} %FM').format(pH, TS, VS, Xc.printValue(),
-                                                                     mySubstrate.calcCOD_SX().printValue(),
-                                                                     cls._get_TOC(substrate_id).printValue(),
-                                                                     np.round(mySubstrate.calcCtoNratio(), 2), BMP, TKN)
+        params = (
+            "pH value: {0} \n"
+            "Dry matter: {1} %FM \n"
+            "Volatile solids content: {2} %TS \n"
+            "Particulate chemical oxygen demand: {3} \n"
+            "Particulate disintegrated chemical oxygen demand: {4} \n"
+            "Total organic carbon: {5} \n"
+            "Carbon-to-Nitrogen ratio: {6} \n"
+            "Biochemical methane potential: {7} l/gFM \n"
+            "Total Kjeldahl Nitrogen: {8} %FM"
+        ).format(
+            pH,
+            TS,
+            VS,
+            Xc.printValue(),
+            mySubstrate.calcCOD_SX().printValue(),
+            cls._get_TOC(substrate_id).printValue(),
+            np.round(mySubstrate.calcCtoNratio(), 2),
+            BMP,
+            TKN,
+        )
 
         return params
 
@@ -237,12 +255,12 @@ class Feedstock:
         """
         ADMstreamAllSubstrates = []
 
-        for i in range(1,cls._mySubstrates.getNumSubstrates() + 1):
-          ADMstream = ADMstate.calcADMstream(cls._mySubstrates.get(i), Q[i-1])
+        for i in range(1, cls._mySubstrates.getNumSubstrates() + 1):
+            ADMstream = ADMstate.calcADMstream(cls._mySubstrates.get(i), Q[i - 1])
 
-          myData_l = [row for row in ADMstream]
+            myData_l = [row for row in ADMstream]
 
-          ADMstreamAllSubstrates.append(myData_l)
+            ADMstreamAllSubstrates.append(myData_l)
 
         ADMstreamAllSubstrates = np.ravel(ADMstreamAllSubstrates)
 
@@ -270,13 +288,46 @@ class Feedstock:
 
     # *** PRIVATE variables ***
 
-    _mySubstrates = substrates('substrate_gummersbach.xml')
+    _mySubstrates = substrates("data/substrates/substrate_gummersbach.xml")
+    # _mySubstrates = substrates(os.path.join(data_path, "substrate_gummersbach.xml"))
 
     # names of ADM1 input stream components
-    _header = ["S_su", "S_aa", "S_fa", "S_va", "S_bu", "S_pro", "S_ac", "S_h2", "S_ch4", "S_co2", "S_nh4", "S_I",
-              "X_xc", "X_ch", "X_pr", "X_li", "X_su", "X_aa", "X_fa", "X_c4", "X_pro", "X_ac", "X_h2", "X_I", "X_p",
-              "S_cation", "S_anion", "S_va_ion", "S_bu_ion", "S_pro_ion", "S_ac_ion",
-              "S_hco3_ion", "S_nh3", "Q"]
+    _header = [
+        "S_su",
+        "S_aa",
+        "S_fa",
+        "S_va",
+        "S_bu",
+        "S_pro",
+        "S_ac",
+        "S_h2",
+        "S_ch4",
+        "S_co2",
+        "S_nh4",
+        "S_I",
+        "X_xc",
+        "X_ch",
+        "X_pr",
+        "X_li",
+        "X_su",
+        "X_aa",
+        "X_fa",
+        "X_c4",
+        "X_pro",
+        "X_ac",
+        "X_h2",
+        "X_I",
+        "X_p",
+        "S_cation",
+        "S_anion",
+        "S_va_ion",
+        "S_bu_ion",
+        "S_pro_ion",
+        "S_ac_ion",
+        "S_hco3_ion",
+        "S_nh3",
+        "Q",
+    ]
 
     # array specifying the total simulation time of the complete experiment in days, has to start at 0 and include
     # the timesteps where the substrate feed may change. Example [0, 2, 4, 6, ..., 50]. This means every 2 days the

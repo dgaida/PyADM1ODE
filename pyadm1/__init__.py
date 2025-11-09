@@ -13,10 +13,4 @@ from pyadm1.substrates.feedstock import Feedstock
 __version__ = "0.1.0"
 __author__ = "Daniel Gaida"
 
-__all__ = [
-    "PyADM1",
-    "get_state_zero_from_initial_state",
-    "ADMparams",
-    "Simulator",
-    "Feedstock"
-]
+__all__ = ["PyADM1", "get_state_zero_from_initial_state", "ADMparams", "Simulator", "Feedstock"]

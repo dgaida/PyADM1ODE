@@ -1,0 +1,7 @@
+pythonnet
+matplotlib
+numpy
+pandas
+scipy
+vs2015_runtime
+

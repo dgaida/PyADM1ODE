@@ -1,0 +1,13 @@
+name: biogas
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - matplotlib
+  - numpy
+  - pandas
+  - python
+  - pythonnet
+  - scipy
+  - vs2015_runtime
+  

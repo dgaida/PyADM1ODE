@@ -15,7 +15,9 @@ from pyadm1 import PyADM1, Feedstock, Simulator, get_state_zero_from_initial_sta
 def main() -> None:
     """Run example ADM1 simulation."""
 
-    feeding_freq = 48   # every feeding_freq hours the controller can change the substrate feed of the digester
+    feeding_freq = (
+        48  # every feeding_freq hours the controller can change the substrate feed of the digester
+    )
 
     myfeedstock = Feedstock(feeding_freq)
 
@@ -25,13 +27,12 @@ def main() -> None:
     # initial substrate feed for all substrates. At the moment only values for the first two substrates may be changed, rest 0
     # first value: corn silage, 2nd value: liquid manure, both in m^3/d
     Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
-    #Q = [69, 64, 0, 0, 0, 0, 0, 0, 0, 0]
+    # Q = [69, 64, 0, 0, 0, 0, 0, 0, 0, 0]
 
     data_path = Path(__file__).parent.parent / "data" / "initial_states"
     # initial ADM1 state vector where to start the simulation
-    state_zero = get_state_zero_from_initial_state(
-        str(data_path / "digester_initial8.csv")
-    )
+    # state_zero = get_state_zero_from_initial_state(str(data_path / "digester_initial8.csv"))
+    state_zero = get_state_zero_from_initial_state(str("data/initial_states/digester_initial8.csv"))
 
     ## time array definition
     t = myfeedstock.simtime()
@@ -49,7 +50,7 @@ def main() -> None:
         adm1.createInfluent(Q, n)
 
         # Span for next time step
-        tstep = [t0,u]
+        tstep = [t0, u]
 
         state_zero = mySimulator.simulateADplant(tstep, state_zero)
 
@@ -62,10 +63,8 @@ def main() -> None:
 
     # save final ADM1 state vector
     output_path = Path(__file__).parent.parent / "data" / "initial_states"
-    adm1.save_final_state_in_csv(
-        simulate_results,
-        str(output_path / "digester_final.csv")
-    )
+    adm1.save_final_state_in_csv(simulate_results, str("output/digester_final.csv"))
+    # adm1.save_final_state_in_csv(simulate_results, str(output_path / "digester_final.csv"))
 
 
 if __name__ == "__main__":
