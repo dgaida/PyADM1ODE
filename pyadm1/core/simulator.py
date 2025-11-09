@@ -2,10 +2,17 @@
 """
 Created on Fri Nov 04 09:56:06 2023
 
-@author: Daniel Gaida
-"""
-"""
 Simulator class for running ADM1 simulations with different scenarios.
+
+This class is used to do simulations with the ADM1 using an ODE solver. It contains two public methods:
+
+- determineBestFeedbyNSims: Do n simulations with ADM1 with different substrate feeds and return that
+substrate feed that let to a methane production rate that is closest to a given set point.
+- simulateADplant: Simulate ADM1 for given duration starting at a given state and returns the state
+
+This class only works with the class PyADM1 that implements the ADM1.
+
+@author: Daniel Gaida
 """
 
 import numpy as np
@@ -13,17 +20,6 @@ import scipy.integrate
 from typing import List, Tuple
 
 from pyadm1.core.pyadm1 import PyADM1
-
-
-"""
-This class is used to do simulations with the ADM1 using an ODE solver. It contains two public methods:
-
-- determineBestFeedbyNSims: Do n simulations with ADM1 with different substrate feeds and return that 
-substrate feed that let to a methane production rate that is closest to a given set point.  
-- simulateADplant: Simulate ADM1 for given duration starting at a given state and returns the state
-
-This class only works with the class PyADM1 that implements the ADM1. 
-"""
 
 
 class Simulator:

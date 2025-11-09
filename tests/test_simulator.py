@@ -7,8 +7,7 @@ with different substrate feed scenarios.
 
 import pytest
 import numpy as np
-from typing import List
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 
 from pyadm1.core.simulator import Simulator
 from pyadm1.core.pyadm1 import PyADM1
@@ -419,7 +418,7 @@ class TestSimulatorIntegration:
 
         # Set up simulation
         state_zero = [0.01] * 37
-        Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
+        # Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
 
         # Run multiple time steps
         current_state = state_zero

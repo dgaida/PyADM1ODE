@@ -2,10 +2,7 @@
 """
 Created on Fri Nov 04 09:56:06 2023
 
-@author: Daniel Gaida
-"""
-"""
-The ADM1ODE implementation is based on: 
+The ADM1ODE implementation is based on:
 
 @article {Sadrimajd2021.03.03.433746,
 	author = {Sadrimajd, Peyman and Mannion, Patrick and Howley, Enda and Lens, Piet N. L.},
@@ -18,12 +15,13 @@ The ADM1ODE implementation is based on:
 	journal = {bioRxiv}
 }
 
-It is changed to an ODE only implementation with no DAEs similar to the implementation in Simba (ifak e.V., 2010). 
+It is changed to an ODE only implementation with no DAEs similar to the implementation in Simba (ifak e.V., 2010).
 More information about the implementation and characterisation of the ADM1 input stream can be found in:
 Gaida, D., Dynamic real-time substrate feed optimization of anaerobic co-digestion plants, PhD thesis, Leiden, 2014.
 
 This file has dependencies to feedstock.py and ADMparams.py
 
+@author: Daniel Gaida
 """
 
 import clr

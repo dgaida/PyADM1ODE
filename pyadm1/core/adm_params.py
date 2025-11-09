@@ -2,9 +2,6 @@
 """
 Created on Fri Nov 04 09:56:06 2023
 
-@author: Daniel Gaida
-"""
-"""
 contains functions returning constant ADM1 params
 
 Most code is taken from the PyADM1 implementation of:
@@ -19,6 +16,7 @@ Most code is taken from the PyADM1 implementation of:
 	eprint = {https://www.biorxiv.org/content/early/2021/03/04/2021.03.03.433746.full.pdf},
 	journal = {bioRxiv}
 }
+@author: Daniel Gaida
 """
 
 import numpy as np

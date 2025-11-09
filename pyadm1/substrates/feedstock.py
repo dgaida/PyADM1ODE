@@ -2,17 +2,15 @@
 """
 Created on Fri Nov 04 09:56:06 2023
 
-@author: Daniel Gaida
-"""
-
-"""
 Feedstock class for substrate management and ADM1 input stream calculation.
 
 Substrate parameters are defined in XML files and accessed via C# DLLs.
+
+@author: Daniel Gaida
 """
 
 import clr
-import os
+# import os
 import numpy as np
 import pandas as pd
 from typing import List

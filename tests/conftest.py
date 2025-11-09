@@ -3,12 +3,59 @@ pytest configuration and shared fixtures for PyADM1ODE tests.
 
 This module provides common fixtures and configuration used across
 all test modules.
+
+Configuration file for pytest that checks if .NET runtime is available.
+If not available (e.g., in GitHub Actions), tests requiring .NET will be skipped.
 """
 
 import pytest
 import numpy as np
 from pathlib import Path
 from typing import List
+
+
+# Try to import clr and check if .NET runtime is available
+try:
+    import clr
+
+    # Try to actually use it to ensure it's working
+    clr.AddReference("System")
+    DOTNET_AVAILABLE = True
+except (ImportError, RuntimeError):
+    DOTNET_AVAILABLE = False
+
+
+def pytest_collection_modifyitems(config, items):
+    """
+    Modify test items to skip tests that require .NET runtime if it's not available.
+    """
+    if DOTNET_AVAILABLE:
+        # .NET is available, run all tests
+        return
+
+    skip_dotnet = pytest.mark.skip(reason="Requires .NET/Mono runtime (not available in this environment)")
+
+    # List of test modules that require .NET
+    dotnet_modules = [
+        "test_adm_params",
+        "test_pyadm1",
+        "test_simulator",
+        "test_feedstock"
+    ]
+
+    for item in items:
+        # Check if test is in a module that requires .NET
+        module_name = item.module.__name__
+        if any(dm in module_name for dm in dotnet_modules):
+            item.add_marker(skip_dotnet)
+
+
+def pytest_configure(config):
+    """Register custom markers."""
+    config.addinivalue_line(
+        "markers",
+        "requires_dotnet: mark test as requiring .NET/Mono runtime"
+    )
 
 
 @pytest.fixture

@@ -2,10 +2,9 @@
 """
 Created on Fri Nov 04 09:56:06 2023
 
-@author: Daniel Gaida
-"""
-"""
 Example script demonstrating PyADM1 usage.
+
+@author: Daniel Gaida
 """
 
 from pathlib import Path
@@ -29,7 +28,7 @@ def main() -> None:
     Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
     # Q = [69, 64, 0, 0, 0, 0, 0, 0, 0, 0]
 
-    data_path = Path(__file__).parent.parent / "data" / "initial_states"
+    # data_path = Path(__file__).parent.parent / "data" / "initial_states"
     # initial ADM1 state vector where to start the simulation
     # state_zero = get_state_zero_from_initial_state(str(data_path / "digester_initial8.csv"))
     state_zero = get_state_zero_from_initial_state(str("data/initial_states/digester_initial8.csv"))
@@ -62,7 +61,7 @@ def main() -> None:
             print(f"Simulated {n} of {len(t)} steps.")
 
     # save final ADM1 state vector
-    output_path = Path(__file__).parent.parent / "data" / "initial_states"
+    # output_path = Path(__file__).parent.parent / "data" / "initial_states"
     adm1.save_final_state_in_csv(simulate_results, str("output/digester_final.csv"))
     # adm1.save_final_state_in_csv(simulate_results, str(output_path / "digester_final.csv"))
 
