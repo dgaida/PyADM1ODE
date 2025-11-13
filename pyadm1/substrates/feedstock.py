@@ -10,23 +10,20 @@ Substrate parameters are defined in XML files and accessed via C# DLLs.
 """
 
 import clr
-
-# import os
+import os
 import numpy as np
 import pandas as pd
 from typing import List
 from pathlib import Path
 
 # CLR reference must be added before importing from DLL
-clr.AddReference("pyadm1/dlls/substrates")
-clr.AddReference("pyadm1/dlls/biogas")
-clr.AddReference("pyadm1/dlls/plant")
-clr.AddReference("pyadm1/dlls/physchem")
+dll_path = os.path.join(os.path.dirname(__file__), "..", "dlls")
+clr.AddReference(os.path.join(dll_path, "substrates"))
+clr.AddReference(os.path.join(dll_path, "biogas"))
+clr.AddReference(os.path.join(dll_path, "plant"))
+clr.AddReference(os.path.join(dll_path, "physchem"))
 
 from biogas import substrates, ADMstate  # noqa: E402  # type: ignore
-
-
-data_path = Path(__file__).parent.parent / "data" / "substrates"
 
 
 """
@@ -69,8 +66,6 @@ class Feedstock:
         """
         # the length of the total experiment here is 60 days
         self._simtime = np.arange(0, total_simtime, float(feeding_freq / 24))
-
-        print(data_path / "substrate_gummersbach.xml")
 
     # *** PUBLIC SET methods ***
 
@@ -288,8 +283,9 @@ class Feedstock:
 
     # *** PRIVATE variables ***
 
-    _mySubstrates = substrates("data/substrates/substrate_gummersbach.xml")
-    # _mySubstrates = substrates(os.path.join(data_path, "substrate_gummersbach.xml"))
+    data_path = Path(__file__).parent.parent.parent / "data" / "substrates"
+
+    _mySubstrates = substrates(os.path.join(data_path, "substrate_gummersbach.xml"))
 
     # names of ADM1 input stream components
     _header = [

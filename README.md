@@ -1,8 +1,12 @@
 # PyADM1ODE
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code Quality](https://github.com/dgaida/PyADM1ODE/actions/workflows/lint.yml/badge.svg)](https://github.com/dgaida/PyADM1ODE/actions/workflows/lint.yml)
+[![Tests](https://github.com/dgaida/PyADM1ODE/actions/workflows/tests.yml/badge.svg)](https://github.com/dgaida/PyADM1ODE/actions/workflows/tests.yml)
+[![CodeQL](https://github.com/dgaida/PyADM1ODE/actions/workflows/codeql.yml/badge.svg)](https://github.com/dgaida/PyADM1ODE/actions/workflows/codeql.yml)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 A Python implementation of the Anaerobic Digestion Model No. 1 (ADM1) as a system of Ordinary Differential Equations (ODEs) without differential algebraic equations (DAEs).
 
@@ -235,22 +239,6 @@ pytest --cov=pyadm1
 pytest tests/test_pyadm1.py -v
 ```
 
-## Contributing
-
-Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-Please ensure:
-- Code follows black formatting
-- Type hints are provided
-- Tests pass and coverage is maintained
-- Documentation is updated
-
 ## Publications
 
 This implementation is based on research documented in:
@@ -307,3 +295,5 @@ If you use this software in your research, please cite:
 ---
 
 **Note**: This implementation requires C# DLLs for substrate characterization. Ensure the `dlls/` directory exists and contains the required DLLs.
+
+Source code to create the DLL files can be found at [matlab_toolboxes](https://github.com/dgaida/matlab_toolboxes).

@@ -24,6 +24,7 @@ This file has dependencies to feedstock.py and ADMparams.py
 @author: Daniel Gaida
 """
 
+import os
 import clr
 import numpy as np
 import pandas as pd
@@ -33,7 +34,8 @@ from pyadm1.core.adm_params import ADMparams
 from pyadm1.substrates.feedstock import Feedstock
 
 # CLR reference must be added before importing from DLL
-clr.AddReference("pyadm1/dlls/plant")
+dll_path = os.path.join(os.path.dirname(__file__), "..", "dlls")
+clr.AddReference(os.path.join(dll_path, "plant"))
 from biogas import ADMstate  # noqa: E402  # type: ignore
 
 
