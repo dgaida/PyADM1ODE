@@ -5,6 +5,9 @@
 Digester component wrapping PyADM1 model.
 """
 
+import clr
+import os
+
 from typing import Dict, Any, List, Optional
 import numpy as np
 
@@ -12,6 +15,11 @@ from pyadm1.plant.component_base import Component, ComponentType
 from pyadm1.core.pyadm1 import PyADM1
 from pyadm1.substrates.feedstock import Feedstock
 from pyadm1.core.simulator import Simulator
+
+# CLR reference must be added before importing from DLL
+dll_path = os.path.join(os.path.dirname(__file__), "..", "dlls")
+clr.AddReference(os.path.join(dll_path, "plant"))
+from biogas import ADMstate  # noqa: E402  # type: ignore
 
 
 class Digester(Component):
@@ -164,11 +172,6 @@ class Digester(Component):
 
         # Calculate process indicators (if available via DLL)
         try:
-            import clr
-
-            clr.AddReference("pyadm1/dlls/plant")
-            from biogas import ADMstate
-
             self.state["pH"] = ADMstate.calcPHOfADMstate(self.adm1_state)
             self.state["VFA"] = ADMstate.calcVFAOfADMstate(self.adm1_state, "gHAceq/l").Value
             self.state["TAC"] = ADMstate.calcTACOfADMstate(self.adm1_state, "gCaCO3eq/l").Value

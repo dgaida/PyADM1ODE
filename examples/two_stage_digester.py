@@ -8,7 +8,10 @@ This example demonstrates:
 - Two digesters in series
 - CHP unit consuming biogas
 - Heating system using CHP waste heat
+- Loading initial state from CSV file
 """
+
+from pathlib import Path
 
 
 def create_two_stage_plant():
@@ -19,10 +22,30 @@ def create_two_stage_plant():
     from pyadm1.plant.heating import HeatingSystem
     from pyadm1.plant.connection import Connection
     from pyadm1.substrates.feedstock import Feedstock
+    from pyadm1.core.pyadm1 import get_state_zero_from_initial_state
 
     # Initialize feedstock
     feeding_freq = 48  # hours
     feedstock = Feedstock(feeding_freq)
+
+    # Load initial state from CSV
+    data_path = Path(__file__).parent.parent / "data" / "initial_states"
+    initial_state_file = data_path / "digester_initial8.csv"
+
+    print(f"Loading initial state from: {initial_state_file}")
+    adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
+
+    # Create initial state dictionaries for digesters
+    digester1_initial = {
+        "adm1_state": adm1_state,
+        "Q_substrates": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0],
+    }
+
+    # For second digester, use same initial state but no direct substrate feed
+    digester2_initial = {
+        "adm1_state": adm1_state,
+        "Q_substrates": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    }
 
     # Create plant
     plant = BiogasPlant("Two-Stage Digester Plant")
@@ -31,11 +54,13 @@ def create_two_stage_plant():
     digester1 = Digester(
         component_id="digester_1", feedstock=feedstock, V_liq=1977.0, V_gas=304.0, T_ad=308.15, name="Main Digester"
     )
+    digester1.initialize(digester1_initial)
 
     # Create second digester (post-digester)
     digester2 = Digester(
         component_id="digester_2", feedstock=feedstock, V_liq=1000.0, V_gas=150.0, T_ad=308.15, name="Post Digester"
     )
+    digester2.initialize(digester2_initial)
 
     # Create CHP unit
     chp = CHP(component_id="chp_1", P_el_nom=500.0, eta_el=0.40, eta_th=0.45, name="CHP Unit")
@@ -81,38 +106,95 @@ def main():
     # Create plant
     plant = create_two_stage_plant()
 
-    # Initialize all components with default states
-    plant.initialize()
-
-    # Set initial substrate feed for first digester
-    digester1 = plant.components["digester_1"]
-    digester1.Q_substrates = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
-
     # Print plant summary
+    print("\n" + "=" * 70)
     print(plant.get_summary())
+    print("=" * 70)
 
-    # Save configuration to JSON
-    plant.to_json("plant_config.json")
+    # Save initial configuration to JSON
+    output_path = Path(__file__).parent.parent / "output"
+    output_path.mkdir(exist_ok=True)
+
+    config_file = output_path / "plant_config_initial.json"
+    plant.to_json(str(config_file))
+    print(f"\nInitial configuration saved to: {config_file}")
 
     # Run simulation
-    print("\nStarting simulation...")
-    results = plant.simulate(duration=10.0, dt=1.0 / 24.0, save_interval=1.0)  # 10 days  # 1 hour time step  # Save daily
+    print("\n" + "=" * 70)
+    print("Starting simulation...")
+    print("=" * 70)
+
+    duration = 10.0  # 10 days
+    dt = 1.0 / 24.0  # 1 hour time step
+    save_interval = 1.0  # Save daily
+
+    results = plant.simulate(duration=duration, dt=dt, save_interval=save_interval)
 
     print(f"\nSimulation complete. Generated {len(results)} result snapshots.")
 
     # Print final results
+    print("\n" + "=" * 70)
+    print("FINAL RESULTS")
+    print("=" * 70)
+
     final_result = results[-1]
-    print(f"\n=== Final Results (t={final_result['time']:.1f} days) ===")
+    print(f"\nTime: {final_result['time']:.1f} days")
 
     for comp_id, comp_results in final_result["components"].items():
         comp = plant.components[comp_id]
-        print(f"\n{comp.name}:")
+        print(f"\n{comp.name} ({comp.component_type.value}):")
+        print("-" * 50)
+
         for key, value in comp_results.items():
             if isinstance(value, (int, float)):
-                print(f"  {key}: {value:.2f}")
+                print(f"  {key:20s}: {value:12.2f}")
+            elif isinstance(value, list) and len(value) <= 3:
+                print(f"  {key:20s}: {value}")
 
-    # Save plant state
-    plant.to_json("plant_config_final.json")
+    # Save final plant state
+    final_config_file = output_path / "plant_config_final.json"
+    plant.to_json(str(final_config_file))
+    print(f"\nFinal configuration saved to: {final_config_file}")
+
+    # Print key performance indicators
+    print("\n" + "=" * 70)
+    print("KEY PERFORMANCE INDICATORS")
+    print("=" * 70)
+
+    # Extract time series data
+    times = [r["time"] for r in results]
+
+    print(times)
+
+    # Digester 1 metrics
+    if "digester_1" in results[-1]["components"]:
+        d1_results = results[-1]["components"]["digester_1"]
+        print("\nMain Digester (Final Values):")
+        print(f"  Biogas production:  {d1_results.get('Q_gas', 0):.1f} m³/d")
+        print(f"  Methane production: {d1_results.get('Q_ch4', 0):.1f} m³/d")
+        print(f"  pH value:           {d1_results.get('pH', 0):.2f}")
+        print(f"  VFA concentration:  {d1_results.get('VFA', 0):.2f} g/L")
+        print(f"  TAC concentration:  {d1_results.get('TAC', 0):.2f} g/L")
+
+    # Digester 2 metrics
+    if "digester_2" in results[-1]["components"]:
+        d2_results = results[-1]["components"]["digester_2"]
+        print("\nPost Digester (Final Values):")
+        print(f"  Biogas production:  {d2_results.get('Q_gas', 0):.1f} m³/d")
+        print(f"  Methane production: {d2_results.get('Q_ch4', 0):.1f} m³/d")
+        print(f"  pH value:           {d2_results.get('pH', 0):.2f}")
+
+    # CHP metrics
+    if "chp_1" in results[-1]["components"]:
+        chp_results = results[-1]["components"]["chp_1"]
+        print("\nCHP Unit (Final Values):")
+        print(f"  Electrical power:   {chp_results.get('P_el', 0):.1f} kW")
+        print(f"  Thermal power:      {chp_results.get('P_th', 0):.1f} kW")
+        print(f"  Gas consumption:    {chp_results.get('Q_gas_consumed', 0):.1f} m³/d")
+
+    print("\n" + "=" * 70)
+    print("Simulation completed successfully!")
+    print("=" * 70 + "\n")
 
     return plant, results
 
