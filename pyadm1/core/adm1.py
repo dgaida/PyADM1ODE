@@ -861,46 +861,53 @@ class ADM1:
             DataFrame containing ADM1 input variables over n time steps
         i : int
             the ith value is taken out of the given influent_state dictionary.
+            If i exceeds available rows, uses the last row (steady-state assumption)
         """
+        # Handle index out of bounds by using the last available row
+        # This assumes steady-state substrate feed after the defined time points
+        max_index = len(influent_state) - 1
+        if i > max_index:
+            i = max_index
+
         ##variable definition
         # Input values (influent/feed)
-        S_su_in = influent_state["S_su"][i]  # kg COD.m^-3
-        S_aa_in = influent_state["S_aa"][i]  # kg COD.m^-3
-        S_fa_in = influent_state["S_fa"][i]  # kg COD.m^-3
-        S_va_in = influent_state["S_va"][i]  # kg COD.m^-3
-        S_bu_in = influent_state["S_bu"][i]  # kg COD.m^-3
-        S_pro_in = influent_state["S_pro"][i]  # kg COD.m^-3
-        S_ac_in = influent_state["S_ac"][i]  # kg COD.m^-3
-        S_h2_in = influent_state["S_h2"][i]  # kg COD.m^-3
-        S_ch4_in = influent_state["S_ch4"][i]  # kg COD.m^-3
-        S_IC_in = influent_state["S_co2"][i]  # kmole C.m^-3
-        S_IN_in = influent_state["S_nh4"][i]  # kmole N.m^-3
-        S_I_in = influent_state["S_I"][i]  # kg COD.m^-3
+        S_su_in = influent_state["S_su"].iloc[i]  # kg COD.m^-3
+        S_aa_in = influent_state["S_aa"].iloc[i]  # kg COD.m^-3
+        S_fa_in = influent_state["S_fa"].iloc[i]  # kg COD.m^-3
+        S_va_in = influent_state["S_va"].iloc[i]  # kg COD.m^-3
+        S_bu_in = influent_state["S_bu"].iloc[i]  # kg COD.m^-3
+        S_pro_in = influent_state["S_pro"].iloc[i]  # kg COD.m^-3
+        S_ac_in = influent_state["S_ac"].iloc[i]  # kg COD.m^-3
+        S_h2_in = influent_state["S_h2"].iloc[i]  # kg COD.m^-3
+        S_ch4_in = influent_state["S_ch4"].iloc[i]  # kg COD.m^-3
+        S_IC_in = influent_state["S_co2"].iloc[i]  # kmole C.m^-3
+        S_IN_in = influent_state["S_nh4"].iloc[i]  # kmole N.m^-3
+        S_I_in = influent_state["S_I"].iloc[i]  # kg COD.m^-3
 
-        X_xc_in = influent_state["X_xc"][i]  # kg COD.m^-3
-        X_ch_in = influent_state["X_ch"][i]  # kg COD.m^-3
-        X_pr_in = influent_state["X_pr"][i]  # kg COD.m^-3
-        X_li_in = influent_state["X_li"][i]  # kg COD.m^-3
-        X_su_in = influent_state["X_su"][i]  # kg COD.m^-3
-        X_aa_in = influent_state["X_aa"][i]  # kg COD.m^-3
-        X_fa_in = influent_state["X_fa"][i]  # kg COD.m^-3
-        X_c4_in = influent_state["X_c4"][i]  # kg COD.m^-3
-        X_pro_in = influent_state["X_pro"][i]  # kg COD.m^-3
-        X_ac_in = influent_state["X_ac"][i]  # kg COD.m^-3
-        X_h2_in = influent_state["X_h2"][i]  # kg COD.m^-3
-        X_I_in = influent_state["X_I"][i]  # kg COD.m^-3
-        X_p_in = influent_state["X_p"][i]
+        X_xc_in = influent_state["X_xc"].iloc[i]  # kg COD.m^-3
+        X_ch_in = influent_state["X_ch"].iloc[i]  # kg COD.m^-3
+        X_pr_in = influent_state["X_pr"].iloc[i]  # kg COD.m^-3
+        X_li_in = influent_state["X_li"].iloc[i]  # kg COD.m^-3
+        X_su_in = influent_state["X_su"].iloc[i]  # kg COD.m^-3
+        X_aa_in = influent_state["X_aa"].iloc[i]  # kg COD.m^-3
+        X_fa_in = influent_state["X_fa"].iloc[i]  # kg COD.m^-3
+        X_c4_in = influent_state["X_c4"].iloc[i]  # kg COD.m^-3
+        X_pro_in = influent_state["X_pro"].iloc[i]  # kg COD.m^-3
+        X_ac_in = influent_state["X_ac"].iloc[i]  # kg COD.m^-3
+        X_h2_in = influent_state["X_h2"].iloc[i]  # kg COD.m^-3
+        X_I_in = influent_state["X_I"].iloc[i]  # kg COD.m^-3
+        X_p_in = influent_state["X_p"].iloc[i]
 
-        S_cation_in = influent_state["S_cation"][i]  # kmole.m^-3
-        S_anion_in = influent_state["S_anion"][i]  # kmole.m^-3
-        S_va_ion_in = influent_state["S_va_ion"][i]  # kg COD.m^-3
-        S_bu_ion_in = influent_state["S_bu_ion"][i]  # kg COD.m^-3
-        S_pro_ion_in = influent_state["S_pro_ion"][i]  # kg COD.m^-3
-        S_ac_ion_in = influent_state["S_ac_ion"][i]  # kg COD.m^-3
-        S_hco3_ion_in = influent_state["S_hco3_ion"][i]  # kg COD.m^-3
-        S_nh3_in = influent_state["S_nh3"][i]  # kg COD.m^-3
+        S_cation_in = influent_state["S_cation"].iloc[i]  # kmole.m^-3
+        S_anion_in = influent_state["S_anion"].iloc[i]  # kmole.m^-3
+        S_va_ion_in = influent_state["S_va_ion"].iloc[i]  # kg COD.m^-3
+        S_bu_ion_in = influent_state["S_bu_ion"].iloc[i]  # kg COD.m^-3
+        S_pro_ion_in = influent_state["S_pro_ion"].iloc[i]  # kg COD.m^-3
+        S_ac_ion_in = influent_state["S_ac_ion"].iloc[i]  # kg COD.m^-3
+        S_hco3_ion_in = influent_state["S_hco3_ion"].iloc[i]  # kg COD.m^-3
+        S_nh3_in = influent_state["S_nh3"].iloc[i]  # kg COD.m^-3
 
-        q_ad = influent_state["Q"][i]  # m^3/d
+        q_ad = influent_state["Q"].iloc[i]  # m^3/d
 
         self._state_input = [
             S_su_in,
