@@ -1,18 +1,21 @@
 # ============================================================================
-# pyadm1/plant/plant_model.py
+# pyadm1/configurator/plant_builder.py
 # ============================================================================
 """
 Main biogas plant model with component management and JSON I/O.
+
+This module provides the BiogasPlant class which manages multiple components
+and their connections to build complete biogas plant configurations.
 """
 
 import json
 from typing import Dict, Any, List, Optional
 
-from pyadm1.plant.component_base import Component, ComponentType
-from pyadm1.plant.digester import Digester
-from pyadm1.plant.chp import CHP
-from pyadm1.plant.heating import HeatingSystem
-from pyadm1.plant.connection import Connection
+from pyadm1.components.base import Component, ComponentType
+from pyadm1.components.biological.digester import Digester
+from pyadm1.components.energy.chp import CHP
+from pyadm1.components.energy.heating import HeatingSystem
+from pyadm1.configurator.connection_manager import Connection
 from pyadm1.substrates.feedstock import Feedstock
 
 
@@ -22,16 +25,31 @@ class BiogasPlant:
 
     Manages component lifecycle, connections, and simulation.
     Supports JSON-based configuration.
+
+    Attributes:
+        plant_name (str): Name of the biogas plant.
+        components (Dict[str, Component]): Dictionary of all plant components.
+        connections (List[Connection]): List of connections between components.
+        simulation_time (float): Current simulation time in days.
+
+    Example:
+        >>> from pyadm1.substrates.feedstock import Feedstock
+        >>> from pyadm1.configurator.plant_builder import BiogasPlant
+        >>> from pyadm1.components.biological.digester import Digester
+        >>>
+        >>> feedstock = Feedstock(feeding_freq=48)
+        >>> plant = BiogasPlant("My Plant")
+        >>> digester = Digester("dig1", feedstock, V_liq=2000)
+        >>> plant.add_component(digester)
+        >>> plant.initialize()
     """
 
     def __init__(self, plant_name: str = "Biogas Plant"):
         """
         Initialize biogas plant.
 
-        Parameters
-        ----------
-        plant_name : str
-            Name of the plant
+        Args:
+            plant_name (str): Name of the plant. Defaults to "Biogas Plant".
         """
         self.plant_name = plant_name
         self.components: Dict[str, Component] = {}
@@ -42,10 +60,11 @@ class BiogasPlant:
         """
         Add a component to the plant.
 
-        Parameters
-        ----------
-        component : Component
-            Component to add
+        Args:
+            component (Component): Component to add to the plant.
+
+        Raises:
+            ValueError: If component with same ID already exists.
         """
         if component.component_id in self.components:
             raise ValueError(f"Component with ID '{component.component_id}' already exists")
@@ -55,10 +74,11 @@ class BiogasPlant:
         """
         Add a connection between components.
 
-        Parameters
-        ----------
-        connection : Connection
-            Connection to add
+        Args:
+            connection (Connection): Connection to add.
+
+        Raises:
+            ValueError: If source or target component not found.
         """
         # Verify components exist
         if connection.from_component not in self.components:
@@ -76,7 +96,11 @@ class BiogasPlant:
         self.connections.append(connection)
 
     def initialize(self) -> None:
-        """Initialize all components."""
+        """
+        Initialize all components.
+
+        This must be called before simulation starts.
+        """
         for component in self.components.values():
             component.initialize()
 
@@ -84,15 +108,11 @@ class BiogasPlant:
         """
         Perform one simulation time step for all components.
 
-        Parameters
-        ----------
-        dt : float
-            Time step [days]
+        Args:
+            dt (float): Time step in days.
 
-        Returns
-        -------
-        Dict[str, Dict[str, Any]]
-            Results from all components
+        Returns:
+            Dict[str, Dict[str, Any]]: Results from all components.
         """
         results = {}
 
@@ -121,19 +141,19 @@ class BiogasPlant:
         """
         Run simulation for specified duration.
 
-        Parameters
-        ----------
-        duration : float
-            Simulation duration [days]
-        dt : float
-            Time step [days]
-        save_interval : Optional[float]
-            Interval for saving results [days]. If None, saves every step.
+        Args:
+            duration (float): Simulation duration in days.
+            dt (float): Time step in days. Defaults to 1 hour (1/24 day).
+            save_interval (Optional[float]): Interval for saving results in days.
+                If None, saves every step.
 
-        Returns
-        -------
-        List[Dict[str, Any]]
-            Simulation results at each saved time point
+        Returns:
+            List[Dict[str, Any]]: Simulation results at each saved time point.
+                Each entry contains 'time' and 'components' with component results.
+
+        Example:
+            >>> results = plant.simulate(duration=30, dt=1/24, save_interval=1.0)
+            >>> print(f"Simulated {len(results)} time points")
         """
         if save_interval is None:
             save_interval = dt
@@ -165,13 +185,14 @@ class BiogasPlant:
         """
         Determine execution order based on component dependencies.
 
-        Returns topologically sorted list of component IDs.
+        Returns:
+            List[str]: Topologically sorted list of component IDs.
         """
         # Simple topological sort
         visited = set()
         order = []
 
-        def visit(comp_id: str):
+        def visit(comp_id: str) -> None:
             if comp_id in visited:
                 return
             visited.add(comp_id)
@@ -192,10 +213,8 @@ class BiogasPlant:
         """
         Save plant configuration to JSON file.
 
-        Parameters
-        ----------
-        filepath : str
-            Path to JSON file
+        Args:
+            filepath (str): Path to JSON file.
         """
         config = {
             "plant_name": self.plant_name,
@@ -214,17 +233,16 @@ class BiogasPlant:
         """
         Load plant configuration from JSON file.
 
-        Parameters
-        ----------
-        filepath : str
-            Path to JSON file
-        feedstock : Optional[Feedstock]
-            Feedstock object for digesters (required if plant has digesters)
+        Args:
+            filepath (str): Path to JSON file.
+            feedstock (Optional[Feedstock]): Feedstock object for digesters.
+                Required if plant has digesters.
 
-        Returns
-        -------
-        BiogasPlant
-            Loaded plant model
+        Returns:
+            BiogasPlant: Loaded plant model.
+
+        Raises:
+            ValueError: If feedstock is None but plant contains digesters.
         """
         with open(filepath, "r") as f:
             config = json.load(f)
@@ -262,10 +280,8 @@ class BiogasPlant:
         """
         Get human-readable summary of plant configuration.
 
-        Returns
-        -------
-        str
-            Summary text
+        Returns:
+            str: Summary text with components and connections.
         """
         lines = [
             f"=== {self.plant_name} ===",

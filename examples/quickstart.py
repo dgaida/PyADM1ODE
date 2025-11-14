@@ -1,0 +1,120 @@
+#!/usr/bin/env python3
+# ============================================================================
+# examples/quickstart.py
+# ============================================================================
+"""
+Quickstart example for PyADM1.
+
+This is the simplest possible example showing:
+- Single digester with substrate feed
+- Basic simulation
+- Result output
+
+Usage:
+    python examples/quickstart.py
+"""
+
+from pathlib import Path
+
+
+def main():
+    """Run a simple single-digester simulation."""
+    # Import required modules
+    from pyadm1.configurator.plant_builder import BiogasPlant
+    from pyadm1.components.biological.digester import Digester
+    from pyadm1.substrates.feedstock import Feedstock
+    from pyadm1.core.pyadm1 import get_state_zero_from_initial_state
+
+    print("=" * 70)
+    print("PyADM1 Quickstart Example")
+    print("=" * 70)
+
+    # Step 1: Create feedstock
+    print("\n1. Creating feedstock...")
+    feedstock = Feedstock(feeding_freq=48)  # Can change substrate every 48 hours
+
+    # Step 2: Load initial state
+    print("2. Loading initial state...")
+    data_path = Path(__file__).parent.parent / "data" / "initial_states"
+    initial_state_file = data_path / "digester_initial8.csv"
+    adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
+
+    # Step 3: Create plant
+    print("3. Creating biogas plant...")
+    plant = BiogasPlant("Quickstart Plant")
+
+    # Step 4: Add digester
+    print("4. Adding digester...")
+    digester = Digester(
+        component_id="main_digester",
+        feedstock=feedstock,
+        V_liq=2000.0,  # 2000 m³ liquid volume
+        V_gas=300.0,  # 300 m³ gas volume
+        T_ad=308.15,  # 35°C operating temperature
+        name="Main Digester",
+    )
+
+    # Initialize with substrate feed: 15 m³/d corn silage + 10 m³/d manure
+    digester.initialize({"adm1_state": adm1_state, "Q_substrates": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]})
+
+    plant.add_component(digester)
+
+    # Step 5: Initialize plant
+    print("5. Initializing plant...")
+    plant.initialize()
+
+    # Step 6: Run simulation
+    print("6. Running simulation...")
+    print("   Duration: 5 days")
+    print("   Time step: 1 hour")
+    print("   Save interval: 1 day")
+
+    results = plant.simulate(
+        duration=5.0, dt=1.0 / 24.0, save_interval=1.0  # 5 days  # 1 hour time step  # Save results daily
+    )
+
+    # Step 7: Display results
+    print("\n" + "=" * 70)
+    print("SIMULATION RESULTS")
+    print("=" * 70)
+
+    print(f"\nGenerated {len(results)} daily result snapshots\n")
+
+    # Show results for each day
+    for result in results:
+        time = result["time"]
+        comp_results = result["components"]["main_digester"]
+
+        print(f"Day {time:.1f}:")
+        print(f"  Biogas:  {comp_results.get('Q_gas', 0):>8.1f} m³/d")
+        print(f"  Methane: {comp_results.get('Q_ch4', 0):>8.1f} m³/d")
+        print(f"  pH:      {comp_results.get('pH', 0):>8.2f}")
+        print(f"  VFA:     {comp_results.get('VFA', 0):>8.2f} g/L")
+        print(f"  TAC:     {comp_results.get('TAC', 0):>8.2f} g/L")
+        print()
+
+    # Final summary
+    final = results[-1]["components"]["main_digester"]
+    print("=" * 70)
+    print("FINAL SUMMARY")
+    print("=" * 70)
+    print(f"Total biogas production:  {final.get('Q_gas', 0):.1f} m³/d")
+    print(f"Total methane production: {final.get('Q_ch4', 0):.1f} m³/d")
+    print(f"Methane content:          {final.get('Q_ch4', 0) / final.get('Q_gas', 1) * 100:.1f}%")
+    print(f"Process stability (pH):   {final.get('pH', 0):.2f}")
+    print("=" * 70)
+
+    print("\n✅ Simulation completed successfully!")
+
+    # Optional: Save configuration
+    output_path = Path(__file__).parent.parent / "output"
+    output_path.mkdir(exist_ok=True)
+    config_file = output_path / "quickstart_config.json"
+    plant.to_json(str(config_file))
+    print(f"\n💾 Configuration saved to: {config_file}")
+
+    return plant, results
+
+
+if __name__ == "__main__":
+    plant, results = main()

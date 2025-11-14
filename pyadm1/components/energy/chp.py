@@ -1,21 +1,34 @@
 # ============================================================================
-# pyadm1/plant/chp.py
+# pyadm1/components/energy/chp.py
 # ============================================================================
 """
 Combined Heat and Power (CHP) unit component.
+
+This module provides the CHP class for converting biogas to electricity
+and heat in a biogas plant configuration.
 """
 
 from typing import Dict, Any, Optional
 
-from pyadm1.plant.component_base import Component, ComponentType
+from pyadm1.components.base import Component, ComponentType
 
 
 class CHP(Component):
     """
     Combined Heat and Power unit.
 
-    Converts biogas to electricity and heat.
-    Uses C# DLL functions for calculations (to be implemented).
+    Converts biogas to electricity and heat with configurable efficiency.
+
+    Attributes:
+        P_el_nom (float): Nominal electrical power in kW.
+        eta_el (float): Electrical efficiency (0-1).
+        eta_th (float): Thermal efficiency (0-1).
+        load_factor (float): Current operating point (0-1).
+
+    Example:
+        >>> chp = CHP("chp1", P_el_nom=500, eta_el=0.40, eta_th=0.45)
+        >>> chp.initialize()
+        >>> result = chp.step(t=0, dt=1/24, inputs={"Q_ch4": 1000})
     """
 
     def __init__(
@@ -29,18 +42,12 @@ class CHP(Component):
         """
         Initialize CHP unit.
 
-        Parameters
-        ----------
-        component_id : str
-            Unique identifier
-        P_el_nom : float
-            Nominal electrical power [kW]
-        eta_el : float
-            Electrical efficiency [-]
-        eta_th : float
-            Thermal efficiency [-]
-        name : Optional[str]
-            Human-readable name
+        Args:
+            component_id (str): Unique identifier.
+            P_el_nom (float): Nominal electrical power in kW. Defaults to 500.0.
+            eta_el (float): Electrical efficiency (0-1). Defaults to 0.40.
+            eta_th (float): Thermal efficiency (0-1). Defaults to 0.45.
+            name (Optional[str]): Human-readable name. Defaults to component_id.
         """
         super().__init__(component_id, ComponentType.CHP, name)
 
@@ -52,7 +59,14 @@ class CHP(Component):
         self.load_factor = 0.0
 
     def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
-        """Initialize CHP state."""
+        """
+        Initialize CHP state.
+
+        Args:
+            initial_state (Optional[Dict[str, Any]]): Initial state with keys:
+                - 'load_factor': Initial load factor (0-1)
+                If None, uses default initialization.
+        """
         if initial_state is None:
             initial_state = {}
 
@@ -70,24 +84,19 @@ class CHP(Component):
         """
         Perform one simulation time step.
 
-        Parameters
-        ----------
-        t : float
-            Current time [days]
-        dt : float
-            Time step [days]
-        inputs : Dict[str, Any]
-            Input data with keys:
-            - 'Q_ch4': Methane flow rate [m³/d]
-            - 'load_setpoint': Desired load factor [0-1]
+        Args:
+            t (float): Current time in days.
+            dt (float): Time step in days.
+            inputs (Dict[str, Any]): Input data with keys:
+                - 'Q_ch4': Methane flow rate [m³/d]
+                - 'load_setpoint': Desired load factor [0-1] (optional)
 
-        Returns
-        -------
-        Dict[str, Any]
-            Output data with keys:
-            - 'P_el': Electrical power [kW]
-            - 'P_th': Thermal power [kW]
-            - 'Q_gas_consumed': Biogas consumption [m³/d]
+        Returns:
+            Dict[str, Any]: Output data with keys:
+                - 'P_el': Electrical power [kW]
+                - 'P_th': Thermal power [kW]
+                - 'Q_gas_consumed': Biogas consumption [m³/d]
+                - 'Q_ch4_remaining': Remaining methane [m³/d]
         """
         Q_ch4 = inputs.get("Q_ch4", 0.0)
         load_setpoint = inputs.get("load_setpoint", 1.0)
@@ -127,7 +136,12 @@ class CHP(Component):
         return self.outputs_data
 
     def to_dict(self) -> Dict[str, Any]:
-        """Serialize to dictionary."""
+        """
+        Serialize to dictionary.
+
+        Returns:
+            Dict[str, Any]: Component configuration as dictionary.
+        """
         return {
             "component_id": self.component_id,
             "component_type": self.component_type.value,
@@ -142,7 +156,15 @@ class CHP(Component):
 
     @classmethod
     def from_dict(cls, config: Dict[str, Any]) -> "CHP":
-        """Create from dictionary."""
+        """
+        Create from dictionary.
+
+        Args:
+            config (Dict[str, Any]): Component configuration.
+
+        Returns:
+            CHP: Initialized CHP component.
+        """
         chp = cls(
             component_id=config["component_id"],
             P_el_nom=config.get("P_el_nom", 500.0),

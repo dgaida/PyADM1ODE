@@ -1,5 +1,6 @@
+#!/usr/bin/env python3
 # ============================================================================
-# Example usage script: examples/two_stage_digester.py
+# examples/two_stage_simulation.py
 # ============================================================================
 """
 Example: Two-stage digester in series with CHP and heating.
@@ -9,18 +10,26 @@ This example demonstrates:
 - CHP unit consuming biogas
 - Heating system using CHP waste heat
 - Loading initial state from CSV file
+
+Usage:
+    python examples/two_stage_simulation.py
 """
 
 from pathlib import Path
 
 
 def create_two_stage_plant():
-    """Create example two-stage biogas plant configuration."""
-    from pyadm1.plant.plant_model import BiogasPlant
-    from pyadm1.plant.digester import Digester
-    from pyadm1.plant.chp import CHP
-    from pyadm1.plant.heating import HeatingSystem
-    from pyadm1.plant.connection import Connection
+    """
+    Create example two-stage biogas plant configuration.
+
+    Returns:
+        BiogasPlant: Configured plant with two digesters, CHP, and heating systems.
+    """
+    from pyadm1.configurator.plant_builder import BiogasPlant
+    from pyadm1.components.biological.digester import Digester
+    from pyadm1.components.energy.chp import CHP
+    from pyadm1.components.energy.heating import HeatingSystem
+    from pyadm1.configurator.connection_manager import Connection
     from pyadm1.substrates.feedstock import Feedstock
     from pyadm1.core.pyadm1 import get_state_zero_from_initial_state
 
@@ -104,6 +113,9 @@ def create_two_stage_plant():
 def main():
     """Run example simulation."""
     # Create plant
+    print("=" * 70)
+    print("Creating two-stage biogas plant...")
+    print("=" * 70)
     plant = create_two_stage_plant()
 
     # Print plant summary
@@ -160,11 +172,6 @@ def main():
     print("\n" + "=" * 70)
     print("KEY PERFORMANCE INDICATORS")
     print("=" * 70)
-
-    # Extract time series data
-    times = [r["time"] for r in results]
-
-    print(times)
 
     # Digester 1 metrics
     if "digester_1" in results[-1]["components"]:

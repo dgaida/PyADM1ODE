@@ -1,8 +1,11 @@
 # ============================================================================
-# pyadm1/plant/digester.py
+# pyadm1/components/biological/digester.py
 # ============================================================================
 """
 Digester component wrapping PyADM1 model.
+
+This module provides the Digester class which encapsulates the ADM1 model
+for anaerobic digestion in a component-based framework.
 """
 
 import clr
@@ -11,13 +14,13 @@ import os
 from typing import Dict, Any, List, Optional
 import numpy as np
 
-from pyadm1.plant.component_base import Component, ComponentType
+from pyadm1.components.base import Component, ComponentType
 from pyadm1.core.pyadm1 import PyADM1
 from pyadm1.substrates.feedstock import Feedstock
-from pyadm1.core.simulator import Simulator
+from pyadm1.simulation.simulator import Simulator
 
 # CLR reference must be added before importing from DLL
-dll_path = os.path.join(os.path.dirname(__file__), "..", "dlls")
+dll_path = os.path.join(os.path.dirname(__file__), "..", "..", "dlls")
 clr.AddReference(os.path.join(dll_path, "plant"))
 from biogas import ADMstate  # noqa: E402  # type: ignore
 
@@ -28,6 +31,21 @@ class Digester(Component):
 
     This component wraps the PyADM1 implementation and can be
     connected to other digesters or components in series/parallel.
+
+    Attributes:
+        feedstock (Feedstock): Feedstock object for substrate management.
+        V_liq (float): Liquid volume in m³.
+        V_gas (float): Gas volume in m³.
+        T_ad (float): Operating temperature in K.
+        adm1 (PyADM1): ADM1 model instance.
+        simulator (Simulator): Simulator for ADM1.
+        adm1_state (List[float]): Current ADM1 state vector (37 dimensions).
+        Q_substrates (List[float]): Substrate feed rates in m³/d.
+
+    Example:
+        >>> feedstock = Feedstock(feeding_freq=48)
+        >>> digester = Digester("dig1", feedstock, V_liq=2000, V_gas=300)
+        >>> digester.initialize({"adm1_state": initial_state, "Q_substrates": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]})
     """
 
     def __init__(
@@ -42,20 +60,13 @@ class Digester(Component):
         """
         Initialize digester component.
 
-        Parameters
-        ----------
-        component_id : str
-            Unique identifier
-        feedstock : Feedstock
-            Feedstock object for substrate management
-        V_liq : float
-            Liquid volume [m³]
-        V_gas : float
-            Gas volume [m³]
-        T_ad : float
-            Operating temperature [K]
-        name : Optional[str]
-            Human-readable name
+        Args:
+            component_id (str): Unique identifier.
+            feedstock (Feedstock): Feedstock object for substrate management.
+            V_liq (float): Liquid volume in m³. Defaults to 1977.0.
+            V_gas (float): Gas volume in m³. Defaults to 304.0.
+            T_ad (float): Operating temperature in K. Defaults to 308.15 (35°C).
+            name (Optional[str]): Human-readable name. Defaults to component_id.
         """
         super().__init__(component_id, ComponentType.DIGESTER, name)
 
@@ -82,12 +93,11 @@ class Digester(Component):
         """
         Initialize digester state.
 
-        Parameters
-        ----------
-        initial_state : Optional[Dict[str, Any]]
-            Initial state with keys:
-            - 'adm1_state': ADM1 state vector (37 dims)
-            - 'Q_substrates': Substrate feed rates
+        Args:
+            initial_state (Optional[Dict[str, Any]]): Initial state with keys:
+                - 'adm1_state': ADM1 state vector (37 dims)
+                - 'Q_substrates': Substrate feed rates
+                If None, uses default initialization.
         """
         if initial_state is None:
             # Default initialization
@@ -113,30 +123,24 @@ class Digester(Component):
         """
         Perform one simulation time step.
 
-        Parameters
-        ----------
-        t : float
-            Current time [days]
-        dt : float
-            Time step [days]
-        inputs : Dict[str, Any]
-            Input data with keys:
-            - 'Q_substrates': Fresh substrate feed rates [m³/d]
-            - 'Q_in': Influent from previous digester [m³/d]
-            - 'state_in': ADM1 state from previous digester (if connected)
+        Args:
+            t (float): Current time in days.
+            dt (float): Time step in days.
+            inputs (Dict[str, Any]): Input data with keys:
+                - 'Q_substrates': Fresh substrate feed rates [m³/d]
+                - 'Q_in': Influent from previous digester [m³/d]
+                - 'state_in': ADM1 state from previous digester (if connected)
 
-        Returns
-        -------
-        Dict[str, Any]
-            Output data with keys:
-            - 'Q_out': Effluent flow rate [m³/d]
-            - 'state_out': ADM1 state vector for next digester
-            - 'Q_gas': Biogas production [m³/d]
-            - 'Q_ch4': Methane production [m³/d]
-            - 'Q_co2': CO2 production [m³/d]
-            - 'pH': pH value
-            - 'VFA': VFA concentration [g/L]
-            - 'TAC': TAC concentration [g CaCO3/L]
+        Returns:
+            Dict[str, Any]: Output data with keys:
+                - 'Q_out': Effluent flow rate [m³/d]
+                - 'state_out': ADM1 state vector for next digester
+                - 'Q_gas': Biogas production [m³/d]
+                - 'Q_ch4': Methane production [m³/d]
+                - 'Q_co2': CO2 production [m³/d]
+                - 'pH': pH value
+                - 'VFA': VFA concentration [g/L]
+                - 'TAC': TAC concentration [g CaCO3/L]
         """
         # Get substrate feed or influent from previous stage
         if "Q_substrates" in inputs:
@@ -177,7 +181,7 @@ class Digester(Component):
             self.state["TAC"] = ADMstate.calcTACOfADMstate(self.adm1_state, "gCaCO3eq/l").Value
         except Exception as e:
             # Fallback if DLL not available
-            print(e)
+            print(f"Warning: Could not calculate process indicators: {e}")
 
         # Prepare output
         Q_out = np.sum(self.Q_substrates)
@@ -196,7 +200,12 @@ class Digester(Component):
         return self.outputs_data
 
     def to_dict(self) -> Dict[str, Any]:
-        """Serialize to dictionary."""
+        """
+        Serialize to dictionary.
+
+        Returns:
+            Dict[str, Any]: Component configuration as dictionary.
+        """
         return {
             "component_id": self.component_id,
             "component_type": self.component_type.value,
@@ -211,7 +220,16 @@ class Digester(Component):
 
     @classmethod
     def from_dict(cls, config: Dict[str, Any], feedstock: Feedstock) -> "Digester":
-        """Create from dictionary."""
+        """
+        Create from dictionary.
+
+        Args:
+            config (Dict[str, Any]): Component configuration.
+            feedstock (Feedstock): Feedstock object.
+
+        Returns:
+            Digester: Initialized digester component.
+        """
         digester = cls(
             component_id=config["component_id"],
             feedstock=feedstock,
