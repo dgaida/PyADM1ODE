@@ -33,21 +33,22 @@ Example:
 
 from pyadm1.core.adm1 import ADM1, get_state_zero_from_initial_state
 from pyadm1.core.adm_params import ADMParams
-from pyadm1.core.adm_equations import (
-    InhibitionFunctions,
-    ProcessRates,
-    AcidBaseKinetics,
-    GasTransfer,
-)
-from pyadm1.core.solver import ODESolver
+
+# from pyadm1.core.adm_equations import (
+#     InhibitionFunctions,
+#     ProcessRates,
+#     AcidBaseKinetics,
+#     GasTransfer,
+# )
+# from pyadm1.core.solver import ODESolver
 
 __all__ = [
     "ADM1",
     "get_state_zero_from_initial_state",
     "ADMParams",
-    "InhibitionFunctions",
-    "ProcessRates",
-    "AcidBaseKinetics",
-    "GasTransfer",
-    "ODESolver",
+    #  "InhibitionFunctions",
+    #  "ProcessRates",
+    #  "AcidBaseKinetics",
+    #  "GasTransfer",
+    #  "ODESolver",
 ]

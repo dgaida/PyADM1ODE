@@ -26,7 +26,7 @@ from typing import Tuple
 # are coded in PyADM1.py directly as numbers, so they are not defined here
 
 
-class ADMparams:
+class ADMParams:
     """Static class containing ADM1 model parameters."""
 
     # *** CONSTRUCTORS ***
@@ -81,7 +81,7 @@ class ADMparams:
         f_fa_li = 0.95  # fFA_Xli OK
         C_fa = 0.0217  # kmole C.kg^-1COD        # C_Sfa OK
 
-        f_h2_su, f_bu_su, f_pro_su, f_ac_su = ADMparams._getADMfsuparams()
+        f_h2_su, f_bu_su, f_pro_su, f_ac_su = ADMParams._getADMfsuparams()
 
         N_bac = 0.08 / 14  # kmole N.kg^-1COD        # N_XB OK
         C_bu = 0.025  # kmole C.kg^-1COD         C_Sbu OK
@@ -92,9 +92,9 @@ class ADMparams:
         C_va = 0.024  # kmole C.kg^-1COD        # C_Sva OK
         C_ch4 = 0.0156  # kmole C.kg^-1COD      # C_Sch4 OK
 
-        (Y_su, Y_aa, Y_fa, Y_c4, Y_pro, Y_ac, Y_h2) = ADMparams._getADMYparams()
+        (Y_su, Y_aa, Y_fa, Y_c4, Y_pro, Y_ac, Y_h2) = ADMParams._getADMYparams()
 
-        f_h2_aa, f_va_aa, f_bu_aa, f_pro_aa, f_ac_aa = ADMparams._getADMfaaparams()
+        f_h2_aa, f_va_aa, f_bu_aa, f_pro_aa, f_ac_aa = ADMParams._getADMfaaparams()
 
         # they are substrate dependent and therefore calculated from the current substrate mix, directly in PyADM1.py
         # Biochemical parameter values from the Rosen et al (2006) BSM2 report
@@ -123,9 +123,9 @@ class ADMparams:
             K_I_nh3,
             k_m_h2,
             K_S_h2,
-        ) = ADMparams._getADMk_mK_Sparams()
+        ) = ADMParams._getADMk_mK_Sparams()
 
-        pH_LL_aa, pH_UL_aa, pH_LL_ac, pH_UL_ac, pH_LL_h2, pH_UL_h2 = ADMparams._getADMpHULLLparams()
+        pH_LL_aa, pH_UL_aa, pH_LL_ac, pH_UL_ac, pH_LL_h2, pH_UL_h2 = ADMParams._getADMpHULLLparams()
 
         # decay rates
         k_dec_X_su = 0.02  # d^-1            # OK
@@ -137,7 +137,7 @@ class ADMparams:
         k_dec_X_h2 = 0.02  # d^-1            # OK
         ## M is kmole m^-3
 
-        K_w, K_a_va, K_a_bu, K_a_pro, K_a_ac, K_a_co2, K_a_IN = ADMparams._getADMKparams(R, T_base, T_ad)
+        K_w, K_a_va, K_a_bu, K_a_pro, K_a_ac, K_a_co2, K_a_IN = ADMParams._getADMKparams(R, T_base, T_ad)
 
         # acid-base kinetic parameters
         # those values all are 1e8 kmole/d in C# implementation
@@ -148,7 +148,7 @@ class ADMparams:
         k_A_B_co2 = 1e8  # 10 ** 10 #M^-1 * d^-1
         k_A_B_IN = 1e8  # 10 ** 10 #M^-1 * d^-1
 
-        p_gas_h2o, k_p, k_L_a, K_H_co2, K_H_ch4, K_H_h2 = ADMparams.getADMgasparams(R, T_base, T_ad)
+        p_gas_h2o, k_p, k_L_a, K_H_co2, K_H_ch4, K_H_h2 = ADMParams.getADMgasparams(R, T_base, T_ad)
 
         return (
             N_xc,
@@ -250,7 +250,7 @@ class ADMparams:
         Tuple[float, float, float, float, float, float]
             K_pH_aa, nn_aa, K_pH_ac, n_ac, K_pH_h2, n_h2
         """
-        pH_LL_aa, pH_UL_aa, pH_LL_ac, pH_UL_ac, pH_LL_h2, pH_UL_h2 = ADMparams._getADMpHULLLparams()
+        pH_LL_aa, pH_UL_aa, pH_LL_ac, pH_UL_ac, pH_LL_h2, pH_UL_h2 = ADMParams._getADMpHULLLparams()
 
         # related to pH inhibition taken from BSM2 report, they are global variables to avoid repeating them in DAE part
         K_pH_aa = 10 ** (-1 * (pH_LL_aa + pH_UL_aa) / 2.0)  # OK

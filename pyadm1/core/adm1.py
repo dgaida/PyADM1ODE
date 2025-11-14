@@ -19,7 +19,7 @@ It is changed to an ODE only implementation with no DAEs similar to the implemen
 More information about the implementation and characterisation of the ADM1 input stream can be found in:
 Gaida, D., Dynamic real-time substrate feed optimization of anaerobic co-digestion plants, PhD thesis, Leiden, 2014.
 
-This file has dependencies to feedstock.py and ADMparams.py
+This file has dependencies to feedstock.py and adm_params.py
 
 @author: Daniel Gaida
 """
@@ -30,7 +30,7 @@ import numpy as np
 import pandas as pd
 from typing import List, Tuple
 
-from pyadm1.core.adm_params import ADMparams
+from pyadm1.core.adm_params import ADMParams
 from pyadm1.substrates.feedstock import Feedstock
 
 # CLR reference must be added before importing from DLL
@@ -146,7 +146,7 @@ the input stream or to calculate and store a couple of process values after the 
 """
 
 
-class PyADM1:
+class ADM1:
     """
     Main class containing the ODE implementation of ADM1.
 
@@ -252,7 +252,7 @@ class PyADM1:
         Tuple[float, float, float, float]
             q_gas, q_ch4, q_co2, p_gas [m³/d, m³/d, m³/d, bar]
         """
-        p_gas_h2o, k_p, k_L_a, K_H_co2, K_H_ch4, K_H_h2 = ADMparams.getADMgasparams(self._R, self._T_base, self._T_ad)
+        p_gas_h2o, k_p, k_L_a, K_H_co2, K_H_ch4, K_H_h2 = ADMParams.getADMgasparams(self._R, self._T_base, self._T_ad)
 
         NQ = 44.64300
 
@@ -446,7 +446,7 @@ class PyADM1:
             K_H_co2,
             K_H_ch4,
             K_H_h2,
-        ) = ADMparams.getADMparams(self._R, self._T_base, self._T_ad)
+        ) = ADMParams.getADMparams(self._R, self._T_base, self._T_ad)
 
         (
             f_ch_xc,
@@ -472,7 +472,7 @@ class PyADM1:
         f_pr_xb = f_pr_xc / (f_ch_xc + f_pr_xc + f_li_xc) * (1 - f_p)
         f_li_xb = f_li_xc / (f_ch_xc + f_pr_xc + f_li_xc) * (1 - f_p)
 
-        K_pH_aa, nn_aa, K_pH_ac, n_ac, K_pH_h2, n_h2 = ADMparams.getADMinhibitionparams()
+        K_pH_aa, nn_aa, K_pH_ac, n_ac, K_pH_h2, n_h2 = ADMParams.getADMinhibitionparams()
 
         S_su = state_zero[0]
         S_aa = state_zero[1]

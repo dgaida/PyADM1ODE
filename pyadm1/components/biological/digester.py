@@ -15,7 +15,7 @@ from typing import Dict, Any, List, Optional
 import numpy as np
 
 from pyadm1.components.base import Component, ComponentType
-from pyadm1.core.pyadm1 import PyADM1
+from pyadm1.core.adm1 import ADM1
 from pyadm1.substrates.feedstock import Feedstock
 from pyadm1.simulation.simulator import Simulator
 
@@ -29,7 +29,7 @@ class Digester(Component):
     """
     Digester component using ADM1 model.
 
-    This component wraps the PyADM1 implementation and can be
+    This component wraps the ADM1 implementation and can be
     connected to other digesters or components in series/parallel.
 
     Attributes:
@@ -37,7 +37,7 @@ class Digester(Component):
         V_liq (float): Liquid volume in m³.
         V_gas (float): Gas volume in m³.
         T_ad (float): Operating temperature in K.
-        adm1 (PyADM1): ADM1 model instance.
+        adm1 (ADM1): ADM1 model instance.
         simulator (Simulator): Simulator for ADM1.
         adm1_state (List[float]): Current ADM1 state vector (37 dimensions).
         Q_substrates (List[float]): Substrate feed rates in m³/d.
@@ -76,7 +76,7 @@ class Digester(Component):
         self.T_ad = T_ad
 
         # Initialize ADM1
-        self.adm1 = PyADM1(feedstock)
+        self.adm1 = ADM1(feedstock)
         self.adm1.V_liq = V_liq
         self.adm1._V_gas = V_gas
         self.adm1._T_ad = T_ad

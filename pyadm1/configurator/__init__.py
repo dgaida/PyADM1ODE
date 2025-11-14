@@ -49,7 +49,8 @@ from pyadm1.configurator.connection_manager import (
     Connection,
     ConnectionType,
 )
-from pyadm1.configurator.validation import PlantValidator
+
+# from pyadm1.configurator.validation import PlantValidator
 
 # Import templates
 from pyadm1.configurator import templates
@@ -68,7 +69,7 @@ __all__ = [
     "ConnectionManager",
     "Connection",
     "ConnectionType",
-    "PlantValidator",
+    # "PlantValidator",
     "templates",
     "mcp",
     "MCP_AVAILABLE",

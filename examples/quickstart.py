@@ -23,7 +23,7 @@ def main():
     from pyadm1.configurator.plant_builder import BiogasPlant
     from pyadm1.components.biological.digester import Digester
     from pyadm1.substrates.feedstock import Feedstock
-    from pyadm1.core.pyadm1 import get_state_zero_from_initial_state
+    from pyadm1.core.adm1 import get_state_zero_from_initial_state
 
     print("=" * 70)
     print("PyADM1 Quickstart Example")

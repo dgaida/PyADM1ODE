@@ -10,7 +10,7 @@ This class is used to do simulations with the ADM1 using an ODE solver. It conta
 substrate feed that let to a methane production rate that is closest to a given set point.
 - simulateADplant: Simulate ADM1 for given duration starting at a given state and returns the state
 
-This class only works with the class PyADM1 that implements the ADM1.
+This class only works with the class ADM1 that implements the ADM1.
 
 @author: Daniel Gaida
 """
@@ -19,21 +19,21 @@ import numpy as np
 import scipy.integrate
 from typing import List, Tuple
 
-from pyadm1.core.pyadm1 import PyADM1
+from pyadm1.core.adm1 import ADM1
 
 
 class Simulator:
     """Handles ADM1 simulation runs with various configurations."""
 
     # *** CONSTRUCTORS ***
-    def __init__(self, adm1: PyADM1) -> None:
+    def __init__(self, adm1: ADM1) -> None:
         """
         Initialize simulator with ADM1 model instance.
 
         Parameters
         ----------
-        adm1 : PyADM1
-            PyADM1 model instance
+        adm1 : ADM1
+            ADM1 model instance
         """
         self._adm1 = adm1
 
