@@ -58,6 +58,9 @@ class CHP(Component):
         # Operating point (0-1)
         self.load_factor = 0.0
 
+        # Auto-initialize with default state
+        self.initialize()
+
     def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
         """
         Initialize CHP state.

@@ -119,6 +119,9 @@ class Digester(Component):
             "TAC": 0.0,
         }
 
+        # Mark as initialized
+        self._initialized = True
+
     def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Perform one simulation time step.

@@ -99,10 +99,13 @@ class BiogasPlant:
         """
         Initialize all components.
 
-        This must be called before simulation starts.
+        Note: Most components auto-initialize in their constructor.
+        This method is kept for compatibility and to ensure any
+        components that need explicit initialization are handled.
         """
         for component in self.components.values():
-            component.initialize()
+            if not component._initialized:
+                component.initialize()
 
     def step(self, dt: float) -> Dict[str, Dict[str, Any]]:
         """

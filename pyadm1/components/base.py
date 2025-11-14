@@ -56,6 +56,9 @@ class Component(ABC):
         # Output variables (what this component provides to others)
         self.outputs_data: Dict[str, Any] = {}
 
+        # Flag to track if component has been initialized
+        self._initialized: bool = False
+
     @abstractmethod
     def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
         """

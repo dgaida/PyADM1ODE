@@ -51,6 +51,9 @@ class HeatingSystem(Component):
         self.target_temperature = target_temperature
         self.heat_loss_coefficient = heat_loss_coefficient
 
+        # Auto-initialize with default state
+        self.initialize()
+
     def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
         """
         Initialize heating system state.
