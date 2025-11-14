@@ -80,6 +80,14 @@ class CHP(Component):
             "operating_hours": 0.0,
         }
 
+        # Ensure outputs_data is also initialized
+        self.outputs_data = {
+            "P_el": 0.0,
+            "P_th": 0.0,
+            "Q_gas_consumed": 0.0,
+            "Q_ch4_remaining": 0.0,
+        }
+
     def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Perform one simulation time step.
@@ -178,5 +186,7 @@ class CHP(Component):
 
         if "state" in config:
             chp.initialize(config["state"])
+        else:
+            chp.initialize()
 
         return chp

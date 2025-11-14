@@ -33,11 +33,18 @@ def main():
     print("\n1. Creating feedstock...")
     feedstock = Feedstock(feeding_freq=48)  # Can change substrate every 48 hours
 
-    # Step 2: Load initial state
-    print("2. Loading initial state...")
+    # Step 2: Load initial state from CSV
+    print("2. Loading initial state from CSV...")
     data_path = Path(__file__).parent.parent / "data" / "initial_states"
     initial_state_file = data_path / "digester_initial8.csv"
-    adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
+
+    if not initial_state_file.exists():
+        print(f"   Warning: Initial state file not found at {initial_state_file}")
+        print("   Using default initialization instead.")
+        adm1_state = None
+    else:
+        print(f"   Loading from: {initial_state_file}")
+        adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
 
     # Step 3: Create plant
     print("3. Creating biogas plant...")

@@ -9,8 +9,8 @@ import pytest
 import numpy as np
 from unittest.mock import Mock, patch
 
-from pyadm1.core.simulator import Simulator
-from pyadm1.core.pyadm1 import PyADM1
+from pyadm1.simulation.simulator import Simulator
+from pyadm1.core.adm1 import ADM1
 
 
 class TestSimulatorInitialization:
@@ -19,12 +19,12 @@ class TestSimulatorInitialization:
     @pytest.fixture
     def mock_adm1(self) -> Mock:
         """
-        Create a mock PyADM1 object.
+        Create a mock ADM1 object.
 
         Returns:
-            Mock PyADM1 object with necessary attributes.
+            Mock ADM1 object with necessary attributes.
         """
-        adm1 = Mock(spec=PyADM1)
+        adm1 = Mock(spec=ADM1)
         adm1.V_liq = 1977
         adm1.createInfluent = Mock()
         adm1.ADM1_ODE = Mock(return_value=[0.01] * 37)
@@ -35,7 +35,7 @@ class TestSimulatorInitialization:
         Test that Simulator stores the ADM1 instance.
 
         Args:
-            mock_adm1: Mock PyADM1 fixture.
+            mock_adm1: Mock ADM1 fixture.
         """
         simulator = Simulator(mock_adm1)
 
@@ -46,7 +46,7 @@ class TestSimulatorInitialization:
         Test that Simulator sets the solver method.
 
         Args:
-            mock_adm1: Mock PyADM1 fixture.
+            mock_adm1: Mock ADM1 fixture.
         """
         simulator = Simulator(mock_adm1)
 
@@ -60,12 +60,12 @@ class TestSimulatorSimulateADPlant:
     @pytest.fixture
     def mock_adm1_with_params(self) -> Mock:
         """
-        Create a mock PyADM1 with print_params_at_current_state method.
+        Create a mock ADM1 with print_params_at_current_state method.
 
         Returns:
-            Mock PyADM1 object.
+            Mock ADM1 object.
         """
-        adm1 = Mock(spec=PyADM1)
+        adm1 = Mock(spec=ADM1)
         adm1.V_liq = 1977
         adm1.ADM1_ODE = Mock(return_value=[0.01] * 37)
         adm1.print_params_at_current_state = Mock()
@@ -76,14 +76,14 @@ class TestSimulatorSimulateADPlant:
         Test that simulateADplant returns a list.
 
         Args:
-            mock_adm1_with_params: Mock PyADM1 fixture.
+            mock_adm1_with_params: Mock ADM1 fixture.
         """
         simulator = Simulator(mock_adm1_with_params)
 
         state_zero = [0.01] * 37
         tstep = [0, 1]
 
-        with patch("pyadm1.core.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
             # Mock the solver result
             mock_result = Mock()
             mock_result.y = np.array([[val] * 20 for val in state_zero])
@@ -98,14 +98,14 @@ class TestSimulatorSimulateADPlant:
         Test that simulateADplant returns state with 37 elements.
 
         Args:
-            mock_adm1_with_params: Mock PyADM1 fixture.
+            mock_adm1_with_params: Mock ADM1 fixture.
         """
         simulator = Simulator(mock_adm1_with_params)
 
         state_zero = [0.01] * 37
         tstep = [0, 1]
 
-        with patch("pyadm1.core.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -119,14 +119,14 @@ class TestSimulatorSimulateADPlant:
         Test that simulateADplant calls print_params_at_current_state.
 
         Args:
-            mock_adm1_with_params: Mock PyADM1 fixture.
+            mock_adm1_with_params: Mock ADM1 fixture.
         """
         simulator = Simulator(mock_adm1_with_params)
 
         state_zero = [0.01] * 37
         tstep = [0, 1]
 
-        with patch("pyadm1.core.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -142,16 +142,20 @@ class TestSimulatorDetermineBestFeed:
     @pytest.fixture
     def mock_adm1_for_optimization(self) -> Mock:
         """
-        Create a mock PyADM1 for feed optimization tests.
+        Create a mock ADM1 for feed optimization tests.
 
         Returns:
-            Mock PyADM1 object with necessary methods.
+            Mock ADM1 object with necessary methods.
         """
-        adm1 = Mock(spec=PyADM1)
+        adm1 = Mock(spec=ADM1)
         adm1.V_liq = 1977
         adm1.createInfluent = Mock()
         adm1.ADM1_ODE = Mock(return_value=[0.01] * 37)
         adm1.calc_gas = Mock(return_value=(1500, 900, 600, 0.95))
+        adm1.feedstock = Mock()
+        adm1.feedstock.return_value.get_substrate_feed_mixtures = Mock(
+            return_value=[[15, 10, 0, 0, 0, 0, 0, 0, 0, 0] for _ in range(13)]
+        )
         return adm1
 
     def test_determine_best_feed_returns_ten_values(self, mock_adm1_for_optimization: Mock) -> None:
@@ -159,7 +163,7 @@ class TestSimulatorDetermineBestFeed:
         Test that determineBestFeedbyNSims returns 10 values.
 
         Args:
-            mock_adm1_for_optimization: Mock PyADM1 fixture.
+            mock_adm1_for_optimization: Mock ADM1 fixture.
         """
         simulator = Simulator(mock_adm1_for_optimization)
 
@@ -168,7 +172,7 @@ class TestSimulatorDetermineBestFeed:
         Qch4sp = 900
         feeding_freq = 48
 
-        with patch("pyadm1.core.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 140 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -182,7 +186,7 @@ class TestSimulatorDetermineBestFeed:
         Test that the best Q returned is a list.
 
         Args:
-            mock_adm1_for_optimization: Mock PyADM1 fixture.
+            mock_adm1_for_optimization: Mock ADM1 fixture.
         """
         simulator = Simulator(mock_adm1_for_optimization)
 
@@ -191,7 +195,7 @@ class TestSimulatorDetermineBestFeed:
         Qch4sp = 900
         feeding_freq = 48
 
-        with patch("pyadm1.core.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 140 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -208,7 +212,7 @@ class TestSimulatorDetermineBestFeed:
         Test determineBestFeedbyNSims with minimum n=3.
 
         Args:
-            mock_adm1_for_optimization: Mock PyADM1 fixture.
+            mock_adm1_for_optimization: Mock ADM1 fixture.
         """
         simulator = Simulator(mock_adm1_for_optimization)
 
@@ -217,7 +221,7 @@ class TestSimulatorDetermineBestFeed:
         Qch4sp = 900
         feeding_freq = 48
 
-        with patch("pyadm1.core.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 140 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -232,7 +236,7 @@ class TestSimulatorDetermineBestFeed:
         Test that returned gas flows are positive.
 
         Args:
-            mock_adm1_for_optimization: Mock PyADM1 fixture.
+            mock_adm1_for_optimization: Mock ADM1 fixture.
         """
         simulator = Simulator(mock_adm1_for_optimization)
 
@@ -241,7 +245,7 @@ class TestSimulatorDetermineBestFeed:
         Qch4sp = 900
         feeding_freq = 48
 
-        with patch("pyadm1.core.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 140 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -266,12 +270,12 @@ class TestSimulatorPrivateMethods:
     @pytest.fixture
     def mock_adm1_basic(self) -> Mock:
         """
-        Create a basic mock PyADM1 object.
+        Create a basic mock ADM1 object.
 
         Returns:
-            Mock PyADM1 object.
+            Mock ADM1 object.
         """
-        adm1 = Mock(spec=PyADM1)
+        adm1 = Mock(spec=ADM1)
         adm1.V_liq = 1977
         adm1.createInfluent = Mock()
         adm1.ADM1_ODE = Mock(return_value=[0.01] * 37)
@@ -283,14 +287,14 @@ class TestSimulatorPrivateMethods:
         Test that _simulate uses BDF solver method.
 
         Args:
-            mock_adm1_basic: Mock PyADM1 fixture.
+            mock_adm1_basic: Mock ADM1 fixture.
         """
         simulator = Simulator(mock_adm1_basic)
 
         state_zero = [0.01] * 37
         tstep = [0, 1]
 
-        with patch("pyadm1.core.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -306,14 +310,14 @@ class TestSimulatorPrivateMethods:
         Test that _simulate uses time evaluation with 0.05 step.
 
         Args:
-            mock_adm1_basic: Mock PyADM1 fixture.
+            mock_adm1_basic: Mock ADM1 fixture.
         """
         simulator = Simulator(mock_adm1_basic)
 
         state_zero = [0.01] * 37
         tstep = [0, 1]
 
-        with patch("pyadm1.core.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -334,7 +338,7 @@ class TestSimulatorPrivateMethods:
         Test that _simulate_wosavinglaststate returns biogas and methane flows.
 
         Args:
-            mock_adm1_basic: Mock PyADM1 fixture.
+            mock_adm1_basic: Mock ADM1 fixture.
         """
         simulator = Simulator(mock_adm1_basic)
 
@@ -342,7 +346,7 @@ class TestSimulatorPrivateMethods:
         Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
         tstep = [0, 7]
 
-        with patch("pyadm1.core.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 140 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -357,14 +361,14 @@ class TestSimulatorPrivateMethods:
         Test that _simulate_returnlaststate returns state with 37 elements.
 
         Args:
-            mock_adm1_basic: Mock PyADM1 fixture.
+            mock_adm1_basic: Mock ADM1 fixture.
         """
         simulator = Simulator(mock_adm1_basic)
 
         state_zero = [0.01] * 37
         tstep = [0, 1]
 
-        with patch("pyadm1.core.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -380,12 +384,12 @@ class TestSimulatorIntegration:
     @pytest.fixture
     def mock_adm1_full(self) -> Mock:
         """
-        Create a fully configured mock PyADM1 for integration testing.
+        Create a fully configured mock ADM1 for integration testing.
 
         Returns:
-            Mock PyADM1 object with realistic behavior.
+            Mock ADM1 object with realistic behavior.
         """
-        adm1 = Mock(spec=PyADM1)
+        adm1 = Mock(spec=ADM1)
         adm1.V_liq = 1977
         adm1._V_gas = 304
         adm1._R = 0.08314
@@ -412,19 +416,18 @@ class TestSimulatorIntegration:
         Test a complete simulation workflow.
 
         Args:
-            mock_adm1_full: Mock PyADM1 fixture.
+            mock_adm1_full: Mock ADM1 fixture.
         """
         simulator = Simulator(mock_adm1_full)
 
         # Set up simulation
         state_zero = [0.01] * 37
-        # Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
 
         # Run multiple time steps
         current_state = state_zero
         time_points = [0, 1, 2, 3]
 
-        with patch("pyadm1.core.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
             for i in range(len(time_points) - 1):
                 # Create realistic solver result
                 mock_result = Mock()
@@ -443,8 +446,14 @@ class TestSimulatorIntegration:
         Test that optimization finds a feed rate.
 
         Args:
-            mock_adm1_full: Mock PyADM1 fixture.
+            mock_adm1_full: Mock ADM1 fixture.
         """
+        # Add feedstock mock for this test
+        mock_adm1_full.feedstock = Mock()
+        mock_adm1_full.feedstock.return_value.get_substrate_feed_mixtures = Mock(
+            return_value=[[15 + i, 10 + i, 0, 0, 0, 0, 0, 0, 0, 0] for i in range(5)]
+        )
+
         simulator = Simulator(mock_adm1_full)
 
         state_zero = [0.01] * 37
@@ -452,7 +461,7 @@ class TestSimulatorIntegration:
         Qch4sp = 900
         feeding_freq = 48
 
-        with patch("pyadm1.core.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
             # Mock solver with varying results
             def create_mock_result(state, n_points=140):
                 return Mock(y=np.array([[state[j] * (1 + 0.001 * k) for k in range(n_points)] for j in range(37)]))

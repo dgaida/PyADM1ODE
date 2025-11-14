@@ -1,7 +1,7 @@
 """
-Unit tests for PyADM1 core functionality.
+Unit tests for ADM1 core functionality.
 
-This module tests the main PyADM1 class which implements the
+This module tests the main ADM1 class which implements the
 ADM1 ODE system for anaerobic digestion simulation.
 """
 
@@ -11,7 +11,7 @@ import pandas as pd
 from unittest.mock import Mock
 from pathlib import Path
 
-from pyadm1.core.pyadm1 import PyADM1, get_state_zero_from_initial_state
+from pyadm1.core.adm1 import ADM1, get_state_zero_from_initial_state
 from pyadm1.substrates.feedstock import Feedstock
 
 
@@ -118,8 +118,8 @@ class TestGetStateZeroFromInitialState:
             get_state_zero_from_initial_state("nonexistent_file.csv")
 
 
-class TestPyADM1Initialization:
-    """Test suite for PyADM1 initialization."""
+class TestADM1Initialization:
+    """Test suite for ADM1 initialization."""
 
     @pytest.fixture
     def mock_feedstock(self) -> Mock:
@@ -140,7 +140,7 @@ class TestPyADM1Initialization:
         Args:
             mock_feedstock: Mock Feedstock fixture.
         """
-        adm1 = PyADM1(mock_feedstock)
+        adm1 = ADM1(mock_feedstock)
 
         assert hasattr(adm1, "V_liq"), "Should have V_liq attribute"
         assert adm1.V_liq == 1977, f"V_liq should be 1977, got {adm1.V_liq}"
@@ -152,7 +152,7 @@ class TestPyADM1Initialization:
         Args:
             mock_feedstock: Mock Feedstock fixture.
         """
-        adm1 = PyADM1(mock_feedstock)
+        adm1 = ADM1(mock_feedstock)
 
         assert adm1.feedstock == mock_feedstock, "Should store feedstock reference"
 
@@ -163,7 +163,7 @@ class TestPyADM1Initialization:
         Args:
             mock_feedstock: Mock Feedstock fixture.
         """
-        adm1 = PyADM1(mock_feedstock)
+        adm1 = ADM1(mock_feedstock)
 
         assert isinstance(adm1._Q_GAS, list), "_Q_GAS should be a list"
         assert isinstance(adm1._Q_CH4, list), "_Q_CH4 should be a list"
@@ -171,7 +171,7 @@ class TestPyADM1Initialization:
         assert len(adm1._Q_GAS) == 0, "_Q_GAS should be empty initially"
 
 
-class TestPyADM1CalcGas:
+class TestADM1CalcGas:
     """Test suite for biogas calculation methods."""
 
     @pytest.fixture
@@ -187,35 +187,35 @@ class TestPyADM1CalcGas:
         return feedstock
 
     @pytest.fixture
-    def adm1_instance(self, mock_feedstock: Mock) -> PyADM1:
+    def adm1_instance(self, mock_feedstock: Mock) -> ADM1:
         """
-        Create a PyADM1 instance for testing.
+        Create a ADM1 instance for testing.
 
         Args:
             mock_feedstock: Mock Feedstock fixture.
 
         Returns:
-            PyADM1 instance.
+            ADM1 instance.
         """
-        return PyADM1(mock_feedstock)
+        return ADM1(mock_feedstock)
 
-    def test_calc_gas_returns_four_values(self, adm1_instance: PyADM1) -> None:
+    def test_calc_gas_returns_four_values(self, adm1_instance: ADM1) -> None:
         """
         Test that calc_gas returns 4 values.
 
         Args:
-            adm1_instance: PyADM1 fixture.
+            adm1_instance: ADM1 fixture.
         """
         result = adm1_instance.calc_gas(pi_Sh2=5e-6, pi_Sch4=0.55, pi_Sco2=0.42, pTOTAL=0.98)
 
         assert len(result) == 4, "calc_gas should return 4 values"
 
-    def test_calc_gas_all_positive(self, adm1_instance: PyADM1) -> None:
+    def test_calc_gas_all_positive(self, adm1_instance: ADM1) -> None:
         """
         Test that all gas flow rates are positive.
 
         Args:
-            adm1_instance: PyADM1 fixture.
+            adm1_instance: ADM1 fixture.
         """
         q_gas, q_ch4, q_co2, p_gas = adm1_instance.calc_gas(pi_Sh2=5e-6, pi_Sch4=0.55, pi_Sco2=0.42, pTOTAL=0.98)
 
@@ -224,24 +224,24 @@ class TestPyADM1CalcGas:
         assert q_co2 >= 0, "CO2 flow should be non-negative"
         assert p_gas >= 0, "Gas pressure should be non-negative"
 
-    def test_calc_gas_methane_less_than_total(self, adm1_instance: PyADM1) -> None:
+    def test_calc_gas_methane_less_than_total(self, adm1_instance: ADM1) -> None:
         """
         Test that methane flow is less than or equal to total gas flow.
 
         Args:
-            adm1_instance: PyADM1 fixture.
+            adm1_instance: ADM1 fixture.
         """
         q_gas, q_ch4, q_co2, p_gas = adm1_instance.calc_gas(pi_Sh2=5e-6, pi_Sch4=0.55, pi_Sco2=0.42, pTOTAL=0.98)
 
         assert q_ch4 <= q_gas, "Methane flow should be <= total gas flow"
         assert q_co2 <= q_gas, "CO2 flow should be <= total gas flow"
 
-    def test_calc_gas_with_zero_pressure(self, adm1_instance: PyADM1) -> None:
+    def test_calc_gas_with_zero_pressure(self, adm1_instance: ADM1) -> None:
         """
         Test calc_gas with zero partial pressures.
 
         Args:
-            adm1_instance: PyADM1 fixture.
+            adm1_instance: ADM1 fixture.
         """
         q_gas, q_ch4, q_co2, p_gas = adm1_instance.calc_gas(pi_Sh2=0.0, pi_Sch4=0.0, pi_Sco2=0.0, pTOTAL=1.0)
 
@@ -251,7 +251,7 @@ class TestPyADM1CalcGas:
         assert np.isfinite(q_co2), "q_co2 should be finite"
 
 
-class TestPyADM1CreateInfluent:
+class TestADM1CreateInfluent:
     """Test suite for influent stream creation."""
 
     @pytest.fixture
@@ -315,7 +315,7 @@ class TestPyADM1CreateInfluent:
         Args:
             mock_feedstock: Mock Feedstock fixture.
         """
-        adm1 = PyADM1(mock_feedstock)
+        adm1 = ADM1(mock_feedstock)
         Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
 
         adm1.createInfluent(Q, 0)
@@ -329,7 +329,7 @@ class TestPyADM1CreateInfluent:
         Args:
             mock_feedstock: Mock Feedstock fixture.
         """
-        adm1 = PyADM1(mock_feedstock)
+        adm1 = ADM1(mock_feedstock)
         Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
 
         adm1.createInfluent(Q, 0)
@@ -337,7 +337,7 @@ class TestPyADM1CreateInfluent:
         mock_feedstock.get_influent_dataframe.assert_called_once_with(Q)
 
 
-class TestPyADM1SaveFinalState:
+class TestADM1SaveFinalState:
     """Test suite for saving final state to CSV."""
 
     @pytest.fixture
@@ -399,7 +399,7 @@ class TestPyADM1SaveFinalState:
             mock_feedstock: Mock Feedstock fixture.
             tmp_path: pytest fixture providing temporary directory.
         """
-        adm1 = PyADM1(mock_feedstock)
+        adm1 = ADM1(mock_feedstock)
 
         # Create sample simulation results
         state = [0.01] * 37  # 37 state variables
@@ -418,7 +418,7 @@ class TestPyADM1SaveFinalState:
             mock_feedstock: Mock Feedstock fixture.
             tmp_path: pytest fixture providing temporary directory.
         """
-        adm1 = PyADM1(mock_feedstock)
+        adm1 = ADM1(mock_feedstock)
 
         # Create sample simulation results with different values
         state1 = [0.01] * 37
@@ -434,8 +434,8 @@ class TestPyADM1SaveFinalState:
         assert len(df) == 1, "Should contain only one row (final state)"
 
 
-class TestPyADM1Properties:
-    """Test suite for PyADM1 properties."""
+class TestADM1Properties:
+    """Test suite for ADM1 properties."""
 
     @pytest.fixture
     def mock_feedstock(self) -> Mock:
@@ -456,7 +456,7 @@ class TestPyADM1Properties:
         Args:
             mock_feedstock: Mock Feedstock fixture.
         """
-        adm1 = PyADM1(mock_feedstock)
+        adm1 = ADM1(mock_feedstock)
 
         T_ad = adm1.T_ad
         assert T_ad == 308.15, f"T_ad should be 308.15 K, got {T_ad}"
@@ -468,7 +468,7 @@ class TestPyADM1Properties:
         Args:
             mock_feedstock: Mock Feedstock fixture.
         """
-        adm1 = PyADM1(mock_feedstock)
+        adm1 = ADM1(mock_feedstock)
 
         assert adm1.feedstock == mock_feedstock
 
@@ -479,7 +479,7 @@ class TestPyADM1Properties:
         Args:
             mock_feedstock: Mock Feedstock fixture.
         """
-        adm1 = PyADM1(mock_feedstock)
+        adm1 = ADM1(mock_feedstock)
 
         assert isinstance(adm1.Q_GAS, list), "Q_GAS should return a list"
         assert isinstance(adm1.Q_CH4, list), "Q_CH4 should return a list"
@@ -488,7 +488,7 @@ class TestPyADM1Properties:
         assert isinstance(adm1.TAC, list), "TAC should return a list"
 
 
-class TestPyADM1ODEIntegration:
+class TestADM1ODEIntegration:
     """Integration tests for ADM1 ODE system."""
 
     @pytest.fixture
@@ -519,7 +519,7 @@ class TestPyADM1ODEIntegration:
         Args:
             mock_feedstock_full: Mock Feedstock fixture.
         """
-        adm1 = PyADM1(mock_feedstock_full)
+        adm1 = ADM1(mock_feedstock_full)
 
         # Set up influent
         Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -541,7 +541,7 @@ class TestPyADM1ODEIntegration:
         Args:
             mock_feedstock_full: Mock Feedstock fixture.
         """
-        adm1 = PyADM1(mock_feedstock_full)
+        adm1 = ADM1(mock_feedstock_full)
 
         Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
         adm1._Q = Q

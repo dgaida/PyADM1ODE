@@ -64,6 +64,13 @@ class HeatingSystem(Component):
             "energy_consumed": 0.0,
         }
 
+        # Ensure outputs_data is also initialized
+        self.outputs_data = {
+            "Q_heat_supplied": 0.0,
+            "P_th_used": 0.0,
+            "P_aux_heat": 0.0,
+        }
+
     def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Perform one simulation time step.
@@ -159,5 +166,7 @@ class HeatingSystem(Component):
 
         if "state" in config:
             heating.initialize(config["state"])
+        else:
+            heating.initialize()
 
         return heating
