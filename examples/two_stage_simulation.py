@@ -31,7 +31,7 @@ def create_two_stage_plant():
     from pyadm1.components.energy.heating import HeatingSystem
     from pyadm1.configurator.connection_manager import Connection
     from pyadm1.substrates.feedstock import Feedstock
-    from pyadm1.core.pyadm1 import get_state_zero_from_initial_state
+    from pyadm1.core.adm1 import get_state_zero_from_initial_state
 
     # Initialize feedstock
     feeding_freq = 48  # hours
