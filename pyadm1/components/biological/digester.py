@@ -216,12 +216,15 @@ class Digester(Component):
 
         # --- integrate with attached gas storage ---
         gs_inputs = {
-            "Q_gas_in_m3_per_day": q_gas,
-            "Q_gas_out_m3_per_day": 0.0,  # storage is not drained by digester
+            "Q_gas_in_m3_per_day": q_gas,  # ✓ This is correct - daily gas production
+            "Q_gas_out_m3_per_day": 0.0,  # Storage not drained by digester directly
             "vent_to_flare": True,
         }
 
         gs_outputs = self.gas_storage.step(t=t, dt=dt, inputs=gs_inputs)
+
+        # Store the gas input for potential second-pass access
+        self.gas_storage.outputs_data["Q_gas_in_m3_per_day"] = q_gas
 
         # --- digester outputs ---
         self.outputs_data = {
