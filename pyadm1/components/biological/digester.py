@@ -18,6 +18,7 @@ from pyadm1.components.base import Component, ComponentType
 from pyadm1.core.adm1 import ADM1
 from pyadm1.substrates.feedstock import Feedstock
 from pyadm1.simulation.simulator import Simulator
+from pyadm1.components.energy.gas_storage import GasStorage
 
 # CLR reference must be added before importing from DLL
 dll_path = os.path.join(os.path.dirname(__file__), "..", "..", "dlls")
@@ -83,6 +84,20 @@ class Digester(Component):
 
         self.simulator = Simulator(self.adm1)
 
+        # Gas storage attached to this digester (created per-digester)
+        storage_id = f"{self.component_id}_storage"
+        # create a low-pressure membrane storage sized roughly proportional to V_gas
+        # capacity_m3 is in m³ STP; use V_gas as a baseline
+        self.gas_storage: GasStorage = GasStorage(
+            component_id=storage_id,
+            storage_type="membrane",
+            capacity_m3=max(50.0, float(self.V_gas)),  # sensible minimum
+            p_min_bar=0.95,
+            p_max_bar=1.05,
+            initial_fill_fraction=0.1,
+            name=f"{self.name} Gas Storage",
+        )
+
         # ADM1 state vector (37 dimensions)
         self.adm1_state: List[float] = []
 
@@ -118,6 +133,16 @@ class Digester(Component):
             "VFA": 0.0,
             "TAC": 0.0,
         }
+
+        # initialize gas storage (keep separate state namespace)
+        try:
+            gs_state = None
+            if initial_state and "gas_storage" in initial_state:
+                gs_state = initial_state["gas_storage"]
+            self.gas_storage.initialize(gs_state)
+        except Exception as e:
+            print(e)
+            self.gas_storage.initialize()
 
         # Mark as initialized
         self._initialized = True
@@ -189,6 +214,16 @@ class Digester(Component):
         # Prepare output
         Q_out = np.sum(self.Q_substrates)
 
+        # --- integrate with attached gas storage ---
+        gs_inputs = {
+            "Q_gas_in_m3_per_day": q_gas,
+            "Q_gas_out_m3_per_day": 0.0,  # storage is not drained by digester
+            "vent_to_flare": True,
+        }
+
+        gs_outputs = self.gas_storage.step(t=t, dt=dt, inputs=gs_inputs)
+
+        # --- digester outputs ---
         self.outputs_data = {
             "Q_out": Q_out,
             "state_out": self.adm1_state,
@@ -198,6 +233,16 @@ class Digester(Component):
             "pH": self.state.get("pH", 7.0),
             "VFA": self.state.get("VFA", 0.0),
             "TAC": self.state.get("TAC", 0.0),
+            # gas sent to storage
+            "Q_gas_to_storage_m3_per_day": q_gas,
+            # inline storage diagnostics
+            "gas_storage": {
+                "component_id": self.gas_storage.component_id,
+                "stored_volume_m3": gs_outputs["stored_volume_m3"],
+                "pressure_bar": gs_outputs["pressure_bar"],
+                "vented_volume_m3": gs_outputs["vented_volume_m3"],
+                "Q_gas_supplied_m3_per_day": gs_outputs["Q_gas_supplied_m3_per_day"],
+            },
         }
 
         return self.outputs_data

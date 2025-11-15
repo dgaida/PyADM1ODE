@@ -24,6 +24,8 @@ from pyadm1.configurator.plant_builder import BiogasPlant
 from pyadm1.components.biological.digester import Digester
 from pyadm1.components.energy.chp import CHP
 from pyadm1.components.energy.heating import HeatingSystem
+from pyadm1.components.energy.gas_storage import GasStorage
+from pyadm1.components.energy.flare import Flare
 from pyadm1.configurator.connection_manager import Connection
 from pyadm1.substrates.feedstock import Feedstock
 from pyadm1.core.adm1 import get_state_zero_from_initial_state
@@ -279,6 +281,29 @@ def add_digester(
 
         plant.add_component(digester)
 
+        # ----------------------------------------------------------
+        # AUTOMATIC GAS STORAGE FOR DIGESTER
+        # ----------------------------------------------------------
+        storage_id = f"{digester_id}_storage"
+        storage = GasStorage(
+            component_id=storage_id,
+            storage_type="membrane",
+            capacity_m3=max(50.0, V_gas),
+            name=f"{digester_id}_storage",
+        )
+        plant.add_component(storage)
+
+        # Connect: digester → storage
+        conn = Connection(digester_id, storage_id, "gas")
+        plant.add_connection(conn)
+
+        # Add to metadata
+        metadata["components"][storage_id] = {
+            "type": "gas_storage",
+            "capacity_m3": max(50.0, V_gas),
+            "name": f"{digester_id}_storage",
+        }
+
         # Update metadata
         metadata["components"][digester_id] = {
             "type": "digester",
@@ -345,6 +370,22 @@ def add_chp(
         chp = CHP(component_id=chp_id, P_el_nom=P_el_nom, eta_el=eta_el, eta_th=eta_th, name=name or chp_id)
 
         plant.add_component(chp)
+
+        # ----------------------------------------------------------
+        # AUTOMATIC CHP FLARE
+        # ----------------------------------------------------------
+        flare_id = f"{chp_id}_flare"
+        flare = Flare(component_id=flare_id, name=f"{chp_id}_flare")
+        plant.add_component(flare)
+
+        # Connect: CHP → flare
+        conn_fl = Connection(chp_id, flare_id, "gas")
+        plant.add_connection(conn_fl)
+
+        metadata["components"][flare_id] = {
+            "type": "flare",
+            "name": f"{chp_id}_flare",
+        }
 
         # Update metadata
         metadata["components"][chp_id] = {
@@ -556,6 +597,50 @@ def initialize_plant(plant_id: str) -> str:
 
         # Validate configuration
         warnings: List[str] = []
+
+        # ==========================================================
+        # AUTOMATIC GAS INFRASTRUCTURE COMPLETION
+        # ==========================================================
+        # digesters = [cid for cid, cfg in metadata["components"].items() if cfg["type"] == "digester"]
+        storages = [cid for cid, cfg in metadata["components"].items() if cfg["type"] == "gas_storage"]
+        chps = [cid for cid, cfg in metadata["components"].items() if cfg["type"] == "chp"]
+
+        # ----------------------------------------------------------
+        # If no CHP exists → add plant-level flare
+        # ----------------------------------------------------------
+        if len(chps) == 0:
+            plant_flare_id = f"{plant_id}_flare"
+            if plant_flare_id not in metadata["components"]:
+                flare = Flare(component_id=plant_flare_id, name=f"{plant_id}_flare")
+                plant.add_component(flare)
+                metadata["components"][plant_flare_id] = {
+                    "type": "flare",
+                    "name": f"{plant_id}_flare",
+                }
+                chp_flares = [plant_flare_id]
+            else:
+                chp_flares = [plant_flare_id]
+        else:
+            # Flares already created in add_chp()
+            chp_flares = [f"{cid}_flare" for cid in chps]
+
+        # ----------------------------------------------------------
+        # Connect all gas storages → CHP or → global flare
+        # ----------------------------------------------------------
+        for storage in storages:
+            if len(chps) > 0:
+                # TODO: all gas_storages are connected to all chps. if one storage is connected
+                #  to 2 chps, there is no 50/50 split, but the amount of gas is doubled.
+                for chp in chps:
+                    conn = Connection(storage, chp, "gas")
+                    plant.add_connection(conn)
+                    metadata["connections"].append({"from": storage, "to": chp, "type": "gas"})
+            else:
+                # connect storage → plant flare
+                for flare_id in chp_flares:
+                    conn = Connection(storage, flare_id, "gas")
+                    plant.add_connection(conn)
+                    metadata["connections"].append({"from": storage, "to": flare_id, "type": "gas"})
 
         # Check for digesters
         digester_count = sum(1 for c in metadata["components"].values() if c["type"] == "digester")

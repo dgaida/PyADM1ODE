@@ -95,11 +95,12 @@ def create_two_stage_plant():
     # Digester 1 -> Digester 2 (liquid flow)
     plant.add_connection(Connection(from_component="digester_1", to_component="digester_2", connection_type="liquid"))
 
+    # in initialize_plant all gas_storages are automatically connected to all chps
     # Digester 1 -> CHP (biogas)
-    plant.add_connection(Connection(from_component="digester_1", to_component="chp_1", connection_type="gas"))
+    # plant.add_connection(Connection(from_component="digester_1", to_component="chp_1", connection_type="gas"))
 
     # Digester 2 -> CHP (biogas)
-    plant.add_connection(Connection(from_component="digester_2", to_component="chp_1", connection_type="gas"))
+    # plant.add_connection(Connection(from_component="digester_2", to_component="chp_1", connection_type="gas"))
 
     # CHP -> Heating 1 (waste heat)
     plant.add_connection(Connection(from_component="chp_1", to_component="heating_1", connection_type="heat"))
