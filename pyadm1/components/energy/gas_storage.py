@@ -171,7 +171,7 @@ class GasStorage(Component):
         vol_out_req = Q_out_req * dt
 
         vented_this_step = 0.0
-        supplied_this_step = 0.0
+        # supplied_this_step = 0.0
 
         # Inflow: attempt to store incoming gas
         free_capacity_m3 = self.capacity_m3 - self.stored_volume_m3
@@ -186,15 +186,19 @@ class GasStorage(Component):
             self.stored_volume_m3 += stored
             if allow_vent:
                 vented_this_step += overflow
+                self._cum_vented_m3 += overflow
             else:
                 # if venting not allowed, assume overflow is rejected (lost) (count as vented for safety)
                 vented_this_step += overflow
+                self._cum_vented_m3 += overflow
 
         # Supply (outflow): cannot supply more than stored
         # If pressure below p_min, limit supply (simulate pressure control)
         current_pressure = self._estimate_pressure_bar()
+
         # If a pressure setpoint is requested and higher than current,
         # we might choose to deny outflow to increase pressure
+        restrict_factor = 1.0
         if self.pressure_setpoint_bar is not None:
             # If setpoint is higher than current pressure, prioritize charging (i.e., restrict outflow)
             if self.pressure_setpoint_bar > current_pressure:
@@ -203,10 +207,6 @@ class GasStorage(Component):
                 gap = self.pressure_setpoint_bar - current_pressure
                 span = max(1e-6, self.p_max_bar - self.p_atm_bar)
                 restrict_factor = max(0.0, 1.0 - gap / span)
-            else:
-                restrict_factor = 1.0
-        else:
-            restrict_factor = 1.0
 
         allowed_out_vol = self.stored_volume_m3 * restrict_factor  # simple limit
         desired_out_vol = min(vol_out_req, allowed_out_vol)
@@ -238,7 +238,7 @@ class GasStorage(Component):
 
         # perform outflow
         self.stored_volume_m3 -= desired_out_vol
-        supplied_this_step = desired_out_vol / max(dt, 1e-12)  # convert back to m3/day
+        supplied_this_step_m3_per_day = desired_out_vol / max(dt, 1e-12)  # convert back to m3/day
 
         # After flows, update pressure and check safety
         current_pressure = self._estimate_pressure_bar()
@@ -286,7 +286,7 @@ class GasStorage(Component):
             "pressure_bar": float(current_pressure),
             "utilization": float(self.stored_volume_m3 / max(1e-9, self.capacity_m3)),
             "vented_volume_m3": float(vented_this_step),
-            "Q_gas_supplied_m3_per_day": float(supplied_this_step),
+            "Q_gas_supplied_m3_per_day": float(supplied_this_step_m3_per_day),
             "cumulative_vented_m3": float(self._cum_vented_m3),
             "pressure_setpoint_bar": self.pressure_setpoint_bar,
         }

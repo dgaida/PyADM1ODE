@@ -223,13 +223,30 @@ class PlantConfigurator:
 
     def auto_connect_digester_to_chp(self, digester_id: str, chp_id: str) -> None:
         """
-        Automatically connect digester to CHP with gas flow.
+        Automatically connect digester to CHP through gas storage.
+
+        Creates the connection chain: digester -> gas_storage -> chp
 
         Args:
             digester_id: Digester component ID
             chp_id: CHP component ID
+
+        Raises:
+            ValueError: If gas storage for digester is not found
         """
-        self.connect(digester_id, chp_id, "gas")
+        # Gas storage is created with pattern: {digester_id}_storage
+        storage_id = f"{digester_id}_storage"
+
+        # Verify the storage exists
+        if storage_id not in self.plant.components:
+            raise ValueError(
+                f"Gas storage '{storage_id}' not found for digester '{digester_id}'. "
+                f"Ensure digester was added via PlantConfigurator.add_digester()"
+            )
+
+        # Connect: digester -> storage (already done in add_digester)
+        # Connect: storage -> chp
+        self.connect(storage_id, chp_id, "gas")
 
     def auto_connect_chp_to_heating(self, chp_id: str, heating_id: str) -> None:
         """

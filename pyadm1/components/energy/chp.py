@@ -99,7 +99,8 @@ class CHP(Component):
             t (float): Current time in days.
             dt (float): Time step in days.
             inputs (Dict[str, Any]): Input data with keys:
-                - 'Q_ch4': Methane flow rate [m³/d]
+                - 'Q_ch4': Methane flow rate [m³/d] (direct input)
+                - 'Q_gas_supplied_m3_per_day': Available biogas from storage [m³/d]
                 - 'load_setpoint': Desired load factor [0-1] (optional)
 
         Returns:
@@ -107,28 +108,43 @@ class CHP(Component):
                 - 'P_el': Electrical power [kW]
                 - 'P_th': Thermal power [kW]
                 - 'Q_gas_consumed': Biogas consumption [m³/d]
+                - 'Q_gas_out_m3_per_day': Gas demand for connected storages [m³/d]
                 - 'Q_ch4_remaining': Remaining methane [m³/d]
         """
-        Q_ch4 = inputs.get("Q_ch4", 0.0)
-        load_setpoint = inputs.get("load_setpoint", 1.0)
+        # Get available gas from inputs (either direct Q_ch4 or from gas storage)
+        Q_ch4_direct = inputs.get("Q_ch4", 0.0)
 
-        # TODO: Call C# DLL functions for CHP calculations
-        # For now, use simplified model
+        # Sum gas from all connected gas storages
+        Q_gas_from_storage = 0.0
+        for input_component in self.inputs:
+            if input_component.endswith("_storage"):
+                Q_gas_from_storage += inputs.get("Q_gas_supplied_m3_per_day", 0.0)
+
+        # TODO: strange that we have to assume a methane concentration here, actually we should have it
+        # Assume 60% methane content in biogas
+        CH4_content = 0.60
+        Q_ch4_from_storage = Q_gas_from_storage * CH4_content
+
+        # Total available methane
+        Q_ch4_available = Q_ch4_direct + Q_ch4_from_storage
+
+        load_setpoint = inputs.get("load_setpoint", 1.0)
 
         # Methane energy content: ~10 kWh/m³
         E_ch4 = 10.0  # kWh/m³
 
         # Available power from methane
-        P_available = Q_ch4 / 24.0 * E_ch4  # kW (convert m³/d to m³/h)
+        P_available = Q_ch4_available / 24.0 * E_ch4  # kW (convert m³/d to m³/h)
 
         # Determine actual load
         P_el_max = min(self.P_el_nom, P_available / self.eta_el)
-        self.load_factor = min(load_setpoint, P_el_max / self.P_el_nom)
+        self.load_factor = min(load_setpoint, P_el_max / self.P_el_nom) if self.P_el_nom > 0 else 0.0
 
         # Calculate outputs
         P_el = self.load_factor * self.P_el_nom
-        P_th = P_el * self.eta_th / self.eta_el
-        Q_gas_consumed = (P_el / self.eta_el) * 24.0 / E_ch4  # m³/d
+        P_th = P_el * self.eta_th / self.eta_el if self.eta_el > 0 else 0.0
+        Q_ch4_consumed = (P_el / self.eta_el) * 24.0 / E_ch4 if self.eta_el > 0 else 0.0  # m³/d
+        Q_gas_consumed = Q_ch4_consumed / CH4_content if CH4_content > 0 else 0.0  # m³/d biogas
 
         # Update state
         self.state["load_factor"] = self.load_factor
@@ -141,7 +157,8 @@ class CHP(Component):
             "P_el": P_el,
             "P_th": P_th,
             "Q_gas_consumed": Q_gas_consumed,
-            "Q_ch4_remaining": Q_ch4 - Q_gas_consumed,
+            "Q_gas_out_m3_per_day": Q_gas_consumed,  # Demand signal for storages
+            "Q_ch4_remaining": Q_ch4_available - Q_ch4_consumed,
         }
 
         return self.outputs_data

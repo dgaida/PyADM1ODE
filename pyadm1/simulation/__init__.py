@@ -30,7 +30,7 @@ Modules:
             various formats (CSV, JSON, HDF5) for further processing.
 
 Example:
-    >>> from pyadm1.simulation import Simulator
+    >>> from pyadm1.simulation import Simulator, ParallelSimulator
     >>> from pyadm1.core import ADM1, create_solver
     >>> from pyadm1.substrates import Feedstock
     >>>
@@ -38,19 +38,22 @@ Example:
     >>> feedstock = Feedstock(feeding_freq=48)
     >>> adm1 = ADM1(feedstock)
     >>>
-    >>> # Create simulator with custom solver
+    >>> # Single simulation
     >>> solver = create_solver(method='BDF', rtol=1e-7)
     >>> simulator = Simulator(adm1, solver=solver)
-    >>>
-    >>> # Run simulation
     >>> initial_state = [0.01] * 37
     >>> final_state = simulator.simulate_AD_plant([0, 30], initial_state)
+    >>>
+    >>> # Parallel simulations
+    >>> parallel = ParallelSimulator(adm1, n_workers=4)
+    >>> scenarios = [{"k_dis": 0.5, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]}]
+    >>> results = parallel.run_scenarios(scenarios, duration=30, initial_state=initial_state)
 """
 
 from pyadm1.simulation.simulator import Simulator
+from pyadm1.simulation.parallel import ParallelSimulator, ScenarioResult, ParameterSweepConfig, MonteCarloConfig
 
 # Future imports (currently stubs)
-# from pyadm1.simulation.parallel import ParallelSimulator, ScenarioResult
 # from pyadm1.simulation.scenarios import (
 #     ScenarioManager,
 #     Scenario,
@@ -68,8 +71,10 @@ from pyadm1.simulation.simulator import Simulator
 
 __all__ = [
     "Simulator",
-    # "ParallelSimulator",
-    # "ScenarioResult",
+    "ParallelSimulator",
+    "ScenarioResult",
+    "ParameterSweepConfig",
+    "MonteCarloConfig",
     # "ScenarioManager",
     # "Scenario",
     # "ParameterSweep",

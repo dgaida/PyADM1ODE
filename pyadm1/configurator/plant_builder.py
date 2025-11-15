@@ -122,6 +122,7 @@ class BiogasPlant:
         # Build dependency graph and execute in order
         execution_order = self._get_execution_order()
 
+        # First pass: Execute all components to get their outputs
         for component_id in execution_order:
             component = self.components[component_id]
 
@@ -135,6 +136,35 @@ class BiogasPlant:
             # Execute component
             output = component.step(self.simulation_time, dt, inputs)
             results[component_id] = output
+
+        # Second pass: Handle gas demand from CHP back to storages
+        # Find all CHPs and their gas demands
+        for component_id, component in self.components.items():
+            if component.component_type.value == "chp":
+                gas_demand = component.outputs_data.get("Q_gas_out_m3_per_day", 0.0)
+
+                # Find all gas storages connected to this CHP
+                for conn in self.connections:
+                    if conn.to_component == component_id and conn.connection_type == "gas":
+                        storage_id = conn.from_component
+                        if storage_id in self.components:
+                            storage = self.components[storage_id]
+
+                            # Re-execute storage with gas demand
+                            storage_inputs = {
+                                "Q_gas_in_m3_per_day": storage.outputs_data.get("Q_gas_in_m3_per_day", 0.0),
+                                "Q_gas_out_m3_per_day": gas_demand,
+                                "vent_to_flare": True,
+                            }
+
+                            # Re-step the storage with demand
+                            storage_output = storage.step(self.simulation_time, dt, storage_inputs)
+                            results[storage_id] = storage_output
+
+                            # Now re-execute CHP with actual supplied gas
+                            chp_inputs = {"Q_gas_supplied_m3_per_day": storage_output.get("Q_gas_supplied_m3_per_day", 0.0)}
+                            chp_output = component.step(self.simulation_time, dt, chp_inputs)
+                            results[component_id] = chp_output
 
         self.simulation_time += dt
 
