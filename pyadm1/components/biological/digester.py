@@ -157,11 +157,11 @@ class Digester(Component):
             pass
 
         # Update ADM1 influent
-        self.adm1.createInfluent(self.Q_substrates, int(t / dt))
+        self.adm1.create_influent(self.Q_substrates, int(t / dt))
 
         # Simulate ADM1
         t_span = [t, t + dt]
-        self.adm1_state = self.simulator.simulateADplant(t_span, self.adm1_state)
+        self.adm1_state = self.simulator.simulate_AD_plant(t_span, self.adm1_state)
 
         # Calculate gas production
         q_gas, q_ch4, q_co2, p_gas = self.adm1.calc_gas(

@@ -1,11 +1,15 @@
+# pyadm1/simulation/__init__.py
 """
 Simulation Engine
 
 Core simulation functionality for single and parallel execution of biogas plant models.
 
+The Simulator class has been refactored to use the new solver architecture from
+pyadm1.core.solver, providing better separation of concerns and improved testability.
+
 Modules:
     simulator: Main Simulator class orchestrating single plant simulation runs, managing
-              time stepping, component execution order, state updates, and result
+              time stepping using the ODESolver interface, state updates, and result
               collection with progress reporting and error handling.
 
     parallel: ParallelSimulator for concurrent execution of multiple scenarios with
@@ -26,26 +30,26 @@ Modules:
             various formats (CSV, JSON, HDF5) for further processing.
 
 Example:
-    >>> from pyadm1.simulation import Simulator, ParallelSimulator
-    >>> from pyadm1.configurator import BiogasPlant
+    >>> from pyadm1.simulation import Simulator
+    >>> from pyadm1.core import ADM1, create_solver
+    >>> from pyadm1.substrates import Feedstock
     >>>
-    >>> # Single simulation
-    >>> plant = BiogasPlant.from_json("plant.json", feedstock)
-    >>> simulator = Simulator(plant)
-    >>> results = simulator.simulate(duration=30, dt=1/24)
+    >>> # Create model
+    >>> feedstock = Feedstock(feeding_freq=48)
+    >>> adm1 = ADM1(feedstock)
     >>>
-    >>> # Parallel parameter sweep
-    >>> scenarios = [
-    ...     {"k_dis": 0.5, "Y_su": 0.1},
-    ...     {"k_dis": 0.6, "Y_su": 0.11},
-    ...     {"k_dis": 0.7, "Y_su": 0.12},
-    ... ]
-    >>> parallel_sim = ParallelSimulator(plant, n_workers=4)
-    >>> results = parallel_sim.run_scenarios(scenarios, duration=30)
+    >>> # Create simulator with custom solver
+    >>> solver = create_solver(method='BDF', rtol=1e-7)
+    >>> simulator = Simulator(adm1, solver=solver)
+    >>>
+    >>> # Run simulation
+    >>> initial_state = [0.01] * 37
+    >>> final_state = simulator.simulate_AD_plant([0, 30], initial_state)
 """
 
 from pyadm1.simulation.simulator import Simulator
 
+# Future imports (currently stubs)
 # from pyadm1.simulation.parallel import ParallelSimulator, ScenarioResult
 # from pyadm1.simulation.scenarios import (
 #     ScenarioManager,

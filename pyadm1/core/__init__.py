@@ -1,3 +1,4 @@
+# pyadm1/core/__init__.py
 """
 Core ADM1 Implementation
 
@@ -23,32 +24,51 @@ Modules:
            management, and result handling.
 
 Example:
-    >>> from pyadm1.core import ADM1, ADMParams
+    >>> from pyadm1.core import ADM1, ADMParams, create_solver
     >>> from pyadm1.substrates import Feedstock
     >>>
+    >>> # Create model
     >>> feedstock = Feedstock(feeding_freq=48)
     >>> adm1 = ADM1(feedstock, V_liq=2000, T_ad=308.15)
+    >>>
+    >>> # Get parameters
     >>> params = ADMParams.get_all_params(R=0.08314, T_base=298.15, T_ad=308.15)
+    >>>
+    >>> # Create custom solver
+    >>> solver = create_solver(method='BDF', rtol=1e-7)
 """
 
 from pyadm1.core.adm1 import ADM1, get_state_zero_from_initial_state
 from pyadm1.core.adm_params import ADMParams
-
-# from pyadm1.core.adm_equations import (
-#     InhibitionFunctions,
-#     ProcessRates,
-#     AcidBaseKinetics,
-#     GasTransfer,
-# )
-# from pyadm1.core.solver import ODESolver
+from pyadm1.core.adm_equations import (
+    InhibitionFunctions,
+    ProcessRates,
+    AcidBaseKinetics,
+    GasTransfer,
+    BiochemicalProcesses,
+)
+from pyadm1.core.solver import (
+    ODESolver,
+    AdaptiveODESolver,
+    SolverConfig,
+    create_solver,
+)
 
 __all__ = [
+    # Main ADM1 class
     "ADM1",
     "get_state_zero_from_initial_state",
+    # Parameters
     "ADMParams",
-    #  "InhibitionFunctions",
-    #  "ProcessRates",
-    #  "AcidBaseKinetics",
-    #  "GasTransfer",
-    #  "ODESolver",
+    # Process equations
+    "InhibitionFunctions",
+    "ProcessRates",
+    "AcidBaseKinetics",
+    "GasTransfer",
+    "BiochemicalProcesses",
+    # Solvers
+    "ODESolver",
+    "AdaptiveODESolver",
+    "SolverConfig",
+    "create_solver",
 ]
