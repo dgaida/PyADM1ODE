@@ -2,93 +2,192 @@
 """
 PyADM1 MCP Server with SSE Transport
 
-Provides tools for biogas plant modeling with stateful plant management.
+FastMCP server providing tools for biogas plant modeling with stateful plant management.
+This server exposes tools for LLM-driven plant design, configuration, and simulation.
+
+The server handles:
+- Tool registration and serving via FastMCP
+- SSE (Server-Sent Events) transport for real-time communication
+- System prompts for LLM guidance
+- Error handling and logging
+
+All business logic is delegated to the tools module, keeping this file focused
+on server configuration and protocol handling.
+
+Usage:
+    # Start server
+    python -m pyadm1.configurator.mcp.server
+
+    # Or programmatically
+    from pyadm1.configurator.mcp.server import start_server
+    start_server(host="127.0.0.1", port=8000)
+
+MCP Client Configuration (Claude Desktop):
+    Add to claude_desktop_config.json:
+    {
+      "mcpServers": {
+        "pyadm1": {
+          "command": "python",
+          "args": ["-m", "pyadm1.configurator.mcp.server"],
+          "env": {}
+        }
+      }
+    }
 """
 
+from typing import Optional
 from fastmcp import FastMCP
-from typing import Optional, Dict, Any, List
-from pathlib import Path
-import traceback
 
-from pyadm1.configurator.plant_builder import BiogasPlant
-from pyadm1.components.biological.digester import Digester
-from pyadm1.components.energy.chp import CHP
-from pyadm1.components.energy.heating import HeatingSystem
-from pyadm1.configurator.connection_manager import Connection
-from pyadm1.substrates.feedstock import Feedstock
-from pyadm1.core.adm1 import get_state_zero_from_initial_state
+# Import all tools from the tools module
+from pyadm1.configurator.mcp.tools import (
+    create_biogas_plant,
+    add_digester,
+    add_chp,
+    add_heating,
+    add_connection,
+    initialize_plant,
+    simulate_plant,
+    get_plant_status,
+    export_plant_config,
+    list_plants,
+    delete_plant,
+)
 
-# Initialize FastMCP server
-mcp = FastMCP(name="PyADM1 Biogas Plant Server", version="1.0.0")
+# Import prompts for LLM guidance
+from pyadm1.configurator.mcp.prompts import (
+    SYSTEM_PROMPT,
+    COMPONENT_SELECTION_GUIDE,
+    CONNECTION_RULES,
+    PARAMETER_RANGES,
+    SUBSTRATE_RECOMMENDATIONS,
+    BEST_PRACTICES,
+    TROUBLESHOOTING_GUIDE,
+    EXAMPLE_CONFIGURATIONS,
+)
 
+# Import schemas for documentation (FastMCP can use them for auto-documentation)
 
-# Global state management
-class PlantRegistry:
-    """Manages plant instances and their metadata."""
+# ==============================================================================
+# Initialize FastMCP Server
+# ==============================================================================
 
-    def __init__(self):
-        self.plants: Dict[str, BiogasPlant] = {}
-        self.feedstocks: Dict[str, Feedstock] = {}
-        self.metadata: Dict[str, Dict[str, Any]] = {}
-
-    def create_plant(self, plant_id: str, **kwargs) -> str:
-        """Create a new plant instance."""
-        if plant_id in self.plants:
-            raise ValueError(f"Plant '{plant_id}' already exists")
-
-        plant = BiogasPlant(plant_id)
-        feedstock = Feedstock(feeding_freq=kwargs.get("feeding_freq", 48))
-
-        self.plants[plant_id] = plant
-        self.feedstocks[plant_id] = feedstock
-        self.metadata[plant_id] = {
-            "created": True,
-            "initialized": False,
-            "components": {},
-            "connections": [],
-            "simulation_runs": 0,
-        }
-
-        return plant_id
-
-    def get_plant(self, plant_id: str) -> BiogasPlant:
-        """Get plant instance."""
-        if plant_id not in self.plants:
-            raise ValueError(f"Plant '{plant_id}' not found")
-        return self.plants[plant_id]
-
-    def get_feedstock(self, plant_id: str) -> Feedstock:
-        """Get feedstock for plant."""
-        if plant_id not in self.feedstocks:
-            raise ValueError(f"Feedstock for plant '{plant_id}' not found")
-        return self.feedstocks[plant_id]
-
-    def get_metadata(self, plant_id: str) -> Dict[str, Any]:
-        """Get plant metadata."""
-        if plant_id not in self.metadata:
-            raise ValueError(f"Metadata for plant '{plant_id}' not found")
-        return self.metadata[plant_id]
-
-    def list_plants(self) -> List[str]:
-        """List all plant IDs."""
-        return list(self.plants.keys())
-
-    def delete_plant(self, plant_id: str) -> None:
-        """Delete a plant."""
-        if plant_id in self.plants:
-            del self.plants[plant_id]
-        if plant_id in self.feedstocks:
-            del self.feedstocks[plant_id]
-        if plant_id in self.metadata:
-            del self.metadata[plant_id]
+mcp = FastMCP(
+    name="PyADM1 Biogas Plant Server",
+    version="1.0.0",
+    description=(
+        "MCP server for designing, configuring, and simulating biogas plants "
+        "using the PyADM1 framework. Provides tools for component-based plant "
+        "modeling with ADM1 simulation capabilities."
+    ),
+)
 
 
-# Global registry instance
-registry = PlantRegistry()
+# ==============================================================================
+# Register System Prompts
+# ==============================================================================
+
+
+@mcp.prompt()
+def system_guidance() -> str:
+    """
+    Get system-level guidance for biogas plant design.
+
+    Returns comprehensive information about:
+    - Role and capabilities
+    - Design philosophy
+    - Best practices
+    - Parameter guidelines
+
+    Returns:
+        str: Complete system prompt for LLM guidance
+    """
+    return SYSTEM_PROMPT
+
+
+@mcp.prompt()
+def component_selection() -> str:
+    """
+    Get detailed guidelines for component selection and sizing.
+
+    Returns:
+        str: Component selection guide with sizing rules
+    """
+    return COMPONENT_SELECTION_GUIDE
+
+
+@mcp.prompt()
+def connection_guidelines() -> str:
+    """
+    Get rules and patterns for connecting components.
+
+    Returns:
+        str: Connection rules and validation guidelines
+    """
+    return CONNECTION_RULES
+
+
+@mcp.prompt()
+def parameter_guidelines() -> str:
+    """
+    Get parameter ranges and default values for all components.
+
+    Returns:
+        str: Parameter ranges and recommendations
+    """
+    return PARAMETER_RANGES
+
+
+@mcp.prompt()
+def substrate_guide() -> str:
+    """
+    Get substrate-specific design recommendations.
+
+    Returns:
+        str: Substrate recommendations and feeding strategies
+    """
+    return SUBSTRATE_RECOMMENDATIONS
+
+
+@mcp.prompt()
+def design_best_practices() -> str:
+    """
+    Get best practices for plant design and operation.
+
+    Returns:
+        str: Best practices guide
+    """
+    return BEST_PRACTICES
+
+
+@mcp.prompt()
+def troubleshooting() -> str:
+    """
+    Get troubleshooting guide for common issues.
+
+    Returns:
+        str: Troubleshooting guide
+    """
+    return TROUBLESHOOTING_GUIDE
+
+
+@mcp.prompt()
+def example_plants() -> str:
+    """
+    Get example plant configurations with complete tool sequences.
+
+    Returns:
+        str: Example configurations
+    """
+    return EXAMPLE_CONFIGURATIONS
+
+
+# ==============================================================================
+# Register Tools
+# ==============================================================================
 
 
 @mcp.tool()
-def create_biogas_plant(plant_id: str, description: Optional[str] = None, feeding_freq: int = 48) -> str:
+def create_plant(plant_id: str, description: Optional[str] = None, feeding_freq: int = 48) -> str:
     """
     Create a new biogas plant model.
 
@@ -102,37 +201,12 @@ def create_biogas_plant(plant_id: str, description: Optional[str] = None, feedin
 
     Returns:
         Detailed status message including next steps
-
-    Example:
-        create_biogas_plant("MyFarm", "Two-stage digestion with CHP", 48)
     """
-    try:
-        registry.create_plant(plant_id, feeding_freq=feeding_freq)
-
-        metadata = registry.get_metadata(plant_id)
-        if description:
-            metadata["description"] = description
-
-        return (
-            f"✓ Successfully created biogas plant '{plant_id}'\n\n"
-            f"Plant Status:\n"
-            f"  - ID: {plant_id}\n"
-            f"  - Description: {description or 'No description provided'}\n"
-            f"  - Feeding frequency: {feeding_freq} hours\n"
-            f"  - Components: 0\n"
-            f"  - Connections: 0\n\n"
-            f"Next steps:\n"
-            f"  1. Add components using add_digester(), add_chp(), or add_heating()\n"
-            f"  2. Connect components using add_connection()\n"
-            f"  3. Initialize plant using initialize_plant()\n"
-            f"  4. Run simulation using simulate_plant()"
-        )
-    except Exception as e:
-        return f"✗ Error creating plant: {str(e)}\n{traceback.format_exc()}"
+    return create_biogas_plant(plant_id, description, feeding_freq)
 
 
 @mcp.tool()
-def add_digester(
+def add_digester_component(
     plant_id: str,
     digester_id: str,
     V_liq: float = 1977.0,
@@ -159,78 +233,11 @@ def add_digester(
     Returns:
         Detailed status with component information and next steps
     """
-    try:
-        plant = registry.get_plant(plant_id)
-        feedstock = registry.get_feedstock(plant_id)
-        metadata = registry.get_metadata(plant_id)
-
-        # Create digester
-        digester = Digester(
-            component_id=digester_id, feedstock=feedstock, V_liq=V_liq, V_gas=V_gas, T_ad=T_ad, name=name or digester_id
-        )
-
-        # Initialize with default state if requested
-        if load_initial_state:
-            try:
-                data_path = Path(__file__).parent.parent.parent.parent / "data" / "initial_states"
-                initial_state_file = data_path / "digester_initial8.csv"
-
-                if initial_state_file.exists():
-                    adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
-                    digester.initialize({"adm1_state": adm1_state, "Q_substrates": [0] * 10})
-                    state_info = f"  - Initial state: Loaded from {initial_state_file.name}\n"
-                else:
-                    digester.initialize()
-                    state_info = "  - Initial state: Default initialization\n"
-            except Exception as e:
-                digester.initialize()
-                state_info = f"  - Initial state: Default (error loading file: {str(e)})\n"
-        else:
-            digester.initialize()
-            state_info = "  - Initial state: Not initialized\n"
-
-        plant.add_component(digester)
-
-        # Update metadata
-        metadata["components"][digester_id] = {
-            "type": "digester",
-            "V_liq": V_liq,
-            "V_gas": V_gas,
-            "T_ad": T_ad,
-            "name": name or digester_id,
-        }
-
-        # Calculate retention time
-        HRT = V_liq / 25.0  # Assuming default flow of 25 m³/d
-
-        component_count = len(metadata["components"])
-
-        return (
-            f"✓ Successfully added digester '{digester_id}' to plant '{plant_id}'\n\n"
-            f"Digester Configuration:\n"
-            f"  - ID: {digester_id}\n"
-            f"  - Name: {name or digester_id}\n"
-            f"  - Liquid volume: {V_liq:.1f} m³\n"
-            f"  - Gas volume: {V_gas:.1f} m³\n"
-            f"  - Total volume: {V_liq + V_gas:.1f} m³\n"
-            f"  - Temperature: {T_ad:.2f} K ({T_ad - 273.15:.1f}°C)\n"
-            f"  - Hydraulic retention time: ~{HRT:.1f} days (at 25 m³/d)\n"
-            f"{state_info}\n"
-            f"Plant Status:\n"
-            f"  - Total components: {component_count}\n"
-            f"  - Digesters: {sum(1 for c in metadata['components'].values() if c['type'] == 'digester')}\n\n"
-            f"Next steps:\n"
-            f"  - Add more digesters for multi-stage configuration\n"
-            f"  - Add CHP unit with add_chp()\n"
-            f"  - Add heating system with add_heating()\n"
-            f"  - Connect components with add_connection()"
-        )
-    except Exception as e:
-        return f"✗ Error adding digester: {str(e)}\n{traceback.format_exc()}"
+    return add_digester(plant_id, digester_id, V_liq, V_gas, T_ad, name, load_initial_state)
 
 
 @mcp.tool()
-def add_chp(
+def add_chp_unit(
     plant_id: str, chp_id: str, P_el_nom: float = 500.0, eta_el: float = 0.40, eta_th: float = 0.45, name: Optional[str] = None
 ) -> str:
     """
@@ -250,59 +257,11 @@ def add_chp(
     Returns:
         Detailed status with CHP specifications and next steps
     """
-    try:
-        plant = registry.get_plant(plant_id)
-        metadata = registry.get_metadata(plant_id)
-
-        chp = CHP(component_id=chp_id, P_el_nom=P_el_nom, eta_el=eta_el, eta_th=eta_th, name=name or chp_id)
-
-        plant.add_component(chp)
-
-        # Update metadata
-        metadata["components"][chp_id] = {
-            "type": "chp",
-            "P_el_nom": P_el_nom,
-            "eta_el": eta_el,
-            "eta_th": eta_th,
-            "name": name or chp_id,
-        }
-
-        # Calculate performance metrics
-        P_th_nom = P_el_nom * eta_th / eta_el
-        P_total = P_el_nom / eta_el
-        eta_total = eta_el + eta_th
-
-        # Estimate biogas demand (assuming 10 kWh/m³ CH4, 60% CH4 content)
-        biogas_demand = P_total * 24 / (10 * 0.6)  # m³/d at full load
-
-        component_count = len(metadata["components"])
-
-        return (
-            f"✓ Successfully added CHP unit '{chp_id}' to plant '{plant_id}'\n\n"
-            f"CHP Configuration:\n"
-            f"  - ID: {chp_id}\n"
-            f"  - Name: {name or chp_id}\n"
-            f"  - Electrical power: {P_el_nom:.1f} kW ({P_el_nom * 24:.0f} kWh/day)\n"
-            f"  - Thermal power: {P_th_nom:.1f} kW ({P_th_nom * 24:.0f} kWh/day)\n"
-            f"  - Total input: {P_total:.1f} kW\n"
-            f"  - Electrical efficiency: {eta_el * 100:.1f}%\n"
-            f"  - Thermal efficiency: {eta_th * 100:.1f}%\n"
-            f"  - Total efficiency: {eta_total * 100:.1f}%\n"
-            f"  - Biogas demand (full load): ~{biogas_demand:.1f} m³/day\n\n"
-            f"Plant Status:\n"
-            f"  - Total components: {component_count}\n"
-            f"  - CHP units: {sum(1 for c in metadata['components'].values() if c['type'] == 'chp')}\n\n"
-            f"Next steps:\n"
-            f"  - Connect digesters to CHP with add_connection(from='digester_id', to='{chp_id}', type='gas')\n"
-            f"  - Add heating system to use waste heat\n"
-            f"  - Connect CHP to heating with add_connection(from='{chp_id}', to='heating_id', type='heat')"
-        )
-    except Exception as e:
-        return f"✗ Error adding CHP: {str(e)}\n{traceback.format_exc()}"
+    return add_chp(plant_id, chp_id, P_el_nom, eta_el, eta_th, name)
 
 
 @mcp.tool()
-def add_heating(
+def add_heating_system(
     plant_id: str,
     heating_id: str,
     target_temperature: float = 308.15,
@@ -325,55 +284,11 @@ def add_heating(
     Returns:
         Detailed status with heating specifications
     """
-    try:
-        plant = registry.get_plant(plant_id)
-        metadata = registry.get_metadata(plant_id)
-
-        heating = HeatingSystem(
-            component_id=heating_id,
-            target_temperature=target_temperature,
-            heat_loss_coefficient=heat_loss_coefficient,
-            name=name or heating_id,
-        )
-
-        plant.add_component(heating)
-
-        # Update metadata
-        metadata["components"][heating_id] = {
-            "type": "heating",
-            "target_temperature": target_temperature,
-            "heat_loss_coefficient": heat_loss_coefficient,
-            "name": name or heating_id,
-        }
-
-        # Calculate heat demand (assuming 15°C ambient)
-        T_ambient = 288.15
-        heat_demand = heat_loss_coefficient * (target_temperature - T_ambient)
-
-        component_count = len(metadata["components"])
-
-        return (
-            f"✓ Successfully added heating system '{heating_id}' to plant '{plant_id}'\n\n"
-            f"Heating Configuration:\n"
-            f"  - ID: {heating_id}\n"
-            f"  - Name: {name or heating_id}\n"
-            f"  - Target temperature: {target_temperature:.2f} K ({target_temperature - 273.15:.1f}°C)\n"
-            f"  - Heat loss coefficient: {heat_loss_coefficient:.2f} kW/K\n"
-            f"  - Estimated heat demand: ~{heat_demand:.1f} kW (at 15°C ambient)\n"
-            f"  - Daily heat demand: ~{heat_demand * 24:.0f} kWh/day\n\n"
-            f"Plant Status:\n"
-            f"  - Total components: {component_count}\n"
-            f"  - Heating systems: {sum(1 for c in metadata['components'].values() if c['type'] == 'heating')}\n\n"
-            f"Next steps:\n"
-            f"  - Connect CHP to heating with add_connection(from='chp_id', to='{heating_id}', type='heat')\n"
-            f"  - Initialize and simulate plant"
-        )
-    except Exception as e:
-        return f"✗ Error adding heating: {str(e)}\n{traceback.format_exc()}"
+    return add_heating(plant_id, heating_id, target_temperature, heat_loss_coefficient, name)
 
 
 @mcp.tool()
-def add_connection(plant_id: str, from_component: str, to_component: str, connection_type: str = "default") -> str:
+def connect_components(plant_id: str, from_component: str, to_component: str, connection_type: str = "default") -> str:
     """
     Connect two components in the plant.
 
@@ -394,103 +309,11 @@ def add_connection(plant_id: str, from_component: str, to_component: str, connec
     Returns:
         Detailed connection information and topology overview
     """
-    try:
-        plant = registry.get_plant(plant_id)
-        metadata = registry.get_metadata(plant_id)
-
-        # Verify components exist
-        if from_component not in metadata["components"]:
-            return f"✗ Error: Source component '{from_component}' not found in plant"
-        if to_component not in metadata["components"]:
-            return f"✗ Error: Target component '{to_component}' not found in plant"
-
-        connection = Connection(from_component, to_component, connection_type)
-        plant.add_connection(connection)
-
-        # Update metadata
-        metadata["connections"].append({"from": from_component, "to": to_component, "type": connection_type})
-
-        # Build topology view
-        from_comp = metadata["components"][from_component]
-        to_comp = metadata["components"][to_component]
-
-        # Count connections by type
-        connection_types = {}
-        for conn in metadata["connections"]:
-            conn_type = conn["type"]
-            connection_types[conn_type] = connection_types.get(conn_type, 0) + 1
-
-        return (
-            (
-                f"✓ Successfully connected '{from_component}' → '{to_component}'\n\n"
-                f"Connection Details:\n"
-                f"  - From: {from_comp['name']} ({from_comp['type']})\n"
-                f"  - To: {to_comp['name']} ({to_comp['type']})\n"
-                f"  - Type: {connection_type}\n\n"
-                f"Plant Topology:\n"
-                f"  - Total connections: {len(metadata['connections'])}\n"
-                f"  - By type: {', '.join(f'{k}: {v}' for k, v in connection_types.items())}\n\n"
-                f"Connection Flow:\n"
-            )
-            + _build_topology_view(metadata)
-            + (
-                "\nNext steps:\n"
-                "  - Add more connections to complete the plant topology\n"
-                "  - Use get_plant_status() to review the complete plant\n"
-                "  - Initialize plant with initialize_plant()\n"
-                "  - Run simulation with simulate_plant()"
-            )
-        )
-    except Exception as e:
-        return f"✗ Error adding connection: {str(e)}\n{traceback.format_exc()}"
-
-
-def _build_topology_view(metadata: Dict[str, Any]) -> str:
-    """Build ASCII topology visualization."""
-    lines = []
-    components = metadata["components"]
-    connections = metadata["connections"]
-
-    # Group by component type
-    digesters = [k for k, v in components.items() if v["type"] == "digester"]
-    chps = [k for k, v in components.items() if v["type"] == "chp"]
-    heating = [k for k, v in components.items() if v["type"] == "heating"]
-
-    if digesters:
-        lines.append("  Digesters:")
-        for d in digesters:
-            outgoing = [c for c in connections if c["from"] == d]
-            if outgoing:
-                for conn in outgoing:
-                    lines.append(f"    {d} --[{conn['type']}]--> {conn['to']}")
-            else:
-                lines.append(f"    {d} (not connected)")
-
-    if chps:
-        lines.append("  CHP Units:")
-        for c in chps:
-            incoming = [cn for cn in connections if cn["to"] == c]
-            outgoing = [cn for cn in connections if cn["from"] == c]
-            if incoming or outgoing:
-                lines.append(f"    {c}")
-                for conn in incoming:
-                    lines.append(f"      ← [{conn['type']}] {conn['from']}")
-                for conn in outgoing:
-                    lines.append(f"      → [{conn['type']}] {conn['to']}")
-
-    if heating:
-        lines.append("  Heating Systems:")
-        for h in heating:
-            incoming = [cn for cn in connections if cn["to"] == h]
-            if incoming:
-                for conn in incoming:
-                    lines.append(f"    {h} ← [{conn['type']}] {conn['from']}")
-
-    return "\n".join(lines) if lines else "  (No connections yet)"
+    return add_connection(plant_id, from_component, to_component, connection_type)
 
 
 @mcp.tool()
-def initialize_plant(plant_id: str) -> str:
+def initialize_biogas_plant(plant_id: str) -> str:
     """
     Initialize the plant before simulation.
 
@@ -503,58 +326,11 @@ def initialize_plant(plant_id: str) -> str:
     Returns:
         Initialization status and validation results
     """
-    try:
-        plant = registry.get_plant(plant_id)
-        metadata = registry.get_metadata(plant_id)
-
-        # Initialize plant
-        plant.initialize()
-
-        metadata["initialized"] = True
-
-        # Validate configuration
-        warnings = []
-
-        # Check for digesters
-        digester_count = sum(1 for c in metadata["components"].values() if c["type"] == "digester")
-        if digester_count == 0:
-            warnings.append("No digesters found - plant needs at least one digester")
-
-        # Check for gas connections to CHP
-        chp_count = sum(1 for c in metadata["components"].values() if c["type"] == "chp")
-        if chp_count > 0:
-            gas_to_chp = sum(
-                1
-                for c in metadata["connections"]
-                if c["type"] == "gas" and metadata["components"].get(c["to"], {}).get("type") == "chp"
-            )
-            if gas_to_chp == 0:
-                warnings.append("CHP units present but no gas connections from digesters")
-
-        warning_text = ""
-        if warnings:
-            warning_text = "\n⚠ Warnings:\n" + "\n".join(f"  - {w}" for w in warnings) + "\n"
-
-        return (
-            f"✓ Successfully initialized plant '{plant_id}'\n\n"
-            f"Plant Configuration:\n"
-            f"  - Components: {len(metadata['components'])}\n"
-            f"    • Digesters: {digester_count}\n"
-            f"    • CHP units: {chp_count}\n"
-            f"    • Heating systems: {sum(1 for c in metadata['components'].values() if c['type'] == 'heating')}\n"
-            f"  - Connections: {len(metadata['connections'])}\n"
-            f"  - Status: Ready for simulation\n"
-            f"{warning_text}\n"
-            f"Next steps:\n"
-            f"  - Run simulation with simulate_plant()\n"
-            f"  - View plant summary with get_plant_status()"
-        )
-    except Exception as e:
-        return f"✗ Error initializing plant: {str(e)}\n{traceback.format_exc()}"
+    return initialize_plant(plant_id)
 
 
 @mcp.tool()
-def simulate_plant(plant_id: str, duration: float = 10.0, dt: float = 0.04167, save_interval: float = 1.0) -> str:
+def simulate_biogas_plant(plant_id: str, duration: float = 10.0, dt: float = 0.04167, save_interval: float = 1.0) -> str:
     """
     Run a simulation of the biogas plant.
 
@@ -570,116 +346,11 @@ def simulate_plant(plant_id: str, duration: float = 10.0, dt: float = 0.04167, s
     Returns:
         Detailed simulation results and performance metrics
     """
-    try:
-        plant = registry.get_plant(plant_id)
-        metadata = registry.get_metadata(plant_id)
-
-        if not metadata["initialized"]:
-            return (
-                f"✗ Error: Plant '{plant_id}' must be initialized before simulation\n"
-                f"Please call initialize_plant('{plant_id}') first"
-            )
-
-        # Run simulation
-        results = plant.simulate(duration=duration, dt=dt, save_interval=save_interval)
-
-        metadata["simulation_runs"] += 1
-        metadata["last_simulation"] = {
-            "duration": duration,
-            "dt": dt,
-            "save_interval": save_interval,
-            "result_count": len(results),
-        }
-
-        # Extract key metrics
-        if results:
-            final_result = results[-1]
-
-            # Build results summary
-            summary_lines = [
-                f"✓ Successfully simulated plant '{plant_id}' for {duration:.1f} days\n",
-                "Simulation Configuration:",
-                f"  - Duration: {duration:.1f} days",
-                f"  - Time step: {dt * 24:.1f} hours",
-                f"  - Save interval: {save_interval:.1f} days",
-                f"  - Result snapshots: {len(results)}",
-                f"  - Simulation time: {final_result['time']:.2f} days\n",
-                "Performance Metrics:\n",
-            ]
-
-            # Process each component
-            for comp_id, comp_results in final_result["components"].items():
-                comp_meta = metadata["components"].get(comp_id, {})
-                comp_type = comp_meta.get("type", "unknown")
-                comp_name = comp_meta.get("name", comp_id)
-
-                summary_lines.append(f"  {comp_name} ({comp_type}):")
-
-                if comp_type == "digester":
-                    q_gas = comp_results.get("Q_gas", 0)
-                    q_ch4 = comp_results.get("Q_ch4", 0)
-                    pH = comp_results.get("pH", 0)
-                    vfa = comp_results.get("VFA", 0)
-                    tac = comp_results.get("TAC", 0)
-
-                    ch4_percent = (q_ch4 / q_gas * 100) if q_gas > 0 else 0
-
-                    summary_lines.extend(
-                        [
-                            f"    - Biogas production: {q_gas:.1f} m³/day",
-                            f"    - Methane production: {q_ch4:.1f} m³/day ({ch4_percent:.1f}% CH4)",
-                            f"    - pH: {pH:.2f}",
-                            f"    - VFA: {vfa:.2f} g/L",
-                            f"    - TAC: {tac:.2f} g/L",
-                            f"    - FOS/TAC: {(vfa/tac if tac > 0 else 0):.3f}",
-                        ]
-                    )
-
-                elif comp_type == "chp":
-                    p_el = comp_results.get("P_el", 0)
-                    p_th = comp_results.get("P_th", 0)
-                    q_gas_consumed = comp_results.get("Q_gas_consumed", 0)
-
-                    summary_lines.extend(
-                        [
-                            f"    - Electrical power: {p_el:.1f} kW ({p_el * 24:.0f} kWh/day)",
-                            f"    - Thermal power: {p_th:.1f} kW ({p_th * 24:.0f} kWh/day)",
-                            f"    - Biogas consumption: {q_gas_consumed:.1f} m³/day",
-                            f"    - Load factor: {(p_el / comp_meta.get('P_el_nom', 1) * 100):.1f}%",
-                        ]
-                    )
-
-                elif comp_type == "heating":
-                    q_heat = comp_results.get("Q_heat_supplied", 0)
-                    p_th_used = comp_results.get("P_th_used", 0)
-                    p_aux = comp_results.get("P_aux_heat", 0)
-
-                    summary_lines.extend(
-                        [
-                            f"    - Heat supplied: {q_heat:.1f} kW",
-                            f"    - CHP heat used: {p_th_used:.1f} kW",
-                            f"    - Auxiliary heat: {p_aux:.1f} kW",
-                            f"    - CHP coverage: {(p_th_used / q_heat * 100 if q_heat > 0 else 0):.1f}%",
-                        ]
-                    )
-
-                summary_lines.append("")
-
-            return "\n".join(summary_lines) + (
-                "\nNext steps:\n"
-                "  - Review results with get_plant_status()\n"
-                "  - Export configuration with export_plant_config()\n"
-                "  - Run longer simulation or adjust parameters"
-            )
-        else:
-            return "✗ Simulation completed but no results generated"
-
-    except Exception as e:
-        return f"✗ Error during simulation: {str(e)}\n{traceback.format_exc()}"
+    return simulate_plant(plant_id, duration, dt, save_interval)
 
 
 @mcp.tool()
-def get_plant_status(plant_id: str) -> str:
+def get_biogas_plant_status(plant_id: str) -> str:
     """
     Get comprehensive status of a biogas plant.
 
@@ -692,111 +363,11 @@ def get_plant_status(plant_id: str) -> str:
     Returns:
         Complete plant status report
     """
-    try:
-        # plant = registry.get_plant(plant_id)
-        metadata = registry.get_metadata(plant_id)
-
-        lines = [
-            "═══════════════════════════════════════════════════════",
-            f"Biogas Plant Status: {plant_id}",
-            "═══════════════════════════════════════════════════════\n",
-        ]
-
-        # Description
-        if "description" in metadata:
-            lines.append(f"Description: {metadata['description']}\n")
-
-        # Overall status
-        lines.extend(
-            [
-                "Status:",
-                f"  - Initialized: {'Yes' if metadata['initialized'] else 'No'}",
-                f"  - Simulation runs: {metadata['simulation_runs']}",
-                f"  - Components: {len(metadata['components'])}",
-                f"  - Connections: {len(metadata['connections'])}\n",
-            ]
-        )
-
-        # Components detail
-        if metadata["components"]:
-            lines.append("Components:")
-            for comp_id, comp_info in metadata["components"].items():
-                comp_type = comp_info["type"]
-                comp_name = comp_info["name"]
-
-                lines.append(f"  • {comp_name} ({comp_id})")
-                lines.append(f"    Type: {comp_type}")
-
-                if comp_type == "digester":
-                    lines.extend(
-                        [
-                            f"    Liquid volume: {comp_info['V_liq']:.1f} m³",
-                            f"    Gas volume: {comp_info['V_gas']:.1f} m³",
-                            f"    Temperature: {comp_info['T_ad'] - 273.15:.1f}°C",
-                        ]
-                    )
-                elif comp_type == "chp":
-                    lines.extend(
-                        [
-                            f"    Electrical power: {comp_info['P_el_nom']:.1f} kW",
-                            f"    Electrical efficiency: {comp_info['eta_el'] * 100:.1f}%",
-                            f"    Thermal efficiency: {comp_info['eta_th'] * 100:.1f}%",
-                        ]
-                    )
-                elif comp_type == "heating":
-                    lines.extend(
-                        [
-                            f"    Target temperature: {comp_info['target_temperature'] - 273.15:.1f}°C",
-                            f"    Heat loss coefficient: {comp_info['heat_loss_coefficient']:.2f} kW/K",
-                        ]
-                    )
-                lines.append("")
-
-        # Connections
-        if metadata["connections"]:
-            lines.append("Connections:")
-            for conn in metadata["connections"]:
-                from_name = metadata["components"][conn["from"]]["name"]
-                to_name = metadata["components"][conn["to"]]["name"]
-                conn_type = conn["type"]
-                lines.append(f"  {from_name} --[{conn_type}]--> {to_name}")
-            lines.append("")
-
-        # Last simulation
-        if "last_simulation" in metadata:
-            sim = metadata["last_simulation"]
-            lines.extend(
-                [
-                    "Last Simulation:",
-                    f"  - Duration: {sim['duration']:.1f} days",
-                    f"  - Time step: {sim['dt'] * 24:.1f} hours",
-                    f"  - Results saved: {sim['result_count']} snapshots\n",
-                ]
-            )
-
-        # Recommendations
-        lines.append("Recommendations:")
-        if not metadata["initialized"]:
-            lines.append("  ⚠ Initialize plant before simulation")
-        if len(metadata["components"]) == 0:
-            lines.append("  ⚠ Add components to the plant")
-        if len(metadata["connections"]) == 0 and len(metadata["components"]) > 1:
-            lines.append("  ⚠ Connect components to define process flow")
-        if metadata["simulation_runs"] == 0 and metadata["initialized"]:
-            lines.append("  → Ready to run simulation")
-        if metadata["simulation_runs"] > 0:
-            lines.append("  ✓ Plant has been simulated successfully")
-
-        lines.append(f"\n{'═' * 55}")
-
-        return "\n".join(lines)
-
-    except Exception as e:
-        return f"✗ Error getting plant status: {str(e)}\n{traceback.format_exc()}"
+    return get_plant_status(plant_id)
 
 
 @mcp.tool()
-def export_plant_config(plant_id: str, filepath: Optional[str] = None) -> str:
+def export_biogas_plant_config(plant_id: str, filepath: Optional[str] = None) -> str:
     """
     Export plant configuration to JSON file.
 
@@ -810,68 +381,22 @@ def export_plant_config(plant_id: str, filepath: Optional[str] = None) -> str:
     Returns:
         Export status and file location
     """
-    try:
-        plant = registry.get_plant(plant_id)
-
-        if filepath is None:
-            filepath = f"plant_config_{plant_id}.json"
-
-        plant.to_json(filepath)
-
-        # Get file size
-        file_path = Path(filepath)
-        file_size = file_path.stat().st_size if file_path.exists() else 0
-
-        return (
-            f"✓ Successfully exported plant configuration\n\n"
-            f"Export Details:\n"
-            f"  - Plant ID: {plant_id}\n"
-            f"  - File: {filepath}\n"
-            f"  - Size: {file_size:,} bytes\n\n"
-            f"The configuration can be loaded later using load_plant_config()"
-        )
-
-    except Exception as e:
-        return f"✗ Error exporting plant: {str(e)}\n{traceback.format_exc()}"
+    return export_plant_config(plant_id, filepath)
 
 
 @mcp.tool()
-def list_plants() -> str:
+def list_biogas_plants() -> str:
     """
     List all biogas plants in the registry.
 
     Returns:
         Summary of all available plants
     """
-    try:
-        plant_ids = registry.list_plants()
-
-        if not plant_ids:
-            return "No plants found in registry.\n\n" "Create a new plant with create_biogas_plant()"
-
-        lines = [f"Available Biogas Plants ({len(plant_ids)}):", "=" * 50]
-
-        for plant_id in plant_ids:
-            metadata = registry.get_metadata(plant_id)
-            comp_count = len(metadata["components"])
-            sim_runs = metadata["simulation_runs"]
-            initialized = "✓" if metadata["initialized"] else "○"
-
-            lines.append(f"\n{initialized} {plant_id}:" f"\n  - Components: {comp_count}" f"\n  - Simulations: {sim_runs}")
-
-            if "description" in metadata:
-                lines.append(f"  - Description: {metadata['description']}")
-
-        lines.append("\n" + "=" * 50)
-
-        return "\n".join(lines)
-
-    except Exception as e:
-        return f"✗ Error listing plants: {str(e)}"
+    return list_plants()
 
 
 @mcp.tool()
-def delete_plant(plant_id: str) -> str:
+def delete_biogas_plant(plant_id: str) -> str:
     """
     Delete a biogas plant from the registry.
 
@@ -881,50 +406,81 @@ def delete_plant(plant_id: str) -> str:
     Returns:
         Deletion confirmation
     """
-    try:
-        if plant_id not in registry.list_plants():
-            return f"✗ Plant '{plant_id}' not found"
-
-        registry.delete_plant(plant_id)
-
-        return f"✓ Successfully deleted plant '{plant_id}'\n\n" f"Remaining plants: {len(registry.list_plants())}"
-
-    except Exception as e:
-        return f"✗ Error deleting plant: {str(e)}"
+    return delete_plant(plant_id)
 
 
-# Entry point for running the server
-def start_server(host: str = "127.0.0.1", port: int = 8000):
+# ==============================================================================
+# Server Entry Point
+# ==============================================================================
+
+
+def start_server(host: str = "127.0.0.1", port: int = 8000) -> None:
     """
     Start the FastMCP server with SSE transport.
+
+    This function initializes and runs the MCP server, making all tools
+    available to MCP clients (like Claude Desktop or custom applications).
 
     Args:
         host: Host address (default: 127.0.0.1)
         port: Port number (default: 8000)
+
+    Example:
+        >>> from pyadm1.configurator.mcp.server import start_server
+        >>> start_server(host="0.0.0.0", port=8000)
     """
     print("=" * 70)
     print("PyADM1 MCP Server - Biogas Plant Modeling")
     print("=" * 70)
     print(f"\nServer starting at: http://{host}:{port}")
     print(f"SSE endpoint: http://{host}:{port}/sse")
-    print("\nAvailable tools:")
-    print("  - create_biogas_plant: Create new plant")
-    print("  - add_digester: Add digester component")
-    print("  - add_chp: Add CHP unit")
-    print("  - add_heating: Add heating system")
-    print("  - add_connection: Connect components")
-    print("  - initialize_plant: Initialize for simulation")
-    print("  - simulate_plant: Run simulation")
-    print("  - get_plant_status: View plant details")
-    print("  - export_plant_config: Export to JSON")
-    print("  - list_plants: List all plants")
-    print("  - delete_plant: Remove plant")
+    print("\nAvailable Tools:")
+    print("  Plant Management:")
+    print("    - create_plant: Create new biogas plant")
+    print("    - list_biogas_plants: List all plants")
+    print("    - get_biogas_plant_status: View plant details")
+    print("    - delete_biogas_plant: Remove plant")
+    print("    - export_biogas_plant_config: Export to JSON")
+    print("\n  Component Addition:")
+    print("    - add_digester_component: Add digester")
+    print("    - add_chp_unit: Add CHP unit")
+    print("    - add_heating_system: Add heating system")
+    print("\n  Plant Configuration:")
+    print("    - connect_components: Connect components")
+    print("    - initialize_biogas_plant: Initialize for simulation")
+    print("\n  Simulation:")
+    print("    - simulate_biogas_plant: Run simulation")
+    print("\nAvailable Prompts:")
+    print("  - system_guidance: System-level guidance")
+    print("  - component_selection: Component sizing guidelines")
+    print("  - connection_guidelines: Connection rules")
+    print("  - parameter_guidelines: Parameter ranges")
+    print("  - substrate_guide: Substrate recommendations")
+    print("  - design_best_practices: Best practices")
+    print("  - troubleshooting: Troubleshooting guide")
+    print("  - example_plants: Example configurations")
     print("\nPress Ctrl+C to stop")
     print("=" * 70 + "\n")
 
-    mcp.run(transport="sse", host=host, port=port)
+    try:
+        # Run the FastMCP server with SSE transport
+        mcp.run(transport="sse", host=host, port=port)
+    except KeyboardInterrupt:
+        print("\n\nShutting down server...")
+    except Exception as e:
+        print(f"\n\nError starting server: {e}")
+        raise
 
 
-# python -m pyadm1.configurator.mcp.server
+# ==============================================================================
+# Main Entry Point
+# ==============================================================================
+
 if __name__ == "__main__":
+    """
+    Main entry point when running as a module.
+
+    Usage:
+        python -m pyadm1.configurator.mcp.server
+    """
     start_server()
