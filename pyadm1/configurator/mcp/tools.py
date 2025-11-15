@@ -21,14 +21,10 @@ from typing import Dict, Any, List, Optional
 from pathlib import Path
 
 from pyadm1.configurator.plant_builder import BiogasPlant
-from pyadm1.components.biological.digester import Digester
-from pyadm1.components.energy.chp import CHP
-from pyadm1.components.energy.heating import HeatingSystem
-from pyadm1.components.energy.gas_storage import GasStorage
 from pyadm1.components.energy.flare import Flare
 from pyadm1.configurator.connection_manager import Connection
 from pyadm1.substrates.feedstock import Feedstock
-from pyadm1.core.adm1 import get_state_zero_from_initial_state
+from pyadm1.configurator.plant_configurator import PlantConfigurator
 
 
 class PlantRegistry:
@@ -36,19 +32,21 @@ class PlantRegistry:
     Registry for managing multiple biogas plant instances.
 
     This class maintains a collection of plant instances along with their
-    associated feedstocks and metadata, enabling stateful plant modeling
-    across multiple tool calls.
+    associated feedstocks, configurators, and metadata, enabling stateful
+    plant modeling across multiple tool calls.
 
     Attributes:
         plants: Dictionary mapping plant IDs to BiogasPlant instances
         feedstocks: Dictionary mapping plant IDs to Feedstock instances
+        configurators: Dictionary mapping plant IDs to PlantConfigurator instances
         metadata: Dictionary mapping plant IDs to metadata dictionaries
     """
 
     def __init__(self) -> None:
-        """Initialize empty registries for plants, feedstocks, and metadata."""
+        """Initialize empty registries for plants, feedstocks, configurators, and metadata."""
         self.plants: Dict[str, BiogasPlant] = {}
         self.feedstocks: Dict[str, Feedstock] = {}
+        self.configurators: Dict[str, PlantConfigurator] = {}
         self.metadata: Dict[str, Dict[str, Any]] = {}
 
     def create_plant(self, plant_id: str, **kwargs: Any) -> str:
@@ -75,9 +73,11 @@ class PlantRegistry:
 
         plant = BiogasPlant(plant_id)
         feedstock = Feedstock(feeding_freq=kwargs.get("feeding_freq", 48))
+        configurator = PlantConfigurator(plant, feedstock)
 
         self.plants[plant_id] = plant
         self.feedstocks[plant_id] = feedstock
+        self.configurators[plant_id] = configurator
         self.metadata[plant_id] = {
             "created": True,
             "initialized": False,
@@ -104,6 +104,23 @@ class PlantRegistry:
         if plant_id not in self.plants:
             raise ValueError(f"Plant '{plant_id}' not found")
         return self.plants[plant_id]
+
+    def get_configurator(self, plant_id: str) -> PlantConfigurator:
+        """
+        Retrieve the configurator for a plant.
+
+        Args:
+            plant_id: Plant identifier
+
+        Returns:
+            PlantConfigurator instance
+
+        Raises:
+            ValueError: If plant_id not found
+        """
+        if plant_id not in self.configurators:
+            raise ValueError(f"Configurator for plant '{plant_id}' not found")
+        return self.configurators[plant_id]
 
     def get_feedstock(self, plant_id: str) -> Feedstock:
         """
@@ -159,6 +176,8 @@ class PlantRegistry:
             del self.plants[plant_id]
         if plant_id in self.feedstocks:
             del self.feedstocks[plant_id]
+        if plant_id in self.configurators:
+            del self.configurators[plant_id]
         if plant_id in self.metadata:
             del self.metadata[plant_id]
 
@@ -250,52 +269,15 @@ def add_digester(
     """
     try:
         registry = get_registry()
-        plant = registry.get_plant(plant_id)
-        feedstock = registry.get_feedstock(plant_id)
         metadata = registry.get_metadata(plant_id)
+        configurator = registry.get_configurator(plant_id)
 
         # Create digester
-        digester = Digester(
-            component_id=digester_id, feedstock=feedstock, V_liq=V_liq, V_gas=V_gas, T_ad=T_ad, name=name or digester_id
+        _, state_info = configurator.add_digester(
+            digester_id=digester_id, V_liq=V_liq, V_gas=V_gas, T_ad=T_ad, name=name or digester_id
         )
 
-        # Initialize with default state if requested
-        if load_initial_state:
-            try:
-                data_path = Path(__file__).parent.parent.parent.parent / "data" / "initial_states"
-                initial_state_file = data_path / "digester_initial8.csv"
-
-                if initial_state_file.exists():
-                    adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
-                    digester.initialize({"adm1_state": adm1_state, "Q_substrates": [0] * 10})
-                    state_info = f"  - Initial state: Loaded from {initial_state_file.name}\n"
-                else:
-                    digester.initialize()
-                    state_info = "  - Initial state: Default initialization\n"
-            except Exception as e:
-                digester.initialize()
-                state_info = f"  - Initial state: Default (error loading file: {str(e)})\n"
-        else:
-            digester.initialize()
-            state_info = "  - Initial state: Not initialized\n"
-
-        plant.add_component(digester)
-
-        # ----------------------------------------------------------
-        # AUTOMATIC GAS STORAGE FOR DIGESTER
-        # ----------------------------------------------------------
         storage_id = f"{digester_id}_storage"
-        storage = GasStorage(
-            component_id=storage_id,
-            storage_type="membrane",
-            capacity_m3=max(50.0, V_gas),
-            name=f"{digester_id}_storage",
-        )
-        plant.add_component(storage)
-
-        # Connect: digester → storage
-        conn = Connection(digester_id, storage_id, "gas")
-        plant.add_connection(conn)
 
         # Add to metadata
         metadata["components"][storage_id] = {
@@ -364,23 +346,12 @@ def add_chp(
     """
     try:
         registry = get_registry()
-        plant = registry.get_plant(plant_id)
         metadata = registry.get_metadata(plant_id)
+        configurator = registry.get_configurator(plant_id)
 
-        chp = CHP(component_id=chp_id, P_el_nom=P_el_nom, eta_el=eta_el, eta_th=eta_th, name=name or chp_id)
+        configurator.add_chp(chp_id=chp_id, P_el_nom=P_el_nom, eta_el=eta_el, eta_th=eta_th, name=name or chp_id)
 
-        plant.add_component(chp)
-
-        # ----------------------------------------------------------
-        # AUTOMATIC CHP FLARE
-        # ----------------------------------------------------------
         flare_id = f"{chp_id}_flare"
-        flare = Flare(component_id=flare_id, name=f"{chp_id}_flare")
-        plant.add_component(flare)
-
-        # Connect: CHP → flare
-        conn_fl = Connection(chp_id, flare_id, "gas")
-        plant.add_connection(conn_fl)
 
         metadata["components"][flare_id] = {
             "type": "flare",
@@ -455,17 +426,15 @@ def add_heating(
     """
     try:
         registry = get_registry()
-        plant = registry.get_plant(plant_id)
         metadata = registry.get_metadata(plant_id)
+        configurator = registry.get_configurator(plant_id)
 
-        heating = HeatingSystem(
-            component_id=heating_id,
+        configurator.add_heating(
+            heating_id=heating_id,
             target_temperature=target_temperature,
             heat_loss_coefficient=heat_loss_coefficient,
             name=name or heating_id,
         )
-
-        plant.add_component(heating)
 
         # Update metadata
         metadata["components"][heating_id] = {

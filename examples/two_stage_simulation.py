@@ -3,13 +3,16 @@
 # examples/two_stage_simulation.py
 # ============================================================================
 """
-Example: Two-stage digester in series with CHP and heating.
+Example: Two-stage digester in series with CHP and heating,
+configured using the PlantConfigurator.
 
-This example demonstrates:
+Demonstrates:
 - Two digesters in series
+- Automatic gas storage per digester
 - CHP unit consuming biogas
-- Heating system using CHP waste heat
+- Heating systems
 - Loading initial state from CSV file
+- High-level configuration via PlantConfigurator
 
 Usage:
     python examples/two_stage_simulation.py
@@ -18,121 +21,113 @@ Usage:
 from pathlib import Path
 
 
-def create_two_stage_plant():
-    """
-    Create example two-stage biogas plant configuration.
-
-    Returns:
-        BiogasPlant: Configured plant with two digesters, CHP, and heating systems.
-    """
+def main():
+    """Run a two-stage biogas plant simulation using PlantConfigurator."""
+    # Import required modules
     from pyadm1.configurator.plant_builder import BiogasPlant
-    from pyadm1.components.biological.digester import Digester
-    from pyadm1.components.energy.chp import CHP
-    from pyadm1.components.energy.heating import HeatingSystem
-    from pyadm1.configurator.connection_manager import Connection
     from pyadm1.substrates.feedstock import Feedstock
     from pyadm1.core.adm1 import get_state_zero_from_initial_state
+    from pyadm1.configurator.plant_configurator import PlantConfigurator
 
-    # Initialize feedstock
-    feeding_freq = 48  # hours
-    feedstock = Feedstock(feeding_freq)
+    print("=" * 70)
+    print("PyADM1 Two-Stage Simulation Example (PlantConfigurator version)")
+    print("=" * 70)
 
-    # Load initial state from CSV
+    # Step 1: Create feedstock
+    feeding_freq = 48  # Can change substrate every 48 hours
+    feedstock = Feedstock(feeding_freq=feeding_freq)
+
+    # Step 2: Load initial state from CSV
     data_path = Path(__file__).parent.parent / "data" / "initial_states"
     initial_state_file = data_path / "digester_initial8.csv"
+    if initial_state_file.exists():
+        print(f"Loading initial state from: {initial_state_file}")
+        adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
+    else:
+        print(f"   Warning: Initial state file not found at {initial_state_file}")
+        adm1_state = None
 
-    print(f"Loading initial state from: {initial_state_file}")
-    adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
+    # Substrate feed rates
+    digester1_feed = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
+    digester2_feed = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  # Post-digester receives only effluent
 
-    # Create initial state dictionaries for digesters
-    digester1_initial = {
-        "adm1_state": adm1_state,
-        "Q_substrates": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0],
-    }
-
-    # For second digester, use same initial state but no direct substrate feed
-    digester2_initial = {
-        "adm1_state": adm1_state,
-        "Q_substrates": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    }
-
-    # Create plant
+    # Step 3: Create biogas plant
     plant = BiogasPlant("Two-Stage Digester Plant")
+    configurator = PlantConfigurator(plant, feedstock)
 
-    # Create first digester (main fermenter)
-    digester1 = Digester(
-        component_id="digester_1", feedstock=feedstock, V_liq=1977.0, V_gas=304.0, T_ad=308.15, name="Main Digester"
+    # Step 4: Add components using configurator
+    print("Adding two digesters...")
+    configurator.add_digester(
+        digester_id="digester_1",
+        V_liq=1977.0,
+        V_gas=304.0,
+        T_ad=308.15,
+        name="Main Digester",
+        load_initial_state=True,
+        initial_state_file=str(initial_state_file) if adm1_state else None,
+        Q_substrates=digester1_feed,
     )
-    digester1.initialize(digester1_initial)
-
-    # Create second digester (post-digester)
-    digester2 = Digester(
-        component_id="digester_2", feedstock=feedstock, V_liq=1000.0, V_gas=150.0, T_ad=308.15, name="Post Digester"
-    )
-    digester2.initialize(digester2_initial)
-
-    # Create CHP unit
-    chp = CHP(component_id="chp_1", P_el_nom=500.0, eta_el=0.40, eta_th=0.45, name="CHP Unit")
-
-    # Create heating system for digester 1
-    heating1 = HeatingSystem(
-        component_id="heating_1", target_temperature=308.15, heat_loss_coefficient=0.5, name="Main Digester Heating"
+    configurator.add_digester(
+        digester_id="digester_2",
+        V_liq=1000.0,
+        V_gas=150.0,
+        T_ad=308.15,
+        name="Post Digester",
+        load_initial_state=True,
+        initial_state_file=str(initial_state_file) if adm1_state else None,
+        Q_substrates=digester2_feed,
     )
 
-    # Create heating system for digester 2
-    heating2 = HeatingSystem(
-        component_id="heating_2", target_temperature=308.15, heat_loss_coefficient=0.3, name="Post Digester Heating"
+    print("Adding CHP unit...")
+    configurator.add_chp(
+        chp_id="chp_1",
+        P_el_nom=500.0,
+        eta_el=0.40,
+        eta_th=0.45,
+        name="CHP Unit",
     )
 
-    # Add components to plant
-    plant.add_component(digester1)
-    plant.add_component(digester2)
-    plant.add_component(chp)
-    plant.add_component(heating1)
-    plant.add_component(heating2)
+    print("Adding heating systems...")
+    configurator.add_heating(
+        heating_id="heating_1",
+        target_temperature=308.15,
+        heat_loss_coefficient=0.5,
+        name="Main Digester Heating",
+    )
+    configurator.add_heating(
+        heating_id="heating_2",
+        target_temperature=308.15,
+        heat_loss_coefficient=0.3,
+        name="Post Digester Heating",
+    )
 
-    # Create connections
-    # Digester 1 -> Digester 2 (liquid flow)
-    plant.add_connection(Connection(from_component="digester_1", to_component="digester_2", connection_type="liquid"))
+    # Step 5: Connect digesters in series and set up energy flows
+    print("Connecting liquid flow between digesters...")
+    configurator.connect("digester_1", "digester_2", "liquid")
 
-    # in initialize_plant all gas_storages are automatically connected to all chps
-    # Digester 1 -> CHP (biogas)
-    # plant.add_connection(Connection(from_component="digester_1", to_component="chp_1", connection_type="gas"))
+    print("Connecting thermal flows...")
+    configurator.auto_connect_digester_to_chp("digester_1", "chp_1")
+    configurator.auto_connect_digester_to_chp("digester_2", "chp_1")
+    configurator.auto_connect_chp_to_heating("chp_1", "heating_1")
+    configurator.auto_connect_chp_to_heating("chp_1", "heating_2")
 
-    # Digester 2 -> CHP (biogas)
-    # plant.add_connection(Connection(from_component="digester_2", to_component="chp_1", connection_type="gas"))
-
-    # CHP -> Heating 1 (waste heat)
-    plant.add_connection(Connection(from_component="chp_1", to_component="heating_1", connection_type="heat"))
-
-    # CHP -> Heating 2 (waste heat)
-    plant.add_connection(Connection(from_component="chp_1", to_component="heating_2", connection_type="heat"))
-
-    return plant
-
-
-def main():
-    """Run example simulation."""
-    # Create plant
-    print("=" * 70)
-    print("Creating two-stage biogas plant...")
-    print("=" * 70)
-    plant = create_two_stage_plant()
+    # Step 6: Initialize plant
+    print("Initializing plant...")
+    plant.initialize()
 
     # Print plant summary
     print("\n" + "=" * 70)
     print(plant.get_summary())
     print("=" * 70)
 
-    # Save initial configuration to JSON
+    # Step 7: Save initial configuration to JSON
     output_path = Path(__file__).parent.parent / "output"
     output_path.mkdir(exist_ok=True)
-
     config_file = output_path / "plant_config_initial.json"
     plant.to_json(str(config_file))
     print(f"\nInitial configuration saved to: {config_file}")
 
-    # Run simulation
+    # Step 8: Run simulation
     print("\n" + "=" * 70)
     print("Starting simulation...")
     print("=" * 70)

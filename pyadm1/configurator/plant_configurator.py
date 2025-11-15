@@ -14,6 +14,8 @@ from pyadm1.configurator.plant_builder import BiogasPlant
 from pyadm1.components.biological.digester import Digester
 from pyadm1.components.energy.chp import CHP
 from pyadm1.components.energy.heating import HeatingSystem
+from pyadm1.components.energy.gas_storage import GasStorage
+from pyadm1.components.energy.flare import Flare
 from pyadm1.configurator.connection_manager import Connection
 from pyadm1.substrates.feedstock import Feedstock
 from pyadm1.core.adm1 import get_state_zero_from_initial_state
@@ -48,9 +50,11 @@ class PlantConfigurator:
         load_initial_state: bool = True,
         initial_state_file: Optional[str] = None,
         Q_substrates: Optional[list] = None,
-    ) -> Digester:
+    ) -> (Digester, str):
         """
         Add a digester component to the plant.
+
+        Automatically creates and connects a gas storage for the digester.
 
         Args:
             digester_id: Unique identifier for this digester
@@ -83,6 +87,7 @@ class PlantConfigurator:
             if initial_state_file:
                 # Load from custom file
                 adm1_state = get_state_zero_from_initial_state(initial_state_file)
+                state_info = f"  - Initial state: Loaded from {initial_state_file}\n"
             else:
                 # Load from default file
                 try:
@@ -91,10 +96,13 @@ class PlantConfigurator:
 
                     if default_file.exists():
                         adm1_state = get_state_zero_from_initial_state(str(default_file))
+                        state_info = f"  - Initial state: Loaded from {default_file.name}\n"
                     else:
                         adm1_state = None
-                except Exception:
+                        state_info = "  - Initial state: Default initialization\n"
+                except Exception as e:
                     adm1_state = None
+                    state_info = f"  - Initial state: Default (error loading file: {str(e)})\n"
 
             # Set substrate feeds
             if Q_substrates is None:
@@ -103,11 +111,28 @@ class PlantConfigurator:
             digester.initialize({"adm1_state": adm1_state, "Q_substrates": Q_substrates})
         else:
             digester.initialize()
+            state_info = "  - Initial state: Not initialized\n"
 
         # Add to plant
         self.plant.add_component(digester)
 
-        return digester
+        # ----------------------------------------------------------
+        # AUTOMATIC GAS STORAGE FOR DIGESTER
+        # ----------------------------------------------------------
+
+        storage_id = f"{digester_id}_storage"
+        storage = GasStorage(
+            component_id=storage_id,
+            storage_type="membrane",
+            capacity_m3=max(50.0, V_gas),
+            name=f"{name or digester_id} Gas Storage",
+        )
+        self.plant.add_component(storage)
+
+        # Connect: digester → storage
+        self.connect(digester_id, storage_id, "gas")
+
+        return digester, state_info
 
     def add_chp(
         self, chp_id: str, P_el_nom: float = 500.0, eta_el: float = 0.40, eta_th: float = 0.45, name: Optional[str] = None
@@ -131,6 +156,16 @@ class PlantConfigurator:
         chp = CHP(component_id=chp_id, P_el_nom=P_el_nom, eta_el=eta_el, eta_th=eta_th, name=name or chp_id)
 
         self.plant.add_component(chp)
+
+        # ----------------------------------------------------------
+        # AUTOMATIC CHP FLARE
+        # ----------------------------------------------------------
+        flare_id = f"{chp_id}_flare"
+        flare = Flare(component_id=flare_id, name=f"{chp_id}_flare")
+        self.plant.add_component(flare)
+
+        # Connect: CHP → flare
+        self.connect(chp_id, flare_id, "gas")
 
         return chp
 

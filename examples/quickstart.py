@@ -5,8 +5,9 @@
 """
 Quickstart example for PyADM1.
 
-This is the simplest possible example showing:
+Demonstrates:
 - Single digester with substrate feed
+- Configuration using PlantConfigurator
 - Basic simulation
 - Result output
 
@@ -18,22 +19,23 @@ from pathlib import Path
 
 
 def main():
-    """Run a simple single-digester simulation."""
+    """Run a simple single-digester simulation using PlantConfigurator."""
     # Import required modules
     from pyadm1.configurator.plant_builder import BiogasPlant
-    from pyadm1.components.biological.digester import Digester
     from pyadm1.substrates.feedstock import Feedstock
     from pyadm1.core.adm1 import get_state_zero_from_initial_state
+    from pyadm1.configurator.plant_configurator import PlantConfigurator
 
     print("=" * 70)
-    print("PyADM1 Quickstart Example")
+    print("PyADM1 Quickstart Example (PlantConfigurator version)")
     print("=" * 70)
 
     # Step 1: Create feedstock
     print("\n1. Creating feedstock...")
-    feedstock = Feedstock(feeding_freq=48)  # Can change substrate every 48 hours
+    feeding_freq = 48  # Controller can change substrate every 48 hours
+    feedstock = Feedstock(feeding_freq=feeding_freq)
 
-    # Step 2: Load initial state from CSV
+    # Step 2: Prepare initial state and substrate feed
     print("2. Loading initial state from CSV...")
     data_path = Path(__file__).parent.parent / "data" / "initial_states"
     initial_state_file = data_path / "digester_initial8.csv"
@@ -46,25 +48,25 @@ def main():
         print(f"   Loading from: {initial_state_file}")
         adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
 
-    # Step 3: Create plant
+    Q_substrates = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]  # Corn silage and manure
+
+    # Step 3: Create biogas plant
     print("3. Creating biogas plant...")
     plant = BiogasPlant("Quickstart Plant")
 
-    # Step 4: Add digester
-    print("4. Adding digester...")
-    digester = Digester(
-        component_id="main_digester",
-        feedstock=feedstock,
-        V_liq=2000.0,  # 2000 m³ liquid volume
-        V_gas=300.0,  # 300 m³ gas volume
-        T_ad=308.15,  # 35°C operating temperature
+    # Step 4: Use PlantConfigurator to add digester
+    print("4. Adding digester with PlantConfigurator...")
+    configurator = PlantConfigurator(plant, feedstock)
+    configurator.add_digester(
+        digester_id="main_digester",
+        V_liq=2000.0,
+        V_gas=300.0,
+        T_ad=308.15,  # 35°C
         name="Main Digester",
+        load_initial_state=True,
+        initial_state_file=str(initial_state_file) if adm1_state else None,
+        Q_substrates=Q_substrates,
     )
-
-    # Initialize with substrate feed: 15 m³/d corn silage + 10 m³/d manure
-    digester.initialize({"adm1_state": adm1_state, "Q_substrates": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]})
-
-    plant.add_component(digester)
 
     # Step 5: Initialize plant
     print("5. Initializing plant...")

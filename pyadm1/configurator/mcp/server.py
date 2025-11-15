@@ -74,11 +74,11 @@ from pyadm1.configurator.mcp.prompts import (
 mcp = FastMCP(
     name="PyADM1 Biogas Plant Server",
     version="1.0.0",
-    description=(
-        "MCP server for designing, configuring, and simulating biogas plants "
-        "using the PyADM1 framework. Provides tools for component-based plant "
-        "modeling with ADM1 simulation capabilities."
-    ),
+    # description=(
+    #     "MCP server for designing, configuring, and simulating biogas plants "
+    #     "using the PyADM1 framework. Provides tools for component-based plant "
+    #     "modeling with ADM1 simulation capabilities."
+    # ),
 )
 
 
