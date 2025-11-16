@@ -35,10 +35,12 @@ jobs:
         sudo apt-get install -y mono-complete
         mono --version
 
-    - name: Install Mono (macOS)
+    - name: Install Mono Framework (macOS)
       if: runner.os == 'macOS'
       run: |
-        brew install mono
+        curl -L -o mono.pkg \
+          "https://download.mono-project.com/archive/6.12.0/macos-10-universal/MonoFramework-MDK-6.12.0.182.macos10.xamarin.universal.pkg"
+        sudo installer -pkg mono.pkg -target /
         mono --version
 
     - name: Setup .NET Framework (Windows)

@@ -83,7 +83,7 @@ class TestSimulatorSimulateADPlant:
         state_zero = [0.01] * 37
         tstep = [0, 1]
 
-        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("scipy.integrate.solve_ivp") as mock_solve:
             # Mock the solver result
             mock_result = Mock()
             mock_result.y = np.array([[val] * 20 for val in state_zero])
@@ -105,7 +105,7 @@ class TestSimulatorSimulateADPlant:
         state_zero = [0.01] * 37
         tstep = [0, 1]
 
-        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -126,7 +126,7 @@ class TestSimulatorSimulateADPlant:
         state_zero = [0.01] * 37
         tstep = [0, 1]
 
-        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -172,7 +172,7 @@ class TestSimulatorDetermineBestFeed:
         Qch4sp = 900
         feeding_freq = 48
 
-        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 140 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -195,7 +195,7 @@ class TestSimulatorDetermineBestFeed:
         Qch4sp = 900
         feeding_freq = 48
 
-        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 140 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -221,7 +221,7 @@ class TestSimulatorDetermineBestFeed:
         Qch4sp = 900
         feeding_freq = 48
 
-        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 140 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -245,7 +245,7 @@ class TestSimulatorDetermineBestFeed:
         Qch4sp = 900
         feeding_freq = 48
 
-        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 140 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -294,7 +294,7 @@ class TestSimulatorPrivateMethods:
         state_zero = [0.01] * 37
         tstep = [0, 1]
 
-        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -317,7 +317,7 @@ class TestSimulatorPrivateMethods:
         state_zero = [0.01] * 37
         tstep = [0, 1]
 
-        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -346,7 +346,7 @@ class TestSimulatorPrivateMethods:
         Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
         tstep = [0, 7]
 
-        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 140 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -368,7 +368,7 @@ class TestSimulatorPrivateMethods:
         state_zero = [0.01] * 37
         tstep = [0, 1]
 
-        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("scipy.integrate.solve_ivp") as mock_solve:
             mock_result = Mock()
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
@@ -427,7 +427,7 @@ class TestSimulatorIntegration:
         current_state = state_zero
         time_points = [0, 1, 2, 3]
 
-        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("scipy.integrate.solve_ivp") as mock_solve:
             for i in range(len(time_points) - 1):
                 # Create realistic solver result
                 mock_result = Mock()
@@ -461,7 +461,7 @@ class TestSimulatorIntegration:
         Qch4sp = 900
         feeding_freq = 48
 
-        with patch("pyadm1.simulation.simulator.scipy.integrate.solve_ivp") as mock_solve:
+        with patch("scipy.integrate.solve_ivp") as mock_solve:
             # Mock solver with varying results
             def create_mock_result(state, n_points=140):
                 return Mock(y=np.array([[state[j] * (1 + 0.001 * k) for k in range(n_points)] for j in range(37)]))
