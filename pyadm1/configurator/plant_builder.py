@@ -111,6 +111,11 @@ class BiogasPlant:
         """
         Perform one simulation time step for all components.
 
+        This uses a three-pass execution model:
+        1. Execute digesters to produce gas → storages
+        2. Execute CHPs to determine gas demand → storages
+        3. Execute storages to supply gas → CHPs (re-execute with actual supply)
+
         Args:
             dt (float): Time step in days.
 
@@ -119,12 +124,18 @@ class BiogasPlant:
         """
         results = {}
 
-        # Build dependency graph and execute in order
+        # Build dependency graph
         execution_order = self._get_execution_order()
 
-        # First pass: Execute all components to get their outputs
+        # ========================================================================
+        # PASS 1: Execute all non-storage components
+        # ========================================================================
         for component_id in execution_order:
             component = self.components[component_id]
+
+            # Skip storages in first pass
+            if component.component_type.value == "storage":
+                continue
 
             # Gather inputs from connected components
             inputs = {}
@@ -137,61 +148,104 @@ class BiogasPlant:
             output = component.step(self.simulation_time, dt, inputs)
             results[component_id] = output
 
-        # Second pass: Handle gas demand from CHP back to storages
-        # Find all CHPs and calculate their total gas demand
+        # ========================================================================
+        # PASS 2: Execute gas storages with gas production from digesters
+        # ========================================================================
+        for component_id in execution_order:
+            component = self.components[component_id]
+
+            if component.component_type.value != "storage":
+                continue
+
+            # Get gas input from connected digesters
+            gas_input = 0.0
+            for conn in self.connections:
+                if conn.to_component == component_id and conn.connection_type == "gas":
+                    source_comp = self.components.get(conn.from_component)
+                    if source_comp and source_comp.component_type.value == "digester":
+                        gas_input += source_comp.outputs_data.get("Q_gas", 0.0)
+
+            # Execute storage with production only (no demand yet)
+            storage_inputs = {
+                "Q_gas_in_m3_per_day": gas_input,
+                "Q_gas_out_m3_per_day": 0.0,  # No demand yet
+                "vent_to_flare": True,
+            }
+
+            output = component.step(self.simulation_time, dt, storage_inputs)
+            results[component_id] = output
+
+        # ========================================================================
+        # PASS 3: Handle gas demand from CHPs
+        # ========================================================================
         for component_id, component in self.components.items():
-            if component.component_type.value == "chp":
-                gas_demand = component.outputs_data.get("Q_gas_out_m3_per_day", 0.0)
+            if component.component_type.value != "chp":
+                continue
 
-                if gas_demand <= 0:
-                    continue
+            # Calculate CHP gas demand based on current operating point
+            P_el_nom = component.P_el_nom
+            eta_el = component.eta_el
+            load_setpoint = 1.0  # Full load by default
 
-                # Find all gas storages connected to this CHP
-                connected_storages = []
+            # Calculate required gas (m³/d biogas at 60% CH4)
+            E_ch4 = 10.0  # kWh/m³ CH4
+            CH4_content = 0.60
+            P_required = load_setpoint * P_el_nom  # kW
+            Q_ch4_required = (P_required / eta_el) * 24.0 / E_ch4  # m³/d CH4
+            Q_gas_required = Q_ch4_required / CH4_content  # m³/d biogas
+
+            # Find all gas storages connected to this CHP
+            connected_storages = []
+            for conn in self.connections:
+                if conn.to_component == component_id and conn.connection_type == "gas":
+                    storage_id = conn.from_component
+                    if storage_id in self.components:
+                        storage_comp = self.components[storage_id]
+                        if storage_comp.component_type.value == "storage":
+                            connected_storages.append(storage_id)
+
+            if not connected_storages:
+                continue
+
+            # Distribute demand equally among storages
+            demand_per_storage = Q_gas_required / len(connected_storages)
+
+            total_supplied = 0.0
+
+            # Re-execute storages with gas demand
+            for storage_id in connected_storages:
+                storage = self.components[storage_id]
+
+                # Get gas input from pass 2
+                gas_input = 0.0
                 for conn in self.connections:
-                    if conn.to_component == component_id and conn.connection_type == "gas":
-                        storage_id = conn.from_component
-                        # Verify it's actually a storage component
-                        if storage_id in self.components:
-                            storage_comp = self.components[storage_id]
-                            if storage_comp.component_type.value == "storage":
-                                connected_storages.append(storage_id)
+                    if conn.to_component == storage_id and conn.connection_type == "gas":
+                        source_comp = self.components.get(conn.from_component)
+                        if source_comp and source_comp.component_type.value == "digester":
+                            gas_input += source_comp.outputs_data.get("Q_gas", 0.0)
 
-                if not connected_storages:
-                    continue
+                # Re-execute with demand
+                storage_inputs = {
+                    "Q_gas_in_m3_per_day": gas_input,
+                    "Q_gas_out_m3_per_day": demand_per_storage,
+                    "vent_to_flare": True,
+                }
 
-                # Distribute gas demand equally among connected storages
-                demand_per_storage = gas_demand / len(connected_storages)
+                storage_output = storage.step(self.simulation_time, dt, storage_inputs)
+                results[storage_id] = storage_output
 
-                total_supplied = 0.0
+                # Accumulate supplied gas
+                supplied = storage_output.get("Q_gas_supplied_m3_per_day", 0.0)
+                total_supplied += supplied
 
-                # Re-execute each connected storage with its share of demand
-                for storage_id in connected_storages:
-                    storage = self.components[storage_id]
+            # Re-execute CHP with actual gas supply
+            chp_inputs = {
+                "Q_gas_supplied_m3_per_day": total_supplied,
+                "load_setpoint": load_setpoint,
+            }
 
-                    # Get the original gas input to this storage (from first pass)
-                    original_gas_in = storage.outputs_data.get("Q_gas_in_m3_per_day", 0.0)
-
-                    # Create new inputs with gas demand
-                    storage_inputs = {
-                        "Q_gas_in_m3_per_day": original_gas_in,
-                        "Q_gas_out_m3_per_day": demand_per_storage,
-                        "vent_to_flare": True,
-                    }
-
-                    # Re-step the storage with demand
-                    storage_output = storage.step(self.simulation_time, dt, storage_inputs)
-                    results[storage_id] = storage_output
-
-                    # Accumulate actually supplied gas
-                    supplied = storage_output.get("Q_gas_supplied_m3_per_day", 0.0)
-                    total_supplied += supplied
-
-                # Now re-execute CHP with actual supplied gas
-                chp_inputs = {"Q_gas_supplied_m3_per_day": total_supplied}
-
-                chp_output = component.step(self.simulation_time, dt, chp_inputs)
-                results[component_id] = chp_output
+            chp_output = component.step(self.simulation_time, dt, chp_inputs)
+            results[component_id] = chp_output
 
         self.simulation_time += dt
 

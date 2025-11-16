@@ -111,22 +111,22 @@ class CHP(Component):
                 - 'Q_gas_out_m3_per_day': Gas demand for connected storages [m³/d]
                 - 'Q_ch4_remaining': Remaining methane [m³/d]
         """
-        # Get available gas from inputs (either direct Q_ch4 or from gas storage)
+        # Determine gas source priority:
+        # 1. Direct gas supply from storage (preferred, plant_builder managed)
+        # 2. Direct CH4 from digester (fallback for simple configurations)
+
+        Q_gas_from_storage = inputs.get("Q_gas_supplied_m3_per_day", 0.0)
         Q_ch4_direct = inputs.get("Q_ch4", 0.0)
 
-        # Sum gas from all connected gas storages
-        Q_gas_from_storage = 0.0
-        for input_component in self.inputs:
-            if input_component.endswith("_storage"):
-                Q_gas_from_storage += inputs.get("Q_gas_supplied_m3_per_day", 0.0)
-
-        # TODO: strange that we have to assume a methane concentration here, actually we should have it
-        # Assume 60% methane content in biogas
+        # Assume 60% methane content in biogas from storage
         CH4_content = 0.60
-        Q_ch4_from_storage = Q_gas_from_storage * CH4_content
 
-        # Total available methane
-        Q_ch4_available = Q_ch4_direct + Q_ch4_from_storage
+        if Q_gas_from_storage > 0:
+            # Use gas from storage (normal operation)
+            Q_ch4_available = Q_gas_from_storage * CH4_content
+        else:
+            # Fallback: use direct CH4 from digester
+            Q_ch4_available = Q_ch4_direct
 
         load_setpoint = inputs.get("load_setpoint", 1.0)
 
