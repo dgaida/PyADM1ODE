@@ -50,8 +50,8 @@ class TestSimulatorInitialization:
         """
         simulator = Simulator(mock_adm1)
 
-        assert hasattr(simulator, "_solvermethod"), "Should have solver method attribute"
-        assert simulator._solvermethod == "BDF", "Should use BDF solver for stiff ODEs"
+        assert hasattr(simulator, "_solver"), "Should have solver attribute"
+        assert simulator._solver.config.method == "BDF", "Should use BDF solver for stiff ODEs"
 
 
 class TestSimulatorSimulateADPlant:
@@ -324,7 +324,7 @@ class TestSimulatorPrivateMethods:
 
     def test_simulate_uses_bdf_solver(self, mock_adm1_basic: Mock) -> None:
         """
-        Test that _simulate uses BDF solver method.
+        Test that _simulate_without_saving_state uses BDF solver method.
 
         Args:
             mock_adm1_basic: Mock ADM1 fixture.
@@ -332,6 +332,7 @@ class TestSimulatorPrivateMethods:
         simulator = Simulator(mock_adm1_basic)
 
         state_zero = [0.01] * 37
+        Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
         tstep = [0, 1]
 
         with patch("scipy.integrate.solve_ivp") as mock_solve:
@@ -339,7 +340,7 @@ class TestSimulatorPrivateMethods:
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
 
-            simulator._simulate(tstep, state_zero)
+            simulator._simulate_without_saving_state(tstep, state_zero, Q)
 
             # Check that solve_ivp was called with method='BDF'
             call_kwargs = mock_solve.call_args[1]
@@ -347,7 +348,7 @@ class TestSimulatorPrivateMethods:
 
     def test_simulate_uses_correct_time_eval(self, mock_adm1_basic: Mock) -> None:
         """
-        Test that _simulate uses time evaluation with 0.05 step.
+        Test that _simulate_without_saving_state uses time evaluation with 0.05 step.
 
         Args:
             mock_adm1_basic: Mock ADM1 fixture.
@@ -355,6 +356,7 @@ class TestSimulatorPrivateMethods:
         simulator = Simulator(mock_adm1_basic)
 
         state_zero = [0.01] * 37
+        Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
         tstep = [0, 1]
 
         with patch("scipy.integrate.solve_ivp") as mock_solve:
@@ -362,7 +364,7 @@ class TestSimulatorPrivateMethods:
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
 
-            simulator._simulate(tstep, state_zero)
+            simulator._simulate_without_saving_state(tstep, state_zero, Q)
 
             call_kwargs = mock_solve.call_args[1]
             t_eval = call_kwargs.get("t_eval")
