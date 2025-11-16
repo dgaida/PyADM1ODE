@@ -89,7 +89,7 @@ class TestSimulatorSimulateADPlant:
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
 
-            result = simulator.simulateADplant(tstep, state_zero)
+            result = simulator.simulate_AD_plant(tstep, state_zero)
 
         assert isinstance(result, list), "Should return a list"
 
@@ -110,7 +110,7 @@ class TestSimulatorSimulateADPlant:
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
 
-            result = simulator.simulateADplant(tstep, state_zero)
+            result = simulator.simulate_AD_plant(tstep, state_zero)
 
         assert len(result) == 37, f"Should return 37 elements, got {len(result)}"
 
@@ -131,7 +131,7 @@ class TestSimulatorSimulateADPlant:
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
 
-            simulator.simulateADplant(tstep, state_zero)
+            simulator.simulate_AD_plant(tstep, state_zero)
 
         mock_adm1_with_params.print_params_at_current_state.assert_called_once()
 
@@ -177,7 +177,7 @@ class TestSimulatorDetermineBestFeed:
             mock_result.y = np.array([[val] * 140 for val in state_zero])
             mock_solve.return_value = mock_result
 
-            result = simulator.determineBestFeedbyNSims(state_zero, Q, Qch4sp, feeding_freq, n=13)
+            result = simulator.determine_best_feed_by_n_sims(state_zero, Q, Qch4sp, feeding_freq, n=13)
 
         assert len(result) == 10, f"Should return 10 values, got {len(result)}"
 
@@ -200,7 +200,7 @@ class TestSimulatorDetermineBestFeed:
             mock_result.y = np.array([[val] * 140 for val in state_zero])
             mock_solve.return_value = mock_result
 
-            result = simulator.determineBestFeedbyNSims(state_zero, Q, Qch4sp, feeding_freq, n=13)
+            result = simulator.determine_best_feed_by_n_sims(state_zero, Q, Qch4sp, feeding_freq, n=13)
 
         # Best Q is at index 2
         best_Q = result[2]
@@ -227,7 +227,7 @@ class TestSimulatorDetermineBestFeed:
             mock_solve.return_value = mock_result
 
             # Should work with n=3 (minimum)
-            result = simulator.determineBestFeedbyNSims(state_zero, Q, Qch4sp, feeding_freq, n=3)
+            result = simulator.determine_best_feed_by_n_sims(state_zero, Q, Qch4sp, feeding_freq, n=3)
 
         assert result is not None, "Should work with n=3"
 
@@ -250,7 +250,7 @@ class TestSimulatorDetermineBestFeed:
             mock_result.y = np.array([[val] * 140 for val in state_zero])
             mock_solve.return_value = mock_result
 
-            result = simulator.determineBestFeedbyNSims(state_zero, Q, Qch4sp, feeding_freq, n=5)
+            result = simulator.determine_best_feed_by_n_sims(state_zero, Q, Qch4sp, feeding_freq, n=5)
 
         # Check gas flows (indices 0, 1, 3, 4, 6, 7, 8, 9)
         q_gas_best = result[0]
@@ -351,7 +351,7 @@ class TestSimulatorPrivateMethods:
             mock_result.y = np.array([[val] * 140 for val in state_zero])
             mock_solve.return_value = mock_result
 
-            q_gas, q_ch4 = simulator._simulate_wosavinglaststate(tstep, state_zero, Q)
+            q_gas, q_ch4 = simulator._simulate_without_saving_state(tstep, state_zero, Q)
 
         assert isinstance(q_gas, (int, float, np.ndarray)), "q_gas should be numeric"
         assert isinstance(q_ch4, (int, float, np.ndarray)), "q_ch4 should be numeric"
@@ -373,7 +373,7 @@ class TestSimulatorPrivateMethods:
             mock_result.y = np.array([[val] * 20 for val in state_zero])
             mock_solve.return_value = mock_result
 
-            result = simulator._simulate_returnlaststate(tstep, state_zero)
+            result = simulator._simulate_and_return_final_state(tstep, state_zero)
 
         assert len(result) == 37, f"Should return 37 elements, got {len(result)}"
 
@@ -436,7 +436,7 @@ class TestSimulatorIntegration:
                 mock_solve.return_value = mock_result
 
                 tstep = [time_points[i], time_points[i + 1]]
-                current_state = simulator.simulateADplant(tstep, current_state)
+                current_state = simulator.simulate_AD_plant(tstep, current_state)
 
                 assert len(current_state) == 37, "State should maintain 37 elements"
                 assert all(np.isfinite(current_state)), "All state values should be finite"
@@ -468,7 +468,7 @@ class TestSimulatorIntegration:
 
             mock_solve.return_value = create_mock_result(state_zero)
 
-            result = simulator.determineBestFeedbyNSims(state_zero, Q, Qch4sp, feeding_freq, n=5)
+            result = simulator.determine_best_feed_by_n_sims(state_zero, Q, Qch4sp, feeding_freq, n=5)
 
             best_Q = result[2]
 

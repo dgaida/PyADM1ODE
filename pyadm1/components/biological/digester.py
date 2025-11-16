@@ -8,22 +8,42 @@ This module provides the Digester class which encapsulates the ADM1 model
 for anaerobic digestion in a component-based framework.
 """
 
-import clr
-import os
 
-from typing import Dict, Any, List, Optional
-import numpy as np
+def try_load_clr():
+    import platform
 
-from pyadm1.components.base import Component, ComponentType
-from pyadm1.core.adm1 import ADM1
-from pyadm1.substrates.feedstock import Feedstock
-from pyadm1.simulation.simulator import Simulator
-from pyadm1.components.energy.gas_storage import GasStorage
+    if platform.system() == "Darwin":
+        return None
+    try:
+        import clr
 
-# CLR reference must be added before importing from DLL
-dll_path = os.path.join(os.path.dirname(__file__), "..", "..", "dlls")
-clr.AddReference(os.path.join(dll_path, "plant"))
-from biogas import ADMstate  # noqa: E402  # type: ignore
+        return clr
+    except Exception as e:
+        print(e)
+        return None
+
+
+clr = try_load_clr()
+
+
+import os  # noqa: E402  # type: ignore
+
+from typing import Dict, Any, List, Optional  # noqa: E402  # type: ignore
+import numpy as np  # noqa: E402  # type: ignore
+
+from pyadm1.components.base import Component, ComponentType  # noqa: E402  # type: ignore
+from pyadm1.core.adm1 import ADM1  # noqa: E402  # type: ignore
+from pyadm1.substrates.feedstock import Feedstock  # noqa: E402  # type: ignore
+from pyadm1.simulation.simulator import Simulator  # noqa: E402  # type: ignore
+from pyadm1.components.energy.gas_storage import GasStorage  # noqa: E402  # type: ignore
+
+if clr is None:
+    raise RuntimeError("CLR features unavailable on this platform")
+else:
+    # CLR reference must be added before importing from DLL
+    dll_path = os.path.join(os.path.dirname(__file__), "..", "..", "dlls")
+    clr.AddReference(os.path.join(dll_path, "plant"))
+    from biogas import ADMstate  # noqa: E402  # type: ignore
 
 
 class Digester(Component):

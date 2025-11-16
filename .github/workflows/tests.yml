@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]  # clr does not run under macOS
         python-version: ['3.10', '3.11']  # fastmcp needs at least 3.10
       fail-fast: false
 
@@ -35,13 +35,10 @@ jobs:
         sudo apt-get install -y mono-complete
         mono --version
 
-    - name: Install Mono Framework (macOS)
+    - name: Disable pythonnet on macOS
       if: runner.os == 'macOS'
       run: |
-        curl -L -o mono.pkg \
-          "https://download.mono-project.com/archive/6.12.0/macos-10-universal/MonoFramework-MDK-6.12.0.182.macos10.xamarin.universal.pkg"
-        sudo installer -pkg mono.pkg -target /
-        mono --version
+        echo "PYTHONNET_RUNTIME=Null" >> $GITHUB_ENV
 
     - name: Setup .NET Framework (Windows)
       if: runner.os == 'Windows'

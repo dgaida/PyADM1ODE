@@ -318,7 +318,7 @@ class TestADM1CreateInfluent:
         adm1 = ADM1(mock_feedstock)
         Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
 
-        adm1.createInfluent(Q, 0)
+        adm1.create_influent(Q, 0)
 
         assert adm1._Q == Q, "Should store flow rate vector"
 
@@ -332,7 +332,7 @@ class TestADM1CreateInfluent:
         adm1 = ADM1(mock_feedstock)
         Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
 
-        adm1.createInfluent(Q, 0)
+        adm1.create_influent(Q, 0)
 
         mock_feedstock.get_influent_dataframe.assert_called_once_with(Q)
 
