@@ -165,6 +165,16 @@ class TestSimulatorDetermineBestFeed:
         Args:
             mock_adm1_for_optimization: Mock ADM1 fixture.
         """
+        # Fix feedstock mock to match how Simulator expects to call it
+        from pyadm1.substrates.feedstock import Feedstock
+
+        mock_feedstock = Mock(spec=Feedstock)
+        mock_feedstock.get_substrate_feed_mixtures = Mock(
+            return_value=[[15 + i, 10 + i, 0, 0, 0, 0, 0, 0, 0, 0] for i in range(13)]
+        )
+
+        mock_adm1_for_optimization.feedstock = mock_feedstock
+
         simulator = Simulator(mock_adm1_for_optimization)
 
         state_zero = [0.01] * 37
@@ -188,6 +198,16 @@ class TestSimulatorDetermineBestFeed:
         Args:
             mock_adm1_for_optimization: Mock ADM1 fixture.
         """
+        # Fix feedstock mock to match how Simulator expects to call it
+        from pyadm1.substrates.feedstock import Feedstock
+
+        mock_feedstock = Mock(spec=Feedstock)
+        mock_feedstock.get_substrate_feed_mixtures = Mock(
+            return_value=[[15 + i, 10 + i, 0, 0, 0, 0, 0, 0, 0, 0] for i in range(13)]
+        )
+
+        mock_adm1_for_optimization.feedstock = mock_feedstock
+
         simulator = Simulator(mock_adm1_for_optimization)
 
         state_zero = [0.01] * 37
@@ -214,6 +234,16 @@ class TestSimulatorDetermineBestFeed:
         Args:
             mock_adm1_for_optimization: Mock ADM1 fixture.
         """
+        # Fix feedstock mock to match how Simulator expects to call it
+        from pyadm1.substrates.feedstock import Feedstock
+
+        mock_feedstock = Mock(spec=Feedstock)
+        mock_feedstock.get_substrate_feed_mixtures = Mock(
+            return_value=[[15 + i, 10 + i, 0, 0, 0, 0, 0, 0, 0, 0] for i in range(3)]
+        )
+
+        mock_adm1_for_optimization.feedstock = mock_feedstock
+
         simulator = Simulator(mock_adm1_for_optimization)
 
         state_zero = [0.01] * 37
@@ -238,6 +268,16 @@ class TestSimulatorDetermineBestFeed:
         Args:
             mock_adm1_for_optimization: Mock ADM1 fixture.
         """
+        # Fix feedstock mock to match how Simulator expects to call it
+        from pyadm1.substrates.feedstock import Feedstock
+
+        mock_feedstock = Mock(spec=Feedstock)
+        mock_feedstock.get_substrate_feed_mixtures = Mock(
+            return_value=[[15 + i, 10 + i, 0, 0, 0, 0, 0, 0, 0, 0] for i in range(5)]
+        )
+
+        mock_adm1_for_optimization.feedstock = mock_feedstock
+
         simulator = Simulator(mock_adm1_for_optimization)
 
         state_zero = [0.01] * 37
