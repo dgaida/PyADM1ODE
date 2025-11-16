@@ -26,7 +26,7 @@ class TestSimulatorInitialization:
         """
         adm1 = Mock(spec=ADM1)
         adm1.V_liq = 1977
-        adm1.createInfluent = Mock()
+        adm1.create_influent = Mock()
         adm1.ADM1_ODE = Mock(return_value=[0.01] * 37)
         return adm1
 
@@ -448,11 +448,14 @@ class TestSimulatorIntegration:
         Args:
             mock_adm1_full: Mock ADM1 fixture.
         """
-        # Add feedstock mock for this test
-        mock_adm1_full.feedstock = Mock()
-        mock_adm1_full.feedstock.return_value.get_substrate_feed_mixtures = Mock(
+        # instead of making feedstock callable, create a mock that exposes the method directly
+        from pyadm1.substrates.feedstock import Feedstock
+
+        mock_feedstock = Mock(spec=Feedstock)
+        mock_feedstock.get_substrate_feed_mixtures = Mock(
             return_value=[[15 + i, 10 + i, 0, 0, 0, 0, 0, 0, 0, 0] for i in range(5)]
         )
+        mock_adm1_full.feedstock = mock_feedstock
 
         simulator = Simulator(mock_adm1_full)
 

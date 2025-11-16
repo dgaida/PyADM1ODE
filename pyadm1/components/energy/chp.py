@@ -91,6 +91,8 @@ class CHP(Component):
             "Q_ch4_remaining": 0.0,
         }
 
+        self._initialized = True
+
     def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Perform one simulation time step.
