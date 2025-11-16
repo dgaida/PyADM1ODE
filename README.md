@@ -409,7 +409,7 @@ This framework supports research in:
 
 The framework has been validated against:
 - **SIMBA#**: Commercial biogas simulation software
-- **ADM1F**: LANL's Fortran ADM1 implementation
+- **[ADM1F](https://github.com/lanl/ADM1F)**: LANL's Fortran ADM1 implementation
 - **Real plant data**: Multiple agricultural biogas plants
 
 ## Development Status
@@ -436,7 +436,7 @@ Areas where we need help:
 
 ## Citation
 
-If you use PyADM1 in your research, please cite:
+If you use PyADM1ODE in your research, please cite:
 ```bibtex
 @software{pyadm1,
   author = {Gaida, Daniel},
@@ -459,13 +459,16 @@ If you use PyADM1 in your research, please cite:
 
 - **Batstone, D.J., et al. (2002).** *Anaerobic Digestion Model No. 1 (ADM1).* IWA Publishing, London.
 
+- **Sadrimajd, P., Mannion, P., Howley, E., & Lens, P.N.L. (2021).** *PyADM1: a Python implementation of Anaerobic Digestion Model No. 1.* bioRxiv. DOI: [10.1101/2021.03.03.433746](https://doi.org/10.1101/2021.03.03.433746)
+
 ## License
 
 This project is licensed under the MIT License - see [LICENSE](LICENSE) for details.
 
 ## Acknowledgments
 
-- Original ADM1 development by IWA Task Group
+- Original [PyADM1](https://github.com/CaptainFerMag/PyADM1) implementation by Peyman Sadrimajd et al. that motivated me to create this project
+- ADM1 development by IWA Task Group
 - SIMBA implementation by ifak e.V.
 
 ## Contact

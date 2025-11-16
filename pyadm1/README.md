@@ -1,10 +1,10 @@
-# PyADM1ODE
+# pyadm1
 
 A Python implementation of the Anaerobic Digestion Model No. 1 (ADM1) as a system of Ordinary Differential Equations (ODEs) without differential algebraic equations (DAEs).
 
 ## Overview
 
-PyADM1ODE is specifically designed for simulating agricultural co-digestion plants. The ADM1 input stream is calculated from agricultural substrates, making this implementation particularly useful for:
+pyadm1 is specifically designed for simulating agricultural co-digestion plants. The ADM1 input stream is calculated from agricultural substrates, making this implementation particularly useful for:
 
 - Biogas plant process simulation
 - Substrate feed optimization
@@ -148,26 +148,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Daniel Gaida**
 - GitHub: [@dgaida](https://github.com/dgaida)
-
-## Citation
-
-If you use this software in your research, please cite:
-
-```bibtex
-@phdthesis{gaida2014dynamic,
-  title={Dynamic real-time substrate feed optimization of anaerobic co-digestion plants},
-  author={Gaida, Daniel},
-  year={2014},
-  school={Universiteit Leiden}
-}
-
-@software{pyadm1ode,
-  author={Gaida, Daniel},
-  title={PyADM1ODE: Python implementation of Anaerobic Digestion Model No. 1},
-  year={2024},
-  url={https://github.com/dgaida/PyADM1ODE}
-}
-```
 
 ---
 

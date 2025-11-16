@@ -157,6 +157,8 @@ class GasStorage(Component):
         Q_out_req = float(inputs.get("Q_gas_out_m3_per_day", 0.0))
         allow_vent = bool(inputs.get("vent_to_flare", True))
 
+        print(f"gas storage Q_in {Q_in}, Q_out: {Q_out_req}")
+
         # pressure setpoint handling (bar) - if provided, store it for internal control
         if "set_pressure" in inputs:
             sp = inputs["set_pressure"]
@@ -239,6 +241,8 @@ class GasStorage(Component):
         # perform outflow
         self.stored_volume_m3 -= desired_out_vol
         supplied_this_step_m3_per_day = desired_out_vol / max(dt, 1e-12)  # convert back to m3/day
+
+        print("storage tank:", supplied_this_step_m3_per_day, self.stored_volume_m3)
 
         # After flows, update pressure and check safety
         current_pressure = self._estimate_pressure_bar()
