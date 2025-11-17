@@ -58,7 +58,7 @@ Example:
 from pyadm1.calibration.calibrator import Calibrator, CalibrationResult
 from pyadm1.calibration.initial import InitialCalibrator
 
-# from pyadm1.calibration.online import OnlineCalibrator
+from pyadm1.calibration.online import OnlineCalibrator
 from pyadm1.calibration.parameter_bounds import (
     ParameterBounds,
     BoundType,
@@ -76,7 +76,7 @@ __all__ = [
     "Calibrator",
     "CalibrationResult",
     "InitialCalibrator",
-    # "OnlineCalibrator",
+    "OnlineCalibrator",
     "ParameterBounds",
     "BoundType",
     "create_default_bounds",

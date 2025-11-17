@@ -66,9 +66,9 @@ from pyadm1.calibration.optimization.objective import (
 )
 from pyadm1.calibration.optimization.constraints import (
     ParameterConstraints,
-    BoxConstraints,
-    LinearConstraints,
-    NonlinearConstraints,
+    BoxConstraint,
+    LinearConstraint,
+    NonlinearConstraint,
     PenaltyFunction,
 )
 
@@ -86,8 +86,8 @@ __all__ = [
     "WeightedSumObjective",
     "LikelihoodObjective",
     "ParameterConstraints",
-    "BoxConstraints",
-    "LinearConstraints",
-    "NonlinearConstraints",
+    "BoxConstraint",
+    "LinearConstraint",
+    "NonlinearConstraint",
     "PenaltyFunction",
 ]
