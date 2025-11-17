@@ -800,23 +800,33 @@ class ADM1:
 
     def _get_substrate_dependent_params(self) -> dict:
         """
-        Get substrate-dependent parameters from C# DLL. The parameters
-        used in these calculations are defined in substrate_...xml. Documentation in PhD thesis of D. Gaida, 2014
+        Get substrate-dependent parameters from C# DLL with calibration override support.
 
-        Calculates ADM1 parameters that depend on substrate composition
-        using weighted averaging based on volumetric flow rates.
+        Calculates ADM1 parameters that depend on substrate composition using weighted
+        averaging based on volumetric flow rates. If calibration parameters are set
+        (via _calibration_params attribute), those values override the calculated ones.
+        TODO: do I want this behaviour that during calibration the parameters are overriden?
 
         Returns:
-            Dictionary with substrate-dependent parameters:
+            dict: Substrate-dependent parameters with keys:
                 - f_ch_xc, f_pr_xc, f_li_xc: Composite fractions
                 - f_xI_xc, f_sI_xc, f_xp_xc: Inert and product fractions
                 - k_dis: Disintegration rate [1/d]
                 - k_hyd_ch, k_hyd_pr, k_hyd_li: Hydrolysis rates [1/d]
                 - k_m_c4, k_m_pro, k_m_ac, k_m_h2: Uptake rates [1/d]
+
+        Example:
+            >>> # Normal usage
+            >>> params = adm1._get_substrate_dependent_params()
+            >>>
+            >>> # With calibration override
+            >>> adm1._calibration_params = {'k_dis': 0.55, 'Y_su': 0.105}
+            >>> params = adm1._get_substrate_dependent_params()
+            >>> # k_dis will be 0.55 instead of calculated value
         """
         if self._Q is None:
             # Return default values if Q not set
-            return {
+            base_params = {
                 "f_ch_xc": 0.2,
                 "f_pr_xc": 0.2,
                 "f_li_xc": 0.3,
@@ -832,31 +842,84 @@ class ADM1:
                 "k_m_ac": 8.0,
                 "k_m_h2": 35.0,
             }
+        else:
+            # Calculate weighted substrate parameters from C# DLL
+            f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = self._feedstock.mySubstrates().calcfFactors(self._Q)
+            f_xp_xc = max(f_xp_xc, 0.0)
 
-        # Calculate weighted substrate parameters
-        f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = self._feedstock.mySubstrates().calcfFactors(self._Q)
-        f_xp_xc = max(f_xp_xc, 0.0)
+            k_dis = self._feedstock.mySubstrates().calcDisintegrationParam(self._Q)
+            k_hyd_ch, k_hyd_pr, k_hyd_li = self._feedstock.mySubstrates().calcHydrolysisParams(self._Q)
+            k_m_c4, k_m_pro, k_m_ac, k_m_h2 = self._feedstock.mySubstrates().calcMaxUptakeRateParams(self._Q)
 
-        k_dis = self._feedstock.mySubstrates().calcDisintegrationParam(self._Q)
-        k_hyd_ch, k_hyd_pr, k_hyd_li = self._feedstock.mySubstrates().calcHydrolysisParams(self._Q)
-        k_m_c4, k_m_pro, k_m_ac, k_m_h2 = self._feedstock.mySubstrates().calcMaxUptakeRateParams(self._Q)
+            base_params = {
+                "f_ch_xc": f_ch_xc,
+                "f_pr_xc": f_pr_xc,
+                "f_li_xc": f_li_xc,
+                "f_xI_xc": f_xI_xc,
+                "f_sI_xc": f_sI_xc,
+                "f_xp_xc": f_xp_xc,
+                "k_dis": k_dis,
+                "k_hyd_ch": k_hyd_ch,
+                "k_hyd_pr": k_hyd_pr,
+                "k_hyd_li": k_hyd_li,
+                "k_m_c4": k_m_c4,
+                "k_m_pro": k_m_pro,
+                "k_m_ac": k_m_ac,
+                "k_m_h2": k_m_h2,
+            }
 
-        return {
-            "f_ch_xc": f_ch_xc,
-            "f_pr_xc": f_pr_xc,
-            "f_li_xc": f_li_xc,
-            "f_xI_xc": f_xI_xc,
-            "f_sI_xc": f_sI_xc,
-            "f_xp_xc": f_xp_xc,
-            "k_dis": k_dis,
-            "k_hyd_ch": k_hyd_ch,
-            "k_hyd_pr": k_hyd_pr,
-            "k_hyd_li": k_hyd_li,
-            "k_m_c4": k_m_c4,
-            "k_m_pro": k_m_pro,
-            "k_m_ac": k_m_ac,
-            "k_m_h2": k_m_h2,
-        }
+        # Apply calibration parameter overrides if they exist
+        if hasattr(self, "_calibration_params") and self._calibration_params:
+            for param_name, param_value in self._calibration_params.items():
+                if param_name in base_params:
+                    base_params[param_name] = param_value
+
+        return base_params
+
+    def set_calibration_parameters(self, parameters: dict) -> None:
+        """
+        Set calibration parameters that override substrate-dependent calculations.
+
+        Args:
+            parameters: Parameter values as {param_name: value}.
+
+        Example:
+            >>> adm1.set_calibration_parameters({
+            ...     'k_dis': 0.55,
+            ...     'k_hyd_ch': 11.0,
+            ...     'Y_su': 0.105
+            ... })
+        """
+        if not hasattr(self, "_calibration_params"):
+            self._calibration_params = {}
+
+        self._calibration_params.update(parameters)
+
+    def clear_calibration_parameters(self) -> None:
+        """
+        Clear all calibration parameters and revert to substrate-dependent calculations.
+
+        Example:
+            >>> adm1.clear_calibration_parameters()
+        """
+        if hasattr(self, "_calibration_params"):
+            self._calibration_params = {}
+
+    def get_calibration_parameters(self) -> dict:
+        """
+        Get currently set calibration parameters.
+
+        Returns:
+            dict: Current calibration parameters as {param_name: value}.
+
+        Example:
+            >>> params = adm1.get_calibration_parameters()
+            >>> print(params)
+            {'k_dis': 0.55, 'Y_su': 0.105}
+        """
+        if hasattr(self, "_calibration_params"):
+            return self._calibration_params.copy()
+        return {}
 
     # Properties for accessing model parameters and results
     @property

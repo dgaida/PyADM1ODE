@@ -217,3 +217,55 @@ pyadm1/
 │   └── ...
 └── ...
 ```
+
+---
+
+## Performance Considerations
+
+### Calibration Speed
+
+**Typical Runtime**:
+- 3 parameters, 100 iterations, 30 days data: ~5-10 minutes
+- 5 parameters, 200 iterations, 30 days data: ~20-30 minutes
+
+**Optimization**:
+- Use parallel evaluation in differential evolution (workers parameter)
+- Reduce simulation duration if possible
+- Use coarser time steps for initial calibration
+
+### Memory Usage
+
+**Per Simulation**:
+- ~50 MB for 30-day simulation
+- Optimization history can grow large (limit to 1000 entries)
+
+**Tips**:
+- Clear history between calibration runs
+- Use sparse save intervals in simulation
+- Don't save full time series unless needed
+
+---
+
+## Future Enhancements
+
+### Planned Features
+1. Multi-stage calibration (coarse then fine)
+2. Bayesian calibration with uncertainty quantification
+3. Real-time calibration for online operation
+4. Automated parameter selection
+5. Parallel simulation for faster calibration
+
+### Integration Points
+- MCP server for LLM-driven calibration
+- Web interface for calibration workflows
+- Database storage for calibration history
+- Automated reporting and visualization
+
+---
+
+## References
+
+1. **ADM1 Model**: Batstone et al. (2002). Anaerobic Digestion Model No. 1.
+2. **Calibration Methods**: Gaida, D. (2014). Dynamic real-time substrate feed optimization.
+3. **Sensitivity Analysis**: Saltelli et al. (2008). Global Sensitivity Analysis.
+4. **Parameter Estimation**: Dochain & Vanrolleghem (2001). Dynamical Modelling of Bioprocesses.

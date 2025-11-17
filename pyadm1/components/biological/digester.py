@@ -317,3 +317,63 @@ class Digester(Component):
             digester.initialize(config["state"])
 
         return digester
+
+    def apply_calibration_parameters(self, parameters: dict) -> None:
+        """
+        Apply calibration parameters to this digester.
+
+        Stores parameters for use during simulation. These override the
+        substrate-dependent parameters calculated from feedstock.
+
+        Args:
+            parameters: Parameter values as {param_name: value}.
+
+        Example:
+            >>> digester.apply_calibration_parameters({
+            ...     'k_dis': 0.55,
+            ...     'Y_su': 0.105,
+            ...     'k_hyd_ch': 11.0
+            ... })
+        """
+        if not hasattr(self, "_calibration_params"):
+            self._calibration_params = {}
+
+        self._calibration_params.update(parameters)
+
+        # Also store in ADM1 instance for access during simulation
+        self.adm1._calibration_params = self._calibration_params.copy()
+
+        if hasattr(self, "_verbose") and self._verbose:
+            print(f"Applied {len(parameters)} calibration parameters to digester '{self.component_id}'")
+
+    def get_calibration_parameters(self) -> dict:
+        """
+        Get currently applied calibration parameters.
+
+        Returns:
+            dict: Current calibration parameters as {param_name: value}.
+
+        Example:
+            >>> params = digester.get_calibration_parameters()
+            >>> print(params)
+            {'k_dis': 0.55, 'Y_su': 0.105}
+        """
+        if hasattr(self, "_calibration_params"):
+            return self._calibration_params.copy()
+        return {}
+
+    def clear_calibration_parameters(self) -> None:
+        """
+        Clear all calibration parameters and revert to default substrate-dependent values.
+
+        Example:
+            >>> digester.clear_calibration_parameters()
+        """
+        if hasattr(self, "_calibration_params"):
+            del self._calibration_params
+
+        if hasattr(self.adm1, "_calibration_params"):
+            del self.adm1._calibration_params
+
+        if hasattr(self, "_verbose") and self._verbose:
+            print(f"Cleared calibration parameters from digester '{self.component_id}'")

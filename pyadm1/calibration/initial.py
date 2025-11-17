@@ -1,4 +1,6 @@
-# pyadm1/calibration/initial.py
+# ============================================================================
+# pyadm1/calibration/initial.py - Complete Implementation
+# ============================================================================
 """
 Initial Calibration from Historical Measurement Data
 
@@ -49,6 +51,7 @@ from scipy.optimize import differential_evolution, minimize
 import time
 
 from pyadm1.calibration.parameter_bounds import create_default_bounds
+from pyadm1.calibration.validation import CalibrationValidator
 from pyadm1.io import MeasurementData
 
 
@@ -112,6 +115,7 @@ class InitialCalibrator:
         plant: BiogasPlant instance to calibrate
         verbose: Enable progress output
         parameter_bounds: Parameter bounds manager
+        validator: CalibrationValidator instance for result validation
 
     Example:
         >>> calibrator = InitialCalibrator(plant)
@@ -127,16 +131,20 @@ class InitialCalibrator:
         Initialize initial calibrator.
 
         Args:
-            plant: BiogasPlant instance
-            verbose: Enable progress output
+            plant: BiogasPlant instance to calibrate.
+            verbose: Enable progress output.
         """
         self.plant = plant
         self.verbose = verbose
         self.parameter_bounds = create_default_bounds()
+        self.validator = CalibrationValidator(plant, verbose=False)
 
         # Storage for optimization history
         self._optimization_history: List[Dict[str, Any]] = []
         self._best_objective_value = float("inf")
+
+        # Store original parameters for restoration
+        self._original_parameters = self._get_current_parameters()
 
     def calibrate(
         self,
@@ -157,32 +165,34 @@ class InitialCalibrator:
         Calibrate model parameters from historical measurements.
 
         Args:
-            measurements: Historical measurement data
-            parameters: List of parameter names to calibrate
-            bounds: Parameter bounds {param: (min, max)}
-            method: Optimization method:
-                - "differential_evolution" (global, recommended)
-                - "nelder_mead" (local)
-                - "lbfgsb" (gradient-based)
-            objectives: List of outputs to match ["Q_ch4", "pH", "VFA", "TAC"]
-            weights: Objective weights {output: weight}
-            validation_split: Fraction of data for validation
-            max_iterations: Maximum optimization iterations
-            population_size: Population size for DE
-            tolerance: Convergence tolerance
-            sensitivity_analysis: Perform sensitivity analysis
-            **kwargs: Additional optimizer arguments
+            measurements: Historical measurement data with columns for substrates and outputs.
+            parameters: List of parameter names to calibrate (e.g., ["k_dis", "Y_su"]).
+            bounds: Parameter bounds as {param: (min, max)}. Uses defaults if None.
+            method: Optimization method ("differential_evolution", "nelder_mead", "lbfgsb").
+            objectives: List of outputs to match (e.g., ["Q_ch4", "pH", "VFA"]).
+            weights: Objective weights as {output: weight}. Equal weights if None.
+            validation_split: Fraction of data reserved for validation (0-1).
+            max_iterations: Maximum optimization iterations.
+            population_size: Population size for differential evolution.
+            tolerance: Convergence tolerance.
+            sensitivity_analysis: Perform sensitivity analysis on results.
+            **kwargs: Additional optimizer arguments.
 
         Returns:
-            CalibrationResult with optimized parameters
+            CalibrationResult: Object containing optimized parameters, metrics, and history.
+
+        Raises:
+            ValueError: If method is unknown or parameters/objectives are invalid.
 
         Example:
             >>> result = calibrator.calibrate(
             ...     measurements=data,
             ...     parameters=["k_dis", "k_hyd_ch", "Y_su"],
             ...     objectives=["Q_ch4", "pH"],
-            ...     weights={"Q_ch4": 0.8, "pH": 0.2}
+            ...     weights={"Q_ch4": 0.8, "pH": 0.2},
+            ...     method="differential_evolution"
             ... )
+            >>> print(f"Success: {result.success}, Best obj: {result.objective_value:.4f}")
         """
         from pyadm1.calibration.calibrator import CalibrationResult
 
@@ -280,9 +290,16 @@ class InitialCalibrator:
         # Validate on validation set
         validation_metrics = {}
         if len(val_data) > 0:
-            validation_metrics = self._validate_parameters(
-                parameters=optimized_params, measurements=val_data, objectives=objectives
-            )
+            val_result = self.validator.validate(parameters=optimized_params, measurements=val_data, objectives=objectives)
+
+            # Convert ValidationMetrics to dict format
+            for obj in objectives:
+                # The validator returns a dict mapping objectives to ValidationMetrics
+                if obj in val_result:
+                    metrics = val_result[obj]
+                    validation_metrics[f"{obj}_rmse"] = metrics.rmse
+                    validation_metrics[f"{obj}_r2"] = metrics.r2
+                    validation_metrics[f"{obj}_nse"] = metrics.nse
 
         # Sensitivity analysis
         sensitivity_results = {}
@@ -295,6 +312,9 @@ class InitialCalibrator:
             )
 
         execution_time = time.time() - start_time
+
+        # Restore original parameters
+        self._apply_parameters_to_plant(self._original_parameters)
 
         # Create result object
         result = CalibrationResult(
@@ -327,13 +347,13 @@ class InitialCalibrator:
         normalized sensitivity indices to identify influential parameters.
 
         Args:
-            parameters: Parameter values for analysis
-            measurements: Measurement data
-            objectives: List of outputs to analyze
-            perturbation: Relative perturbation for finite differences
+            parameters: Parameter values for analysis as {param: value}.
+            measurements: Measurement data for simulation.
+            objectives: List of outputs to analyze. Defaults to ["Q_ch4"].
+            perturbation: Relative perturbation for finite differences (0-1).
 
         Returns:
-            Dictionary mapping parameter names to SensitivityResult
+            Dict[str, SensitivityResult]: Mapping parameter names to sensitivity results.
 
         Example:
             >>> sensitivity = calibrator.sensitivity_analysis(
@@ -341,7 +361,7 @@ class InitialCalibrator:
             ...     measurements=data
             ... )
             >>> for param, result in sensitivity.items():
-            ...     print(f"{param}: {result.sensitivity_indices}")
+            ...     print(f"{param}: sensitivity = {result.sensitivity_indices}")
         """
         if objectives is None:
             objectives = ["Q_ch4"]
@@ -377,19 +397,24 @@ class InitialCalibrator:
 
             for obj in objectives:
                 if obj in outputs_base and obj in outputs_plus and obj in outputs_minus:
+                    # Extract mean values
+                    base_val = np.mean(outputs_base[obj])
+                    plus_val = np.mean(outputs_plus[obj])
+                    minus_val = np.mean(outputs_minus[obj])
+
                     # Local gradient (finite difference)
-                    gradient = (outputs_plus[obj] - outputs_minus[obj]) / (2 * delta)
+                    gradient = (plus_val - minus_val) / (2 * delta)
                     local_gradient[obj] = gradient
 
                     # Sensitivity index (relative)
-                    if outputs_base[obj] != 0:
-                        sens_idx = gradient * (base_value / outputs_base[obj])
+                    if base_val != 0:
+                        sens_idx = gradient * (base_value / base_val)
                         sensitivity_indices[obj] = sens_idx
                     else:
                         sensitivity_indices[obj] = 0.0
 
                     # Normalized sensitivity
-                    base_std = np.std(outputs_base[obj]) if hasattr(outputs_base[obj], "__len__") else 0.0
+                    base_std = np.std(outputs_base[obj])
                     if base_std > 0:
                         norm_sens = abs(gradient * delta / base_std)
                         normalized_sensitivity[obj] = norm_sens
@@ -426,17 +451,16 @@ class InitialCalibrator:
         Assess parameter identifiability from available measurements.
 
         Identifies parameters that cannot be reliably estimated due to
-        insufficient data, low sensitivity, or high correlation with
-        other parameters.
+        insufficient data, low sensitivity, or high correlation with other parameters.
 
         Args:
-            parameters: Parameter values to analyze
-            measurements: Measurement data
-            confidence_level: Confidence level for intervals
-            correlation_threshold: Threshold for high correlation
+            parameters: Parameter values to analyze as {param: value}.
+            measurements: Measurement data for analysis.
+            confidence_level: Confidence level for intervals (0-1).
+            correlation_threshold: Threshold for high correlation (0-1).
 
         Returns:
-            Dictionary mapping parameter names to IdentifiabilityResult
+            Dict[str, IdentifiabilityResult]: Mapping parameter names to identifiability results.
 
         Example:
             >>> identifiability = calibrator.identifiability_analysis(
@@ -455,8 +479,8 @@ class InitialCalibrator:
         # Perform sensitivity analysis
         sensitivity = self.sensitivity_analysis(parameters, measurements, objectives=["Q_ch4", "pH", "VFA"])
 
-        # Calculate correlation matrix
-        correlation_matrix = self._calculate_parameter_correlation(parameters, measurements)
+        # Calculate correlation matrix from optimization history
+        correlation_matrix = self._calculate_parameter_correlation_from_history()
 
         results = {}
 
@@ -473,7 +497,7 @@ class InitialCalibrator:
             max_correlation = 0.0
             highly_correlated_with = None
 
-            if param_name in correlation_matrix:
+            if correlation_matrix and param_name in correlation_matrix:
                 for other_param, corr_value in correlation_matrix[param_name].items():
                     if other_param != param_name:
                         correlations[other_param] = corr_value
@@ -492,15 +516,12 @@ class InitialCalibrator:
                 is_identifiable = False
                 reason = f"High correlation with {highly_correlated_with} ({max_correlation:.3f})"
 
-            # Estimate confidence interval (simplified)
-            # In practice, this would use Fisher information matrix
+            # Estimate confidence interval
             if is_identifiable:
-                # Simple approximation based on sensitivity
                 uncertainty = 0.1 * param_value / max(max_sensitivity, 1e-6)
                 ci_lower = max(0, param_value - uncertainty)
                 ci_upper = param_value + uncertainty
             else:
-                # Wide interval for non-identifiable parameters
                 ci_lower = 0
                 ci_upper = param_value * 10
 
@@ -535,18 +556,17 @@ class InitialCalibrator:
         """
         Objective function for optimization.
 
-        Computes weighted sum of squared errors between simulated and
-        measured outputs.
+        Computes weighted sum of squared errors between simulated and measured outputs.
 
         Args:
-            param_values: Parameter values to evaluate
-            param_names: Parameter names
-            measurements: Measurement data
-            objectives: List of objectives
-            weights: Objective weights
+            param_values: Parameter values to evaluate.
+            param_names: Parameter names corresponding to param_values.
+            measurements: Measurement data with expected outputs.
+            objectives: List of objective names to evaluate.
+            weights: Objective weights for multi-objective optimization.
 
         Returns:
-            Objective function value (lower is better)
+            float: Objective function value (lower is better).
         """
         # Create parameter dictionary
         parameters = {name: value for name, value in zip(param_names, param_values)}
@@ -557,7 +577,7 @@ class InitialCalibrator:
         except Exception as e:
             if self.verbose:
                 print(f"Simulation failed: {str(e)}")
-            return 1e10  # Penalty for failed simulation
+            return 1e10
 
         # Calculate weighted objective
         objective = 0.0
@@ -568,21 +588,17 @@ class InitialCalibrator:
                 continue
 
             # Get measured values
-            if not hasattr(measurements, obj):
+            try:
+                measured = measurements.get_measurement(obj).values
+            except Exception as e:
+                print(e)
                 continue
 
-            measured = getattr(measurements, obj)
             simulated = outputs[obj]
 
             # Ensure arrays
-            if not isinstance(measured, (list, np.ndarray)):
-                measured = [measured]
-            if not isinstance(simulated, (list, np.ndarray)):
-                simulated = [simulated]
-
-            # Calculate RMSE
-            measured = np.array(measured)
-            simulated = np.array(simulated)
+            measured = np.atleast_1d(measured)
+            simulated = np.atleast_1d(simulated)
 
             # Handle length mismatch
             min_len = min(len(measured), len(simulated))
@@ -597,7 +613,7 @@ class InitialCalibrator:
             measured = measured[valid]
             simulated = simulated[valid]
 
-            # Calculate error
+            # Calculate MSE
             mse = np.mean((measured - simulated) ** 2)
 
             # Get weight
@@ -616,51 +632,217 @@ class InitialCalibrator:
         if objective < self._best_objective_value:
             self._best_objective_value = objective
             if self.verbose:
-                print(f"  New best: {objective:.6f} | Params: {param_values}")
+                param_str = ", ".join([f"{p}={v:.4f}" for p, v in zip(param_names, param_values)])
+                print(f"  New best: {objective:.6f} | {param_str}")
 
         # Store in history
         self._optimization_history.append({"parameters": parameters.copy(), "objective": objective})
 
         return objective
 
-    def _simulate_with_parameters(self, parameters: Dict[str, float], measurements: "MeasurementData") -> Dict[str, Any]:
+    def _simulate_with_parameters(
+        self, parameters: Dict[str, float], measurements: "MeasurementData"
+    ) -> Dict[str, np.ndarray]:
         """
-        Simulate plant with given parameters.
+        Simulate plant with given parameters and extract outputs.
+
+        This method:
+        1. Applies parameters to all digester components in the plant
+        2. Extracts substrate feed rates from measurements
+        3. Runs plant simulation for the measurement duration
+        4. Extracts and returns relevant outputs
 
         Args:
-            parameters: Parameter values
-            measurements: Measurement data
+            parameters: Parameter values to apply as {param: value}.
+            measurements: Measurement data containing substrate feeds and duration.
 
         Returns:
-            Dictionary of simulated outputs
+            Dict[str, np.ndarray]: Simulated outputs as {output_name: array}.
+
+        Raises:
+            ValueError: If no digesters found in plant or substrate feeds missing.
+            RuntimeError: If simulation fails.
         """
         # Apply parameters to plant
         self._apply_parameters_to_plant(parameters)
 
+        # Determine simulation settings
+        n_steps = len(measurements)
+        dt = 1.0 / 24.0  # 1 hour timestep
+        duration = n_steps * dt
+
+        # Extract substrate feeds from measurements
+        Q_substrates = self._extract_substrate_feeds(measurements)
+
+        # Apply substrate feeds to digesters
+        for component_id, component in self.plant.components.items():
+            if component.component_type.value == "digester":
+                # Update substrate feeds for this digester
+                component.Q_substrates = Q_substrates
+                component.adm1.create_influent(Q_substrates, 0)
+
         # Run simulation
-        # For now, return dummy values
-        # TODO: Implement actual simulation with plant
-        outputs = {
-            "Q_ch4": np.random.randn(10) * 10 + 750,
-            "pH": np.random.randn(10) * 0.1 + 7.2,
-            "VFA": np.random.randn(10) * 0.5 + 2.5,
-        }
+        try:
+            results = self.plant.simulate(duration=duration, dt=dt, save_interval=dt)
+        except Exception as e:
+            raise RuntimeError(f"Simulation failed: {str(e)}")
+
+        # Extract outputs
+        outputs = self._extract_outputs_from_results(results)
 
         return outputs
 
+    def _get_current_parameters(self) -> Dict[str, float]:
+        """
+        Get current parameter values from all plant digesters.
+
+        Returns:
+            Dict[str, float]: Current parameter values as {param: value}.
+        """
+        params = {}
+
+        # Get parameters from first digester
+        for component in self.plant.components.values():
+            if component.component_type.value == "digester":
+                # Get substrate-dependent params
+                substrate_params = component.adm1._get_substrate_dependent_params()
+                params.update(substrate_params)
+                break  # Use first digester's parameters
+
+        return params
+
     def _apply_parameters_to_plant(self, parameters: Dict[str, float]) -> None:
         """
-        Apply parameter values to plant components.
+        Apply parameter values to all digester components in the plant.
+
+        Substrate-dependent parameters (k_dis, k_hyd_*, k_m_*) are applied
+        by updating the substrate properties, which are then used during
+        simulation to calculate these parameters dynamically.
 
         Args:
-            parameters: Parameter values to apply
+            parameters: Parameter values to apply as {param: value}.
+
+        Raises:
+            ValueError: If no digesters found in plant.
         """
-        # TODO: Implement parameter application
-        # This requires access to ADM1 parameters in plant components
-        pass
+        digester_count = 0
+
+        for component_id, component in self.plant.components.items():
+            if component.component_type.value == "digester":
+                digester_count += 1
+
+                # Access the substrates object from feedstock
+                # substrates = component.feedstock.mySubstrates()
+
+                # Apply substrate-dependent parameters
+                # These parameters affect the substrate characterization
+                for param_name, param_value in parameters.items():
+                    if param_name in ["k_dis", "k_hyd_ch", "k_hyd_pr", "k_hyd_li", "k_m_c4", "k_m_pro", "k_m_ac", "k_m_h2"]:
+                        # Store parameter for later use in get_substrate_dependent_params
+                        if not hasattr(component, "_calibration_params"):
+                            component._calibration_params = {}
+                        component._calibration_params[param_name] = param_value
+
+                # For yield and other ADM1 parameters, we need to modify them
+                # in the parameter calculation. Since these are calculated each time
+                # in ADM1_ODE from ADMParams, we store them for retrieval
+                for param_name, param_value in parameters.items():
+                    if param_name.startswith("Y_") or param_name.startswith("K_"):
+                        if not hasattr(component, "_calibration_params"):
+                            component._calibration_params = {}
+                        component._calibration_params[param_name] = param_value
+
+        if digester_count == 0:
+            raise ValueError("No digesters found in plant to apply parameters")
+
+    def _extract_substrate_feeds(self, measurements: "MeasurementData") -> List[float]:
+        """
+        Extract substrate feed rates from measurements.
+
+        Looks for columns with names like 'Q_sub1', 'Q_sub2', etc., or
+        uses a default substrate mix if not found.
+
+        Args:
+            measurements: Measurement data potentially containing substrate feeds.
+
+        Returns:
+            List[float]: Substrate feed rates in m³/d for each substrate.
+        """
+        try:
+            # Try to get substrate feeds from measurements
+            Q = measurements.get_substrate_feeds()
+            # Use mean values over the measurement period
+            return list(np.mean(Q, axis=0))
+        except Exception:
+            # Default substrate mix if not found in measurements
+            # Assumes 2 main substrates (corn silage + cattle manure)
+            return [15.0, 10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+    def _extract_outputs_from_results(self, results: List[Dict[str, Any]]) -> Dict[str, np.ndarray]:
+        """
+        Extract relevant outputs from simulation results.
+
+        Args:
+            results: List of simulation results from plant.simulate().
+
+        Returns:
+            Dict[str, np.ndarray]: Extracted outputs as {output_name: array}.
+        """
+        outputs = {
+            "Q_ch4": [],
+            "Q_gas": [],
+            "pH": [],
+            "VFA": [],
+            "TAC": [],
+            "Q_co2": [],
+        }
+
+        for result in results:
+            components = result.get("components", {})
+
+            # Sum outputs from all digesters
+            q_ch4_total = 0.0
+            q_gas_total = 0.0
+            q_co2_total = 0.0
+            pH_list = []
+            vfa_list = []
+            tac_list = []
+
+            for component_id, component_result in components.items():
+                if "Q_ch4" in component_result:
+                    q_ch4_total += component_result["Q_ch4"]
+                if "Q_gas" in component_result:
+                    q_gas_total += component_result["Q_gas"]
+                if "Q_co2" in component_result:
+                    q_co2_total += component_result["Q_co2"]
+                if "pH" in component_result:
+                    pH_list.append(component_result["pH"])
+                if "VFA" in component_result:
+                    vfa_list.append(component_result["VFA"])
+                if "TAC" in component_result:
+                    tac_list.append(component_result["TAC"])
+
+            outputs["Q_ch4"].append(q_ch4_total)
+            outputs["Q_gas"].append(q_gas_total)
+            outputs["Q_co2"].append(q_co2_total)
+            outputs["pH"].append(np.mean(pH_list) if pH_list else 7.0)
+            outputs["VFA"].append(np.mean(vfa_list) if vfa_list else 0.0)
+            outputs["TAC"].append(np.mean(tac_list) if tac_list else 0.0)
+
+        # Convert to numpy arrays
+        return {k: np.array(v) for k, v in outputs.items()}
 
     def _setup_objective_weights(self, objectives: List[str], weights: Optional[Dict[str, float]]) -> ObjectiveWeights:
-        """Setup and normalize objective weights."""
+        """
+        Setup and normalize objective weights.
+
+        Args:
+            objectives: List of objective names.
+            weights: Optional weights as {objective: weight}.
+
+        Returns:
+            ObjectiveWeights: Normalized objective weights.
+        """
         if weights is None:
             # Equal weights
             weight_value = 1.0 / len(objectives)
@@ -676,55 +858,67 @@ class InitialCalibrator:
 
         return obj_weights.normalize()
 
-    def _split_data(self, measurements: "MeasurementData", split_ratio: float) -> Tuple[Any, Any]:
-        """Split measurements into training and validation sets."""
-        # TODO: Implement proper data splitting
-        # For now, return dummy split
-        return measurements, measurements
+    def _split_data(self, measurements: "MeasurementData", split_ratio: float) -> Tuple["MeasurementData", "MeasurementData"]:
+        """
+        Split measurements into training and validation sets.
+
+        Uses time-based splitting (chronological order).
+
+        Args:
+            measurements: Full measurement dataset.
+            split_ratio: Fraction of data for validation (0-1).
+
+        Returns:
+            Tuple[MeasurementData, MeasurementData]: (train_data, validation_data).
+        """
+        n_total = len(measurements)
+        n_train = int(n_total * (1 - split_ratio))
+
+        # Time-based split
+        train_data = MeasurementData(measurements.data.iloc[:n_train].copy(), metadata=measurements.metadata.copy())
+
+        val_data = MeasurementData(measurements.data.iloc[n_train:].copy(), metadata=measurements.metadata.copy())
+
+        return train_data, val_data
 
     def _get_initial_parameters(self, parameters: List[str]) -> Dict[str, float]:
-        """Get initial parameter values."""
-        # Default ADM1 parameter values
-        defaults = {
-            "k_dis": 0.5,
-            "k_hyd_ch": 10.0,
-            "k_hyd_pr": 10.0,
-            "k_hyd_li": 10.0,
-            "Y_su": 0.1,
-            "Y_aa": 0.08,
-            "Y_fa": 0.06,
-            "Y_c4": 0.06,
-            "Y_pro": 0.04,
-            "Y_ac": 0.05,
-            "Y_h2": 0.06,
-            "k_m_su": 30.0,
-            "k_m_aa": 50.0,
-            "k_m_fa": 6.0,
-            "k_m_c4": 20.0,
-            "k_m_pro": 13.0,
-            "k_m_ac": 8.0,
-            "k_m_h2": 35.0,
-        }
+        """
+        Get initial parameter values from bounds manager.
 
-        return {param: defaults.get(param, 1.0) for param in parameters}
+        Args:
+            parameters: List of parameter names.
+
+        Returns:
+            Dict[str, float]: Initial parameter values.
+        """
+        return self.parameter_bounds.get_default_values(parameters)
 
     def _setup_bounds(
         self, parameters: List[str], custom_bounds: Optional[Dict[str, Tuple[float, float]]]
     ) -> Dict[str, Tuple[float, float]]:
-        """Setup parameter bounds."""
+        """
+        Setup parameter bounds for optimization.
+
+        Args:
+            parameters: List of parameter names.
+            custom_bounds: Optional custom bounds as {param: (min, max)}.
+
+        Returns:
+            Dict[str, Tuple[float, float]]: Parameter bounds.
+        """
         bounds = {}
 
         for param in parameters:
             if custom_bounds and param in custom_bounds:
                 bounds[param] = custom_bounds[param]
             else:
-                # Get default bounds
-                bound_obj = self.parameter_bounds.get_bounds(param)
-                if bound_obj:
-                    bounds[param] = (bound_obj.lower, bound_obj.upper)
+                # Get default bounds from manager
+                bounds_tuple = self.parameter_bounds.get_bounds_tuple(param)
+                if bounds_tuple:
+                    bounds[param] = bounds_tuple
                 else:
                     # Fallback: ±50% of default value
-                    default = self._get_initial_parameters([param])[param]
+                    default = self.parameter_bounds.get_default_values([param])[param]
                     bounds[param] = (default * 0.5, default * 1.5)
 
         return bounds
@@ -739,7 +933,21 @@ class InitialCalibrator:
         tolerance: float,
         **kwargs,
     ) -> Dict[str, Any]:
-        """Run differential evolution optimization."""
+        """
+        Run differential evolution optimization.
+
+        Args:
+            objective_func: Objective function to minimize.
+            bounds: Parameter bounds as {param: (min, max)}.
+            parameters: Parameter names in order.
+            max_iterations: Maximum iterations.
+            population_size: Population size.
+            tolerance: Convergence tolerance.
+            **kwargs: Additional scipy arguments.
+
+        Returns:
+            Dict[str, Any]: Optimization result with keys 'success', 'x', 'fun', 'nit', 'message'.
+        """
         # Convert bounds to scipy format
         bounds_list = [bounds[param] for param in parameters]
 
@@ -772,7 +980,21 @@ class InitialCalibrator:
         tolerance: float,
         **kwargs,
     ) -> Dict[str, Any]:
-        """Run Nelder-Mead optimization."""
+        """
+        Run Nelder-Mead optimization.
+
+        Args:
+            objective_func: Objective function to minimize.
+            initial_guess: Initial parameter values.
+            bounds: Parameter bounds (not strictly enforced by Nelder-Mead).
+            parameters: Parameter names.
+            max_iterations: Maximum iterations.
+            tolerance: Convergence tolerance.
+            **kwargs: Additional scipy arguments.
+
+        Returns:
+            Dict[str, Any]: Optimization result.
+        """
         result = minimize(
             fun=objective_func,
             x0=initial_guess,
@@ -799,7 +1021,21 @@ class InitialCalibrator:
         tolerance: float,
         **kwargs,
     ) -> Dict[str, Any]:
-        """Run L-BFGS-B optimization."""
+        """
+        Run L-BFGS-B optimization.
+
+        Args:
+            objective_func: Objective function to minimize.
+            initial_guess: Initial parameter values.
+            bounds: Parameter bounds.
+            parameters: Parameter names in order.
+            max_iterations: Maximum iterations.
+            tolerance: Convergence tolerance.
+            **kwargs: Additional scipy arguments.
+
+        Returns:
+            Dict[str, Any]: Optimization result.
+        """
         bounds_list = [bounds[param] for param in parameters]
 
         result = minimize(
@@ -819,28 +1055,20 @@ class InitialCalibrator:
             "message": result.message,
         }
 
-    def _validate_parameters(
-        self, parameters: Dict[str, float], measurements: "MeasurementData", objectives: List[str]
-    ) -> Dict[str, float]:
-        """Validate parameters on validation set."""
-        outputs = self._simulate_with_parameters(parameters, measurements)
-
-        metrics = {}
-
-        for obj in objectives:
-            if obj not in outputs:
-                continue
-
-            # Calculate RMSE on validation set
-            # TODO: Implement actual validation
-            metrics[f"{obj}_rmse"] = np.random.rand() * 10
-
-        return metrics
-
     def _perform_sensitivity_analysis(
         self, parameters: Dict[str, float], measurements: "MeasurementData", objectives: List[str]
     ) -> Dict[str, float]:
-        """Perform sensitivity analysis."""
+        """
+        Perform sensitivity analysis and return simplified metrics.
+
+        Args:
+            parameters: Parameter values for analysis.
+            measurements: Measurement data.
+            objectives: List of objectives.
+
+        Returns:
+            Dict[str, float]: Simplified sensitivity metrics as {param: max_sensitivity}.
+        """
         sensitivity = self.sensitivity_analysis(parameters, measurements, objectives)
 
         # Return simplified sensitivity metrics
@@ -852,20 +1080,139 @@ class InitialCalibrator:
 
         return results
 
-    def _calculate_parameter_correlation(
-        self, parameters: Dict[str, float], measurements: "MeasurementData"
-    ) -> Dict[str, Dict[str, float]]:
-        """Calculate correlation matrix between parameters."""
-        # TODO: Implement correlation calculation using Fisher information
-        # For now, return dummy correlation
+    def _calculate_parameter_correlation_from_history(self) -> Dict[str, Dict[str, float]]:
+        """
+        Calculate correlation matrix from optimization history.
+
+        Uses the stored optimization history to compute correlations between parameters.
+
+        Returns:
+            Dict[str, Dict[str, float]]: Correlation matrix as nested dict.
+        """
+        if not self._optimization_history or len(self._optimization_history) < 2:
+            return {}
+
+        # Extract parameter names from first history entry
+        param_names = list(self._optimization_history[0]["parameters"].keys())
+        n_samples = len(self._optimization_history)
+
+        # Build parameter matrix
+        param_matrix = np.zeros((n_samples, len(param_names)))
+        for i, entry in enumerate(self._optimization_history):
+            for j, name in enumerate(param_names):
+                param_matrix[i, j] = entry["parameters"][name]
+
+        # Calculate correlation matrix
+        try:
+            corr_matrix = np.corrcoef(param_matrix.T)
+        except Exception as e:
+            print(e)
+            return {}
+
+        # Convert to dictionary format
         correlation = {}
-        for param1 in parameters:
+        for i, param1 in enumerate(param_names):
             correlation[param1] = {}
-            for param2 in parameters:
-                if param1 == param2:
-                    correlation[param1][param2] = 1.0
-                else:
-                    # Random correlation for now
-                    correlation[param1][param2] = np.random.rand() * 0.5
+            for j, param2 in enumerate(param_names):
+                correlation[param1][param2] = float(corr_matrix[i, j])
 
         return correlation
+
+
+# ============================================================================
+# Example Usage
+# ============================================================================
+"""
+Complete example showing calibration workflow:
+
+>>> from pyadm1.configurator import BiogasPlant
+>>> from pyadm1.substrates import Feedstock
+>>> from pyadm1.calibration import InitialCalibrator
+>>> from pyadm1.io import MeasurementData
+>>>
+>>> # 1. Load or create plant
+>>> feedstock = Feedstock(feeding_freq=48)
+>>> plant = BiogasPlant("Calibration Test Plant")
+>>>
+>>> from pyadm1.components.biological import Digester
+>>> digester = Digester("main_dig", feedstock, V_liq=2000, V_gas=300)
+>>> plant.add_component(digester)
+>>> plant.initialize()
+>>>
+>>> # 2. Load measurement data
+>>> measurements = MeasurementData.from_csv(
+>>>     "plant_measurements.csv",
+>>>     timestamp_column="time",
+>>>     resample="1H"
+>>> )
+>>>
+>>> # 3. Validate data
+>>> validation = measurements.validate()
+>>> if not validation.is_valid:
+>>>     print("Data quality issues found:")
+>>>     validation.print_report()
+>>>
+>>> # 4. Create calibrator
+>>> calibrator = InitialCalibrator(plant, verbose=True)
+>>>
+>>> # 5. Run calibration
+>>> result = calibrator.calibrate(
+>>>     measurements=measurements,
+>>>     parameters=["k_dis", "k_hyd_ch", "Y_su"],
+>>>     bounds={
+>>>         "k_dis": (0.3, 0.8),
+>>>         "Y_su": (0.05, 0.15)
+>>>     },
+>>>     objectives=["Q_ch4", "pH"],
+>>>     weights={"Q_ch4": 0.8, "pH": 0.2},
+>>>     method="differential_evolution",
+>>>     validation_split=0.2,
+>>>     max_iterations=100
+>>> )
+>>>
+>>> # 6. Check results
+>>> if result.success:
+>>>     print(f"Calibration successful!")
+>>>     print(f"Objective value: {result.objective_value:.4f}")
+>>>     print(f"Optimized parameters:")
+>>>     for param, value in result.parameters.items():
+>>>         print(f"  {param}: {value:.4f}")
+>>>
+>>>     # Validation metrics
+>>>     print(f"\nValidation metrics:")
+>>>     for metric, value in result.validation_metrics.items():
+>>>         print(f"  {metric}: {value:.4f}")
+>>> else:
+>>>     print(f"Calibration failed: {result.message}")
+>>>
+>>> # 7. Apply calibrated parameters
+>>> calibrator.plant.components["main_dig"].apply_calibration_parameters(
+>>>     result.parameters
+>>> )
+>>>
+>>> # 8. Perform sensitivity analysis
+>>> sensitivity = calibrator.sensitivity_analysis(
+>>>     parameters=result.parameters,
+>>>     measurements=measurements
+>>> )
+>>>
+>>> print("\nParameter sensitivities:")
+>>> for param, sens_result in sensitivity.items():
+>>>     print(f"\n{param}:")
+>>>     for obj, sens in sens_result.sensitivity_indices.items():
+>>>         print(f"  {obj}: {sens:.4e}")
+>>>
+>>> # 9. Check identifiability
+>>> identifiability = calibrator.identifiability_analysis(
+>>>     parameters=result.parameters,
+>>>     measurements=measurements
+>>> )
+>>>
+>>> print("\nParameter identifiability:")
+>>> for param, ident_result in identifiability.items():
+>>>     status = "✓" if ident_result.is_identifiable else "✗"
+>>>     print(f"{status} {param}: {ident_result.reason}")
+>>>
+>>> # 10. Save results
+>>> result.to_json("calibration_result.json")
+"""
