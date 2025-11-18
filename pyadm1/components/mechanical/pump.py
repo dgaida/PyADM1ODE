@@ -51,6 +51,11 @@ class PumpType(str, Enum):
     PISTON = "piston"
 
 
+# TODO: pump has to be connected between digesters or between substrate feed and primary digester so that it knows
+#  how much fluid it is pumping (m^3/d).
+# TODO: it must be a mistake that Q_nom: Nominal flow rate [m³/h], this must be m^3/d.
+
+
 class Pump(Component):
     """
     Pump component for material handling in biogas plants.

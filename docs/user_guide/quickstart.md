@@ -383,9 +383,10 @@ plt.savefig('simulation_results.png')
 Now that you've run your first simulations:
 
 1. **Learn about components**: [Components Guide](components.md)
-2. **Try parallel simulations**: See `examples/parallel_two_stage_simulation.py`
-3. **Explore MCP server**: LLM-driven plant configuration
-4. **Read API documentation**: Full reference for all classes
+2. [`two_stage_plant.md`](two_stage_plant.md): Two-stage digestion with CHP and heating
+3. **Try parallel simulations**: See `examples/parallel_two_stage_simulation.py`
+4. **Explore MCP server**: LLM-driven plant configuration
+5. **Read API documentation**: Full reference for all classes
 
 ## Quick Reference
 
@@ -474,3 +475,8 @@ Q_high = 40            # High loading [m³/d]
 - Use parallel simulation for parameter sweeps
 
 For more help, see the [Installation Guide](installation.md) or contact daniel.gaida@th-koeln.de.
+
+## References
+
+- **ADM1 Model**: Batstone et al. (2002). *Anaerobic Digestion Model No. 1*. IWA Publishing.
+- **Leitfaden Biogas**: FNR (2016). https://mediathek.fnr.de/leitfaden-biogas.html
