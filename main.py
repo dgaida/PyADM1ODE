@@ -44,12 +44,12 @@ def main() -> None:
     for n, u in enumerate(t[1:], 1):
         # you could change Q here to simulate with dynamically changing substrate feed
 
-        adm1.createInfluent(Q, n)
+        adm1.create_influent(Q, n)
 
         # Span for next time step
         tstep = [t0, u]
 
-        state_zero = mySimulator.simulateADplant(tstep, state_zero)
+        state_zero = mySimulator.simulate_AD_plant(tstep, state_zero)
 
         simulate_results.append(state_zero)
 
