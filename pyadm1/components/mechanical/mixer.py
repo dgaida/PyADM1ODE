@@ -318,7 +318,7 @@ class Mixer(Component):
         else:  # JET
             C, alpha, beta = 4.0, 1.5, 0.3
 
-        if N > 0:
+        if N > 1e-6:  # Only calculate if mixer is actually running
             self.mixing_time = C * (D_T / D) ** alpha * (H / D_T) ** beta / (N * 60.0)  # minutes
         else:
             self.mixing_time = float("inf")
@@ -327,10 +327,16 @@ class Mixer(Component):
         """
         Calculate power number based on Reynolds number and mixer type.
 
+        When mixer is not running (Re < 1e-6), returns a safe default value.
+
         Returns:
             Power number (dimensionless)
         """
         Re = self.reynolds_number
+
+        # Handle zero Reynolds number (mixer not running)
+        if Re < 1e-6:
+            return 1.0  # Return default value when not running
 
         if self.mixer_type == MixerType.PROPELLER:
             # Propeller: transition from laminar to turbulent
