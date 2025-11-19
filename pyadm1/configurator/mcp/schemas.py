@@ -13,7 +13,7 @@ Each tool has corresponding request and response schemas.
 """
 
 from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from enum import Enum
 
 
@@ -67,22 +67,27 @@ class PlantCreateRequest(BaseModel):
         description="Unique identifier for the plant (e.g., 'FarmAB_Plant', 'MyPlant')",
         min_length=1,
         max_length=50,
-        example="MyFarm_Plant",
+        json_schema_extra={"example": "MyFarm_Plant"},
     )
 
     description: Optional[str] = Field(
         None,
         description="Optional description of the plant purpose and design",
         max_length=500,
-        example="Two-stage digestion plant with corn silage and cattle manure",
+        json_schema_extra={"example": "Two-stage digestion plant with corn silage and cattle manure"},
     )
 
     feeding_freq: int = Field(
-        48, description="Feeding frequency in hours (how often substrate feed can change)", ge=1, le=168, example=48
+        48,
+        description="Feeding frequency in hours (how often substrate feed can change)",
+        ge=1,
+        le=168,
+        json_schema_extra={"example": 48},
     )
 
-    @validator("plant_id")
-    def validate_plant_id(cls, v):
+    @field_validator("plant_id")
+    @classmethod
+    def validate_plant_id(cls, v: str) -> str:
         """Ensure plant_id contains only valid characters."""
         if not v.replace("_", "").replace("-", "").isalnum():
             raise ValueError("plant_id must contain only alphanumeric characters, underscores, and hyphens")
@@ -107,14 +112,28 @@ class PlantCreateResponse(BaseModel):
 class DigesterAddRequest(BaseModel):
     """Request schema for adding a digester component."""
 
-    plant_id: str = Field(..., description="Plant identifier where digester will be added", example="MyPlant")
+    plant_id: str = Field(
+        ..., description="Plant identifier where digester will be added", json_schema_extra={"example": "MyPlant"}
+    )
 
-    digester_id: str = Field(..., description="Unique identifier for this digester", example="main_digester")
+    digester_id: str = Field(
+        ..., description="Unique identifier for this digester", json_schema_extra={"example": "main_digester"}
+    )
 
-    V_liq: float = Field(1977.0, description="Liquid volume in cubic meters (m³)", ge=100.0, le=10000.0, example=2000.0)
+    V_liq: float = Field(
+        1977.0,
+        description="Liquid volume in cubic meters (m³)",
+        ge=100.0,
+        le=10000.0,
+        json_schema_extra={"example": 2000.0},
+    )
 
     V_gas: float = Field(
-        304.0, description="Gas volume in cubic meters (m³), typically 10-20% of V_liq", ge=10.0, le=2000.0, example=300.0
+        304.0,
+        description="Gas volume in cubic meters (m³), typically 10-20% of V_liq",
+        ge=10.0,
+        le=2000.0,
+        json_schema_extra={"example": 300.0},
     )
 
     T_ad: float = Field(
@@ -122,20 +141,24 @@ class DigesterAddRequest(BaseModel):
         description="Operating temperature in Kelvin (308.15 K = 35°C mesophilic)",
         ge=283.15,
         le=333.15,
-        example=308.15,
+        json_schema_extra={"example": 308.15},
     )
 
     name: Optional[str] = Field(
-        None, description="Human-readable name for the digester", max_length=100, example="Main Digester"
+        None,
+        description="Human-readable name for the digester",
+        max_length=100,
+        json_schema_extra={"example": "Main Digester"},
     )
 
     load_initial_state: bool = Field(True, description="Load default initial state from CSV file")
 
-    @validator("V_gas")
-    def validate_gas_volume(cls, v, values):
+    @field_validator("V_gas")
+    @classmethod
+    def validate_gas_volume(cls, v: float, info) -> float:
         """Check that gas volume is reasonable relative to liquid volume."""
-        if "V_liq" in values:
-            ratio = v / values["V_liq"]
+        if "V_liq" in info.data:
+            ratio = v / info.data["V_liq"]
             if ratio < 0.05 or ratio > 0.30:
                 raise ValueError(
                     f"V_gas/V_liq ratio ({ratio:.2f}) should be between 0.05 and 0.30 "
@@ -143,8 +166,9 @@ class DigesterAddRequest(BaseModel):
                 )
         return v
 
-    @validator("T_ad")
-    def validate_temperature(cls, v):
+    @field_validator("T_ad")
+    @classmethod
+    def validate_temperature(cls, v: float) -> float:
         """Check temperature is in valid operating range."""
         if v < 283.15:
             raise ValueError("Temperature too low for anaerobic digestion (< 10°C)")
@@ -174,41 +198,54 @@ class DigesterAddResponse(BaseModel):
 class CHPAddRequest(BaseModel):
     """Request schema for adding a CHP unit."""
 
-    plant_id: str = Field(..., description="Plant identifier", example="MyPlant")
+    plant_id: str = Field(..., description="Plant identifier", json_schema_extra={"example": "MyPlant"})
 
-    chp_id: str = Field(..., description="Unique identifier for this CHP unit", example="chp_main")
+    chp_id: str = Field(..., description="Unique identifier for this CHP unit", json_schema_extra={"example": "chp_main"})
 
     P_el_nom: float = Field(
-        500.0, description="Nominal electrical power output in kilowatts (kW)", ge=10.0, le=5000.0, example=500.0
+        500.0,
+        description="Nominal electrical power output in kilowatts (kW)",
+        ge=10.0,
+        le=5000.0,
+        json_schema_extra={"example": 500.0},
     )
 
     eta_el: float = Field(
-        0.40, description="Electrical efficiency (0-1), typical gas engines: 0.38-0.42", ge=0.20, le=0.60, example=0.40
+        0.40,
+        description="Electrical efficiency (0-1), typical gas engines: 0.38-0.42",
+        ge=0.20,
+        le=0.60,
+        json_schema_extra={"example": 0.40},
     )
 
-    eta_th: float = Field(0.45, description="Thermal efficiency (0-1), typical: 0.40-0.50", ge=0.30, le=0.60, example=0.45)
+    eta_th: float = Field(
+        0.45, description="Thermal efficiency (0-1), typical: 0.40-0.50", ge=0.30, le=0.60, json_schema_extra={"example": 0.45}
+    )
 
-    name: Optional[str] = Field(None, description="Human-readable name", max_length=100, example="CHP Unit 1")
+    name: Optional[str] = Field(
+        None, description="Human-readable name", max_length=100, json_schema_extra={"example": "CHP Unit 1"}
+    )
 
-    @validator("eta_el", "eta_th")
-    def validate_efficiency(cls, v, field):
+    @field_validator("eta_el", "eta_th")
+    @classmethod
+    def validate_efficiency(cls, v: float, info) -> float:
         """Validate efficiency is in reasonable range."""
+        field_name = info.field_name
         if v < 0.20 or v > 0.60:
-            raise ValueError(f"{field.name} should be between 0.20 and 0.60 for biogas CHP")
+            raise ValueError(f"{field_name} should be between 0.20 and 0.60 for biogas CHP")
         return v
 
-    @validator("eta_th")
-    def validate_total_efficiency(cls, v, values):
+    @model_validator(mode="after")
+    def validate_total_efficiency(self) -> "CHPAddRequest":
         """Check total efficiency is realistic."""
-        if "eta_el" in values:
-            total = v + values["eta_el"]
-            if total < 0.70:
-                raise ValueError(
-                    f"Total efficiency (eta_el + eta_th = {total:.2f}) is too low. " "Typical total efficiency is 0.85-0.90"
-                )
-            if total > 0.95:
-                raise ValueError(f"Total efficiency (eta_el + eta_th = {total:.2f}) is unrealistically high")
-        return v
+        total = self.eta_th + self.eta_el
+        if total < 0.70:
+            raise ValueError(
+                f"Total efficiency (eta_el + eta_th = {total:.2f}) is too low. " "Typical total efficiency is 0.85-0.90"
+            )
+        if total > 0.95:
+            raise ValueError(f"Total efficiency (eta_el + eta_th = {total:.2f}) is unrealistically high")
+        return self
 
 
 class CHPAddResponse(BaseModel):
@@ -236,21 +273,29 @@ class HeatingAddRequest(BaseModel):
 
     plant_id: str = Field(..., description="Plant identifier")
 
-    heating_id: str = Field(..., description="Unique identifier for this heating system", example="heating_main")
+    heating_id: str = Field(
+        ..., description="Unique identifier for this heating system", json_schema_extra={"example": "heating_main"}
+    )
 
     target_temperature: float = Field(
         308.15,
         description="Target temperature in Kelvin (should match digester temperature)",
         ge=283.15,
         le=333.15,
-        example=308.15,
+        json_schema_extra={"example": 308.15},
     )
 
     heat_loss_coefficient: float = Field(
-        0.5, description="Heat loss coefficient in kW/K (0.3-0.5 well insulated, 0.8-1.5 poor)", ge=0.1, le=3.0, example=0.5
+        0.5,
+        description="Heat loss coefficient in kW/K (0.3-0.5 well insulated, 0.8-1.5 poor)",
+        ge=0.1,
+        le=3.0,
+        json_schema_extra={"example": 0.5},
     )
 
-    name: Optional[str] = Field(None, description="Human-readable name", example="Main Digester Heating")
+    name: Optional[str] = Field(
+        None, description="Human-readable name", json_schema_extra={"example": "Main Digester Heating"}
+    )
 
 
 class HeatingAddResponse(BaseModel):
@@ -275,18 +320,19 @@ class ConnectionAddRequest(BaseModel):
 
     plant_id: str = Field(..., description="Plant identifier")
 
-    from_component: str = Field(..., description="Source component ID", example="main_digester")
+    from_component: str = Field(..., description="Source component ID", json_schema_extra={"example": "main_digester"})
 
-    to_component: str = Field(..., description="Target component ID", example="chp_main")
+    to_component: str = Field(..., description="Target component ID", json_schema_extra={"example": "chp_main"})
 
     connection_type: ConnectionTypeEnum = Field(
         ConnectionTypeEnum.DEFAULT, description="Type of connection defining what flows between components"
     )
 
-    @validator("to_component")
-    def validate_not_self_connection(cls, v, values):
+    @field_validator("to_component")
+    @classmethod
+    def validate_not_self_connection(cls, v: str, info) -> str:
         """Prevent component from connecting to itself."""
-        if "from_component" in values and v == values["from_component"]:
+        if "from_component" in info.data and v == info.data["from_component"]:
             raise ValueError("Cannot connect component to itself")
         return v
 
@@ -336,22 +382,33 @@ class SimulationRequest(BaseModel):
 
     plant_id: str = Field(..., description="Plant identifier to simulate")
 
-    duration: float = Field(10.0, description="Simulation duration in days", ge=0.1, le=365.0, example=30.0)
+    duration: float = Field(
+        10.0, description="Simulation duration in days", ge=0.1, le=365.0, json_schema_extra={"example": 30.0}
+    )
 
     dt: float = Field(
-        0.04167, description="Time step in days (0.04167 = 1 hour, 0.02083 = 30 min)", ge=0.001, le=1.0, example=0.04167
+        0.04167,
+        description="Time step in days (0.04167 = 1 hour, 0.02083 = 30 min)",
+        ge=0.001,
+        le=1.0,
+        json_schema_extra={"example": 0.04167},
     )
 
     save_interval: float = Field(
-        1.0, description="Interval for saving results in days (1.0 = daily snapshots)", ge=0.01, le=10.0, example=1.0
+        1.0,
+        description="Interval for saving results in days (1.0 = daily snapshots)",
+        ge=0.01,
+        le=10.0,
+        json_schema_extra={"example": 1.0},
     )
 
-    @validator("dt")
-    def validate_timestep(cls, v, values):
+    @field_validator("dt")
+    @classmethod
+    def validate_timestep(cls, v: float, info) -> float:
         """Validate timestep is appropriate for duration."""
-        if "duration" in values and v > values["duration"] / 10:
+        if "duration" in info.data and v > info.data["duration"] / 10:
             raise ValueError(
-                f"Time step ({v} days) is too large for duration ({values['duration']} days). "
+                f"Time step ({v} days) is too large for duration ({info.data['duration']} days). "
                 "Use at least 10 steps per simulation."
             )
         return v
@@ -420,7 +477,9 @@ class PlantExportRequest(BaseModel):
     plant_id: str = Field(..., description="Plant identifier to export")
 
     filepath: Optional[str] = Field(
-        None, description="Output filepath (auto-generated if not provided)", example="my_plant_config.json"
+        None,
+        description="Output filepath (auto-generated if not provided)",
+        json_schema_extra={"example": "my_plant_config.json"},
     )
 
 
