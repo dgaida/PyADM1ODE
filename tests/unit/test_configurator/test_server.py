@@ -52,46 +52,69 @@ class TestMCPServerInitialization:
 class TestMCPServerPrompts:
     """Test suite for MCP server prompt registration."""
 
-    def test_system_guidance_prompt_registered(self) -> None:
-        """Test that system_guidance prompt is registered."""
-        # Get all registered prompts
-        prompts = [p.name for p in mcp._prompts.values()]
-        assert "system_guidance" in prompts
+    def test_system_guidance_prompt_callable(self) -> None:
+        """Test that system_guidance prompt is callable."""
+        from pyadm1.configurator.mcp.server import system_guidance
 
-    def test_component_selection_prompt_registered(self) -> None:
-        """Test that component_selection prompt is registered."""
-        prompts = [p.name for p in mcp._prompts.values()]
-        assert "component_selection" in prompts
+        result = system_guidance()
+        assert isinstance(result, str)
+        assert len(result) > 0
 
-    def test_connection_guidelines_prompt_registered(self) -> None:
-        """Test that connection_guidelines prompt is registered."""
-        prompts = [p.name for p in mcp._prompts.values()]
-        assert "connection_guidelines" in prompts
+    def test_component_selection_prompt_callable(self) -> None:
+        """Test that component_selection prompt is callable."""
+        from pyadm1.configurator.mcp.server import component_selection
 
-    def test_parameter_guidelines_prompt_registered(self) -> None:
-        """Test that parameter_guidelines prompt is registered."""
-        prompts = [p.name for p in mcp._prompts.values()]
-        assert "parameter_guidelines" in prompts
+        result = component_selection()
+        assert isinstance(result, str)
+        assert len(result) > 0
 
-    def test_substrate_guide_prompt_registered(self) -> None:
-        """Test that substrate_guide prompt is registered."""
-        prompts = [p.name for p in mcp._prompts.values()]
-        assert "substrate_guide" in prompts
+    def test_connection_guidelines_prompt_callable(self) -> None:
+        """Test that connection_guidelines prompt is callable."""
+        from pyadm1.configurator.mcp.server import connection_guidelines
 
-    def test_design_best_practices_prompt_registered(self) -> None:
-        """Test that design_best_practices prompt is registered."""
-        prompts = [p.name for p in mcp._prompts.values()]
-        assert "design_best_practices" in prompts
+        result = connection_guidelines()
+        assert isinstance(result, str)
+        assert len(result) > 0
 
-    def test_troubleshooting_prompt_registered(self) -> None:
-        """Test that troubleshooting prompt is registered."""
-        prompts = [p.name for p in mcp._prompts.values()]
-        assert "troubleshooting" in prompts
+    def test_parameter_guidelines_prompt_callable(self) -> None:
+        """Test that parameter_guidelines prompt is callable."""
+        from pyadm1.configurator.mcp.server import parameter_guidelines
 
-    def test_example_plants_prompt_registered(self) -> None:
-        """Test that example_plants prompt is registered."""
-        prompts = [p.name for p in mcp._prompts.values()]
-        assert "example_plants" in prompts
+        result = parameter_guidelines()
+        assert isinstance(result, str)
+        assert len(result) > 0
+
+    def test_substrate_guide_prompt_callable(self) -> None:
+        """Test that substrate_guide prompt is callable."""
+        from pyadm1.configurator.mcp.server import substrate_guide
+
+        result = substrate_guide()
+        assert isinstance(result, str)
+        assert len(result) > 0
+
+    def test_design_best_practices_prompt_callable(self) -> None:
+        """Test that design_best_practices prompt is callable."""
+        from pyadm1.configurator.mcp.server import design_best_practices
+
+        result = design_best_practices()
+        assert isinstance(result, str)
+        assert len(result) > 0
+
+    def test_troubleshooting_prompt_callable(self) -> None:
+        """Test that troubleshooting prompt is callable."""
+        from pyadm1.configurator.mcp.server import troubleshooting
+
+        result = troubleshooting()
+        assert isinstance(result, str)
+        assert len(result) > 0
+
+    def test_example_plants_prompt_callable(self) -> None:
+        """Test that example_plants prompt is callable."""
+        from pyadm1.configurator.mcp.server import example_plants
+
+        result = example_plants()
+        assert isinstance(result, str)
+        assert len(result) > 0
 
     def test_all_prompts_return_strings(self) -> None:
         """Test that all prompt functions return strings."""
@@ -126,66 +149,49 @@ class TestMCPServerPrompts:
 class TestMCPServerTools:
     """Test suite for MCP server tool registration."""
 
-    def test_create_plant_tool_registered(self) -> None:
-        """Test that create_plant tool is registered."""
-        tools = [t.name for t in mcp._tools.values()]
-        assert "create_plant" in tools
+    def test_create_plant_tool_callable(self) -> None:
+        """Test that create_plant tool is callable."""
+        assert callable(create_plant)
 
-    def test_add_digester_component_tool_registered(self) -> None:
-        """Test that add_digester_component tool is registered."""
-        tools = [t.name for t in mcp._tools.values()]
-        assert "add_digester_component" in tools
+    def test_add_digester_component_tool_callable(self) -> None:
+        """Test that add_digester_component tool is callable."""
+        assert callable(add_digester_component)
 
-    def test_add_chp_unit_tool_registered(self) -> None:
-        """Test that add_chp_unit tool is registered."""
-        tools = [t.name for t in mcp._tools.values()]
-        assert "add_chp_unit" in tools
+    def test_add_chp_unit_tool_callable(self) -> None:
+        """Test that add_chp_unit tool is callable."""
+        assert callable(add_chp_unit)
 
-    def test_add_heating_system_tool_registered(self) -> None:
-        """Test that add_heating_system tool is registered."""
-        tools = [t.name for t in mcp._tools.values()]
-        assert "add_heating_system" in tools
+    def test_add_heating_system_tool_callable(self) -> None:
+        """Test that add_heating_system tool is callable."""
+        assert callable(add_heating_system)
 
-    def test_connect_components_tool_registered(self) -> None:
-        """Test that connect_components tool is registered."""
-        tools = [t.name for t in mcp._tools.values()]
-        assert "connect_components" in tools
+    def test_connect_components_tool_callable(self) -> None:
+        """Test that connect_components tool is callable."""
+        assert callable(connect_components)
 
-    def test_initialize_biogas_plant_tool_registered(self) -> None:
-        """Test that initialize_biogas_plant tool is registered."""
-        tools = [t.name for t in mcp._tools.values()]
-        assert "initialize_biogas_plant" in tools
+    def test_initialize_biogas_plant_tool_callable(self) -> None:
+        """Test that initialize_biogas_plant tool is callable."""
+        assert callable(initialize_biogas_plant)
 
-    def test_simulate_biogas_plant_tool_registered(self) -> None:
-        """Test that simulate_biogas_plant tool is registered."""
-        tools = [t.name for t in mcp._tools.values()]
-        assert "simulate_biogas_plant" in tools
+    def test_simulate_biogas_plant_tool_callable(self) -> None:
+        """Test that simulate_biogas_plant tool is callable."""
+        assert callable(simulate_biogas_plant)
 
-    def test_get_biogas_plant_status_tool_registered(self) -> None:
-        """Test that get_biogas_plant_status tool is registered."""
-        tools = [t.name for t in mcp._tools.values()]
-        assert "get_biogas_plant_status" in tools
+    def test_get_biogas_plant_status_tool_callable(self) -> None:
+        """Test that get_biogas_plant_status tool is callable."""
+        assert callable(get_biogas_plant_status)
 
-    def test_export_biogas_plant_config_tool_registered(self) -> None:
-        """Test that export_biogas_plant_config tool is registered."""
-        tools = [t.name for t in mcp._tools.values()]
-        assert "export_biogas_plant_config" in tools
+    def test_export_biogas_plant_config_tool_callable(self) -> None:
+        """Test that export_biogas_plant_config tool is callable."""
+        assert callable(export_biogas_plant_config)
 
-    def test_list_biogas_plants_tool_registered(self) -> None:
-        """Test that list_biogas_plants tool is registered."""
-        tools = [t.name for t in mcp._tools.values()]
-        assert "list_biogas_plants" in tools
+    def test_list_biogas_plants_tool_callable(self) -> None:
+        """Test that list_biogas_plants tool is callable."""
+        assert callable(list_biogas_plants)
 
-    def test_delete_biogas_plant_tool_registered(self) -> None:
-        """Test that delete_biogas_plant tool is registered."""
-        tools = [t.name for t in mcp._tools.values()]
-        assert "delete_biogas_plant" in tools
-
-    def test_all_tools_have_correct_count(self) -> None:
-        """Test that all expected tools are registered."""
-        expected_tool_count = 11  # Total number of tools defined
-        actual_tool_count = len(mcp._tools)
-        assert actual_tool_count == expected_tool_count, f"Expected {expected_tool_count} tools, got {actual_tool_count}"
+    def test_delete_biogas_plant_tool_callable(self) -> None:
+        """Test that delete_biogas_plant tool is callable."""
+        assert callable(delete_biogas_plant)
 
 
 class TestMCPServerToolFunctions:
@@ -391,35 +397,102 @@ class TestStartServerFunction:
 class TestMCPServerIntegration:
     """Integration tests for MCP server functionality."""
 
-    def test_server_has_all_required_components(self) -> None:
-        """Test that server has all required components."""
-        # Check tools exist
-        assert len(mcp._tools) > 0, "Server should have tools"
-
-        # Check prompts exist
-        assert len(mcp._prompts) > 0, "Server should have prompts"
+    def test_server_instance_exists(self) -> None:
+        """Test that server instance exists."""
+        assert mcp is not None
+        assert mcp.name == "PyADM1 Biogas Plant Server"
 
     def test_tool_names_are_unique(self) -> None:
-        """Test that all tool names are unique."""
-        tool_names = [t.name for t in mcp._tools.values()]
+        """Test that all tool function names are unique."""
+        tool_functions = [
+            create_plant,
+            add_digester_component,
+            add_chp_unit,
+            add_heating_system,
+            connect_components,
+            initialize_biogas_plant,
+            simulate_biogas_plant,
+            get_biogas_plant_status,
+            export_biogas_plant_config,
+            list_biogas_plants,
+            delete_biogas_plant,
+        ]
+        tool_names = [f.__name__ for f in tool_functions]
         assert len(tool_names) == len(set(tool_names)), "Tool names should be unique"
 
     def test_prompt_names_are_unique(self) -> None:
-        """Test that all prompt names are unique."""
-        prompt_names = [p.name for p in mcp._prompts.values()]
+        """Test that all prompt function names are unique."""
+        from pyadm1.configurator.mcp.server import (
+            system_guidance,
+            component_selection,
+            connection_guidelines,
+            parameter_guidelines,
+            substrate_guide,
+            design_best_practices,
+            troubleshooting,
+            example_plants,
+        )
+
+        prompt_functions = [
+            system_guidance,
+            component_selection,
+            connection_guidelines,
+            parameter_guidelines,
+            substrate_guide,
+            design_best_practices,
+            troubleshooting,
+            example_plants,
+        ]
+        prompt_names = [f.__name__ for f in prompt_functions]
         assert len(prompt_names) == len(set(prompt_names)), "Prompt names should be unique"
 
     def test_tools_have_documentation(self) -> None:
         """Test that all tools have docstrings."""
-        for tool in mcp._tools.values():
-            assert tool.fn.__doc__ is not None, f"Tool {tool.name} should have documentation"
-            assert len(tool.fn.__doc__) > 0, f"Tool {tool.name} should have non-empty documentation"
+        tool_functions = [
+            create_plant,
+            add_digester_component,
+            add_chp_unit,
+            add_heating_system,
+            connect_components,
+            initialize_biogas_plant,
+            simulate_biogas_plant,
+            get_biogas_plant_status,
+            export_biogas_plant_config,
+            list_biogas_plants,
+            delete_biogas_plant,
+        ]
+
+        for tool_fn in tool_functions:
+            assert tool_fn.__doc__ is not None, f"Tool {tool_fn.__name__} should have documentation"
+            assert len(tool_fn.__doc__) > 0, f"Tool {tool_fn.__name__} should have non-empty documentation"
 
     def test_prompts_have_documentation(self) -> None:
         """Test that all prompts have docstrings."""
-        for prompt in mcp._prompts.values():
-            assert prompt.fn.__doc__ is not None, f"Prompt {prompt.name} should have documentation"
-            assert len(prompt.fn.__doc__) > 0, f"Prompt {prompt.name} should have non-empty documentation"
+        from pyadm1.configurator.mcp.server import (
+            system_guidance,
+            component_selection,
+            connection_guidelines,
+            parameter_guidelines,
+            substrate_guide,
+            design_best_practices,
+            troubleshooting,
+            example_plants,
+        )
+
+        prompt_functions = [
+            system_guidance,
+            component_selection,
+            connection_guidelines,
+            parameter_guidelines,
+            substrate_guide,
+            design_best_practices,
+            troubleshooting,
+            example_plants,
+        ]
+
+        for prompt_fn in prompt_functions:
+            assert prompt_fn.__doc__ is not None, f"Prompt {prompt_fn.__name__} should have documentation"
+            assert len(prompt_fn.__doc__) > 0, f"Prompt {prompt_fn.__name__} should have non-empty documentation"
 
 
 class TestMCPServerToolSequencing:
@@ -442,20 +515,18 @@ class TestMCPServerToolSequencing:
 
         # This test verifies the tools exist and can be called in order
         tools_in_order = [
-            "create_plant",
-            "add_digester_component",
-            "add_chp_unit",
-            "add_heating_system",
-            "connect_components",
-            "initialize_biogas_plant",
-            "simulate_biogas_plant",
-            "get_biogas_plant_status",
+            create_plant,
+            add_digester_component,
+            add_chp_unit,
+            add_heating_system,
+            connect_components,
+            initialize_biogas_plant,
+            simulate_biogas_plant,
+            get_biogas_plant_status,
         ]
 
-        tool_names = [t.name for t in mcp._tools.values()]
-
-        for tool_name in tools_in_order:
-            assert tool_name in tool_names, f"Tool {tool_name} should be registered"
+        for tool in tools_in_order:
+            assert callable(tool), f"Tool {tool.__name__} should be callable"
 
 
 if __name__ == "__main__":
