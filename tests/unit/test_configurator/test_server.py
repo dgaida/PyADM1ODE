@@ -8,6 +8,9 @@ This module tests the FastMCP server implementation including:
 - Prompt registration and retrieval
 - Error handling
 - Server lifecycle management
+
+Note: Tests access FunctionTool and FunctionPrompt wrapper objects via their
+attributes (.fn, .name, .description) rather than calling them directly.
 """
 
 import pytest
@@ -56,7 +59,8 @@ class TestMCPServerPrompts:
         """Test that system_guidance prompt is callable."""
         from pyadm1.configurator.mcp.server import system_guidance
 
-        result = system_guidance()
+        # FunctionPrompt objects have an 'fn' attribute with the actual function
+        result = system_guidance.fn()
         assert isinstance(result, str)
         assert len(result) > 0
 
@@ -64,7 +68,7 @@ class TestMCPServerPrompts:
         """Test that component_selection prompt is callable."""
         from pyadm1.configurator.mcp.server import component_selection
 
-        result = component_selection()
+        result = component_selection.fn()
         assert isinstance(result, str)
         assert len(result) > 0
 
@@ -72,7 +76,7 @@ class TestMCPServerPrompts:
         """Test that connection_guidelines prompt is callable."""
         from pyadm1.configurator.mcp.server import connection_guidelines
 
-        result = connection_guidelines()
+        result = connection_guidelines.fn()
         assert isinstance(result, str)
         assert len(result) > 0
 
@@ -80,7 +84,7 @@ class TestMCPServerPrompts:
         """Test that parameter_guidelines prompt is callable."""
         from pyadm1.configurator.mcp.server import parameter_guidelines
 
-        result = parameter_guidelines()
+        result = parameter_guidelines.fn()
         assert isinstance(result, str)
         assert len(result) > 0
 
@@ -88,7 +92,7 @@ class TestMCPServerPrompts:
         """Test that substrate_guide prompt is callable."""
         from pyadm1.configurator.mcp.server import substrate_guide
 
-        result = substrate_guide()
+        result = substrate_guide.fn()
         assert isinstance(result, str)
         assert len(result) > 0
 
@@ -96,7 +100,7 @@ class TestMCPServerPrompts:
         """Test that design_best_practices prompt is callable."""
         from pyadm1.configurator.mcp.server import design_best_practices
 
-        result = design_best_practices()
+        result = design_best_practices.fn()
         assert isinstance(result, str)
         assert len(result) > 0
 
@@ -104,7 +108,7 @@ class TestMCPServerPrompts:
         """Test that troubleshooting prompt is callable."""
         from pyadm1.configurator.mcp.server import troubleshooting
 
-        result = troubleshooting()
+        result = troubleshooting.fn()
         assert isinstance(result, str)
         assert len(result) > 0
 
@@ -112,7 +116,7 @@ class TestMCPServerPrompts:
         """Test that example_plants prompt is callable."""
         from pyadm1.configurator.mcp.server import example_plants
 
-        result = example_plants()
+        result = example_plants.fn()
         assert isinstance(result, str)
         assert len(result) > 0
 
@@ -129,7 +133,7 @@ class TestMCPServerPrompts:
             example_plants,
         )
 
-        prompt_functions = [
+        prompt_wrappers = [
             system_guidance,
             component_selection,
             connection_guidelines,
@@ -140,10 +144,10 @@ class TestMCPServerPrompts:
             example_plants,
         ]
 
-        for prompt_func in prompt_functions:
-            result = prompt_func()
-            assert isinstance(result, str), f"{prompt_func.__name__} should return string"
-            assert len(result) > 0, f"{prompt_func.__name__} should return non-empty string"
+        for prompt_wrapper in prompt_wrappers:
+            result = prompt_wrapper.fn()
+            assert isinstance(result, str), f"{prompt_wrapper.name} should return string"
+            assert len(result) > 0, f"{prompt_wrapper.name} should return non-empty string"
 
 
 class TestMCPServerTools:
@@ -151,47 +155,47 @@ class TestMCPServerTools:
 
     def test_create_plant_tool_callable(self) -> None:
         """Test that create_plant tool is callable."""
-        assert callable(create_plant)
+        assert callable(create_plant.fn)
 
     def test_add_digester_component_tool_callable(self) -> None:
         """Test that add_digester_component tool is callable."""
-        assert callable(add_digester_component)
+        assert callable(add_digester_component.fn)
 
     def test_add_chp_unit_tool_callable(self) -> None:
         """Test that add_chp_unit tool is callable."""
-        assert callable(add_chp_unit)
+        assert callable(add_chp_unit.fn)
 
     def test_add_heating_system_tool_callable(self) -> None:
         """Test that add_heating_system tool is callable."""
-        assert callable(add_heating_system)
+        assert callable(add_heating_system.fn)
 
     def test_connect_components_tool_callable(self) -> None:
         """Test that connect_components tool is callable."""
-        assert callable(connect_components)
+        assert callable(connect_components.fn)
 
     def test_initialize_biogas_plant_tool_callable(self) -> None:
         """Test that initialize_biogas_plant tool is callable."""
-        assert callable(initialize_biogas_plant)
+        assert callable(initialize_biogas_plant.fn)
 
     def test_simulate_biogas_plant_tool_callable(self) -> None:
         """Test that simulate_biogas_plant tool is callable."""
-        assert callable(simulate_biogas_plant)
+        assert callable(simulate_biogas_plant.fn)
 
     def test_get_biogas_plant_status_tool_callable(self) -> None:
         """Test that get_biogas_plant_status tool is callable."""
-        assert callable(get_biogas_plant_status)
+        assert callable(get_biogas_plant_status.fn)
 
     def test_export_biogas_plant_config_tool_callable(self) -> None:
         """Test that export_biogas_plant_config tool is callable."""
-        assert callable(export_biogas_plant_config)
+        assert callable(export_biogas_plant_config.fn)
 
     def test_list_biogas_plants_tool_callable(self) -> None:
         """Test that list_biogas_plants tool is callable."""
-        assert callable(list_biogas_plants)
+        assert callable(list_biogas_plants.fn)
 
     def test_delete_biogas_plant_tool_callable(self) -> None:
         """Test that delete_biogas_plant tool is callable."""
-        assert callable(delete_biogas_plant)
+        assert callable(delete_biogas_plant.fn)
 
 
 class TestMCPServerToolFunctions:
@@ -202,7 +206,7 @@ class TestMCPServerToolFunctions:
         """Test that create_plant wrapper calls the underlying function."""
         mock_create.return_value = "Success"
 
-        result = create_plant("TestPlant", "Test description", 48)
+        result = create_plant.fn("TestPlant", "Test description", 48)
 
         mock_create.assert_called_once_with("TestPlant", "Test description", 48)
         assert result == "Success"
@@ -212,7 +216,7 @@ class TestMCPServerToolFunctions:
         """Test that add_digester_component wrapper calls the underlying function."""
         mock_add.return_value = "Digester added"
 
-        result = add_digester_component(
+        result = add_digester_component.fn(
             "TestPlant", "dig1", V_liq=2000, V_gas=300, T_ad=308.15, name="Main Digester", load_initial_state=True
         )
 
@@ -224,7 +228,7 @@ class TestMCPServerToolFunctions:
         """Test that add_chp_unit wrapper calls the underlying function."""
         mock_add.return_value = "CHP added"
 
-        result = add_chp_unit("TestPlant", "chp1", P_el_nom=500, eta_el=0.40, eta_th=0.45, name="Main CHP")
+        result = add_chp_unit.fn("TestPlant", "chp1", P_el_nom=500, eta_el=0.40, eta_th=0.45, name="Main CHP")
 
         mock_add.assert_called_once()
         assert result == "CHP added"
@@ -234,7 +238,7 @@ class TestMCPServerToolFunctions:
         """Test that add_heating_system wrapper calls the underlying function."""
         mock_add.return_value = "Heating added"
 
-        result = add_heating_system(
+        result = add_heating_system.fn(
             "TestPlant", "heat1", target_temperature=308.15, heat_loss_coefficient=0.5, name="Main Heating"
         )
 
@@ -246,7 +250,7 @@ class TestMCPServerToolFunctions:
         """Test that connect_components wrapper calls the underlying function."""
         mock_connect.return_value = "Components connected"
 
-        result = connect_components("TestPlant", "dig1", "chp1", "gas")
+        result = connect_components.fn("TestPlant", "dig1", "chp1", "gas")
 
         mock_connect.assert_called_once_with("TestPlant", "dig1", "chp1", "gas")
         assert result == "Components connected"
@@ -256,7 +260,7 @@ class TestMCPServerToolFunctions:
         """Test that initialize_biogas_plant wrapper calls the underlying function."""
         mock_init.return_value = "Plant initialized"
 
-        result = initialize_biogas_plant("TestPlant")
+        result = initialize_biogas_plant.fn("TestPlant")
 
         mock_init.assert_called_once_with("TestPlant")
         assert result == "Plant initialized"
@@ -266,7 +270,7 @@ class TestMCPServerToolFunctions:
         """Test that simulate_biogas_plant wrapper calls the underlying function."""
         mock_sim.return_value = "Simulation complete"
 
-        result = simulate_biogas_plant("TestPlant", duration=10.0, dt=0.04167, save_interval=1.0)
+        result = simulate_biogas_plant.fn("TestPlant", duration=10.0, dt=0.04167, save_interval=1.0)
 
         mock_sim.assert_called_once_with("TestPlant", 10.0, 0.04167, 1.0)
         assert result == "Simulation complete"
@@ -276,7 +280,7 @@ class TestMCPServerToolFunctions:
         """Test that get_biogas_plant_status wrapper calls the underlying function."""
         mock_status.return_value = "Plant status"
 
-        result = get_biogas_plant_status("TestPlant")
+        result = get_biogas_plant_status.fn("TestPlant")
 
         mock_status.assert_called_once_with("TestPlant")
         assert result == "Plant status"
@@ -286,7 +290,7 @@ class TestMCPServerToolFunctions:
         """Test that export_biogas_plant_config wrapper calls the underlying function."""
         mock_export.return_value = "Export complete"
 
-        result = export_biogas_plant_config("TestPlant", "config.json")
+        result = export_biogas_plant_config.fn("TestPlant", "config.json")
 
         mock_export.assert_called_once_with("TestPlant", "config.json")
         assert result == "Export complete"
@@ -296,7 +300,7 @@ class TestMCPServerToolFunctions:
         """Test that list_biogas_plants wrapper calls the underlying function."""
         mock_list.return_value = "Plant list"
 
-        result = list_biogas_plants()
+        result = list_biogas_plants.fn()
 
         mock_list.assert_called_once()
         assert result == "Plant list"
@@ -306,7 +310,7 @@ class TestMCPServerToolFunctions:
         """Test that delete_biogas_plant wrapper calls the underlying function."""
         mock_delete.return_value = "Plant deleted"
 
-        result = delete_biogas_plant("TestPlant")
+        result = delete_biogas_plant.fn("TestPlant")
 
         mock_delete.assert_called_once_with("TestPlant")
         assert result == "Plant deleted"
@@ -404,7 +408,7 @@ class TestMCPServerIntegration:
 
     def test_tool_names_are_unique(self) -> None:
         """Test that all tool function names are unique."""
-        tool_functions = [
+        tool_wrappers = [
             create_plant,
             add_digester_component,
             add_chp_unit,
@@ -417,7 +421,7 @@ class TestMCPServerIntegration:
             list_biogas_plants,
             delete_biogas_plant,
         ]
-        tool_names = [f.__name__ for f in tool_functions]
+        tool_names = [t.name for t in tool_wrappers]
         assert len(tool_names) == len(set(tool_names)), "Tool names should be unique"
 
     def test_prompt_names_are_unique(self) -> None:
@@ -433,7 +437,7 @@ class TestMCPServerIntegration:
             example_plants,
         )
 
-        prompt_functions = [
+        prompt_wrappers = [
             system_guidance,
             component_selection,
             connection_guidelines,
@@ -443,12 +447,12 @@ class TestMCPServerIntegration:
             troubleshooting,
             example_plants,
         ]
-        prompt_names = [f.__name__ for f in prompt_functions]
+        prompt_names = [p.name for p in prompt_wrappers]
         assert len(prompt_names) == len(set(prompt_names)), "Prompt names should be unique"
 
     def test_tools_have_documentation(self) -> None:
         """Test that all tools have docstrings."""
-        tool_functions = [
+        tool_wrappers = [
             create_plant,
             add_digester_component,
             add_chp_unit,
@@ -462,9 +466,9 @@ class TestMCPServerIntegration:
             delete_biogas_plant,
         ]
 
-        for tool_fn in tool_functions:
-            assert tool_fn.__doc__ is not None, f"Tool {tool_fn.__name__} should have documentation"
-            assert len(tool_fn.__doc__) > 0, f"Tool {tool_fn.__name__} should have non-empty documentation"
+        for tool_wrapper in tool_wrappers:
+            assert tool_wrapper.description is not None, f"Tool {tool_wrapper.name} should have documentation"
+            assert len(tool_wrapper.description) > 0, f"Tool {tool_wrapper.name} should have non-empty documentation"
 
     def test_prompts_have_documentation(self) -> None:
         """Test that all prompts have docstrings."""
@@ -479,7 +483,7 @@ class TestMCPServerIntegration:
             example_plants,
         )
 
-        prompt_functions = [
+        prompt_wrappers = [
             system_guidance,
             component_selection,
             connection_guidelines,
@@ -490,9 +494,10 @@ class TestMCPServerIntegration:
             example_plants,
         ]
 
-        for prompt_fn in prompt_functions:
-            assert prompt_fn.__doc__ is not None, f"Prompt {prompt_fn.__name__} should have documentation"
-            assert len(prompt_fn.__doc__) > 0, f"Prompt {prompt_fn.__name__} should have non-empty documentation"
+        for prompt_wrapper in prompt_wrappers:
+            # Check the underlying function's docstring
+            assert prompt_wrapper.fn.__doc__ is not None, f"Prompt {prompt_wrapper.name} should have documentation"
+            assert len(prompt_wrapper.fn.__doc__) > 0, f"Prompt {prompt_wrapper.name} should have non-empty documentation"
 
 
 class TestMCPServerToolSequencing:
@@ -525,8 +530,11 @@ class TestMCPServerToolSequencing:
             get_biogas_plant_status,
         ]
 
-        for tool in tools_in_order:
-            assert callable(tool), f"Tool {tool.__name__} should be callable"
+        for tool_wrapper in tools_in_order:
+            # Check that the tool wrapper has the necessary attributes
+            assert hasattr(tool_wrapper, "name"), "Tool should have 'name' attribute"
+            assert hasattr(tool_wrapper, "fn"), f"Tool {tool_wrapper.name} should have 'fn' attribute"
+            assert callable(tool_wrapper.fn), f"Tool {tool_wrapper.name}'s fn should be callable"
 
 
 if __name__ == "__main__":
