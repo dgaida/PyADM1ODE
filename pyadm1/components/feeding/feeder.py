@@ -361,20 +361,29 @@ class Feeder(Component):
         """
         Estimate power requirement based on feeder type and capacity.
 
+        TODO: Check these publications that provide numbers:
+
+        Frey, J., Grüssing, F., Nägele, H. J., & Oechsner, H. (2013). Eigenstromverbrauch an Biogasanlagen senken:
+        Der Einfluss neuer Techniken. agricultural engineering. eu, 68(1), 58-63.
+
+         Naegele, H.-J., Lemmer, A., Oechsner, H., & Jungbluth, T. (2012). Electric Energy Consumption of the Full
+         Scale Research Biogas Plant “Unterer Lindenhof”: Results of Longterm and Full Detail Measurements. Energies,
+         5(12), 5198-5214. https://doi.org/10.3390/en5125198
+
         Returns:
             Power requirement [kW]
         """
         # Specific power requirements [kW per m³/h]
         specific_powers = {
-            FeederType.SCREW: 0.5,
-            FeederType.TWIN_SCREW: 0.7,
-            FeederType.PROGRESSIVE_CAVITY: 0.8,
-            FeederType.PISTON: 1.0,
-            FeederType.CENTRIFUGAL_PUMP: 0.3,
-            FeederType.MIXER_WAGON: 1.5,
+            FeederType.SCREW: 0.8,  # Increased from 0.5
+            FeederType.TWIN_SCREW: 1.0,  # Increased from 0.7
+            FeederType.PROGRESSIVE_CAVITY: 1.2,  # Increased from 0.8
+            FeederType.PISTON: 1.5,  # Increased from 1.0
+            FeederType.CENTRIFUGAL_PUMP: 0.5,  # Increased from 0.3
+            FeederType.MIXER_WAGON: 2.0,  # Increased from 1.5
         }
 
-        specific_power = specific_powers.get(self.feeder_type, 0.5)
+        specific_power = specific_powers.get(self.feeder_type, 0.8)
 
         # Convert Q_max from m³/d to m³/h
         Q_max_per_hour = self.Q_max / 24.0
@@ -384,16 +393,16 @@ class Feeder(Component):
 
         # Substrate type modifier
         if self.substrate_type == SubstrateCategory.FIBROUS:
-            power *= 1.5  # Fibrous materials need more power
+            power *= 1.8  # Increased from 1.5 - Fibrous materials need more power
         elif self.substrate_type == SubstrateCategory.SOLID:
-            power *= 1.2
+            power *= 1.4  # Increased from 1.2
         elif self.substrate_type == SubstrateCategory.LIQUID:
-            power *= 0.8  # Liquids easier to pump
+            power *= 0.7  # Decreased from 0.8 - Liquids easier to pump
 
         # Add safety margin
-        power *= 1.2
+        power *= 1.3  # Increased from 1.2
 
-        return max(1.0, power)  # Minimum 1 kW
+        return max(2.0, power)  # Increased minimum from 1.0 kW to 2.0 kW
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize feeder to dictionary."""
