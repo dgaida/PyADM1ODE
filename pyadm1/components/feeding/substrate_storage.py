@@ -170,6 +170,8 @@ class SubstrateStorage(Component):
         """
         if initial_state:
             self.current_level = float(initial_state.get("current_level", self.current_level))
+            # current_level cannot be larger than capacity
+            self.current_level = min(self.current_level, self.capacity)
             self.quality_factor = float(initial_state.get("quality_factor", 1.0))
             self.storage_time = float(initial_state.get("storage_time", 0.0))
             self.cumulative_losses = float(initial_state.get("cumulative_losses", 0.0))
@@ -355,7 +357,7 @@ class SubstrateStorage(Component):
         base_rates = {
             StorageType.VERTICAL_SILO: 0.0005,  # Reduced from 0.001 - Well sealed, very low losses
             StorageType.HORIZONTAL_SILO: 0.0008,  # Reduced from 0.002 - Good sealing
-            StorageType.BUNKER_SILO: 0.0015,  # Reduced from 0.003 - Moderate losses
+            StorageType.BUNKER_SILO: 0.001,  # Reduced from 0.003 - Moderate losses
             StorageType.CLAMP: 0.0025,  # Reduced from 0.005 - Higher losses
             StorageType.PILE: 0.004,  # Reduced from 0.008 - Highest losses
             StorageType.ABOVE_GROUND_TANK: 0.0002,  # Reduced from 0.0005 - Very low for liquids

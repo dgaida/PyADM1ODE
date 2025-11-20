@@ -806,11 +806,11 @@ class TestMixerEdgeCases:
 
         # Should handle overload condition
         assert result["P_consumed"] >= 0.0
-        assert result["speed_fraction"] > 1.0 or result["P_consumed"] <= mixer.power_installed * 1.2
+        assert mixer.state["current_speed_fraction"] > 1.0 or result["P_consumed"] <= mixer.power_installed * 1.2
 
     def test_mixer_multiple_consecutive_steps(self) -> None:
         """Test mixer over multiple consecutive time steps."""
-        mixer = Mixer("mixer_1")
+        mixer = Mixer("mixer_1", intermittent=False)
         mixer.initialize()
 
         # Run for 24 hours
@@ -820,6 +820,19 @@ class TestMixerEdgeCases:
 
         # Operating hours should accumulate
         assert mixer.operating_hours == 24.0
+
+    def test_mixer_multiple_consecutive_steps_intermittent(self) -> None:
+        """Test mixer over multiple consecutive time steps in intermittent operation (default: 25%)."""
+        mixer = Mixer("mixer_1")
+        mixer.initialize()
+
+        # Run for 24 hours
+        for hour in range(24):
+            result = mixer.step(t=hour / 24.0, dt=1.0 / 24.0, inputs={})
+            assert result["P_consumed"] >= 0.0
+
+        # Operating hours should accumulate: 25% of 24 h = 6 h
+        assert mixer.operating_hours == 6.0
 
     def test_mixer_start_stop_cycle(self) -> None:
         """Test mixer start/stop cycling."""
@@ -941,7 +954,8 @@ class TestMixerIntegration:
         # Average power should be close to 25% of continuous operation
         avg_power = total_energy / 24.0
         expected_avg = mixer.power_installed * 0.25
-        assert 0.1 * expected_avg <= avg_power <= 0.5 * expected_avg, "Average power should reflect intermittent operation"
+        # avg_power should be 0.25 of power_installed
+        assert 0.9 * expected_avg <= avg_power <= 1.1 * expected_avg, "Average power should reflect intermittent operation"
 
     def test_mixer_with_varying_speed_profile(self) -> None:
         """Test mixer with time-varying speed profile."""

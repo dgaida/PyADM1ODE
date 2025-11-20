@@ -100,7 +100,7 @@ class Feeder(Component):
     def __init__(
         self,
         component_id: str,
-        feeder_type: str = "screw",
+        feeder_type: Optional[str] = None,
         Q_max: float = 20.0,
         substrate_type: str = "solid",
         dosing_accuracy: Optional[float] = None,
@@ -123,9 +123,17 @@ class Feeder(Component):
         """
         super().__init__(component_id, ComponentType.MIXER, name)  # Use MIXER as closest type
 
+        if feeder_type is None:
+            if substrate_type.lower() == "solids" or substrate_type.lower() == "fibrous":
+                feeder_type = "screw"
+            else:
+                feeder_type = "centrifugal_pump"
+
         # Configuration
         self.feeder_type = FeederType(feeder_type.lower())
         self.substrate_type = SubstrateCategory(substrate_type.lower())
+        # TODO: check whether substrate type fits to feeder_type. E.g. liquid substrate should not be transported
+        #  with a screw
         self.Q_max = float(Q_max)
         self.enable_dosing_noise = enable_dosing_noise
 
@@ -402,7 +410,7 @@ class Feeder(Component):
         # Add safety margin
         power *= 1.3  # Increased from 1.2
 
-        return max(2.0, power)  # Increased minimum from 1.0 kW to 2.0 kW
+        return max(1.0, power)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize feeder to dictionary."""

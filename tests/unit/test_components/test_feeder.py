@@ -459,23 +459,25 @@ class TestFeederBlockage:
         # Note: This is probabilistic, but with 1000 steps it's very likely
         assert feeder.n_blockages >= 0, "Blockage counter should exist"
 
-    def test_blockage_reduces_flow(self) -> None:
-        """Test that blockage reduces flow rate."""
-        feeder = Feeder("feeder_1", Q_max=20.0, enable_dosing_noise=False)
-        feeder.initialize()
-
-        # Manually trigger blockage for testing
-        feeder.blockage_detected = True
-        inputs = {"Q_setpoint": 15.0}
-
-        # Simulate with blockage
-        feeder.blockage_detected = True
-        feeder.current_flow = 15.0 * 0.1  # Reduced flow
-
-        result = feeder.step(t=0.0, dt=1.0 / 24.0, inputs=inputs)
-
-        # Flow should be significantly reduced
-        assert result["Q_actual"] < 15.0 * 0.5, "Blockage should reduce flow"
+    # TODO: this test cannot work, because in the step method the variabel blockage_detected is set if random number
+    #  passes a threshold, otherwise it is set to False, thus overwriting the variable set here.
+    # def test_blockage_reduces_flow(self) -> None:
+    #     """Test that blockage reduces flow rate."""
+    #     feeder = Feeder("feeder_1", Q_max=20.0, enable_dosing_noise=False)
+    #     feeder.initialize()
+    #
+    #     # Manually trigger blockage for testing
+    #     feeder.blockage_detected = True
+    #     inputs = {"Q_setpoint": 15.0}
+    #
+    #     # Simulate with blockage
+    #     feeder.blockage_detected = True
+    #     feeder.current_flow = 15.0 * 0.1  # Reduced flow
+    #
+    #     result = feeder.step(t=0.0, dt=1.0 / 24.0, inputs=inputs)
+    #
+    #     # Flow should be significantly reduced
+    #     assert result["Q_actual"] < 15.0 * 0.5, "Blockage should reduce flow"
 
 
 class TestFeederSerialization:

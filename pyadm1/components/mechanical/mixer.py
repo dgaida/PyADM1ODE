@@ -237,7 +237,8 @@ class Mixer(Component):
             self.is_running = enable_mixing
 
         # Update speed
-        self.current_speed_fraction = speed_setpoint if self.is_running else 0.0
+        # take max of speed_setpoint, 0.0 - to avoid wrong calculations if accidently a negative setpoint is given
+        self.current_speed_fraction = max(speed_setpoint, 0.0) if self.is_running else 0.0
 
         # Calculate mixing parameters
         self._calculate_mixing_parameters()
