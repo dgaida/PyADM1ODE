@@ -8,6 +8,7 @@ dependencies:
   - numpy
   - pandas
   - scipy
+  - sqlalchemy
   - pip
   - pip:
     - pythonnet
