@@ -493,6 +493,10 @@ class Database:
             try:
                 session.add(plant)
                 session.commit()
+                # Refresh to ensure all attributes are loaded
+                session.refresh(plant)
+                # Detach from session so it can be used outside context
+                session.expunge(plant)
                 print(f"✓ Plant '{plant_id}' created")
                 return plant
             except IntegrityError:

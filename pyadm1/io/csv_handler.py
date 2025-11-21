@@ -249,6 +249,9 @@ class CSVHandler:
         ]:
             if param in df.columns:
                 value = row[param]
+                # Handle both scalar values and Series
+                if isinstance(value, pd.Series):
+                    value = value.iloc[0] if len(value) > 0 else None
                 if pd.notna(value):
                     result[param] = float(value)
 
