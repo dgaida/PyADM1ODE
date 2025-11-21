@@ -60,12 +60,6 @@ from pyadm1.calibration.optimization import (
 )
 from pyadm1.io import MeasurementData
 
-# from pyadm1.calibration.optimization import (
-#     create_optimizer,
-#     MultiObjectiveFunction,
-#     ParameterConstraints
-# )
-
 
 @dataclass
 class ObjectiveWeights:

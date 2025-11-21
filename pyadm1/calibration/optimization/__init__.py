@@ -56,6 +56,7 @@ from pyadm1.calibration.optimization.optimizer import (
     ParticleSwarmOptimizer,
     NelderMeadOptimizer,
     LBFGSBOptimizer,
+    create_optimizer,
 )
 from pyadm1.calibration.optimization.objective import (
     ObjectiveFunction,
@@ -80,6 +81,7 @@ __all__ = [
     "ParticleSwarmOptimizer",
     "NelderMeadOptimizer",
     "LBFGSBOptimizer",
+    "create_optimizer",
     "ObjectiveFunction",
     "SingleObjective",
     "MultiObjectiveFunction",
