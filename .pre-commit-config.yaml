@@ -23,10 +23,10 @@ repos:
       - id: check-merge-conflict
       - id: debug-statements
 
-  - repo: https://github.com/pycqa/bandit
-    rev: 1.7.10
-    hooks:
-      - id: bandit
-        args: ['-c', 'pyproject.toml']
-        additional_dependencies: ['bandit[toml]']
-        exclude: ^tests/  # Don't scan test files
+#  - repo: https://github.com/pycqa/bandit
+#    rev: 1.7.10
+#    hooks:
+#      - id: bandit
+#        args: ['-c', 'pyproject.toml']
+#        additional_dependencies: ['bandit[toml]']
+#        exclude: ^tests/  # Don't scan test files

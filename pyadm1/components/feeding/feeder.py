@@ -124,7 +124,8 @@ class Feeder(Component):
         super().__init__(component_id, ComponentType.MIXER, name)  # Use MIXER as closest type
 
         if feeder_type is None:
-            if substrate_type.lower() == "solids" or substrate_type.lower() == "fibrous":
+            # Default to screw feeder for solid substrates
+            if substrate_type.lower() in ["solid", "fibrous"]:
                 feeder_type = "screw"
             else:
                 feeder_type = "centrifugal_pump"

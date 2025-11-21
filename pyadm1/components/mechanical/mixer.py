@@ -337,7 +337,13 @@ class Mixer(Component):
 
         # Handle zero Reynolds number (mixer not running)
         if Re < 1e-6:
-            return 1.0  # Return default value when not running
+            # Return a reasonable default for the mixer type
+            if self.mixer_type == MixerType.PROPELLER:
+                return 0.32  # Turbulent regime value
+            elif self.mixer_type == MixerType.PADDLE:
+                return 5.0
+            else:  # JET
+                return 0.1
 
         if self.mixer_type == MixerType.PROPELLER:
             # Propeller: transition from laminar to turbulent

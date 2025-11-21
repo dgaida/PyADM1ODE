@@ -52,6 +52,12 @@ import time
 
 from pyadm1.calibration.parameter_bounds import create_default_bounds
 from pyadm1.calibration.validation import CalibrationValidator
+from pyadm1.calibration.optimization import (
+    create_optimizer,
+    MultiObjectiveFunction,
+    WeightedSumObjective,
+    ParameterConstraints,
+)
 from pyadm1.io import MeasurementData
 
 # from pyadm1.calibration.optimization import (
@@ -165,6 +171,7 @@ class InitialCalibrator:
         population_size: int = 15,
         tolerance: float = 1e-4,
         sensitivity_analysis: bool = True,
+        use_constraints: bool = False,
         **kwargs,
     ):
         """
@@ -182,6 +189,7 @@ class InitialCalibrator:
             population_size: Population size for differential evolution.
             tolerance: Convergence tolerance.
             sensitivity_analysis: Perform sensitivity analysis on results.
+            use_constraints: Add parameter constraints beyond bounds.
             **kwargs: Additional optimizer arguments.
 
         Returns:
@@ -236,62 +244,116 @@ class InitialCalibrator:
         self._optimization_history = []
         self._best_objective_value = float("inf")
 
-        # Create objective function
-        def objective_func(param_values):
-            return self._objective_function(
-                param_values=param_values,
-                param_names=parameters,
-                measurements=train_data,
+        # ====================================================================
+        # CREATE OBJECTIVE FUNCTION USING OPTIMIZATION PACKAGE
+        # ====================================================================
+
+        # Create simulator wrapper
+        def simulator(params: Dict[str, float]) -> Dict[str, np.ndarray]:
+            """Wrapper that simulates with given parameters."""
+            return self._simulate_with_parameters(params, train_data)
+
+        # Extract measurements for each objective
+        measurements_dict = {}
+        for obj in objectives:
+            try:
+                measured = train_data.get_measurement(obj).values
+                measurements_dict[obj] = measured
+            except Exception:
+                continue
+
+        # Create multi-objective function
+        if weights is None:
+            # Use WeightedSumObjective with equal weights
+            objective_func = WeightedSumObjective(
+                simulator=simulator,
+                measurements_dict=measurements_dict,
                 objectives=objectives,
-                weights=objective_weights,
+                parameter_names=parameters,
+                error_metric="rmse",
+                normalize=True,
+            )
+        else:
+            # Use MultiObjectiveFunction with custom weights
+            objective_func = MultiObjectiveFunction(
+                simulator=simulator,
+                measurements_dict=measurements_dict,
+                objectives=objectives,
+                weights=weights,
+                parameter_names=parameters,
+                error_metric="rmse",
+                normalize=True,
             )
 
-        # Run optimization
+        # ====================================================================
+        # SETUP CONSTRAINTS (OPTIONAL)
+        # ====================================================================
+
+        constraints = None
+        if use_constraints:
+            constraints = ParameterConstraints()
+
+            # Add box constraints
+            for param, (lower, upper) in param_bounds.items():
+                constraints.add_box_constraint(param, lower, upper, hard=True)
+
+            # Add example linear constraint: Y_su + 0.1*k_dis <= 0.2
+            # (Only if both parameters are being calibrated)
+            if "Y_su" in parameters and "k_dis" in parameters:
+                constraints.add_linear_inequality(
+                    coefficients={"Y_su": 1.0, "k_dis": 0.1},
+                    upper_bound=0.2,
+                    weight=1.0,
+                )
+
+            # Wrap objective with penalty
+            original_objective = objective_func
+
+            def penalized_objective(x: np.ndarray) -> float:
+                params = {name: val for name, val in zip(parameters, x)}
+                penalty = constraints.calculate_penalty(params)
+                return original_objective(x) + penalty
+
+            # Use penalized objective
+            objective_func_wrapped = penalized_objective
+        else:
+            objective_func_wrapped = objective_func
+
+        # ====================================================================
+        # CREATE OPTIMIZER USING OPTIMIZATION PACKAGE
+        # ====================================================================
+
         if self.verbose:
             print(f"\nStarting {method} optimization...")
             print(f"Max iterations: {max_iterations}")
 
-        if method == "differential_evolution":
-            result_opt = self._optimize_differential_evolution(
-                objective_func=objective_func,
-                bounds=param_bounds,
-                parameters=parameters,
-                max_iterations=max_iterations,
-                population_size=population_size,
-                tolerance=tolerance,
-                **kwargs,
-            )
-        elif method == "nelder_mead":
-            result_opt = self._optimize_nelder_mead(
-                objective_func=objective_func,
-                initial_guess=[initial_params[p] for p in parameters],
-                bounds=param_bounds,
-                parameters=parameters,
-                max_iterations=max_iterations,
-                tolerance=tolerance,
-                **kwargs,
-            )
-        elif method == "lbfgsb":
-            result_opt = self._optimize_lbfgsb(
-                objective_func=objective_func,
-                initial_guess=[initial_params[p] for p in parameters],
-                bounds=param_bounds,
-                parameters=parameters,
-                max_iterations=max_iterations,
-                tolerance=tolerance,
-                **kwargs,
-            )
-        else:
-            raise ValueError(f"Unknown optimization method: {method}")
+        # Create optimizer via factory
+        optimizer = create_optimizer(
+            method=method,
+            bounds=param_bounds,
+            max_iterations=max_iterations,
+            tolerance=tolerance,
+            verbose=self.verbose,
+            population_size=population_size if method in ["differential_evolution", "de"] else None,
+            **kwargs,
+        )
 
-        # Extract results
-        success = result_opt["success"]
-        optimized_values = result_opt["x"]
-        objective_value = result_opt["fun"]
-        n_iterations = result_opt["nit"]
+        # Get initial guess for local methods
+        initial_guess = None
+        if method in ["nelder_mead", "nm", "lbfgsb", "l_bfgs_b", "powell"]:
+            initial_guess = np.array([initial_params[p] for p in parameters])
 
-        # Create parameter dictionary
-        optimized_params = {param: float(val) for param, val in zip(parameters, optimized_values)}
+        # Run optimization
+        opt_result = optimizer.optimize(objective_func_wrapped, initial_guess=initial_guess)
+
+        # ====================================================================
+        # EXTRACT AND PROCESS RESULTS
+        # ====================================================================
+
+        success = opt_result.success
+        optimized_params = opt_result.parameter_dict
+        objective_value = opt_result.fun
+        n_iterations = opt_result.nit
 
         # Validate on validation set
         validation_metrics = {}
@@ -322,6 +384,9 @@ class InitialCalibrator:
         # Restore original parameters
         self._apply_parameters_to_plant(self._original_parameters)
 
+        # Store optimization history from optimizer
+        self._optimization_history = opt_result.history
+
         # Create result object
         result = CalibrationResult(
             success=success,
@@ -331,7 +396,7 @@ class InitialCalibrator:
             n_iterations=n_iterations,
             execution_time=execution_time,
             method=method,
-            message=result_opt.get("message", "Optimization completed"),
+            message=opt_result.message if hasattr(opt_result, "message") else "Optimization completed",
             validation_metrics=validation_metrics,
             sensitivity=sensitivity_results,
             history=self._optimization_history,
@@ -814,13 +879,10 @@ class InitialCalibrator:
             vfa_list = []
             tac_list = []
 
-            for component_id, component_result in components.items():
-                if "Q_ch4" in component_result:
-                    q_ch4_total += component_result["Q_ch4"]
-                if "Q_gas" in component_result:
-                    q_gas_total += component_result["Q_gas"]
-                if "Q_co2" in component_result:
-                    q_co2_total += component_result["Q_co2"]
+            for component_result in components.values():
+                q_ch4_total += component_result.get("Q_ch4", 0.0)
+                q_gas_total += component_result.get("Q_gas", 0.0)
+                q_co2_total += component_result.get("Q_co2", 0.0)
                 if "pH" in component_result:
                     pH_list.append(component_result["pH"])
                 if "VFA" in component_result:

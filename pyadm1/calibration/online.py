@@ -54,11 +54,14 @@ from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 import time
-from scipy.optimize import minimize
 
 from pyadm1.calibration.parameter_bounds import create_default_bounds, ParameterBounds
 from pyadm1.calibration.validation import CalibrationValidator
-from pyadm1.calibration.initial import ObjectiveWeights
+from pyadm1.calibration.optimization import (
+    create_optimizer,
+    MultiObjectiveFunction,
+    ParameterConstraints,
+)
 from pyadm1.io import MeasurementData
 
 
@@ -190,6 +193,7 @@ class OnlineCalibrator:
         max_iterations: int = 50,
         objectives: Optional[List[str]] = None,
         weights: Optional[Dict[str, float]] = None,
+        use_constraints: bool = True,
         **kwargs,
     ):
         """
@@ -207,8 +211,9 @@ class OnlineCalibrator:
             time_window: Days of recent data to use.
             method: Optimization method ("nelder_mead" or "lbfgsb").
             max_iterations: Maximum optimization iterations.
-            objectives: List of objectives to match. Defaults to ["Q_ch4", "pH"].
-            weights: Objective weights. Equal weights if None.
+            objectives: List of objectives to match.
+            weights: Objective weights.
+            use_constraints: Use parameter constraints.
             **kwargs: Additional optimizer arguments.
 
         Returns:
@@ -286,40 +291,91 @@ class OnlineCalibrator:
                 current = current_parameters.get(param, 0)
                 print(f"  {param}: [{lb:.4f}, {ub:.4f}] (current: {current:.4f})")
 
-        # Setup objective function
+        # ====================================================================
+        # CREATE OBJECTIVE FUNCTION USING OPTIMIZATION PACKAGE
+        # ====================================================================
 
-        objective_weights = self._setup_objective_weights(objectives, weights)
+        # Create simulator wrapper
+        def simulator(params: Dict[str, float]) -> Dict[str, np.ndarray]:
+            """Wrapper that simulates with given parameters."""
+            return self._simulate_with_parameters(params, windowed_data)
 
-        def objective_func(param_values):
-            params_dict = {name: value for name, value in zip(parameters, param_values)}
-            return self._online_objective_function(params_dict, windowed_data, objectives, objective_weights)
+        # Extract measurements for each objective
+        measurements_dict = {}
+        for obj in objectives:
+            try:
+                measured = windowed_data.get_measurement(obj).values
+                measurements_dict[obj] = measured
+            except Exception:
+                continue
 
-        # Get initial guess (current parameters)
-        initial_guess = [current_parameters.get(p, self.parameter_bounds.get_default_values([p])[p]) for p in parameters]
+        # Create multi-objective function
+        objective_func = MultiObjectiveFunction(
+            simulator=simulator,
+            measurements_dict=measurements_dict,
+            objectives=objectives,
+            weights=weights or {obj: 1.0 / len(objectives) for obj in objectives},
+            parameter_names=parameters,
+            error_metric="rmse",
+            normalize=True,
+        )
 
-        # Run optimization
+        # ====================================================================
+        # SETUP CONSTRAINTS
+        # ====================================================================
+
+        if use_constraints:
+            constraints = ParameterConstraints()
+
+            # Add box constraints with max change limits
+            for param, (lower, upper) in param_bounds.items():
+                constraints.add_box_constraint(param, lower, upper, hard=True)
+
+            # Wrap objective with penalty
+            original_objective = objective_func
+
+            def penalized_objective(x: np.ndarray) -> float:
+                params = {name: val for name, val in zip(parameters, x)}
+                penalty = constraints.calculate_penalty(params)
+                return original_objective(x) + penalty
+
+            objective_func_wrapped = penalized_objective
+        else:
+            objective_func_wrapped = objective_func
+
+        # ====================================================================
+        # CREATE OPTIMIZER USING OPTIMIZATION PACKAGE
+        # ====================================================================
+
         if self.verbose:
             print(f"\nStarting {method} optimization...")
 
-        if method == "nelder_mead":
-            result_opt = self._optimize_nelder_mead(
-                objective_func, initial_guess, param_bounds, parameters, max_iterations, **kwargs
-            )
-        elif method == "lbfgsb":
-            result_opt = self._optimize_lbfgsb(
-                objective_func, initial_guess, param_bounds, parameters, max_iterations, **kwargs
-            )
-        else:
-            raise ValueError(f"Unknown optimization method: {method}")
+        # Create optimizer
+        optimizer = create_optimizer(
+            method=method,
+            bounds=param_bounds,
+            max_iterations=max_iterations,
+            tolerance=kwargs.get("tolerance", 1e-4),
+            verbose=self.verbose,
+            **kwargs,
+        )
 
-        # Extract results
-        success = result_opt["success"]
-        optimized_values = result_opt["x"]
-        objective_value = result_opt["fun"]
-        n_iterations = result_opt["nit"]
+        # Get initial guess (current parameters)
+        initial_guess = np.array(
+            [current_parameters.get(p, self.parameter_bounds.get_default_values([p])[p]) for p in parameters]
+        )
 
-        # Create parameter dictionary
-        optimized_params = {param: float(val) for param, val in zip(parameters, optimized_values)}
+        # Run optimization
+        opt_result = optimizer.optimize(objective_func_wrapped, initial_guess=initial_guess)
+
+        # ====================================================================
+        # EXTRACT AND PROCESS RESULTS
+        # ====================================================================
+
+        success = opt_result.success
+        optimized_params = opt_result.parameter_dict
+        objective_value = opt_result.fun
+        n_iterations = opt_result.nit
 
         # Calculate parameter changes
         param_changes = {}
@@ -373,7 +429,7 @@ class OnlineCalibrator:
             n_iterations=n_iterations,
             execution_time=execution_time,
             method=method,
-            message=result_opt.get("message", "Online calibration completed"),
+            message=opt_result.get("message", "Online calibration completed"),
             validation_metrics=validation_metrics,
             sensitivity={},  # Not computed in online mode
             history=[],  # Not tracked in online mode
@@ -846,292 +902,3 @@ class OnlineCalibrator:
             bounds[param] = (lower, upper)
 
         return bounds
-
-    def _setup_objective_weights(self, objectives: List[str], weights: Optional[Dict[str, float]]) -> "ObjectiveWeights":
-        """
-        Setup objective weights for multi-objective calibration.
-
-        Args:
-            objectives: List of objective names.
-            weights: Optional weight dictionary.
-
-        Returns:
-            ObjectiveWeights instance.
-        """
-        if weights is None:
-            # Equal weights
-            weight_value = 1.0 / len(objectives)
-            weights = {obj: weight_value for obj in objectives}
-
-        obj_weights = ObjectiveWeights(
-            Q_ch4=weights.get("Q_ch4", 0.0),
-            Q_gas=weights.get("Q_gas", 0.0),
-            pH=weights.get("pH", 0.0),
-            VFA=weights.get("VFA", 0.0),
-            TAC=weights.get("TAC", 0.0),
-        )
-
-        return obj_weights.normalize()
-
-    def _online_objective_function(
-        self, parameters: Dict[str, float], measurements: "MeasurementData", objectives: List[str], weights: "ObjectiveWeights"
-    ) -> float:
-        """
-        Objective function for online calibration.
-
-        Computes weighted sum of squared errors between simulated and
-        measured outputs using recent measurement window.
-
-        Args:
-            parameters: Parameter values to evaluate.
-            measurements: Recent measurement data.
-            objectives: List of objectives to match.
-            weights: Objective weights.
-
-        Returns:
-            Objective function value (lower is better).
-        """
-        # Simulate with these parameters
-        try:
-            outputs = self._simulate_with_parameters(parameters, measurements)
-        except Exception as e:
-            if self.verbose:
-                print(f"Simulation failed: {str(e)}")
-            return 1e10  # Penalty for failed simulation
-
-        # Calculate weighted objective
-        objective = 0.0
-        n_objectives = 0
-
-        for obj in objectives:
-            if obj not in outputs:
-                continue
-
-            # Get measured values
-            try:
-                measured = measurements.get_measurement(obj).values
-            except Exception as e:
-                print(e)
-                continue
-
-            simulated = outputs[obj]
-
-            # Ensure arrays
-            measured = np.atleast_1d(measured)
-            simulated = np.atleast_1d(simulated)
-
-            # Align lengths
-            min_len = min(len(measured), len(simulated))
-            measured = measured[:min_len]
-            simulated = simulated[:min_len]
-
-            # Remove NaN values
-            valid = ~(np.isnan(measured) | np.isnan(simulated))
-            if not np.any(valid):
-                continue
-
-            measured = measured[valid]
-            simulated = simulated[valid]
-
-            # Calculate RMSE
-            mse = np.mean((measured - simulated) ** 2)
-
-            # Get weight
-            weight = getattr(weights, obj, 0.0)
-
-            objective += weight * mse
-            n_objectives += 1
-
-        if n_objectives == 0:
-            return 1e10
-
-        # Normalize by number of objectives
-        objective = objective / n_objectives
-
-        return objective
-
-    def _optimize_nelder_mead(
-        self,
-        objective_func,
-        initial_guess: List[float],
-        param_bounds: Dict[str, Tuple[float, float]],
-        parameters: List[str],
-        max_iterations: int,
-        **kwargs,
-    ) -> Dict[str, Any]:
-        """
-        Run Nelder-Mead optimization with bounds handling.
-
-        Args:
-            objective_func: Objective function to minimize.
-            initial_guess: Initial parameter values.
-            param_bounds: Parameter bounds dictionary.
-            parameters: Parameter names.
-            max_iterations: Maximum iterations.
-            **kwargs: Additional optimizer arguments.
-
-        Returns:
-            Optimization result dictionary.
-        """
-
-        # Nelder-Mead doesn't support bounds directly, so we use penalty
-        def bounded_objective(x):
-            # Check bounds and add penalty
-            penalty = 0.0
-            for i, (param, value) in enumerate(zip(parameters, x)):
-                lower, upper = param_bounds[param]
-                if value < lower:
-                    penalty += 1e6 * (lower - value) ** 2
-                elif value > upper:
-                    penalty += 1e6 * (value - upper) ** 2
-
-            return objective_func(x) + penalty
-
-        result = minimize(
-            fun=bounded_objective,
-            x0=initial_guess,
-            method="Nelder-Mead",
-            options={
-                "maxiter": max_iterations,
-                "xatol": kwargs.get("xatol", 1e-4),
-                "fatol": kwargs.get("fatol", 1e-4),
-                "disp": self.verbose,
-            },
-        )
-
-        return {"success": result.success, "x": result.x, "fun": result.fun, "nit": result.nit, "message": result.message}
-
-    def _optimize_lbfgsb(
-        self,
-        objective_func,
-        initial_guess: List[float],
-        param_bounds: Dict[str, Tuple[float, float]],
-        parameters: List[str],
-        max_iterations: int,
-        **kwargs,
-    ) -> Dict[str, Any]:
-        """
-        Run L-BFGS-B optimization with bounds.
-
-        Args:
-            objective_func: Objective function to minimize.
-            initial_guess: Initial parameter values.
-            param_bounds: Parameter bounds dictionary.
-            parameters: Parameter names.
-            max_iterations: Maximum iterations.
-            **kwargs: Additional optimizer arguments.
-
-        Returns:
-            Optimization result dictionary.
-        """
-
-        # Convert bounds to list of tuples
-        bounds_list = [param_bounds[param] for param in parameters]
-
-        result = minimize(
-            fun=objective_func,
-            x0=initial_guess,
-            method="L-BFGS-B",
-            bounds=bounds_list,
-            options={
-                "maxiter": max_iterations,
-                "ftol": kwargs.get("ftol", 1e-4),
-                "gtol": kwargs.get("gtol", 1e-5),
-                "disp": self.verbose,
-            },
-        )
-
-        return {"success": result.success, "x": result.x, "fun": result.fun, "nit": result.nit, "message": result.message}
-
-    def _simulate_with_parameters(
-        self, parameters: Dict[str, float], measurements: "MeasurementData"
-    ) -> Dict[str, np.ndarray]:
-        """
-        Simulate plant with given parameters.
-
-        Applies parameters temporarily, runs simulation, and restores
-        original parameters.
-
-        Args:
-            parameters: Parameter values to use.
-            measurements: Measurement data for simulation duration.
-
-        Returns:
-            Dictionary of simulated outputs.
-        """
-        # Store original parameters for all digesters
-        original_params = {}
-        for component_id, component in self.plant.components.items():
-            if component.component_type.value == "digester":
-                original_params[component_id] = component.get_calibration_parameters()
-                component.apply_calibration_parameters(parameters)
-
-        try:
-            # Determine simulation duration from measurements
-            n_steps = len(measurements)
-            dt = 1.0 / 24.0  # Hourly time steps
-            duration = n_steps * dt
-
-            # Run simulation
-            results = self.plant.simulate(duration=duration, dt=dt, save_interval=dt)
-
-            # Extract outputs
-            outputs = self._extract_outputs_from_results(results)
-
-            return outputs
-
-        finally:
-            # Restore original parameters
-            for component_id, params in original_params.items():
-                if params:
-                    self.plant.components[component_id].apply_calibration_parameters(params)
-                else:
-                    self.plant.components[component_id].clear_calibration_parameters()
-
-    def _extract_outputs_from_results(self, results: List[Dict[str, Any]]) -> Dict[str, np.ndarray]:
-        """
-        Extract relevant outputs from simulation results.
-
-        Args:
-            results: List of simulation result dictionaries.
-
-        Returns:
-            Dictionary mapping output names to arrays.
-        """
-        outputs = {
-            "Q_ch4": [],
-            "Q_gas": [],
-            "pH": [],
-            "VFA": [],
-            "TAC": [],
-        }
-
-        for result in results:
-            components = result.get("components", {})
-
-            # Aggregate across all digesters
-            q_ch4_total = 0.0
-            q_gas_total = 0.0
-            pH_list = []
-            vfa_list = []
-            tac_list = []
-
-            for component_result in components.values():
-                q_ch4_total += component_result.get("Q_ch4", 0.0)
-                q_gas_total += component_result.get("Q_gas", 0.0)
-
-                if "pH" in component_result:
-                    pH_list.append(component_result["pH"])
-                if "VFA" in component_result:
-                    vfa_list.append(component_result["VFA"])
-                if "TAC" in component_result:
-                    tac_list.append(component_result["TAC"])
-
-            outputs["Q_ch4"].append(q_ch4_total)
-            outputs["Q_gas"].append(q_gas_total)
-            outputs["pH"].append(np.mean(pH_list) if pH_list else 7.0)
-            outputs["VFA"].append(np.mean(vfa_list) if vfa_list else 0.0)
-            outputs["TAC"].append(np.mean(tac_list) if tac_list else 0.0)
-
-        # Convert to numpy arrays
-        return {k: np.array(v) for k, v in outputs.items()}
