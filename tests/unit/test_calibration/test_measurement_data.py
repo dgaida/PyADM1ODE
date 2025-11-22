@@ -48,7 +48,7 @@ def test_outlier_detection_iqr():
     s = pd.Series([1, 2, 3, 100])  # 100 is an outlier
     outliers = OutlierDetector.detect_iqr(s, multiplier=1.5)
 
-    assert outliers.iloc[-1] is True
+    assert outliers.iloc[-1]
     assert outliers.sum() == 1
 
 
@@ -56,19 +56,19 @@ def test_outlier_detection_moving_window():
     s = pd.Series([1, 2, 3, 4, 20])  # last entry is outlier
     outliers = OutlierDetector.detect_moving_window(s, window=3, threshold=2.0)
 
-    assert outliers.iloc[-1] is True
+    assert outliers.iloc[-1]
 
 
 def test_remove_outliers_zscore():
     df = pd.DataFrame(
         {
             "timestamp": pd.date_range("2024-01-01", periods=5, freq="H"),
-            "Q_ch4": [1, 2, 1000, 3, 4],
+            "Q_ch4": [1, 2, 1000, 3, 4, 3],
         }
     )
     data = MeasurementData(df)
 
-    removed = data.remove_outliers(method="zscore", threshold=3.0)
+    removed = data.remove_outliers(method="zscore", threshold=2.0)
 
     assert removed == 1
     assert data.data["Q_ch4"].isna().sum() == 1

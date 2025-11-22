@@ -56,7 +56,7 @@ class ADMParams:
         Returns
         -------
         Tuple[float, ...]
-            All ADM1 parameters (73 values)
+            All ADM1 parameters (87 values)
         """
         # parameter definition from the Rosen et al (2006) BSM2 report bmadm1_report
         # Stoichiometric parameter

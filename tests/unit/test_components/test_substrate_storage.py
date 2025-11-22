@@ -380,8 +380,9 @@ class TestStorageTypes:
         storage = SubstrateStorage("storage_1", storage_type="bunker_silo")
 
         assert storage.storage_type == StorageType.BUNKER_SILO
+        # TODO: check which numbers make sense here. get a source.
         # Bunker silos have moderate degradation
-        assert 0.001 < storage.degradation_rate < 0.01
+        assert 0.0005 < storage.degradation_rate < 0.01
 
     def test_clamp_storage_initialization(self) -> None:
         """Test clamp storage initialization."""

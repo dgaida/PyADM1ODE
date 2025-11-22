@@ -352,6 +352,7 @@ class SubstrateStorage(Component):
         Returns:
             Degradation rate [1/d]
         """
+        # TODO: get a source confirming those values
         # Base rates for different storage types [1/d]
         # Reduced to more realistic values
         base_rates = {

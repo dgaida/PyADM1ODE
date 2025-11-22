@@ -134,9 +134,9 @@ class DataValidator:
             pct_missing = (data[col].isna().sum() / len(data)) * 100
             missing_data[col] = pct_missing
 
-            if pct_missing > 50:
+            if pct_missing > 30:
                 issues.append(f"Column '{col}' has {pct_missing:.1f}% missing data")
-            elif pct_missing > 20:
+            elif pct_missing > 5:
                 warnings_list.append(f"Column '{col}' has {pct_missing:.1f}% missing data")
 
         # Check for expected ranges

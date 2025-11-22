@@ -33,7 +33,7 @@ class TestADMParams:
 
     def test_getADMparams_returns_correct_number_of_values(self, standard_conditions: Tuple[float, float, float]) -> None:
         """
-        Test that getADMparams returns exactly 73 parameter values.
+        Test that getADMparams returns exactly 87 parameter values.
 
         Args:
             standard_conditions: Fixture providing R, T_base, T_ad values.
@@ -41,7 +41,7 @@ class TestADMParams:
         R, T_base, T_ad = standard_conditions
         params = ADMParams.getADMparams(R, T_base, T_ad)
 
-        assert len(params) == 73, "getADMparams should return 73 parameters"
+        assert len(params) == 87, "getADMparams should return 87 parameters"
 
     def test_getADMparams_all_positive_values(self, standard_conditions: Tuple[float, float, float]) -> None:
         """
