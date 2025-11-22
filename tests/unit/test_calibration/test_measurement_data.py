@@ -53,16 +53,19 @@ def test_outlier_detection_iqr():
 
 
 def test_outlier_detection_moving_window():
-    s = pd.Series([1, 2, 3, 4, 20])  # last entry is outlier
-    outliers = OutlierDetector.detect_moving_window(s, window=3, threshold=2.0)
+    # as moving average is calculated around center, the last window-2 elements in the outliers object are NaN.
+    # window of 3 is very small to detect outliers with z-score, because z-score is calculated using mean, so not robust
+    s = pd.Series([1, 2, 3, 4, 80, 2, 4])  # last entry is outlier
+    outliers = OutlierDetector.detect_moving_window(s, window=5, threshold=1.5)
 
-    assert outliers.iloc[-1]
+    # last value is NaN
+    assert outliers.iloc[-3]
 
 
 def test_remove_outliers_zscore():
     df = pd.DataFrame(
         {
-            "timestamp": pd.date_range("2024-01-01", periods=5, freq="H"),
+            "timestamp": pd.date_range("2024-01-01", periods=6, freq="H"),
             "Q_ch4": [1, 2, 1000, 3, 4, 3],
         }
     )
