@@ -344,6 +344,781 @@ flare = Flare(
 )
 ```
 
+## Mechanical Components
+
+### Pump
+
+Pumps transfer substrates, digestate, and other fluids throughout the biogas plant.
+
+#### Parameters
+
+```python
+from pyadm1.components.mechanical import Pump
+
+pump = Pump(
+    component_id="pump1",
+    pump_type="progressive_cavity",  # or "centrifugal", "piston"
+    Q_nom=15.0,                      # Nominal flow rate [m³/h]
+    pressure_head=50.0,              # Design pressure [m]
+    efficiency=None,                 # Auto-calculated if None
+    motor_efficiency=0.90,           # Motor efficiency (0-1)
+    fluid_density=1020.0,            # Fluid density [kg/m³]
+    speed_control=True,              # Variable speed drive
+    name="Feed Pump"
+)
+```
+
+#### Pump Types Comparison
+
+| Type | Best Application | Efficiency | Advantages | Disadvantages |
+|------|-----------------|------------|------------|---------------|
+| **Centrifugal** | Low viscosity liquids | 65-75% | • High flow rates<br>• Robust<br>• Low maintenance | • Not self-priming<br>• Poor with high viscosity<br>• Efficiency drops with slurries |
+| **Progressive Cavity** | Viscous slurries | 50-70% | • Handles high solids<br>• Self-priming<br>• Gentle conveying | • Lower efficiency<br>• Higher maintenance<br>• Speed-dependent pressure |
+| **Piston** | High pressure applications | 70-85% | • High pressure capability<br>• Precise flow control<br>• Good efficiency | • Higher cost<br>• More complex<br>• Sensitive to solids |
+
+#### Sizing Guidelines
+
+**Flow Rate Selection:**
+
+| Plant Size | Substrate Feed [m³/d] | Pump Q_nom [m³/h] | Typical Pressure [m] |
+|------------|----------------------|-------------------|---------------------|
+| Small | 10-25 | 5-15 | 30-50 |
+| Medium | 25-75 | 15-40 | 40-60 |
+| Large | 75-200 | 40-100 | 50-80 |
+
+% TODO: add sources for those numbers
+
+**Pressure Head Considerations:**
+
+```python
+# Calculate required pressure head
+H_static = 5.0      # Vertical lift [m]
+H_friction = 8.0    # Pipe friction losses [m]
+H_process = 2.0     # Process pressure [m]
+H_safety = 1.2      # Safety factor
+
+H_required = (H_static + H_friction + H_process) * H_safety
+# = 18.0 m
+
+pump = Pump("pump1", Q_nom=15, pressure_head=H_required)
+```
+
+#### Outputs
+
+```python
+{
+    'P_consumed': 8.5,           # Power consumption [kW]
+    'Q_actual': 10.0,            # Actual flow rate [m³/h]
+    'is_running': True,          # Operating state
+    'efficiency': 0.68,          # Current efficiency
+    'pressure_actual': 48.5,     # Actual pressure [m]
+    'speed_fraction': 1.0,       # Speed (0-1)
+    'specific_energy': 0.85      # Energy per volume [kWh/m³]
+}
+```
+
+#### Usage Example
+
+```python
+# Progressive cavity pump for substrate feeding
+pump = Pump(
+    component_id="feed_pump",
+    pump_type="progressive_cavity",
+    Q_nom=15.0,
+    pressure_head=50.0,
+    speed_control=True
+)
+
+pump.initialize()
+
+# Operate at 80% capacity
+result = pump.step(
+    t=0,
+    dt=1/24,
+    inputs={
+        'Q_setpoint': 12.0,
+        'enable_pump': True,
+        'fluid_density': 1020,
+        'pressure_head': 50
+    }
+)
+
+print(f"Power: {result['P_consumed']:.1f} kW")
+print(f"Flow: {result['Q_actual']:.1f} m³/h")
+print(f"Efficiency: {result['efficiency']:.1%}")
+```
+
+#### Power Consumption
+
+Pumps calculate power based on hydraulic formula:
+
+```
+P_hydraulic = ρ × g × Q × H / 1000  [kW]
+P_shaft = P_hydraulic / η_pump
+P_electrical = P_shaft / η_motor
+```
+
+Where:
+- ρ = fluid density [kg/m³]
+- g = 9.81 m/s²
+- Q = flow rate [m³/s]
+- H = pressure head [m]
+- η = efficiency
+
+**Typical Power Consumption:**
+
+| Flow [m³/h] | Head [m] | Pump Type | Power [kW] |
+|-------------|----------|-----------|------------|
+| 10 | 30 | Centrifugal | 2.5 |
+| 10 | 50 | Progressive Cavity | 4.5 |
+| 15 | 50 | Progressive Cavity | 6.8 |
+| 20 | 60 | Piston | 10.5 |
+
+% TODO: add sources for those numbers
+
+### Mixer
+
+Mixers maintain homogeneity in digesters, preventing stratification and optimizing substrate-bacteria contact.
+
+#### Parameters
+
+```python
+from pyadm1.components.mechanical import Mixer
+
+mixer = Mixer(
+    component_id="mix1",
+    mixer_type="propeller",          # or "paddle", "jet"
+    tank_volume=2000.0,              # Tank volume [m³]
+    tank_diameter=None,              # Auto-calculated if None
+    mixing_intensity="medium",       # "low", "medium", "high"
+    power_installed=None,            # Auto-calculated if None
+    intermittent=True,               # Intermittent operation
+    on_time_fraction=0.25,           # 25% on-time
+    name="Main Mixer"
+)
+```
+
+#### Mixer Types
+
+| Type | Flow Pattern | Best For | Power Factor | Typical Speed [rpm] |
+|------|--------------|----------|--------------|-------------------|
+| **Propeller** | Axial | Large tanks, liquid substrates | 1.0× | 40-100 |
+| **Paddle** | Radial | High-solids, fibrous material | 1.2× | 20-60 |
+| **Jet** | Hydraulic | Recirculation mixing | 1.5× | N/A (pump) |
+
+#### Mixing Intensity
+
+| Intensity | Specific Power [W/m³] | Mixing Time [min] | Application |
+|-----------|----------------------|-------------------|-------------|
+| **Low** | 3 | 15-30 | Liquid manure, low-solids substrates |
+| **Medium** | 5 | 8-15 | Standard operation, energy crops |
+| **High** | 8 | 3-8 | High-solids, fibrous substrates |
+
+% TODO: add sources for those numbers
+
+#### Sizing Example
+
+```python
+# For 2000 m³ digester with medium intensity
+tank_volume = 2000  # m³
+specific_power = 5  # W/m³ for medium intensity
+
+P_required = (tank_volume * specific_power) / 1000  # kW
+P_required *= 1.2  # Safety factor for fibrous material
+# = 12 kW
+
+mixer = Mixer(
+    "mix1",
+    tank_volume=2000,
+    mixing_intensity="medium",
+    power_installed=15  # Round up to standard size
+)
+```
+
+#### Outputs
+
+```python
+{
+    'P_consumed': 12.5,          # Current power [kW]
+    'P_average': 3.1,            # Time-averaged [kW]
+    'is_running': True,          # Operating state
+    'mixing_quality': 0.85,      # Quality index (0-1)
+    'reynolds_number': 15000,    # Flow regime indicator
+    'power_number': 0.32,        # Dimensionless power
+    'mixing_time': 8.5,          # Time to homogeneity [min]
+    'shear_rate': 45.2,          # Average shear [1/s]
+    'specific_power': 6.25,      # Power density [kW/m³]
+    'tip_speed': 2.8             # Impeller tip speed [m/s]
+}
+```
+
+#### Usage Example
+
+```python
+# Medium intensity propeller mixer
+mixer = Mixer(
+    component_id="mix1",
+    mixer_type="propeller",
+    tank_volume=2000,
+    mixing_intensity="medium",
+    intermittent=True,
+    on_time_fraction=0.25  # 6 hours per day
+)
+
+mixer.initialize()
+
+result = mixer.step(
+    t=0,
+    dt=1/24,
+    inputs={
+        'enable_mixing': True,
+        'speed_setpoint': 1.0,
+        'fluid_viscosity': 0.05  # Pa·s
+    }
+)
+
+print(f"Power: {result['P_consumed']:.1f} kW")
+print(f"Average power: {result['P_average']:.1f} kW")
+print(f"Mixing quality: {result['mixing_quality']:.2f}")
+print(f"Mixing time: {result['mixing_time']:.1f} min")
+```
+
+#### Intermittent Operation
+
+Intermittent mixing reduces energy consumption:
+
+```python
+# Continuous vs intermittent comparison
+# Continuous: 15 kW × 24 h = 360 kWh/day
+# Intermittent (25%): 15 kW × 6 h = 90 kWh/day
+# Savings: 270 kWh/day (75%)
+
+mixer_continuous = Mixer(
+    "mix_cont",
+    tank_volume=2000,
+    intermittent=False
+)
+
+mixer_intermittent = Mixer(
+    "mix_int",
+    tank_volume=2000,
+    intermittent=True,
+    on_time_fraction=0.25
+)
+
+# Both achieve similar mixing quality
+```
+
+**Recommended On-Time Fractions:**
+
+| Substrate Type | On-Time | Total Hours/Day | Energy Savings |
+|----------------|---------|-----------------|----------------|
+| Liquid manure | 15-20% | 3.6-4.8 h | 80-85% |
+| Energy crops | 20-30% | 4.8-7.2 h | 70-80% |
+| High-solids mix | 25-35% | 6.0-8.4 h | 65-75% |
+| Fibrous materials | 30-40% | 7.2-9.6 h | 60-70% |
+
+% TODO: add sources for those numbers
+
+## Feeding Components
+
+### SubstrateStorage
+
+Storage facilities for different substrate types with quality tracking.
+
+#### Parameters
+
+```python
+from pyadm1.components.feeding import SubstrateStorage
+
+storage = SubstrateStorage(
+    component_id="silo1",
+    storage_type="vertical_silo",    # See table below
+    substrate_type="corn_silage",    # See table below
+    capacity=1000.0,                 # Max capacity [t or m³]
+    initial_level=800.0,             # Initial inventory
+    degradation_rate=None,           # Auto-calculated
+    temperature=288.15,              # Storage temp [K] (15°C)
+    name="Corn Silage Silo"
+)
+```
+
+#### Storage Types
+
+| Type | Degradation [1/d] | Best For | Typical Size | Investment |
+|------|------------------|----------|--------------|------------|
+| **Vertical Silo** | 0.0005 | Corn/grass silage | 500-2000 t | High |
+| **Horizontal Silo** | 0.0008 | Large operations | 1000-3000 t | Medium |
+| **Bunker Silo** | 0.001 | Drive-over access | 1000-5000 t | Medium |
+| **Clamp** | 0.0025 | Seasonal storage | 500-2000 t | Low |
+| **Above-ground Tank** | 0.0002 | Liquid manure | 500-3000 m³ | High |
+| **Below-ground Tank** | 0.0001 | Liquid storage | 1000-5000 m³ | Very High |
+
+% TODO: add sources for those numbers
+
+#### Substrate Types
+
+| Substrate | Density [kg/m³] | DM [%] | VS [% of DM] | Typical Storage |
+|-----------|----------------|--------|--------------|-----------------|
+| Corn silage | 650 | 35 | 95 | Silo |
+| Grass silage | 700 | 30 | 92 | Silo |
+| Whole crop silage | 680 | 32 | 94 | Silo/Bunker |
+| Liquid manure | 1020 | 8 | 80 | Tank |
+| Solid manure | 850 | 25 | 75 | Clamp |
+| Food waste | 1000 | 20 | 90 | Tank |
+
+% TODO: add sources for those numbers
+
+#### Quality Degradation
+
+Storage quality degrades over time:
+
+```python
+# Quality factor at time t:
+quality(t) = quality(0) × exp(-k × t)
+
+# Where:
+# k = degradation_rate [1/d]
+# t = storage_time [days]
+
+# Example: Corn silage in vertical silo
+# After 30 days: quality = 1.0 × exp(-0.0005 × 30) = 0.985 (98.5%)
+# After 90 days: quality = 1.0 × exp(-0.0005 × 90) = 0.956 (95.6%)
+```
+
+**Temperature Effect:**
+
+Temperature affects degradation (Q10 = 2):
+
+```python
+# Degradation increases with temperature
+T_ref = 288.15  # 15°C reference
+k_ref = 0.0005  # Base rate
+
+# At 20°C (293.15 K):
+k_20C = k_ref × 2^((293.15-288.15)/10) = 0.0007
+
+# At 10°C (283.15 K):
+k_10C = k_ref × 2^((283.15-288.15)/10) = 0.0004
+```
+
+#### Outputs
+
+```python
+{
+    'current_level': 750.0,      # Inventory [t or m³]
+    'utilization': 0.75,         # Fill level (0-1)
+    'quality_factor': 0.95,      # Quality (0-1)
+    'available_mass': 712.5,     # Usable mass
+    'degradation_rate': 0.0005,  # Current rate
+    'losses_this_step': 0.4,     # Losses [t or m³]
+    'withdrawn_this_step': 15.0, # Withdrawn [t or m³]
+    'is_empty': False,
+    'is_full': False,
+    'storage_time': 25.5,        # Days stored
+    'dry_matter': 35.0,          # DM [%]
+    'vs_content': 95.0           # VS [% of DM]
+}
+```
+
+#### Usage Example
+
+```python
+# Corn silage storage
+storage = SubstrateStorage(
+    component_id="silo1",
+    storage_type="vertical_silo",
+    substrate_type="corn_silage",
+    capacity=1000,
+    initial_level=800
+)
+
+storage.initialize()
+
+# Daily operation
+result = storage.step(
+    t=10,
+    dt=1,
+    inputs={
+        'withdrawal_rate': 15,    # m³/d or t/d
+        'refill_amount': 0,
+        'temperature': 288.15
+    }
+)
+
+print(f"Level: {result['current_level']:.1f} t")
+print(f"Quality: {result['quality_factor']:.3f}")
+print(f"Available: {result['available_mass']:.1f} t")
+print(f"Losses: {result['losses_this_step']:.2f} t")
+```
+
+#### Storage Management Strategy
+
+```python
+# Optimal refill timing
+def should_refill(storage_result, safety_days=7):
+    """Determine if refill is needed"""
+    level = storage_result['current_level']
+    daily_usage = 15  # t/d
+    days_remaining = level / daily_usage
+
+    return days_remaining < safety_days
+
+# Quality-based rotation
+def check_quality(storage_result, min_quality=0.90):
+    """Alert if quality too low"""
+    quality = storage_result['quality_factor']
+    if quality < min_quality:
+        print(f"Warning: Quality at {quality:.1%}")
+        return False
+    return True
+```
+
+### Feeder
+
+Automated dosing systems for precise substrate feeding.
+
+#### Parameters
+
+```python
+from pyadm1.components.feeding import Feeder
+
+feeder = Feeder(
+    component_id="feed1",
+    feeder_type="screw",             # Auto-selected if None
+    Q_max=20.0,                      # Max flow [m³/d or t/d]
+    substrate_type="solid",          # "solid", "slurry", "liquid", "fibrous"
+    dosing_accuracy=None,            # Auto-calculated
+    power_installed=None,            # Auto-calculated
+    enable_dosing_noise=True,        # Realistic variance
+    name="Screw Feeder"
+)
+```
+
+#### Feeder Types
+
+| Type | Accuracy [±%] | Best For | Speed Control | Power [kW/m³/h] |
+|------|--------------|----------|---------------|----------------|
+| **Screw** | 5 | Solid substrates | Good | 0.8 |
+| **Twin Screw** | 3 | Better control | Excellent | 1.0 |
+| **Progressive Cavity** | 2 | Viscous slurries | Good | 1.2 |
+| **Piston** | 1 | Precise dosing | Excellent | 1.5 |
+| **Centrifugal Pump** | 8 | Low viscosity | Fair | 0.5 |
+| **Mixer Wagon** | 10 | Batch feeding | N/A | 2.0 |
+
+% TODO: add sources for those numbers
+
+#### Dosing Accuracy
+
+Real feeders have variance around setpoints:
+
+```python
+# With dosing_noise enabled:
+# Actual flow = Setpoint + noise
+# Where noise ~ Normal(0, accuracy × setpoint)
+
+# Example: Screw feeder (5% accuracy) at 15 m³/d
+# Typical range: 14.25 - 15.75 m³/d
+# Occasional: 13.5 - 16.5 m³/d (±2σ)
+
+feeder = Feeder("feed1", Q_max=20, dosing_accuracy=0.05)
+```
+
+#### Power Requirements
+
+Power depends on substrate type:
+
+| Substrate | Base Power [kW/m³/h] | Modifier | Total |
+|-----------|---------------------|----------|-------|
+| Liquid | 0.5 | ×0.7 | 0.35 |
+| Slurry | 0.8 | ×1.0 | 0.80 |
+| Solid | 0.8 | ×1.4 | 1.12 |
+| Fibrous | 0.8 | ×1.8 | 1.44 |
+
+% TODO: add sources for those numbers
+
+```python
+# Example: 15 m³/h screw feeder for fibrous substrate
+Q_nom_h = 15 / 24  # = 0.625 m³/h
+P = 0.8 * 0.625 * 1.8 * 1.3  # [base × Q × modifier × safety]
+  = 1.17 kW
+```
+
+#### Outputs
+
+```python
+{
+    'Q_actual': 14.8,            # Actual flow [m³/d]
+    'is_running': True,
+    'load_factor': 0.74,         # Load (0-1)
+    'P_consumed': 2.5,           # Power [kW]
+    'blockage_detected': False,  # Alarm
+    'dosing_error': 1.3,         # Error [%]
+    'speed_fraction': 0.95,      # Speed (0-1)
+    'dosing_accuracy': 0.05,     # Accuracy
+    'total_mass_fed': 1250.0     # Cumulative [t]
+}
+```
+
+#### Usage Example
+
+```python
+# Screw feeder for solid substrates
+feeder = Feeder(
+    component_id="feed1",
+    feeder_type="screw",
+    Q_max=20.0,
+    substrate_type="solid",
+    enable_dosing_noise=True
+)
+
+feeder.initialize()
+
+result = feeder.step(
+    t=0,
+    dt=1/24,
+    inputs={
+        'Q_setpoint': 15.0,
+        'enable_feeding': True,
+        'substrate_available': 500,
+        'speed_setpoint': 1.0
+    }
+)
+
+print(f"Target: 15.0 m³/d")
+print(f"Actual: {result['Q_actual']:.2f} m³/d")
+print(f"Error: {result['dosing_error']:.1f}%")
+print(f"Power: {result['P_consumed']:.2f} kW")
+```
+
+#### Blockage Detection
+
+Feeders can detect and handle blockages:
+
+```python
+# Automatic handling
+if result['blockage_detected']:
+    print("Blockage detected!")
+    # Feeder automatically reduces flow to 10%
+    # Continue monitoring
+
+# Monitor cumulative blockages
+print(f"Total blockages: {feeder.state['n_blockages']}")
+```
+
+## Complete Integration Example
+
+### Full Feeding Chain
+
+```python
+from pyadm1.configurator import BiogasPlant, PlantConfigurator
+from pyadm1.components.feeding import SubstrateStorage, Feeder
+from pyadm1.components.mechanical import Pump, Mixer
+from pyadm1.substrates import Feedstock
+
+# Setup
+feedstock = Feedstock(feeding_freq=48)
+plant = BiogasPlant("Complete Plant")
+config = PlantConfigurator(plant, feedstock)
+
+# 1. Substrate storage
+storage = SubstrateStorage(
+    "silo1",
+    storage_type="vertical_silo",
+    substrate_type="corn_silage",
+    capacity=1000,
+    initial_level=800
+)
+plant.add_component(storage)
+
+# 2. Feeder
+feeder = Feeder(
+    "feed1",
+    feeder_type="screw",
+    Q_max=20.0,
+    substrate_type="solid"
+)
+plant.add_component(feeder)
+
+# 3. Feed pump
+pump = Pump(
+    "pump1",
+    pump_type="progressive_cavity",
+    Q_nom=15.0,
+    pressure_head=50.0
+)
+plant.add_component(pump)
+
+# 4. Digester
+digester, _ = config.add_digester(
+    "main_digester",
+    V_liq=2000,
+    Q_substrates=[15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
+)
+
+# 5. Mixer
+mixer = Mixer(
+    "mix1",
+    mixer_type="propeller",
+    tank_volume=2000,
+    mixing_intensity="medium",
+    intermittent=True,
+    on_time_fraction=0.25
+)
+plant.add_component(mixer)
+
+# 6. CHP and heating
+config.add_chp("chp1", P_el_nom=500)
+config.add_heating("heat1", target_temperature=308.15)
+
+# Connect components
+config.connect("silo1", "feed1", "default")
+config.connect("feed1", "pump1", "default")
+config.connect("pump1", "main_digester", "liquid")
+config.auto_connect_digester_to_chp("main_digester", "chp1")
+config.auto_connect_chp_to_heating("chp1", "heat1")
+
+# Initialize and simulate
+plant.initialize()
+results = plant.simulate(duration=30, dt=1/24, save_interval=1.0)
+
+# Analyze results
+final = results[-1]
+print("\nFinal Results:")
+print(f"Storage level: {final['components']['silo1']['current_level']:.1f} t")
+print(f"Feeder throughput: {final['components']['feed1']['total_mass_fed']:.1f} t")
+print(f"Pump energy: {final['components']['pump1']['energy_consumed']:.1f} kWh")
+print(f"Mixer energy: {final['components']['mix1']['energy_consumed']:.1f} kWh")
+print(f"Biogas: {final['components']['main_digester']['Q_gas']:.1f} m³/d")
+```
+
+### Energy Analysis
+
+```python
+# Calculate parasitic load
+def calculate_parasitic_load(results):
+    """Calculate total parasitic energy consumption"""
+    final = results[-1]
+    components = final['components']
+
+    # Mechanical components
+    pump_energy = components.get('pump1', {}).get('energy_consumed', 0)
+    mixer_energy = components.get('mix1', {}).get('energy_consumed', 0)
+    feeder_power = components.get('feed1', {}).get('P_consumed', 0)
+
+    # CHP production
+    chp_energy = components.get('chp1', {}).get('P_el', 0) * 30 * 24  # kWh
+
+    parasitic_total = pump_energy + mixer_energy
+    parasitic_fraction = parasitic_total / chp_energy
+
+    return {
+        'pump_energy': pump_energy,
+        'mixer_energy': mixer_energy,
+        'total_parasitic': parasitic_total,
+        'chp_production': chp_energy,
+        'parasitic_fraction': parasitic_fraction,
+        'net_energy': chp_energy - parasitic_total
+    }
+
+analysis = calculate_parasitic_load(results)
+print(f"\nEnergy Analysis:")
+print(f"CHP production: {analysis['chp_production']:.0f} kWh")
+print(f"Pump consumption: {analysis['pump_energy']:.0f} kWh")
+print(f"Mixer consumption: {analysis['mixer_energy']:.0f} kWh")
+print(f"Parasitic load: {analysis['parasitic_fraction']:.1%}")
+print(f"Net production: {analysis['net_energy']:.0f} kWh")
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Issue**: Pump not delivering flow
+
+**Solution**: Check pressure head and speed settings
+```python
+result = pump.step(0, 1/24, {
+    'Q_setpoint': 15.0,
+    'enable_pump': True,
+    'pressure_head': 50.0  # Ensure sufficient head
+})
+
+if result['Q_actual'] < 0.5 * result['Q_setpoint']:
+    print("Check: pressure head, blockages, power supply")
+```
+
+**Issue**: Mixer consuming excessive energy
+
+**Solution**: Use intermittent operation
+```python
+# Instead of continuous (360 kWh/day):
+mixer_continuous = Mixer("mix1", intermittent=False)
+
+# Use intermittent (90 kWh/day):
+mixer_optimal = Mixer(
+    "mix1",
+    intermittent=True,
+    on_time_fraction=0.25  # 75% energy savings
+)
+```
+
+**Issue**: Feeder dosing inaccuracy too high
+
+**Solution**: Use more precise feeder type or disable noise
+```python
+# Less precise: Screw (±5%)
+feeder_screw = Feeder("feed1", feeder_type="screw")
+
+# More precise: Piston (±1%)
+feeder_piston = Feeder("feed1", feeder_type="piston")
+
+# Or disable realistic noise for idealized simulation
+feeder_ideal = Feeder(
+    "feed1",
+    feeder_type="screw",
+    enable_dosing_noise=False
+)
+```
+
+**Issue**: Storage quality degrading too fast
+
+**Solution**: Check temperature and storage type
+```python
+# Poor: Clamp storage at 20°C
+storage_poor = SubstrateStorage(
+    "clamp1",
+    storage_type="clamp",        # High degradation
+    temperature=293.15           # Warm
+)
+# Degradation: ~0.003/d → 91% quality after 30 days
+
+# Better: Silo at 15°C
+storage_good = SubstrateStorage(
+    "silo1",
+    storage_type="vertical_silo", # Low degradation
+    temperature=288.15            # Cool
+)
+# Degradation: ~0.0005/d → 98.5% quality after 30 days
+```
+
+## Component Summary Table
+
+| Component | Purpose | Key Parameters | Typical Power | Notes |
+|-----------|---------|----------------|---------------|-------|
+| **Pump** | Material transfer | Q_nom, pressure_head | 2-10 kW | Size for 80-90% max flow |
+| **Mixer** | Homogenization | mixing_intensity, on_time | 5-20 kW | Use intermittent (25% on-time) |
+| **Storage** | Substrate storage | capacity, storage_type | 0 kW | Monitor quality degradation |
+| **Feeder** | Dosing | Q_max, feeder_type | 1-5 kW | Enable dosing noise for realism |
+
+% TODO: add sources for those numbers
+
+## Next Steps
+
+- **Examples**: See [examples/two_stage_plant.md](..examples/two_stage_plant.md) for complete implementation
+- **Optimization**: Use parameter sweeps to optimize component sizing
+- **[API Reference](../api_reference/components.rst)**: See detailed class documentation for advanced features
+
 ## Connection Types
 
 ### Liquid Connections

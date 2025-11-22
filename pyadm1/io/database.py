@@ -477,7 +477,8 @@ class Database:
             ...     T_ad=308.15
             ... )
         """
-        with self.get_session() as session:
+        session = self.SessionLocal()
+        try:
             plant = Plant(
                 id=plant_id,
                 name=name,
@@ -490,17 +491,36 @@ class Database:
                 configuration=configuration,
             )
 
-            try:
-                session.add(plant)
-                session.commit()
-                # Refresh to ensure all attributes are loaded
-                session.refresh(plant)
-                # Detach from session so it can be used outside context
-                session.expunge(plant)
-                print(f"✓ Plant '{plant_id}' created")
-                return plant
-            except IntegrityError:
-                raise ValueError(f"Plant with ID '{plant_id}' already exists")
+            session.add(plant)
+            session.commit()
+            session.refresh(plant)
+
+            # Create a detached copy with all attributes loaded
+            plant_dict = {
+                "id": plant.id,
+                "name": plant.name,
+                "location": plant.location,
+                "operator": plant.operator,
+                "V_liq": plant.V_liq,
+                "V_gas": plant.V_gas,
+                "T_ad": plant.T_ad,
+                "P_el_nom": plant.P_el_nom,
+                "configuration": plant.configuration,
+                "created_at": plant.created_at,
+                "updated_at": plant.updated_at,
+            }
+            print(plant_dict)
+
+            session.expunge(plant)
+
+            print(f"✓ Plant '{plant_id}' created")
+            return plant
+
+        except IntegrityError:
+            session.rollback()
+            raise ValueError(f"Plant with ID '{plant_id}' already exists")
+        finally:
+            session.close()
 
     def get_plant(self, plant_id: str) -> Optional[Plant]:
         """
@@ -512,8 +532,14 @@ class Database:
         Returns:
             Plant object or None if not found
         """
-        with self.get_session() as session:
-            return session.query(Plant).filter(Plant.id == plant_id).first()
+        session = self.SessionLocal()
+        try:
+            plant = session.query(Plant).filter(Plant.id == plant_id).first()
+            if plant:
+                session.expunge(plant)  # Detach before closing
+            return plant
+        finally:
+            session.close()
 
     def list_plants(self) -> List[Dict[str, Any]]:
         """
@@ -1078,7 +1104,8 @@ class Database:
         if isinstance(sample_date, str):
             sample_date = pd.to_datetime(sample_date)
 
-        with self.get_session() as session:
+        session = self.SessionLocal()
+        try:
             substrate = Substrate(
                 plant_id=plant_id,
                 substrate_name=substrate_name,
@@ -1096,9 +1123,16 @@ class Database:
 
             session.add(substrate)
             session.commit()
+            session.refresh(substrate)
+            session.expunge(substrate)
 
             print(f"✓ Stored substrate data for '{substrate_name}'")
             return substrate
+        except Exception:
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
     def load_substrates(
         self,

@@ -9,6 +9,7 @@ dependencies:
   - pandas
   - scipy
   - sqlalchemy
+  - psycopg2
   - pip
   - pip:
     - pythonnet
