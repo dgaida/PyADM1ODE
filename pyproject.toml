@@ -73,7 +73,7 @@ Documentation = "https://github.com/dgaida/PyADM1ODE#readme"
 pyadm1-simulate = "pyadm1.cli:main"
 
 [tool.setuptools]
-packages = ["pyadm1", "pyadm1.core", "pyadm1.substrates", "pyadm1.utils"]
+packages = {find = {}}
 
 [tool.setuptools.package-data]
 pyadm1 = ["dlls/*.dll", "py.typed"]
