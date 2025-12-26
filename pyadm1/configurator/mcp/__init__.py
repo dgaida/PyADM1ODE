@@ -55,7 +55,7 @@ Usage in prompts:
     and cattle manure co-digestion."
 """
 
-from pyadm1.configurator.mcp.server import start_server
+from .server import start_server
 
 # from pyadm1.configurator.mcp.tools import (
 #     create_plant,

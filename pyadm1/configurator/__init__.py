@@ -43,8 +43,8 @@ Example:
     >>> plant = TwoStageTemplate.create(feedstock=feedstock)
 """
 
-from plant_builder import BiogasPlant
-from connection_manager import (
+from .plant_builder import BiogasPlant
+from .connection_manager import (
     ConnectionManager,
     Connection,
     ConnectionType,

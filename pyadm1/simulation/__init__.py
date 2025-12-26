@@ -50,8 +50,8 @@ Example:
     >>> results = parallel.run_scenarios(scenarios, duration=30, initial_state=initial_state)
 """
 
-from simulator import Simulator
-from parallel import ParallelSimulator, ScenarioResult, ParameterSweepConfig, MonteCarloConfig
+from .simulator import Simulator
+from .parallel import ParallelSimulator, ScenarioResult, ParameterSweepConfig, MonteCarloConfig
 
 # Future imports (currently stubs)
 # from pyadm1.simulation.scenarios import (
