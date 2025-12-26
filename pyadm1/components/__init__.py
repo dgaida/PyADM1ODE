@@ -50,7 +50,7 @@ from pyadm1.components.base import Component, ComponentType
 from pyadm1.components.registry import ComponentRegistry
 
 # Import all component types for registry
-from pyadm1.components import biological, mechanical, energy, feeding, sensors
+from . import biological, mechanical, energy, feeding, sensors
 
 __all__ = [
     "Component",

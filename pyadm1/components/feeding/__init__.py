@@ -31,8 +31,8 @@ Example:
     >>> wagon = MixerWagon("wagon1", capacity=30, mixing_time=15)
 """
 
-from pyadm1.components.feeding.substrate_storage import SubstrateStorage
-from pyadm1.components.feeding.feeder import Feeder
+from .substrate_storage import SubstrateStorage
+from .feeder import Feeder
 
 # from pyadm1.components.feeding.mixer_wagon import MixerWagon
 

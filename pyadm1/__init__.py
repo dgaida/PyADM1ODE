@@ -17,7 +17,7 @@ Main modules:
 Example:
     >>> from pyadm1 import BiogasPlant
     >>> from pyadm1.components.biological import Digester
-    >>> from pyadm1.substrates import Feedstock
+    >>> from pyadm1 import Feedstock
     >>>
     >>> feedstock = Feedstock(feeding_freq=48)
     >>> plant = BiogasPlant("My Plant")
@@ -29,12 +29,12 @@ Example:
 from pyadm1.__version__ import __version__
 
 # Core imports
-from pyadm1.configurator.plant_builder import BiogasPlant
-from pyadm1.substrates.feedstock import Feedstock
-from pyadm1.simulation.simulator import Simulator
+from .configurator.plant_builder import BiogasPlant
+from .substrates.feedstock import Feedstock
+from .simulation.simulator import Simulator
 
 # Component base classes
-from pyadm1.components.base import Component, ComponentType
+from .components.base import Component, ComponentType
 
 __all__ = [
     "__version__",

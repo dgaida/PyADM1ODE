@@ -35,10 +35,10 @@ Example:
     >>> flare = Flare("flare1", capacity=500, destruction_efficiency=0.98)
 """
 
-from pyadm1.components.energy.chp import CHP
-from pyadm1.components.energy.boiler import Boiler
-from pyadm1.components.energy.gas_storage import GasStorage
-from pyadm1.components.energy.flare import Flare
+from .chp import CHP
+from .boiler import Boiler
+from .gas_storage import GasStorage
+from .flare import Flare
 
 __all__ = [
     "CHP",
