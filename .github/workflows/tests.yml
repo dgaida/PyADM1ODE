@@ -8,16 +8,44 @@ on:
       - '**.md'
       - 'LICENSE'
       - '.gitignore'
+      - 'docs/**'
+      - '**.rst'
+      - '.github/workflows/release.yml'
+      - '.github/workflows/dependency-review.yml'
+      - '.github/workflows/codeql.yml'
+      - '.github/workflows/lint.yml'
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      full_test:
+        description: 'Run full test matrix'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
 
 jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]  # clr does not run under macOS
-        python-version: ['3.10', '3.11']  # fastmcp needs at least 3.10
+        # Quick tests: ubuntu-latest + Python 3.11 only
+        # Full tests: all OS and all Python versions
+        os: >-
+          ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.full_test == 'true'
+                || contains(github.event.head_commit.message, '[full-test]')
+                || contains(github.event.head_commit.message, '[full ci]'))
+              && fromJSON('["ubuntu-latest", "windows-latest", "macos-latest"]')
+              || fromJSON('["ubuntu-latest"]') }}
+        python-version: >-
+          ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.full_test == 'true'
+                || contains(github.event.head_commit.message, '[full-test]')
+                || contains(github.event.head_commit.message, '[full ci]'))
+              && fromJSON('["3.10", "3.11", "3.12"]')
+              || fromJSON('["3.11"]') }}
       fail-fast: false
 
     services:
@@ -33,12 +61,23 @@ jobs:
           --health-retries 5
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+
+    - name: Display test mode
+      run: |
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.full_test }}" == "true" ]] || \
+           [[ "${{ contains(github.event.head_commit.message, '[full-test]') }}" == "true" ]] || \
+           [[ "${{ contains(github.event.head_commit.message, '[full ci]') }}" == "true" ]]; then
+          echo "🔥 Running FULL test suite on all platforms"
+        else
+          echo "⚡ Running QUICK tests (ubuntu-latest, Python 3.11 only)"
+        fi
+      shell: bash
 
     - name: Install Mono (Linux)
       if: runner.os == 'Linux'
@@ -69,10 +108,10 @@ jobs:
       continue-on-error: false
 
     - name: Upload coverage to Codecov
-      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10'
-      uses: codecov/codecov-action@v3
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+      uses: codecov/codecov-action@v5
       with:
         file: ./coverage.xml
         flags: unittests
-        name: codecov-umbrella
+        name: codecov-pyadm1ode
         fail_ci_if_error: false
