@@ -1,4 +1,4 @@
-# PyADM1 - Advanced Biogas Plant Simulation Framework
+# PyADM1ODE - Advanced Biogas Plant Simulation Framework
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -18,7 +18,7 @@ PyADM1 provides a modular, extensible platform for:
 - **High-fidelity ADM1 simulation**: Agricultural biogas-specific implementation of ADM1 as pure ODE system
 - **Automated model configuration**: Build plant models programmatically via MCP server for LLM integration
 - **Parallel scenario simulation**: Run multiple simulations with varying parameters simultaneously
-- **Online calibration**: Automatic parameter calibration and re-calibration during plant operation
+- **Online calibration**: Automatic parameter calibration and re-calibration during plant operation (see [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration))
 - **Validation framework**: Comprehensive testing against established models (SIMBA#, [ADM1F](https://github.com/lanl/ADM1F))
 
 ## Key Features
@@ -46,13 +46,10 @@ PyADM1 provides a modular, extensible platform for:
 - Pure ODE implementation (no DAEs) for numerical stability
 - Parallel execution of multiple scenarios
 - Parameter sweeps for sensitivity analysis
-- Time-series data management
+- Time-series data management (see [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration))
 
 ### 🎯 Calibration Framework
-- Initial calibration from measurement data
-- Online re-calibration with bounded parameter adjustments
-- Multiple optimization algorithms
-- Variance-based triggering for re-calibration
+See [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration).
 
 ### ✅ Validation & Testing
 - Comparison with SIMBA# and ADM1F models
@@ -172,27 +169,6 @@ PyADM1/
 │   │   ├── time_series.py          # Time series handling
 │   │   └── results.py              # Result management
 │   │
-│   ├── calibration/                  # Calibration framework
-│   │   ├── __init__.py
-│   │   ├── calibrator.py           # Main calibrator
-│   │   ├── optimization/
-│   │   │   ├── __init__.py
-│   │   │   ├── optimizer.py       # Optimization algorithms
-│   │   │   ├── objective.py       # Objective functions
-│   │   │   └── constraints.py     # Parameter constraints
-│   │   │
-│   │   ├── initial.py              # Initial calibration
-│   │   ├── online.py               # Online re-calibration
-│   │   ├── parameter_bounds.py     # Parameter bounds
-│   │   └── validation.py           # Calibration validation
-│   │
-│   ├── io/                          # Input/output
-│   │   ├── __init__.py
-│   │   ├── json_handler.py         # JSON import/export
-│   │   ├── csv_handler.py          # CSV import/export
-│   │   ├── database.py             # Database interface
-│   │   └── measurement_data.py     # Measurement data import
-│   │
 │   ├── utils/                       # Utility functions
 │   │   ├── __init__.py
 │   │   ├── math_helpers.py         # Mathematical helpers
@@ -244,10 +220,8 @@ PyADM1/
 │   │   │   ├── test_digester.py
 │   │   │   ├── test_chp.py
 │   │   │   └── test_pumps.py
-│   │   ├── test_configurator/
-│   │   │   └── test_plant_builder.py
-│   │   └── test_calibration/
-│   │       └── test_calibrator.py
+│   │   └── test_configurator/
+│   │      └── test_plant_builder.py
 │   │
 │   ├── integration/                 # Integration tests
 │   │   ├── test_plant_simulation.py
@@ -340,27 +314,8 @@ results = sim.run_scenarios(scenarios, duration=30)
 ```
 
 ### Model Calibration
-```python
-from pyadm1.calibration import Calibrator
-from pyadm1.io import MeasurementData
 
-# Load measurement data
-measurements = MeasurementData.from_csv("plant_data.csv")
-
-# Calibrate model
-calibrator = Calibrator(plant)
-calibrated_params = calibrator.calibrate_initial(
-    measurements=measurements,
-    parameters=["k_dis", "k_hyd_ch", "Y_su"],
-    bounds={"k_dis": (0.3, 0.8)},
-)
-
-# Online re-calibration (triggered by high variance)
-calibrator.calibrate_online(
-    measurements=new_measurements,
-    variance_threshold=0.1,
-)
-```
+See [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration).
 
 ## Core Concepts
 
@@ -441,7 +396,7 @@ If you use PyADM1ODE in your research, please cite:
 @software{pyadm1,
   author = {Gaida, Daniel},
   title = {PyADM1: Advanced Biogas Plant Simulation Framework},
-  year = {2024},
+  year = {2026},
   url = {https://github.com/dgaida/PyADM1}
 }
 
@@ -474,8 +429,8 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) for deta
 ## Contact
 
 **Daniel Gaida**
-- Email: daniel.gaida@th-koeln.de
-- GitHub: [@dgaida](https://github.com/dgaida)
+- Email: daniel.gaida@th-koeln.de  
+- GitHub: [@dgaida](https://github.com/dgaida)  
 - Institution: TH Köln - University of Applied Sciences
 
 ---
