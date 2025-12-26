@@ -8,7 +8,7 @@ It keeps track of vented volume and combustion emissions (simplified).
 """
 from typing import Dict, Any, Optional
 
-from pyadm1.components.base import Component, ComponentType
+from ..base import Component, ComponentType
 
 
 class Flare(Component):

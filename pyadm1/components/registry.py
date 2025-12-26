@@ -9,7 +9,7 @@ biogas plant components dynamically.
 """
 
 from typing import Dict, Type, Any, Optional
-from pyadm1.components.base import Component
+from .base import Component
 
 
 class ComponentRegistry:

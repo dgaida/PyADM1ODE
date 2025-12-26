@@ -10,7 +10,7 @@ temperature using waste heat from CHP or auxiliary heating.
 
 from typing import Dict, Any, Optional
 
-from pyadm1.components.base import Component, ComponentType
+from ..base import Component, ComponentType
 
 
 class HeatingSystem(Component):

@@ -4,8 +4,8 @@
 """Hydrolysis tank component (stub implementation)."""
 
 from typing import Dict, Any, Optional
-from pyadm1.components.base import Component, ComponentType
-from pyadm1.substrates.feedstock import Feedstock
+from ..base import Component, ComponentType
+from ...substrates import Feedstock
 
 
 class Hydrolysis(Component):

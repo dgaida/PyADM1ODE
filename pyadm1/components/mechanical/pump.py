@@ -40,7 +40,7 @@ Example:
 from typing import Dict, Any, Optional
 from enum import Enum
 
-from pyadm1.components.base import Component, ComponentType
+from ..base import Component, ComponentType
 
 
 class PumpType(str, Enum):

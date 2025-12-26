@@ -4,7 +4,7 @@
 """Boiler component (stub implementation)."""
 
 from typing import Dict, Any, Optional
-from pyadm1.components.base import Component, ComponentType
+from ..base import Component, ComponentType
 
 
 class Boiler(Component):

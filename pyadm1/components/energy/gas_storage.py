@@ -20,7 +20,7 @@ Features:
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
 
-from pyadm1.components.base import Component, ComponentType
+from ..base import Component, ComponentType
 
 
 @dataclass

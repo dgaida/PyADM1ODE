@@ -46,7 +46,7 @@ from typing import Dict, Any, Optional
 from enum import Enum
 import numpy as np
 
-from pyadm1.components.base import Component, ComponentType
+from ..base import Component, ComponentType
 
 
 class FeederType(str, Enum):

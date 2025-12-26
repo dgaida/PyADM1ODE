@@ -10,7 +10,7 @@ and heat in a biogas plant configuration.
 
 from typing import Dict, Any, Optional
 
-from pyadm1.components.base import Component, ComponentType
+from ..base import Component, ComponentType
 
 
 class CHP(Component):

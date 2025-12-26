@@ -31,11 +31,11 @@ import os  # noqa: E402  # type: ignore
 from typing import Dict, Any, List, Optional  # noqa: E402  # type: ignore
 import numpy as np  # noqa: E402  # type: ignore
 
-from pyadm1.components.base import Component, ComponentType  # noqa: E402  # type: ignore
-from pyadm1.core.adm1 import ADM1  # noqa: E402  # type: ignore
-from pyadm1.substrates.feedstock import Feedstock  # noqa: E402  # type: ignore
-from pyadm1.simulation.simulator import Simulator  # noqa: E402  # type: ignore
-from pyadm1.components.energy.gas_storage import GasStorage  # noqa: E402  # type: ignore
+from ..base import Component, ComponentType  # noqa: E402  # type: ignore
+from ...core import ADM1  # noqa: E402  # type: ignore
+from ...substrates import Feedstock  # noqa: E402  # type: ignore
+from ...simulation import Simulator  # noqa: E402  # type: ignore
+from ..energy import GasStorage  # noqa: E402  # type: ignore
 
 if clr is None:
     raise RuntimeError("CLR features unavailable on this platform")
