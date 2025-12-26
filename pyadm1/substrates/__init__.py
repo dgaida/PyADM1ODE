@@ -34,7 +34,7 @@ Example:
     >>> influent_df = feedstock.get_influent_dataframe(Q)
 """
 
-from pyadm1.substrates.feedstock import Feedstock
+from feedstock import Feedstock
 
 # from pyadm1.substrates.substrate_db import SubstrateDB, Substrate
 # from pyadm1.substrates.xml_loader import XMLSubstrateLoader

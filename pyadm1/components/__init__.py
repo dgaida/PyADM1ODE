@@ -46,8 +46,8 @@ Example:
     >>> component = registry.create("Digester", "dig1", feedstock=feedstock)
 """
 
-from pyadm1.components.base import Component, ComponentType
-from pyadm1.components.registry import ComponentRegistry
+from .base import Component, ComponentType
+from .registry import ComponentRegistry
 
 # Import all component types for registry
 from . import biological, mechanical, energy, feeding, sensors

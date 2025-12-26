@@ -28,9 +28,9 @@ Example:
     >>> separator = Separator("sep1", separation_efficiency=0.95)
 """
 
-from pyadm1.components.biological.digester import Digester
-from pyadm1.components.biological.hydrolysis import Hydrolysis
-from pyadm1.components.biological.separator import Separator
+from .digester import Digester
+from .hydrolysis import Hydrolysis
+from .separator import Separator
 
 __all__ = [
     "Digester",

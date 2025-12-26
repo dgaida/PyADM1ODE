@@ -43,8 +43,8 @@ Example:
     >>> plant = TwoStageTemplate.create(feedstock=feedstock)
 """
 
-from pyadm1.configurator.plant_builder import BiogasPlant
-from pyadm1.configurator.connection_manager import (
+from plant_builder import BiogasPlant
+from connection_manager import (
     ConnectionManager,
     Connection,
     ConnectionType,
@@ -53,11 +53,11 @@ from pyadm1.configurator.connection_manager import (
 # from pyadm1.configurator.validation import PlantValidator
 
 # Import templates
-from pyadm1.configurator import templates
+from . import templates
 
 # Import MCP server (optional dependency)
 try:
-    from pyadm1.configurator import mcp
+    from . import mcp
 
     MCP_AVAILABLE = True
 except ImportError:

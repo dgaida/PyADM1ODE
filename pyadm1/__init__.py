@@ -29,12 +29,12 @@ Example:
 from pyadm1.__version__ import __version__
 
 # Core imports
-from .configurator.plant_builder import BiogasPlant
-from .substrates.feedstock import Feedstock
-from .simulation.simulator import Simulator
+from .configurator import BiogasPlant
+from .substrates import Feedstock
+from .simulation import Simulator
 
 # Component base classes
-from .components.base import Component, ComponentType
+from .components import Component, ComponentType
 
 __all__ = [
     "__version__",

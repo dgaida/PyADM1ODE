@@ -38,16 +38,16 @@ Example:
     >>> solver = create_solver(method='BDF', rtol=1e-7)
 """
 
-from pyadm1.core.adm1 import ADM1, get_state_zero_from_initial_state
-from pyadm1.core.adm_params import ADMParams
-from pyadm1.core.adm_equations import (
+from adm1 import ADM1, get_state_zero_from_initial_state
+from adm_params import ADMParams
+from adm_equations import (
     InhibitionFunctions,
     ProcessRates,
     AcidBaseKinetics,
     GasTransfer,
     BiochemicalProcesses,
 )
-from pyadm1.core.solver import (
+from solver import (
     ODESolver,
     AdaptiveODESolver,
     SolverConfig,
