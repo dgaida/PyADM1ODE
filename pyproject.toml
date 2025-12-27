@@ -77,6 +77,8 @@ packages = {find = {}}
 
 [tool.setuptools.package-data]
 pyadm1 = ["dlls/*.dll", "py.typed"]
+# Include data files in package
+"*" = ["*.xml", "*.csv"]
 
 [tool.black]
 line-length = 127
