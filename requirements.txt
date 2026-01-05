@@ -7,9 +7,6 @@ scipy>=1.7.0
 sqlalchemy
 psycopg2
 
-# MCP Server & Client Dependencies
-fastmcp>=0.2.0
-
 # LLM Client for intelligent parsing
 git+https://github.com/dgaida/llm_client.git
 

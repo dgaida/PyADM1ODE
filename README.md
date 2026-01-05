@@ -2,6 +2,7 @@
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![codecov](https://codecov.io/gh/dgaida/PyADM1ODE/branch/master/graph/badge.svg)](https://codecov.io/gh/dgaida/PyADM1ODE)
 [![Code Quality](https://github.com/dgaida/PyADM1ODE/actions/workflows/lint.yml/badge.svg)](https://github.com/dgaida/PyADM1ODE/actions/workflows/lint.yml)
 [![Tests](https://github.com/dgaida/PyADM1ODE/actions/workflows/tests.yml/badge.svg)](https://github.com/dgaida/PyADM1ODE/actions/workflows/tests.yml)
 [![CodeQL](https://github.com/dgaida/PyADM1ODE/actions/workflows/codeql.yml/badge.svg)](https://github.com/dgaida/PyADM1ODE/actions/workflows/codeql.yml)
@@ -16,7 +17,7 @@ PyADM1 provides a modular, extensible platform for:
 
 - **Component-based plant modeling**: Build complex biogas plant configurations from modular components (digesters, CHP units, pumps, mixers, feeders, etc.)
 - **High-fidelity ADM1 simulation**: Agricultural biogas-specific implementation of ADM1 as pure ODE system
-- **Automated model configuration**: Build plant models programmatically via MCP server for LLM integration
+- **Automated model configuration**: Build plant models programmatically via MCP server for LLM integration (see [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp))
 - **Parallel scenario simulation**: Run multiple simulations with varying parameters simultaneously
 - **Online calibration**: Automatic parameter calibration and re-calibration during plant operation (see [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration))
 - **Validation framework**: Comprehensive testing against established models (SIMBA#, [ADM1F](https://github.com/lanl/ADM1F))
@@ -37,10 +38,7 @@ PyADM1 provides a modular, extensible platform for:
 - Connection management with type safety
 
 ### 🤖 MCP Server Integration
-- FastMCP-based server for LLM-driven plant configuration
-- Natural language plant descriptions → executable models
-- Automated component selection and connection
-- Integration with intelligent virtual biogas advisor (iVBA)
+See [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp).
 
 ### ⚡ High-Performance Simulation
 - Pure ODE implementation (no DAEs) for numerical stability
@@ -148,18 +146,11 @@ PyADM1/
 │   │   ├── plant_builder.py        # Plant builder
 │   │   ├── connection_manager.py   # Connection management
 │   │   ├── validation.py           # Model validation
-│   │   ├── templates/              # Plant templates
-│   │   │   ├── __init__.py
-│   │   │   ├── single_stage.py
-│   │   │   ├── two_stage.py
-│   │   │   └── custom.py
-│   │   │
-│   │   └── mcp/                     # MCP server for LLM integration
+│   │   └── templates/              # Plant templates
 │   │       ├── __init__.py
-│   │       ├── server.py           # FastMCP server
-│   │       ├── tools.py            # MCP tools
-│   │       ├── prompts.py          # System prompts
-│   │       └── schemas.py          # Data schemas
+│   │       ├── single_stage.py
+│   │       ├── two_stage.py
+│   │       └── custom.py
 │   │
 │   ├── simulation/                   # Simulation engine
 │   │   ├── __init__.py
@@ -202,8 +193,6 @@ PyADM1/
 │   ├── 03_chp_integration.py
 │   ├── 04_substrate_optimization.py
 │   ├── 05_parallel_simulation.py
-│   ├── 06_calibration.py
-│   ├── 07_mcp_usage.py
 │   └── notebooks/
 │       ├── tutorial_basic.ipynb
 │       └── tutorial_calibration.ipynb
@@ -225,7 +214,6 @@ PyADM1/
 │   │
 │   ├── integration/                 # Integration tests
 │   │   ├── test_plant_simulation.py
-│   │   ├── test_mcp.py
 │   │   └── test_parallel_sim.py
 │   │
 │   └── validation/                  # Validation tests
@@ -282,20 +270,8 @@ plant.to_json("my_plant.json")
 ```
 
 ### Using the MCP Server
-```python
-from pyadm1.configurator.mcp import MCPServer
 
-# Start MCP server
-server = MCPServer()
-server.start()
-
-# Server provides tools for LLM:
-# - create_plant: Create new plant model
-# - add_component: Add component to plant
-# - connect_components: Connect components
-# - simulate_plant: Run simulation
-# - calibrate_model: Calibrate parameters
-```
+See [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp).
 
 ### Parallel Simulation
 ```python
@@ -373,9 +349,7 @@ The framework has been validated against:
 - ✅ Basic components (Digester, CHP, Heating)
 - ✅ Plant configuration and JSON I/O
 - 🚧 Extended component library (in progress)
-- 🚧 MCP server implementation (in progress)
 - 🚧 Parallel simulation (in progress)
-- 🚧 Calibration framework (in progress)
 - 📋 Validation framework (planned)
 
 ## Contributing
