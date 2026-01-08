@@ -70,16 +70,14 @@ PyADM1/
 │   ├── user_guide/
 │   │   ├── installation.md
 │   │   ├── quickstart.md
-│   │   ├── components.md
-│   │   └── calibration.md
+│   │   └── components.md
 │   ├── api_reference/
 │   │   ├── core.rst
 │   │   ├── components.rst
-│   │   ├── configurator.rst
-│   │   └── calibration.rst
+│   │   └── configurator.rst
 │   ├── examples/
 │   │   ├── basic_digester.md
-│   │   ├── multi_stage_plant.md
+│   │   ├── two_stage_plant.md
 │   │   └── parallel_simulation.md
 │   └── development/
 │       ├── architecture.md
@@ -228,7 +226,6 @@ PyADM1/
 │
 ├── scripts/                         # Helper scripts
 │   ├── setup_dev_env.sh
-│   ├── run_calibration.py
 │   ├── generate_validation_data.py
 │   └── start_mcp_server.sh
 │

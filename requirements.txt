@@ -7,9 +7,6 @@ scipy>=1.7.0
 sqlalchemy
 psycopg2
 
-# LLM Client for intelligent parsing
-git+https://github.com/dgaida/llm_client.git
-
 # Optional: Development tools
 # pytest>=7.0
 # pytest-cov>=3.0
