@@ -15,7 +15,7 @@ A comprehensive Python framework for modeling, simulating, and optimizing agricu
 
 PyADM1 provides a modular, extensible platform for:
 
-- **Component-based plant modeling**: Build complex biogas plant configurations from modular components (digesters, CHP units, pumps, mixers, feeders, etc.)
+- **Component-based plant modeling**: Build complex biogas plant configurations from modular components (digesters, CHP units, pumps, mixers, feeders, gas storage, etc.)
 - **High-fidelity ADM1 simulation**: Agricultural biogas-specific implementation of ADM1 as pure ODE system
 - **Automated model configuration**: Build plant models programmatically via MCP server for LLM integration (see [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp))
 - **Parallel scenario simulation**: Run multiple simulations with varying parameters simultaneously
@@ -25,23 +25,29 @@ PyADM1 provides a modular, extensible platform for:
 ## Key Features
 
 ### 🧩 Modular Component System
-- **Biological**: Digesters, hydrolysis tanks, separators
+- **Biological**: Digesters with integrated gas storage, hydrolysis tanks, separators
 - **Mechanical**: Pumps, mixers, valves, heat exchangers
-- **Energy**: CHP units, boilers, gas storage, flares
-- **Feeding**: Substrate storage, dosing systems, mixer wagons
-- **Sensors**: Physical, chemical, and gas sensors
+- **Energy**: CHP units, boilers, gas storage (low/high pressure), flares
+- **Feeding**: Substrate storage with quality degradation, dosing systems with accuracy modeling, mixer wagons
+- **Sensors**: Physical, chemical, and gas sensors with realistic measurement characteristics
 
 ### 🔧 Plant Configurator
 - Template-based plant design (single-stage, two-stage, custom)
 - JSON-based configuration with validation
 - Component registry for dynamic loading
 - Connection management with type safety
+- Automatic gas storage creation for each digester
+- Integrated flare for CHP units
 
 ### 🤖 MCP Server Integration
 See [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp).
 
 ### ⚡ High-Performance Simulation
 - Pure ODE implementation (no DAEs) for numerical stability
+- Three-pass execution model for gas flow management:
+  1. Execute digesters → produce gas to storage
+  2. Execute CHPs → determine gas demand from storage
+  3. Execute storages → supply gas based on actual demand and availability
 - Parallel execution of multiple scenarios
 - Parameter sweeps for sensitivity analysis
 - Time-series data management (see [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration))
@@ -102,7 +108,7 @@ PyADM1/
 │   │   │
 │   │   ├── biological/              # Biological processes
 │   │   │   ├── __init__.py
-│   │   │   ├── digester.py         # Fermenter component
+│   │   │   ├── digester.py         # Fermenter component with integrated gas storage
 │   │   │   ├── hydrolysis.py       # Hydrolysis tank
 │   │   │   └── separator.py        # Solid-liquid separation
 │   │   │
@@ -115,15 +121,15 @@ PyADM1/
 │   │   │
 │   │   ├── energy/                  # Energy components
 │   │   │   ├── __init__.py
-│   │   │   ├── chp.py              # Combined heat and power
+│   │   │   ├── chp.py              # Combined heat and power with automatic flare
 │   │   │   ├── boiler.py           # Boilers
-│   │   │   ├── gas_storage.py      # Gas storage
+│   │   │   ├── gas_storage.py      # Gas storage (low/high pressure)
 │   │   │   └── flare.py            # Flares
 │   │   │
 │   │   ├── feeding/                 # Substrate components
 │   │   │   ├── __init__.py
-│   │   │   ├── substrate_storage.py # Substrate storage
-│   │   │   ├── feeder.py           # Dosing systems
+│   │   │   ├── substrate_storage.py # Substrate storage with degradation
+│   │   │   ├── feeder.py           # Dosing systems with accuracy modeling
 │   │   │   └── mixer_wagon.py      # Mixer wagons
 │   │   │
 │   │   └── sensors/                 # Sensor components
@@ -141,7 +147,8 @@ PyADM1/
 │   │
 │   ├── configurator/                 # Model configurator
 │   │   ├── __init__.py
-│   │   ├── plant_builder.py        # Plant builder
+│   │   ├── plant_builder.py        # Plant builder with three-pass simulation
+│   │   ├── plant_configurator.py   # High-level configuration helpers
 │   │   ├── connection_manager.py   # Connection management
 │   │   ├── validation.py           # Model validation
 │   │   └── templates/              # Plant templates
@@ -252,11 +259,25 @@ from pyadm1.substrates import Feedstock
 # Create feedstock
 feedstock = Feedstock(feeding_freq=48)
 
-# Build plant
+# Build plant using PlantConfigurator
+from pyadm1.configurator.plant_configurator import PlantConfigurator
+
 plant = BiogasPlant("My Biogas Plant")
-plant.add_component(Digester("main_digester", feedstock, V_liq=2000))
-plant.add_component(CHP("chp1", P_el_nom=500))
-plant.connect("main_digester", "chp1", connection_type="gas")
+configurator = PlantConfigurator(plant, feedstock)
+
+# Add digester (automatically creates gas storage)
+configurator.add_digester(
+    "main_digester",
+    V_liq=2000,
+    V_gas=300,
+    Q_substrates=[15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
+)
+
+# Add CHP (automatically creates flare)
+configurator.add_chp("chp1", P_el_nom=500)
+
+# Connect components (gas storage automatically connected)
+configurator.auto_connect_digester_to_chp("main_digester", "chp1")
 
 # Initialize and simulate
 plant.initialize()
@@ -302,10 +323,32 @@ All plant components inherit from `Component` base class and provide:
 ### Plant Configuration
 
 Plants are configured through:
-- **Programmatic API**: Direct component instantiation
+- **Programmatic API**: Direct component instantiation using PlantConfigurator
 - **JSON files**: Load/save complete configurations
 - **Templates**: Pre-defined plant layouts
 - **MCP Server**: LLM-driven configuration from natural language
+
+### Gas Flow Management
+
+The simulation uses a three-pass execution model:
+
+1. **Pass 1**: Digesters produce gas → Gas storages
+2. **Pass 2**: Gas storages receive production (no demand yet)
+3. **Pass 3**: CHPs request gas → Storages supply → CHPs re-execute with actual supply
+
+This ensures:
+- Realistic gas buffering in storage tanks
+- Pressure management in gas systems
+- CHP operates with available gas, not idealized supply
+- Excess gas venting to flare when storage is full
+
+### Automatic Component Creation
+
+PlantConfigurator automatically creates and connects:
+- **Gas Storage**: One per digester (membrane type, sized to gas volume)
+- **Flare**: One per CHP unit (safety combustion of excess gas)
+
+This reduces configuration complexity while ensuring realistic plant behavior.
 
 ### Substrate Management
 
@@ -343,8 +386,11 @@ The framework has been validated against:
 ## Development Status
 
 - ✅ Core ADM1 implementation
-- ✅ Basic components (Digester, CHP, Heating)
+- ✅ Basic components (Digester with integrated storage, CHP with flare, Heating)
 - ✅ Plant configuration and JSON I/O
+- ✅ Three-pass gas flow simulation
+- ✅ Mechanical components (Pumps, Mixers)
+- ✅ Feeding components (Storage with degradation, Feeders with accuracy)
 - 🚧 Extended component library (in progress)
 - 🚧 Parallel simulation (in progress)
 - 📋 Validation framework (planned)
