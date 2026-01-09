@@ -4,6 +4,7 @@ Biological Process Components
 Components for biological conversion processes in biogas plants.
 
 Modules:
+
     digester: Main fermenter component implementing ADM1 model for anaerobic digestion,
              supporting single or multiple fermenters in series/parallel, with flexible
              volume, temperature, and retention time configuration.
@@ -17,6 +18,7 @@ Modules:
               configurable separation efficiency and dry matter content.
 
 Example:
+
     >>> from pyadm1.components.biological import Digester, Hydrolysis, Separator
     >>> from pyadm1.substrates import Feedstock
     >>>

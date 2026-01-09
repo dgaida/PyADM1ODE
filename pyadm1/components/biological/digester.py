@@ -54,6 +54,7 @@ class Digester(Component):
     connected to other digesters or components in series/parallel.
 
     Attributes:
+
         feedstock (Feedstock): Feedstock object for substrate management.
         V_liq (float): Liquid volume in m³.
         V_gas (float): Gas volume in m³.
@@ -64,6 +65,7 @@ class Digester(Component):
         Q_substrates (List[float]): Substrate feed rates in m³/d.
 
     Example:
+
         >>> feedstock = Feedstock(feeding_freq=48)
         >>> digester = Digester("dig1", feedstock, V_liq=2000, V_gas=300)
         >>> digester.initialize({"adm1_state": initial_state, "Q_substrates": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]})

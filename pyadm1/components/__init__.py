@@ -6,6 +6,7 @@ combined to build complex plant configurations. All components follow a common
 interface and can be dynamically loaded and connected.
 
 Modules:
+
     base: Base classes (Component, ComponentType) defining the interface that all
           components must implement, including step(), initialize(), serialization,
           and connection management.
@@ -15,6 +16,7 @@ Modules:
              component selection by LLM agents.
 
 Subpackages:
+
     biological: Components for biological processes including digesters (single/multi-stage),
                hydrolysis tanks for pre-treatment, and solid-liquid separators for
                digestate processing.
@@ -34,6 +36,7 @@ Subpackages:
             chemical sensors (VFA, ammonia, COD), and gas analyzers (CH4, CO2, H2S, O2).
 
 Example:
+
     >>> from pyadm1.components.biological import Digester
     >>> from pyadm1.components.energy import CHP
     >>> from pyadm1.components import ComponentRegistry
