@@ -26,6 +26,13 @@ jobs:
         run: |
           pip install mkdocs mkdocs-material pymdown-extensions mkdocs-autorefs
 
+      - name: Install Mono (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mono-complete
+          mono --version
+
       - name: Install pyadm1 package
         run: |
           pip install -e .
