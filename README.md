@@ -195,7 +195,6 @@ PyADM1/
 │   ├── __init__.py
 │   ├── 01_basic_digester.py
 │   ├── 02_two_stage_plant.py
-│   ├── 03_chp_integration.py
 │   ├── 04_substrate_optimization.py
 │   ├── 05_parallel_simulation.py
 │   └── notebooks/
@@ -247,7 +246,13 @@ PyADM1/
         └── feature_request.md
 ```
 
+## Installation
+
+See [Installation](docs/user_guide/installation.md).
+
 ## Quick Start
+
+See [Quickstart](docs/user_guide/quickstart.md).
 
 ### Basic Usage
 ```python

@@ -350,6 +350,51 @@ git pull origin master
 pip install -e . --upgrade
 ```
 
+## Optional Packages
+
+### PyADM1ODE_mcp - Model Context Protocol Server
+
+For LLM-driven biogas plant modeling with natural language interface:
+
+```bash
+# Install from GitHub
+git clone https://github.com/dgaida/PyADM1ODE_mcp.git
+cd PyADM1ODE_mcp
+pip install -e .
+```
+
+**Features:**
+- Natural language plant design via LLM (e.g., Claude)
+- MCP server for LLM integration
+- Intelligent client with automated parsing
+- Interactive plant configuration
+
+**Use cases:** Non-expert plant design, rapid prototyping, educational tools
+
+See [PyADM1ODE_mcp documentation](https://github.com/dgaida/PyADM1ODE_mcp) for details.
+
+### PyADM1ODE_calibration - Parameter Calibration Framework
+
+For automated model calibration from measurement data:
+
+```bash
+# Install from GitHub
+git clone https://github.com/dgaida/PyADM1ODE_calibration.git
+cd PyADM1ODE_calibration
+pip install -e .
+```
+
+**Features:**
+- Initial calibration from historical data
+- Online re-calibration during operation
+- Multiple optimization algorithms (DE, PSO, Nelder-Mead)
+- Comprehensive validation metrics
+- Database integration for measurement data
+
+**Use cases:** Model parameterization, real plant adaptation, uncertainty quantification
+
+See [PyADM1ODE_calibration documentation](https://github.com/dgaida/PyADM1ODE_calibration) for details.
+
 ## Uninstallation
 
 To remove PyADM1ODE:
@@ -360,4 +405,9 @@ pip uninstall pyadm1ode
 To also remove dependencies:
 ```bash
 pip uninstall pyadm1ode pythonnet numpy pandas scipy matplotlib
+```
+
+To remove optional packages:
+```bash
+pip uninstall pyadm1ode_mcp pyadm1ode_calibration
 ```
