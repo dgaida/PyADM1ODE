@@ -6,7 +6,7 @@ Virtual sensors for process monitoring and control, with realistic measurement
 characteristics including noise, drift, and response times.
 
 Modules:
-    physical: Physical property sensors including pH electrodes (with calibration drift),
+Modules:
              temperature sensors (PT100, thermocouples), pressure transmitters, level
              sensors, and flow meters with accuracy specifications.
 
@@ -19,6 +19,8 @@ Modules:
         oxygen sensors, and trace gas analyzers with detection limits.
 
 Example:
+
+```python
     >>> from pyadm1.components.sensors import PhysicalSensor, ChemicalSensor, GasSensor
     >>>
     >>> # pH sensor with realistic noise
@@ -32,4 +34,5 @@ Example:
     >>> # Methane analyzer
     >>> ch4_sensor = GasSensor("ch4_1", sensor_type="CH4",
     ...                       measurement_range=(0, 100), accuracy=0.5)
+```
 

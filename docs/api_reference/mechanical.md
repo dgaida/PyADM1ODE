@@ -5,7 +5,7 @@ Mechanical Plant Components
 Mechanical equipment for material handling and process control.
 
 Modules:
-    pump: Pump models including centrifugal and positive displacement types,
+Modules:
          with power consumption calculation, flow rate control, and characteristic
          curves for different operating points.
 
@@ -22,6 +22,8 @@ Modules:
                    calculation and fouling factor consideration.
 
 Example:
+
+```python
     >>> from pyadm1.components.mechanical import Pump, Mixer, Valve, HeatExchanger
     >>>
     >>> # Substrate feeding pump
@@ -34,6 +36,7 @@ Example:
     >>>
     >>> # Heat exchanger for substrate pre-heating
     >>> hex = HeatExchanger("hex1", effectiveness=0.7, area=50)
+```
 
 ## Classes
 
@@ -49,7 +52,7 @@ in anaerobic digesters. Calculates power consumption based on mixer type,
 operating conditions, and fluid properties.
 
 Attributes:
-    mixer_type: Type of mixer (propeller, paddle, jet)
+Attributes:
     tank_volume: Tank volume [m³]
     tank_diameter: Tank diameter [m]
     tank_height: Tank height [m]
@@ -61,6 +64,8 @@ Attributes:
     on_time_fraction: Fraction of time mixer is on (0-1)
 
 Example:
+
+```python
     >>> mixer = Mixer(
     ...     "mix1",
     ...     mixer_type="propeller",
@@ -69,6 +74,7 @@ Example:
     ... )
     >>> mixer.initialize()
     >>> result = mixer.step(0, 1/24, {})
+```
 
 **Signature:**
 
@@ -124,7 +130,7 @@ initialize(initial_state=None)
 Initialize mixer state.
 
 Args:
-    initial_state: Optional initial state dictionary with keys:
+Args:
         - 'is_running': Mixer running state
         - 'current_speed_fraction': Speed fraction (0-1)
         - 'operating_hours': Cumulative operating hours
@@ -147,7 +153,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
-    t: Current time [days]
+Args:
     dt: Time step [days]
     inputs: Input data with optional keys:
         - 'speed_setpoint': Desired speed fraction (0-1)
@@ -156,7 +162,7 @@ Args:
         - 'temperature': Fluid temperature [K]
 
 Returns:
-    Dict with keys:
+Returns:
         - 'P_consumed': Power consumption [kW]
         - 'P_average': Time-averaged power [kW]
         - 'is_running': Current running state
@@ -175,7 +181,7 @@ to_dict()
 Serialize mixer to dictionary.
 
 Returns:
-    Dictionary representation
+Returns:
 
 **Attributes:**
 
@@ -213,7 +219,7 @@ digestate transfer. Calculates power consumption based on flow rate,
 pressure head, and pump efficiency.
 
 Attributes:
-    pump_type: Type of pump (centrifugal, progressive_cavity, piston)
+Attributes:
     Q_nom: Nominal flow rate [m³/h]
     pressure_head: Pressure head [m] or [bar]
     efficiency: Pump efficiency at nominal point (0-1)
@@ -224,6 +230,8 @@ Attributes:
     is_running: Pump operating state
 
 Example:
+
+```python
     >>> pump = Pump(
     ...     "feed_pump",
     ...     pump_type="progressive_cavity",
@@ -232,6 +240,7 @@ Example:
     ... )
     >>> pump.initialize()
     >>> result = pump.step(0, 1/24, {'Q_setpoint': 8.0})
+```
 
 **Signature:**
 
@@ -284,7 +293,7 @@ initialize(initial_state=None)
 Initialize pump state.
 
 Args:
-    initial_state: Optional initial state dictionary with keys:
+Args:
         - 'is_running': Initial pump state
         - 'current_flow': Initial flow rate [m³/h]
         - 'operating_hours': Cumulative operating hours
@@ -308,7 +317,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
-    t: Current time [days]
+Args:
     dt: Time step [days]
     inputs: Input data with optional keys:
         - 'Q_setpoint': Desired flow rate [m³/h]
@@ -318,7 +327,7 @@ Args:
         - 'pressure_head': Required pressure head [m]
 
 Returns:
-    Dict with keys:
+Returns:
         - 'P_consumed': Power consumption [kW]
         - 'Q_actual': Actual flow rate [m³/h]
         - 'is_running': Current running state
@@ -335,7 +344,7 @@ to_dict()
 Serialize pump to dictionary.
 
 Returns:
-    Dictionary representation
+Returns:
 
 **Attributes:**
 

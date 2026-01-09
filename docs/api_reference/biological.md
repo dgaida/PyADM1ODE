@@ -6,7 +6,7 @@ Components for biological conversion processes in biogas plants.
 
 Modules:
 
-    digester: Main fermenter component implementing ADM1 model for anaerobic digestion,
+Modules:
              supporting single or multiple fermenters in series/parallel, with flexible
              volume, temperature, and retention time configuration.
 
@@ -20,6 +20,7 @@ Modules:
 
 Example:
 
+```python
     >>> from pyadm1.components.biological import Digester, Hydrolysis, Separator
     >>> from pyadm1.substrates import Feedstock
     >>>
@@ -29,6 +30,7 @@ Example:
     >>> hydrolysis = Hydrolysis("hydro1", feedstock, V_liq=500, T_ad=318.15)
     >>> digester = Digester("dig1", feedstock, V_liq=2000, T_ad=308.15)
     >>> separator = Separator("sep1", separation_efficiency=0.95)
+```
 
 ## Classes
 
@@ -45,7 +47,7 @@ connected to other digesters or components in series/parallel.
 
 Attributes:
 
-    feedstock (Feedstock): Feedstock object for substrate management.
+Attributes:
     V_liq (float): Liquid volume in m³.
     V_gas (float): Gas volume in m³.
     T_ad (float): Operating temperature in K.
@@ -56,9 +58,11 @@ Attributes:
 
 Example:
 
+```python
     >>> feedstock = Feedstock(feeding_freq=48)
     >>> digester = Digester("dig1", feedstock, V_liq=2000, V_gas=300)
     >>> digester.initialize({"adm1_state": initial_state, "Q_substrates": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]})
+```
 
 **Signature:**
 
@@ -103,14 +107,17 @@ Stores parameters for use during simulation. These override the
 substrate-dependent parameters calculated from feedstock.
 
 Args:
-    parameters: Parameter values as {param_name: value}.
+Args:
 
 Example:
+
+```python
     >>> digester.apply_calibration_parameters({
     ...     'k_dis': 0.55,
     ...     'Y_su': 0.105,
     ...     'k_hyd_ch': 11.0
     ... })
+```
 
 #### `clear_calibration_parameters()`
 
@@ -121,7 +128,10 @@ clear_calibration_parameters()
 Clear all calibration parameters and revert to default substrate-dependent values.
 
 Example:
+
+```python
     >>> digester.clear_calibration_parameters()
+```
 
 #### `get_calibration_parameters()`
 
@@ -132,12 +142,15 @@ get_calibration_parameters()
 Get currently applied calibration parameters.
 
 Returns:
-    dict: Current calibration parameters as {param_name: value}.
+Returns:
 
 Example:
+
+```python
     >>> params = digester.get_calibration_parameters()
     >>> print(params)
     {'k_dis': 0.55, 'Y_su': 0.105}
+```
 
 #### `get_state()`
 
@@ -156,7 +169,7 @@ initialize(initial_state=None)
 Initialize digester state.
 
 Args:
-    initial_state (Optional[Dict[str, Any]]): Initial state with keys:
+Args:
         - 'adm1_state': ADM1 state vector (37 dims)
         - 'Q_substrates': Substrate feed rates
         If None, uses default initialization.
@@ -178,7 +191,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
-    t (float): Current time in days.
+Args:
     dt (float): Time step in days.
     inputs (Dict[str, Any]): Input data with keys:
         - 'Q_substrates': Fresh substrate feed rates [m³/d]
@@ -186,7 +199,7 @@ Args:
         - 'state_in': ADM1 state from previous digester (if connected)
 
 Returns:
-    Dict[str, Any]: Output data with keys:
+Returns:
         - 'Q_out': Effluent flow rate [m³/d]
         - 'state_out': ADM1 state vector for next digester
         - 'Q_gas': Biogas production [m³/d]
@@ -205,7 +218,7 @@ to_dict()
 Serialize to dictionary.
 
 Returns:
-    Dict[str, Any]: Component configuration as dictionary.
+Returns:
 
 **Attributes:**
 

@@ -5,7 +5,7 @@ Energy Conversion and Storage Components
 Components for energy generation, conversion, and storage in biogas plants.
 
 Modules:
-    chp: Combined Heat and Power (CHP) units including gas engines and micro-turbines,
+Modules:
         with electrical and thermal efficiency curves, part-load behavior, maintenance
         scheduling, and emissions calculation.
 
@@ -22,6 +22,8 @@ Modules:
           control.
 
 Example:
+
+```python
     >>> from pyadm1.components.energy import CHP, Boiler, GasStorage, Flare
     >>>
     >>> # CHP unit with 500 kW electrical output
@@ -34,6 +36,7 @@ Example:
     >>>
     >>> # Emergency flare
     >>> flare = Flare("flare1", capacity=500, destruction_efficiency=0.98)
+```
 
 ## Classes
 
@@ -119,15 +122,18 @@ Combined Heat and Power unit.
 Converts biogas to electricity and heat with configurable efficiency.
 
 Attributes:
-    P_el_nom (float): Nominal electrical power in kW.
+Attributes:
     eta_el (float): Electrical efficiency (0-1).
     eta_th (float): Thermal efficiency (0-1).
     load_factor (float): Current operating point (0-1).
 
 Example:
+
+```python
     >>> chp = CHP("chp1", P_el_nom=500, eta_el=0.40, eta_th=0.45)
     >>> chp.initialize()
     >>> result = chp.step(t=0, dt=1/24, inputs={"Q_ch4": 1000})
+```
 
 **Signature:**
 
@@ -176,7 +182,7 @@ initialize(initial_state=None)
 Initialize CHP state.
 
 Args:
-    initial_state (Optional[Dict[str, Any]]): Initial state with keys:
+Args:
         - 'load_factor': Initial load factor (0-1)
         If None, uses default initialization.
 
@@ -197,7 +203,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
-    t (float): Current time in days.
+Args:
     dt (float): Time step in days.
     inputs (Dict[str, Any]): Input data with keys:
         - 'Q_ch4': Methane flow rate [m³/d] (direct input)
@@ -205,7 +211,7 @@ Args:
         - 'load_setpoint': Desired load factor [0-1] (optional)
 
 Returns:
-    Dict[str, Any]: Output data with keys:
+Returns:
         - 'P_el': Electrical power [kW]
         - 'P_th': Thermal power [kW]
         - 'Q_gas_consumed': Biogas consumption [m³/d]
@@ -221,7 +227,7 @@ to_dict()
 Serialize to dictionary.
 
 Returns:
-    Dict[str, Any]: Component configuration as dictionary.
+Returns:
 
 **Attributes:**
 
@@ -300,7 +306,7 @@ initialize(initial_state=None)
 Initialize flare internal state.
 
         Args:
-            initial_state: optional dict with 'cumulative_vented_m3' to restore state.
+        Args:
 
 #### `set_state()`
 
@@ -319,14 +325,14 @@ step(t, dt, inputs)
 Process one timestep and combust incoming gas.
 
         Args:
-            t: current simulation time [days]
+        Args:
             dt: timestep length [days]
             inputs: dictionary that may contain:
                 - 'Q_gas_in_m3_per_day': inflow (m³/day)
                 - 'CH4_fraction': methane fraction in the gas (0..1). Default 0.6
 
         Returns:
-            outputs_data dict with keys:
+        Returns:
                 - 'vented_volume_m3' (this timestep)
                 - 'cumulative_vented_m3'
                 - 'CH4_destroyed_m3' (m³ of CH4 destroyed this step)

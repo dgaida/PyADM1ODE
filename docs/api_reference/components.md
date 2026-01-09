@@ -8,7 +8,7 @@ interface and can be dynamically loaded and connected.
 
 Modules:
 
-    base: Base classes (Component, ComponentType) defining the interface that all
+Modules:
           components must implement, including step(), initialize(), serialization,
           and connection management.
 
@@ -38,6 +38,7 @@ Subpackages:
 
 Example:
 
+```python
     >>> from pyadm1.components.biological import Digester
     >>> from pyadm1.components.energy import CHP
     >>> from pyadm1.components import ComponentRegistry
@@ -48,6 +49,7 @@ Example:
     >>> # Via registry
     >>> registry = ComponentRegistry()
     >>> component = registry.create("Digester", "dig1", feedstock=feedstock)
+```
 
 ## Subpackages
 

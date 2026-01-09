@@ -5,7 +5,7 @@ Substrate Feeding and Storage Components
 Components for substrate handling, storage, and dosing into digesters.
 
 Modules:
-    substrate_storage: Storage facilities for different substrate types (silos for
+Modules:
                       solid substrates, tanks for liquid substrates), with inventory
                       management, quality degradation over time, and capacity monitoring.
 
@@ -18,6 +18,8 @@ Modules:
                 substrate homogenization.
 
 Example:
+
+```python
     >>> from pyadm1.components.feeding import SubstrateStorage, Feeder, MixerWagon
     >>>
     >>> # Corn silage storage
@@ -30,6 +32,7 @@ Example:
     >>>
     >>> # Mixer wagon for substrate preparation
     >>> wagon = MixerWagon("wagon1", capacity=30, mixing_time=15)
+```
 
 ## Classes
 
@@ -46,7 +49,7 @@ Includes realistic operational characteristics like dosing accuracy,
 capacity limits, and power consumption.
 
 Attributes:
-    feeder_type: Type of feeding system
+Attributes:
     Q_max: Maximum flow rate [m³/d or t/d]
     substrate_type: Physical category of substrate
     dosing_accuracy: Accuracy of flow control (std dev as fraction)
@@ -55,6 +58,8 @@ Attributes:
     is_running: Operating state
 
 Example:
+
+```python
     >>> feeder = Feeder(
     ...     "feed1",
     ...     feeder_type="screw",
@@ -63,6 +68,7 @@ Example:
     ... )
     >>> feeder.initialize()
     >>> result = feeder.step(0, 1/24, {'Q_setpoint': 15})
+```
 
 **Signature:**
 
@@ -114,7 +120,7 @@ initialize(initial_state=None)
 Initialize feeder state.
 
 Args:
-    initial_state: Optional initial state with keys:
+Args:
         - 'is_running': Initial operating state
         - 'current_flow': Initial flow rate [m³/d or t/d]
         - 'operating_hours': Cumulative operating hours
@@ -138,7 +144,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
-    t: Current time [days]
+Args:
     dt: Time step [days]
     inputs: Input data with optional keys:
         - 'Q_setpoint': Desired flow rate [m³/d or t/d]
@@ -147,7 +153,7 @@ Args:
         - 'speed_setpoint': Desired speed fraction (0-1)
 
 Returns:
-    Dict with keys:
+Returns:
         - 'Q_actual': Actual flow rate [m³/d or t/d]
         - 'is_running': Current operating state
         - 'load_factor': Operating load (0-1)
@@ -197,7 +203,7 @@ quality degradation, and capacity management. Supports both solid
 (silage, solid manure) and liquid (liquid manure, slurry) substrates.
 
 Attributes:
-    storage_type: Type of storage facility
+Attributes:
     substrate_type: Category of substrate stored
     capacity: Maximum storage capacity [t or m³]
     current_level: Current inventory level [t or m³]
@@ -208,6 +214,8 @@ Attributes:
     vs_content: Volatile solids [% of DM]
 
 Example:
+
+```python
     >>> storage = SubstrateStorage(
     ...     "silo1",
     ...     storage_type="vertical_silo",
@@ -217,6 +225,7 @@ Example:
     ... )
     >>> storage.initialize()
     >>> outputs = storage.step(0, 1, {'withdrawal_rate': 15})
+```
 
 **Signature:**
 
@@ -268,7 +277,7 @@ initialize(initial_state=None)
 Initialize storage state.
 
 Args:
-    initial_state: Optional initial state with keys:
+Args:
         - 'current_level': Inventory level [t or m³]
         - 'quality_factor': Quality factor (0-1)
         - 'storage_time': Time stored [days]
@@ -291,7 +300,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
-    t: Current time [days]
+Args:
     dt: Time step [days]
     inputs: Input data with optional keys:
         - 'withdrawal_rate': Withdrawal rate [t/d or m³/d]
@@ -300,7 +309,7 @@ Args:
         - 'temperature': Ambient/storage temperature [K]
 
 Returns:
-    Dict with keys:
+Returns:
         - 'current_level': Current inventory [t or m³]
         - 'utilization': Fill level (0-1)
         - 'quality_factor': Current quality (0-1)
