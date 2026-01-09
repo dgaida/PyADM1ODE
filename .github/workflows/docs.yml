@@ -26,6 +26,10 @@ jobs:
         run: |
           pip install mkdocs mkdocs-material pymdown-extensions mkdocs-autorefs
 
+      - name: Install pyadm1 package
+        run: |
+          pip install -e .
+
       - name: Generate API documentation
         run: |
           python pyadm1/utils/api_doc_generator.py
