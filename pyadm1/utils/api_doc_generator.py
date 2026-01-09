@@ -431,7 +431,6 @@ class APIDocGenerator:
             "Examples",
             "Returns",
             "Args",
-            # "Attributes",
             "Yields",
             "Raises",
             "Note",
@@ -456,24 +455,33 @@ class APIDocGenerator:
                 result_lines.append(line)
                 i += 1
 
-                # Check if code block follows
+                # Look ahead to see if code block follows
                 if i < len(cleaned_lines):
-                    next_line = cleaned_lines[i]
-
-                    # Skip optional blank line
+                    # Check next few lines to determine if we have code
+                    look_ahead_idx = i
                     has_blank_line = False
-                    if not next_line.strip():
-                        has_blank_line = True
-                        result_lines.append(next_line)
-                        i += 1
-                        if i >= len(cleaned_lines):
-                            continue
-                        next_line = cleaned_lines[i]
 
-                    # Check if code block starts (with >>> or indented code)
-                    if next_line.strip().startswith(">>>"):
-                        if not has_blank_line:
+                    # Skip blank line if present
+                    if look_ahead_idx < len(cleaned_lines) and not cleaned_lines[look_ahead_idx].strip():
+                        has_blank_line = True
+                        look_ahead_idx += 1
+
+                    # Check if code block starts
+                    has_code_block = False
+                    if look_ahead_idx < len(cleaned_lines):
+                        next_line = cleaned_lines[look_ahead_idx]
+                        if next_line.strip().startswith(">>>"):
+                            has_code_block = True
+
+                    if has_code_block:
+                        # Add blank line if not present
+                        if has_blank_line:
+                            result_lines.append(cleaned_lines[i])
+                            i += 1
+                        else:
                             result_lines.append("")
+
+                        # Add code fence
                         result_lines.append("```python")
 
                         # Collect all code lines
