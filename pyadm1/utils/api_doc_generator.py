@@ -318,30 +318,33 @@ class APIDocGenerator:
 
         # Look for Attributes section in docstring
         docstring = cls.__doc__
-        if "Attributes:" in docstring or "Attributes\n" in docstring:
-            file_handle.write("**Attributes:**\n\n")
+        if "Attributes:" not in docstring and "Attributes\n" not in docstring:
+            return
 
-            # Try to parse attributes from docstring
-            # This is a simple heuristic - could be improved
-            lines = docstring.split("\n")
-            in_attributes = False
+        file_handle.write("**Attributes:**\n\n")
 
-            for line in lines:
-                if "Attributes:" in line or line.strip() == "Attributes":
-                    in_attributes = True
-                    continue
+        # Parse attributes from docstring
+        lines = docstring.split("\n")
+        in_attributes = False
 
-                if in_attributes:
-                    # Stop at next section
-                    if line.strip() and not line.startswith(" ") and ":" in line:
-                        break
+        for line in lines:
+            stripped_line = line.strip()
 
-                    # Extract attribute info
-                    stripped = line.strip()
-                    if stripped and not stripped.startswith("---"):
-                        file_handle.write(f"- {stripped}\n")
+            # Check if we're entering the Attributes section
+            if stripped_line == "Attributes:" or stripped_line.startswith("Attributes:"):
+                in_attributes = True
+                continue
 
-            file_handle.write("\n")
+            if in_attributes:
+                # Stop at next section (line that starts with capital letter and ends with :)
+                if stripped_line and not line.startswith(" ") and re.match(r"^[A-Z][a-zA-Z\s]+:", stripped_line):
+                    break
+
+                # Extract attribute info (skip empty lines and separators)
+                if stripped_line and not stripped_line.startswith("---"):
+                    file_handle.write(f"- {stripped_line}\n")
+
+        file_handle.write("\n")
 
     def _get_package_classes(self, package_path: str) -> List[str]:
         """
@@ -428,7 +431,7 @@ class APIDocGenerator:
             "Examples",
             "Returns",
             "Args",
-            "Attributes",
+            # "Attributes",
             "Yields",
             "Raises",
             "Note",
