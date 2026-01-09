@@ -6,6 +6,7 @@ for the PyADM1 components package by inspecting Python modules and extracting
 docstrings, signatures, and structure.
 
 Example:
+
     >>> from pyadm1.utils.api_doc_generator import generate_components_api_docs
     >>>
     >>> # Generate documentation for components package
@@ -17,6 +18,7 @@ Example:
 
 import inspect
 import importlib
+import re
 from pathlib import Path
 from typing import Any, List, Optional, Tuple
 from dataclasses import dataclass
@@ -59,6 +61,7 @@ class APIDocGenerator:
         exclude_private: Skip private members (starting with _)
 
     Example:
+
         >>> generator = APIDocGenerator("pyadm1.components")
         >>> generator.generate_all()
     """
@@ -374,6 +377,11 @@ class APIDocGenerator:
         """
         Format a docstring for markdown output.
 
+        Intelligently handles code examples by detecting them and wrapping
+        them in markdown code blocks. Supports both formats:
+        - Example: (with blank line before code)
+        - Example: >>> (code immediately after)
+
         Args:
             docstring: Raw docstring
 
@@ -410,7 +418,95 @@ class APIDocGenerator:
             else:
                 cleaned_lines.append("")
 
-        return "\n".join(cleaned_lines)
+        # Process code examples and other sections with code blocks
+        result_lines = []
+        i = 0
+
+        # Sections that might contain code blocks
+        code_sections = [
+            "Example",
+            "Examples",
+            "Returns",
+            "Args",
+            "Attributes",
+            "Yields",
+            "Raises",
+            "Note",
+            "Notes",
+            "Warning",
+            "Warnings",
+            "See Also",
+            "References",
+            "Modules",
+            "Classes",
+            "Functions",
+        ]
+
+        # Create regex pattern for all code sections
+        section_pattern = r"^(" + "|".join(code_sections) + r")[s]?:\s*$"
+
+        while i < len(cleaned_lines):
+            line = cleaned_lines[i]
+
+            # Check if this is a code section line
+            if re.match(section_pattern, line.strip()):
+                result_lines.append(line)
+                i += 1
+
+                # Check if code block follows
+                if i < len(cleaned_lines):
+                    next_line = cleaned_lines[i]
+
+                    # Skip optional blank line
+                    has_blank_line = False
+                    if not next_line.strip():
+                        has_blank_line = True
+                        result_lines.append(next_line)
+                        i += 1
+                        if i >= len(cleaned_lines):
+                            continue
+                        next_line = cleaned_lines[i]
+
+                    # Check if code block starts (with >>> or indented code)
+                    if next_line.strip().startswith(">>>"):
+                        if not has_blank_line:
+                            result_lines.append("")
+                        result_lines.append("```python")
+
+                        # Collect all code lines
+                        while i < len(cleaned_lines):
+                            code_line = cleaned_lines[i]
+                            stripped = code_line.strip()
+
+                            # Stop at empty line followed by non-code
+                            if not stripped:
+                                if i + 1 < len(cleaned_lines):
+                                    next_stripped = cleaned_lines[i + 1].strip()
+                                    if not next_stripped.startswith((">>>", "...")):
+                                        break
+                                result_lines.append(code_line)
+                                i += 1
+                                continue
+
+                            # Stop at next section
+                            if not stripped.startswith((">>>", "...")) and re.match(section_pattern, stripped):
+                                break
+
+                            # Stop at any new top-level section marker
+                            if not stripped.startswith((">>>", "...")) and re.match(r"^[A-Z][a-z]+[s]?:", stripped):
+                                break
+
+                            result_lines.append(code_line)
+                            i += 1
+
+                        result_lines.append("```")
+                        continue
+
+            # Normal line
+            result_lines.append(line)
+            i += 1
+
+        return "\n".join(result_lines)
 
     def _format_title(self, name: str) -> str:
         """
@@ -459,6 +555,7 @@ def generate_components_api_docs(output_dir: str = "docs/api_reference", package
         package_name: Package to document (default: 'pyadm1.components')
 
     Example:
+
         >>> from pyadm1.utils.doc_generator import generate_components_api_docs
         >>>
         >>> # Generate with default settings
