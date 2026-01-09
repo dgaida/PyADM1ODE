@@ -5,7 +5,7 @@ Substrate Feeding and Storage Components
 Components for substrate handling, storage, and dosing into digesters.
 
 Modules:
-Modules:
+    substrate_storage: Storage facilities for different substrate types (silos for
                       solid substrates, tanks for liquid substrates), with inventory
                       management, quality degradation over time, and capacity monitoring.
 
@@ -120,7 +120,7 @@ initialize(initial_state=None)
 Initialize feeder state.
 
 Args:
-Args:
+    initial_state: Optional initial state with keys:
         - 'is_running': Initial operating state
         - 'current_flow': Initial flow rate [m³/d or t/d]
         - 'operating_hours': Cumulative operating hours
@@ -144,7 +144,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
-Args:
+    t: Current time [days]
     dt: Time step [days]
     inputs: Input data with optional keys:
         - 'Q_setpoint': Desired flow rate [m³/d or t/d]
@@ -153,7 +153,7 @@ Args:
         - 'speed_setpoint': Desired speed fraction (0-1)
 
 Returns:
-Returns:
+    Dict with keys:
         - 'Q_actual': Actual flow rate [m³/d or t/d]
         - 'is_running': Current operating state
         - 'load_factor': Operating load (0-1)
@@ -277,7 +277,7 @@ initialize(initial_state=None)
 Initialize storage state.
 
 Args:
-Args:
+    initial_state: Optional initial state with keys:
         - 'current_level': Inventory level [t or m³]
         - 'quality_factor': Quality factor (0-1)
         - 'storage_time': Time stored [days]
@@ -300,7 +300,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
-Args:
+    t: Current time [days]
     dt: Time step [days]
     inputs: Input data with optional keys:
         - 'withdrawal_rate': Withdrawal rate [t/d or m³/d]
@@ -309,7 +309,7 @@ Args:
         - 'temperature': Ambient/storage temperature [K]
 
 Returns:
-Returns:
+    Dict with keys:
         - 'current_level': Current inventory [t or m³]
         - 'utilization': Fill level (0-1)
         - 'quality_factor': Current quality (0-1)

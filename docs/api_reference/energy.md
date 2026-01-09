@@ -5,7 +5,7 @@ Energy Conversion and Storage Components
 Components for energy generation, conversion, and storage in biogas plants.
 
 Modules:
-Modules:
+    chp: Combined Heat and Power (CHP) units including gas engines and micro-turbines,
         with electrical and thermal efficiency curves, part-load behavior, maintenance
         scheduling, and emissions calculation.
 
@@ -182,7 +182,7 @@ initialize(initial_state=None)
 Initialize CHP state.
 
 Args:
-Args:
+    initial_state (Optional[Dict[str, Any]]): Initial state with keys:
         - 'load_factor': Initial load factor (0-1)
         If None, uses default initialization.
 
@@ -203,7 +203,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
-Args:
+    t (float): Current time in days.
     dt (float): Time step in days.
     inputs (Dict[str, Any]): Input data with keys:
         - 'Q_ch4': Methane flow rate [m³/d] (direct input)
@@ -211,7 +211,7 @@ Args:
         - 'load_setpoint': Desired load factor [0-1] (optional)
 
 Returns:
-Returns:
+    Dict[str, Any]: Output data with keys:
         - 'P_el': Electrical power [kW]
         - 'P_th': Thermal power [kW]
         - 'Q_gas_consumed': Biogas consumption [m³/d]
@@ -227,7 +227,7 @@ to_dict()
 Serialize to dictionary.
 
 Returns:
-Returns:
+    Dict[str, Any]: Component configuration as dictionary.
 
 **Attributes:**
 
@@ -306,7 +306,7 @@ initialize(initial_state=None)
 Initialize flare internal state.
 
         Args:
-        Args:
+            initial_state: optional dict with 'cumulative_vented_m3' to restore state.
 
 #### `set_state()`
 
@@ -325,14 +325,14 @@ step(t, dt, inputs)
 Process one timestep and combust incoming gas.
 
         Args:
-        Args:
+            t: current simulation time [days]
             dt: timestep length [days]
             inputs: dictionary that may contain:
                 - 'Q_gas_in_m3_per_day': inflow (m³/day)
                 - 'CH4_fraction': methane fraction in the gas (0..1). Default 0.6
 
         Returns:
-        Returns:
+            outputs_data dict with keys:
                 - 'vented_volume_m3' (this timestep)
                 - 'cumulative_vented_m3'
                 - 'CH4_destroyed_m3' (m³ of CH4 destroyed this step)

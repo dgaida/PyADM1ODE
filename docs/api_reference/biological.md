@@ -5,7 +5,7 @@ Biological Process Components
 Components for biological conversion processes in biogas plants.
 
 Modules:
-Modules:
+
     digester: Main fermenter component implementing ADM1 model for anaerobic digestion,
              supporting single or multiple fermenters in series/parallel, with flexible
              volume, temperature, and retention time configuration.
@@ -107,7 +107,7 @@ Stores parameters for use during simulation. These override the
 substrate-dependent parameters calculated from feedstock.
 
 Args:
-Args:
+    parameters: Parameter values as {param_name: value}.
 
 Example:
 
@@ -142,7 +142,7 @@ get_calibration_parameters()
 Get currently applied calibration parameters.
 
 Returns:
-Returns:
+    dict: Current calibration parameters as {param_name: value}.
 
 Example:
 
@@ -169,7 +169,7 @@ initialize(initial_state=None)
 Initialize digester state.
 
 Args:
-Args:
+    initial_state (Optional[Dict[str, Any]]): Initial state with keys:
         - 'adm1_state': ADM1 state vector (37 dims)
         - 'Q_substrates': Substrate feed rates
         If None, uses default initialization.
@@ -191,7 +191,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
-Args:
+    t (float): Current time in days.
     dt (float): Time step in days.
     inputs (Dict[str, Any]): Input data with keys:
         - 'Q_substrates': Fresh substrate feed rates [m³/d]
@@ -199,7 +199,7 @@ Args:
         - 'state_in': ADM1 state from previous digester (if connected)
 
 Returns:
-Returns:
+    Dict[str, Any]: Output data with keys:
         - 'Q_out': Effluent flow rate [m³/d]
         - 'state_out': ADM1 state vector for next digester
         - 'Q_gas': Biogas production [m³/d]
@@ -218,7 +218,7 @@ to_dict()
 Serialize to dictionary.
 
 Returns:
-Returns:
+    Dict[str, Any]: Component configuration as dictionary.
 
 **Attributes:**
 

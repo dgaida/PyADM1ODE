@@ -5,7 +5,7 @@ Mechanical Plant Components
 Mechanical equipment for material handling and process control.
 
 Modules:
-Modules:
+    pump: Pump models including centrifugal and positive displacement types,
          with power consumption calculation, flow rate control, and characteristic
          curves for different operating points.
 
@@ -130,7 +130,7 @@ initialize(initial_state=None)
 Initialize mixer state.
 
 Args:
-Args:
+    initial_state: Optional initial state dictionary with keys:
         - 'is_running': Mixer running state
         - 'current_speed_fraction': Speed fraction (0-1)
         - 'operating_hours': Cumulative operating hours
@@ -153,7 +153,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
-Args:
+    t: Current time [days]
     dt: Time step [days]
     inputs: Input data with optional keys:
         - 'speed_setpoint': Desired speed fraction (0-1)
@@ -162,7 +162,7 @@ Args:
         - 'temperature': Fluid temperature [K]
 
 Returns:
-Returns:
+    Dict with keys:
         - 'P_consumed': Power consumption [kW]
         - 'P_average': Time-averaged power [kW]
         - 'is_running': Current running state
@@ -181,7 +181,7 @@ to_dict()
 Serialize mixer to dictionary.
 
 Returns:
-Returns:
+    Dictionary representation
 
 **Attributes:**
 
@@ -293,7 +293,7 @@ initialize(initial_state=None)
 Initialize pump state.
 
 Args:
-Args:
+    initial_state: Optional initial state dictionary with keys:
         - 'is_running': Initial pump state
         - 'current_flow': Initial flow rate [m³/h]
         - 'operating_hours': Cumulative operating hours
@@ -317,7 +317,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
-Args:
+    t: Current time [days]
     dt: Time step [days]
     inputs: Input data with optional keys:
         - 'Q_setpoint': Desired flow rate [m³/h]
@@ -327,7 +327,7 @@ Args:
         - 'pressure_head': Required pressure head [m]
 
 Returns:
-Returns:
+    Dict with keys:
         - 'P_consumed': Power consumption [kW]
         - 'Q_actual': Actual flow rate [m³/h]
         - 'is_running': Current running state
@@ -344,7 +344,7 @@ to_dict()
 Serialize pump to dictionary.
 
 Returns:
-Returns:
+    Dictionary representation
 
 **Attributes:**
 

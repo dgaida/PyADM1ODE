@@ -6,7 +6,7 @@ Virtual sensors for process monitoring and control, with realistic measurement
 characteristics including noise, drift, and response times.
 
 Modules:
-Modules:
+    physical: Physical property sensors including pH electrodes (with calibration drift),
              temperature sensors (PT100, thermocouples), pressure transmitters, level
              sensors, and flow meters with accuracy specifications.
 
