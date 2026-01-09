@@ -447,11 +447,14 @@ class APIDocGenerator:
         # Create regex pattern for all code sections
         section_pattern = r"^(" + "|".join(code_sections) + r")[s]?:\s*$"
 
+        print("cleaned_lines:", cleaned_lines)
+
         while i < len(cleaned_lines):
             line = cleaned_lines[i]
 
             # Check if this is a code section line
             if re.match(section_pattern, line.strip()):
+                print("matched line:", line)
                 result_lines.append(line)
                 i += 1
 
@@ -516,6 +519,8 @@ class APIDocGenerator:
             # Normal line
             result_lines.append(line)
             i += 1
+
+        print("result:", result_lines)
 
         return "\n".join(result_lines)
 
