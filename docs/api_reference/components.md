@@ -7,8 +7,8 @@ combined to build complex plant configurations. All components follow a common
 interface and can be dynamically loaded and connected.
 
 Modules:
-
 Modules:
+    base: Base classes (Component, ComponentType) defining the interface that all
           components must implement, including step(), initialize(), serialization,
           and connection management.
 
