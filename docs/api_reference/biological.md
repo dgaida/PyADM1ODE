@@ -5,8 +5,8 @@ Biological Process Components
 Components for biological conversion processes in biogas plants.
 
 Modules:
-
 Modules:
+    digester: Main fermenter component implementing ADM1 model for anaerobic digestion,
              supporting single or multiple fermenters in series/parallel, with flexible
              volume, temperature, and retention time configuration.
 
