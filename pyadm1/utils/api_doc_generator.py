@@ -514,7 +514,12 @@ class APIDocGenerator:
                             i += 1
 
                         result_lines.append("```")
+                        # continue here ensures we skip the normal line append at the end
                         continue
+
+                # If no code block follows, continue to next iteration
+                # (the section header was already added to result_lines)
+                continue
 
             # Normal line
             result_lines.append(line)
