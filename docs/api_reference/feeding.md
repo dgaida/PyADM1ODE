@@ -49,7 +49,7 @@ Includes realistic operational characteristics like dosing accuracy,
 capacity limits, and power consumption.
 
 Attributes:
-Attributes:
+    feeder_type: Type of feeding system
     Q_max: Maximum flow rate [m³/d or t/d]
     substrate_type: Physical category of substrate
     dosing_accuracy: Accuracy of flow control (std dev as fraction)
@@ -203,7 +203,7 @@ quality degradation, and capacity management. Supports both solid
 (silage, solid manure) and liquid (liquid manure, slurry) substrates.
 
 Attributes:
-Attributes:
+    storage_type: Type of storage facility
     substrate_type: Category of substrate stored
     capacity: Maximum storage capacity [t or m³]
     current_level: Current inventory level [t or m³]

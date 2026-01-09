@@ -52,7 +52,7 @@ in anaerobic digesters. Calculates power consumption based on mixer type,
 operating conditions, and fluid properties.
 
 Attributes:
-Attributes:
+    mixer_type: Type of mixer (propeller, paddle, jet)
     tank_volume: Tank volume [m³]
     tank_diameter: Tank diameter [m]
     tank_height: Tank height [m]
@@ -219,7 +219,7 @@ digestate transfer. Calculates power consumption based on flow rate,
 pressure head, and pump efficiency.
 
 Attributes:
-Attributes:
+    pump_type: Type of pump (centrifugal, progressive_cavity, piston)
     Q_nom: Nominal flow rate [m³/h]
     pressure_head: Pressure head [m] or [bar]
     efficiency: Pump efficiency at nominal point (0-1)

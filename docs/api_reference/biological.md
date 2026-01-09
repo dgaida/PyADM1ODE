@@ -47,7 +47,7 @@ connected to other digesters or components in series/parallel.
 
 Attributes:
 
-Attributes:
+    feedstock (Feedstock): Feedstock object for substrate management.
     V_liq (float): Liquid volume in m³.
     V_gas (float): Gas volume in m³.
     T_ad (float): Operating temperature in K.

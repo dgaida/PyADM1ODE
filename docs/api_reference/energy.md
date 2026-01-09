@@ -122,7 +122,7 @@ Combined Heat and Power unit.
 Converts biogas to electricity and heat with configurable efficiency.
 
 Attributes:
-Attributes:
+    P_el_nom (float): Nominal electrical power in kW.
     eta_el (float): Electrical efficiency (0-1).
     eta_th (float): Thermal efficiency (0-1).
     load_factor (float): Current operating point (0-1).
