@@ -1,0 +1,47 @@
+name: Deploy Documentation
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'docs/**'
+      - '.github/workflows/docs.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install mkdocs mkdocs-material pymdown-extensions mkdocs-autorefs
+
+      - name: Generate API documentation
+        run: |
+          python pyadm1/utils/api_doc_generator.py
+
+      - name: Commit auto-generated docs (if changed)
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/api_reference/components.md
+          git add docs/api_reference/biological.md
+          git add docs/api_reference/energy.md
+          git add docs/api_reference/mechanical.md
+          git add docs/api_reference/feeding.md
+          git add docs/api_reference/sensors.md
+          git diff --quiet && git diff --staged --quiet || git commit -m "docs: Auto-generate API reference"
+          git push || echo "No changes to commit"
+
+      # - name: Deploy to GitHub Pages
+      #   run: mkdocs gh-deploy --force
