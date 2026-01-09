@@ -5,6 +5,7 @@ Biological Process Components
 Components for biological conversion processes in biogas plants.
 
 Modules:
+
     digester: Main fermenter component implementing ADM1 model for anaerobic digestion,
              supporting single or multiple fermenters in series/parallel, with flexible
              volume, temperature, and retention time configuration.
@@ -18,6 +19,7 @@ Modules:
               configurable separation efficiency and dry matter content.
 
 Example:
+
     >>> from pyadm1.components.biological import Digester, Hydrolysis, Separator
     >>> from pyadm1.substrates import Feedstock
     >>>
@@ -42,6 +44,7 @@ This component wraps the ADM1 implementation and can be
 connected to other digesters or components in series/parallel.
 
 Attributes:
+
     feedstock (Feedstock): Feedstock object for substrate management.
     V_liq (float): Liquid volume in m³.
     V_gas (float): Gas volume in m³.
@@ -52,6 +55,7 @@ Attributes:
     Q_substrates (List[float]): Substrate feed rates in m³/d.
 
 Example:
+
     >>> feedstock = Feedstock(feeding_freq=48)
     >>> digester = Digester("dig1", feedstock, V_liq=2000, V_gas=300)
     >>> digester.initialize({"adm1_state": initial_state, "Q_substrates": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]})
