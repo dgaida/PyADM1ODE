@@ -46,16 +46,7 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add docs/api_reference/components/components.md
-          git add docs/api_reference/components/biological.md
-          git add docs/api_reference/components/energy.md
-          git add docs/api_reference/components/mechanical.md
-          git add docs/api_reference/components/feeding.md
-          git add docs/api_reference/components/sensors.md
-          git add docs/api_reference/configurator/connection_manager.md
-          git add docs/api_reference/configurator/plant_builder.md
-          git add docs/api_reference/configurator/plant_configurator.md
-          git add docs/api_reference/core/adm1.md
+          git add docs/api_reference/ -- '*.md'
           git diff --quiet && git diff --staged --quiet || git commit -m "docs: Auto-generate API reference"
           git push || echo "No changes to commit"
 
