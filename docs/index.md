@@ -51,13 +51,13 @@ PyADM1ODE is a comprehensive Python framework for agricultural biogas plant mode
 
 ### Key Features
 
-✨ **Comprehensive Component Library**
-- Biological: Single/multi-stage digesters, hydrolysis tanks, separators
-- Energy: CHP units, heating systems, gas storage, flares
-- Mechanical: Pumps, mixers with realistic power consumption
+✨ **Comprehensive Component Library**  
+- Biological: Single/multi-stage digesters, hydrolysis tanks, separators  
+- Energy: CHP units, heating systems, gas storage, flares  
+- Mechanical: Pumps, mixers with realistic power consumption  
 - Feeding: Substrate storage, automated dosing systems
 
-🔧 **Flexible Plant Configuration**
+🔧 **Flexible Plant Configuration**  
 - Build complex plants programmatically or via templates
 - Automatic component connection and validation
 - Save/load configurations as JSON
@@ -378,7 +378,7 @@ PyADM1ODE is based on the **Anaerobic Digestion Model No. 1 (ADM1)**, developed 
 
 ## Installation
 
-Install PyADM1ODE via pip:
+Install PyADM1ODE via pip (not yet existing):
 
 ```bash
 pip install pyadm1ode
@@ -417,9 +417,9 @@ cd PyADM1ODE_mcp
 pip install -e .
 ```
 
-**Features:**
-- Interact with Claude or other LLMs to design plants via natural language
-- MCP server for seamless LLM integration
+**Features:**  
+- Interact with Claude or other LLMs to design plants via natural language  
+- MCP server for seamless LLM integration  
 - Automated configuration parsing and validation
 
 **Use case:** *"Design a two-stage biogas plant with 2000 m³ main digester, 500 m³ hydrolysis tank at 45°C, and a 500 kW CHP unit. Use corn silage and cattle manure as substrates."*
@@ -434,7 +434,7 @@ cd PyADM1ODE_calibration
 pip install -e .
 ```
 
-**Features:**
+**Features:**  
 - Initial calibration from historical data
 - Online re-calibration during operation
 - Multiple optimization algorithms (Differential Evolution, PSO, Nelder-Mead)
