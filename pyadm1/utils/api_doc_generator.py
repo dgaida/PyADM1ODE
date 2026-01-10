@@ -180,6 +180,7 @@ class APIDocGenerator:
             for name, obj in inspect.getmembers(package, inspect.isclass):
                 if not name.startswith("_"):
                     # Check if class is defined in this package's __init__.py
+                    print(obj.__module__, package_path)
                     if obj.__module__ == package_path:
                         classes.append(name)
 
@@ -205,7 +206,8 @@ class APIDocGenerator:
 
             # Write package docstring
             if package.__doc__:
-                f.write(self._format_docstring(package.__doc__))
+                preprocessed_docstring = self._preprocess_docstring(package.__doc__)
+                f.write(self._format_docstring(preprocessed_docstring))
                 f.write("\n\n")
 
             # Write subpackages overview

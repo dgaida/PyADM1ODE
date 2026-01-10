@@ -22,10 +22,6 @@ Subpackages:
               (single-stage, two-stage, plug-flow, CSTR) serving as starting
               points for customization or examples for learning.
 
-    mcp: MCP (Model Context Protocol) server implementation using fastmcp for
-        LLM integration, providing tools for automated plant design from natural
-        language descriptions and integration with intelligent virtual advisors.
-
 Example:
     >>> from pyadm1.configurator import BiogasPlant, ConnectionManager
     >>> from pyadm1.components.biological import Digester
@@ -55,15 +51,6 @@ from .connection_manager import (
 # Import templates
 from . import templates
 
-# Import MCP server (optional dependency)
-try:
-    from . import mcp
-
-    MCP_AVAILABLE = True
-except ImportError:
-    MCP_AVAILABLE = False
-    mcp = None
-
 __all__ = [
     "BiogasPlant",
     "ConnectionManager",
@@ -71,6 +58,4 @@ __all__ = [
     "ConnectionType",
     # "PlantValidator",
     "templates",
-    "mcp",
-    "MCP_AVAILABLE",
 ]
