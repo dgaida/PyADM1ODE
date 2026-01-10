@@ -7,6 +7,7 @@ on:
     paths:
       - 'docs/**'
       - '.github/workflows/docs.yml'
+      - 'mkdocs.yml'
       - 'pyadm1/**'
 
 permissions:
@@ -50,5 +51,5 @@ jobs:
           git diff --quiet && git diff --staged --quiet || git commit -m "docs: Auto-generate API reference"
           git push || echo "No changes to commit"
 
-      # - name: Deploy to GitHub Pages
-      #   run: mkdocs gh-deploy --force
+      - name: Deploy to GitHub Pages
+        run: mkdocs gh-deploy --force

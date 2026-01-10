@@ -19,6 +19,7 @@ repos:
         args: ['--markdown-linebreak-ext=md']
       - id: end-of-file-fixer
       - id: check-yaml
+        exclude: ^mkdocs\.yml$
       - id: check-added-large-files
         args: ['--maxkb=1000']
       - id: check-merge-conflict
