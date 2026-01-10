@@ -165,24 +165,39 @@ class APIDocGenerator:
 
     def _get_direct_package_classes(self, package_path: str) -> List[str]:
         """
-        Get classes directly defined in package __init__.py (not in subpackages).
+        Get classes exposed at package level (not in subpackages).
+
+        This includes classes defined in direct submodules (e.g., base.py, registry.py)
+        but not in subpackages (e.g., biological/, energy/).
 
         Args:
             package_path: Full package path
 
         Returns:
-            List of class names defined in package's __init__.py
+            List of class names exposed at package level
         """
         try:
             package = importlib.import_module(package_path)
 
+            # Get subpackage names to exclude their classes
+            subpackages = self._get_subpackages(package)
+            subpackage_prefixes = [f"{package_path}.{sp}" for sp in subpackages]
+
             classes = []
             for name, obj in inspect.getmembers(package, inspect.isclass):
                 if not name.startswith("_"):
-                    # Check if class is defined in this package's __init__.py
-                    print(obj.__module__, package_path)
-                    if obj.__module__ == package_path:
-                        classes.append(name)
+                    # Include class if:
+                    # 1. It's from a direct submodule (e.g., pyadm1.components.base)
+                    # 2. Not from a subpackage (e.g., pyadm1.components.biological)
+                    module = obj.__module__
+
+                    # Check if module starts with package_path
+                    if module.startswith(package_path):
+                        # Check if it's NOT from a subpackage
+                        is_from_subpackage = any(module.startswith(prefix) for prefix in subpackage_prefixes)
+
+                        if not is_from_subpackage:
+                            classes.append(name)
 
             return sorted(classes)
         except (ImportError, AttributeError):
@@ -414,8 +429,9 @@ class APIDocGenerator:
             "Warnings",
             "See Also",
             "References",
+            "Module",
             "Modules",
-            "Classes",
+            "Subpackage" "Subpackages" "Classes",
             "Functions",
         ]
 
