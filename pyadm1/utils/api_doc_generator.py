@@ -2,17 +2,22 @@
 Automatic API Documentation Generator for PyADM1
 
 This module generates comprehensive API reference documentation in Markdown format
-for the PyADM1 components package by inspecting Python modules and extracting
-docstrings, signatures, and structure.
+for PyADM1 packages by inspecting Python modules and extracting docstrings,
+signatures, and structure.
 
 Example:
-
-    >>> from pyadm1.utils.api_doc_generator import generate_components_api_docs
+    >>> from pyadm1.utils.api_doc_generator import generate_api_docs
     >>>
     >>> # Generate documentation for components package
-    >>> generate_components_api_docs(
-    ...     output_dir="docs/api_reference",
+    >>> generate_api_docs(
+    ...     output_dir="docs/api_reference/components",
     ...     package_name="pyadm1.components"
+    ... )
+    >>>
+    >>> # Generate documentation for configurator package
+    >>> generate_api_docs(
+    ...     output_dir="docs/api_reference/configurator",
+    ...     package_name="pyadm1.configurator"
     ... )
 """
 
@@ -59,14 +64,20 @@ class APIDocGenerator:
         package_name: Full package name (e.g., 'pyadm1.components')
         output_dir: Directory to write documentation files
         exclude_private: Skip private members (starting with _)
+        package_title: Human-readable package title
 
     Example:
-
         >>> generator = APIDocGenerator("pyadm1.components")
         >>> generator.generate_all()
     """
 
-    def __init__(self, package_name: str, output_dir: str = "docs/api_reference", exclude_private: bool = True):
+    def __init__(
+        self,
+        package_name: str,
+        output_dir: str = "docs/api_reference",
+        exclude_private: bool = True,
+        package_title: Optional[str] = None,
+    ):
         """
         Initialize documentation generator.
 
@@ -74,10 +85,19 @@ class APIDocGenerator:
             package_name: Package to document (e.g., 'pyadm1.components')
             output_dir: Output directory for markdown files
             exclude_private: Skip private members starting with _
+            package_title: Human-readable title (auto-generated if None)
         """
         self.package_name = package_name
         self.output_dir = Path(output_dir)
         self.exclude_private = exclude_private
+
+        # Auto-generate title from package name if not provided
+        if package_title is None:
+            # Extract last part of package name and format it
+            last_part = package_name.split(".")[-1]
+            self.package_title = self._format_title(last_part)
+        else:
+            self.package_title = package_title
 
         # Create output directory if it doesn't exist
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -100,14 +120,28 @@ class APIDocGenerator:
         # Get package structure
         subpackages = self._get_subpackages(package)
 
-        # Generate main components.md file
-        self._generate_main_file(package, subpackages)
+        # Get direct classes (not in subpackages)
+        direct_classes = self._get_direct_package_classes(self.package_name)
+
+        # Generate main file
+        main_filename = self._get_main_filename()
+        self._generate_main_file(package, subpackages, direct_classes, main_filename)
 
         # Generate documentation for each subpackage
         for subpkg_name in subpackages:
             self._generate_subpackage_docs(subpkg_name)
 
         print(f"Documentation generated in {self.output_dir}")
+
+    def _get_main_filename(self) -> str:
+        """
+        Determine the main documentation filename.
+
+        Returns:
+            Filename for main documentation file (e.g., 'components.md')
+        """
+        # Use last part of package name
+        return f"{self.package_name.split('.')[-1]}.md"
 
     def _get_subpackages(self, package: Any) -> List[str]:
         """
@@ -129,19 +163,45 @@ class APIDocGenerator:
 
         return sorted(subpackages)
 
-    def _generate_main_file(self, package: Any, subpackages: List[str]) -> None:
+    def _get_direct_package_classes(self, package_path: str) -> List[str]:
         """
-        Generate main components.md file with overview.
+        Get classes directly defined in package __init__.py (not in subpackages).
+
+        Args:
+            package_path: Full package path
+
+        Returns:
+            List of class names defined in package's __init__.py
+        """
+        try:
+            package = importlib.import_module(package_path)
+
+            classes = []
+            for name, obj in inspect.getmembers(package, inspect.isclass):
+                if not name.startswith("_"):
+                    # Check if class is defined in this package's __init__.py
+                    if obj.__module__ == package_path:
+                        classes.append(name)
+
+            return sorted(classes)
+        except (ImportError, AttributeError):
+            return []
+
+    def _generate_main_file(self, package: Any, subpackages: List[str], direct_classes: List[str], filename: str) -> None:
+        """
+        Generate main package overview file.
 
         Args:
             package: Imported package object
             subpackages: List of subpackage names
+            direct_classes: Classes defined directly in package
+            filename: Output filename
         """
-        output_file = self.output_dir / "components.md"
+        output_file = self.output_dir / filename
 
         with open(output_file, "w", encoding="utf-8") as f:
             # Write header
-            f.write("# Plant Components\n\n")
+            f.write(f"# {self.package_title}\n\n")
 
             # Write package docstring
             if package.__doc__:
@@ -149,29 +209,34 @@ class APIDocGenerator:
                 f.write("\n\n")
 
             # Write subpackages overview
-            f.write("## Subpackages\n\n")
+            if subpackages:
+                f.write("## Subpackages\n\n")
 
-            for subpkg_name in subpackages:
-                subpkg_full = f"{self.package_name}.{subpkg_name}"
-                try:
-                    subpkg = importlib.import_module(subpkg_full)
-                    brief_desc = self._get_brief_description(subpkg.__doc__)
+                for subpkg_name in subpackages:
+                    subpkg_full = f"{self.package_name}.{subpkg_name}"
+                    try:
+                        subpkg = importlib.import_module(subpkg_full)
+                        brief_desc = self._get_brief_description(subpkg.__doc__)
 
-                    f.write(f"### [{subpkg_name}]({subpkg_name}.md)\n\n")
-                    if brief_desc:
-                        f.write(f"{brief_desc}\n\n")
-                except ImportError:
-                    pass
+                        f.write(f"### [{subpkg_name}]({subpkg_name}.md)\n\n")
+                        if brief_desc:
+                            f.write(f"{brief_desc}\n\n")
+                    except ImportError:
+                        pass
 
-            # Write base classes section
-            f.write("## Base Classes\n\n")
-            f.write("### Component Base\n\n")
-            f.write("```python\n")
-            f.write(f"from {self.package_name}.base import Component\n")
-            f.write("```\n\n")
+            # Write direct classes section
+            if direct_classes:
+                f.write("## Base Classes\n\n")
 
-            # Document base.Component class
-            self._document_class(f"{self.package_name}.base", "Component", f)
+                for class_name in direct_classes:
+                    f.write(f"### {class_name}\n\n")
+                    f.write("```python\n")
+                    f.write(f"from {self.package_name} import {class_name}\n")
+                    f.write("```\n\n")
+
+                    # Document the class
+                    self._document_class(self.package_name, class_name, f)
+                    f.write("\n")
 
         print(f"Created {output_file}")
 
@@ -191,10 +256,13 @@ class APIDocGenerator:
             print(f"Could not import {subpkg_full}: {e}")
             return
 
+        # Get all classes in subpackage
+        classes = self._get_package_classes(subpkg_full)
+
         with open(output_file, "w", encoding="utf-8") as f:
             # Write header
             title = self._format_title(subpkg_name)
-            f.write(f"# {title} Components\n\n")
+            f.write(f"# {title}\n\n")
 
             # Write package docstring
             if subpkg.__doc__:
@@ -202,12 +270,16 @@ class APIDocGenerator:
                 f.write(self._format_docstring(preprocessed_docstring))
                 f.write("\n\n")
 
-            # Get all classes in subpackage
-            classes = self._get_package_classes(subpkg_full)
-
+            # Write table of contents for classes
             if classes:
                 f.write("## Classes\n\n")
 
+                # Generate TOC
+                for class_name in classes:
+                    f.write(f"- [{class_name}](#{class_name.lower()})\n")
+                f.write("\n")
+
+                # Document each class
                 for class_name in classes:
                     f.write(f"### {class_name}\n\n")
                     f.write("```python\n")
@@ -513,14 +585,11 @@ class APIDocGenerator:
         # Create regex pattern for all code sections
         section_pattern = r"^(" + "|".join(code_sections) + r")[s]?:\s*$"
 
-        # print("cleaned_lines:", cleaned_lines)
-
         while i < len(cleaned_lines):
             line = cleaned_lines[i]
 
             # Check if this is a code section line
             if re.match(section_pattern, line.strip()):
-                # print("matched line:", line)
                 result_lines.append(line)
                 i += 1
 
@@ -591,8 +660,6 @@ class APIDocGenerator:
             result_lines.append(line)
             i += 1
 
-        # print("result:", result_lines)
-
         return "\n".join(result_lines)
 
     def _format_title(self, name: str) -> str:
@@ -629,45 +696,63 @@ class APIDocGenerator:
         return ""
 
 
-def generate_components_api_docs(
-    output_dir: str = "docs/api_reference/components", package_name: str = "pyadm1.components"
-) -> None:
+def generate_api_docs(output_dir: str, package_name: str, package_title: Optional[str] = None) -> None:
     """
-    Generate API documentation for PyADM1 components package.
+    Generate API documentation for a PyADM1 package.
 
     Creates comprehensive markdown documentation by inspecting the
-    components package and all its subpackages, extracting docstrings,
+    package and all its subpackages, extracting docstrings,
     class signatures, and method documentation.
 
     Args:
-        output_dir: Directory to write markdown files (default: 'docs/api_reference')
-        package_name: Package to document (default: 'pyadm1.components')
+        output_dir: Directory to write markdown files
+        package_name: Package to document (e.g., 'pyadm1.components')
+        package_title: Human-readable title (auto-generated if None)
 
     Example:
-
-        >>> from pyadm1.utils.doc_generator import generate_components_api_docs
-        >>>
-        >>> # Generate with default settings
-        >>> generate_components_api_docs()
-        >>>
-        >>> # Custom output directory
-        >>> generate_components_api_docs(
-        ...     output_dir="docs/custom_api",
+        >>> # Generate documentation for components
+        >>> generate_api_docs(
+        ...     output_dir="docs/api_reference/components",
         ...     package_name="pyadm1.components"
         ... )
+        >>>
+        >>> # Generate documentation for configurator
+        >>> generate_api_docs(
+        ...     output_dir="docs/api_reference/configurator",
+        ...     package_name="pyadm1.configurator",
+        ...     package_title="Plant Model Configurator and MCP Server"
+        ... )
     """
-    generator = APIDocGenerator(package_name, output_dir)
+    generator = APIDocGenerator(package_name, output_dir, package_title=package_title)
     generator.generate_all()
 
 
+def generate_all_pyadm1_docs() -> None:
+    """
+    Generate API documentation for all PyADM1 packages.
+
+    Convenience function that generates documentation for all main
+    PyADM1 packages: components, configurator, simulation, substrates, and core.
+
+    Example:
+        >>> from pyadm1.utils.api_doc_generator import generate_all_pyadm1_docs
+        >>> generate_all_pyadm1_docs()
+    """
+    packages = [
+        ("docs/api_reference/components", "pyadm1.components", "Plant Components"),
+        ("docs/api_reference/configurator", "pyadm1.configurator", "Plant Model Configurator and MCP Server"),
+        ("docs/api_reference/simulation", "pyadm1.simulation", "Simulation Engine"),
+        ("docs/api_reference/substrates", "pyadm1.substrates", "Substrate Management and Characterization"),
+        ("docs/api_reference/core", "pyadm1.core", "Core ADM1 Model"),
+    ]
+
+    for output_dir, package_name, title in packages:
+        print(f"\n{'='*80}")
+        print(f"Generating documentation for {package_name}")
+        print(f"{'='*80}\n")
+        generate_api_docs(output_dir, package_name, title)
+
+
 if __name__ == "__main__":
-    # Generate documentation when run as script
-    generate_components_api_docs(output_dir="docs/api_reference/components", package_name="pyadm1.components")
-
-    generate_components_api_docs(output_dir="docs/api_reference/configurator", package_name="pyadm1.configurator")
-
-    generate_components_api_docs(output_dir="docs/api_reference/core", package_name="pyadm1.core")
-
-    generate_components_api_docs(output_dir="docs/api_reference/simulation", package_name="pyadm1.simulation")
-
-    generate_components_api_docs(output_dir="docs/api_reference/substrates", package_name="pyadm1.substrates")
+    # Generate documentation for all packages
+    generate_all_pyadm1_docs()
