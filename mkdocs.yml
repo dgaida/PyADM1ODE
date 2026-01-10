@@ -65,12 +65,23 @@ nav:
       - Installation: user_guide/installation.md
       - Quick Start: user_guide/quickstart.md
   - Documentation:
-      - Components: user_guide/components/index.md
-      - Examples: examples/basic_digester.md
+      - Components:
+          - Overview: user_guide/components/index.md
+          - Biological: user_guide/components/biological.md
+          - Energy: user_guide/components/energy.md
+          - Feeding: user_guide/components/feeding.md
+          - Mechanical: user_guide/components/mechanical.md
+          - Sensors: user_guide/components/sensors.md
+      - Examples:
+          - Basic Digester: examples/basic_digester.md
+          - Two Stage Plant: examples/two_stage_plant.md
   - Troubleshooting: troubleshooting.md
   - API Reference:
       - Components: api_reference/components/components.md
       - Configurator: api_reference/configurator/configurator.md
+      - Core: api_reference/core/core.md
+      - Simulation: api_reference/simulation/simulation.md
+      - Substrates: api_reference/substrates/substrates.md
 
 extra:
   social:
