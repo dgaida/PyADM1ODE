@@ -260,6 +260,7 @@ class APIDocGenerator:
                     # Document the class
                     self._document_class(self.package_name, class_name, f)
                     f.write("\n")
+                    f.write("--------------------------------------\n")
 
         print(f"Created {output_file}")
 
