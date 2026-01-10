@@ -8,6 +8,7 @@ The Simulator class has been refactored to use the new solver architecture from
 pyadm1.core.solver, providing better separation of concerns and improved testability.
 
 Modules:
+
     simulator: Main Simulator class orchestrating single plant simulation runs, managing
               time stepping using the ODESolver interface, state updates, and result
               collection with progress reporting and error handling.

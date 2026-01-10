@@ -7,6 +7,7 @@ This module contains the core implementation of the Anaerobic Digestion Model No
 biogas plants.
 
 Modules:
+
     adm1: Main ADM1 class implementing the complete ODE system with 37 state variables,
           including methods for creating influent streams, calculating gas production,
           and managing simulation state.

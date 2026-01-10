@@ -6,6 +6,7 @@ This module provides tools for building, validating, and automatically configuri
 biogas plant models, including an MCP server for LLM-driven plant design.
 
 Modules:
+
     plant_builder: BiogasPlant class for assembling components into complete plant
                   models, managing component lifecycle, connections, and providing
                   JSON serialization for model persistence and sharing.
@@ -22,10 +23,6 @@ Subpackages:
     templates: Pre-defined plant configurations for common biogas plant layouts
               (single-stage, two-stage, plug-flow, CSTR) serving as starting
               points for customization or examples for learning.
-
-    mcp: MCP (Model Context Protocol) server implementation using fastmcp for
-        LLM integration, providing tools for automated plant design from natural
-        language descriptions and integration with intelligent virtual advisors.
 
 Example:
 

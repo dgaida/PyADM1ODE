@@ -6,6 +6,7 @@ This module handles substrate definitions, characterization, and ADM1 input
 stream calculation for agricultural biogas substrates.
 
 Modules:
+
     feedstock: Main Feedstock class managing substrate mixing and ADM1 input stream
               generation, with support for time-varying substrate feeds and automatic
               weighting of substrate properties based on volumetric flow rates.
