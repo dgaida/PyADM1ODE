@@ -223,6 +223,7 @@ Args:
 - simulation_time (float): Current simulation time in days.
 
 
+--------------------------------------
 ### Connection
 
 ```python
@@ -278,6 +279,7 @@ Returns:
 - connection_type (str): Type of connection.
 
 
+--------------------------------------
 ### ConnectionManager
 
 ```python
@@ -508,6 +510,7 @@ Returns:
 - connections (List[Connection]): List of all connections.
 
 
+--------------------------------------
 ### ConnectionType
 
 ```python
@@ -544,3 +547,4 @@ ConnectionType(
 - DEFAULT: Generic connection type.
 
 
+--------------------------------------

@@ -183,6 +183,7 @@ Dict[str, Any]
     Component configuration as dictionary
 
 
+--------------------------------------
 ### ComponentRegistry
 
 ```python
@@ -323,6 +324,7 @@ Raises:
 - component names to their classes.
 
 
+--------------------------------------
 ### ComponentType
 
 ```python
@@ -341,3 +343,4 @@ ComponentType(
 ```
 
 
+--------------------------------------

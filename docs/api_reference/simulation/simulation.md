@@ -97,6 +97,7 @@ MonteCarloConfig(
 - seed: Random seed for reproducibility
 
 
+--------------------------------------
 ### ParallelSimulator
 
 ```python
@@ -308,6 +309,7 @@ Example:
 - verbose: Enable progress reporting
 
 
+--------------------------------------
 ### ParameterSweepConfig
 
 ```python
@@ -341,6 +343,7 @@ ParameterSweepConfig(
 - other_params: Fixed parameters for all scenarios
 
 
+--------------------------------------
 ### ScenarioResult
 
 ```python
@@ -392,6 +395,7 @@ ScenarioResult(
 - execution_time: Wall clock time for execution [seconds]
 
 
+--------------------------------------
 ### Simulator
 
 ```python
@@ -505,3 +509,4 @@ Example:
 - solver: ODE solver instance
 
 
+--------------------------------------

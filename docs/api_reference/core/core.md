@@ -291,6 +291,7 @@ Example:
 - feedstock: Feedstock object for substrate management
 
 
+--------------------------------------
 ### ADMParams
 
 ```python
@@ -368,6 +369,7 @@ Tuple[float, ...]
     All ADM1 parameters (87 values)
 
 
+--------------------------------------
 ### AcidBaseKinetics
 
 ```python
@@ -410,6 +412,7 @@ Returns:
     Acid-base reaction rate [M/d or kg COD/(m³·d)]
 
 
+--------------------------------------
 ### AdaptiveODESolver
 
 ```python
@@ -489,6 +492,7 @@ Returns:
     - converged: True if steady state was reached
 
 
+--------------------------------------
 ### BiochemicalProcesses
 
 ```python
@@ -601,6 +605,7 @@ Returns:
     Tuple of 19 process rates (Rho_1 through Rho_19)
 
 
+--------------------------------------
 ### GasTransfer
 
 ```python
@@ -664,6 +669,7 @@ Returns:
     Gas transfer rate to gas phase [kg COD/(m³_gas·d) or kmol/(m³_gas·d)]
 
 
+--------------------------------------
 ### InhibitionFunctions
 
 ```python
@@ -771,6 +777,7 @@ Returns:
     Limitation factor between 0 and 1
 
 
+--------------------------------------
 ### ODESolver
 
 ```python
@@ -873,6 +880,7 @@ Returns:
     - converged: True if steady state was reached
 
 
+--------------------------------------
 ### ProcessRates
 
 ```python
@@ -965,6 +973,7 @@ Returns:
     Uptake rate [kg COD/(m³·d)]
 
 
+--------------------------------------
 ### SolverConfig
 
 ```python
@@ -1007,3 +1016,4 @@ SolverConfig(
 - first_step: Initial step size [days]
 
 
+--------------------------------------
