@@ -234,7 +234,8 @@ class APIDocGenerator:
 
             # Write class docstring
             if cls.__doc__:
-                file_handle.write(self._format_docstring(cls.__doc__))
+                preprocessed_docstring = self._preprocess_docstring(cls.__doc__)
+                file_handle.write(self._format_docstring(preprocessed_docstring))
                 file_handle.write("\n\n")
 
             # Write signature
@@ -296,7 +297,8 @@ class APIDocGenerator:
 
                     # Method docstring
                     if method.__doc__:
-                        file_handle.write(self._format_docstring(method.__doc__))
+                        preprocessed_docstring = self._preprocess_docstring(method.__doc__)
+                        file_handle.write(self._format_docstring(preprocessed_docstring))
                         file_handle.write("\n\n")
 
             # Document attributes from docstring
@@ -304,6 +306,63 @@ class APIDocGenerator:
 
         except (ImportError, AttributeError) as e:
             file_handle.write(f"*Error documenting {class_name}: {e}*\n\n")
+
+    def _preprocess_docstring(self, docstring: str) -> str:
+        """
+        Preprocess docstring to ensure blank lines after section headers.
+
+        Adds a blank line after section headers (Args:, Returns:, Example:, etc.)
+        if one is not already present. This ensures proper markdown formatting.
+
+        Args:
+            docstring: Raw docstring to preprocess
+
+        Returns:
+            Preprocessed docstring with blank lines after section headers
+        """
+        if not docstring:
+            return ""
+
+        # Sections that should have blank lines after them
+        code_sections = [
+            "Example",
+            "Examples",
+            "Returns",
+            "Args",
+            "Yields",
+            "Raises",
+            "Note",
+            "Notes",
+            "Warning",
+            "Warnings",
+            "See Also",
+            "References",
+            "Modules",
+            "Classes",
+            "Functions",
+        ]
+
+        # Create regex pattern for section headers
+        section_pattern = r"^(" + "|".join(code_sections) + r")[s]?:\s*$"
+
+        lines = docstring.split("\n")
+        result_lines = []
+
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+            result_lines.append(line)
+
+            # Check if this line is a section header
+            if re.match(section_pattern, line.strip()):
+                # Check if next line exists and is not blank
+                if i + 1 < len(lines) and lines[i + 1].strip():
+                    # Add blank line after section header
+                    result_lines.append("")
+
+            i += 1
+
+        return "\n".join(result_lines)
 
     def _document_attributes(self, cls: type, file_handle) -> None:
         """
