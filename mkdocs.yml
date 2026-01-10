@@ -39,6 +39,7 @@ theme:
 plugins:
   - search
   - autorefs
+  - mermaid2
 
 markdown_extensions:
   - pymdownx.highlight:

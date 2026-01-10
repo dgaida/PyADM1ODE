@@ -26,7 +26,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install mkdocs mkdocs-material pymdown-extensions mkdocs-autorefs
+          pip install mkdocs mkdocs-material pymdown-extensions mkdocs-autorefs mkdocs-mermaid2-plugin
 
       - name: Install Mono (Linux)
         if: runner.os == 'Linux'
