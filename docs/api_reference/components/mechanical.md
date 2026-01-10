@@ -1,4 +1,4 @@
-# Mechanical Components
+# Mechanical
 
 Mechanical Plant Components
 
@@ -40,6 +40,9 @@ Example:
 ```
 
 ## Classes
+
+- [Mixer](#mixer)
+- [Pump](#pump)
 
 ### Mixer
 

@@ -1,4 +1,4 @@
-# Feeding Components
+# Feeding
 
 Substrate Feeding and Storage Components
 
@@ -36,6 +36,9 @@ Example:
 ```
 
 ## Classes
+
+- [Feeder](#feeder)
+- [SubstrateStorage](#substratestorage)
 
 ### Feeder
 

@@ -1,4 +1,4 @@
-# Energy Components
+# Energy
 
 Energy Conversion and Storage Components
 
@@ -40,6 +40,11 @@ Example:
 ```
 
 ## Classes
+
+- [Boiler](#boiler)
+- [CHP](#chp)
+- [Flare](#flare)
+- [GasStorage](#gasstorage)
 
 ### Boiler
 

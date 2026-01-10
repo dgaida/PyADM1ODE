@@ -1,4 +1,4 @@
-# Biological Components
+# Biological
 
 Biological Process Components
 
@@ -33,6 +33,10 @@ Example:
 ```
 
 ## Classes
+
+- [Digester](#digester)
+- [Hydrolysis](#hydrolysis)
+- [Separator](#separator)
 
 ### Digester
 

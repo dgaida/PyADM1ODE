@@ -1,4 +1,4 @@
-# Sensors Components
+# Sensors
 
 Measurement and Sensor Components
 

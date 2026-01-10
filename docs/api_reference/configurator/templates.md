@@ -1,4 +1,4 @@
-# Templates Components
+# Templates
 
 Plant Configuration Templates
 
