@@ -75,6 +75,10 @@ Measurement and Sensor Components
 
 ## Base Classes
 
+- [Component](#component)
+- [ComponentRegistry](#componentregistry)
+- [ComponentType](#componenttype)
+
 ### Component
 
 ```python

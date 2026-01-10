@@ -43,6 +43,17 @@ Example:
 
 ## Base Classes
 
+- [ADM1](#adm1)
+- [ADMParams](#admparams)
+- [AcidBaseKinetics](#acidbasekinetics)
+- [AdaptiveODESolver](#adaptiveodesolver)
+- [BiochemicalProcesses](#biochemicalprocesses)
+- [GasTransfer](#gastransfer)
+- [InhibitionFunctions](#inhibitionfunctions)
+- [ODESolver](#odesolver)
+- [ProcessRates](#processrates)
+- [SolverConfig](#solverconfig)
+
 ### ADM1
 
 ```python

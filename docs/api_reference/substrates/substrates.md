@@ -40,6 +40,8 @@ Example:
 
 ## Base Classes
 
+- [Feedstock](#feedstock)
+
 ### Feedstock
 
 ```python

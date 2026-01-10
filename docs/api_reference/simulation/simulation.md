@@ -55,6 +55,12 @@ Example:
 
 ## Base Classes
 
+- [MonteCarloConfig](#montecarloconfig)
+- [ParallelSimulator](#parallelsimulator)
+- [ParameterSweepConfig](#parametersweepconfig)
+- [ScenarioResult](#scenarioresult)
+- [Simulator](#simulator)
+
 ### MonteCarloConfig
 
 ```python

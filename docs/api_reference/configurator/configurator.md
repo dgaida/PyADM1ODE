@@ -20,6 +20,7 @@ Modules:
                detailed error messages for debugging.
 
 Subpackages:
+
     templates: Pre-defined plant configurations for common biogas plant layouts
               (single-stage, two-stage, plug-flow, CSTR) serving as starting
               points for customization or examples for learning.
@@ -50,6 +51,11 @@ Example:
 Plant Configuration Templates
 
 ## Base Classes
+
+- [BiogasPlant](#biogasplant)
+- [Connection](#connection)
+- [ConnectionManager](#connectionmanager)
+- [ConnectionType](#connectiontype)
 
 ### BiogasPlant
 
