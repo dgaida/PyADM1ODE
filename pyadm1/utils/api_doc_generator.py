@@ -198,7 +198,8 @@ class APIDocGenerator:
 
             # Write package docstring
             if subpkg.__doc__:
-                f.write(self._format_docstring(subpkg.__doc__))
+                preprocessed_docstring = self._preprocess_docstring(subpkg.__doc__)
+                f.write(self._format_docstring(preprocessed_docstring))
                 f.write("\n\n")
 
             # Get all classes in subpackage
@@ -215,6 +216,7 @@ class APIDocGenerator:
 
                     self._document_class(subpkg_full, class_name, f)
                     f.write("\n")
+                    f.write("---------------------------------------\n")
 
         print(f"Created {output_file}")
 
@@ -329,6 +331,7 @@ class APIDocGenerator:
             "Examples",
             "Returns",
             "Args",
+            "Attributes",
             "Yields",
             "Raises",
             "Note",
@@ -397,6 +400,10 @@ class APIDocGenerator:
             if in_attributes:
                 # Stop at next section (line that starts with capital letter and ends with :)
                 if stripped_line and not line.startswith(" ") and re.match(r"^[A-Z][a-zA-Z\s]+:", stripped_line):
+                    break
+
+                # after Attributes sometimes also come Examples. then we reached the end of the Attributes section
+                if stripped_line.startswith("Example:") or stripped_line.startswith("Examples:"):
                     break
 
                 # Extract attribute info (skip empty lines and separators)
@@ -622,7 +629,9 @@ class APIDocGenerator:
         return ""
 
 
-def generate_components_api_docs(output_dir: str = "docs/api_reference", package_name: str = "pyadm1.components") -> None:
+def generate_components_api_docs(
+    output_dir: str = "docs/api_reference/components", package_name: str = "pyadm1.components"
+) -> None:
     """
     Generate API documentation for PyADM1 components package.
 
@@ -653,4 +662,12 @@ def generate_components_api_docs(output_dir: str = "docs/api_reference", package
 
 if __name__ == "__main__":
     # Generate documentation when run as script
-    generate_components_api_docs()
+    generate_components_api_docs(output_dir="docs/api_reference/components", package_name="pyadm1.components")
+
+    generate_components_api_docs(output_dir="docs/api_reference/configurator", package_name="pyadm1.configurator")
+
+    generate_components_api_docs(output_dir="docs/api_reference/core", package_name="pyadm1.core")
+
+    generate_components_api_docs(output_dir="docs/api_reference/simulation", package_name="pyadm1.simulation")
+
+    generate_components_api_docs(output_dir="docs/api_reference/substrates", package_name="pyadm1.substrates")

@@ -38,13 +38,12 @@ class GasStorage(Component):
     """
     Gas storage component.
 
-    Initialization args:
+    Arguments:
         component_id: unique id
         storage_type: 'membrane' | 'dome' | 'compressed'
         capacity_m3: usable gas volume at STP (m^3)
         p_min_bar: minimum operating pressure (bar)
         p_max_bar: maximum safe pressure (bar)
-        initial_fill_fraction: initial stored fraction of capacity (0-1)
         name: optional human-readable name
     """
 
@@ -58,6 +57,17 @@ class GasStorage(Component):
         initial_fill_fraction: float = 0.1,
         name: Optional[str] = None,
     ):
+        """
+
+        Args:
+            component_id: unique id
+            storage_type: 'membrane' | 'dome' | 'compressed'
+            capacity_m3: usable gas volume at STP (m^3)
+            p_min_bar: minimum operating pressure (bar)
+            p_max_bar: maximum safe pressure (bar)
+            initial_fill_fraction: initial stored fraction of capacity (0-1)
+            name: optional human-readable name
+        """
         super().__init__(component_id, ComponentType.STORAGE, name)
 
         # Config
@@ -139,18 +149,22 @@ class GasStorage(Component):
         """
         One simulation step.
 
-        Inputs dictionary may contain:
-            - 'Q_gas_in_m3_per_day'   : gas inflow from digesters/other sources (m^3/day)
-            - 'Q_gas_out_m3_per_day'  : requested gas outflow (demand) (m^3/day)
-            - 'set_pressure'          : desired pressure setpoint (bar)  (optional)
-            - 'vent_to_flare'         : bool, if True allow venting to flare when overpressure (default True)
+        Args:
+            t:
+            dt:
+            inputs: Inputs dictionary may contain:
+                - 'Q_gas_in_m3_per_day'   : gas inflow from digesters/other sources (m^3/day)
+                - 'Q_gas_out_m3_per_day'  : requested gas outflow (demand) (m^3/day)
+                - 'set_pressure'          : desired pressure setpoint (bar)  (optional)
+                - 'vent_to_flare'         : bool, if True allow venting to flare when overpressure (default True)
 
-        Returns outputs_data with keys:
-            - 'stored_volume_m3'
-            - 'pressure_bar'
-            - 'utilization' (0-1)
-            - 'vented_volume_m3' (this timestep)
-            - 'Q_gas_supplied_m3_per_day' (actual supply that was delivered)
+        Returns:
+            object: Returns outputs_data with keys:
+                - 'stored_volume_m3'
+                - 'pressure_bar'
+                - 'utilization' (0-1)
+                - 'vented_volume_m3' (this timestep)
+                - 'Q_gas_supplied_m3_per_day' (actual supply that was delivered)
         """
         # get flows (units: m^3/day) -> convert to volume for this timestep: m^3 = Q * dt (dt in days)
         Q_in = float(inputs.get("Q_gas_in_m3_per_day", 0.0))
