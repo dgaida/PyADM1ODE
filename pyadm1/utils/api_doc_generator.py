@@ -241,10 +241,16 @@ class APIDocGenerator:
                     except ImportError:
                         pass
 
-            # Write direct classes section
+            # Write direct classes section with TOC
             if direct_classes:
                 f.write("## Base Classes\n\n")
 
+                # Generate TOC for base classes
+                for class_name in direct_classes:
+                    f.write(f"- [{class_name}](#{class_name.lower()})\n")
+                f.write("\n")
+
+                # Document each class
                 for class_name in direct_classes:
                     f.write(f"### {class_name}\n\n")
                     f.write("```python\n")
@@ -431,7 +437,9 @@ class APIDocGenerator:
             "References",
             "Module",
             "Modules",
-            "Subpackage" "Subpackages" "Classes",
+            "Subpackage",
+            "Subpackages",
+            "Classes",
             "Functions",
         ]
 
