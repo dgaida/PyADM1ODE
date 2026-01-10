@@ -517,9 +517,9 @@ class APIDocGenerator:
                         # continue here ensures we skip the normal line append at the end
                         continue
 
-                # If no code block follows, continue to next iteration
-                # (the section header was already added to result_lines)
-                continue
+                    # No code block follows - process normally but don't re-add section header
+                    # Continue processing from current position
+                    continue
 
             # Normal line
             result_lines.append(line)
