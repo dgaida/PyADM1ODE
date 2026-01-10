@@ -77,8 +77,16 @@ nav:
           - Two Stage Plant: examples/two_stage_plant.md
   - Troubleshooting: troubleshooting.md
   - API Reference:
-      - Components: api_reference/components/components.md
-      - Configurator: api_reference/configurator/configurator.md
+      - Components:
+          - Components: api_reference/components/components.md
+          - Biological: api_reference/components/biological.md
+          - Energy: api_reference/components/energy.md
+          - Feeding: api_reference/components/feeding.md
+          - Mechanical: api_reference/components/mechanical.md
+          - Sensors: api_reference/components/sensors.md
+      - Configurator:
+          - Configurator: api_reference/configurator/configurator.md
+          - Templates: api_reference/configurator/templates.md
       - Core: api_reference/core/core.md
       - Simulation: api_reference/simulation/simulation.md
       - Substrates: api_reference/substrates/substrates.md

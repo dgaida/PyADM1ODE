@@ -451,10 +451,6 @@ Das Sensormodul wird erweitert um:
    - Historische Trends
    - Alarm-Übersichten
 
-## Beitragen
-
-Interessiert an der Entwicklung des Sensormoduls? Beiträge sind willkommen! Siehe [Contributing Guide](../../../CONTRIBUTING.md) für Details.
-
 ## Nächste Schritte
 
 - [Biologische Komponenten](biological.md): Fermenter und Prozesssteuerung

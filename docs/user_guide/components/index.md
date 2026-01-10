@@ -402,7 +402,7 @@ storage_good = SubstrateStorage(
 
 - **Beispiele**: Siehe detaillierte Komponentenguides für vollständige Implementierungen
 - **Optimierung**: Nutze Parameterstudien zur Optimierung der Komponentendimensionierung
-- **[API-Referenz](../api_reference/components/components.md)**: Siehe detaillierte Klassendokumentation für erweiterte Funktionen
+- **[API-Referenz](../../api_reference/components/components.md)**: Siehe detaillierte Klassendokumentation für erweiterte Funktionen
 
 ## Weiterführende Dokumentation
 

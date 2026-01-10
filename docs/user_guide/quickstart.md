@@ -598,7 +598,7 @@ plt.savefig('simulation_results.png')
 
 Now that you've run your first simulations:
 
-1. **Learn about components**: [Components Guide](components.md)
+1. **Learn about components**: [Components Guide](components/index.md)
 2. **Explore advanced examples**:
    - [`examples/01_basic_digester.py`](../../examples/01_basic_digester.py)
    - [`examples/02_two_stage_plant.py`](../../examples/02_two_stage_plant.py)

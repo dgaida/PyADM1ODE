@@ -334,7 +334,7 @@ After successful installation:
 
 1. **Try the Quickstart**: See [Quickstart Guide](quickstart.md)
 2. **Explore Examples**: Check the `examples/` directory
-3. **Read Component Documentation**: [Components Guide](components.md)
+3. **Read Component Documentation**: [Components Guide](components/index.md)
 
 ## Updating PyADM1ODE
 

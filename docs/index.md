@@ -236,12 +236,12 @@ Model the core biological processes:
 
 Complete energy integration:
 
-- **[CHP](user_guide/components/energy.md#chp)**: Combined heat and power generation
+- **[CHP](user_guide/components/energy.md#chp-combined-heat-and-power)**: Combined heat and power generation
   - Variable efficiency curves
   - Load-following operation
   - Automatic flare creation
 
-- **[Heating](user_guide/components/energy.md#heating)**: Temperature control systems
+- **[Heating](user_guide/components/energy.md#heizsystem)**: Temperature control systems
   - CHP waste heat utilization
   - Auxiliary heating calculation
 
@@ -250,7 +250,7 @@ Complete energy integration:
   - Automatic pressure management
   - Safety venting
 
-- **[Flare](user_guide/components/energy.md#flare)**: Safety gas combustion
+- **[Flare](user_guide/components/energy.md#fackel)**: Safety gas combustion
   - 98% methane destruction efficiency
   - Automatic activation on overpressure
 
