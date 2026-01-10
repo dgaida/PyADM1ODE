@@ -76,11 +76,14 @@ PyADM1/
 │   ├── user_guide/
 │   │   ├── installation.md
 │   │   ├── quickstart.md
-│   │   └── components.md
+│   │   └── components
 │   ├── api_reference/
 │   │   ├── core.rst
 │   │   ├── components.rst
-│   │   └── configurator.rst
+│   │   ├── configurator.rst
+│   │   ├── components
+│   │   ├── configurator
+│   │   └── core
 │   ├── examples/
 │   │   ├── basic_digester.md
 │   │   ├── two_stage_plant.md
@@ -88,7 +91,7 @@ PyADM1/
 │   └── development/
 │       ├── architecture.md
 │       ├── adding_components.md
-│       └── testing.md
+│       └── TESTING.md
 │
 ├── pyadm1/                           # Main package
 │   ├── __init__.py
@@ -212,7 +215,7 @@ PyADM1/
 │   │   ├── test_components/
 │   │   │   ├── test_digester.py
 │   │   │   ├── test_chp.py
-│   │   │   └── test_pumps.py
+│   │   │   └── test_pump.py
 │   │   └── test_configurator/
 │   │      └── test_plant_builder.py
 │   │
@@ -232,14 +235,13 @@ PyADM1/
 │
 ├── scripts/                         # Helper scripts
 │   ├── setup_dev_env.sh
-│   ├── generate_validation_data.py
-│   └── start_mcp_server.sh
+│   └── generate_validation_data.py
 │
 └── .github/                         # GitHub CI/CD
     ├── workflows/
     │   ├── tests.yml
     │   ├── lint.yml
-    │   ├── build-docs.yml
+    │   ├── docs.yml
     │   └── release.yml
     └── ISSUE_TEMPLATE/
         ├── bug_report.md

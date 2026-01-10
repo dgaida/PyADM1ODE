@@ -58,18 +58,18 @@ PyADM1ODE is a comprehensive Python framework for agricultural biogas plant mode
 - Feeding: Substrate storage, automated dosing systems
 
 🔧 **Flexible Plant Configuration**  
-- Build complex plants programmatically or via templates
-- Automatic component connection and validation
+- Build complex plants programmatically or via templates  
+- Automatic component connection and validation  
 - Save/load configurations as JSON
 
-📊 **Advanced Simulation**
-- Parallel execution for parameter sweeps and Monte Carlo analysis
-- Adaptive ODE solvers optimized for stiff biogas systems
+📊 **Advanced Simulation**  
+- Parallel execution for parameter sweeps and Monte Carlo analysis  
+- Adaptive ODE solvers optimized for stiff biogas systems  
 - Time-series data handling and result analysis
 
-🎓 **Educational & Professional**
-- Suitable for teaching biogas plant design
-- Research tool for process optimization
+🎓 **Educational & Professional**  
+- Suitable for teaching biogas plant design  
+- Research tool for process optimization  
 - Engineering applications for plant planning
 
 ## System Architecture
@@ -392,8 +392,8 @@ cd PyADM1ODE
 pip install -e .
 ```
 
-**Platform-specific requirements:**
-- **Linux/macOS**: Mono runtime (for C# DLLs)
+**Platform-specific requirements:**  
+- **Linux/macOS**: Mono runtime (for C# DLLs)  
 - **Windows**: .NET Framework (usually pre-installed)
 
 See the [Installation Guide](user_guide/installation.md) for detailed instructions.
@@ -435,9 +435,9 @@ pip install -e .
 ```
 
 **Features:**  
-- Initial calibration from historical data
-- Online re-calibration during operation
-- Multiple optimization algorithms (Differential Evolution, PSO, Nelder-Mead)
+- Initial calibration from historical data  
+- Online re-calibration during operation  
+- Multiple optimization algorithms (Differential Evolution, PSO, Nelder-Mead)  
 - Comprehensive validation metrics
 
 **Use case:** Fit ADM1 parameters to real plant measurements for accurate predictions.
