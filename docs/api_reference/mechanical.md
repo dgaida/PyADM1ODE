@@ -130,6 +130,7 @@ initialize(initial_state=None)
 Initialize mixer state.
 
 Args:
+
     initial_state: Optional initial state dictionary with keys:
         - 'is_running': Mixer running state
         - 'current_speed_fraction': Speed fraction (0-1)
@@ -153,6 +154,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
+
     t: Current time [days]
     dt: Time step [days]
     inputs: Input data with optional keys:
@@ -162,6 +164,7 @@ Args:
         - 'temperature': Fluid temperature [K]
 
 Returns:
+
     Dict with keys:
         - 'P_consumed': Power consumption [kW]
         - 'P_average': Time-averaged power [kW]
@@ -181,6 +184,7 @@ to_dict()
 Serialize mixer to dictionary.
 
 Returns:
+
     Dictionary representation
 
 **Attributes:**
@@ -293,6 +297,7 @@ initialize(initial_state=None)
 Initialize pump state.
 
 Args:
+
     initial_state: Optional initial state dictionary with keys:
         - 'is_running': Initial pump state
         - 'current_flow': Initial flow rate [m³/h]
@@ -317,6 +322,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
+
     t: Current time [days]
     dt: Time step [days]
     inputs: Input data with optional keys:
@@ -327,6 +333,7 @@ Args:
         - 'pressure_head': Required pressure head [m]
 
 Returns:
+
     Dict with keys:
         - 'P_consumed': Power consumption [kW]
         - 'Q_actual': Actual flow rate [m³/h]
@@ -344,6 +351,7 @@ to_dict()
 Serialize pump to dictionary.
 
 Returns:
+
     Dictionary representation
 
 **Attributes:**

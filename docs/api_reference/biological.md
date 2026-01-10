@@ -107,6 +107,7 @@ Stores parameters for use during simulation. These override the
 substrate-dependent parameters calculated from feedstock.
 
 Args:
+
     parameters: Parameter values as {param_name: value}.
 
 Example:
@@ -142,6 +143,7 @@ get_calibration_parameters()
 Get currently applied calibration parameters.
 
 Returns:
+
     dict: Current calibration parameters as {param_name: value}.
 
 Example:
@@ -169,6 +171,7 @@ initialize(initial_state=None)
 Initialize digester state.
 
 Args:
+
     initial_state (Optional[Dict[str, Any]]): Initial state with keys:
         - 'adm1_state': ADM1 state vector (37 dims)
         - 'Q_substrates': Substrate feed rates
@@ -191,6 +194,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
+
     t (float): Current time in days.
     dt (float): Time step in days.
     inputs (Dict[str, Any]): Input data with keys:
@@ -199,6 +203,7 @@ Args:
         - 'state_in': ADM1 state from previous digester (if connected)
 
 Returns:
+
     Dict[str, Any]: Output data with keys:
         - 'Q_out': Effluent flow rate [m³/d]
         - 'state_out': ADM1 state vector for next digester
@@ -218,6 +223,7 @@ to_dict()
 Serialize to dictionary.
 
 Returns:
+
     Dict[str, Any]: Component configuration as dictionary.
 
 **Attributes:**

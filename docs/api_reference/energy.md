@@ -182,6 +182,7 @@ initialize(initial_state=None)
 Initialize CHP state.
 
 Args:
+
     initial_state (Optional[Dict[str, Any]]): Initial state with keys:
         - 'load_factor': Initial load factor (0-1)
         If None, uses default initialization.
@@ -203,6 +204,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
+
     t (float): Current time in days.
     dt (float): Time step in days.
     inputs (Dict[str, Any]): Input data with keys:
@@ -211,6 +213,7 @@ Args:
         - 'load_setpoint': Desired load factor [0-1] (optional)
 
 Returns:
+
     Dict[str, Any]: Output data with keys:
         - 'P_el': Electrical power [kW]
         - 'P_th': Thermal power [kW]
@@ -227,6 +230,7 @@ to_dict()
 Serialize to dictionary.
 
 Returns:
+
     Dict[str, Any]: Component configuration as dictionary.
 
 **Attributes:**
@@ -306,6 +310,7 @@ initialize(initial_state=None)
 Initialize flare internal state.
 
         Args:
+
             initial_state: optional dict with 'cumulative_vented_m3' to restore state.
 
 #### `set_state()`
@@ -325,6 +330,7 @@ step(t, dt, inputs)
 Process one timestep and combust incoming gas.
 
         Args:
+
             t: current simulation time [days]
             dt: timestep length [days]
             inputs: dictionary that may contain:
@@ -332,6 +338,7 @@ Process one timestep and combust incoming gas.
                 - 'CH4_fraction': methane fraction in the gas (0..1). Default 0.6
 
         Returns:
+
             outputs_data dict with keys:
                 - 'vented_volume_m3' (this timestep)
                 - 'cumulative_vented_m3'

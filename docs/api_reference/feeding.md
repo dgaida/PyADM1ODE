@@ -120,6 +120,7 @@ initialize(initial_state=None)
 Initialize feeder state.
 
 Args:
+
     initial_state: Optional initial state with keys:
         - 'is_running': Initial operating state
         - 'current_flow': Initial flow rate [m³/d or t/d]
@@ -144,6 +145,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
+
     t: Current time [days]
     dt: Time step [days]
     inputs: Input data with optional keys:
@@ -153,6 +155,7 @@ Args:
         - 'speed_setpoint': Desired speed fraction (0-1)
 
 Returns:
+
     Dict with keys:
         - 'Q_actual': Actual flow rate [m³/d or t/d]
         - 'is_running': Current operating state
@@ -277,6 +280,7 @@ initialize(initial_state=None)
 Initialize storage state.
 
 Args:
+
     initial_state: Optional initial state with keys:
         - 'current_level': Inventory level [t or m³]
         - 'quality_factor': Quality factor (0-1)
@@ -300,6 +304,7 @@ step(t, dt, inputs)
 Perform one simulation time step.
 
 Args:
+
     t: Current time [days]
     dt: Time step [days]
     inputs: Input data with optional keys:
@@ -309,6 +314,7 @@ Args:
         - 'temperature': Ambient/storage temperature [K]
 
 Returns:
+
     Dict with keys:
         - 'current_level': Current inventory [t or m³]
         - 'utilization': Fill level (0-1)
