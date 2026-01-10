@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # ============================================================================
-# examples/parallel_two_stage_simulation.py
+# examples/05_parallel_two_stage_simulation.py
 # ============================================================================
 """
 Example: Parallel simulation of two-stage biogas plant with parameter sweeps.
@@ -13,7 +13,7 @@ Demonstrates:
 - Result visualization and comparison
 
 Usage:
-    python examples/parallel_two_stage_simulation.py
+    python examples/05_parallel_two_stage_simulation.py
 """
 
 from pathlib import Path
@@ -28,7 +28,11 @@ def main():
     from pyadm1.substrates.feedstock import Feedstock
     from pyadm1.core.adm1 import get_state_zero_from_initial_state
     from pyadm1.configurator.plant_configurator import PlantConfigurator
-    from pyadm1.simulation.parallel import ParallelSimulator, ParameterSweepConfig, MonteCarloConfig
+    from pyadm1.simulation.parallel import (
+        ParallelSimulator,
+        ParameterSweepConfig,
+        MonteCarloConfig,
+    )
 
     print("=" * 70)
     print("Parallel Two-Stage Biogas Plant Simulation")
@@ -64,16 +68,30 @@ def main():
     # Add components
     print("   Adding digesters...")
     configurator.add_digester(
-        digester_id="digester_1", V_liq=1977.0, V_gas=304.0, T_ad=308.15, name="Main Digester", Q_substrates=base_feed_hydro
+        digester_id="digester_1",
+        V_liq=1977.0,
+        V_gas=304.0,
+        T_ad=308.15,
+        name="Main Digester",
+        Q_substrates=base_feed_hydro,
     )
     configurator.add_digester(
-        digester_id="digester_2", V_liq=1000.0, V_gas=150.0, T_ad=308.15, name="Post Digester", Q_substrates=base_feed_main
+        digester_id="digester_2",
+        V_liq=1000.0,
+        V_gas=150.0,
+        T_ad=308.15,
+        name="Post Digester",
+        Q_substrates=base_feed_main,
     )
 
     print("   Adding CHP and heating...")
     configurator.add_chp(chp_id="chp_1", P_el_nom=500.0, name="CHP Unit")
     configurator.add_heating(heating_id="heating_1", target_temperature=308.15, name="Main Digester Heating")
-    configurator.add_heating(heating_id="heating_2", target_temperature=308.15, name="Post Digester Heating")
+    configurator.add_heating(
+        heating_id="heating_2",
+        target_temperature=308.15,
+        name="Post Digester Heating",
+    )
 
     # Connect components
     print("   Connecting components...")
@@ -99,7 +117,10 @@ def main():
         {"name": "Low Feed", "Q_digester_1": [10, 8, 0, 0, 0, 0, 0, 0, 0, 0]},
         {"name": "Base Feed", "Q_digester_1": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
         {"name": "High Feed", "Q_digester_1": [20, 12, 0, 0, 0, 0, 0, 0, 0, 0]},
-        {"name": "Very High Feed", "Q_digester_1": [25, 15, 0, 0, 0, 0, 0, 0, 0, 0]},
+        {
+            "name": "Very High Feed",
+            "Q_digester_1": [25, 15, 0, 0, 0, 0, 0, 0, 0, 0],
+        },
     ]
 
     print(f"   Defined {len(feed_scenarios)} feed rate scenarios")
@@ -109,9 +130,6 @@ def main():
     # ========================================================================
     print("\n3. Running basic parallel scenarios...")
     print("   (This demonstrates running different feed rates in parallel)")
-
-    # Note: For this example, we'll simulate individual digesters
-    # In a full implementation, you'd simulate the entire plant
 
     # Get the first digester's ADM1 model for parallel simulation
     digester_1 = plant.components["digester_1"]
@@ -172,12 +190,17 @@ def main():
 
     # Sweep disintegration rate parameter
     sweep_config = ParameterSweepConfig(
-        parameter_name="k_dis", values=[0.10, 0.14, 0.18, 0.22, 0.26, 0.30], other_params={"Q": base_feed_hydro}
+        parameter_name="k_dis",
+        values=[0.10, 0.14, 0.18, 0.22, 0.26, 0.30],
+        other_params={"Q": base_feed_hydro},
     )
 
     print("\n   Testing 6 different k_dis values...")
     sweep_results = parallel.parameter_sweep(
-        config=sweep_config, duration=10.0, initial_state=adm1_state, compute_metrics=True
+        config=sweep_config,
+        duration=10.0,
+        initial_state=adm1_state,
+        compute_metrics=True,
     )
 
     print("\n   Parameter Sweep Results:")
@@ -226,7 +249,10 @@ def main():
 
     print(f"\n   Testing {len(multi_scenarios)} parameter combinations...")
     multi_results = parallel.run_scenarios(
-        scenarios=multi_scenarios, duration=10.0, initial_state=adm1_state, compute_metrics=True
+        scenarios=multi_scenarios,
+        duration=10.0,
+        initial_state=adm1_state,
+        compute_metrics=True,
     )
 
     print("\n   Multi-Parameter Sweep Results:")
@@ -262,7 +288,6 @@ def main():
         n_samples=50,
         parameter_distributions={
             "k_dis": (0.18, 0.03),  # mean ± std
-            # Note: Y_su would need to be applied differently in practice
         },
         fixed_params={"Q": base_feed_hydro},
         seed=42,
