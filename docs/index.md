@@ -52,22 +52,26 @@ PyADM1ODE is a comprehensive Python framework for agricultural biogas plant mode
 ### Key Features
 
 ✨ **Comprehensive Component Library**  
+
 - Biological: Single/multi-stage digesters, hydrolysis tanks, separators  
 - Energy: CHP units, heating systems, gas storage, flares  
 - Mechanical: Pumps, mixers with realistic power consumption  
 - Feeding: Substrate storage, automated dosing systems
 
 🔧 **Flexible Plant Configuration**  
+
 - Build complex plants programmatically or via templates  
 - Automatic component connection and validation  
 - Save/load configurations as JSON
 
 📊 **Advanced Simulation**  
+
 - Parallel execution for parameter sweeps and Monte Carlo analysis  
 - Adaptive ODE solvers optimized for stiff biogas systems  
 - Time-series data handling and result analysis
 
 🎓 **Educational & Professional**  
+
 - Suitable for teaching biogas plant design  
 - Research tool for process optimization  
 - Engineering applications for plant planning
@@ -227,7 +231,7 @@ Model the core biological processes:
   - Single or multi-stage configurations
   - Temperature control (psychrophilic, mesophilic, thermophilic)
   - Automatic gas storage creation
-  - Calibration parameter support
+  - Calibration parameter support (using [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration))
 
 - **[Hydrolysis](user_guide/components/biological.md#hydrolysis)**: Pre-treatment tank (planned)
 - **[Separator](user_guide/components/biological.md#separator)**: Digestate processing (planned)
@@ -237,50 +241,50 @@ Model the core biological processes:
 Complete energy integration:
 
 - **[CHP](user_guide/components/energy.md#chp-combined-heat-and-power)**: Combined heat and power generation
-  - Variable efficiency curves
-  - Load-following operation
-  - Automatic flare creation
+    - Variable efficiency curves
+    - Load-following operation
+    - Automatic flare creation
 
 - **[Heating](user_guide/components/energy.md#heizsystem)**: Temperature control systems
-  - CHP waste heat utilization
-  - Auxiliary heating calculation
+    - CHP waste heat utilization
+    - Auxiliary heating calculation
 
 - **[Gas Storage](user_guide/components/energy.md#gasstorage)**: Biogas buffering
-  - Low-pressure (membrane, dome) and high-pressure options
-  - Automatic pressure management
-  - Safety venting
+    - Low-pressure (membrane, dome) and high-pressure options
+    - Automatic pressure management
+    - Safety venting
 
 - **[Flare](user_guide/components/energy.md#fackel)**: Safety gas combustion
-  - 98% methane destruction efficiency
-  - Automatic activation on overpressure
+    - 98% methane destruction efficiency
+    - Automatic activation on overpressure
 
 ### Mechanical Components
 
 Material handling and process control:
 
 - **[Pump](user_guide/components/mechanical.md#pump)**: Substrate and digestate transfer
-  - Progressive cavity, centrifugal, piston types
-  - Power consumption modeling
-  - Variable frequency drive support
+    - Progressive cavity, centrifugal, piston types
+    - Power consumption modeling
+    - Variable frequency drive support
 
 - **[Mixer](user_guide/components/mechanical.md#mixer)**: Digester agitation
-  - Propeller, paddle, jet mixer types
-  - Intermittent operation for energy savings
-  - Reynolds number and mixing time calculation
+    - Propeller, paddle, jet mixer types
+    - Intermittent operation for energy savings
+    - Reynolds number and mixing time calculation
 
 ### Feeding Components
 
 Substrate management:
 
 - **[Substrate Storage](user_guide/components/feeding.md#substratestorage)**: Material inventory
-  - Multiple storage types (silos, tanks, bunkers)
-  - Quality degradation modeling
-  - Capacity and utilization tracking
+    - Multiple storage types (silos, tanks, bunkers)
+    - Quality degradation modeling
+    - Capacity and utilization tracking
 
 - **[Feeder](user_guide/components/feeding.md#feeder)**: Automated dosing
-  - Screw, piston, progressive cavity feeders
-  - Realistic dosing accuracy and noise
-  - Blockage detection
+    - Screw, piston, progressive cavity feeders
+    - Realistic dosing accuracy and noise
+    - Blockage detection
 
 ## Pre-configured Substrates
 
@@ -299,17 +303,17 @@ PyADM1ODE includes 10 agricultural substrates with literature-validated paramete
 | **Cow manure** | Animal waste | Co-substrate | Medium (200-350 L/kg VS) |
 | **Onions** | Waste | Vegetable waste | Medium-High |
 
-All substrates are characterized with:
-- Dry matter (DM) and volatile solids (VS) content
-- ADM1 fractionation (carbohydrates, proteins, lipids)
-- Biochemical methane potential (BMP)
+All substrates are characterized with:  
+- Dry matter (DM) and volatile solids (VS) content  
+- ADM1 fractionation (carbohydrates, proteins, lipids)  
+- Biochemical methane potential (BMP)  
 - pH and alkalinity
 
 ## Advanced Features
 
 ### Parallel Simulation
 
-Run multiple scenarios concurrently:
+Run multiple scenarios concurrently (see [Example: Parallel Simulation](examples/parallel_simulation.md)):
 
 ```python
 from pyadm1.simulation import ParallelSimulator
@@ -323,26 +327,6 @@ scenarios = [
 ]
 
 results = parallel.run_scenarios(scenarios, duration=30, initial_state=state)
-```
-
-### Model Calibration
-
-Fit model parameters to measurement data:
-
-```python
-from pyadm1.components.biological import Digester
-
-digester = Digester("dig1", feedstock, V_liq=2000)
-
-# Apply calibrated parameters
-digester.apply_calibration_parameters({
-    'k_dis': 0.55,
-    'Y_su': 0.105,
-    'k_hyd_ch': 11.0
-})
-
-# Get current parameters
-params = digester.get_calibration_parameters()
 ```
 
 ### Configuration Management
@@ -373,8 +357,7 @@ PyADM1ODE is based on the **Anaerobic Digestion Model No. 1 (ADM1)**, developed 
 **Key References:**
 
 - Batstone, D.J., et al. (2002). *Anaerobic Digestion Model No. 1 (ADM1)*. IWA Publishing.
-- Sadrimajd, P., et al. (2021). *PyADM1: a Python implementation of Anaerobic Digestion Model No. 1*. bioRxiv.
-- Gaida, D. (2014). *Dynamic real-time substrate feed optimization of anaerobic co-digestion plants*. PhD thesis, Leiden University.
+- Sadrimajd, P., et al. (2021). *[PyADM1](https://github.com/CaptainFerMag/PyADM1): a Python implementation of Anaerobic Digestion Model No. 1*. bioRxiv.
 
 ## Installation
 
@@ -459,9 +442,9 @@ If you use PyADM1ODE in your research, please cite:
 
 ```bibtex
 @software{gaida2025pyadm1ode,
-  author = {Gaida, Daniel},
+  author = {Gaida, Daniel; Nordhoff, Tim Yago},
   title = {PyADM1ODE: Python Framework for Agricultural Biogas Plant Modeling},
-  year = {2025},
+  year = {2026},
   url = {https://github.com/dgaida/PyADM1ODE}
 }
 ```
@@ -471,7 +454,7 @@ If you use PyADM1ODE in your research, please cite:
 PyADM1ODE builds upon:
 
 - **IWA ADM1 Task Group** - Original model development
-- **PyADM1** by Sadrimajd et al. - Initial Python implementation
+- **[PyADM1](https://github.com/CaptainFerMag/PyADM1)** by Sadrimajd et al. - Initial Python implementation
 - **SIMBA#biogas** - Substrate characterization and validation data
 
 ---

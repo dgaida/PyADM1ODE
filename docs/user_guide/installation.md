@@ -5,14 +5,14 @@ This guide covers the installation of PyADM1ODE on different operating systems.
 ## System Requirements
 
 ### Minimum Requirements
-- **Python**: 3.8 or higher (3.10+ recommended, needed by [fastmcp](https://github.com/jlowin/fastmcp) package)
+- **Python**: 3.8 or higher (3.10+ recommended, needed by [fastmcp](https://github.com/jlowin/fastmcp) package, used in the optional package [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp))
 - **Operating System**: Windows, Linux, or macOS
-- **Memory**: 4 GB RAM minimum (8 GB recommended)
-- **Disk Space**: 500 MB for installation
+- **Memory**: 2 GB RAM minimum (4 GB recommended)
+- **Disk Space**: 10 MB for installation
 
 ### Runtime Requirements
-PyADM1ODE uses C# DLLs for substrate characterization, which requires:
-- **Linux/macOS**: Mono runtime
+PyADM1ODE uses C# DLLs for substrate characterization, which requires:  
+- **Linux/macOS**: Mono runtime  
 - **Windows**: .NET Framework (usually pre-installed)
 
 ## Installation Methods
@@ -63,7 +63,11 @@ pip install -e .
 
 2. **Install PyADM1**:
    ```cmd
-   pip install pyadm1ode
+   pip install pyadm1ode  # pip not yet supported
+   # or from source:
+   git clone https://github.com/dgaida/PyADM1ODE.git
+   cd PyADM1ODE
+   pip install -e .
 
    # Windows-specific dependencies
    pip install -r requirements-windows.txt
@@ -151,20 +155,9 @@ matplotlib>=3.5.0     # Plotting
 
 ## Optional Dependencies
 
-### For MCP Server (LLM Integration)
-```bash
-pip install fastmcp>=0.2.0
-pip install git+https://github.com/dgaida/llm_client.git
-```
-
 ### For Development
 ```bash
 pip install pytest pytest-cov black ruff mypy
-```
-
-### For Documentation Building
-```bash
-pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints
 ```
 
 ## Verifying Your Installation
@@ -305,16 +298,6 @@ import clr  # First import may take 10-30 seconds
 # Subsequent imports will be fast
 ```
 
-#### 5. "No module named 'fastmcp'"
-
-**Problem**: MCP server dependencies not installed.
-
-**Solution**:
-```bash
-pip install fastmcp>=0.2.0
-pip install git+https://github.com/dgaida/llm_client.git
-```
-
 ### Getting Help
 
 If you encounter issues:
@@ -333,12 +316,12 @@ If you encounter issues:
 After successful installation:
 
 1. **Try the Quickstart**: See [Quickstart Guide](quickstart.md)
-2. **Explore Examples**: Check the `examples/` directory
+2. **Explore Examples**: See [Example: Basic Digester](../examples/basic_digester.md)
 3. **Read Component Documentation**: [Components Guide](components/index.md)
 
 ## Updating PyADM1ODE
 
-### Update from PyPI
+### Update from PyPI (not yet supported)
 ```bash
 pip install --upgrade pyadm1
 ```
@@ -352,7 +335,7 @@ pip install -e . --upgrade
 
 ## Optional Packages
 
-### PyADM1ODE_mcp - Model Context Protocol Server
+### [PyADM1ODE_mcp]((https://github.com/dgaida/PyADM1ODE_mcp)) - Model Context Protocol Server
 
 For LLM-driven biogas plant modeling with natural language interface:
 
@@ -366,14 +349,13 @@ pip install -e .
 **Features:**
 - Natural language plant design via LLM (e.g., Claude)
 - MCP server for LLM integration
-- Intelligent client with automated parsing
 - Interactive plant configuration
 
 **Use cases:** Non-expert plant design, rapid prototyping, educational tools
 
 See [PyADM1ODE_mcp documentation](https://github.com/dgaida/PyADM1ODE_mcp) for details.
 
-### PyADM1ODE_calibration - Parameter Calibration Framework
+### [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration) - Parameter Calibration Framework
 
 For automated model calibration from measurement data:
 
@@ -397,7 +379,7 @@ See [PyADM1ODE_calibration documentation](https://github.com/dgaida/PyADM1ODE_ca
 
 ## Uninstallation
 
-To remove PyADM1ODE:
+To remove PyADM1ODE (not yet supported):
 ```bash
 pip uninstall pyadm1ode
 ```
@@ -407,7 +389,7 @@ To also remove dependencies:
 pip uninstall pyadm1ode pythonnet numpy pandas scipy matplotlib
 ```
 
-To remove optional packages:
+To remove optional packages (not yet supported):
 ```bash
 pip uninstall pyadm1ode_mcp pyadm1ode_calibration
 ```

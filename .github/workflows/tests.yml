@@ -15,6 +15,7 @@ on:
       - '.github/workflows/codeql.yml'
       - '.github/workflows/lint.yml'
       - '.github/workflows/docs.yml'
+      - 'mkdocs.yml'
   pull_request:
     branches: [ master ]
   workflow_dispatch:
