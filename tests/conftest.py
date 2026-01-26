@@ -28,7 +28,17 @@ except (ImportError, RuntimeError):
     DOTNET_AVAILABLE = False
     # Mock clr and biogas for environments without .NET
     sys.modules["clr"] = MagicMock()
-    sys.modules["biogas"] = MagicMock()
+    biogas_mock = MagicMock()
+    sys.modules["biogas"] = biogas_mock
+
+    # Configure mock for substrates and ADMstate to avoid common errors
+    biogas_mock.substrates.return_value.getNumSubstrates.return_value = 10
+    biogas_mock.ADMstate.calcADMstream.return_value = [0.0] * 34
+    biogas_mock.ADMstate.mixADMstreams.return_value = [0.0] * 34
+    biogas_mock.ADMstate.calcPHOfADMstate.return_value = 7.0
+    biogas_mock.ADMstate.calcVFAOfADMstate.return_value.Value = 0.5
+    biogas_mock.ADMstate.calcTACOfADMstate.return_value.Value = 2.0
+    biogas_mock.substrates.return_value.calcfFactors.return_value = [0.1] * 6
 
 
 def pytest_collection_modifyitems(config, items):
@@ -47,6 +57,7 @@ def pytest_collection_modifyitems(config, items):
         "test_pyadm1",
         "test_simulator",
         "test_feedstock",
+        "test_parallel_simulation",
     ]
 
     for item in items:
