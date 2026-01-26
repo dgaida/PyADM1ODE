@@ -294,13 +294,17 @@ class PlantConfigurator:
         heating_config.setdefault("heating_id", "heating_main")
 
         # Create components
-        digester = self.add_digester(**digester_config)
+        digester, _ = self.add_digester(**digester_config)
 
-        components = {"digester": digester.component_id}
+        components = {
+            "digester": digester.component_id,
+            "storage": f"{digester.component_id}_storage"
+        }
 
         if chp_config:
             chp = self.add_chp(**chp_config)
             components["chp"] = chp.component_id
+            components["flare"] = f"{chp.component_id}_flare"
 
             if auto_connect:
                 self.auto_connect_digester_to_chp(digester.component_id, chp.component_id)
@@ -357,10 +361,15 @@ class PlantConfigurator:
         chp_config.setdefault("chp_id", "chp_main")
 
         # Create components
-        hydrolysis = self.add_digester(**hydrolysis_config)
-        digester = self.add_digester(**digester_config)
+        hydrolysis, _ = self.add_digester(**hydrolysis_config)
+        digester, _ = self.add_digester(**digester_config)
 
-        components = {"hydrolysis": hydrolysis.component_id, "digester": digester.component_id}
+        components = {
+            "hydrolysis": hydrolysis.component_id,
+            "hydrolysis_storage": f"{hydrolysis.component_id}_storage",
+            "digester": digester.component_id,
+            "digester_storage": f"{digester.component_id}_storage",
+        }
 
         # Connect digesters in series
         if auto_connect:
@@ -370,6 +379,7 @@ class PlantConfigurator:
         if chp_config:
             chp = self.add_chp(**chp_config)
             components["chp"] = chp.component_id
+            components["flare"] = f"{chp.component_id}_flare"
 
             if auto_connect:
                 # Connect both digesters to CHP
