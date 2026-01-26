@@ -391,22 +391,28 @@ class ParallelSimulator:
             >>> print(f"Mean CH4: {summary['Q_ch4']['mean']:.1f} m³/d")
         """
         successful = [r for r in results if r.success]
+        n_scenarios = len(results)
+        n_successful = len(successful)
+
+        summary = {
+            "n_scenarios": n_scenarios,
+            "n_successful": n_successful,
+            "n_failed": n_scenarios - n_successful,
+            "success_rate": n_successful / n_scenarios if n_scenarios > 0 else 0,
+            "metrics": {},
+        }
 
         if not successful:
-            return {"error": "No successful scenarios"}
+            if n_scenarios > 0:
+                summary["error"] = "No successful scenarios"
+            else:
+                summary["error"] = "No scenarios to summarize"
+            return summary
 
         # Determine which metrics to summarize
         if metrics is None:
             # Use all metrics from first result
             metrics = list(successful[0].metrics.keys())
-
-        summary = {
-            "n_scenarios": len(results),
-            "n_successful": len(successful),
-            "n_failed": len(results) - len(successful),
-            "success_rate": len(successful) / len(results),
-            "metrics": {},
-        }
 
         # Compute statistics for each metric
         for metric_name in metrics:
