@@ -14,6 +14,9 @@ from pathlib import Path
 from typing import List
 
 
+import sys
+from unittest.mock import MagicMock
+
 # Try to import clr and check if .NET runtime is available
 try:
     import clr
@@ -23,6 +26,9 @@ try:
     DOTNET_AVAILABLE = True
 except (ImportError, RuntimeError):
     DOTNET_AVAILABLE = False
+    # Mock clr and biogas for environments without .NET
+    sys.modules["clr"] = MagicMock()
+    sys.modules["biogas"] = MagicMock()
 
 
 def pytest_collection_modifyitems(config, items):
