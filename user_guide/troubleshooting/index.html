@@ -1,0 +1,3528 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Python framework for modeling, simulating, and optimizing agricultural biogas plants based on the Anaerobic Digestion Model No. 1">
+      
+      
+        <meta name="author" content="Daniel Gaida">
+      
+      
+        <link rel="canonical" href="https://dgaida.github.io/PyADM1ODE/user_guide/troubleshooting/">
+      
+      
+        <link rel="prev" href="../../examples/parallel_simulation/">
+      
+      
+        <link rel="next" href="../../api_reference/components/components/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Troubleshooting - PyADM1ODE Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#troubleshooting-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="PyADM1ODE Documentation" class="md-header__button md-logo" aria-label="PyADM1ODE Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PyADM1ODE Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Troubleshooting
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/dgaida/PyADM1ODE" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dgaida/PyADM1ODE
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../installation/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../components/" class="md-tabs__link">
+          
+  
+  
+  Documentation
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Troubleshooting
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api_reference/components/components/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="PyADM1ODE Documentation" class="md-nav__button md-logo" aria-label="PyADM1ODE Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    PyADM1ODE Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/dgaida/PyADM1ODE" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dgaida/PyADM1ODE
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Components
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Components
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../components/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../components/biological/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Biological
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../components/energy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Energy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../components/feeding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feeding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../components/mechanical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mechanical
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../components/sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/basic_digester/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basic Digester
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/two_stage_plant/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Two Stage Plant
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/parallel_simulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parallel Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ubersicht" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Übersicht
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation-und-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation und Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#biologische-prozesse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Biologische Prozesse
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Biologische Prozesse">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fermenter-probleme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fermenter-Probleme
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fermenter-Probleme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#niedriger-ph-wert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Niedriger pH-Wert
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schaumbildung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schaumbildung
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geringe-gasproduktion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Geringe Gasproduktion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prozessuberwachung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prozessüberwachung
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#energiesystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Energiesystem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Energiesystem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bhkw-und-warmesysteme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BHKW und Wärmesysteme
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BHKW und Wärmesysteme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bhkw-lauft-nicht" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BHKW läuft nicht
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ubermaiges-venting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Übermäßiges Venting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unzureichende-warme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unzureichende Wärme
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optimierungsstrategien" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optimierungsstrategien
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mechanische-komponenten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mechanische Komponenten
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mechanische Komponenten">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pumpen-und-ruhrwerkprobleme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pumpen- und Rührwerkprobleme
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pumpen- und Rührwerkprobleme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pumpe-liefert-unzureichenden-durchfluss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pumpe liefert unzureichenden Durchfluss
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ruhrwerk-verbraucht-zu-viel-energie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rührwerk verbraucht zu viel Energie
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schlechte-mischqualitat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schlechte Mischqualität
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optimierungsstrategien_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optimierungsstrategien
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#futterungssystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fütterungssystem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fütterungssystem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lager-und-dosierprobleme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lager- und Dosierprobleme
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lager- und Dosierprobleme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#schneller-qualitatsverlust" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schneller Qualitätsverlust
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dosierer-blockaden" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dosierer-Blockaden
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inkonsistente-dosierung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inkonsistente Dosierung
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#substratmanagement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Substratmanagement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulation-und-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulation und Performance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simulation und Performance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulationsprobleme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulationsprobleme
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simulationsprobleme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulation-instabil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulation instabil
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#niedrige-gasproduktion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Niedrige Gasproduktion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#langsame-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Langsame Simulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices-nach-komponententyp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices nach Komponententyp
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices nach Komponententyp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#biologische-komponenten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Biologische Komponenten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#energiekomponenten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Energiekomponenten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mechanische-komponenten_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mechanische Komponenten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#futterungskomponenten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fütterungskomponenten
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diagnose-tools-und-checklisten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagnose-Tools und Checklisten
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Diagnose-Tools und Checklisten">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fermenter-gesundheitscheck" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fermenter-Gesundheitscheck
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#energiebilanz-analyse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Energiebilanz-Analyse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mechanische-energie-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mechanische Energie-Audit
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optimale-betriebsbereiche-schnellreferenz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optimale Betriebsbereiche - Schnellreferenz
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optimale Betriebsbereiche - Schnellreferenz">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fermenter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fermenter
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#energiesystem_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Energiesystem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mechanische-komponenten_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mechanische Komponenten
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#haufig-gestellte-fragen-faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Häufig gestellte Fragen (FAQ)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Häufig gestellte Fragen (FAQ)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#warum-ist-mein-ph-wert-niedrig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Warum ist mein pH-Wert niedrig?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#warum-lauft-mein-bhkw-nicht" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Warum läuft mein BHKW nicht?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#warum-verbraucht-mein-ruhrwerk-so-viel-energie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Warum verbraucht mein Rührwerk so viel Energie?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#warum-verschlechtert-sich-meine-substratqualitat-schnell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Warum verschlechtert sich meine Substratqualität schnell?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#warum-ist-meine-simulation-langsam" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Warum ist meine Simulation langsam?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#weiterfuhrende-ressourcen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Weiterführende Ressourcen
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Weiterführende Ressourcen">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#komponenten-spezifische-dokumentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Komponenten-spezifische Dokumentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#allgemeine-anleitungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Allgemeine Anleitungen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#externe-ressourcen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Externe Ressourcen
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Support
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checkliste-fur-problem-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checkliste für Problem-Reports
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Components
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Components
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/components/components/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Components
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/components/biological/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Biological
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/components/energy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Energy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/components/feeding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feeding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/components/mechanical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mechanical
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/components/sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurator
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Configurator
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/configurator/configurator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/configurator/templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/core/core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/simulation/simulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/substrates/substrates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Substrates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ubersicht" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Übersicht
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation-und-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation und Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#biologische-prozesse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Biologische Prozesse
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Biologische Prozesse">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fermenter-probleme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fermenter-Probleme
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fermenter-Probleme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#niedriger-ph-wert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Niedriger pH-Wert
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schaumbildung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schaumbildung
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geringe-gasproduktion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Geringe Gasproduktion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prozessuberwachung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prozessüberwachung
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#energiesystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Energiesystem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Energiesystem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bhkw-und-warmesysteme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BHKW und Wärmesysteme
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BHKW und Wärmesysteme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bhkw-lauft-nicht" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BHKW läuft nicht
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ubermaiges-venting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Übermäßiges Venting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unzureichende-warme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unzureichende Wärme
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optimierungsstrategien" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optimierungsstrategien
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mechanische-komponenten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mechanische Komponenten
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mechanische Komponenten">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pumpen-und-ruhrwerkprobleme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pumpen- und Rührwerkprobleme
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pumpen- und Rührwerkprobleme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pumpe-liefert-unzureichenden-durchfluss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pumpe liefert unzureichenden Durchfluss
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ruhrwerk-verbraucht-zu-viel-energie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rührwerk verbraucht zu viel Energie
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schlechte-mischqualitat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schlechte Mischqualität
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optimierungsstrategien_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optimierungsstrategien
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#futterungssystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fütterungssystem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fütterungssystem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lager-und-dosierprobleme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lager- und Dosierprobleme
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lager- und Dosierprobleme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#schneller-qualitatsverlust" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schneller Qualitätsverlust
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dosierer-blockaden" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dosierer-Blockaden
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inkonsistente-dosierung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inkonsistente Dosierung
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#substratmanagement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Substratmanagement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulation-und-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulation und Performance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simulation und Performance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulationsprobleme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulationsprobleme
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simulationsprobleme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulation-instabil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulation instabil
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#niedrige-gasproduktion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Niedrige Gasproduktion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#langsame-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Langsame Simulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices-nach-komponententyp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices nach Komponententyp
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices nach Komponententyp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#biologische-komponenten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Biologische Komponenten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#energiekomponenten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Energiekomponenten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mechanische-komponenten_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mechanische Komponenten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#futterungskomponenten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fütterungskomponenten
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diagnose-tools-und-checklisten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagnose-Tools und Checklisten
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Diagnose-Tools und Checklisten">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fermenter-gesundheitscheck" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fermenter-Gesundheitscheck
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#energiebilanz-analyse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Energiebilanz-Analyse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mechanische-energie-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mechanische Energie-Audit
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optimale-betriebsbereiche-schnellreferenz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optimale Betriebsbereiche - Schnellreferenz
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optimale Betriebsbereiche - Schnellreferenz">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fermenter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fermenter
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#energiesystem_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Energiesystem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mechanische-komponenten_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mechanische Komponenten
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#haufig-gestellte-fragen-faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Häufig gestellte Fragen (FAQ)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Häufig gestellte Fragen (FAQ)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#warum-ist-mein-ph-wert-niedrig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Warum ist mein pH-Wert niedrig?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#warum-lauft-mein-bhkw-nicht" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Warum läuft mein BHKW nicht?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#warum-verbraucht-mein-ruhrwerk-so-viel-energie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Warum verbraucht mein Rührwerk so viel Energie?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#warum-verschlechtert-sich-meine-substratqualitat-schnell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Warum verschlechtert sich meine Substratqualität schnell?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#warum-ist-meine-simulation-langsam" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Warum ist meine Simulation langsam?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#weiterfuhrende-ressourcen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Weiterführende Ressourcen
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Weiterführende Ressourcen">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#komponenten-spezifische-dokumentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Komponenten-spezifische Dokumentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#allgemeine-anleitungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Allgemeine Anleitungen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#externe-ressourcen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Externe Ressourcen
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Support
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checkliste-fur-problem-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checkliste für Problem-Reports
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="troubleshooting-guide">Troubleshooting Guide<a class="headerlink" href="#troubleshooting-guide" title="Permanent link">&para;</a></h1>
+<p>Diese Seite bietet eine Übersicht über häufige Probleme und deren Lösungen in PyADM1ODE. Detaillierte Troubleshooting-Anleitungen finden Sie in den jeweiligen Komponentendokumentationen.</p>
+<h2 id="ubersicht">Übersicht<a class="headerlink" href="#ubersicht" title="Permanent link">&para;</a></h2>
+<p>PyADM1ODE ist ein komplexes System mit biologischen, energetischen und mechanischen Komponenten. Probleme können in verschiedenen Bereichen auftreten:</p>
+<ul>
+<li><strong><a href="#installation-und-setup">Installation und Setup</a></strong>: Python-Umgebung, Abhängigkeiten, C# DLLs</li>
+<li><strong><a href="#biologische-prozesse">Biologische Prozesse</a></strong>: Fermenter-Instabilität, pH-Probleme, VFA-Akkumulation</li>
+<li><strong><a href="#energiesystem">Energiesystem</a></strong>: BHKW, Heizung, Gasspeicher</li>
+<li><strong><a href="#mechanische-komponenten">Mechanische Komponenten</a></strong>: Pumpen, Rührwerke</li>
+<li><strong><a href="#fütterungssystem">Fütterungssystem</a></strong>: Substratqualität, Dosiergenauigkeit</li>
+<li><strong><a href="#simulation-und-performance">Simulation und Performance</a></strong>: Laufzeit, Konvergenz, Numerik</li>
+</ul>
+<h2 id="installation-und-setup">Installation und Setup<a class="headerlink" href="#installation-und-setup" title="Permanent link">&para;</a></h2>
+<p>Für Installationsprobleme siehe:</p>
+<p><strong><a href="../installation/#troubleshooting">→ Installation Guide - Troubleshooting Section</a></strong></p>
+<p>Häufige Themen:
+- C# DLL-Dateien nicht gefunden
+- pythonnet Import-Fehler
+- Mono/.NET Framework-Probleme
+- Erste Import-Verzögerungen
+- Modul-Attributfehler</p>
+<h2 id="biologische-prozesse">Biologische Prozesse<a class="headerlink" href="#biologische-prozesse" title="Permanent link">&para;</a></h2>
+<h3 id="fermenter-probleme">Fermenter-Probleme<a class="headerlink" href="#fermenter-probleme" title="Permanent link">&para;</a></h3>
+<p>Für Diagnose und Lösung biologischer Prozessprobleme siehe:</p>
+<p><strong><a href="../components/biological/#fehlerbehebung">→ Biological Components - Troubleshooting Section</a></strong></p>
+<p>Behandelte Themen:</p>
+<h4 id="niedriger-ph-wert">Niedriger pH-Wert<a class="headerlink" href="#niedriger-ph-wert" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Ursachen</strong>: Zu hohe organische Raumbelastung, unzureichende Pufferkapazität</li>
+<li><strong>Diagnose</strong>: pH &lt; 6.8, steigende VFA</li>
+<li><strong>Lösungen</strong>: OLR reduzieren, Kalkpuffer hinzufügen, Substratmischung anpassen</li>
+</ul>
+<h4 id="schaumbildung">Schaumbildung<a class="headerlink" href="#schaumbildung" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Ursachen</strong>: Hoher Proteingehalt, pH-Änderungen, hohe VFA</li>
+<li><strong>Lösungen</strong>: Proteinreiche Substrate reduzieren, pH stabilisieren</li>
+</ul>
+<h4 id="geringe-gasproduktion">Geringe Gasproduktion<a class="headerlink" href="#geringe-gasproduktion" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Ursachen</strong>: Niedrige OLR, Substratqualität, Inhibition, kurze HRT</li>
+<li><strong>Diagnose-Tools</strong>: Spezifische Gasproduktion, Methangehalt prüfen</li>
+<li><strong>Lösungen</strong>: Substratqualität verbessern, Inhibitoren identifizieren</li>
+</ul>
+<h3 id="prozessuberwachung">Prozessüberwachung<a class="headerlink" href="#prozessuberwachung" title="Permanent link">&para;</a></h3>
+<p><strong><a href="../components/biological/#prozessüberwachung">→ Biological Components - Process Monitoring</a></strong></p>
+<p>Wichtige Prozessindikatoren:
+- pH-Wert: 6.8-7.5 optimal
+- VFA/TAC-Verhältnis: &lt; 0.4
+- Methangehalt: &gt; 55%
+- Temperaturstabilität</p>
+<h2 id="energiesystem">Energiesystem<a class="headerlink" href="#energiesystem" title="Permanent link">&para;</a></h2>
+<h3 id="bhkw-und-warmesysteme">BHKW und Wärmesysteme<a class="headerlink" href="#bhkw-und-warmesysteme" title="Permanent link">&para;</a></h3>
+<p>Für Energiekomponenten-Probleme siehe:</p>
+<p><strong><a href="../components/energy/#fehlerbehebung">→ Energy Components - Troubleshooting Section</a></strong></p>
+<p>Behandelte Themen:</p>
+<h4 id="bhkw-lauft-nicht">BHKW läuft nicht<a class="headerlink" href="#bhkw-lauft-nicht" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Diagnose</strong>: Gasverfügbarkeit, Mindestgasbedarf, Speicherdruck prüfen</li>
+<li><strong>Lösungen</strong>: Gasversorgung sicherstellen, Speicherdruck anpassen</li>
+</ul>
+<h4 id="ubermaiges-venting">Übermäßiges Venting<a class="headerlink" href="#ubermaiges-venting" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Ursache</strong>: Gasproduktion &gt; BHKW-Verbrauch</li>
+<li><strong>Lösungen</strong>:</li>
+<li>BHKW-Kapazität erhöhen</li>
+<li>Zweites BHKW hinzufügen</li>
+<li>Gasspeicher vergrößern</li>
+</ul>
+<h4 id="unzureichende-warme">Unzureichende Wärme<a class="headerlink" href="#unzureichende-warme" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Diagnose</strong>: Hoher Zusatzheizungsbedarf</li>
+<li><strong>Lösungen</strong>: Isolierung verbessern, BHKW vergrößern, Fermentertemperatur reduzieren</li>
+</ul>
+<h3 id="optimierungsstrategien">Optimierungsstrategien<a class="headerlink" href="#optimierungsstrategien" title="Permanent link">&para;</a></h3>
+<p><strong><a href="../components/energy/#optimierungsstrategien">→ Energy Components - Optimization Strategies</a></strong></p>
+<p>Themen:
+- Wärmenutzungsoptimierung
+- Lastfolgebetrieb
+- Gasspeicher-Management</p>
+<h2 id="mechanische-komponenten">Mechanische Komponenten<a class="headerlink" href="#mechanische-komponenten" title="Permanent link">&para;</a></h2>
+<h3 id="pumpen-und-ruhrwerkprobleme">Pumpen- und Rührwerkprobleme<a class="headerlink" href="#pumpen-und-ruhrwerkprobleme" title="Permanent link">&para;</a></h3>
+<p>Für mechanische Komponentenprobleme siehe:</p>
+<p><strong><a href="../components/mechanical/#fehlerbehebung">→ Mechanical Components - Troubleshooting Section</a></strong></p>
+<p>Behandelte Themen:</p>
+<h4 id="pumpe-liefert-unzureichenden-durchfluss">Pumpe liefert unzureichenden Durchfluss<a class="headerlink" href="#pumpe-liefert-unzureichenden-durchfluss" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Diagnose</strong>: Effizienz, Druckhöhe, Dimensionierung prüfen</li>
+<li><strong>Lösungen</strong>: Pumpengröße erhöhen, Reibungsverluste reduzieren, Blockaden prüfen</li>
+</ul>
+<h4 id="ruhrwerk-verbraucht-zu-viel-energie">Rührwerk verbraucht zu viel Energie<a class="headerlink" href="#ruhrwerk-verbraucht-zu-viel-energie" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Diagnose</strong>: Spezifische Leistung &gt; 6.0 W/m³</li>
+<li><strong>Lösungen</strong>: Intermittierenden Betrieb aktivieren, Intensität reduzieren</li>
+</ul>
+<h4 id="schlechte-mischqualitat">Schlechte Mischqualität<a class="headerlink" href="#schlechte-mischqualitat" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Diagnose</strong>: Mixing quality &lt; 0.7, lange Mischzeit</li>
+<li><strong>Lösungen</strong>: Intensität erhöhen, Einschaltzeit verlängern, größeres Rührblatt</li>
+</ul>
+<h3 id="optimierungsstrategien_1">Optimierungsstrategien<a class="headerlink" href="#optimierungsstrategien_1" title="Permanent link">&para;</a></h3>
+<p><strong><a href="../components/mechanical/#optimierungsstrategien">→ Mechanical Components - Optimization Strategies</a></strong></p>
+<p>Themen:
+- Pumpenoptimierung (80-90% Nennlast)
+- Mischstrategie-Auswahl
+- Energieminimierung</p>
+<h2 id="futterungssystem">Fütterungssystem<a class="headerlink" href="#futterungssystem" title="Permanent link">&para;</a></h2>
+<h3 id="lager-und-dosierprobleme">Lager- und Dosierprobleme<a class="headerlink" href="#lager-und-dosierprobleme" title="Permanent link">&para;</a></h3>
+<p>Für Fütterungskomponenten-Probleme siehe:</p>
+<p><strong><a href="../components/feeding/#fehlerbehebung">→ Feeding Components - Troubleshooting Section</a></strong></p>
+<p>Behandelte Themen:</p>
+<h4 id="schneller-qualitatsverlust">Schneller Qualitätsverlust<a class="headerlink" href="#schneller-qualitatsverlust" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Diagnose</strong>: Qualitätsfaktor &lt; 0.95 bei kurzer Lagerzeit</li>
+<li><strong>Lösungen</strong>: Lagertyp verbessern, Temperatur reduzieren, schnellere Verwendung</li>
+</ul>
+<h4 id="dosierer-blockaden">Dosierer-Blockaden<a class="headerlink" href="#dosierer-blockaden" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Diagnose</strong>: Häufige Blockaden (&gt; 5)</li>
+<li><strong>Lösungen</strong>: Robusteren Dosierertyp wählen, Substratvorbereitung verbessern</li>
+</ul>
+<h4 id="inkonsistente-dosierung">Inkonsistente Dosierung<a class="headerlink" href="#inkonsistente-dosierung" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Diagnose</strong>: Durchschnittlicher Dosierfehler &gt; 10%</li>
+<li><strong>Lösungen</strong>: Präziseren Dosierertyp erwägen, Kalibrierung prüfen</li>
+</ul>
+<h3 id="substratmanagement">Substratmanagement<a class="headerlink" href="#substratmanagement" title="Permanent link">&para;</a></h3>
+<p><strong><a href="../components/feeding/#optimierungsstrategien">→ Feeding Components - Optimization Strategies</a></strong></p>
+<p>Themen:
+- Substratmischoptimierung
+- Bestandsmanagement
+- Dosiergenauigkeitsoptimierung</p>
+<h2 id="simulation-und-performance">Simulation und Performance<a class="headerlink" href="#simulation-und-performance" title="Permanent link">&para;</a></h2>
+<h3 id="simulationsprobleme">Simulationsprobleme<a class="headerlink" href="#simulationsprobleme" title="Permanent link">&para;</a></h3>
+<p>Für allgemeine Simulationsprobleme siehe:</p>
+<p><strong><a href="../quickstart/#troubleshooting">→ Quickstart Guide - Troubleshooting Section</a></strong></p>
+<p>Behandelte Themen:</p>
+<h4 id="simulation-instabil">Simulation instabil<a class="headerlink" href="#simulation-instabil" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Symptome</strong>: pH fällt, VFA steigt, Methanproduktion sinkt</li>
+<li><strong>Lösungen</strong>: Substratfütterungsrate reduzieren, Verweilzeit erhöhen, Puffermaterial hinzufügen</li>
+</ul>
+<h4 id="niedrige-gasproduktion">Niedrige Gasproduktion<a class="headerlink" href="#niedrige-gasproduktion" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Lösungen</strong>: Substratfütterung erhöhen, Abbaubarkeit prüfen, Temperatur optimieren</li>
+</ul>
+<h4 id="langsame-simulation">Langsame Simulation<a class="headerlink" href="#langsame-simulation" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Lösungen</strong>: Zeitschritt erhöhen (dt), save_interval reduzieren, parallele Simulation nutzen</li>
+</ul>
+<h2 id="best-practices-nach-komponententyp">Best Practices nach Komponententyp<a class="headerlink" href="#best-practices-nach-komponententyp" title="Permanent link">&para;</a></h2>
+<h3 id="biologische-komponenten">Biologische Komponenten<a class="headerlink" href="#biologische-komponenten" title="Permanent link">&para;</a></h3>
+<p><strong><a href="../components/biological/#best-practices">→ Biological Components - Best Practices</a></strong></p>
+<ol>
+<li>Mit realistischen Betriebsparametern starten</li>
+<li>Kritische Parameter überwachen</li>
+<li>Puffersysteme implementieren</li>
+<li>Zweistufige Systeme für schwierige Substrate nutzen</li>
+<li>Modell mit realen Daten kalibrieren</li>
+</ol>
+<h3 id="energiekomponenten">Energiekomponenten<a class="headerlink" href="#energiekomponenten" title="Permanent link">&para;</a></h3>
+<p><strong><a href="../components/energy/#leistungsmetriken">→ Energy Components - Performance Metrics</a></strong></p>
+<ul>
+<li>BHKW-Verfügbarkeit berechnen</li>
+<li>Volllaststunden tracken</li>
+<li>Wärmenutzungsgrad optimieren</li>
+<li>Parasitäre Last minimieren</li>
+</ul>
+<h3 id="mechanische-komponenten_1">Mechanische Komponenten<a class="headerlink" href="#mechanische-komponenten_1" title="Permanent link">&para;</a></h3>
+<p><strong><a href="../components/mechanical/#best-practices">→ Mechanical Components - Best Practices</a></strong></p>
+<ol>
+<li>Pumpen für optimalen Wirkungsgrad dimensionieren (80-90% Nennlast)</li>
+<li>Intermittierendes Mischen implementieren</li>
+<li>Regelmäßige Wartung</li>
+<li>Systemdesign optimieren</li>
+<li>Energieverbrauch überwachen</li>
+</ol>
+<h3 id="futterungskomponenten">Fütterungskomponenten<a class="headerlink" href="#futterungskomponenten" title="Permanent link">&para;</a></h3>
+<p><strong><a href="../components/feeding/#best-practices">→ Feeding Components - Best Practices</a></strong></p>
+<ol>
+<li>Qualitätsüberwachung implementieren</li>
+<li>Bestandssicherheit aufrechterhalten (7-14 Tage)</li>
+<li>Energieverbrauch optimieren</li>
+<li>Substratmischung optimieren</li>
+<li>Wartung planen</li>
+</ol>
+<h2 id="diagnose-tools-und-checklisten">Diagnose-Tools und Checklisten<a class="headerlink" href="#diagnose-tools-und-checklisten" title="Permanent link">&para;</a></h2>
+<h3 id="fermenter-gesundheitscheck">Fermenter-Gesundheitscheck<a class="headerlink" href="#fermenter-gesundheitscheck" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">monitor_digester_health</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="sd">    Umfassender Fermenter-Gesundheitscheck</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="sd">    Siehe: components/biological.md#prozessüberwachung</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="n">digester_data</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;components&#39;</span><span class="p">][</span><span class="s1">&#39;main_digester&#39;</span><span class="p">]</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="c1"># pH-Wert</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        <span class="n">pH</span> <span class="o">=</span> <span class="n">digester_data</span><span class="p">[</span><span class="s1">&#39;pH&#39;</span><span class="p">]</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        <span class="k">if</span> <span class="n">pH</span> <span class="o">&lt;</span> <span class="mf">6.8</span><span class="p">:</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⚠ Niedriger pH (</span><span class="si">{</span><span class="n">pH</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">) - Übersäuerungsrisiko&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>        <span class="k">elif</span> <span class="n">pH</span> <span class="o">&gt;</span> <span class="mf">8.0</span><span class="p">:</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⚠ Hoher pH (</span><span class="si">{</span><span class="n">pH</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">) - Mögliche Ammoniakinhibition&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>        <span class="c1"># VFA/TAC-Verhältnis</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>        <span class="n">VFA</span> <span class="o">=</span> <span class="n">digester_data</span><span class="p">[</span><span class="s1">&#39;VFA&#39;</span><span class="p">]</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>        <span class="n">TAC</span> <span class="o">=</span> <span class="n">digester_data</span><span class="p">[</span><span class="s1">&#39;TAC&#39;</span><span class="p">]</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>        <span class="n">VFA_TAC</span> <span class="o">=</span> <span class="n">VFA</span> <span class="o">/</span> <span class="n">TAC</span> <span class="k">if</span> <span class="n">TAC</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>        <span class="k">if</span> <span class="n">VFA_TAC</span> <span class="o">&gt;</span> <span class="mf">0.4</span><span class="p">:</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⚠ Hohes VFA/TAC (</span><span class="si">{</span><span class="n">VFA_TAC</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">) - Prozessinstabilität&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>        <span class="c1"># Gasproduktion</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>        <span class="n">Q_gas</span> <span class="o">=</span> <span class="n">digester_data</span><span class="p">[</span><span class="s1">&#39;Q_gas&#39;</span><span class="p">]</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>        <span class="k">if</span> <span class="n">Q_gas</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>  <span class="c1"># Beispielschwelle</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⚠ Niedrige Gasproduktion (</span><span class="si">{</span><span class="n">Q_gas</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m³/d)&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="energiebilanz-analyse">Energiebilanz-Analyse<a class="headerlink" href="#energiebilanz-analyse" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">energy_balance_check</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="sd">    Energiesystem-Diagnose</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="sd">    Siehe: components/energy.md#vollständiges-energiesystem</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">final</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">comp</span> <span class="o">=</span> <span class="n">final</span><span class="p">[</span><span class="s1">&#39;components&#39;</span><span class="p">]</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="c1"># BHKW-Leistung</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">P_el</span> <span class="o">=</span> <span class="n">comp</span><span class="p">[</span><span class="s1">&#39;chp1&#39;</span><span class="p">][</span><span class="s1">&#39;P_el&#39;</span><span class="p">]</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">P_th</span> <span class="o">=</span> <span class="n">comp</span><span class="p">[</span><span class="s1">&#39;chp1&#39;</span><span class="p">][</span><span class="s1">&#39;P_th&#39;</span><span class="p">]</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="c1"># Wärmebedarf</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    <span class="n">Q_heat</span> <span class="o">=</span> <span class="n">comp</span><span class="p">[</span><span class="s1">&#39;heat1&#39;</span><span class="p">][</span><span class="s1">&#39;Q_heat_supplied&#39;</span><span class="p">]</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    <span class="n">P_aux</span> <span class="o">=</span> <span class="n">comp</span><span class="p">[</span><span class="s1">&#39;heat1&#39;</span><span class="p">][</span><span class="s1">&#39;P_aux_heat&#39;</span><span class="p">]</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    <span class="c1"># Warnungen</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="k">if</span> <span class="n">P_aux</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⚠ Hoher Zusatzheizungsbedarf: </span><span class="si">{</span><span class="n">P_aux</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> kW&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  → Isolierung verbessern oder BHKW vergrößern&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>    <span class="n">heat_utilization</span> <span class="o">=</span> <span class="n">Q_heat</span> <span class="o">/</span> <span class="n">P_th</span> <span class="k">if</span> <span class="n">P_th</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>    <span class="k">if</span> <span class="n">heat_utilization</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⚠ Niedrige Wärmenutzung: </span><span class="si">{</span><span class="n">heat_utilization</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  → Zusätzliche Wärmeverbraucher erwägen&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="mechanische-energie-audit">Mechanische Energie-Audit<a class="headerlink" href="#mechanische-energie-audit" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">mechanical_energy_audit</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="sd">    Parasitäre Last-Analyse</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="sd">    Siehe: components/mechanical.md#integrationsbeispiel</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">final</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">comp</span> <span class="o">=</span> <span class="n">final</span><span class="p">[</span><span class="s1">&#39;components&#39;</span><span class="p">]</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="c1"># Gesamtverbrauch</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">pump_energy</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pump1&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;energy_consumed&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="n">mixer_energy</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mix1&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;energy_consumed&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="n">total_parasitic</span> <span class="o">=</span> <span class="n">pump_energy</span> <span class="o">+</span> <span class="n">mixer_energy</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="c1"># BHKW-Produktion</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="n">chp_energy</span> <span class="o">=</span> <span class="n">comp</span><span class="p">[</span><span class="s1">&#39;chp1&#39;</span><span class="p">][</span><span class="s1">&#39;P_el&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">30</span> <span class="o">*</span> <span class="mi">24</span>  <span class="c1"># kWh</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    <span class="c1"># Parasitäre Last</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    <span class="n">parasitic_fraction</span> <span class="o">=</span> <span class="n">total_parasitic</span> <span class="o">/</span> <span class="n">chp_energy</span> <span class="k">if</span> <span class="n">chp_energy</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    <span class="k">if</span> <span class="n">parasitic_fraction</span> <span class="o">&gt;</span> <span class="mf">0.10</span><span class="p">:</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⚠ Hohe parasitäre Last: </span><span class="si">{</span><span class="n">parasitic_fraction</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  → Intermittierendes Mischen aktivieren&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  → Pumpendimensionierung prüfen&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="optimale-betriebsbereiche-schnellreferenz">Optimale Betriebsbereiche - Schnellreferenz<a class="headerlink" href="#optimale-betriebsbereiche-schnellreferenz" title="Permanent link">&para;</a></h2>
+<h3 id="fermenter">Fermenter<a class="headerlink" href="#fermenter" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Optimal</th>
+<th>Akzeptabel</th>
+<th>Kritisch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pH</td>
+<td>7.0-7.5</td>
+<td>6.8-8.0</td>
+<td>&lt;6.8 oder &gt;8.0</td>
+</tr>
+<tr>
+<td>VFA [g/L]</td>
+<td>0.5-2.0</td>
+<td>2.0-4.0</td>
+<td>&gt;4.0</td>
+</tr>
+<tr>
+<td>VFA/TAC</td>
+<td>0.2-0.3</td>
+<td>0.3-0.4</td>
+<td>&gt;0.4</td>
+</tr>
+<tr>
+<td>TAC [g CaCO₃/L]</td>
+<td>5.0-10.0</td>
+<td>4.0-12.0</td>
+<td>&lt;4.0</td>
+</tr>
+<tr>
+<td>CH₄-Gehalt [%]</td>
+<td>58-62</td>
+<td>55-65</td>
+<td>&lt;55</td>
+</tr>
+</tbody>
+</table>
+<p>Quelle: <a href="../components/biological/#optimale-betriebsbereiche">Biological Components - Process Monitoring</a></p>
+<h3 id="energiesystem_1">Energiesystem<a class="headerlink" href="#energiesystem_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Komponente</th>
+<th>Optimaler Bereich</th>
+<th>Warnung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BHKW-Last</td>
+<td>80-100%</td>
+<td>&lt;40% oder &gt;100%</td>
+</tr>
+<tr>
+<td>Wärmenutzung</td>
+<td>&gt;70%</td>
+<td>&lt;50%</td>
+</tr>
+<tr>
+<td>Gasspeicher</td>
+<td>30-70%</td>
+<td>&lt;20% oder &gt;80%</td>
+</tr>
+<tr>
+<td>Parasitäre Last</td>
+<td>&lt;10% der Produktion</td>
+<td>&gt;15%</td>
+</tr>
+</tbody>
+</table>
+<p>Quelle: <a href="../components/energy/#leistungsmetriken">Energy Components - Performance Metrics</a></p>
+<h3 id="mechanische-komponenten_2">Mechanische Komponenten<a class="headerlink" href="#mechanische-komponenten_2" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Komponente</th>
+<th>Optimaler Betrieb</th>
+<th>Ineffizient</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pumpe</td>
+<td>80-90% Q_nom</td>
+<td>&lt;50% oder &gt;95%</td>
+</tr>
+<tr>
+<td>Rührwerk (kontinuierlich)</td>
+<td>5 W/m³</td>
+<td>&gt;8 W/m³</td>
+</tr>
+<tr>
+<td>Rührwerk (intermittierend)</td>
+<td>25% Einschaltzeit</td>
+<td>&gt;40%</td>
+</tr>
+<tr>
+<td>Pumpenwirkungsgrad</td>
+<td>&gt;65%</td>
+<td>&lt;50%</td>
+</tr>
+</tbody>
+</table>
+<p>Quelle: <a href="../components/mechanical/#dimensionierungsrichtlinien">Mechanical Components - Dimensioning Guidelines</a></p>
+<h2 id="haufig-gestellte-fragen-faq">Häufig gestellte Fragen (FAQ)<a class="headerlink" href="#haufig-gestellte-fragen-faq" title="Permanent link">&para;</a></h2>
+<h3 id="warum-ist-mein-ph-wert-niedrig">Warum ist mein pH-Wert niedrig?<a class="headerlink" href="#warum-ist-mein-ph-wert-niedrig" title="Permanent link">&para;</a></h3>
+<p><strong>Antwort</strong>: Siehe <a href="../components/biological/#niedriger-ph-wert">Biological Components - Niedriger pH-Wert</a></p>
+<p>Hauptursachen: Überfütterung, unzureichende Pufferung, plötzliche Substratänderungen</p>
+<h3 id="warum-lauft-mein-bhkw-nicht">Warum läuft mein BHKW nicht?<a class="headerlink" href="#warum-lauft-mein-bhkw-nicht" title="Permanent link">&para;</a></h3>
+<p><strong>Antwort</strong>: Siehe <a href="../components/energy/#problem-bhkw-läuft-nicht">Energy Components - BHKW läuft nicht</a></p>
+<p>Prüfen: Gasverfügbarkeit, Mindestgasbedarf, Speicherdruck</p>
+<h3 id="warum-verbraucht-mein-ruhrwerk-so-viel-energie">Warum verbraucht mein Rührwerk so viel Energie?<a class="headerlink" href="#warum-verbraucht-mein-ruhrwerk-so-viel-energie" title="Permanent link">&para;</a></h3>
+<p><strong>Antwort</strong>: Siehe <a href="../components/mechanical/#problem-rührwerk-verbraucht-zu-viel-energie">Mechanical Components - Rührwerk verbraucht zu viel</a></p>
+<p>Lösung: Intermittierenden Betrieb aktivieren (70% Einsparung)</p>
+<h3 id="warum-verschlechtert-sich-meine-substratqualitat-schnell">Warum verschlechtert sich meine Substratqualität schnell?<a class="headerlink" href="#warum-verschlechtert-sich-meine-substratqualitat-schnell" title="Permanent link">&para;</a></h3>
+<p><strong>Antwort</strong>: Siehe <a href="../components/feeding/#problem-schneller-qualitätsverlust">Feeding Components - Schneller Qualitätsverlust</a></p>
+<p>Prüfen: Lagertyp, Temperatur, Lagerzeit</p>
+<h3 id="warum-ist-meine-simulation-langsam">Warum ist meine Simulation langsam?<a class="headerlink" href="#warum-ist-meine-simulation-langsam" title="Permanent link">&para;</a></h3>
+<p><strong>Antwort</strong>: Siehe <a href="../quickstart/#issue-slow-simulation">Quickstart - Slow Simulation</a></p>
+<p>Lösungen: Zeitschritt erhöhen, save_interval reduzieren, parallele Simulation nutzen</p>
+<h2 id="weiterfuhrende-ressourcen">Weiterführende Ressourcen<a class="headerlink" href="#weiterfuhrende-ressourcen" title="Permanent link">&para;</a></h2>
+<h3 id="komponenten-spezifische-dokumentation">Komponenten-spezifische Dokumentation<a class="headerlink" href="#komponenten-spezifische-dokumentation" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><a href="../components/biological/">Biological Components</a></strong>: Fermenter, Hydrolyse, Separatoren</li>
+<li><strong><a href="../components/energy/">Energy Components</a></strong>: BHKW, Heizung, Gasspeicher, Fackel</li>
+<li><strong><a href="../components/mechanical/">Mechanical Components</a></strong>: Pumpen, Rührwerke</li>
+<li><strong><a href="../components/feeding/">Feeding Components</a></strong>: Lager, Dosierer</li>
+</ul>
+<h3 id="allgemeine-anleitungen">Allgemeine Anleitungen<a class="headerlink" href="#allgemeine-anleitungen" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><a href="../installation/">Installation Guide</a></strong>: Setup und Plattform-spezifische Probleme</li>
+<li><strong><a href="../quickstart/">Quickstart Guide</a></strong>: Erste Schritte und grundlegende Simulation</li>
+<li><strong><a href="../components/">Components Overview</a></strong>: Architektur und Integrationsmuster</li>
+</ul>
+<h3 id="externe-ressourcen">Externe Ressourcen<a class="headerlink" href="#externe-ressourcen" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>GitHub Issues</strong>: <a href="https://github.com/dgaida/PyADM1ODE/issues">PyADM1ODE Issues</a></li>
+<li><strong>Leitfaden Biogas</strong>: FNR (2016) - Praktische Betriebsempfehlungen</li>
+<li><strong>ADM1 Documentation</strong>: IWA - Wissenschaftliche Grundlagen</li>
+</ul>
+<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">&para;</a></h2>
+<p>Wenn Sie in dieser Dokumentation keine Lösung finden:</p>
+<ol>
+<li><strong>Prüfen Sie GitHub Issues</strong>: <a href="https://github.com/dgaida/PyADM1ODE/issues">Existing Issues</a></li>
+<li><strong>Erstellen Sie ein neues Issue</strong> mit:</li>
+<li>Betriebssystem und Version</li>
+<li>Python-Version</li>
+<li>Fehlermeldungen und Stack Traces</li>
+<li>Minimales reproduzierbares Beispiel</li>
+<li><strong>Kontakt</strong>: daniel.gaida@th-koeln.de</li>
+</ol>
+<h2 id="checkliste-fur-problem-reports">Checkliste für Problem-Reports<a class="headerlink" href="#checkliste-fur-problem-reports" title="Permanent link">&para;</a></h2>
+<p>Bei der Meldung von Problemen bitte folgende Informationen angeben:</p>
+<ul>
+<li>[ ] <strong>System-Info</strong>: OS, Python-Version (<code>python --version</code>)</li>
+<li>[ ] <strong>PyADM1-Version</strong>: <code>import pyadm1; print(pyadm1.__version__)</code></li>
+<li>[ ] <strong>Problemkategorie</strong>: Installation, Biologisch, Energie, Mechanisch, etc.</li>
+<li>[ ] <strong>Fehlermeldung</strong>: Vollständiger Stack Trace</li>
+<li>[ ] <strong>Minimales Beispiel</strong>: Code, der das Problem reproduziert</li>
+<li>[ ] <strong>Erwartetes Verhalten</strong>: Was sollte passieren</li>
+<li>[ ] <strong>Tatsächliches Verhalten</strong>: Was passiert stattdessen</li>
+<li>[ ] <strong>Logs</strong>: Relevante Ausgaben oder Logdateien</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Daniel Gaida
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/dgaida/PyADM1ODE" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://pypi.org/project/PyADM1ODE/" target="_blank" rel="noopener" title="pypi.org" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6M286.2 444.7a20.4 20.4 0 1 1 0-40.7 20.4 20.4 0 1 1 0 40.7M167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4m-6.6-183.4a20.4 20.4 0 1 1 0 40.8 20.4 20.4 0 1 1 0-40.8"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
