@@ -226,11 +226,11 @@ class Digester(Component):
 
         # Calculate process indicators (if available via DLL)
         try:
-            # Convert state to 2D array for DLL methods that expect double[,]
-            adm1_state_2d = np.atleast_2d(self.adm1_state)
-            self.state["pH"] = ADMstate.calcPHOfADMstate(adm1_state_2d)
-            self.state["VFA"] = ADMstate.calcVFAOfADMstate(adm1_state_2d, "gHAceq/l").Value
-            self.state["TAC"] = ADMstate.calcTACOfADMstate(adm1_state_2d, "gCaCO3eq/l").Value
+            # Use 1D list of standard Python floats
+            adm1_state_l = [float(x) for x in self.adm1_state]
+            self.state["pH"] = ADMstate.calcPHOfADMstate(adm1_state_l)
+            self.state["VFA"] = ADMstate.calcVFAOfADMstate(adm1_state_l, "gHAceq/l").Value
+            self.state["TAC"] = ADMstate.calcTACOfADMstate(adm1_state_l, "gCaCO3eq/l").Value
         except Exception as e:
             # Fallback if DLL not available
             print(f"Warning: Could not calculate process indicators: {e}")

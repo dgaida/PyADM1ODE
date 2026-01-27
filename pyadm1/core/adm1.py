@@ -323,13 +323,13 @@ class ADM1:
             ...
         """
         # Calculate process indicators using DLL
-        # Convert state to 2D array for DLL methods that expect double[,]
-        state_2d = np.atleast_2d(state_ADM1xp)
-        self._pH_l.append(np.round(ADMstate.calcPHOfADMstate(state_2d), 1))
-        self._FOSTAC.append(np.round(ADMstate.calcFOSTACOfADMstate(state_2d).Value, 2))
-        self._AcvsPro.append(np.round(ADMstate.calcAcetic_vs_PropionicOfADMstate(state_2d).Value, 1))
-        self._VFA.append(np.round(ADMstate.calcVFAOfADMstate(state_2d, "gHAceq/l").Value, 2))
-        self._TAC.append(np.round(ADMstate.calcTACOfADMstate(state_2d, "gCaCO3eq/l").Value, 1))
+        # Convert to list of standard Python floats to avoid np.float64 issues
+        state_l = [float(x) for x in state_ADM1xp]
+        self._pH_l.append(np.round(ADMstate.calcPHOfADMstate(state_l), 1))
+        self._FOSTAC.append(np.round(ADMstate.calcFOSTACOfADMstate(state_l).Value, 2))
+        self._AcvsPro.append(np.round(ADMstate.calcAcetic_vs_PropionicOfADMstate(state_l).Value, 1))
+        self._VFA.append(np.round(ADMstate.calcVFAOfADMstate(state_l, "gHAceq/l").Value, 2))
+        self._TAC.append(np.round(ADMstate.calcTACOfADMstate(state_l, "gCaCO3eq/l").Value, 1))
 
         # Ensure at least 2 values in lists (because the last three values go to the controller)
         # I am assuming here that we start from a steady state
@@ -490,8 +490,9 @@ class ADM1:
         K_pH_aa, nn_aa, K_pH_ac, n_ac, K_pH_h2, n_h2 = ADMParams.getADMinhibitionparams()
 
         # Calculate pH and H+ concentration
-        # Convert state to 2D array for DLL methods that expect double[,]
-        pH = ADMstate.calcPHOfADMstate(np.atleast_2d(state_zero))
+        # Convert to list of standard Python floats for DLL call
+        state_l = [float(x) for x in state_zero]
+        pH = ADMstate.calcPHOfADMstate(state_l)
         S_H_ion = 10 ** (-pH)
 
         # Unpack state variables
@@ -846,17 +847,17 @@ class ADM1:
                 "k_m_h2": 35.0,
             }
         else:
-            # Convert Q to 2D array for DLL methods that expect double[,]
-            # pythonnet 3.x requires explicit 2D arrays for double[,] arguments
-            Q_2d = np.atleast_2d(self._Q)
+            # Convert Q to 1D list of standard Python floats
+            # This worked in serial simulations and avoids type conversion errors.
+            Q_l = [float(x) for x in self._Q]
 
             # Calculate weighted substrate parameters from C# DLL
-            f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = self._feedstock.mySubstrates().calcfFactors(Q_2d)
+            f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = self._feedstock.mySubstrates().calcfFactors(Q_l)
             f_xp_xc = max(f_xp_xc, 0.0)
 
-            k_dis = self._feedstock.mySubstrates().calcDisintegrationParam(Q_2d)
-            k_hyd_ch, k_hyd_pr, k_hyd_li = self._feedstock.mySubstrates().calcHydrolysisParams(Q_2d)
-            k_m_c4, k_m_pro, k_m_ac, k_m_h2 = self._feedstock.mySubstrates().calcMaxUptakeRateParams(Q_2d)
+            k_dis = self._feedstock.mySubstrates().calcDisintegrationParam(Q_l)
+            k_hyd_ch, k_hyd_pr, k_hyd_li = self._feedstock.mySubstrates().calcHydrolysisParams(Q_l)
+            k_m_c4, k_m_pro, k_m_ac, k_m_h2 = self._feedstock.mySubstrates().calcMaxUptakeRateParams(Q_l)
 
             base_params = {
                 "f_ch_xc": f_ch_xc,

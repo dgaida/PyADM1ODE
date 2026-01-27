@@ -257,9 +257,10 @@ class Feedstock:
 
             ADMstreamAllSubstrates.append(myData_l)
 
-        # Convert to 2D array for mixADMstreams
-        # pythonnet 3.x requires explicit 2D arrays for double[,] arguments
-        ADMstreamAllSubstrates = np.array(ADMstreamAllSubstrates)
+        # Convert to 1D list of standard floats for mixADMstreams
+        # pythonnet 3.x works best with standard types for 1D arrays
+        # This worked in serial simulations and avoids dimensionality issues.
+        ADMstreamAllSubstrates = [float(x) for x in np.ravel(ADMstreamAllSubstrates)]
 
         ADMstreamMix = ADMstate.mixADMstreams(ADMstreamAllSubstrates)
 
