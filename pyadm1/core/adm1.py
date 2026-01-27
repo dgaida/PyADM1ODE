@@ -843,13 +843,17 @@ class ADM1:
                 "k_m_h2": 35.0,
             }
         else:
+            # Convert Q to 2D array for DLL methods that expect double[,]
+            # pythonnet 3.x requires explicit 2D arrays for double[,] arguments
+            Q_2d = np.atleast_2d(self._Q)
+
             # Calculate weighted substrate parameters from C# DLL
-            f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = self._feedstock.mySubstrates().calcfFactors(self._Q)
+            f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = self._feedstock.mySubstrates().calcfFactors(Q_2d)
             f_xp_xc = max(f_xp_xc, 0.0)
 
-            k_dis = self._feedstock.mySubstrates().calcDisintegrationParam(self._Q)
-            k_hyd_ch, k_hyd_pr, k_hyd_li = self._feedstock.mySubstrates().calcHydrolysisParams(self._Q)
-            k_m_c4, k_m_pro, k_m_ac, k_m_h2 = self._feedstock.mySubstrates().calcMaxUptakeRateParams(self._Q)
+            k_dis = self._feedstock.mySubstrates().calcDisintegrationParam(Q_2d)
+            k_hyd_ch, k_hyd_pr, k_hyd_li = self._feedstock.mySubstrates().calcHydrolysisParams(Q_2d)
+            k_m_c4, k_m_pro, k_m_ac, k_m_h2 = self._feedstock.mySubstrates().calcMaxUptakeRateParams(Q_2d)
 
             base_params = {
                 "f_ch_xc": f_ch_xc,
