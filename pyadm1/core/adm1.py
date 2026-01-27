@@ -323,11 +323,13 @@ class ADM1:
             ...
         """
         # Calculate process indicators using DLL
-        self._pH_l.append(np.round(ADMstate.calcPHOfADMstate(state_ADM1xp), 1))
-        self._FOSTAC.append(np.round(ADMstate.calcFOSTACOfADMstate(state_ADM1xp).Value, 2))
-        self._AcvsPro.append(np.round(ADMstate.calcAcetic_vs_PropionicOfADMstate(state_ADM1xp).Value, 1))
-        self._VFA.append(np.round(ADMstate.calcVFAOfADMstate(state_ADM1xp, "gHAceq/l").Value, 2))
-        self._TAC.append(np.round(ADMstate.calcTACOfADMstate(state_ADM1xp, "gCaCO3eq/l").Value, 1))
+        # Convert state to 2D array for DLL methods that expect double[,]
+        state_2d = np.atleast_2d(state_ADM1xp)
+        self._pH_l.append(np.round(ADMstate.calcPHOfADMstate(state_2d), 1))
+        self._FOSTAC.append(np.round(ADMstate.calcFOSTACOfADMstate(state_2d).Value, 2))
+        self._AcvsPro.append(np.round(ADMstate.calcAcetic_vs_PropionicOfADMstate(state_2d).Value, 1))
+        self._VFA.append(np.round(ADMstate.calcVFAOfADMstate(state_2d, "gHAceq/l").Value, 2))
+        self._TAC.append(np.round(ADMstate.calcTACOfADMstate(state_2d, "gCaCO3eq/l").Value, 1))
 
         # Ensure at least 2 values in lists (because the last three values go to the controller)
         # I am assuming here that we start from a steady state
@@ -488,7 +490,8 @@ class ADM1:
         K_pH_aa, nn_aa, K_pH_ac, n_ac, K_pH_h2, n_h2 = ADMParams.getADMinhibitionparams()
 
         # Calculate pH and H+ concentration
-        pH = ADMstate.calcPHOfADMstate(state_zero)
+        # Convert state to 2D array for DLL methods that expect double[,]
+        pH = ADMstate.calcPHOfADMstate(np.atleast_2d(state_zero))
         S_H_ion = 10 ** (-pH)
 
         # Unpack state variables
