@@ -452,7 +452,8 @@ class BiochemicalProcesses:
         # For now, we'll use a placeholder that should be replaced
         from biogas import ADMstate
 
-        S_H_ion = 10 ** (-ADMstate.calcPHOfADMstate(state))
+        # Convert state to 2D array for DLL methods that expect double[,]
+        S_H_ion = 10 ** (-ADMstate.calcPHOfADMstate(np.atleast_2d(state)))
 
         ab = AcidBaseKinetics()
 

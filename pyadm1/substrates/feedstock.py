@@ -257,7 +257,9 @@ class Feedstock:
 
             ADMstreamAllSubstrates.append(myData_l)
 
-        ADMstreamAllSubstrates = np.ravel(ADMstreamAllSubstrates)
+        # Convert to 2D array for mixADMstreams
+        # pythonnet 3.x requires explicit 2D arrays for double[,] arguments
+        ADMstreamAllSubstrates = np.array(ADMstreamAllSubstrates)
 
         ADMstreamMix = ADMstate.mixADMstreams(ADMstreamAllSubstrates)
 
