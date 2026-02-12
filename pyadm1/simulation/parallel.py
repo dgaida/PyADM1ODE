@@ -615,10 +615,19 @@ def _compute_scenario_metrics(adm1, final_state: List[float], Q: List[float]) ->
         try:
             from biogas import ADMstate
 
-            metrics["pH"] = float(ADMstate.calcPHOfADMstate(final_state))
-            metrics["VFA"] = float(ADMstate.calcVFAOfADMstate(final_state, "gHAceq/l").Value)
-            metrics["TAC"] = float(ADMstate.calcTACOfADMstate(final_state, "gCaCO3eq/l").Value)
-            if metrics["TAC"] > 0:
+            ph = float(ADMstate.calcPHOfADMstate(final_state))
+            if 0.0 < ph < 14.0:
+                metrics["pH"] = ph
+
+            vfa = float(ADMstate.calcVFAOfADMstate(final_state, "gHAceq/l").Value)
+            if np.isfinite(vfa) and vfa >= 0.0:
+                metrics["VFA"] = vfa
+
+            tac = float(ADMstate.calcTACOfADMstate(final_state, "gCaCO3eq/l").Value)
+            if np.isfinite(tac) and tac > 0.0:
+                metrics["TAC"] = tac
+
+            if "VFA" in metrics and "TAC" in metrics:
                 metrics["FOS_TAC"] = float(metrics["VFA"] / metrics["TAC"])
         except Exception as e:
             print(e)

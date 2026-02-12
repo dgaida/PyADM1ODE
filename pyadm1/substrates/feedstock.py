@@ -247,18 +247,46 @@ class Feedstock:
         List[float]
             Mixed ADM1 input stream (34 dimensions)
         """
-        ADMstreamAllSubstrates = []
+        admstream_rows = []
 
         for i in range(1, cls._mySubstrates.getNumSubstrates() + 1):
             ADMstream = ADMstate.calcADMstream(cls._mySubstrates.get(i), Q[i - 1])
 
             myData_l = [row for row in ADMstream]
+            admstream_rows.append(myData_l)
 
-            ADMstreamAllSubstrates.append(myData_l)
+        errors = []
 
-        ADMstreamAllSubstrates = np.ravel(ADMstreamAllSubstrates)
+        # Preferred path for pythonnet 3.x on Linux/Mono: explicit System.Double[,]
+        try:
+            from System import Array, Double
 
-        ADMstreamMix = ADMstate.mixADMstreams(ADMstreamAllSubstrates)
+            n_rows = len(admstream_rows)
+            n_cols = len(admstream_rows[0]) if n_rows > 0 else 0
+            admstream_2d = Array.CreateInstance(Double, n_rows, n_cols)
+
+            for r in range(n_rows):
+                for c in range(n_cols):
+                    admstream_2d[r, c] = float(admstream_rows[r][c])
+
+            ADMstreamMix = ADMstate.mixADMstreams(admstream_2d)
+        except Exception as exc:
+            errors.append(f"System.Double[,] path failed: {exc}")
+
+            # Fallback path: numpy 2D can work depending on runtime bindings
+            try:
+                admstream_2d_np = np.asarray(admstream_rows, dtype=float)
+                ADMstreamMix = ADMstate.mixADMstreams(admstream_2d_np)
+            except Exception as exc_np:
+                errors.append(f"numpy 2D path failed: {exc_np}")
+
+                # Legacy fallback: flattened 1D layout
+                try:
+                    admstream_1d = np.ravel(admstream_rows)
+                    ADMstreamMix = ADMstate.mixADMstreams(admstream_1d)
+                except Exception as exc_1d:
+                    errors.append(f"flattened 1D path failed: {exc_1d}")
+                    raise TypeError("Failed to mix ADM streams. " + " | ".join(errors))
 
         ADMstreamMix = [row for row in ADMstreamMix]
 
