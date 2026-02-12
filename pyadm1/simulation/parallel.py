@@ -43,6 +43,8 @@ Example:
 """
 
 import multiprocessing as mp
+import os
+import sys
 from multiprocessing import Pool
 from typing import List, Dict, Any, Optional, Tuple
 from dataclasses import dataclass, field
@@ -131,6 +133,26 @@ class MonteCarloConfig:
     parameter_distributions: Dict[str, Tuple[float, float]]
     fixed_params: Dict[str, Any] = field(default_factory=dict)
     seed: Optional[int] = None
+
+
+def _get_mp_context() -> mp.context.BaseContext:
+    """
+    Choose a safe multiprocessing start method.
+
+    On Linux, the default 'fork' can deadlock in CI when the parent process has
+    already initialized native runtimes (e.g. Mono/.NET/pythonnet, OpenMP, etc.).
+    'forkserver' (Linux) and 'spawn' (portable) avoid that class of issues.
+
+    You can override the method via PYADM1_MP_START_METHOD (e.g. 'spawn').
+    """
+    method = os.getenv("PYADM1_MP_START_METHOD")
+    if method:
+        return mp.get_context(method)
+
+    if sys.platform.startswith("linux"):
+        return mp.get_context("forkserver")
+
+    return mp.get_context("spawn")
 
 
 class ParallelSimulator:
@@ -228,8 +250,9 @@ class ParallelSimulator:
                 if self.verbose and ((i + 1) % 10 == 0 or (i + 1) == len(scenarios)):
                     print(f"  Completed {i + 1}/{len(scenarios)} scenarios")
         else:
+            ctx = _get_mp_context()
             # Run scenarios in parallel
-            with Pool(processes=self.n_workers) as pool:
+            with ctx.Pool(processes=self.n_workers, maxtasksperchild=1) as pool:
                 if self.verbose:
                     # Use imap for progress tracking
                     results = []
