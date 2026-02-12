@@ -217,17 +217,28 @@ class ParallelSimulator:
         # Add scenario IDs
         scenarios_with_ids = [(i, scenario) for i, scenario in enumerate(scenarios)]
 
-        # Run scenarios in parallel
-        with Pool(processes=self.n_workers) as pool:
-            if self.verbose:
-                # Use imap for progress tracking
-                results = []
-                for i, result in enumerate(pool.imap(worker_func, scenarios_with_ids)):
-                    results.append(result)
-                    if (i + 1) % 10 == 0 or (i + 1) == len(scenarios):
-                        print(f"  Completed {i + 1}/{len(scenarios)} scenarios")
-            else:
-                results = pool.map(worker_func, scenarios_with_ids)
+        # Avoid spawning a process pool for trivial workloads. This also prevents
+        # pythonnet/.NET deadlocks seen in some CI environments with forked workers.
+        use_sequential = self.n_workers <= 1 or len(scenarios_with_ids) <= 1
+
+        if use_sequential:
+            results = []
+            for i, scenario_data in enumerate(scenarios_with_ids):
+                results.append(worker_func(scenario_data))
+                if self.verbose and ((i + 1) % 10 == 0 or (i + 1) == len(scenarios)):
+                    print(f"  Completed {i + 1}/{len(scenarios)} scenarios")
+        else:
+            # Run scenarios in parallel
+            with Pool(processes=self.n_workers) as pool:
+                if self.verbose:
+                    # Use imap for progress tracking
+                    results = []
+                    for i, result in enumerate(pool.imap(worker_func, scenarios_with_ids)):
+                        results.append(result)
+                        if (i + 1) % 10 == 0 or (i + 1) == len(scenarios):
+                            print(f"  Completed {i + 1}/{len(scenarios)} scenarios")
+                else:
+                    results = pool.map(worker_func, scenarios_with_ids)
 
         elapsed_time = time.time() - start_time
 
@@ -611,26 +622,29 @@ def _compute_scenario_metrics(adm1, final_state: List[float], Q: List[float]) ->
         if q_gas > 0:
             metrics["CH4_content"] = float(q_ch4 / q_gas)
 
-        # Calculate process indicators using DLL if available
-        try:
-            from biogas import ADMstate
+        # Calculate process indicators using DLL if available.
+        # In subprocess workers this can deadlock on some Linux CI setups when
+        # pythonnet initializes the runtime after forking.
+        if mp.current_process().name == "MainProcess":
+            try:
+                from biogas import ADMstate
 
-            ph = float(ADMstate.calcPHOfADMstate(final_state))
-            if 0.0 < ph < 14.0:
-                metrics["pH"] = ph
+                ph = float(ADMstate.calcPHOfADMstate(final_state))
+                if 0.0 < ph < 14.0:
+                    metrics["pH"] = ph
 
-            vfa = float(ADMstate.calcVFAOfADMstate(final_state, "gHAceq/l").Value)
-            if np.isfinite(vfa) and vfa >= 0.0:
-                metrics["VFA"] = vfa
+                vfa = float(ADMstate.calcVFAOfADMstate(final_state, "gHAceq/l").Value)
+                if np.isfinite(vfa) and vfa >= 0.0:
+                    metrics["VFA"] = vfa
 
-            tac = float(ADMstate.calcTACOfADMstate(final_state, "gCaCO3eq/l").Value)
-            if np.isfinite(tac) and tac > 0.0:
-                metrics["TAC"] = tac
+                tac = float(ADMstate.calcTACOfADMstate(final_state, "gCaCO3eq/l").Value)
+                if np.isfinite(tac) and tac > 0.0:
+                    metrics["TAC"] = tac
 
-            if "VFA" in metrics and "TAC" in metrics:
-                metrics["FOS_TAC"] = float(metrics["VFA"] / metrics["TAC"])
-        except Exception as e:
-            print(e)
+                if "VFA" in metrics and "TAC" in metrics:
+                    metrics["FOS_TAC"] = float(metrics["VFA"] / metrics["TAC"])
+            except Exception:
+                pass
 
         # Substrate-related metrics
         Q_total = sum(Q)
