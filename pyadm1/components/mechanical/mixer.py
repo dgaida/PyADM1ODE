@@ -43,6 +43,8 @@ from enum import Enum
 import numpy as np
 from ..base import Component, ComponentType
 
+# Account for motor efficiency (typical 85-95%)
+MOTOR_EFFICIENCY = 0.9
 
 class MixerType(str, Enum):
     """Enumeration of mixer types."""
@@ -387,12 +389,17 @@ class Mixer(Component):
 
         P_mech = self.power_number * self.fluid_density * N**3 * D**5 / 1000.0  # Convert W to kW
 
-        # Account for motor efficiency (typical 85-95%)
-        motor_efficiency = 0.90
-        P_electrical = P_mech / motor_efficiency
+        P_electrical = P_mech / MOTOR_EFFICIENCY
+
+        # Part-load electrical limit should scale with speed^3
+        speed = max(self.current_speed_fraction, 0.0)
+        if speed <= 1.0:
+            dynamic_limit = self.power_installed * speed**3
+        else:
+            dynamic_limit = self.power_installed * min(speed**3, 1.2)
 
         # Limit to installed power
-        P_actual = min(P_electrical, self.power_installed)
+        P_actual = min(P_electrical, dynamic_limit)
 
         return P_actual
 

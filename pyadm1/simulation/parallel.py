@@ -51,6 +51,25 @@ import time
 from functools import partial
 import traceback
 
+_CALIBRATION_PARAM_KEYS = frozenset(
+    (
+        "f_ch_xc",
+        "f_pr_xc",
+        "f_li_xc",
+        "f_xI_xc",
+        "f_sI_xc",
+        "f_xp_xc",
+        "k_dis",
+        "k_hyd_ch",
+        "k_hyd_pr",
+        "k_hyd_li",
+        "k_m_c4",
+        "k_m_pro",
+        "k_m_ac",
+        "k_m_h2",
+    )
+)
+
 
 @dataclass
 class ScenarioResult:
@@ -511,8 +530,10 @@ def _run_single_scenario(
         feedstock = Feedstock(feeding_freq=adm1_config["feedstock_config"]["feeding_freq"])
         adm1 = ADM1(feedstock=feedstock, V_liq=adm1_config["V_liq"], V_gas=adm1_config["V_gas"], T_ad=adm1_config["T_ad"])
 
-        # Apply scenario parameters
         Q = parameters.get("Q", [0] * 10)
+        calibration_params = {key: value for key, value in parameters.items() if key in _CALIBRATION_PARAM_KEYS}
+        if calibration_params:
+            adm1.set_calibration_parameters(calibration_params)
 
         # Create influent
         adm1.create_influent(Q, 0)
