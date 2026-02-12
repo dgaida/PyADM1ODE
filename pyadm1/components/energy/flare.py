@@ -6,6 +6,7 @@
 The Flare is a gas sink that combusts (destroys) vented/excess biogas safely.
 It keeps track of vented volume and combustion emissions (simplified).
 """
+
 from typing import Dict, Any, Optional
 
 from ..base import Component, ComponentType

@@ -92,7 +92,7 @@ class ADMParams:
         C_va = 0.024  # kmole C.kg^-1COD        # C_Sva OK
         C_ch4 = 0.0156  # kmole C.kg^-1COD      # C_Sch4 OK
 
-        (Y_su, Y_aa, Y_fa, Y_c4, Y_pro, Y_ac, Y_h2) = ADMParams._getADMYparams()
+        Y_su, Y_aa, Y_fa, Y_c4, Y_pro, Y_ac, Y_h2 = ADMParams._getADMYparams()
 
         f_h2_aa, f_va_aa, f_bu_aa, f_pro_aa, f_ac_aa = ADMParams._getADMfaaparams()
 

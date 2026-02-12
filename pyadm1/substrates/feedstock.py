@@ -25,7 +25,6 @@ clr.AddReference(os.path.join(dll_path, "physchem"))
 
 from biogas import substrates, ADMstate  # noqa: E402  # type: ignore
 
-
 """
 this class returns parameters of substrates and also creates the input stream for the ADM1 model. The substrate
 parameters are defined in the XML file substrate_...xml. This xml file can be accessed via the DLLs in the dlls

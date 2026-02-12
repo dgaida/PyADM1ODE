@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import pandas as pd
 
+
 def xml_to_table(xml_path: str) -> pd.DataFrame:
     tree = ET.parse(xml_path)
     root = tree.getroot()
@@ -34,17 +35,19 @@ def xml_to_table(xml_path: str) -> pd.DataFrame:
                 if ref_elem is not None:
                     reference = "".join(ref_elem.itertext()).strip()
 
-                rows.append({
-                    "substrate_id": substrate_id,
-                    "substrate_name": substrate_name,
-                    "substrate_class": substrate_class,
-                    "section": section_tag,
-                    "symbol": symbol,
-                    "value": value,
-                    "unit": unit,
-                    "label": label,
-                    "reference": reference,
-                })
+                rows.append(
+                    {
+                        "substrate_id": substrate_id,
+                        "substrate_name": substrate_name,
+                        "substrate_class": substrate_class,
+                        "section": section_tag,
+                        "symbol": symbol,
+                        "value": value,
+                        "unit": unit,
+                        "label": label,
+                        "reference": reference,
+                    }
+                )
 
     df = pd.DataFrame(rows)
 

@@ -296,10 +296,7 @@ class PlantConfigurator:
         # Create components
         digester, _ = self.add_digester(**digester_config)
 
-        components = {
-            "digester": digester.component_id,
-            "storage": f"{digester.component_id}_storage"
-        }
+        components = {"digester": digester.component_id, "storage": f"{digester.component_id}_storage"}
 
         if chp_config:
             chp = self.add_chp(**chp_config)

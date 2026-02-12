@@ -46,6 +46,7 @@ from ..base import Component, ComponentType
 # Account for motor efficiency (typical 85-95%)
 MOTOR_EFFICIENCY = 0.9
 
+
 class MixerType(str, Enum):
     """Enumeration of mixer types."""
 

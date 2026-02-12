@@ -540,7 +540,7 @@ class ADM1:
         Rho_T_8, Rho_T_9, Rho_T_10, Rho_T_11 = gas_rates
 
         # Extract substrate-dependent fractions
-        (f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc, _, _, _, _, _, _, _, _) = substrate_params.values()
+        f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc, _, _, _, _, _, _, _, _ = substrate_params.values()
 
         # Calculate biomass decay fractions
         f_p = 0.08
@@ -843,44 +843,61 @@ class ADM1:
                 "k_m_h2": 35.0,
             }
         else:
-            # Convert Q to 2D array for DLL methods that expect double[,]
-            # pythonnet 3.x requires explicit 2D arrays for double[,] arguments
-            # Q_2d dosen't work with pythonnet=3.0.5
-            try:
-                Q_2d = np.atleast_2d(self._Q)
-                
-                f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = self._feedstock.mySubstrates().calcfFactors(Q_2d)
-                f_xp_xc = max(f_xp_xc, 0.0)
-                
-                k_dis = self._feedstock.mySubstrates().calcDisintegrationParam(Q_2d)
-                k_hyd_ch, k_hyd_pr, k_hyd_li = self._feedstock.mySubstrates().calcHydrolysisParams(Q_2d)
-                k_m_c4, k_m_pro, k_m_ac, k_m_h2 = self._feedstock.mySubstrates().calcMaxUptakeRateParams(Q_2d)
-                
-            except (TypeError, AttributeError):
-                # If Q_2d is not accepted, use self._Q directly
-                f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = self._feedstock.mySubstrates().calcfFactors(self._Q)
-                f_xp_xc = max(f_xp_xc, 0.0)
-                
-                k_dis = self._feedstock.mySubstrates().calcDisintegrationParam(self._Q)
-                k_hyd_ch, k_hyd_pr, k_hyd_li = self._feedstock.mySubstrates().calcHydrolysisParams(self._Q)
-                k_m_c4, k_m_pro, k_m_ac, k_m_h2 = self._feedstock.mySubstrates().calcMaxUptakeRateParams(self._Q)
 
-            base_params = {
-                "f_ch_xc": f_ch_xc,
-                "f_pr_xc": f_pr_xc,
-                "f_li_xc": f_li_xc,
-                "f_xI_xc": f_xI_xc,
-                "f_sI_xc": f_sI_xc,
-                "f_xp_xc": f_xp_xc,
-                "k_dis": k_dis,
-                "k_hyd_ch": k_hyd_ch,
-                "k_hyd_pr": k_hyd_pr,
-                "k_hyd_li": k_hyd_li,
-                "k_m_c4": k_m_c4,
-                "k_m_pro": k_m_pro,
-                "k_m_ac": k_m_ac,
-                "k_m_h2": k_m_h2,
-            }
+            def _calc_params_for_q(q_arg):
+                f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = self._feedstock.mySubstrates().calcfFactors(q_arg)
+                f_xp_xc = max(f_xp_xc, 0.0)
+
+                k_dis = self._feedstock.mySubstrates().calcDisintegrationParam(q_arg)
+                k_hyd_ch, k_hyd_pr, k_hyd_li = self._feedstock.mySubstrates().calcHydrolysisParams(q_arg)
+                k_m_c4, k_m_pro, k_m_ac, k_m_h2 = self._feedstock.mySubstrates().calcMaxUptakeRateParams(q_arg)
+
+                return {
+                    "f_ch_xc": f_ch_xc,
+                    "f_pr_xc": f_pr_xc,
+                    "f_li_xc": f_li_xc,
+                    "f_xI_xc": f_xI_xc,
+                    "f_sI_xc": f_sI_xc,
+                    "f_xp_xc": f_xp_xc,
+                    "k_dis": k_dis,
+                    "k_hyd_ch": k_hyd_ch,
+                    "k_hyd_pr": k_hyd_pr,
+                    "k_hyd_li": k_hyd_li,
+                    "k_m_c4": k_m_c4,
+                    "k_m_pro": k_m_pro,
+                    "k_m_ac": k_m_ac,
+                    "k_m_h2": k_m_h2,
+                }
+
+            errors = []
+
+            # Preferred path for pythonnet 3.x on Linux/Mono: pass explicit System.Double[,]
+            try:
+                from System import Array, Double
+
+                q_values = [float(q) for q in self._Q]
+                q_2d = Array.CreateInstance(Double, 1, len(q_values))
+                for idx, value in enumerate(q_values):
+                    q_2d[0, idx] = value
+
+                base_params = _calc_params_for_q(q_2d)
+            except Exception as exc:
+                errors.append(f"System.Double[,] path failed: {exc}")
+
+                # Fallback path: numpy 2D array works on some local runtimes
+                try:
+                    q_2d_np = np.atleast_2d(np.asarray(self._Q, dtype=float))
+                    base_params = _calc_params_for_q(q_2d_np)
+                except Exception as exc_np:
+                    errors.append(f"numpy 2D path failed: {exc_np}")
+
+                    # Final fallback for legacy runtimes that still accept 1D arrays
+                    try:
+                        q_1d = [float(q) for q in self._Q]
+                        base_params = _calc_params_for_q(q_1d)
+                    except Exception as exc_1d:
+                        errors.append(f"1D path failed: {exc_1d}")
+                        raise TypeError("Failed to evaluate substrate-dependent parameters. " + " | ".join(errors))
 
         # Apply calibration parameter overrides if they exist
         if hasattr(self, "_calibration_params") and self._calibration_params:
