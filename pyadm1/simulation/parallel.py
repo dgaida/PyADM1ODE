@@ -45,7 +45,6 @@ Example:
 import multiprocessing as mp
 import os
 import sys
-from multiprocessing import Pool
 from typing import List, Dict, Any, Optional, Tuple
 from dataclasses import dataclass, field
 import numpy as np
