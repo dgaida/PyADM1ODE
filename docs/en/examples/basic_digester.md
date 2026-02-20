@@ -1,6 +1,6 @@
 # Basic Digester Example
 
-The [examples/basic_digester.py](../../examples/01_basic_digester.py) example demonstrates the simplest possible PyADM1 configuration: a single digester with substrate feed and integrated gas storage.
+The [examples/basic_digester.py](https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py) example demonstrates the simplest possible PyADM1 configuration: a single digester with substrate feed and integrated gas storage.
 
 ## System Architecture
 
@@ -79,7 +79,7 @@ feeding_freq = 48  # Can change substrate every 48 hours
 feedstock = Feedstock(feeding_freq=feeding_freq)
 ```
 
-The feedstock object loads substrate parameters from [`substrate_gummersbach.xml`](../../data/substrates/substrate_gummersbach.xml) and manages:
+The feedstock object loads substrate parameters from [`substrate_gummersbach.xml`](https://github.com/dgaida/PyADM1ODE/blob/master/data/substrates/substrate_gummersbach.xml) and manages:
 - Substrate composition (Weender analysis)
 - ADM1 parameter calculation
 - Influent stream generation
@@ -456,4 +456,4 @@ configurator.add_digester(
 - [`two_stage_plant.md`](two_stage_plant.md): Two-stage digestion with CHP and heating
 - `calibration_workflow.md`: Parameter estimation from measurement data
 - `substrate_optimization.py`: Optimal feed strategy
-- [`parallel_two_stage_simulation.py`](../../examples/parallel_two_stage_simulation.py): Parallel simulations
+- [`parallel_two_stage_simulation.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py): Parallel simulations

@@ -539,4 +539,4 @@ if heat_outputs['P_aux_heat'] > 50:  # kW Zusatzheizung
 - [Biologische Komponenten](biological.md): Fermenter und Prozesssteuerung
 - [Mechanische Komponenten](mechanical.md): Pumpen und Rührwerke
 - [Fütterungskomponenten](feeding.md): Lagerung und Dosierung
-- [API-Referenz](../../api_reference/components/energy.md): Detaillierte Klassendokumentation
+- [API-Referenz](../../api/energy.md): Detaillierte Klassendokumentation

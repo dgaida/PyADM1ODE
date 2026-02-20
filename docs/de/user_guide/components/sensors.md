@@ -457,4 +457,4 @@ Das Sensormodul wird erweitert um:
 - [Energiekomponenten](energy.md): BHKW und Wärmesysteme
 - [Mechanische Komponenten](mechanical.md): Pumpen und Rührwerke
 - [Fütterungskomponenten](feeding.md): Lagerung und Dosierung
-- [API-Referenz](../../api_reference/components/sensors.md): Detaillierte Klassendokumentation (wenn verfügbar)
+- API-Referenz (in Kürze): Detaillierte Klassendokumentation (wenn verfügbar)

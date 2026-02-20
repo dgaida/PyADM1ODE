@@ -56,3 +56,7 @@ for result in results:
 
 - Erfahren Sie mehr über die [Komponenten](components/index.md).
 - Sehen Sie sich die [Beispiele](../examples/basic_digester.md) an.
+
+## Fehlerbehebung
+
+Bei Problemen mit der Simulation prüfen Sie bitte die Eingabeparameter und die Substratzusammensetzung.

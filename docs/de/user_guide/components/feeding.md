@@ -612,4 +612,4 @@ if avg_error > 10:
 - [Biologische Komponenten](biological.md): Fermenter und Prozesssteuerung
 - [Energiekomponenten](energy.md): BHKW und Wärmesysteme
 - [Mechanische Komponenten](mechanical.md): Pumpen und Rührwerke
-- [API-Referenz](../../api_reference/components/feeding.md): Detaillierte Klassendokumentation
+- [API-Referenz](../../api/feeding.md): Detaillierte Klassendokumentation

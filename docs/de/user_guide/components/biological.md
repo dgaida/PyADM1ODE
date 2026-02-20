@@ -346,4 +346,4 @@ diagnose_low_gas_production(digester.outputs_data)
 - [Energiekomponenten](energy.md): BHKW und Wärmesysteme
 - [Mechanische Komponenten](mechanical.md): Pumpen und Rührwerke
 - [Fütterungskomponenten](feeding.md): Lagerung und Dosierung
-- [API-Referenz](../../api_reference/components/biological.md): Detaillierte Klassendokumentation
+- [API-Referenz](../../api/biological.md): Detaillierte Klassendokumentation

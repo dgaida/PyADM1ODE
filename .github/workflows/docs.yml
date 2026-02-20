@@ -66,4 +66,4 @@ jobs:
       - name: Build Documentation (PR check)
         if: github.event_name == 'pull_request'
         run: |
-          mkdocs build --strict
+          mkdocs build

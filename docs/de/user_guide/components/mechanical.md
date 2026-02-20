@@ -687,4 +687,4 @@ if mixer_result['mixing_quality'] < 0.7:
 - [Biologische Komponenten](biological.md): Fermenter und Prozesssteuerung
 - [Energiekomponenten](energy.md): BHKW und Wärmesysteme
 - [Fütterungskomponenten](feeding.md): Lagerung und Dosierung
-- [API-Referenz](../../api_reference/components/mechanical.md): Detaillierte Klassendokumentation
+- [API-Referenz](../../api/mechanical.md): Detaillierte Klassendokumentation

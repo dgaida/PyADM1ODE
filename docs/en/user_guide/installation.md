@@ -335,7 +335,7 @@ pip install -e . --upgrade
 
 ## Optional Packages
 
-### [PyADM1ODE_mcp]((https://github.com/dgaida/PyADM1ODE_mcp)) - Model Context Protocol Server
+### [PyADM1ODE_mcp]([PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp)) - Model Context Protocol Server
 
 For LLM-driven biogas plant modeling with natural language interface:
 

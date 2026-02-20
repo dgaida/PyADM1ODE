@@ -127,3 +127,13 @@ print(f"PyADM1 Version: {pyadm1.__version__}")
 from pyadm1.core import ADM1
 print("Core-Module erfolgreich geladen.")
 ```
+
+## Fehlerbehebung
+
+### Häufige Probleme
+
+#### 1. C#-DLLs nicht gefunden
+Stellen Sie sicher, dass die DLL-Dateien im Verzeichnis `pyadm1/dlls/` vorhanden sind.
+
+#### 2. pythonnet Importfehler
+Dies deutet oft auf eine fehlende Mono-Installation (unter Linux/macOS) oder ein Problem mit dem .NET Framework (unter Windows) hin.

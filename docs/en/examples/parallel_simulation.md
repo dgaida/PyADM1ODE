@@ -1,6 +1,6 @@
 # Parallel Simulation Example
 
-The [examples/05_parallel_two_stage_simulation.py](../../examples/05_parallel_two_stage_simulation.py) example demonstrates efficient parallel execution of multiple biogas plant simulation scenarios for parameter optimization, sensitivity analysis, and uncertainty quantification.
+The [examples/05_parallel_two_stage_simulation.py](https://github.com/dgaida/PyADM1ODE/blob/master/examples/05_parallel_two_stage_simulation.py) example demonstrates efficient parallel execution of multiple biogas plant simulation scenarios for parameter optimization, sensitivity analysis, and uncertainty quantification.
 
 ## Overview
 

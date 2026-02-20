@@ -203,7 +203,7 @@ class ADM1:
 
         Args:
             Q: Volumetric flow rates for each substrate [m³/d]
-               Length must equal number of substrates in feedstock
+                Length must equal number of substrates in feedstock
             i: Time step index for accessing influent dataframe
 
         Example:

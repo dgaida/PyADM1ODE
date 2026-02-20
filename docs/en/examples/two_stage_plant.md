@@ -1,6 +1,6 @@
 # Two-Stage Biogas Plant Example
 
-The [examples/two_stage_plant.py](../../examples/02_two_stage_plant.py) example demonstrates a complete two-stage biogas plant with mechanical components, energy integration, and comprehensive process monitoring.
+The [examples/two_stage_plant.py](https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py) example demonstrates a complete two-stage biogas plant with mechanical components, energy integration, and comprehensive process monitoring.
 
 ## Plant Schematic
 
@@ -725,4 +725,4 @@ Q_best, Q_ch4_pred = simulator.determine_best_feed_by_n_sims(
 - [`basic_digester.md`](basic_digester.md): Simple single-stage system
 - `calibration_workflow.md`(calibration_workflow.md): Parameter estimation from measurement data
 - `substrate_optimization.py`: Optimal feed strategy
-- [`parallel_two_stage_simulation.py`](../../examples/parallel_two_stage_simulation.py): Parallel simulations
+- [`parallel_two_stage_simulation.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py): Parallel simulations

@@ -10,14 +10,14 @@ PyADM1ODE ist ein komplexes System mit biologischen, energetischen und mechanisc
 - **[Biologische Prozesse](#biologische-prozesse)**: Fermenter-Instabilität, pH-Probleme, VFA-Akkumulation
 - **[Energiesystem](#energiesystem)**: BHKW, Heizung, Gasspeicher
 - **[Mechanische Komponenten](#mechanische-komponenten)**: Pumpen, Rührwerke
-- **[Fütterungssystem](#fütterungssystem)**: Substratqualität, Dosiergenauigkeit
+- **[Fütterungssystem](#futterungssystem)**: Substratqualität, Dosiergenauigkeit
 - **[Simulation und Performance](#simulation-und-performance)**: Laufzeit, Konvergenz, Numerik
 
 ## Installation und Setup
 
 Für Installationsprobleme siehe:
 
-**[→ Installation Guide - Troubleshooting Section](installation.md#troubleshooting)**
+**[→ Installation Guide - Troubleshooting Section](installation.md#fehlerbehebung)**
 
 ## Biologische Prozesse
 
@@ -29,7 +29,7 @@ Für Diagnose und Lösung biologischer Prozessprobleme siehe:
 
 ### Prozessüberwachung
 
-**[→ Biological Components - Process Monitoring](components/biological.md#prozessüberwachung)**
+**[→ Biological Components - Process Monitoring](components/biological.md#prozessuberwachung)**
 
 ## Energiesystem
 
@@ -51,7 +51,7 @@ Für mechanische Komponentenprobleme siehe:
 
 **[→ Mechanical Components - Troubleshooting Section](components/mechanical.md#fehlerbehebung)**
 
-## Fütterungssystem
+## Fütterungssystem { #futterungssystem }
 
 ### Lager- und Dosierprobleme
 
@@ -65,7 +65,7 @@ Für Fütterungskomponenten-Probleme siehe:
 
 Für allgemeine Simulationsprobleme siehe:
 
-**[→ Quickstart Guide - Troubleshooting Section](quickstart.md#troubleshooting)**
+**[→ Quickstart Guide - Troubleshooting Section](quickstart.md#fehlerbehebung)**
 
 ## Support
 

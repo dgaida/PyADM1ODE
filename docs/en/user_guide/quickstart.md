@@ -82,7 +82,7 @@ Day 1:
 
 ## Basic Single Digester
 
-See the complete example in [`examples/01_basic_digester.py`](../../examples/01_basic_digester.py).
+See the complete example in [`examples/01_basic_digester.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py).
 
 ### System Architecture
 
@@ -261,7 +261,7 @@ Digester → Gas Storage → CHP → Flare
 
 ## Two-Stage Digestion
 
-See the complete example in [`examples/02_two_stage_plant.py`](../../examples/02_two_stage_plant.py).
+See the complete example in [`examples/02_two_stage_plant.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py).
 
 ### System Architecture
 
@@ -600,9 +600,9 @@ Now that you've run your first simulations:
 
 1. **Learn about components**: [Components Guide](components/index.md)
 2. **Explore advanced examples**:
-   - [`examples/01_basic_digester.py`](../../examples/01_basic_digester.py)
-   - [`examples/02_two_stage_plant.py`](../../examples/02_two_stage_plant.py)
-   - [`examples/parallel_two_stage_simulation.py`](../../examples/parallel_two_stage_simulation.py)
+   - [`examples/01_basic_digester.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py)
+   - [`examples/02_two_stage_plant.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py)
+   - [`examples/parallel_two_stage_simulation.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py)
 3. **Try parallel simulations**: Multiple scenarios simultaneously
 4. **Explore MCP server**: [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp) for LLM-driven plant design
 5. **Calibrate your model**: [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration) for parameter fitting

@@ -45,8 +45,11 @@ Example:
 import multiprocessing as mp
 import os
 import sys
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Optional, Tuple, TYPE_CHECKING
 from dataclasses import dataclass, field
+
+if TYPE_CHECKING:
+    from pyadm1.core.adm1 import ADM1
 import numpy as np
 import time
 from functools import partial
@@ -171,7 +174,7 @@ class ParallelSimulator:
         >>> results = parallel.run_scenarios(scenarios, duration=30)
     """
 
-    def __init__(self, adm1, n_workers: Optional[int] = None, verbose: bool = True):
+    def __init__(self, adm1: "ADM1", n_workers: Optional[int] = None, verbose: bool = True):
         """
         Initialize parallel simulator.
 
@@ -276,7 +279,7 @@ class ParallelSimulator:
         return results
 
     def parameter_sweep(
-        self, config: ParameterSweepConfig, duration: float, initial_state: List[float], **kwargs
+        self, config: ParameterSweepConfig, duration: float, initial_state: List[float], **kwargs: Any
     ) -> List[ScenarioResult]:
         """
         Run parameter sweep for a single parameter.
@@ -319,7 +322,7 @@ class ParallelSimulator:
         duration: float,
         initial_state: List[float],
         fixed_params: Optional[Dict[str, Any]] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> List[ScenarioResult]:
         """
         Run multi-parameter sweep (full factorial design).
@@ -370,7 +373,7 @@ class ParallelSimulator:
         return self.run_scenarios(scenarios, duration, initial_state, **kwargs)
 
     def monte_carlo(
-        self, config: MonteCarloConfig, duration: float, initial_state: List[float], **kwargs
+        self, config: MonteCarloConfig, duration: float, initial_state: List[float], **kwargs: Any
     ) -> List[ScenarioResult]:
         """
         Run Monte Carlo simulation with parameter uncertainty.
@@ -428,8 +431,7 @@ class ParallelSimulator:
         """
         Summarize results from multiple scenarios.
 
-        Computes statistics (mean, std, min, max) for each metric across
-        all successful scenarios.
+        Computes summary statistics for each metric across all successful scenarios.
 
         Args:
             results: List of ScenarioResult objects
@@ -439,8 +441,11 @@ class ParallelSimulator:
             Dictionary with summary statistics
 
         Example:
-            >>> summary = parallel.summarize_results(results)
-            >>> print(f"Mean CH4: {summary['Q_ch4']['mean']:.1f} m³/d")
+            ```python
+            summary = parallel.summarize_results(results)
+            ch4_stats = summary['metrics']['Q_ch4']
+            print(f"Mean CH4: {ch4_stats['avg']:.1f} m³/d")
+            ```
         """
         successful = [r for r in results if r.success]
         n_scenarios = len(results)
@@ -616,7 +621,7 @@ def _run_single_scenario(
         )
 
 
-def _compute_scenario_metrics(adm1, final_state: List[float], Q: List[float]) -> Dict[str, float]:
+def _compute_scenario_metrics(adm1: "ADM1", final_state: List[float], Q: List[float]) -> Dict[str, float]:
     """
     Compute performance metrics from simulation results.
 
