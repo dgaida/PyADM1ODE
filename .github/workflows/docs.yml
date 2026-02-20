@@ -1,55 +1,69 @@
-name: Deploy Documentation
+name: Documentation
 
 on:
   push:
     branches:
       - master
-    paths:
-      - 'docs/**'
-      - '.github/workflows/docs.yml'
-      - 'mkdocs.yml'
-      - 'pyadm1/**'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - master
 
 permissions:
   contents: write
 
 jobs:
-  deploy:
+  docs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
-          pip install mkdocs mkdocs-material pymdown-extensions mkdocs-autorefs mkdocs-mermaid2-plugin
+          pip install -e ".[dev,docs]"
+          pip install mkdocs-material mkdocs-static-i18n "mkdocstrings[python]" mkdocs-mermaid2-plugin mike mkdocs-autorefs interrogate git-cliff
 
       - name: Install Mono (Linux)
-        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y mono-complete
           mono --version
 
-      - name: Install pyadm1 package
+      - name: Check API Doc Coverage
         run: |
-          pip install -e .
+          interrogate pyadm1
 
-      - name: Generate API documentation
+      - name: Generate Changelog
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |
-          python pyadm1/utils/api_doc_generator.py
+          git-cliff --output CHANGELOG.md
 
-      - name: Commit auto-generated docs (if changed)
+      - name: Configure Git
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add docs/api_reference/ -- '*.md'
-          git diff --quiet && git diff --staged --quiet || git commit -m "docs: Auto-generate API reference"
-          git push || echo "No changes to commit"
 
-      - name: Deploy to GitHub Pages
-        run: mkdocs gh-deploy --force
+      - name: Deploy Versioned Documentation
+        if: github.event_name == 'push'
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+            mike deploy --push --update-aliases $VERSION latest
+          elif [[ $GITHUB_REF == refs/heads/master ]]; then
+            mike deploy --push --update-aliases dev latest
+          fi
+          mike set-default latest --push
+
+      - name: Build Documentation (PR check)
+        if: github.event_name == 'pull_request'
+        run: |
+          mkdocs build
