@@ -1,5 +1,5 @@
-site_name: PyADM1ODE Documentation
-site_description: Python framework for modeling, simulating, and optimizing agricultural biogas plants based on the Anaerobic Digestion Model No. 1
+site_name: PyADM1ODE
+site_description: Python framework for modeling, simulating, and optimizing agricultural biogas plants
 site_author: Daniel Gaida
 site_url: https://dgaida.github.io/PyADM1ODE/
 
@@ -9,8 +9,8 @@ edit_uri: edit/master/docs/
 
 theme:
   name: material
+  language: de
   palette:
-    # Light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: indigo
@@ -18,7 +18,6 @@ theme:
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    # Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: indigo
@@ -35,11 +34,34 @@ theme:
     - search.highlight
     - content.code.copy
     - content.code.annotate
+    - navigation.instant
+    - navigation.tracking
+    - content.tabs.link
 
 plugins:
   - search
+  - i18n:
+      docs_structure: folder
+      languages:
+        - locale: de
+          name: Deutsch
+          default: true
+        - locale: en
+          name: English
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_category_heading: true
+  - mermaid2:
+      arguments:
+        theme: 'default'
+  - mike:
+      version_selector: true
   - autorefs
-  - mermaid2
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -66,36 +88,36 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Getting Started:
+  - Erste Schritte:
       - Installation: user_guide/installation.md
-      - Quick Start: user_guide/quickstart.md
-  - Documentation:
-      - Components:
-          - Overview: user_guide/components/index.md
-          - Biological: user_guide/components/biological.md
-          - Energy: user_guide/components/energy.md
-          - Feeding: user_guide/components/feeding.md
-          - Mechanical: user_guide/components/mechanical.md
-          - Sensors: user_guide/components/sensors.md
-      - Examples:
-          - Basic Digester: examples/basic_digester.md
-          - Two Stage Plant: examples/two_stage_plant.md
-          - Parallel Simulation: examples/parallel_simulation.md
-  - Troubleshooting: user_guide/troubleshooting.md
-  - API Reference:
-      - Components:
-          - Components: api_reference/components/components.md
-          - Biological: api_reference/components/biological.md
-          - Energy: api_reference/components/energy.md
-          - Feeding: api_reference/components/feeding.md
-          - Mechanical: api_reference/components/mechanical.md
-          - Sensors: api_reference/components/sensors.md
-      - Configurator:
-          - Configurator: api_reference/configurator/configurator.md
-          - Templates: api_reference/configurator/templates.md
-      - Core: api_reference/core/core.md
-      - Simulation: api_reference/simulation/simulation.md
-      - Substrates: api_reference/substrates/substrates.md
+      - Schnellstart: user_guide/quickstart.md
+  - Dokumentation:
+      - Komponenten:
+          - Übersicht: user_guide/components/index.md
+          - Biologisch: user_guide/components/biological.md
+          - Energie: user_guide/components/energy.md
+          - Fütterung: user_guide/components/feeding.md
+          - Mechanisch: user_guide/components/mechanical.md
+          - Sensoren: user_guide/components/sensors.md
+      - Beispiele:
+          - Basis-Fermenter: examples/basic_digester.md
+          - Zweistufige Anlage: examples/two_stage_plant.md
+          - Parallele Simulation: examples/parallel_simulation.md
+      - Architektur: architecture/index.md
+      - Entwicklung:
+          - Styleguide: development/style_guide.md
+  - Fehlerbehebung: user_guide/troubleshooting.md
+  - Metriken: metrics.md
+  - Changelog: CHANGELOG.md
+  - API-Referenz:
+      - Core: api/core.md
+      - Biologisch: api/biological.md
+      - Energie: api/energy.md
+      - Mechanisch: api/mechanical.md
+      - Fütterung: api/feeding.md
+      - Konfigurator: api/configurator.md
+      - Simulation: api/simulation.md
+      - Substrate: api/substrates.md
 
 extra:
   social:
