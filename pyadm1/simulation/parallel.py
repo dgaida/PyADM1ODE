@@ -233,6 +233,7 @@ class ParallelSimulator:
             dt=dt,
             compute_metrics=compute_metrics,
             save_time_series=save_time_series,
+            verbose=self.verbose,
         )
 
         # Add scenario IDs
@@ -251,7 +252,9 @@ class ParallelSimulator:
         else:
             ctx = _get_mp_context()
             # Run scenarios in parallel
-            with ctx.Pool(processes=self.n_workers, maxtasksperchild=1) as pool:
+            # Keep workers alive across multiple scenarios to avoid repeated
+            # python startup / pythonnet initialization overhead.
+            with ctx.Pool(processes=self.n_workers) as pool:
                 if self.verbose:
                     # Use imap for progress tracking
                     results = []
@@ -530,6 +533,7 @@ def _run_single_scenario(
     dt: float,
     compute_metrics: bool,
     save_time_series: bool,
+    verbose: bool,
 ) -> ScenarioResult:
     """
     Worker function to run a single scenario.
@@ -562,6 +566,9 @@ def _run_single_scenario(
         # Create fresh ADM1 instance
         feedstock = Feedstock(feeding_freq=adm1_config["feedstock_config"]["feeding_freq"])
         adm1 = ADM1(feedstock=feedstock, V_liq=adm1_config["V_liq"], V_gas=adm1_config["V_gas"], T_ad=adm1_config["T_ad"])
+        if not verbose:
+            # Prevent expensive per-scenario stdout noise in performance runs.
+            adm1.print_params_at_current_state = lambda _state: None
 
         Q = parameters.get("Q", [0] * 10)
         calibration_params = {key: value for key, value in parameters.items() if key in _CALIBRATION_PARAM_KEYS}

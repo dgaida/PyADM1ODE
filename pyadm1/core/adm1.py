@@ -477,11 +477,11 @@ class ADM1:
         }
 
         gas_params = {
-            "k_L_a": params_tuple[82],
-            "K_H_co2": params_tuple[83],
-            "K_H_ch4": params_tuple[84],
-            "K_H_h2": params_tuple[85],
-            "k_p": params_tuple[81],
+            "k_p": params_tuple[82],
+            "k_L_a": params_tuple[83],
+            "K_H_co2": params_tuple[84],
+            "K_H_ch4": params_tuple[85],
+            "K_H_h2": params_tuple[86],
         }
 
         # Get pH and inhibition parameters

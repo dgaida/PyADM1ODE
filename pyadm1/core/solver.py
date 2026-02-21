@@ -104,7 +104,16 @@ class ODESolver:
         """
         # Set default evaluation times if not provided
         if t_eval is None:
-            t_eval = np.arange(t_span[0], t_span[1], 0.05)
+            t_start, t_end = float(t_span[0]), float(t_span[1])
+            step = 0.05
+            t_eval = np.arange(t_start, t_end, step, dtype=float)
+
+            # Always include both interval bounds to avoid returning only t_start
+            # when (t_end - t_start) < step.
+            if t_eval.size == 0 or not np.isclose(t_eval[0], t_start):
+                t_eval = np.insert(t_eval, 0, t_start)
+            if not np.isclose(t_eval[-1], t_end):
+                t_eval = np.append(t_eval, t_end)
 
         # Prepare solver arguments
         solver_args = {
@@ -115,7 +124,8 @@ class ODESolver:
         }
 
         # Add optional step size constraints
-        if self.config.min_step is not None:
+        # scipy.solve_ivp only accepts min_step for LSODA.
+        if self.config.min_step is not None and self.config.method.upper() == "LSODA":
             solver_args["min_step"] = self.config.min_step
         if self.config.max_step is not None:
             solver_args["max_step"] = self.config.max_step

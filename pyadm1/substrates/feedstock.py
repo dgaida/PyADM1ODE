@@ -263,11 +263,11 @@ class Feedstock:
 
             n_rows = len(admstream_rows)
             n_cols = len(admstream_rows[0]) if n_rows > 0 else 0
-            admstream_2d = Array.CreateInstance(Double, n_rows, n_cols)
+            admstream_2d = Array.CreateInstance(Double, n_cols, n_rows)
 
             for r in range(n_rows):
                 for c in range(n_cols):
-                    admstream_2d[r, c] = float(admstream_rows[r][c])
+                    admstream_2d[c, r] = float(admstream_rows[r][c])
 
             ADMstreamMix = ADMstate.mixADMstreams(admstream_2d)
         except Exception as exc:
@@ -313,6 +313,7 @@ class Feedstock:
     data_path = Path(__file__).parent.parent.parent / "data" / "substrates"
 
     _mySubstrates = substrates(os.path.join(data_path, "substrate_gummersbach.xml"))
+    _admstream_mix_cache = {}
 
     # names of ADM1 input stream components
     _header = [

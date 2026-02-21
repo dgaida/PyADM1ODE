@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 # ============================================================================
 # examples/quickstart.py
 # ============================================================================
@@ -47,8 +47,11 @@ def main():
     else:
         print(f"   Loading from: {initial_state_file}")
         adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
-
     Q_substrates = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]  # Corn silage and manure
+
+    df = feedstock.get_influent_dataframe(Q=Q_substrates)
+    for col in df.columns:
+        print(f"Column '{col}': {df.iloc[0][col]}")
 
     # Step 3: Create biogas plant
     print("3. Creating biogas plant...")
@@ -100,6 +103,8 @@ def main():
         print(f"  pH:      {comp_results.get('pH', 0):>8.2f}")
         print(f"  VFA:     {comp_results.get('VFA', 0):>8.2f} g/L")
         print(f"  TAC:     {comp_results.get('TAC', 0):>8.2f} g/L")
+        ratio = comp_results.get("VFA", 0) / comp_results.get("TAC", 1)
+        print(f"  VFA/TAC: {ratio:>8.2f}")
         print()
 
     # Final summary
