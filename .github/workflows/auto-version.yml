@@ -1,0 +1,66 @@
+name: Auto Versioning
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  bump-version:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: master
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Bump version
+        id: bump
+        run: python scripts/bump_version.py
+
+      - name: Generate Changelog
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: --tag v${{ steps.bump.outputs.new_version }}
+          outputPath: CHANGELOG.md
+
+      - name: Sync Changelogs
+        run: |
+          for lang in en de; do
+            if [ -d "docs/$lang" ]; then
+              cp CHANGELOG.md "docs/$lang/CHANGELOG.md"
+            fi
+          done
+
+      - name: Commit and Tag
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          # Add modified files, ignore those that don't exist
+          FILES="pyproject.toml pyadm1/__version__.py tests/__init__.py CHANGELOG.md docs/en/metrics.md docs/de/metrics.md docs/en/CHANGELOG.md docs/de/CHANGELOG.md"
+          for f in $FILES; do
+            if [ -f "$f" ]; then
+              git add "$f"
+            fi
+          done
+
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(release): bump version to ${{ steps.bump.outputs.new_version }} [skip ci]"
+            git tag -a v${{ steps.bump.outputs.new_version }} -m "Release v${{ steps.bump.outputs.new_version }}"
+            git push origin master --tags
+          else
+            echo "No changes to commit"
+          fi
