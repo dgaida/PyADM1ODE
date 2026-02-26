@@ -29,7 +29,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
     
     
       
@@ -3754,8 +3754,8 @@ adm1.create_influent([15, 10, 0, 0, 0, 0, 0, 0, 0, 0], 0)</p>
 <a id="__codelineno-0-166" name="__codelineno-0-166"></a>
 <a id="__codelineno-0-167" name="__codelineno-0-167"></a>        <span class="c1"># Constants</span>
 <a id="__codelineno-0-168" name="__codelineno-0-168"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_R</span> <span class="o">=</span> <span class="mf">0.08313999999</span>  <span class="c1"># 0.083145  Gas constant [bar·M^-1·K^-1]</span>
-<a id="__codelineno-0-169" name="__codelineno-0-169"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_T_base</span> <span class="o">=</span> <span class="mf">295.15</span>  <span class="c1"># Base temperature (outside temperature at the biogas plant, 304.15, 298.15) [K]</span>
-<a id="__codelineno-0-170" name="__codelineno-0-170"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_p_atm</span> <span class="o">=</span> <span class="mf">1.04</span>  <span class="c1"># Atmospheric pressure [bar] (1.013 bar; got 1.04 from C# implementation)</span>
+<a id="__codelineno-0-169" name="__codelineno-0-169"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_T_base</span> <span class="o">=</span> <span class="mf">293.15</span>  <span class="c1"># Base temperature (293.15=20°C outside temperature at the biogas plant, 304.15, 298.15) [K]</span>
+<a id="__codelineno-0-170" name="__codelineno-0-170"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_p_atm</span> <span class="o">=</span> <span class="mf">1.04</span>  <span class="c1"># Atmospheric pressure [bar] (1.013 bar; got 1.04 from C# implementation) Simba1.016</span>
 <a id="__codelineno-0-171" name="__codelineno-0-171"></a>
 <a id="__codelineno-0-172" name="__codelineno-0-172"></a>        <span class="c1"># Calculated parameters</span>
 <a id="__codelineno-0-173" name="__codelineno-0-173"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_RT</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_T_ad</span>  <span class="c1"># R * T_ad</span>
@@ -5864,8 +5864,8 @@ directly by users.</p>
 <a id="__codelineno-0-166" name="__codelineno-0-166"></a>
 <a id="__codelineno-0-167" name="__codelineno-0-167"></a>    <span class="c1"># Constants</span>
 <a id="__codelineno-0-168" name="__codelineno-0-168"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_R</span> <span class="o">=</span> <span class="mf">0.08313999999</span>  <span class="c1"># 0.083145  Gas constant [bar·M^-1·K^-1]</span>
-<a id="__codelineno-0-169" name="__codelineno-0-169"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_T_base</span> <span class="o">=</span> <span class="mf">295.15</span>  <span class="c1"># Base temperature (outside temperature at the biogas plant, 304.15, 298.15) [K]</span>
-<a id="__codelineno-0-170" name="__codelineno-0-170"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_p_atm</span> <span class="o">=</span> <span class="mf">1.04</span>  <span class="c1"># Atmospheric pressure [bar] (1.013 bar; got 1.04 from C# implementation)</span>
+<a id="__codelineno-0-169" name="__codelineno-0-169"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_T_base</span> <span class="o">=</span> <span class="mf">293.15</span>  <span class="c1"># Base temperature (293.15=20°C outside temperature at the biogas plant, 304.15, 298.15) [K]</span>
+<a id="__codelineno-0-170" name="__codelineno-0-170"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_p_atm</span> <span class="o">=</span> <span class="mf">1.04</span>  <span class="c1"># Atmospheric pressure [bar] (1.013 bar; got 1.04 from C# implementation) Simba1.016</span>
 <a id="__codelineno-0-171" name="__codelineno-0-171"></a>
 <a id="__codelineno-0-172" name="__codelineno-0-172"></a>    <span class="c1"># Calculated parameters</span>
 <a id="__codelineno-0-173" name="__codelineno-0-173"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_RT</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_T_ad</span>  <span class="c1"># R * T_ad</span>
