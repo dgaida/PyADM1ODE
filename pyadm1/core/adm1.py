@@ -166,8 +166,8 @@ class ADM1:
 
         # Constants
         self._R = 0.08313999999  # 0.083145  Gas constant [bar·M^-1·K^-1]
-        self._T_base = 295.15  # Base temperature (outside temperature at the biogas plant, 304.15, 298.15) [K]
-        self._p_atm = 1.04  # Atmospheric pressure [bar] (1.013 bar; got 1.04 from C# implementation)
+        self._T_base = 293.15  # Base temperature (293.15=20°C outside temperature at the biogas plant, 304.15, 298.15) [K]
+        self._p_atm = 1.04  # Atmospheric pressure [bar] (1.013 bar; got 1.04 from C# implementation) Simba1.016
 
         # Calculated parameters
         self._RT = self._R * self._T_ad  # R * T_ad

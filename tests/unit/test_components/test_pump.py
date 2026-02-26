@@ -308,6 +308,28 @@ class TestPumpEfficiency:
 
         assert result2["P_consumed"] > result1["P_consumed"], "Power should increase with flow"
 
+    def test_estimate_pump_efficiency_covers_small_and_mid_size_branches(self) -> None:
+        """Cover missing branch thresholds in efficiency estimation."""
+        centrifugal_small = Pump("pc1", pump_type="centrifugal", Q_nom=5.0)
+        progressive_small = Pump("pc2", pump_type="progressive_cavity", Q_nom=5.0)
+        piston_mid = Pump("pc3", pump_type="piston", Q_nom=20.0)
+
+        assert centrifugal_small.efficiency == 0.65
+        assert progressive_small.efficiency == 0.50
+        assert piston_mid.efficiency == 0.75
+
+    def test_calculate_efficiency_at_operating_point_returns_zero_for_non_positive_flow(self) -> None:
+        """Directly cover helper early return for Q <= 0."""
+        pump = Pump("pump_1")
+
+        assert pump._calculate_efficiency_at_operating_point(0.0, pump.pressure_head) == 0.0
+
+    def test_calculate_power_consumption_returns_zero_for_non_positive_flow(self) -> None:
+        """Directly cover helper early return for Q <= 0."""
+        pump = Pump("pump_1")
+
+        assert pump._calculate_power_consumption(0.0, pump.pressure_head) == 0.0
+
 
 class TestPumpPressure:
     """Test suite for pump pressure calculations."""

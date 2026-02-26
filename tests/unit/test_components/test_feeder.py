@@ -437,6 +437,15 @@ class TestFeederPerformance:
             specific_energy = energy_per_day / volume_per_day
             assert specific_energy < 10.0, "Specific energy should be reasonable"
 
+    def test_calculate_power_consumption_returns_zero_when_not_running(self) -> None:
+        """Directly cover helper early return when feeder is not running."""
+        feeder = Feeder("feeder_1")
+        feeder.initialize()
+        feeder.is_running = False
+        feeder.current_flow = 10.0
+
+        assert feeder._calculate_power_consumption() == 0.0
+
 
 class TestFeederBlockage:
     """Test suite for feeder blockage detection."""

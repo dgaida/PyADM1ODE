@@ -9,6 +9,7 @@ and their connections to build complete biogas plant configurations.
 import pytest
 import json
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 from pyadm1.configurator.plant_builder import BiogasPlant
@@ -17,6 +18,39 @@ from pyadm1.components.biological.digester import Digester
 from pyadm1.components.energy.chp import CHP
 from pyadm1.components.energy.heating import HeatingSystem
 from pyadm1.substrates.feedstock import Feedstock
+
+
+class _StubPlantComponent:
+    """Minimal test double for BiogasPlant step() branch coverage."""
+
+    def __init__(self, component_id: str, component_type: str, name: str | None = None, **attrs) -> None:
+        self.component_id = component_id
+        self.name = name or component_id
+        self.component_type = SimpleNamespace(value=component_type)
+        self.inputs = []
+        self.outputs = []
+        self.outputs_data = {}
+        self._initialized = True
+        self.step_calls = []
+        for key, value in attrs.items():
+            setattr(self, key, value)
+
+    def add_input(self, component_id: str) -> None:
+        if component_id not in self.inputs:
+            self.inputs.append(component_id)
+
+    def add_output(self, component_id: str) -> None:
+        if component_id not in self.outputs:
+            self.outputs.append(component_id)
+
+    def initialize(self) -> None:
+        self._initialized = True
+
+    def step(self, t: float, dt: float, inputs: dict) -> dict:
+        self.step_calls.append({"t": t, "dt": dt, "inputs": dict(inputs)})
+        if hasattr(self, "_step_impl"):
+            return self._step_impl(t, dt, inputs)
+        return self.outputs_data
 
 
 class TestBiogasPlantInitialization:
@@ -320,6 +354,58 @@ class TestBiogasPlantSerialization:
         assert "dig_1" in recreated.components, "Digester should be in recreated plant"
         assert "chp_1" in recreated.components, "CHP should be in recreated plant"
 
+    def test_from_json_raises_if_digester_present_without_feedstock(self, tmp_path: Path) -> None:
+        """Loading a plant with digesters requires a feedstock object."""
+        filepath = tmp_path / "digester_only.json"
+        filepath.write_text(
+            json.dumps(
+                {
+                    "plant_name": "Test",
+                    "components": [{"component_id": "dig_1", "component_type": "digester"}],
+                    "connections": [],
+                }
+            )
+        )
+
+        with pytest.raises(ValueError, match="Feedstock required"):
+            BiogasPlant.from_json(str(filepath), feedstock=None)
+
+    def test_from_json_loads_heating_component_branch(self, tmp_path: Path) -> None:
+        """Covers HeatingSystem branch in component deserialization."""
+        filepath = tmp_path / "heating_only.json"
+        filepath.write_text(
+            json.dumps(
+                {
+                    "plant_name": "Heating Plant",
+                    "simulation_time": 1.5,
+                    "components": [HeatingSystem("heat_1").to_dict()],
+                    "connections": [],
+                }
+            )
+        )
+
+        plant = BiogasPlant.from_json(str(filepath), feedstock=None)
+
+        assert "heat_1" in plant.components
+        assert isinstance(plant.components["heat_1"], HeatingSystem)
+        assert plant.simulation_time == 1.5
+
+    def test_from_json_raises_for_unsupported_component_type(self, tmp_path: Path) -> None:
+        """Known enum values unsupported by from_json should raise clearly."""
+        filepath = tmp_path / "unsupported_component.json"
+        filepath.write_text(
+            json.dumps(
+                {
+                    "plant_name": "Bad Plant",
+                    "components": [{"component_id": "s1", "component_type": "storage"}],
+                    "connections": [],
+                }
+            )
+        )
+
+        with pytest.raises(ValueError, match="Unknown component type"):
+            BiogasPlant.from_json(str(filepath), feedstock=None)
+
 
 class TestBiogasPlantProperties:
     """Test suite for BiogasPlant properties and summaries."""
@@ -376,6 +462,14 @@ class TestBiogasPlantProperties:
         # After adding connection
         sample_plant.add_connection(Connection("dig_1", "chp_1", "gas"))
         assert len(sample_plant.connections) == 1, "Plant should have 1 connection"
+
+    def test_get_summary_includes_connection_names_and_type(self, sample_plant: BiogasPlant) -> None:
+        """Cover connection-detail lines in summary rendering."""
+        sample_plant.add_connection(Connection("dig_1", "chp_1", "gas"))
+
+        summary = sample_plant.get_summary()
+
+        assert "dig_1 -> chp_1 (gas)" in summary
 
 
 class TestBiogasPlantSimulation:
@@ -449,3 +543,67 @@ class TestBiogasPlantSimulation:
         assert len(results) > 0, "Should have some results"
         assert all("time" in r for r in results), "Each result should have time"
         assert all("components" in r for r in results), "Each result should have components"
+
+    def test_step_three_pass_gas_storage_and_chp_demand_flow(self) -> None:
+        """Cover storage skip/pass2/pass3 and CHP re-execution branches."""
+        plant = BiogasPlant("Stub Plant")
+
+        digester = _StubPlantComponent("dig_1", "digester")
+        storage = _StubPlantComponent("store_1", "storage")
+        chp = _StubPlantComponent("chp_1", "chp", P_el_nom=100.0, eta_el=0.4)
+
+        def digester_step(_t, _dt, _inputs):  # noqa: ANN001
+            digester.outputs_data = {"Q_gas": 120.0}
+            return digester.outputs_data
+
+        def storage_step(_t, _dt, inputs):  # noqa: ANN001
+            supplied = float(inputs.get("Q_gas_out_m3_per_day", 0.0))
+            storage.outputs_data = {
+                "Q_gas_supplied_m3_per_day": supplied,
+                "Q_gas_in_m3_per_day": float(inputs.get("Q_gas_in_m3_per_day", 0.0)),
+            }
+            return storage.outputs_data
+
+        def chp_step(_t, _dt, inputs):  # noqa: ANN001
+            chp.outputs_data = {"Q_gas_used": float(inputs.get("Q_gas_supplied_m3_per_day", 0.0))}
+            return chp.outputs_data
+
+        digester._step_impl = digester_step
+        storage._step_impl = storage_step
+        chp._step_impl = chp_step
+
+        plant.add_component(digester)
+        plant.add_component(storage)
+        plant.add_component(chp)
+        plant.add_connection(Connection("dig_1", "store_1", "gas"))
+        plant.add_connection(Connection("store_1", "chp_1", "gas"))
+
+        results = plant.step(dt=1.0)
+
+        # Storage should be skipped in pass 1 and executed in pass 2 and pass 3 only.
+        assert len(storage.step_calls) == 2
+        assert storage.step_calls[0]["inputs"]["Q_gas_in_m3_per_day"] == 120.0
+        assert storage.step_calls[0]["inputs"]["Q_gas_out_m3_per_day"] == 0.0
+        assert storage.step_calls[1]["inputs"]["Q_gas_out_m3_per_day"] > 0.0
+
+        # CHP executes in pass 1 and again in pass 3 with actual supplied gas.
+        assert len(chp.step_calls) == 2
+        assert "Q_gas_supplied_m3_per_day" in chp.step_calls[1]["inputs"]
+        assert results["chp_1"]["Q_gas_used"] == chp.step_calls[1]["inputs"]["Q_gas_supplied_m3_per_day"]
+        assert "store_1" in results
+
+    def test_simulate_prints_progress_every_100_steps(
+        self, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Cover progress print branch in simulate()."""
+        plant = BiogasPlant("Progress Plant")
+
+        def fake_step(dt: float):  # noqa: ANN001
+            plant.simulation_time += dt
+            return {}
+
+        monkeypatch.setattr(plant, "step", fake_step)
+
+        plant.simulate(duration=100.0, dt=1.0, save_interval=1000.0)
+
+        assert "Simulated 100/100 steps" in capsys.readouterr().out

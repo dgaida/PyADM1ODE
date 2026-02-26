@@ -259,6 +259,20 @@ class TestCHPSerialization:
         assert recreated.eta_el == original.eta_el, "eta_el should be preserved"
         assert recreated.eta_th == original.eta_th, "eta_th should be preserved"
 
+    def test_from_dict_without_state_calls_default_initialize(self) -> None:
+        """Cover from_dict branch when no state is provided."""
+        recreated = CHP.from_dict(
+            {
+                "component_id": "chp_no_state",
+                "P_el_nom": 250.0,
+                "eta_el": 0.39,
+                "eta_th": 0.46,
+            }
+        )
+
+        assert recreated.state["load_factor"] == 0.0
+        assert recreated.outputs_data["P_el"] == 0.0
+
 
 class TestCHPConnections:
     """Test suite for CHP component connections."""

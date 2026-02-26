@@ -226,6 +226,34 @@ class TestAddDigester:
             assert "Loaded from" in state_info, "State info should mention loading"
             mock_get_state.assert_called_once()
 
+    def test_add_digester_uses_default_initialization_when_default_state_file_missing(
+        self, configurator: PlantConfigurator
+    ) -> None:
+        """
+        Test add_digester fallback when packaged default initial-state file is missing.
+
+        Covers the branch where the default CSV does not exist.
+        """
+        with patch("pyadm1.configurator.plant_configurator.Path.exists", return_value=False):
+            with patch("pyadm1.configurator.plant_configurator.get_state_zero_from_initial_state") as mock_get_state:
+                _digester, state_info = configurator.add_digester("dig_missing_state")
+
+        mock_get_state.assert_not_called()
+        assert "Default initialization" in state_info
+
+    def test_add_digester_handles_exception_while_loading_default_initial_state(self, configurator: PlantConfigurator) -> None:
+        """
+        Test add_digester fallback when an exception occurs during default state lookup/load.
+
+        Covers the exception branch around default initial-state handling.
+        """
+        with patch("pyadm1.configurator.plant_configurator.Path.exists", side_effect=RuntimeError("fs error")):
+            with patch("pyadm1.configurator.plant_configurator.get_state_zero_from_initial_state") as mock_get_state:
+                _digester, state_info = configurator.add_digester("dig_state_error")
+
+        mock_get_state.assert_not_called()
+        assert "error loading file: fs error" in state_info
+
     def test_add_digester_with_custom_initial_state_file(self, configurator: PlantConfigurator, tmp_path: Path) -> None:
         """
         Test add_digester with custom initial state file.

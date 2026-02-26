@@ -19,6 +19,7 @@ class ComponentType(Enum):
     STORAGE = "storage"
     SEPARATOR = "separator"
     MIXER = "mixer"
+    BOILER = "boiler"
 
 
 class Component(ABC):

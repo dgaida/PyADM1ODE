@@ -8,9 +8,12 @@ ADM1 ODE system for anaerobic digestion simulation.
 import pytest
 import numpy as np
 import pandas as pd
-from unittest.mock import Mock
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
 from pathlib import Path
+import builtins
 
+import pyadm1.core.adm1 as adm1_module
 from pyadm1.core.adm1 import ADM1, get_state_zero_from_initial_state
 from pyadm1.substrates.feedstock import Feedstock
 
@@ -250,6 +253,23 @@ class TestADM1CalcGas:
         assert np.isfinite(q_ch4), "q_ch4 should be finite"
         assert np.isfinite(q_co2), "q_co2 should be finite"
 
+    def test_calc_gas_supports_numpy_scalar_arrays(self, adm1_instance: ADM1) -> None:
+        """Cover ndarray non-negativity branches in calc_gas."""
+        with patch.object(
+            adm1_module.ADMParams, "getADMgasparams", return_value=(None, np.array([1.0]), None, None, None, None)
+        ):
+            q_gas, q_ch4, q_co2, _ = adm1_instance.calc_gas(
+                pi_Sh2=1e-6,
+                pi_Sch4=0.55,
+                pi_Sco2=0.42,
+                pTOTAL=1.5,
+            )
+
+        assert isinstance(q_gas, np.ndarray)
+        assert isinstance(q_ch4, np.ndarray)
+        assert isinstance(q_co2, np.ndarray)
+        assert float(np.asarray(q_gas).reshape(-1)[0]) >= 0.0
+
 
 class TestADM1CreateInfluent:
     """Test suite for influent stream creation."""
@@ -335,6 +355,54 @@ class TestADM1CreateInfluent:
         adm1.create_influent(Q, 0)
 
         mock_feedstock.get_influent_dataframe.assert_called_once_with(Q)
+
+    def test_set_influent_uses_last_row_when_index_out_of_bounds(self, mock_feedstock: Mock) -> None:
+        """Cover out-of-bounds index fallback in _set_influent."""
+        adm1 = ADM1(mock_feedstock)
+        influent_df = pd.DataFrame(
+            {
+                "S_su": [0.01, 0.99],
+                "S_aa": [0.001, 0.002],
+                "S_fa": [0.04, 0.05],
+                "S_va": [0.005, 0.006],
+                "S_bu": [0.01, 0.02],
+                "S_pro": [0.028, 0.029],
+                "S_ac": [0.97, 0.98],
+                "S_h2": [1e-7, 2e-7],
+                "S_ch4": [0.056, 0.057],
+                "S_co2": [0.012, 0.013],
+                "S_nh4": [0.24, 0.25],
+                "S_I": [10.7, 10.8],
+                "X_xc": [18.0, 18.1],
+                "X_ch": [0.25, 0.26],
+                "X_pr": [0.055, 0.056],
+                "X_li": [0.018, 0.019],
+                "X_su": [7.8, 7.9],
+                "X_aa": [1.36, 1.37],
+                "X_fa": [0.33, 0.34],
+                "X_c4": [1.02, 1.03],
+                "X_pro": [0.88, 0.89],
+                "X_ac": [3.18, 3.19],
+                "X_h2": [1.67, 1.68],
+                "X_I": [38.3, 38.4],
+                "X_p": [2.04, 2.05],
+                "S_cation": [0.0, 0.1],
+                "S_anion": [0.0, 0.1],
+                "S_va_ion": [0.005, 0.015],
+                "S_bu_ion": [0.01, 0.02],
+                "S_pro_ion": [0.028, 0.038],
+                "S_ac_ion": [0.97, 1.07],
+                "S_hco3_ion": [0.23, 0.24],
+                "S_nh3": [0.013, 0.014],
+                "Q": [25.0, 30.0],
+            }
+        )
+
+        adm1._set_influent(influent_df, i=999)
+
+        assert adm1._state_input is not None
+        assert adm1._state_input[0] == 0.99
+        assert adm1._state_input[-1] == 30.0
 
 
 class TestADM1SaveFinalState:
@@ -486,6 +554,98 @@ class TestADM1Properties:
         assert isinstance(adm1.pH_l, list), "pH_l should return a list"
         assert isinstance(adm1.VFA, list), "VFA should return a list"
         assert isinstance(adm1.TAC, list), "TAC should return a list"
+
+    def test_remaining_result_properties_return_backing_lists(self, mock_feedstock: Mock) -> None:
+        adm1 = ADM1(mock_feedstock)
+        adm1._Q_CO2 = [1.1]
+        adm1._P_GAS = [0.98]
+        adm1._FOSTAC = [0.25]
+        adm1._AcvsPro = [1.5]
+
+        assert adm1.Q_CO2 == [1.1]
+        assert adm1.P_GAS == [0.98]
+        assert adm1.VFA_TA == [0.25]
+        assert adm1.AcvsPro == [1.5]
+
+
+class TestADM1AdditionalBranches:
+    """Targeted tests for remaining uncovered helper branches in adm1.py."""
+
+    @pytest.fixture
+    def mock_feedstock(self) -> Mock:
+        feedstock = Mock(spec=Feedstock)
+        feedstock.mySubstrates = Mock()
+        return feedstock
+
+    def test_resume_from_broken_simulation_appends_ch4_values(self, mock_feedstock: Mock) -> None:
+        adm1 = ADM1(mock_feedstock)
+        adm1.resume_from_broken_simulation([1.0, 2.0, 3.0])
+        assert adm1._Q_CH4 == [1.0, 2.0, 3.0]
+
+    def test_print_params_at_current_state_populates_lists_and_duplicates_initial_values(
+        self, mock_feedstock: Mock, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        adm1 = ADM1(mock_feedstock)
+        state = [0.01] * 37
+        state[33:37] = [0.1, 0.2, 0.3, 1.0]
+
+        admstate_mock = SimpleNamespace(
+            calcPHOfADMstate=lambda s: 7.23,  # noqa: ARG005
+            calcFOSTACOfADMstate=lambda s: SimpleNamespace(Value=0.25),  # noqa: ARG005
+            calcAcetic_vs_PropionicOfADMstate=lambda s: SimpleNamespace(Value=1.4),  # noqa: ARG005
+            calcVFAOfADMstate=lambda s, u: SimpleNamespace(Value=0.55),  # noqa: ARG005
+            calcTACOfADMstate=lambda s, u: SimpleNamespace(Value=2.5),  # noqa: ARG005
+        )
+
+        with patch.object(adm1_module, "ADMstate", admstate_mock):
+            with patch.object(adm1, "calc_gas", return_value=(100.0, 60.0, 40.0, 0.6)):
+                adm1.print_params_at_current_state(state)
+
+        assert len(adm1._pH_l) == 2
+        assert len(adm1._Q_GAS) == 3
+        assert adm1._Q_CH4[-1] == 60.0
+        output = capsys.readouterr().out
+        assert "pH(lib)" in output
+        assert "Q_gas =" in output
+        assert "Q_ch4 =" in output
+
+    def test_get_substrate_dependent_params_returns_defaults_when_q_not_set(self, mock_feedstock: Mock) -> None:
+        adm1 = ADM1(mock_feedstock)
+        params = adm1._get_substrate_dependent_params()
+        assert params["k_dis"] == 0.5
+        assert params["k_m_h2"] == 35.0
+
+    def test_get_substrate_dependent_params_raises_after_all_fallback_paths_fail(self, mock_feedstock: Mock) -> None:
+        adm1 = ADM1(mock_feedstock)
+        adm1._Q = [1.0]
+
+        failing_subs = Mock()
+        failing_subs.calcfFactors.side_effect = RuntimeError("cf fail")
+        failing_subs.calcDisintegrationParam.side_effect = RuntimeError("dis fail")
+        mock_feedstock.mySubstrates.return_value = failing_subs
+
+        real_import = builtins.__import__
+
+        def fake_import(name, globals=None, locals=None, fromlist=(), level=0):  # noqa: ANN001, A002
+            if name == "System":
+                raise ImportError("no System")
+            return real_import(name, globals, locals, fromlist, level)
+
+        with patch("builtins.__import__", side_effect=fake_import):
+            with pytest.raises(TypeError, match="Failed to evaluate substrate-dependent parameters"):
+                adm1._get_substrate_dependent_params()
+
+    def test_adm1_calibration_parameter_helpers(self, mock_feedstock: Mock) -> None:
+        adm1 = ADM1(mock_feedstock)
+
+        assert adm1.get_calibration_parameters() == {}
+
+        adm1.set_calibration_parameters({"k_dis": 0.55})
+        params = adm1.get_calibration_parameters()
+        assert params == {"k_dis": 0.55}
+
+        adm1.clear_calibration_parameters()
+        assert adm1.get_calibration_parameters() == {}
 
 
 class TestADM1ODEIntegration:

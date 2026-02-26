@@ -9,6 +9,7 @@ and provides a component-based interface for biogas plant simulations.
 import pytest
 from unittest.mock import Mock, patch
 
+import pyadm1.components.biological.digester as digester_module
 from pyadm1.components.biological.digester import Digester
 from pyadm1.substrates.feedstock import Feedstock
 from pyadm1.components.energy.gas_storage import GasStorage
@@ -493,3 +494,154 @@ class TestDigesterProperties:
         digester.set_state(new_state)
 
         assert digester.state["Q_gas"] == 2000, "set_state should update state"
+
+
+class TestDigesterClrLoading:
+    """Tests for CLR loading helper branches and module import guards."""
+
+    def test_try_load_clr_returns_none_on_darwin(self) -> None:
+        """Darwin should short-circuit and return None."""
+        with patch("platform.system", return_value="Darwin"):
+            assert digester_module.try_load_clr() is None
+
+    def test_try_load_clr_prints_and_returns_none_on_import_error(self, capsys: pytest.CaptureFixture[str]) -> None:
+        """Import failures for clr should be handled gracefully."""
+        import builtins
+
+        original_import = builtins.__import__
+
+        def fake_import(name, *args, **kwargs):
+            if name == "clr":
+                raise RuntimeError("clr import failed")
+            return original_import(name, *args, **kwargs)
+
+        with patch("platform.system", return_value="Windows"):
+            with patch("builtins.__import__", side_effect=fake_import):
+                assert digester_module.try_load_clr() is None
+
+        captured = capsys.readouterr()
+        assert "clr import failed" in captured.out
+
+    def test_module_import_raises_when_clr_unavailable(self) -> None:
+        """Importing the module on Darwin should raise the runtime guard error."""
+        import importlib.util
+        import sys
+        from pathlib import Path
+
+        module_path = Path(digester_module.__file__)
+        module_name = "pyadm1.components.biological._digester_runtimeerror_test"
+        spec = importlib.util.spec_from_file_location(module_name, module_path)
+        assert spec is not None and spec.loader is not None
+
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        try:
+            with patch("platform.system", return_value="Darwin"):
+                with pytest.raises(RuntimeError, match="CLR features unavailable on this platform"):
+                    spec.loader.exec_module(module)
+        finally:
+            sys.modules.pop(module_name, None)
+
+
+class TestDigesterUncoveredBranches:
+    """Tests for fallback branches not covered by the default happy path."""
+
+    @pytest.fixture
+    def mock_feedstock(self) -> Mock:
+        feedstock = Mock(spec=Feedstock)
+        feedstock.mySubstrates = Mock()
+        return feedstock
+
+    def test_initialize_uses_provided_gas_storage_state_and_falls_back_on_error(
+        self, mock_feedstock: Mock, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        """Gas storage init should retry without state if custom init fails."""
+        digester = Digester("dig_1", mock_feedstock)
+        custom_gs_state = {"stored_volume_m3": 12.0}
+        failing_init = Mock(side_effect=[RuntimeError("storage init failed"), None])
+
+        with patch.object(digester, "gas_storage") as mock_storage:
+            mock_storage.initialize = failing_init
+            digester.initialize({"adm1_state": [0.02] * 37, "gas_storage": custom_gs_state})
+
+        assert failing_init.call_count == 2
+        assert failing_init.call_args_list[0].args == (custom_gs_state,)
+        assert failing_init.call_args_list[1].args == ()
+        assert "storage init failed" in capsys.readouterr().out
+
+    def test_step_handles_upstream_input_branch_and_indicator_failure(
+        self, mock_feedstock: Mock, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        """Step should enter the upstream-input branch and keep running if DLL indicators fail."""
+        digester = Digester("dig_1", mock_feedstock)
+        digester.initialize()
+        simulated_state = [0.02] * 37
+        simulated_state[33:37] = [0.1, 0.2, 0.3, 1.0]
+
+        with patch.object(digester, "adm1") as mock_adm1:
+            mock_adm1.create_influent = Mock()
+            mock_adm1.calc_gas = Mock(return_value=(12.0, 7.0, 5.0, 1.01))
+            with patch.object(digester.simulator, "simulate_AD_plant", return_value=simulated_state):
+                digester.gas_storage.outputs_data = {}
+                with patch.object(
+                    digester.gas_storage,
+                    "step",
+                    return_value={
+                        "stored_volume_m3": 5.0,
+                        "pressure_bar": 1.0,
+                        "vented_volume_m3": 0.0,
+                        "Q_gas_supplied_m3_per_day": 0.0,
+                    },
+                ) as mock_storage_step:
+                    admstate_mock = Mock()
+                    admstate_mock.calcPHOfADMstate.side_effect = RuntimeError("indicator failure")
+                    with patch.object(digester_module, "ADMstate", admstate_mock):
+                        result = digester.step(
+                            t=0.0,
+                            dt=1.0 / 24.0,
+                            inputs={
+                                "Q_substrates": [1.0] * 10,
+                                "Q_in": 2.5,
+                                "state_in": [0.01] * 37,
+                            },
+                        )
+
+        assert mock_storage_step.called
+        assert result["Q_out"] == pytest.approx(10.0)
+        assert result["pH"] == 7.0
+        assert "Warning: Could not calculate process indicators" in capsys.readouterr().out
+
+
+class TestDigesterCalibrationParameters:
+    """Tests for calibration parameter helper methods."""
+
+    @pytest.fixture
+    def mock_feedstock(self) -> Mock:
+        feedstock = Mock(spec=Feedstock)
+        feedstock.mySubstrates = Mock()
+        return feedstock
+
+    def test_get_calibration_parameters_returns_empty_when_unset(self, mock_feedstock: Mock) -> None:
+        digester = Digester("dig_1", mock_feedstock)
+        assert digester.get_calibration_parameters() == {}
+
+    def test_apply_get_and_clear_calibration_parameters_with_verbose_logging(
+        self, mock_feedstock: Mock, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        digester = Digester("dig_1", mock_feedstock)
+        digester._verbose = True
+
+        digester.apply_calibration_parameters({"k_dis": 0.55, "Y_su": 0.105})
+
+        params = digester.get_calibration_parameters()
+        assert params == {"k_dis": 0.55, "Y_su": 0.105}
+        assert digester.adm1._calibration_params == params
+        assert digester.adm1._calibration_params is not params
+
+        digester.clear_calibration_parameters()
+
+        assert digester.get_calibration_parameters() == {}
+        assert not hasattr(digester.adm1, "_calibration_params")
+        output = capsys.readouterr().out
+        assert "Applied 2 calibration parameters" in output
+        assert "Cleared calibration parameters" in output

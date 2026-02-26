@@ -4,6 +4,7 @@ Unit tests for the HeatingSystem component and heating DLL helper functions.
 """
 
 import math
+import sys
 from types import SimpleNamespace
 
 import pyadm1.components.energy.heating as heating_module
@@ -208,6 +209,84 @@ class TestHeatingDllHelpers:
         assert heating_module._DLL_INIT_DONE is True
         assert heating_module._SUBSTRATES_FACTORY is None
 
+    def test_init_heating_dll_loads_references_and_sets_globals_with_physvalue(self, monkeypatch) -> None:
+        _reset_heating_globals()
+        monkeypatch.setattr(heating_module.platform, "system", lambda: "Windows")
+
+        addref_calls = []
+        fake_clr = SimpleNamespace(AddReference=lambda path: addref_calls.append(path))
+        fake_biogas = SimpleNamespace(substrates=lambda _: "factory_result")
+        fake_physchem = SimpleNamespace(physValue=lambda value, unit: ("pv", value, unit))
+
+        monkeypatch.setitem(sys.modules, "clr", fake_clr)
+        monkeypatch.setitem(sys.modules, "biogas", fake_biogas)
+        monkeypatch.setitem(sys.modules, "physchem", fake_physchem)
+
+        heating_module._init_heating_dll()
+
+        assert heating_module._BIOGAS is fake_biogas
+        assert heating_module._SUBSTRATES_FACTORY is fake_biogas.substrates
+        assert heating_module._PHYSVALUE is fake_physchem.physValue
+        assert len(addref_calls) == 3
+        assert any(path.endswith("biogas") for path in addref_calls)
+        assert any(path.endswith("substrates") for path in addref_calls)
+        assert any(path.endswith("physchem") for path in addref_calls)
+
+    def test_init_heating_dll_falls_back_to_physvalue_capitalized_name(self, monkeypatch) -> None:
+        _reset_heating_globals()
+        monkeypatch.setattr(heating_module.platform, "system", lambda: "Windows")
+
+        import builtins
+
+        real_import = builtins.__import__
+        fake_clr = SimpleNamespace(AddReference=lambda *_: None)
+        fake_biogas = SimpleNamespace(substrates=lambda _: "factory_result")
+        fake_physchem = SimpleNamespace(PhysValue=lambda value, unit: ("PhysValue", value, unit))
+
+        monkeypatch.setitem(sys.modules, "clr", fake_clr)
+
+        def fake_import(name, globals=None, locals=None, fromlist=(), level=0):  # noqa: ANN001, A002
+            if name == "biogas":
+                return fake_biogas
+            if name == "physchem":
+                if "physValue" in fromlist:
+                    raise ImportError("physValue missing")
+                return fake_physchem
+            return real_import(name, globals, locals, fromlist, level)
+
+        monkeypatch.setattr(builtins, "__import__", fake_import)
+        heating_module._init_heating_dll()
+
+        assert heating_module._BIOGAS is fake_biogas
+        assert heating_module._SUBSTRATES_FACTORY is fake_biogas.substrates
+        assert heating_module._PHYSVALUE is fake_physchem.PhysValue
+
+    def test_init_heating_dll_returns_when_physchem_imports_both_fail(self, monkeypatch) -> None:
+        _reset_heating_globals()
+        monkeypatch.setattr(heating_module.platform, "system", lambda: "Windows")
+
+        import builtins
+
+        real_import = builtins.__import__
+        fake_clr = SimpleNamespace(AddReference=lambda *_: None)
+        fake_biogas = SimpleNamespace(substrates=lambda _: "factory_result")
+
+        monkeypatch.setitem(sys.modules, "clr", fake_clr)
+
+        def fake_import(name, globals=None, locals=None, fromlist=(), level=0):  # noqa: ANN001, A002
+            if name == "biogas":
+                return fake_biogas
+            if name == "physchem":
+                raise ImportError("physchem import failed")
+            return real_import(name, globals, locals, fromlist, level)
+
+        monkeypatch.setattr(builtins, "__import__", fake_import)
+        heating_module._init_heating_dll()
+
+        assert heating_module._BIOGAS is None
+        assert heating_module._SUBSTRATES_FACTORY is None
+        assert heating_module._PHYSVALUE is None
+
     def test_get_substrates_instance_caches_factory_result(self, monkeypatch) -> None:
         _reset_heating_globals()
         calls = []
@@ -233,6 +312,12 @@ class TestHeatingDllHelpers:
 
         heating_module._SUBSTRATES_FACTORY = factory
         heating_module._DLL_INIT_DONE = True
+        assert heating_module._get_substrates_instance() is None
+
+    def test_get_substrates_instance_returns_none_when_factory_unavailable_after_init(self, monkeypatch) -> None:
+        _reset_heating_globals()
+        monkeypatch.setattr(heating_module, "_init_heating_dll", lambda: None)
+
         assert heating_module._get_substrates_instance() is None
 
     def test_calc_process_heat_kw_returns_zero_for_empty_q(self) -> None:
@@ -303,3 +388,16 @@ class TestHeatingDllHelpers:
         monkeypatch.setattr(heating_module, "_get_substrates_instance", lambda: Sub())
         out = heating_module._calc_process_heat_kw([1.0], 308.15)
         assert out == 0.0
+
+    def test_calc_process_heat_kw_returns_zero_when_no_supported_heat_methods(self, monkeypatch) -> None:
+        _reset_heating_globals()
+        heating_module._PHYSVALUE = lambda value, unit: ("PV", value, unit)
+        heating_module._BIOGAS = SimpleNamespace(ADMstate=SimpleNamespace())
+
+        class Sub:
+            pass
+
+        monkeypatch.setattr(heating_module, "_get_substrates_instance", lambda: Sub())
+        out = heating_module._calc_process_heat_kw([1.0], 308.15)
+        assert out == 0.0
+        assert heating_module._HEAT_CALC_MODE == "none"

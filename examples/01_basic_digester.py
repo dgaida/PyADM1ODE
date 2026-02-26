@@ -47,7 +47,7 @@ def main():
     else:
         print(f"   Loading from: {initial_state_file}")
         adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
-    Q_substrates = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]  # Corn silage and manure
+    Q_substrates = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]  # Corn silage and swine manure feed m^3/d
 
     df = feedstock.get_influent_dataframe(Q=Q_substrates)
     for col in df.columns:
@@ -82,7 +82,7 @@ def main():
     print("   Save interval: 1 day")
 
     results = plant.simulate(
-        duration=5.0, dt=1.0 / 24.0, save_interval=1.0  # 5 days  # 1 hour time step  # Save results daily
+        duration=30.0, dt=1.0 / 24.0, save_interval=1.0  # 30 days  # 1 hour time step  # Save results daily
     )
 
     # Step 7: Display results

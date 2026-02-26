@@ -933,6 +933,69 @@ class TestMixerPhysics:
             ratio = tip_speed2 / tip_speed1
             assert 1.8 <= ratio <= 2.2, "Tip speed should be proportional to rotational speed"
 
+    def test_power_number_zero_re_defaults_for_paddle_and_jet(self) -> None:
+        """Cover zero-Re fallback defaults for non-propeller mixer types."""
+        paddle = Mixer("m_paddle", mixer_type="paddle")
+        paddle.reynolds_number = 0.0
+        jet = Mixer("m_jet", mixer_type="jet")
+        jet.reynolds_number = 0.0
+
+        assert paddle._calculate_power_number() == 5.0
+        assert jet._calculate_power_number() == 0.1
+
+    def test_power_number_propeller_laminar_and_transition_branches(self) -> None:
+        """Cover propeller Re<100 and 100<=Re<10000 branches."""
+        mixer = Mixer("m_prop", mixer_type="propeller")
+
+        mixer.reynolds_number = 50.0
+        np_laminar = mixer._calculate_power_number()
+        assert abs(np_laminar - (14.0 * 50.0 ** (-0.67))) < 1e-12
+
+        mixer.reynolds_number = 500.0
+        np_transition = mixer._calculate_power_number()
+        assert abs(np_transition - (1.2 * 500.0 ** (-0.15))) < 1e-12
+
+    def test_power_number_paddle_laminar_and_transition_branches(self) -> None:
+        """Cover paddle Re<10 and 10<=Re<10000 branches."""
+        mixer = Mixer("m_pad", mixer_type="paddle")
+
+        mixer.reynolds_number = 5.0
+        np_laminar = mixer._calculate_power_number()
+        assert abs(np_laminar - (300.0 / 5.0)) < 1e-12
+
+        mixer.reynolds_number = 500.0
+        np_transition = mixer._calculate_power_number()
+        assert abs(np_transition - (8.0 * 500.0 ** (-0.25))) < 1e-12
+
+    def test_mixing_quality_uses_linear_interpolation_in_mid_range(self) -> None:
+        """Cover the 5-30 min linear interpolation branch in mixing quality."""
+        mixer = Mixer("m_mid_quality", intermittent=False)
+        mixer.is_running = True
+        mixer.mixing_time = 17.5
+        mixer.current_speed_fraction = 1.0
+        mixer.reynolds_number = 5000.0
+
+        quality = mixer._calculate_mixing_quality()
+
+        expected = 1.0 - 0.7 * (17.5 - 5.0) / 25.0
+        assert abs(quality - expected) < 1e-12
+
+    def test_shear_rate_uses_type_specific_constants_for_paddle_and_jet(self) -> None:
+        """Cover paddle and jet branches for shear-rate constant selection."""
+        paddle = Mixer("m_shear_p", mixer_type="paddle", intermittent=False)
+        paddle.current_speed_fraction = 1.0
+        paddle_shear = paddle._calculate_shear_rate()
+        Np = paddle.operating_speed / 60.0
+        expected_paddle = 11.0 * Np * (paddle.impeller_diameter / paddle.tank_diameter)
+        assert abs(paddle_shear - expected_paddle) < 1e-12
+
+        jet = Mixer("m_shear_j", mixer_type="jet", intermittent=False)
+        jet.current_speed_fraction = 1.0
+        jet_shear = jet._calculate_shear_rate()
+        Nj = jet.operating_speed / 60.0
+        expected_jet = 8.0 * Nj * (jet.impeller_diameter / jet.tank_diameter)
+        assert abs(jet_shear - expected_jet) < 1e-12
+
 
 class TestMixerIntegration:
     """Test suite for mixer integration scenarios."""
