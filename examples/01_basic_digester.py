@@ -16,7 +16,6 @@ Usage:
 """
 
 from pathlib import Path
-import csv
 import sys
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
