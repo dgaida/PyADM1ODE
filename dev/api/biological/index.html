@@ -29,7 +29,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -4318,7 +4318,15 @@ biogas plant.</p>
 <span class="normal"><a href="#__codelineno-0-85">85</a></span>
 <span class="normal"><a href="#__codelineno-0-86">86</a></span>
 <span class="normal"><a href="#__codelineno-0-87">87</a></span>
-<span class="normal"><a href="#__codelineno-0-88">88</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="k">class</span><span class="w"> </span><span class="nc">Hydrolysis</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-88">88</a></span>
+<span class="normal"><a href="#__codelineno-0-89">89</a></span>
+<span class="normal"><a href="#__codelineno-0-90">90</a></span>
+<span class="normal"><a href="#__codelineno-0-91">91</a></span>
+<span class="normal"><a href="#__codelineno-0-92">92</a></span>
+<span class="normal"><a href="#__codelineno-0-93">93</a></span>
+<span class="normal"><a href="#__codelineno-0-94">94</a></span>
+<span class="normal"><a href="#__codelineno-0-95">95</a></span>
+<span class="normal"><a href="#__codelineno-0-96">96</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="k">class</span><span class="w"> </span><span class="nc">Hydrolysis</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="sd">    Hydrolysis tank component (stub for future implementation).</span>
 <a id="__codelineno-0-14" name="__codelineno-0-14"></a>
@@ -4334,68 +4342,76 @@ biogas plant.</p>
 <a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="sd">    &quot;&quot;&quot;</span>
 <a id="__codelineno-0-25" name="__codelineno-0-25"></a>
 <a id="__codelineno-0-26" name="__codelineno-0-26"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-<a id="__codelineno-0-27" name="__codelineno-0-27"></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">:</span> <span class="n">Feedstock</span><span class="p">,</span> <span class="n">V_liq</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">500.0</span><span class="p">,</span> <span class="n">T_ad</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">318.15</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28"></a>    <span class="p">):</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">        Initialize the Hydrolysis tank.</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31"></a>
-<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="sd">        Args:</span>
-<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="sd">            component_id: Unique identifier.</span>
-<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="sd">            feedstock: Feedstock object.</span>
-<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="sd">            V_liq: Liquid volume [m³].</span>
-<a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="sd">            T_ad: Operating temperature [K].</span>
-<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">            name: Optional name.</span>
-<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">        &quot;&quot;&quot;</span>
-<a id="__codelineno-0-39" name="__codelineno-0-39"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">component_id</span><span class="p">,</span> <span class="n">ComponentType</span><span class="o">.</span><span class="n">DIGESTER</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-<a id="__codelineno-0-40" name="__codelineno-0-40"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">feedstock</span> <span class="o">=</span> <span class="n">feedstock</span>
-<a id="__codelineno-0-41" name="__codelineno-0-41"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">V_liq</span> <span class="o">=</span> <span class="n">V_liq</span>
-<a id="__codelineno-0-42" name="__codelineno-0-42"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">T_ad</span> <span class="o">=</span> <span class="n">T_ad</span>
-<a id="__codelineno-0-43" name="__codelineno-0-43"></a>
-<a id="__codelineno-0-44" name="__codelineno-0-44"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="sd">        Initialize the component state.</span>
-<a id="__codelineno-0-47" name="__codelineno-0-47"></a>
-<a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="sd">        Args:</span>
-<a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="sd">            initial_state: Optional dictionary containing initial state values.</span>
-<a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="sd">        &quot;&quot;&quot;</span>
-<a id="__codelineno-0-51" name="__codelineno-0-51"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a>        <span class="bp">self</span><span class="p">,</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a>        <span class="n">component_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a>        <span class="n">feedstock</span><span class="p">:</span> <span class="n">Feedstock</span><span class="p">,</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a>        <span class="n">V_liq</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">500.0</span><span class="p">,</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a>        <span class="n">T_ad</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">318.15</span><span class="p">,</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a>        <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a>    <span class="p">):</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="sd">        Initialize the Hydrolysis tank.</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">        Args:</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">            component_id: Unique identifier.</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">            feedstock: Feedstock object.</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="sd">            V_liq: Liquid volume [m³].</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="sd">            T_ad: Operating temperature [K].</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="sd">            name: Optional name.</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">component_id</span><span class="p">,</span> <span class="n">ComponentType</span><span class="o">.</span><span class="n">DIGESTER</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">feedstock</span> <span class="o">=</span> <span class="n">feedstock</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">V_liq</span> <span class="o">=</span> <span class="n">V_liq</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">T_ad</span> <span class="o">=</span> <span class="n">T_ad</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="sd">        Initialize the component state.</span>
 <a id="__codelineno-0-52" name="__codelineno-0-52"></a>
-<a id="__codelineno-0-53" name="__codelineno-0-53"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">        Execute one simulation time step.</span>
-<a id="__codelineno-0-56" name="__codelineno-0-56"></a>
-<a id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="sd">        Args:</span>
-<a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="sd">            t: Current simulation time [days].</span>
-<a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="sd">            dt: Time step size [days].</span>
-<a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="sd">            inputs: Dictionary of input values from other components.</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="sd">        Args:</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">            initial_state: Optional dictionary containing initial state values.</span>
+<a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-56" name="__codelineno-0-56"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
+<a id="__codelineno-0-57" name="__codelineno-0-57"></a>
+<a id="__codelineno-0-58" name="__codelineno-0-58"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="sd">        Execute one simulation time step.</span>
 <a id="__codelineno-0-61" name="__codelineno-0-61"></a>
-<a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="sd">        Returns:</span>
-<a id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="sd">            Dictionary of output values.</span>
-<a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="sd">        &quot;&quot;&quot;</span>
-<a id="__codelineno-0-65" name="__codelineno-0-65"></a>        <span class="k">return</span> <span class="p">{}</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="sd">        Args:</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="sd">            t: Current simulation time [days].</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="sd">            dt: Time step size [days].</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65"></a><span class="sd">            inputs: Dictionary of input values from other components.</span>
 <a id="__codelineno-0-66" name="__codelineno-0-66"></a>
-<a id="__codelineno-0-67" name="__codelineno-0-67"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="sd">        Serialize the component to a dictionary.</span>
-<a id="__codelineno-0-70" name="__codelineno-0-70"></a>
-<a id="__codelineno-0-71" name="__codelineno-0-71"></a><span class="sd">        Returns:</span>
-<a id="__codelineno-0-72" name="__codelineno-0-72"></a><span class="sd">            Dictionary containing component configuration.</span>
-<a id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="sd">        &quot;&quot;&quot;</span>
-<a id="__codelineno-0-74" name="__codelineno-0-74"></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;component_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_id</span><span class="p">,</span> <span class="s2">&quot;component_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_type</span><span class="o">.</span><span class="n">value</span><span class="p">}</span>
+<a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="sd">        Returns:</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="sd">            Dictionary of output values.</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a>        <span class="k">return</span> <span class="p">{}</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71"></a>
+<a id="__codelineno-0-72" name="__codelineno-0-72"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-74" name="__codelineno-0-74"></a><span class="sd">        Serialize the component to a dictionary.</span>
 <a id="__codelineno-0-75" name="__codelineno-0-75"></a>
-<a id="__codelineno-0-76" name="__codelineno-0-76"></a>    <span class="nd">@classmethod</span>
-<a id="__codelineno-0-77" name="__codelineno-0-77"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">feedstock</span><span class="p">:</span> <span class="n">Feedstock</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Hydrolysis&quot;</span><span class="p">:</span>
-<a id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="sd">        Create a Hydrolysis instance from a configuration dictionary.</span>
-<a id="__codelineno-0-80" name="__codelineno-0-80"></a>
-<a id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="sd">        Args:</span>
-<a id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="sd">            config: Configuration dictionary.</span>
-<a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="sd">            feedstock: Feedstock object.</span>
-<a id="__codelineno-0-84" name="__codelineno-0-84"></a>
-<a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="sd">        Returns:</span>
-<a id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="sd">            A new Hydrolysis instance.</span>
-<a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="sd">        &quot;&quot;&quot;</span>
-<a id="__codelineno-0-88" name="__codelineno-0-88"></a>        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;component_id&quot;</span><span class="p">],</span> <span class="n">feedstock</span><span class="p">)</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="sd">        Returns:</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="sd">            Dictionary containing component configuration.</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a>        <span class="k">return</span> <span class="p">{</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a>            <span class="s2">&quot;component_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_id</span><span class="p">,</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a>            <span class="s2">&quot;component_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82"></a>        <span class="p">}</span>
+<a id="__codelineno-0-83" name="__codelineno-0-83"></a>
+<a id="__codelineno-0-84" name="__codelineno-0-84"></a>    <span class="nd">@classmethod</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">feedstock</span><span class="p">:</span> <span class="n">Feedstock</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Hydrolysis&quot;</span><span class="p">:</span>
+<a id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="sd">        Create a Hydrolysis instance from a configuration dictionary.</span>
+<a id="__codelineno-0-88" name="__codelineno-0-88"></a>
+<a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="sd">        Args:</span>
+<a id="__codelineno-0-90" name="__codelineno-0-90"></a><span class="sd">            config: Configuration dictionary.</span>
+<a id="__codelineno-0-91" name="__codelineno-0-91"></a><span class="sd">            feedstock: Feedstock object.</span>
+<a id="__codelineno-0-92" name="__codelineno-0-92"></a>
+<a id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="sd">        Returns:</span>
+<a id="__codelineno-0-94" name="__codelineno-0-94"></a><span class="sd">            A new Hydrolysis instance.</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-96" name="__codelineno-0-96"></a>        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;component_id&quot;</span><span class="p">],</span> <span class="n">feedstock</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
@@ -4539,23 +4555,33 @@ biogas plant.</p>
 <span class="normal"><a href="#__codelineno-0-39">39</a></span>
 <span class="normal"><a href="#__codelineno-0-40">40</a></span>
 <span class="normal"><a href="#__codelineno-0-41">41</a></span>
-<span class="normal"><a href="#__codelineno-0-42">42</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-<a id="__codelineno-0-27" name="__codelineno-0-27"></a>    <span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">:</span> <span class="n">Feedstock</span><span class="p">,</span> <span class="n">V_liq</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">500.0</span><span class="p">,</span> <span class="n">T_ad</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">318.15</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="p">):</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">    Initialize the Hydrolysis tank.</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31"></a>
-<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="sd">        component_id: Unique identifier.</span>
-<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="sd">        feedstock: Feedstock object.</span>
-<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="sd">        V_liq: Liquid volume [m³].</span>
-<a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="sd">        T_ad: Operating temperature [K].</span>
-<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">        name: Optional name.</span>
-<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-39" name="__codelineno-0-39"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">component_id</span><span class="p">,</span> <span class="n">ComponentType</span><span class="o">.</span><span class="n">DIGESTER</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-<a id="__codelineno-0-40" name="__codelineno-0-40"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">feedstock</span> <span class="o">=</span> <span class="n">feedstock</span>
-<a id="__codelineno-0-41" name="__codelineno-0-41"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">V_liq</span> <span class="o">=</span> <span class="n">V_liq</span>
-<a id="__codelineno-0-42" name="__codelineno-0-42"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">T_ad</span> <span class="o">=</span> <span class="n">T_ad</span>
+<span class="normal"><a href="#__codelineno-0-42">42</a></span>
+<span class="normal"><a href="#__codelineno-0-43">43</a></span>
+<span class="normal"><a href="#__codelineno-0-44">44</a></span>
+<span class="normal"><a href="#__codelineno-0-45">45</a></span>
+<span class="normal"><a href="#__codelineno-0-46">46</a></span>
+<span class="normal"><a href="#__codelineno-0-47">47</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a>    <span class="bp">self</span><span class="p">,</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a>    <span class="n">component_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a>    <span class="n">feedstock</span><span class="p">:</span> <span class="n">Feedstock</span><span class="p">,</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a>    <span class="n">V_liq</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">500.0</span><span class="p">,</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a>    <span class="n">T_ad</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">318.15</span><span class="p">,</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a>    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="p">):</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="sd">    Initialize the Hydrolysis tank.</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">        component_id: Unique identifier.</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">        feedstock: Feedstock object.</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="sd">        V_liq: Liquid volume [m³].</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="sd">        T_ad: Operating temperature [K].</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="sd">        name: Optional name.</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">component_id</span><span class="p">,</span> <span class="n">ComponentType</span><span class="o">.</span><span class="n">DIGESTER</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">feedstock</span> <span class="o">=</span> <span class="n">feedstock</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">V_liq</span> <span class="o">=</span> <span class="n">V_liq</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">T_ad</span> <span class="o">=</span> <span class="n">T_ad</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -4652,31 +4678,31 @@ biogas plant.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>pyadm1/components/biological/hydrolysis.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-76">76</a></span>
-<span class="normal"><a href="#__codelineno-0-77">77</a></span>
-<span class="normal"><a href="#__codelineno-0-78">78</a></span>
-<span class="normal"><a href="#__codelineno-0-79">79</a></span>
-<span class="normal"><a href="#__codelineno-0-80">80</a></span>
-<span class="normal"><a href="#__codelineno-0-81">81</a></span>
-<span class="normal"><a href="#__codelineno-0-82">82</a></span>
-<span class="normal"><a href="#__codelineno-0-83">83</a></span>
-<span class="normal"><a href="#__codelineno-0-84">84</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-84">84</a></span>
 <span class="normal"><a href="#__codelineno-0-85">85</a></span>
 <span class="normal"><a href="#__codelineno-0-86">86</a></span>
 <span class="normal"><a href="#__codelineno-0-87">87</a></span>
-<span class="normal"><a href="#__codelineno-0-88">88</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="nd">@classmethod</span>
-<a id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">feedstock</span><span class="p">:</span> <span class="n">Feedstock</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Hydrolysis&quot;</span><span class="p">:</span>
-<a id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="sd">    Create a Hydrolysis instance from a configuration dictionary.</span>
-<a id="__codelineno-0-80" name="__codelineno-0-80"></a>
-<a id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="sd">        config: Configuration dictionary.</span>
-<a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="sd">        feedstock: Feedstock object.</span>
-<a id="__codelineno-0-84" name="__codelineno-0-84"></a>
-<a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="sd">        A new Hydrolysis instance.</span>
-<a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-88" name="__codelineno-0-88"></a>    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;component_id&quot;</span><span class="p">],</span> <span class="n">feedstock</span><span class="p">)</span>
+<span class="normal"><a href="#__codelineno-0-88">88</a></span>
+<span class="normal"><a href="#__codelineno-0-89">89</a></span>
+<span class="normal"><a href="#__codelineno-0-90">90</a></span>
+<span class="normal"><a href="#__codelineno-0-91">91</a></span>
+<span class="normal"><a href="#__codelineno-0-92">92</a></span>
+<span class="normal"><a href="#__codelineno-0-93">93</a></span>
+<span class="normal"><a href="#__codelineno-0-94">94</a></span>
+<span class="normal"><a href="#__codelineno-0-95">95</a></span>
+<span class="normal"><a href="#__codelineno-0-96">96</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-84" name="__codelineno-0-84"></a><span class="nd">@classmethod</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">feedstock</span><span class="p">:</span> <span class="n">Feedstock</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Hydrolysis&quot;</span><span class="p">:</span>
+<a id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="sd">    Create a Hydrolysis instance from a configuration dictionary.</span>
+<a id="__codelineno-0-88" name="__codelineno-0-88"></a>
+<a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-90" name="__codelineno-0-90"></a><span class="sd">        config: Configuration dictionary.</span>
+<a id="__codelineno-0-91" name="__codelineno-0-91"></a><span class="sd">        feedstock: Feedstock object.</span>
+<a id="__codelineno-0-92" name="__codelineno-0-92"></a>
+<a id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-94" name="__codelineno-0-94"></a><span class="sd">        A new Hydrolysis instance.</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-96" name="__codelineno-0-96"></a>    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;component_id&quot;</span><span class="p">],</span> <span class="n">feedstock</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -4730,21 +4756,21 @@ biogas plant.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>pyadm1/components/biological/hydrolysis.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-44">44</a></span>
-<span class="normal"><a href="#__codelineno-0-45">45</a></span>
-<span class="normal"><a href="#__codelineno-0-46">46</a></span>
-<span class="normal"><a href="#__codelineno-0-47">47</a></span>
-<span class="normal"><a href="#__codelineno-0-48">48</a></span>
-<span class="normal"><a href="#__codelineno-0-49">49</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-49">49</a></span>
 <span class="normal"><a href="#__codelineno-0-50">50</a></span>
-<span class="normal"><a href="#__codelineno-0-51">51</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="sd">    Initialize the component state.</span>
-<a id="__codelineno-0-47" name="__codelineno-0-47"></a>
-<a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="sd">        initial_state: Optional dictionary containing initial state values.</span>
-<a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="normal"><a href="#__codelineno-0-51">51</a></span>
+<span class="normal"><a href="#__codelineno-0-52">52</a></span>
+<span class="normal"><a href="#__codelineno-0-53">53</a></span>
+<span class="normal"><a href="#__codelineno-0-54">54</a></span>
+<span class="normal"><a href="#__codelineno-0-55">55</a></span>
+<span class="normal"><a href="#__codelineno-0-56">56</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="sd">    Initialize the component state.</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">        initial_state: Optional dictionary containing initial state values.</span>
+<a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-56" name="__codelineno-0-56"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -4853,31 +4879,31 @@ biogas plant.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>pyadm1/components/biological/hydrolysis.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-53">53</a></span>
-<span class="normal"><a href="#__codelineno-0-54">54</a></span>
-<span class="normal"><a href="#__codelineno-0-55">55</a></span>
-<span class="normal"><a href="#__codelineno-0-56">56</a></span>
-<span class="normal"><a href="#__codelineno-0-57">57</a></span>
-<span class="normal"><a href="#__codelineno-0-58">58</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-58">58</a></span>
 <span class="normal"><a href="#__codelineno-0-59">59</a></span>
 <span class="normal"><a href="#__codelineno-0-60">60</a></span>
 <span class="normal"><a href="#__codelineno-0-61">61</a></span>
 <span class="normal"><a href="#__codelineno-0-62">62</a></span>
 <span class="normal"><a href="#__codelineno-0-63">63</a></span>
 <span class="normal"><a href="#__codelineno-0-64">64</a></span>
-<span class="normal"><a href="#__codelineno-0-65">65</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">    Execute one simulation time step.</span>
-<a id="__codelineno-0-56" name="__codelineno-0-56"></a>
-<a id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="sd">        t: Current simulation time [days].</span>
-<a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="sd">        dt: Time step size [days].</span>
-<a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="sd">        inputs: Dictionary of input values from other components.</span>
+<span class="normal"><a href="#__codelineno-0-65">65</a></span>
+<span class="normal"><a href="#__codelineno-0-66">66</a></span>
+<span class="normal"><a href="#__codelineno-0-67">67</a></span>
+<span class="normal"><a href="#__codelineno-0-68">68</a></span>
+<span class="normal"><a href="#__codelineno-0-69">69</a></span>
+<span class="normal"><a href="#__codelineno-0-70">70</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="sd">    Execute one simulation time step.</span>
 <a id="__codelineno-0-61" name="__codelineno-0-61"></a>
-<a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="sd">        Dictionary of output values.</span>
-<a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-65" name="__codelineno-0-65"></a>    <span class="k">return</span> <span class="p">{}</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="sd">        t: Current simulation time [days].</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="sd">        dt: Time step size [days].</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65"></a><span class="sd">        inputs: Dictionary of input values from other components.</span>
+<a id="__codelineno-0-66" name="__codelineno-0-66"></a>
+<a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="sd">        Dictionary of output values.</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a>    <span class="k">return</span> <span class="p">{}</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -4923,21 +4949,27 @@ biogas plant.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>pyadm1/components/biological/hydrolysis.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-67">67</a></span>
-<span class="normal"><a href="#__codelineno-0-68">68</a></span>
-<span class="normal"><a href="#__codelineno-0-69">69</a></span>
-<span class="normal"><a href="#__codelineno-0-70">70</a></span>
-<span class="normal"><a href="#__codelineno-0-71">71</a></span>
-<span class="normal"><a href="#__codelineno-0-72">72</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-72">72</a></span>
 <span class="normal"><a href="#__codelineno-0-73">73</a></span>
-<span class="normal"><a href="#__codelineno-0-74">74</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="sd">    Serialize the component to a dictionary.</span>
-<a id="__codelineno-0-70" name="__codelineno-0-70"></a>
-<a id="__codelineno-0-71" name="__codelineno-0-71"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-72" name="__codelineno-0-72"></a><span class="sd">        Dictionary containing component configuration.</span>
-<a id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-74" name="__codelineno-0-74"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;component_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_id</span><span class="p">,</span> <span class="s2">&quot;component_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_type</span><span class="o">.</span><span class="n">value</span><span class="p">}</span>
+<span class="normal"><a href="#__codelineno-0-74">74</a></span>
+<span class="normal"><a href="#__codelineno-0-75">75</a></span>
+<span class="normal"><a href="#__codelineno-0-76">76</a></span>
+<span class="normal"><a href="#__codelineno-0-77">77</a></span>
+<span class="normal"><a href="#__codelineno-0-78">78</a></span>
+<span class="normal"><a href="#__codelineno-0-79">79</a></span>
+<span class="normal"><a href="#__codelineno-0-80">80</a></span>
+<span class="normal"><a href="#__codelineno-0-81">81</a></span>
+<span class="normal"><a href="#__codelineno-0-82">82</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-72" name="__codelineno-0-72"></a><span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-74" name="__codelineno-0-74"></a><span class="sd">    Serialize the component to a dictionary.</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75"></a>
+<a id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="sd">        Dictionary containing component configuration.</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a>    <span class="k">return</span> <span class="p">{</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a>        <span class="s2">&quot;component_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_id</span><span class="p">,</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a>        <span class="s2">&quot;component_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82"></a>    <span class="p">}</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -5094,7 +5126,15 @@ and liquid fractions.</p>
 <span class="normal"><a href="#__codelineno-0-75">75</a></span>
 <span class="normal"><a href="#__codelineno-0-76">76</a></span>
 <span class="normal"><a href="#__codelineno-0-77">77</a></span>
-<span class="normal"><a href="#__codelineno-0-78">78</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="k">class</span><span class="w"> </span><span class="nc">Separator</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-78">78</a></span>
+<span class="normal"><a href="#__codelineno-0-79">79</a></span>
+<span class="normal"><a href="#__codelineno-0-80">80</a></span>
+<span class="normal"><a href="#__codelineno-0-81">81</a></span>
+<span class="normal"><a href="#__codelineno-0-82">82</a></span>
+<span class="normal"><a href="#__codelineno-0-83">83</a></span>
+<span class="normal"><a href="#__codelineno-0-84">84</a></span>
+<span class="normal"><a href="#__codelineno-0-85">85</a></span>
+<span class="normal"><a href="#__codelineno-0-86">86</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="k">class</span><span class="w"> </span><span class="nc">Separator</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
 <a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="sd">    Solid-liquid separator component (stub for future implementation).</span>
 <a id="__codelineno-0-13" name="__codelineno-0-13"></a>
@@ -5107,62 +5147,70 @@ and liquid fractions.</p>
 <a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="sd">        name: Optional name.</span>
 <a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="sd">    &quot;&quot;&quot;</span>
 <a id="__codelineno-0-22" name="__codelineno-0-22"></a>
-<a id="__codelineno-0-23" name="__codelineno-0-23"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">separation_efficiency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="sd">        Initialize the Separator.</span>
-<a id="__codelineno-0-26" name="__codelineno-0-26"></a>
-<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">        Args:</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="sd">            component_id: Unique identifier.</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="sd">            separation_efficiency: Separation efficiency (default: 0.95).</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">            name: Optional name.</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="sd">        &quot;&quot;&quot;</span>
-<a id="__codelineno-0-32" name="__codelineno-0-32"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">component_id</span><span class="p">,</span> <span class="n">ComponentType</span><span class="o">.</span><span class="n">SEPARATOR</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-<a id="__codelineno-0-33" name="__codelineno-0-33"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">separation_efficiency</span> <span class="o">=</span> <span class="n">separation_efficiency</span>
-<a id="__codelineno-0-34" name="__codelineno-0-34"></a>
-<a id="__codelineno-0-35" name="__codelineno-0-35"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">        Initialize component state.</span>
-<a id="__codelineno-0-38" name="__codelineno-0-38"></a>
-<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">        Args:</span>
-<a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="sd">            initial_state: Optional initial state.</span>
-<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="sd">        &quot;&quot;&quot;</span>
-<a id="__codelineno-0-42" name="__codelineno-0-42"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a>        <span class="bp">self</span><span class="p">,</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a>        <span class="n">component_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a>        <span class="n">separation_efficiency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">,</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a>        <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a>    <span class="p">):</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">        Initialize the Separator.</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="sd">        Args:</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="sd">            component_id: Unique identifier.</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="sd">            separation_efficiency: Separation efficiency (default: 0.95).</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="sd">            name: Optional name.</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">component_id</span><span class="p">,</span> <span class="n">ComponentType</span><span class="o">.</span><span class="n">SEPARATOR</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">separation_efficiency</span> <span class="o">=</span> <span class="n">separation_efficiency</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="sd">        Initialize component state.</span>
 <a id="__codelineno-0-43" name="__codelineno-0-43"></a>
-<a id="__codelineno-0-44" name="__codelineno-0-44"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="sd">        Execute one simulation step.</span>
-<a id="__codelineno-0-47" name="__codelineno-0-47"></a>
-<a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="sd">        Args:</span>
-<a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="sd">            t: Current time [days].</span>
-<a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="sd">            dt: Time step [days].</span>
-<a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="sd">            inputs: Input dictionary.</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="sd">        Args:</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="sd">            initial_state: Optional initial state.</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="sd">        Execute one simulation step.</span>
 <a id="__codelineno-0-52" name="__codelineno-0-52"></a>
-<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="sd">        Returns:</span>
-<a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">            Output dictionary.</span>
-<a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">        &quot;&quot;&quot;</span>
-<a id="__codelineno-0-56" name="__codelineno-0-56"></a>        <span class="k">return</span> <span class="p">{}</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="sd">        Args:</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">            t: Current time [days].</span>
+<a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">            dt: Time step [days].</span>
+<a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="sd">            inputs: Input dictionary.</span>
 <a id="__codelineno-0-57" name="__codelineno-0-57"></a>
-<a id="__codelineno-0-58" name="__codelineno-0-58"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="sd">        Serialize to dictionary.</span>
-<a id="__codelineno-0-61" name="__codelineno-0-61"></a>
-<a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="sd">        Returns:</span>
-<a id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="sd">            Configuration dictionary.</span>
-<a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="sd">        &quot;&quot;&quot;</span>
-<a id="__codelineno-0-65" name="__codelineno-0-65"></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;component_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_id</span><span class="p">,</span> <span class="s2">&quot;component_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_type</span><span class="o">.</span><span class="n">value</span><span class="p">}</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="sd">        Returns:</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="sd">            Output dictionary.</span>
+<a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-61" name="__codelineno-0-61"></a>        <span class="k">return</span> <span class="p">{}</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a>
+<a id="__codelineno-0-63" name="__codelineno-0-63"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65"></a><span class="sd">        Serialize to dictionary.</span>
 <a id="__codelineno-0-66" name="__codelineno-0-66"></a>
-<a id="__codelineno-0-67" name="__codelineno-0-67"></a>    <span class="nd">@classmethod</span>
-<a id="__codelineno-0-68" name="__codelineno-0-68"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;Separator&quot;</span><span class="p">:</span>
-<a id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-70" name="__codelineno-0-70"></a><span class="sd">        Create instance from dictionary.</span>
-<a id="__codelineno-0-71" name="__codelineno-0-71"></a>
-<a id="__codelineno-0-72" name="__codelineno-0-72"></a><span class="sd">        Args:</span>
-<a id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="sd">            config: Configuration dictionary.</span>
+<a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="sd">        Returns:</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="sd">            Configuration dictionary.</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a>        <span class="k">return</span> <span class="p">{</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71"></a>            <span class="s2">&quot;component_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_id</span><span class="p">,</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72"></a>            <span class="s2">&quot;component_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73"></a>        <span class="p">}</span>
 <a id="__codelineno-0-74" name="__codelineno-0-74"></a>
-<a id="__codelineno-0-75" name="__codelineno-0-75"></a><span class="sd">        Returns:</span>
-<a id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="sd">            New Separator instance.</span>
-<a id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="sd">        &quot;&quot;&quot;</span>
-<a id="__codelineno-0-78" name="__codelineno-0-78"></a>        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;component_id&quot;</span><span class="p">])</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75"></a>    <span class="nd">@classmethod</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;Separator&quot;</span><span class="p">:</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="sd">        Create instance from dictionary.</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="sd">        Args:</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="sd">            config: Configuration dictionary.</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82"></a>
+<a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="sd">        Returns:</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84"></a><span class="sd">            New Separator instance.</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-86" name="__codelineno-0-86"></a>        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;component_id&quot;</span><span class="p">])</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
@@ -5268,17 +5316,27 @@ and liquid fractions.</p>
 <span class="normal"><a href="#__codelineno-0-30">30</a></span>
 <span class="normal"><a href="#__codelineno-0-31">31</a></span>
 <span class="normal"><a href="#__codelineno-0-32">32</a></span>
-<span class="normal"><a href="#__codelineno-0-33">33</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">separation_efficiency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="sd">    Initialize the Separator.</span>
-<a id="__codelineno-0-26" name="__codelineno-0-26"></a>
-<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="sd">        component_id: Unique identifier.</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="sd">        separation_efficiency: Separation efficiency (default: 0.95).</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">        name: Optional name.</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-32" name="__codelineno-0-32"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">component_id</span><span class="p">,</span> <span class="n">ComponentType</span><span class="o">.</span><span class="n">SEPARATOR</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-<a id="__codelineno-0-33" name="__codelineno-0-33"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">separation_efficiency</span> <span class="o">=</span> <span class="n">separation_efficiency</span>
+<span class="normal"><a href="#__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#__codelineno-0-34">34</a></span>
+<span class="normal"><a href="#__codelineno-0-35">35</a></span>
+<span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a>    <span class="bp">self</span><span class="p">,</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a>    <span class="n">component_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a>    <span class="n">separation_efficiency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">,</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a>    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="p">):</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">    Initialize the Separator.</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="sd">        component_id: Unique identifier.</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="sd">        separation_efficiency: Separation efficiency (default: 0.95).</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="sd">        name: Optional name.</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">component_id</span><span class="p">,</span> <span class="n">ComponentType</span><span class="o">.</span><span class="n">SEPARATOR</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">separation_efficiency</span> <span class="o">=</span> <span class="n">separation_efficiency</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -5359,29 +5417,29 @@ and liquid fractions.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>pyadm1/components/biological/separator.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-67">67</a></span>
-<span class="normal"><a href="#__codelineno-0-68">68</a></span>
-<span class="normal"><a href="#__codelineno-0-69">69</a></span>
-<span class="normal"><a href="#__codelineno-0-70">70</a></span>
-<span class="normal"><a href="#__codelineno-0-71">71</a></span>
-<span class="normal"><a href="#__codelineno-0-72">72</a></span>
-<span class="normal"><a href="#__codelineno-0-73">73</a></span>
-<span class="normal"><a href="#__codelineno-0-74">74</a></span>
-<span class="normal"><a href="#__codelineno-0-75">75</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-75">75</a></span>
 <span class="normal"><a href="#__codelineno-0-76">76</a></span>
 <span class="normal"><a href="#__codelineno-0-77">77</a></span>
-<span class="normal"><a href="#__codelineno-0-78">78</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="nd">@classmethod</span>
-<a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;Separator&quot;</span><span class="p">:</span>
-<a id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-70" name="__codelineno-0-70"></a><span class="sd">    Create instance from dictionary.</span>
-<a id="__codelineno-0-71" name="__codelineno-0-71"></a>
-<a id="__codelineno-0-72" name="__codelineno-0-72"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="sd">        config: Configuration dictionary.</span>
-<a id="__codelineno-0-74" name="__codelineno-0-74"></a>
-<a id="__codelineno-0-75" name="__codelineno-0-75"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="sd">        New Separator instance.</span>
-<a id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-78" name="__codelineno-0-78"></a>    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;component_id&quot;</span><span class="p">])</span>
+<span class="normal"><a href="#__codelineno-0-78">78</a></span>
+<span class="normal"><a href="#__codelineno-0-79">79</a></span>
+<span class="normal"><a href="#__codelineno-0-80">80</a></span>
+<span class="normal"><a href="#__codelineno-0-81">81</a></span>
+<span class="normal"><a href="#__codelineno-0-82">82</a></span>
+<span class="normal"><a href="#__codelineno-0-83">83</a></span>
+<span class="normal"><a href="#__codelineno-0-84">84</a></span>
+<span class="normal"><a href="#__codelineno-0-85">85</a></span>
+<span class="normal"><a href="#__codelineno-0-86">86</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-75" name="__codelineno-0-75"></a><span class="nd">@classmethod</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;Separator&quot;</span><span class="p">:</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="sd">    Create instance from dictionary.</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="sd">        config: Configuration dictionary.</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82"></a>
+<a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84"></a><span class="sd">        New Separator instance.</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-86" name="__codelineno-0-86"></a>    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;component_id&quot;</span><span class="p">])</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -5435,21 +5493,21 @@ and liquid fractions.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>pyadm1/components/biological/separator.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-35">35</a></span>
-<span class="normal"><a href="#__codelineno-0-36">36</a></span>
-<span class="normal"><a href="#__codelineno-0-37">37</a></span>
-<span class="normal"><a href="#__codelineno-0-38">38</a></span>
-<span class="normal"><a href="#__codelineno-0-39">39</a></span>
-<span class="normal"><a href="#__codelineno-0-40">40</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-40">40</a></span>
 <span class="normal"><a href="#__codelineno-0-41">41</a></span>
-<span class="normal"><a href="#__codelineno-0-42">42</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">    Initialize component state.</span>
-<a id="__codelineno-0-38" name="__codelineno-0-38"></a>
-<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="sd">        initial_state: Optional initial state.</span>
-<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-42" name="__codelineno-0-42"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="normal"><a href="#__codelineno-0-42">42</a></span>
+<span class="normal"><a href="#__codelineno-0-43">43</a></span>
+<span class="normal"><a href="#__codelineno-0-44">44</a></span>
+<span class="normal"><a href="#__codelineno-0-45">45</a></span>
+<span class="normal"><a href="#__codelineno-0-46">46</a></span>
+<span class="normal"><a href="#__codelineno-0-47">47</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="sd">    Initialize component state.</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="sd">        initial_state: Optional initial state.</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -5558,31 +5616,31 @@ and liquid fractions.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>pyadm1/components/biological/separator.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-44">44</a></span>
-<span class="normal"><a href="#__codelineno-0-45">45</a></span>
-<span class="normal"><a href="#__codelineno-0-46">46</a></span>
-<span class="normal"><a href="#__codelineno-0-47">47</a></span>
-<span class="normal"><a href="#__codelineno-0-48">48</a></span>
-<span class="normal"><a href="#__codelineno-0-49">49</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-49">49</a></span>
 <span class="normal"><a href="#__codelineno-0-50">50</a></span>
 <span class="normal"><a href="#__codelineno-0-51">51</a></span>
 <span class="normal"><a href="#__codelineno-0-52">52</a></span>
 <span class="normal"><a href="#__codelineno-0-53">53</a></span>
 <span class="normal"><a href="#__codelineno-0-54">54</a></span>
 <span class="normal"><a href="#__codelineno-0-55">55</a></span>
-<span class="normal"><a href="#__codelineno-0-56">56</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="sd">    Execute one simulation step.</span>
-<a id="__codelineno-0-47" name="__codelineno-0-47"></a>
-<a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="sd">        t: Current time [days].</span>
-<a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="sd">        dt: Time step [days].</span>
-<a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="sd">        inputs: Input dictionary.</span>
+<span class="normal"><a href="#__codelineno-0-56">56</a></span>
+<span class="normal"><a href="#__codelineno-0-57">57</a></span>
+<span class="normal"><a href="#__codelineno-0-58">58</a></span>
+<span class="normal"><a href="#__codelineno-0-59">59</a></span>
+<span class="normal"><a href="#__codelineno-0-60">60</a></span>
+<span class="normal"><a href="#__codelineno-0-61">61</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="sd">    Execute one simulation step.</span>
 <a id="__codelineno-0-52" name="__codelineno-0-52"></a>
-<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">        Output dictionary.</span>
-<a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-56" name="__codelineno-0-56"></a>    <span class="k">return</span> <span class="p">{}</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">        t: Current time [days].</span>
+<a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">        dt: Time step [days].</span>
+<a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="sd">        inputs: Input dictionary.</span>
+<a id="__codelineno-0-57" name="__codelineno-0-57"></a>
+<a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="sd">        Output dictionary.</span>
+<a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-61" name="__codelineno-0-61"></a>    <span class="k">return</span> <span class="p">{}</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -5628,21 +5686,27 @@ and liquid fractions.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>pyadm1/components/biological/separator.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-58">58</a></span>
-<span class="normal"><a href="#__codelineno-0-59">59</a></span>
-<span class="normal"><a href="#__codelineno-0-60">60</a></span>
-<span class="normal"><a href="#__codelineno-0-61">61</a></span>
-<span class="normal"><a href="#__codelineno-0-62">62</a></span>
-<span class="normal"><a href="#__codelineno-0-63">63</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-63">63</a></span>
 <span class="normal"><a href="#__codelineno-0-64">64</a></span>
-<span class="normal"><a href="#__codelineno-0-65">65</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="sd">    Serialize to dictionary.</span>
-<a id="__codelineno-0-61" name="__codelineno-0-61"></a>
-<a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="sd">        Configuration dictionary.</span>
-<a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-65" name="__codelineno-0-65"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;component_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_id</span><span class="p">,</span> <span class="s2">&quot;component_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_type</span><span class="o">.</span><span class="n">value</span><span class="p">}</span>
+<span class="normal"><a href="#__codelineno-0-65">65</a></span>
+<span class="normal"><a href="#__codelineno-0-66">66</a></span>
+<span class="normal"><a href="#__codelineno-0-67">67</a></span>
+<span class="normal"><a href="#__codelineno-0-68">68</a></span>
+<span class="normal"><a href="#__codelineno-0-69">69</a></span>
+<span class="normal"><a href="#__codelineno-0-70">70</a></span>
+<span class="normal"><a href="#__codelineno-0-71">71</a></span>
+<span class="normal"><a href="#__codelineno-0-72">72</a></span>
+<span class="normal"><a href="#__codelineno-0-73">73</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65"></a><span class="sd">    Serialize to dictionary.</span>
+<a id="__codelineno-0-66" name="__codelineno-0-66"></a>
+<a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="sd">        Configuration dictionary.</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a>    <span class="k">return</span> <span class="p">{</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71"></a>        <span class="s2">&quot;component_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_id</span><span class="p">,</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72"></a>        <span class="s2">&quot;component_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73"></a>    <span class="p">}</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

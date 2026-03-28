@@ -2,350 +2,350 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/CHANGELOG/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/CHANGELOG/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/CHANGELOG/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/metrics/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/metrics/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/metrics/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/api/biological/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/api/biological/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/api/biological/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/api/configurator/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/api/configurator/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/api/configurator/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/api/core/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/api/core/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/api/core/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/api/energy/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/api/energy/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/api/energy/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/api/feeding/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/api/feeding/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/api/feeding/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/api/mechanical/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/api/mechanical/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/api/mechanical/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/api/simulation/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/api/simulation/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/api/simulation/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/api/substrates/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/api/substrates/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/api/substrates/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/architecture/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/architecture/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/architecture/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/development/style_guide/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/development/style_guide/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/development/style_guide/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/examples/basic_digester/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/examples/basic_digester/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/examples/basic_digester/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/examples/parallel_simulation/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/examples/parallel_simulation/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/examples/parallel_simulation/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/examples/two_stage_plant/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/examples/two_stage_plant/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/examples/two_stage_plant/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/user_guide/installation/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/user_guide/installation/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/user_guide/installation/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/user_guide/quickstart/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/user_guide/quickstart/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/user_guide/quickstart/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/user_guide/troubleshooting/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/user_guide/troubleshooting/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/user_guide/troubleshooting/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/user_guide/components/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/user_guide/components/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/user_guide/components/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/user_guide/components/biological/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/user_guide/components/biological/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/user_guide/components/biological/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/user_guide/components/energy/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/user_guide/components/energy/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/user_guide/components/energy/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/user_guide/components/feeding/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/user_guide/components/feeding/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/user_guide/components/feeding/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/user_guide/components/mechanical/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/user_guide/components/mechanical/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/user_guide/components/mechanical/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/user_guide/components/sensors/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/user_guide/components/sensors/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/user_guide/components/sensors/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/CHANGELOG/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/CHANGELOG/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devCHANGELOG/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/metrics/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/metrics/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devmetrics/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/api/biological/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/api/biological/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devapi/biological/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/api/configurator/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/api/configurator/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devapi/configurator/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/api/core/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/api/core/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devapi/core/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/api/energy/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/api/energy/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devapi/energy/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/api/feeding/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/api/feeding/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devapi/feeding/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/api/mechanical/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/api/mechanical/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devapi/mechanical/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/api/simulation/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/api/simulation/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devapi/simulation/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/api/substrates/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/api/substrates/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devapi/substrates/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/architecture/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/architecture/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devarchitecture/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/development/style_guide/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/development/style_guide/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devdevelopment/style_guide/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/examples/basic_digester/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/examples/basic_digester/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devexamples/basic_digester/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/examples/parallel_simulation/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/examples/parallel_simulation/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devexamples/parallel_simulation/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/examples/two_stage_plant/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/examples/two_stage_plant/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devexamples/two_stage_plant/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/installation/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/installation/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devuser_guide/installation/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/quickstart/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/quickstart/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devuser_guide/quickstart/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/troubleshooting/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/troubleshooting/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devuser_guide/troubleshooting/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/components/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/components/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devuser_guide/components/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/components/biological/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/components/biological/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devuser_guide/components/biological/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/components/energy/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/components/energy/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devuser_guide/components/energy/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/components/feeding/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/components/feeding/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devuser_guide/components/feeding/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/components/mechanical/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/components/mechanical/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devuser_guide/components/mechanical/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/components/sensors/</loc>
-        <lastmod>2026-02-26</lastmod>
+        <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/components/sensors/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devuser_guide/components/sensors/"/>
