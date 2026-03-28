@@ -24,7 +24,12 @@ class Hydrolysis(Component):
     """
 
     def __init__(
-        self, component_id: str, feedstock: Feedstock, V_liq: float = 500.0, T_ad: float = 318.15, name: Optional[str] = None
+        self,
+        component_id: str,
+        feedstock: Feedstock,
+        V_liq: float = 500.0,
+        T_ad: float = 318.15,
+        name: Optional[str] = None,
     ):
         """
         Initialize the Hydrolysis tank.
@@ -71,7 +76,10 @@ class Hydrolysis(Component):
         Returns:
             Dictionary containing component configuration.
         """
-        return {"component_id": self.component_id, "component_type": self.component_type.value}
+        return {
+            "component_id": self.component_id,
+            "component_type": self.component_type.value,
+        }
 
     @classmethod
     def from_dict(cls, config: Dict[str, Any], feedstock: Feedstock) -> "Hydrolysis":

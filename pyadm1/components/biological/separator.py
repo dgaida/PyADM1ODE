@@ -20,7 +20,12 @@ class Separator(Component):
         name: Optional name.
     """
 
-    def __init__(self, component_id: str, separation_efficiency: float = 0.95, name: Optional[str] = None):
+    def __init__(
+        self,
+        component_id: str,
+        separation_efficiency: float = 0.95,
+        name: Optional[str] = None,
+    ):
         """
         Initialize the Separator.
 
@@ -62,7 +67,10 @@ class Separator(Component):
         Returns:
             Configuration dictionary.
         """
-        return {"component_id": self.component_id, "component_type": self.component_type.value}
+        return {
+            "component_id": self.component_id,
+            "component_type": self.component_type.value,
+        }
 
     @classmethod
     def from_dict(cls, config: Dict[str, Any]) -> "Separator":

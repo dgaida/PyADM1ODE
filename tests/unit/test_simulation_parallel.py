@@ -4,7 +4,12 @@ import types
 import pytest
 
 import pyadm1.simulation.parallel as parallel_mod
-from pyadm1.simulation.parallel import MonteCarloConfig, ParallelSimulator, ParameterSweepConfig, ScenarioResult
+from pyadm1.simulation.parallel import (
+    MonteCarloConfig,
+    ParallelSimulator,
+    ParameterSweepConfig,
+    ScenarioResult,
+)
 
 
 class _DummyADM1Config:
@@ -58,7 +63,11 @@ def test_get_mp_context_env_override(monkeypatch):
     called = {}
 
     monkeypatch.setattr(parallel_mod.os, "getenv", lambda key: "spawn")
-    monkeypatch.setattr(parallel_mod.mp, "get_context", lambda method: called.setdefault("method", method) or "ctx")
+    monkeypatch.setattr(
+        parallel_mod.mp,
+        "get_context",
+        lambda method: called.setdefault("method", method) or "ctx",
+    )
 
     parallel_mod._get_mp_context()
 
@@ -70,7 +79,11 @@ def test_get_mp_context_linux_default(monkeypatch):
 
     monkeypatch.setattr(parallel_mod.os, "getenv", lambda key: None)
     monkeypatch.setattr(parallel_mod.sys, "platform", "linux")
-    monkeypatch.setattr(parallel_mod.mp, "get_context", lambda method: called.setdefault("method", method) or "ctx")
+    monkeypatch.setattr(
+        parallel_mod.mp,
+        "get_context",
+        lambda method: called.setdefault("method", method) or "ctx",
+    )
 
     parallel_mod._get_mp_context()
 
@@ -144,7 +157,12 @@ def test_multi_parameter_sweep_verbose_prints(monkeypatch, capsys):
 
     monkeypatch.setattr(sim, "run_scenarios", fake_run)
 
-    results = sim.multi_parameter_sweep({"k_dis": [0.4, 0.5], "Y_su": [0.1]}, 1.0, [0.0] * 37, fixed_params={"Q": [1] * 10})
+    results = sim.multi_parameter_sweep(
+        {"k_dis": [0.4, 0.5], "Y_su": [0.1]},
+        1.0,
+        [0.0] * 37,
+        fixed_params={"Q": [1] * 10},
+    )
 
     assert len(results) == 2
     assert captured["count"] == 2
@@ -156,7 +174,11 @@ def test_multi_parameter_sweep_verbose_prints(monkeypatch, capsys):
 
 def test_monte_carlo_verbose_prints(monkeypatch, capsys):
     sim = ParallelSimulator(_DummyADM1Config(), n_workers=1, verbose=True)
-    monkeypatch.setattr(sim, "run_scenarios", lambda scenarios, duration, initial_state, **kwargs: scenarios)
+    monkeypatch.setattr(
+        sim,
+        "run_scenarios",
+        lambda scenarios, duration, initial_state, **kwargs: scenarios,
+    )
 
     cfg = MonteCarloConfig(
         n_samples=2,
@@ -203,7 +225,11 @@ def test_compute_scenario_metrics_ignores_dll_errors(monkeypatch):
         def calcPHOfADMstate(_state):
             raise RuntimeError("dll failed")
 
-    monkeypatch.setattr(parallel_mod.mp, "current_process", lambda: types.SimpleNamespace(name="MainProcess"))
+    monkeypatch.setattr(
+        parallel_mod.mp,
+        "current_process",
+        lambda: types.SimpleNamespace(name="MainProcess"),
+    )
     monkeypatch.setitem(sys.modules, "biogas", types.SimpleNamespace(ADMstate=FakeADMState))
 
     state = [0.0] * 37

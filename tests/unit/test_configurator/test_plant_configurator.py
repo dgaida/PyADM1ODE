@@ -247,7 +247,10 @@ class TestAddDigester:
 
         Covers the exception branch around default initial-state handling.
         """
-        with patch("pyadm1.configurator.plant_configurator.Path.exists", side_effect=RuntimeError("fs error")):
+        with patch(
+            "pyadm1.configurator.plant_configurator.Path.exists",
+            side_effect=RuntimeError("fs error"),
+        ):
             with patch("pyadm1.configurator.plant_configurator.get_state_zero_from_initial_state") as mock_get_state:
                 _digester, state_info = configurator.add_digester("dig_state_error")
 
@@ -744,7 +747,8 @@ class TestCreateSingleStagePlant:
             mock_get_state.return_value = [0.01] * 37
 
             components = configurator.create_single_stage_plant(
-                chp_config={"P_el_nom": 500}, heating_config={"target_temperature": 308.15}
+                chp_config={"P_el_nom": 500},
+                heating_config={"target_temperature": 308.15},
             )
 
             assert "heating" in components, "Should have heating in components"
@@ -761,7 +765,9 @@ class TestCreateSingleStagePlant:
             mock_get_state.return_value = [0.01] * 37
 
             configurator.create_single_stage_plant(
-                chp_config={"P_el_nom": 500}, heating_config={"target_temperature": 308.15}, auto_connect=True
+                chp_config={"P_el_nom": 500},
+                heating_config={"target_temperature": 308.15},
+                auto_connect=True,
             )
 
             # Should have connections
@@ -797,7 +803,8 @@ class TestCreateSingleStagePlant:
             mock_get_state.return_value = [0.01] * 37
 
             components = configurator.create_single_stage_plant(
-                digester_config={"V_liq": 2500, "T_ad": 318.15}, chp_config={"P_el_nom": 750, "eta_el": 0.42}
+                digester_config={"V_liq": 2500, "T_ad": 318.15},
+                chp_config={"P_el_nom": 750, "eta_el": 0.42},
             )
 
             digester_id = components["digester"]
@@ -943,7 +950,11 @@ class TestCreateTwoStagePlant:
             mock_get_state.return_value = [0.01] * 37
 
             components = configurator.create_two_stage_plant(
-                chp_config={"P_el_nom": 500}, heating_configs=[{"target_temperature": 318.15}, {"target_temperature": 308.15}]
+                chp_config={"P_el_nom": 500},
+                heating_configs=[
+                    {"target_temperature": 318.15},
+                    {"target_temperature": 308.15},
+                ],
             )
 
             assert "heating" in components, "Should have heating systems"
@@ -1073,7 +1084,9 @@ class TestPlantConfiguratorIntegration:
 
             # Create two-stage plant
             components = configurator.create_two_stage_plant(
-                hydrolysis_config={"V_liq": 500}, digester_config={"V_liq": 1500}, chp_config={"P_el_nom": 500}
+                hydrolysis_config={"V_liq": 500},
+                digester_config={"V_liq": 1500},
+                chp_config={"P_el_nom": 500},
             )
 
             # Add additional digester

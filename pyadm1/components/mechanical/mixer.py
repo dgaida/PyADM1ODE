@@ -191,7 +191,11 @@ class Mixer(Component):
             "mixing_time": self.mixing_time,
         }
 
-        self.outputs_data = {"P_consumed": 0.0, "is_running": self.is_running, "mixing_quality": 1.0}
+        self.outputs_data = {
+            "P_consumed": 0.0,
+            "is_running": self.is_running,
+            "mixing_quality": 1.0,
+        }
 
         self._initialized = True
 

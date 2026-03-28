@@ -47,7 +47,10 @@ class TestBoilerSerialization:
     def test_to_dict_returns_minimal_config(self) -> None:
         boiler = Boiler("boiler_1")
 
-        assert boiler.to_dict() == {"component_id": "boiler_1", "component_type": "boiler"}
+        assert boiler.to_dict() == {
+            "component_id": "boiler_1",
+            "component_type": "boiler",
+        }
 
     def test_from_dict_recreates_instance_with_defaults(self) -> None:
         boiler = Boiler.from_dict({"component_id": "boiler_cfg"})

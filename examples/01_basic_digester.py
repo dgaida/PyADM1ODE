@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 # ============================================================================
 # examples/quickstart.py
 # ============================================================================
@@ -16,6 +16,12 @@ Usage:
 """
 
 from pathlib import Path
+import csv
+import sys
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 
 def main():
@@ -47,7 +53,18 @@ def main():
     else:
         print(f"   Loading from: {initial_state_file}")
         adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
-    Q_substrates = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]  # Corn silage and swine manure feed m^3/d
+    Q_substrates = [
+        15,
+        10,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    ]  # Corn silage and swine manure feed m^3/d
 
     df = feedstock.get_influent_dataframe(Q=Q_substrates)
     for col in df.columns:
@@ -60,7 +77,7 @@ def main():
     # Step 4: Use PlantConfigurator to add digester
     print("4. Adding digester with PlantConfigurator...")
     configurator = PlantConfigurator(plant, feedstock)
-    configurator.add_digester(
+    digester, state_info = configurator.add_digester(
         digester_id="main_digester",
         V_liq=2000.0,
         V_gas=300.0,
@@ -75,36 +92,58 @@ def main():
     print("5. Initializing plant...")
     plant.initialize()
 
+    calibration_params = digester.get_calibration_parameters()
+    if not calibration_params:
+        digester.adm1.create_influent(digester.Q_substrates, 0)
+        calibration_params = digester.adm1._get_substrate_dependent_params()
+    print(calibration_params)
+
     # Step 6: Run simulation
     print("6. Running simulation...")
     print("   Duration: 5 days")
     print("   Time step: 1 hour")
-    print("   Save interval: 1 day")
+    print("   Save interval: 1 hour")
 
     results = plant.simulate(
-        duration=30.0, dt=1.0 / 24.0, save_interval=1.0  # 30 days  # 1 hour time step  # Save results daily
+        duration=30.0,
+        dt=1.0 / 24.0,
+        save_interval=1.0,  # 30 days  # 1 hour time step  # Save results daily
     )
 
-    # Step 7: Display results
+    # Step 9: Display results
     print("\n" + "=" * 70)
     print("SIMULATION RESULTS")
     print("=" * 70)
 
-    print(f"\nGenerated {len(results)} daily result snapshots\n")
+    if len(results) > 1:
+        dt_days = abs(float(results[1]["time"]) - float(results[0]["time"]))
+    else:
+        dt_days = 1.0
+    day_tolerance = max(1e-9, dt_days * 0.51)
 
-    # Show results for each day
+    day_to_result = {}
     for result in results:
+        time = float(result["time"])
+        day = int(round(time))
+        if day >= 1 and abs(time - day) <= day_tolerance:
+            day_to_result[day] = result
+
+    daily_results = [day_to_result[day] for day in sorted(day_to_result)]
+
+    print(f"\nGenerated {len(results)} time-step snapshots ({len(daily_results)} daily summaries shown)\n")
+
+    # Show results once per day
+    for result in daily_results:
         time = result["time"]
         comp_results = result["components"]["main_digester"]
+        q_gas_day = float(comp_results.get("Q_gas", 0.0))
+        q_ch4_day = float(comp_results.get("Q_ch4", 0.0))
+        ch4_share_day = (q_ch4_day / q_gas_day * 100.0) if q_gas_day > 0 else 0.0
 
-        print(f"Day {time:.1f}:")
-        print(f"  Biogas:  {comp_results.get('Q_gas', 0):>8.1f} m³/d")
-        print(f"  Methane: {comp_results.get('Q_ch4', 0):>8.1f} m³/d")
-        print(f"  pH:      {comp_results.get('pH', 0):>8.2f}")
-        print(f"  VFA:     {comp_results.get('VFA', 0):>8.2f} g/L")
-        print(f"  TAC:     {comp_results.get('TAC', 0):>8.2f} g/L")
-        ratio = comp_results.get("VFA", 0) / comp_results.get("TAC", 1)
-        print(f"  VFA/TAC: {ratio:>8.2f}")
+        print(f"Day {int(round(time)):>2d}:")
+        print(f"  Biogas:  {q_gas_day:>8.1f} m³/d")
+        print(f"  Methane: {q_ch4_day:>8.1f} m³/d")
+        print(f"  CH4:     {ch4_share_day:>8.1f} %")
         print()
 
     # Final summary
@@ -118,14 +157,14 @@ def main():
     print(f"Process stability (pH):   {final.get('pH', 0):.2f}")
     print("=" * 70)
 
-    print("\n✅ Simulation completed successfully!")
+    print("\nSimulation completed successfully!")
 
     # Optional: Save configuration
     output_path = Path(__file__).parent.parent / "output"
     output_path.mkdir(exist_ok=True)
     config_file = output_path / "quickstart_config.json"
     plant.to_json(str(config_file))
-    print(f"\n💾 Configuration saved to: {config_file}")
+    print(f"\nConfiguration saved to: {config_file}")
 
     return plant, results
 

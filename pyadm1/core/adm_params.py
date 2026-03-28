@@ -70,7 +70,7 @@ class ADMParams:
         N_xc = 0.0376 / 14  # OK
         N_I = 0.06 / 14  # kmole N.kg^-1COD  # OK
         N_aa = 0.007  # kmole N.kg^-1COD         OK
-        C_xc = 0.02786  # kmole C.kg^-1COD       in C# 0.03
+        C_xc = 0.03  # kmole C.kg^-1COD
         C_sI = 0.03  # kmole C.kg^-1COD          OK
         C_ch = 0.0313  # kmole C.kg^-1COD        C_Xch OK
         C_pr = 0.03  # kmole C.kg^-1COD          C_Xpr OK
@@ -90,7 +90,7 @@ class ADMParams:
         C_bac = 0.0313  # kmole C.kg^-1COD       C_XB OK
 
         C_va = 0.024  # kmole C.kg^-1COD        # C_Sva OK
-        C_ch4 = 0.0156  # kmole C.kg^-1COD      # C_Sch4 OK
+        C_ch4 = 0.0156  # kmole C.kg^-1COD      # C_Sch4
 
         Y_su, Y_aa, Y_fa, Y_c4, Y_pro, Y_ac, Y_h2 = ADMParams._getADMYparams()
 
@@ -286,18 +286,11 @@ class ADMParams:
         p_gas_h2o = 0.0313 * np.exp(5290 * (1 / T_base - 1 / T_ad))  # bar #0.0557
         # in C# this value is 10000, but in m^3/(m^3*d)
         # k_p = 5 * 10 ** 4  # m^3.d^-1.bar^-1 #only for BSM2 AD conditions, recalibrate for other AD cases #gas outlet friction
-        k_p = 10000
+        k_p = 1 * 10**4
         k_L_a = 200.0  # d^-1 OK in C# implementation there is klAH2, klaCH4, klaCO2, but all are equal to 200
-        # Henry constants.
-        # in C# implementation different calculations but also different units
-        # K_H_co2 = 0.035 * np.exp((-19410 / (100 * R)) * (1 / T_base - 1 / T_ad))  # Mliq.bar^-1 #0.0271
-        # K_H_ch4 = 0.0014 * np.exp((-14240 / (100 * R)) * (1 / T_base - 1 / T_ad))  # Mliq.bar^-1 #0.00116
-        # K_H_h2 = 7.8 * 10 ** -4 * np.exp(-4180 / (100 * R) * (1 / T_base - 1 / T_ad))  # Mliq.bar^-1 #7.38*10^-4
-
-        # C# implementations
-        K_H_co2 = 1 / (0.0271 * 0.08314 * T_ad)
-        K_H_ch4 = 1 / (0.00116 * 0.08314 * T_ad)
-        K_H_h2 = 1 / (7.38e-4 * 0.08314 * T_ad)
+        K_H_co2 = 1 / (0.0271 * R * T_ad)
+        K_H_ch4 = 1 / (0.00116 * R * T_ad)
+        K_H_h2 = 1 / (7.38e-4 * R * T_ad)
 
         return p_gas_h2o, k_p, k_L_a, K_H_co2, K_H_ch4, K_H_h2
 
@@ -374,18 +367,14 @@ class ADMParams:
         K_S_fa = 0.4  # kgCOD.m^-3          OK
         K_I_h2_fa = 5 * 10**-6  # kgCOD.m^-3      OK
         k_m_c4 = 20  # d^-1                     OK
-        # in C# 0.3 Quelle: Eignung des Anaerobic Digestion Model No.1 (ADM 1] zur Prozesssteuerung
-        # landwirtschaftlicher Biogasanlagen, Gülzower Gespräche
-        K_S_c4 = 0.3  # 0.2  # kgCOD.m^-3
+        K_S_c4 = 0.2  # kgCOD.m^-3 (SIMBA5 default)
         K_I_h2_c4 = 10**-5  # kgCOD.m^-3      OK
         k_m_pro = 13  # d^-1                    OK
         K_S_pro = 0.1  # kgCOD.m^-3             OK
         K_I_h2_pro = 3.5 * 10**-6  # kgCOD.m^-3       OK
         k_m_ac = 8  # kgCOD.m^-3                    OK
         K_S_ac = 0.15  # kgCOD.m^-3                  OK
-        # in C# 0.002, Quelle: 09 monofermentation of grass silage under mesophilic conditions - measurements
-        # and mathematical modeling with adm 1.pdf
-        K_I_nh3 = 0.002  # 0.0018  # M
+        K_I_nh3 = 0.0018  # M (SIMBA5 default)
         k_m_h2 = 35  # d^-1             OK
         K_S_h2 = 7 * 10**-6  # kgCOD.m^-3         OK
 

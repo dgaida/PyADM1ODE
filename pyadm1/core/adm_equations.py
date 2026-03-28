@@ -11,7 +11,6 @@ clarity and easier modification. It includes:
 - Gas transfer rates
 """
 
-import numpy as np
 from typing import Tuple, List
 
 
@@ -117,7 +116,9 @@ class ProcessRates:
         Args:
             k_hyd: Hydrolysis rate constant [1/d]
             X_substrate: Particulate substrate concentration [kg COD/m³]
-            hydro_factor: Optional TS-dependent factor [-]
+            hydro_factor: Optional TS-dependent factor [-]. Values above 1
+                are interpreted as digester TS [%] and converted with the
+                Koch (2010) hydrolysis correction.
 
         Returns:
             Hydrolysis rate [kg COD/(m³·d)]
@@ -186,7 +187,14 @@ class GasTransfer:
 
     @staticmethod
     def gas_transfer_rate(
-        k_L_a: float, S_gas_liq: float, p_gas: float, K_H: float, RT: float, COD_per_mole: float, V_liq: float, V_gas: float
+        k_L_a: float,
+        S_gas_liq: float,
+        p_gas: float,
+        K_H: float,
+        RT: float,
+        COD_per_mole: float,
+        V_liq: float,
+        V_gas: float,
     ) -> float:
         """
         Calculate gas-liquid transfer rate.
@@ -339,7 +347,8 @@ class BiochemicalProcesses:
             kinetic_params: Dictionary of kinetic parameters (k_m, K_S, k_dec, etc.)
             substrate_params: Dictionary of substrate-dependent parameters
                 (k_dis, k_hyd_ch, k_hyd_pr, k_hyd_li)
-            hydro_factor: Optional TS-dependent hydrolysis factor [-]
+            hydro_factor: Optional TS-dependent hydrolysis factor [-]. Values
+                above 1 are interpreted as digester TS [%].
 
         Returns:
             Tuple of 19 process rates (Rho_1 through Rho_19)
@@ -358,21 +367,10 @@ class BiochemicalProcesses:
         k_hyd_pr = substrate_params["k_hyd_pr"]
         k_hyd_li = substrate_params["k_hyd_li"]
 
-        # TODO
-        # this extension introduces instabilities into the simulation, so it is outcommented. the TS value calculated in
-        # calcTS is also not very accurate
-        # Erweiterung der hydrolyse, abhängigkeit von TS gehalt im fermenter, s. diss. von Koch 2010, S. 62
-        # TS = digester.calcTS(state_zero, self.feedstock.mySubstrates, self.Q)
-        # TS_digester = TS.Value
-
-        # Khyd = 5.5 # 2.5
-        # nhyd = 2.3
-
-        # hydro_factor = 1.0 / (1.0 + math.pow(TS_digester/Khyd, nhyd))
-
-        # by setting hydro_factor to 1, we are not using it
-        # hydro_factor = 1.0
-        # print(hydro_factor)
+        if hydro_factor > 1.0:
+            hydro_factor = 1.0 / (1.0 + (hydro_factor / 5.5) ** 2.3)
+        elif hydro_factor < 0.0:
+            hydro_factor = 0.0
 
         proc = ProcessRates()
 
@@ -443,7 +441,14 @@ class BiochemicalProcesses:
             Tuple of 6 acid-base rates (Rho_A_4 through Rho_A_11)
         """
         # Unpack state
-        S_va, S_bu, S_pro, S_ac, S_co2, S_nh4_ion = (state[3], state[4], state[5], state[6], state[9], state[10])
+        S_va, S_bu, S_pro, S_ac, S_co2, S_nh4_ion = (
+            state[3],
+            state[4],
+            state[5],
+            state[6],
+            state[9],
+            state[10],
+        )
         S_va_ion, S_bu_ion, S_pro_ion, S_ac_ion = state[27:31]
         S_hco3_ion, S_nh3 = state[31], state[32]
 
@@ -458,30 +463,63 @@ class BiochemicalProcesses:
 
         # Acid-base rates
         Rho_A_4 = ab.acid_base_rate(
-            acid_base_params["k_A_B_va"], S_va_ion, S_H_ion, acid_base_params["K_a_va"], S_va - S_va_ion
+            acid_base_params["k_A_B_va"],
+            S_va_ion,
+            S_H_ion,
+            acid_base_params["K_a_va"],
+            S_va - S_va_ion,
         )
 
         Rho_A_5 = ab.acid_base_rate(
-            acid_base_params["k_A_B_bu"], S_bu_ion, S_H_ion, acid_base_params["K_a_bu"], S_bu - S_bu_ion
+            acid_base_params["k_A_B_bu"],
+            S_bu_ion,
+            S_H_ion,
+            acid_base_params["K_a_bu"],
+            S_bu - S_bu_ion,
         )
 
         Rho_A_6 = ab.acid_base_rate(
-            acid_base_params["k_A_B_pro"], S_pro_ion, S_H_ion, acid_base_params["K_a_pro"], S_pro - S_pro_ion
+            acid_base_params["k_A_B_pro"],
+            S_pro_ion,
+            S_H_ion,
+            acid_base_params["K_a_pro"],
+            S_pro - S_pro_ion,
         )
 
         Rho_A_7 = ab.acid_base_rate(
-            acid_base_params["k_A_B_ac"], S_ac_ion, S_H_ion, acid_base_params["K_a_ac"], S_ac - S_ac_ion
+            acid_base_params["k_A_B_ac"],
+            S_ac_ion,
+            S_H_ion,
+            acid_base_params["K_a_ac"],
+            S_ac - S_ac_ion,
         )
 
-        Rho_A_10 = ab.acid_base_rate(acid_base_params["k_A_B_co2"], S_hco3_ion, S_H_ion, acid_base_params["K_a_co2"], S_co2)
+        Rho_A_10 = ab.acid_base_rate(
+            acid_base_params["k_A_B_co2"],
+            S_hco3_ion,
+            S_H_ion,
+            acid_base_params["K_a_co2"],
+            S_co2,
+        )
 
-        Rho_A_11 = ab.acid_base_rate(acid_base_params["k_A_B_IN"], S_nh3, S_H_ion, acid_base_params["K_a_IN"], S_nh4_ion)
+        Rho_A_11 = ab.acid_base_rate(
+            acid_base_params["k_A_B_IN"],
+            S_nh3,
+            S_H_ion,
+            acid_base_params["K_a_IN"],
+            S_nh4_ion,
+        )
 
         return (Rho_A_4, Rho_A_5, Rho_A_6, Rho_A_7, Rho_A_10, Rho_A_11)
 
     @staticmethod
     def calculate_gas_transfer_rates(
-        state: List[float], gas_params: dict, RT: float, V_liq: float, V_gas: float
+        state: List[float],
+        gas_params: dict,
+        RT: float,
+        V_liq: float,
+        V_gas: float,
+        p_ext: float,
     ) -> Tuple[float, float, float, float]:
         """
         Calculate gas-liquid transfer and gas outlet rates.
@@ -492,7 +530,7 @@ class BiochemicalProcesses:
             RT: Gas constant × temperature [bar·m³/kmol]
             V_liq: Liquid volume [m³]
             V_gas: Gas volume [m³]
-
+            p_ext: External pressure [bar]
         Returns:
             Tuple of 4 rates (Rho_T_8, Rho_T_9, Rho_T_10, Rho_T_11)
         """
@@ -500,17 +538,41 @@ class BiochemicalProcesses:
         S_h2, S_ch4, S_co2 = state[7:10]
         p_gas_h2, p_gas_ch4, p_gas_co2, pTOTAL = state[33:37]
 
-        # External pressure (should be passed as parameter in real implementation)
-        p_ext = 1.04 - 0.0084147 * np.exp(0.054 * (RT / 0.08314 - 273.15))
-
         gt = GasTransfer()
 
         # Gas transfer rates
-        Rho_T_8 = gt.gas_transfer_rate(gas_params["k_L_a"], S_h2, p_gas_h2, gas_params["K_H_h2"], RT, 16.0, V_liq, V_gas)
+        Rho_T_8 = gt.gas_transfer_rate(
+            gas_params["k_L_a"],
+            S_h2,
+            p_gas_h2,
+            gas_params["K_H_h2"],
+            RT,
+            16.0,
+            V_liq,
+            V_gas,
+        )
 
-        Rho_T_9 = gt.gas_transfer_rate(gas_params["k_L_a"], S_ch4, p_gas_ch4, gas_params["K_H_ch4"], RT, 64.0, V_liq, V_gas)
+        Rho_T_9 = gt.gas_transfer_rate(
+            gas_params["k_L_a"],
+            S_ch4,
+            p_gas_ch4,
+            gas_params["K_H_ch4"],
+            RT,
+            64.0,
+            V_liq,
+            V_gas,
+        )
 
-        Rho_T_10 = gt.gas_transfer_rate(gas_params["k_L_a"], S_co2, p_gas_co2, gas_params["K_H_co2"], RT, 1.0, V_liq, V_gas)
+        Rho_T_10 = gt.gas_transfer_rate(
+            gas_params["k_L_a"],
+            S_co2,
+            p_gas_co2,
+            gas_params["K_H_co2"],
+            RT,
+            1.0,
+            V_liq,
+            V_gas,
+        )
 
         # Gas outlet rate
         Rho_T_11 = gt.gas_outlet_rate(gas_params["k_p"], pTOTAL, p_ext, V_liq, V_gas)

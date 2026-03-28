@@ -372,7 +372,10 @@ class SubstrateStorage(Component):
         T_factor = 2.0 ** ((self.temperature - T_ref) / 10.0)
 
         # Storage type modifier
-        if self.storage_type in [StorageType.ABOVE_GROUND_TANK, StorageType.BELOW_GROUND_TANK]:
+        if self.storage_type in [
+            StorageType.ABOVE_GROUND_TANK,
+            StorageType.BELOW_GROUND_TANK,
+        ]:
             # Liquid storage has minimal degradation if sealed
             # Further limit temperature effect for liquid storage
             T_factor = min(T_factor, 1.2)  # Changed from 1.5

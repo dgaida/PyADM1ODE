@@ -256,7 +256,9 @@ class TestADM1CalcGas:
     def test_calc_gas_supports_numpy_scalar_arrays(self, adm1_instance: ADM1) -> None:
         """Cover ndarray non-negativity branches in calc_gas."""
         with patch.object(
-            adm1_module.ADMParams, "getADMgasparams", return_value=(None, np.array([1.0]), None, None, None, None)
+            adm1_module.ADMParams,
+            "getADMgasparams",
+            return_value=(None, np.array([1.0]), None, None, None, None),
         ):
             q_gas, q_ch4, q_co2, _ = adm1_instance.calc_gas(
                 pi_Sh2=1e-6,
@@ -582,9 +584,7 @@ class TestADM1AdditionalBranches:
         adm1.resume_from_broken_simulation([1.0, 2.0, 3.0])
         assert adm1._Q_CH4 == [1.0, 2.0, 3.0]
 
-    def test_print_params_at_current_state_populates_lists_and_duplicates_initial_values(
-        self, mock_feedstock: Mock, capsys: pytest.CaptureFixture[str]
-    ) -> None:
+    def test_print_params_at_current_state_initializes_tracking_lists(self, mock_feedstock: Mock) -> None:
         adm1 = ADM1(mock_feedstock)
         state = [0.01] * 37
         state[33:37] = [0.1, 0.2, 0.3, 1.0]
@@ -598,16 +598,19 @@ class TestADM1AdditionalBranches:
         )
 
         with patch.object(adm1_module, "ADMstate", admstate_mock):
-            with patch.object(adm1, "calc_gas", return_value=(100.0, 60.0, 40.0, 0.6)):
+            with patch.object(adm1, "calc_gas", return_value=(100.0, 60.0, 40.0, 0.6)) as calc_gas:
                 adm1.print_params_at_current_state(state)
 
-        assert len(adm1._pH_l) == 2
-        assert len(adm1._Q_GAS) == 3
-        assert adm1._Q_CH4[-1] == 60.0
-        output = capsys.readouterr().out
-        assert "pH(lib)" in output
-        assert "Q_gas =" in output
-        assert "Q_ch4 =" in output
+        calc_gas.assert_called_once_with(0.1, 0.2, 0.3, 1.0)
+        assert adm1._pH_l == [7.2, 7.2]
+        assert adm1._FOSTAC == [0.25, 0.25]
+        assert adm1._AcvsPro == [1.4, 1.4]
+        assert adm1._VFA == [0.55, 0.55]
+        assert adm1._TAC == [2.5, 2.5]
+        assert adm1._Q_GAS == [100.0, 100.0, 100.0]
+        assert adm1._Q_CH4 == [60.0, 60.0, 60.0]
+        assert adm1._Q_CO2 == [40.0, 40.0, 40.0]
+        assert adm1._P_GAS == [0.6, 0.6, 0.6]
 
     def test_get_substrate_dependent_params_returns_defaults_when_q_not_set(self, mock_feedstock: Mock) -> None:
         adm1 = ADM1(mock_feedstock)

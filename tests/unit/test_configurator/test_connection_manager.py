@@ -3,7 +3,11 @@
 
 import pytest
 
-from pyadm1.configurator.connection_manager import Connection, ConnectionManager, ConnectionType
+from pyadm1.configurator.connection_manager import (
+    Connection,
+    ConnectionManager,
+    ConnectionType,
+)
 
 
 class TestConnection:
@@ -113,7 +117,9 @@ class TestConnectionManager:
             manager.get_execution_order(["a", "b", "c"])
         assert manager.has_circular_dependency(["a", "b", "c"]) is True
 
-    def test_get_connected_components_traverses_both_directions_and_avoids_revisit(self) -> None:
+    def test_get_connected_components_traverses_both_directions_and_avoids_revisit(
+        self,
+    ) -> None:
         manager = ConnectionManager()
         manager.add_connection(Connection("a", "b", "liquid"))
         manager.add_connection(Connection("c", "b", "gas"))  # reverse-direction discovery

@@ -76,7 +76,11 @@ def test_get_substrate_feed_mixtures_covers_adjustments_and_random_branch(monkey
 
 def test_calc_olr_from_toc_uses_all_substrates(monkeypatch):
     monkeypatch.setattr(Feedstock, "_mySubstrates", _FakeSubstrates())
-    monkeypatch.setattr(Feedstock, "_get_TOC", classmethod(lambda cls, sid: _FakePhysValue(2.0 if sid == "s1" else 3.0)))
+    monkeypatch.setattr(
+        Feedstock,
+        "_get_TOC",
+        classmethod(lambda cls, sid: _FakePhysValue(2.0 if sid == "s1" else 3.0)),
+    )
 
     olr = Feedstock.calc_OLR_fromTOC([10.0, 20.0], V_liq=10.0)
 
@@ -85,7 +89,11 @@ def test_calc_olr_from_toc_uses_all_substrates(monkeypatch):
 
 def test_get_substrate_params_string_formats_expected_fields(monkeypatch):
     monkeypatch.setattr(Feedstock, "_mySubstrates", _FakeSubstrates())
-    monkeypatch.setattr(Feedstock, "_get_TOC", classmethod(lambda cls, sid: _FakePhysValue(3.45, "TOCVal")))
+    monkeypatch.setattr(
+        Feedstock,
+        "_get_TOC",
+        classmethod(lambda cls, sid: _FakePhysValue(3.45, "TOCVal")),
+    )
 
     text = Feedstock.get_substrate_params_string("s1")
 

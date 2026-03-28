@@ -127,7 +127,13 @@ class TestMixerInitialize:
     def test_initialize_with_custom_state(self) -> None:
         """Test initialize with custom initial state."""
         mixer = Mixer("mixer_1")
-        mixer.initialize({"is_running": False, "current_speed_fraction": 0.5, "operating_hours": 500.0})
+        mixer.initialize(
+            {
+                "is_running": False,
+                "current_speed_fraction": 0.5,
+                "operating_hours": 500.0,
+            }
+        )
 
         assert mixer.is_running is False, "Mixer should be stopped"
         assert mixer.current_speed_fraction == 0.5, "Speed should be set to 0.5"
@@ -556,7 +562,12 @@ class TestMixerSerialization:
     def test_roundtrip_preserves_configuration(self) -> None:
         """Test that serialization roundtrip preserves configuration."""
         original = Mixer(
-            "mixer_1", mixer_type="propeller", tank_volume=1800.0, tank_diameter=14.0, intermittent=True, on_time_fraction=0.30
+            "mixer_1",
+            mixer_type="propeller",
+            tank_volume=1800.0,
+            tank_diameter=14.0,
+            intermittent=True,
+            on_time_fraction=0.30,
         )
 
         config = original.to_dict()
@@ -660,7 +671,11 @@ class TestMixerProperties:
         mixer = Mixer("mixer_1")
         mixer.initialize()
 
-        new_state = {"is_running": False, "current_speed_fraction": 0.0, "operating_hours": 1000.0}
+        new_state = {
+            "is_running": False,
+            "current_speed_fraction": 0.0,
+            "operating_hours": 1000.0,
+        }
         mixer.set_state(new_state)
 
         assert mixer.state.get("operating_hours") == 1000.0
@@ -1068,7 +1083,13 @@ class TestMixerDocumentation:
     def test_basic_example_from_docstring(self) -> None:
         """Test basic example from component docstring."""
         # Example from Mixer class docstring
-        mixer = Mixer("mix1", mixer_type="propeller", tank_volume=2000, mixing_intensity="medium", power_installed=15.0)
+        mixer = Mixer(
+            "mix1",
+            mixer_type="propeller",
+            tank_volume=2000,
+            mixing_intensity="medium",
+            power_installed=15.0,
+        )
         mixer.initialize()
         result = mixer.step(t=0, dt=1 / 24, inputs={})
 
@@ -1078,7 +1099,12 @@ class TestMixerDocumentation:
     def test_module_example_from_docstring(self) -> None:
         """Test example from module docstring."""
         # Example from module-level docstring
-        mixer = Mixer(component_id="pump1", mixer_type="propeller", tank_volume=2000.0, mixing_intensity="medium")
+        mixer = Mixer(
+            component_id="pump1",
+            mixer_type="propeller",
+            tank_volume=2000.0,
+            mixing_intensity="medium",
+        )
         mixer.initialize()
         result = mixer.step(t=0, dt=1 / 24, inputs={})
 

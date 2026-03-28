@@ -235,7 +235,11 @@ def test_generate_main_file_ignores_subpackage_import_error(fake_package, monkey
 
 def test_generate_subpackage_docs_import_error_prints_and_returns(monkeypatch, tmp_path, capsys):
     gen = APIDocGenerator("fakepkg", output_dir=str(tmp_path / "out"))
-    monkeypatch.setattr(api_doc_mod.importlib, "import_module", lambda name: (_ for _ in ()).throw(ImportError("boom")))
+    monkeypatch.setattr(
+        api_doc_mod.importlib,
+        "import_module",
+        lambda name: (_ for _ in ()).throw(ImportError("boom")),
+    )
 
     gen._generate_subpackage_docs("missing")
 
@@ -260,7 +264,11 @@ def test_get_package_classes_without___all___uses_inspect_branch(monkeypatch, tm
     monkeypatch.setattr(
         api_doc_mod.inspect,
         "getmembers",
-        lambda pkg, pred=None: [("Public", Public), ("Other", Other), ("_Private", _Private)],
+        lambda pkg, pred=None: [
+            ("Public", Public),
+            ("Other", Other),
+            ("_Private", _Private),
+        ],
     )
 
     assert gen._get_package_classes("pkg.mod") == ["Public"]
@@ -268,7 +276,11 @@ def test_get_package_classes_without___all___uses_inspect_branch(monkeypatch, tm
 
 def test_generate_all_handles_import_error(monkeypatch, tmp_path, capsys):
     gen = APIDocGenerator("missing.pkg", output_dir=str(tmp_path / "out"))
-    monkeypatch.setattr(api_doc_mod.importlib, "import_module", lambda name: (_ for _ in ()).throw(ImportError("x")))
+    monkeypatch.setattr(
+        api_doc_mod.importlib,
+        "import_module",
+        lambda name: (_ for _ in ()).throw(ImportError("x")),
+    )
 
     gen.generate_all()
 
@@ -310,7 +322,11 @@ def test_generate_api_docs_wrapper_and_generate_all_pyadm1_docs(monkeypatch):
     assert generated[-1] is True
 
     wrapper_calls = []
-    monkeypatch.setattr(api_doc_mod, "generate_api_docs", lambda out, pkg, title=None: wrapper_calls.append((out, pkg, title)))
+    monkeypatch.setattr(
+        api_doc_mod,
+        "generate_api_docs",
+        lambda out, pkg, title=None: wrapper_calls.append((out, pkg, title)),
+    )
     api_doc_mod.generate_all_pyadm1_docs()
 
     assert len(wrapper_calls) == 5

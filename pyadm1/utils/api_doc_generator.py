@@ -203,7 +203,13 @@ class APIDocGenerator:
         except (ImportError, AttributeError):
             return []
 
-    def _generate_main_file(self, package: Any, subpackages: List[str], direct_classes: List[str], filename: str) -> None:
+    def _generate_main_file(
+        self,
+        package: Any,
+        subpackages: List[str],
+        direct_classes: List[str],
+        filename: str,
+    ) -> None:
         """
         Generate main package overview file.
 
@@ -767,16 +773,24 @@ def generate_all_pyadm1_docs() -> None:
     """
     packages = [
         ("docs/api_reference/components", "pyadm1.components", "Plant Components"),
-        ("docs/api_reference/configurator", "pyadm1.configurator", "Plant Model Configurator and MCP Server"),
+        (
+            "docs/api_reference/configurator",
+            "pyadm1.configurator",
+            "Plant Model Configurator and MCP Server",
+        ),
         ("docs/api_reference/simulation", "pyadm1.simulation", "Simulation Engine"),
-        ("docs/api_reference/substrates", "pyadm1.substrates", "Substrate Management and Characterization"),
+        (
+            "docs/api_reference/substrates",
+            "pyadm1.substrates",
+            "Substrate Management and Characterization",
+        ),
         ("docs/api_reference/core", "pyadm1.core", "Core ADM1 Model"),
     ]
 
     for output_dir, package_name, title in packages:
-        print(f"\n{'='*80}")
+        print(f"\n{'=' * 80}")
         print(f"Generating documentation for {package_name}")
-        print(f"{'='*80}\n")
+        print(f"{'=' * 80}\n")
         generate_api_docs(output_dir, package_name, title)
 
 

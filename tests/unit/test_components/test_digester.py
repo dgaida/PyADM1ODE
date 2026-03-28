@@ -162,7 +162,16 @@ class TestDigesterInitialize:
         digester = Digester("dig_1", mock_feedstock)
         digester.initialize()
 
-        required_keys = ["adm1_state", "Q_substrates", "Q_gas", "Q_ch4", "Q_co2", "pH", "VFA", "TAC"]
+        required_keys = [
+            "adm1_state",
+            "Q_substrates",
+            "Q_gas",
+            "Q_ch4",
+            "Q_co2",
+            "pH",
+            "VFA",
+            "TAC",
+        ]
         for key in required_keys:
             assert key in digester.state, f"State should have '{key}' key"
 
@@ -339,7 +348,14 @@ class TestDigesterSerialization:
 
         config = digester.to_dict()
 
-        required_fields = ["component_id", "component_type", "name", "V_liq", "V_gas", "T_ad"]
+        required_fields = [
+            "component_id",
+            "component_type",
+            "name",
+            "V_liq",
+            "V_gas",
+            "T_ad",
+        ]
         for field in required_fields:
             assert field in config, f"to_dict should include '{field}'"
 
@@ -350,7 +366,14 @@ class TestDigesterSerialization:
         Args:
             mock_feedstock: Mock Feedstock fixture.
         """
-        original = Digester("dig_1", mock_feedstock, V_liq=2000, V_gas=300, T_ad=308.15, name="Test Digester")
+        original = Digester(
+            "dig_1",
+            mock_feedstock,
+            V_liq=2000,
+            V_gas=300,
+            T_ad=308.15,
+            name="Test Digester",
+        )
         original.initialize()
 
         config = original.to_dict()

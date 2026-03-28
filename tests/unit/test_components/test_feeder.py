@@ -700,7 +700,11 @@ class TestFeederEdgeCases:
         assert result2["P_consumed"] == 0.0
 
         # Restart feeder
-        result3 = feeder.step(t=2.0 / 24.0, dt=1.0 / 24.0, inputs={"enable_feeding": True, "Q_setpoint": 15.0})
+        result3 = feeder.step(
+            t=2.0 / 24.0,
+            dt=1.0 / 24.0,
+            inputs={"enable_feeding": True, "Q_setpoint": 15.0},
+        )
         assert result3["is_running"] is True
 
 

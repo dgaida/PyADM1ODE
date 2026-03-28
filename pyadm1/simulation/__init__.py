@@ -51,7 +51,12 @@ Example:
 """
 
 from .simulator import Simulator
-from .parallel import ParallelSimulator, ScenarioResult, ParameterSweepConfig, MonteCarloConfig
+from .parallel import (
+    ParallelSimulator,
+    ScenarioResult,
+    ParameterSweepConfig,
+    MonteCarloConfig,
+)
 
 # Future imports (currently stubs)
 # from pyadm1.simulation.scenarios import (

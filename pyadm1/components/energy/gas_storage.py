@@ -232,7 +232,10 @@ class GasStorage(Component):
         if self.storage_type in ("membrane", "dome"):
             # frac required to maintain p_min: (p_min - p_atm)/(p_max - p_atm)
             if (self.p_max_bar - self.p_atm_bar) > 1e-9:
-                frac_needed = max(0.0, (self.p_min_bar - self.p_atm_bar) / (self.p_max_bar - self.p_atm_bar))
+                frac_needed = max(
+                    0.0,
+                    (self.p_min_bar - self.p_atm_bar) / (self.p_max_bar - self.p_atm_bar),
+                )
             else:
                 frac_needed = 0.0
         else:  # compressed
@@ -240,7 +243,8 @@ class GasStorage(Component):
             if (self.p_max_bar - self.p_min_bar) > 1e-9:
                 alpha = 2.0
                 frac_needed = max(
-                    0.0, ((self.p_min_bar - self.p_min_bar) / (self.p_max_bar - self.p_min_bar)) ** (1.0 / alpha)
+                    0.0,
+                    ((self.p_min_bar - self.p_min_bar) / (self.p_max_bar - self.p_min_bar)) ** (1.0 / alpha),
                 )
                 # above formula trivial -> 0, but keep general structure; use small reserve fraction
                 frac_needed = 0.01
@@ -271,7 +275,11 @@ class GasStorage(Component):
                 # but if p_max_bar is absolute safety we want to bring pressure to p_max_bar.
                 # compute fraction that yields p_max_bar
                 target_frac = max(
-                    0.0, min(1.0, (self.p_max_bar - self.p_atm_bar) / max(1e-9, (self.p_max_bar - self.p_atm_bar)))
+                    0.0,
+                    min(
+                        1.0,
+                        (self.p_max_bar - self.p_atm_bar) / max(1e-9, (self.p_max_bar - self.p_atm_bar)),
+                    ),
                 )
                 # if current fraction > 1.0 (theory), set to 1.0
                 target_frac = min(target_frac, 1.0)
@@ -354,6 +362,11 @@ class GasStorage(Component):
         if "pressure_setpoint_bar" in config:
             gs.pressure_setpoint_bar = config.get("pressure_setpoint_bar")
 
-        gs.initialize({"stored_volume_m3": gs.stored_volume_m3, "pressure_setpoint_bar": gs.pressure_setpoint_bar})
+        gs.initialize(
+            {
+                "stored_volume_m3": gs.stored_volume_m3,
+                "pressure_setpoint_bar": gs.pressure_setpoint_bar,
+            }
+        )
 
         return gs

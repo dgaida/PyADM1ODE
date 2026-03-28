@@ -45,7 +45,10 @@ class TestSeparatorSerialization:
     def test_to_dict_returns_minimal_config(self) -> None:
         separator = Separator("sep_1")
 
-        assert separator.to_dict() == {"component_id": "sep_1", "component_type": "separator"}
+        assert separator.to_dict() == {
+            "component_id": "sep_1",
+            "component_type": "separator",
+        }
 
     def test_from_dict_recreates_instance_with_defaults(self) -> None:
         separator = Separator.from_dict({"component_id": "sep_cfg"})

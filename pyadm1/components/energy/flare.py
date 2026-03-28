@@ -28,7 +28,12 @@ class Flare(Component):
         Human readable name.
     """
 
-    def __init__(self, component_id: str, destruction_efficiency: float = 0.98, name: Optional[str] = None):
+    def __init__(
+        self,
+        component_id: str,
+        destruction_efficiency: float = 0.98,
+        name: Optional[str] = None,
+    ):
         super().__init__(component_id, ComponentType.STORAGE, name)
         self.destruction_efficiency: float = float(destruction_efficiency)
         self._cum_vented_m3: float = 0.0

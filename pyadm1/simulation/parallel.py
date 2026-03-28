@@ -282,7 +282,11 @@ class ParallelSimulator:
         return results
 
     def parameter_sweep(
-        self, config: ParameterSweepConfig, duration: float, initial_state: List[float], **kwargs: Any
+        self,
+        config: ParameterSweepConfig,
+        duration: float,
+        initial_state: List[float],
+        **kwargs: Any,
     ) -> List[ScenarioResult]:
         """
         Run parameter sweep for a single parameter.
@@ -376,7 +380,11 @@ class ParallelSimulator:
         return self.run_scenarios(scenarios, duration, initial_state, **kwargs)
 
     def monte_carlo(
-        self, config: MonteCarloConfig, duration: float, initial_state: List[float], **kwargs: Any
+        self,
+        config: MonteCarloConfig,
+        duration: float,
+        initial_state: List[float],
+        **kwargs: Any,
     ) -> List[ScenarioResult]:
         """
         Run Monte Carlo simulation with parameter uncertainty.
@@ -570,7 +578,12 @@ def _run_single_scenario(
 
         # Create fresh ADM1 instance
         feedstock = Feedstock(feeding_freq=adm1_config["feedstock_config"]["feeding_freq"])
-        adm1 = ADM1(feedstock=feedstock, V_liq=adm1_config["V_liq"], V_gas=adm1_config["V_gas"], T_ad=adm1_config["T_ad"])
+        adm1 = ADM1(
+            feedstock=feedstock,
+            V_liq=adm1_config["V_liq"],
+            V_gas=adm1_config["V_gas"],
+            T_ad=adm1_config["T_ad"],
+        )
         if not verbose:
             # Prevent expensive per-scenario stdout noise in performance runs.
             adm1.print_params_at_current_state = lambda _state: None

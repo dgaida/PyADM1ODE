@@ -318,13 +318,17 @@ class TestPumpEfficiency:
         assert progressive_small.efficiency == 0.50
         assert piston_mid.efficiency == 0.75
 
-    def test_calculate_efficiency_at_operating_point_returns_zero_for_non_positive_flow(self) -> None:
+    def test_calculate_efficiency_at_operating_point_returns_zero_for_non_positive_flow(
+        self,
+    ) -> None:
         """Directly cover helper early return for Q <= 0."""
         pump = Pump("pump_1")
 
         assert pump._calculate_efficiency_at_operating_point(0.0, pump.pressure_head) == 0.0
 
-    def test_calculate_power_consumption_returns_zero_for_non_positive_flow(self) -> None:
+    def test_calculate_power_consumption_returns_zero_for_non_positive_flow(
+        self,
+    ) -> None:
         """Directly cover helper early return for Q <= 0."""
         pump = Pump("pump_1")
 
@@ -393,13 +397,27 @@ class TestPumpSerialization:
 
         config = pump.to_dict()
 
-        required_fields = ["component_id", "component_type", "pump_type", "Q_nom", "pressure_head", "efficiency"]
+        required_fields = [
+            "component_id",
+            "component_type",
+            "pump_type",
+            "Q_nom",
+            "pressure_head",
+            "efficiency",
+        ]
         for field in required_fields:
             assert field in config, f"to_dict should include '{field}'"
 
     def test_from_dict_recreates_pump(self) -> None:
         """Test that from_dict can recreate a pump from configuration."""
-        original = Pump("pump_1", pump_type="centrifugal", Q_nom=20.0, pressure_head=60.0, efficiency=0.75, name="Main Pump")
+        original = Pump(
+            "pump_1",
+            pump_type="centrifugal",
+            Q_nom=20.0,
+            pressure_head=60.0,
+            efficiency=0.75,
+            name="Main Pump",
+        )
         original.initialize()
 
         config = original.to_dict()
@@ -414,7 +432,13 @@ class TestPumpSerialization:
 
     def test_roundtrip_preserves_configuration(self) -> None:
         """Test that serialization roundtrip preserves configuration."""
-        original = Pump("pump_1", pump_type="piston", Q_nom=8.0, pressure_head=100.0, speed_control=False)
+        original = Pump(
+            "pump_1",
+            pump_type="piston",
+            Q_nom=8.0,
+            pressure_head=100.0,
+            speed_control=False,
+        )
 
         config = original.to_dict()
         recreated = Pump.from_dict(config)

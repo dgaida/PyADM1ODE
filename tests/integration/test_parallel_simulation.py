@@ -174,7 +174,12 @@ class TestParallelSimulatorBasicScenarios:
             {"Q": [15, 15, 0, 0, 0, 0, 0, 0, 0, 0]},
         ]
 
-        results = parallel.run_scenarios(scenarios=scenarios, duration=7.0, initial_state=initial_state, compute_metrics=True)
+        results = parallel.run_scenarios(
+            scenarios=scenarios,
+            duration=7.0,
+            initial_state=initial_state,
+            compute_metrics=True,
+        )
 
         assert len(results) == 3, "Should return three results"
 
@@ -189,7 +194,12 @@ class TestParallelSimulatorBasicScenarios:
 
         scenarios = [{"Q": base_Q}]
 
-        results = parallel.run_scenarios(scenarios=scenarios, duration=7.0, initial_state=initial_state, compute_metrics=True)
+        results = parallel.run_scenarios(
+            scenarios=scenarios,
+            duration=7.0,
+            initial_state=initial_state,
+            compute_metrics=True,
+        )
 
         result = results[0]
         assert result.success, "Scenario should succeed"
@@ -203,7 +213,12 @@ class TestParallelSimulatorBasicScenarios:
 
         scenarios = [{"Q": base_Q}]
 
-        results = parallel.run_scenarios(scenarios=scenarios, duration=7.0, initial_state=initial_state, save_time_series=True)
+        results = parallel.run_scenarios(
+            scenarios=scenarios,
+            duration=7.0,
+            initial_state=initial_state,
+            save_time_series=True,
+        )
 
         result = results[0]
         assert result.time_series is not None, "Should have time series"
@@ -238,7 +253,12 @@ class TestParameterSweep:
 
         config = ParameterSweepConfig(parameter_name="k_dis", values=[0.3, 0.5, 0.7], other_params={"Q": base_Q})
 
-        results = parallel.parameter_sweep(config=config, duration=7.0, initial_state=initial_state, compute_metrics=True)
+        results = parallel.parameter_sweep(
+            config=config,
+            duration=7.0,
+            initial_state=initial_state,
+            compute_metrics=True,
+        )
 
         successful = [r for r in results if r.success]
         assert len(successful) >= 2, "Need at least 2 successful runs to compare"
@@ -256,7 +276,10 @@ class TestParameterSweep:
         parameter_configs = {"k_dis": [0.4, 0.6], "Y_su": [0.09, 0.11]}
 
         results = parallel.multi_parameter_sweep(
-            parameter_configs=parameter_configs, duration=7.0, initial_state=initial_state, fixed_params={"Q": base_Q}
+            parameter_configs=parameter_configs,
+            duration=7.0,
+            initial_state=initial_state,
+            fixed_params={"Q": base_Q},
         )
 
         # Should test all combinations: 2 × 2 = 4
@@ -356,7 +379,12 @@ class TestResultSummarization:
             {"Q": [15, 15, 0, 0, 0, 0, 0, 0, 0, 0]},
         ]
 
-        results = parallel.run_scenarios(scenarios=scenarios, duration=7.0, initial_state=initial_state, compute_metrics=True)
+        results = parallel.run_scenarios(
+            scenarios=scenarios,
+            duration=7.0,
+            initial_state=initial_state,
+            compute_metrics=True,
+        )
 
         summary = parallel.summarize_results(results)
 
@@ -418,7 +446,9 @@ class TestParallelSimulatorPerformance:
         scenarios = [{"Q": [15 + i * 0.5, 10, 0, 0, 0, 0, 0, 0, 0, 0]} for i in range(20)]
 
         results = parallel.run_scenarios(
-            scenarios=scenarios, duration=3.0, initial_state=initial_state  # Short duration for speed
+            scenarios=scenarios,
+            duration=3.0,
+            initial_state=initial_state,  # Short duration for speed
         )
 
         assert len(results) == 20, "Should complete all scenarios"
@@ -503,7 +533,12 @@ class TestIntegrationWithADM1:
         parallel = ParallelSimulator(adm1_instance, n_workers=1, verbose=False)
 
         scenarios = [{"Q": base_Q}]
-        results = parallel.run_scenarios(scenarios=scenarios, duration=7.0, initial_state=initial_state, compute_metrics=True)
+        results = parallel.run_scenarios(
+            scenarios=scenarios,
+            duration=7.0,
+            initial_state=initial_state,
+            compute_metrics=True,
+        )
 
         result = results[0]
         assert result.success, "Scenario should succeed"
@@ -523,7 +558,12 @@ class TestIntegrationWithADM1:
         # Double the substrate input
         scenarios = [{"Q": base_Q}, {"Q": [2 * q for q in base_Q]}]
 
-        results = parallel.run_scenarios(scenarios=scenarios, duration=7.0, initial_state=initial_state, compute_metrics=True)
+        results = parallel.run_scenarios(
+            scenarios=scenarios,
+            duration=7.0,
+            initial_state=initial_state,
+            compute_metrics=True,
+        )
 
         successful = [r for r in results if r.success]
         assert len(successful) == 2, "Both scenarios should succeed"
@@ -573,7 +613,10 @@ class TestLargeScaleSimulations:
         }
 
         results = parallel.multi_parameter_sweep(
-            parameter_configs=parameter_configs, duration=3.0, initial_state=initial_state, fixed_params={"Q": base_Q}
+            parameter_configs=parameter_configs,
+            duration=3.0,
+            initial_state=initial_state,
+            fixed_params={"Q": base_Q},
         )
 
         # Should test 5 × 3 = 15 combinations

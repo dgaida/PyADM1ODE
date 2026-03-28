@@ -21,7 +21,13 @@ class Boiler(Component):
         name: Optional name.
     """
 
-    def __init__(self, component_id: str, P_th_nom: float = 500.0, efficiency: float = 0.9, name: Optional[str] = None):
+    def __init__(
+        self,
+        component_id: str,
+        P_th_nom: float = 500.0,
+        efficiency: float = 0.9,
+        name: Optional[str] = None,
+    ):
         """
         Initialize the Boiler.
 
@@ -65,7 +71,10 @@ class Boiler(Component):
         Returns:
             Configuration dictionary.
         """
-        return {"component_id": self.component_id, "component_type": self.component_type.value}
+        return {
+            "component_id": self.component_id,
+            "component_type": self.component_type.value,
+        }
 
     @classmethod
     def from_dict(cls, config: Dict[str, Any]) -> "Boiler":

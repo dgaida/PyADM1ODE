@@ -538,7 +538,11 @@ class TestRefillQuality:
         # Add fresh material
         refill_amount = 300.0
         refill_quality = 1.0
-        storage.step(t=30.0, dt=1.0, inputs={"refill_amount": refill_amount, "refill_quality": refill_quality})
+        storage.step(
+            t=30.0,
+            dt=1.0,
+            inputs={"refill_amount": refill_amount, "refill_quality": refill_quality},
+        )
 
         # Quality should be weighted average
         expected_quality = (existing_mass * degraded_quality + refill_amount * refill_quality) / (
@@ -875,7 +879,11 @@ class TestSubstrateStorageIntegration:
         # Simulate harvest season (large refills)
         for day in range(10):
             if day % 3 == 0:  # Harvest days
-                storage.step(t=day, dt=1.0, inputs={"refill_amount": 200.0, "withdrawal_rate": 20.0})
+                storage.step(
+                    t=day,
+                    dt=1.0,
+                    inputs={"refill_amount": 200.0, "withdrawal_rate": 20.0},
+                )
             else:
                 storage.step(t=day, dt=1.0, inputs={"withdrawal_rate": 20.0})
 
@@ -891,7 +899,11 @@ class TestSubstrateStorageIntegration:
         for day in range(365):
             # Weekly refills
             if day % 7 == 0:
-                storage.step(t=day, dt=1.0, inputs={"refill_amount": 150.0, "withdrawal_rate": 15.0})
+                storage.step(
+                    t=day,
+                    dt=1.0,
+                    inputs={"refill_amount": 150.0, "withdrawal_rate": 15.0},
+                )
             else:
                 storage.step(t=day, dt=1.0, inputs={"withdrawal_rate": 15.0})
 
@@ -1008,7 +1020,11 @@ class TestSubstrateStorageDocumentation:
     def test_basic_example_from_docstring(self) -> None:
         """Test basic example from component docstring."""
         storage = SubstrateStorage(
-            "silo1", storage_type="vertical_silo", substrate_type="corn_silage", capacity=1000, initial_level=600
+            "silo1",
+            storage_type="vertical_silo",
+            substrate_type="corn_silage",
+            capacity=1000,
+            initial_level=600,
         )
         storage.initialize()
         result = storage.step(t=0, dt=1, inputs={"withdrawal_rate": 15})
@@ -1019,7 +1035,11 @@ class TestSubstrateStorageDocumentation:
     def test_module_example_from_docstring(self) -> None:
         """Test example from module-level docstring."""
         storage = SubstrateStorage(
-            "silo1", storage_type="vertical_silo", substrate_type="corn_silage", capacity=1000, initial_level=800
+            "silo1",
+            storage_type="vertical_silo",
+            substrate_type="corn_silage",
+            capacity=1000,
+            initial_level=800,
         )
         storage.initialize()
         outputs = storage.step(0, 1, {"withdrawal_rate": 15})
@@ -1138,7 +1158,11 @@ class TestSubstrateStoragePerformance:
             if day % 5 == 0:
                 refill = 50.0
                 total_refills += refill
-                result = storage.step(t=day, dt=1.0, inputs={"refill_amount": refill, "withdrawal_rate": 15.0})
+                result = storage.step(
+                    t=day,
+                    dt=1.0,
+                    inputs={"refill_amount": refill, "withdrawal_rate": 15.0},
+                )
             else:
                 result = storage.step(t=day, dt=1.0, inputs={"withdrawal_rate": 15.0})
 

@@ -251,7 +251,12 @@ class BiogasPlant:
 
         return results
 
-    def simulate(self, duration: float, dt: float = 1.0 / 24.0, save_interval: Optional[float] = None) -> List[Dict[str, Any]]:
+    def simulate(
+        self,
+        duration: float,
+        dt: float = 1.0 / 24.0,
+        save_interval: Optional[float] = None,
+    ) -> List[Dict[str, Any]]:
         """
         Run simulation for specified duration.
 

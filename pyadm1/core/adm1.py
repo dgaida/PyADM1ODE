@@ -148,7 +148,13 @@ class ADM1:
         >>> adm1.create_influent([15, 10, 0, 0, 0, 0, 0, 0, 0, 0], 0)
     """
 
-    def __init__(self, feedstock: Feedstock, V_liq: float = 1977.0, V_gas: float = 304.0, T_ad: float = 308.15) -> None:
+    def __init__(
+        self,
+        feedstock: Feedstock,
+        V_liq: float = 1977.0,
+        V_gas: float = 304.0,
+        T_ad: float = 308.15,
+    ) -> None:
         """
         Initialize ADM1 model.
 
@@ -165,14 +171,14 @@ class ADM1:
         self._T_ad = T_ad  # temperature inside the digester
 
         # Constants
-        self._R = 0.08313999999  # 0.083145  Gas constant [bar·M^-1·K^-1]
-        self._T_base = 293.15  # Base temperature (293.15=20°C outside temperature at the biogas plant, 304.15, 298.15) [K]
-        self._p_atm = 1.04  # Atmospheric pressure [bar] (1.013 bar; got 1.04 from C# implementation) Simba1.016
+        self._R = 0.08314  # 0.083145  Gas constant [bar·M^-1·K^-1]
+        self._T_base = 298.15  # Base temperature [K] 25°C
+        self._p_atm = 1.013  # Atmospheric pressure [bar]
 
         # Calculated parameters
         self._RT = self._R * self._T_ad  # R * T_ad
         # external pressures
-        self._pext = self._p_atm - 0.0084147 * np.exp(0.054 * (self._T_ad - 273.15))
+        self._p_ext = self._p_atm - 0.0084147 * np.exp(0.054 * (self._T_ad - 273.15))
 
         # Feedstock and state
         self._feedstock = feedstock
@@ -243,7 +249,7 @@ class ADM1:
         NQ = 44.643
 
         # Total biogas flow from pressure difference
-        q_gas = k_p * (pTOTAL - self._pext) / (self._RT / 1000 * NQ) * self.V_liq
+        q_gas = k_p * (pTOTAL - self._p_ext) / (self._RT / 1000 * NQ) * self.V_liq
 
         # Total gas partial pressure (excluding water vapor)
         p_gas = pi_Sh2 + pi_Sch4 + pi_Sco2
@@ -308,9 +314,9 @@ class ADM1:
 
     def print_params_at_current_state(self, state_ADM1xp: List[float]) -> None:
         """
-        Calculate and print process parameters from current state.
+        Calculate and store process parameters from current state.
 
-        Computes and displays key process indicators including pH, VFA, TAC,
+        Computes key process indicators including pH, VFA, TAC,
         and gas production rates. Also stores values in tracking lists.
 
         Args:
@@ -318,9 +324,6 @@ class ADM1:
 
         Example:
             >>> adm1.print_params_at_current_state(state_vector)
-            pH(lib) = [7.2, 7.3]
-            FOS/TAC = [0.25, 0.26]
-            ...
         """
         # Calculate process indicators using DLL
         self._pH_l.append(np.round(ADMstate.calcPHOfADMstate(state_ADM1xp), 1))
@@ -338,13 +341,6 @@ class ADM1:
             self._VFA.append(self._VFA[-1])
             self._TAC.append(self._TAC[-1])
 
-        # Print process values
-        print(f"pH(lib) = {self._pH_l}")
-        # print(f"FOS/TAC = {self._FOSTAC}")
-        # print(f"VFA = {self._VFA}")
-        # print(f"TAC = {self._TAC}")
-        # print(f"Ac/Pro = {self._AcvsPro}")
-
         # Calculate and store gas production
         q_gas, q_ch4, q_co2, p_gas = self.calc_gas(state_ADM1xp[33], state_ADM1xp[34], state_ADM1xp[35], state_ADM1xp[36])
 
@@ -361,9 +357,6 @@ class ADM1:
                 self._Q_CH4.append(q_ch4)
                 self._Q_CO2.append(q_co2)
                 self._P_GAS.append(p_gas)
-
-        print(f"Q_gas = {self._Q_GAS} m^3/d")
-        print(f"Q_ch4 = {self._Q_CH4} m^3/d")
 
     def ADM1_ODE(self, t: float, state_zero: List[float]) -> Tuple[float, ...]:
         """
@@ -536,7 +529,7 @@ class ADM1:
         Rho_A_4, Rho_A_5, Rho_A_6, Rho_A_7, Rho_A_10, Rho_A_11 = acid_base_rates
 
         # Calculate gas transfer rates
-        gas_rates = bio.calculate_gas_transfer_rates(state_zero, gas_params, self._RT, self.V_liq, self._V_gas)
+        gas_rates = bio.calculate_gas_transfer_rates(state_zero, gas_params, self._RT, self.V_liq, self._V_gas, self._p_ext)
         Rho_T_8, Rho_T_9, Rho_T_10, Rho_T_11 = gas_rates
 
         # Extract substrate-dependent fractions

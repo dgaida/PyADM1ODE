@@ -195,7 +195,10 @@ class ODESolver:
         return list(current_state), current_time, False
 
     def solve_sequential(
-        self, fun: Callable[[float, List[float]], List[float]], t_points: List[float], y0: List[float]
+        self,
+        fun: Callable[[float, List[float]], List[float]],
+        t_points: List[float],
+        y0: List[float],
     ) -> List[List[float]]:
         """
         Solve ODE system sequentially through multiple time points.
@@ -232,7 +235,11 @@ class AdaptiveODESolver(ODESolver):
     """
 
     def __init__(
-        self, config: Optional[SolverConfig] = None, adaptive: bool = True, min_rtol: float = 1e-8, max_rtol: float = 1e-4
+        self,
+        config: Optional[SolverConfig] = None,
+        adaptive: bool = True,
+        min_rtol: float = 1e-8,
+        max_rtol: float = 1e-4,
     ):
         """
         Initialize adaptive ODE solver.

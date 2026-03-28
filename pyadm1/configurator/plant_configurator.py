@@ -79,7 +79,12 @@ class PlantConfigurator:
         """
         # Create digester
         digester = Digester(
-            component_id=digester_id, feedstock=self.feedstock, V_liq=V_liq, V_gas=V_gas, T_ad=T_ad, name=name or digester_id
+            component_id=digester_id,
+            feedstock=self.feedstock,
+            V_liq=V_liq,
+            V_gas=V_gas,
+            T_ad=T_ad,
+            name=name or digester_id,
         )
 
         # Initialize with state
@@ -135,7 +140,12 @@ class PlantConfigurator:
         return digester, state_info
 
     def add_chp(
-        self, chp_id: str, P_el_nom: float = 500.0, eta_el: float = 0.40, eta_th: float = 0.45, name: Optional[str] = None
+        self,
+        chp_id: str,
+        P_el_nom: float = 500.0,
+        eta_el: float = 0.40,
+        eta_th: float = 0.45,
+        name: Optional[str] = None,
     ) -> CHP:
         """
         Add a CHP unit to the plant.
@@ -153,7 +163,13 @@ class PlantConfigurator:
         Example:
             >>> chp = config.add_chp("chp_main", P_el_nom=500)
         """
-        chp = CHP(component_id=chp_id, P_el_nom=P_el_nom, eta_el=eta_el, eta_th=eta_th, name=name or chp_id)
+        chp = CHP(
+            component_id=chp_id,
+            P_el_nom=P_el_nom,
+            eta_el=eta_el,
+            eta_th=eta_th,
+            name=name or chp_id,
+        )
 
         self.plant.add_component(chp)
 
@@ -296,7 +312,10 @@ class PlantConfigurator:
         # Create components
         digester, _ = self.add_digester(**digester_config)
 
-        components = {"digester": digester.component_id, "storage": f"{digester.component_id}_storage"}
+        components = {
+            "digester": digester.component_id,
+            "storage": f"{digester.component_id}_storage",
+        }
 
         if chp_config:
             chp = self.add_chp(**chp_config)
@@ -387,7 +406,7 @@ class PlantConfigurator:
         if heating_configs:
             components["heating"] = []
             for i, heating_cfg in enumerate(heating_configs):
-                heating_cfg.setdefault("heating_id", f"heating_{i+1}")
+                heating_cfg.setdefault("heating_id", f"heating_{i + 1}")
                 heating = self.add_heating(**heating_cfg)
                 components["heating"].append(heating.component_id)
 

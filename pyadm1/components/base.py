@@ -30,7 +30,12 @@ class Component(ABC):
     one simulation time step.
     """
 
-    def __init__(self, component_id: str, component_type: ComponentType, name: Optional[str] = None):
+    def __init__(
+        self,
+        component_id: str,
+        component_type: ComponentType,
+        name: Optional[str] = None,
+    ):
         """
         Initialize a component.
 

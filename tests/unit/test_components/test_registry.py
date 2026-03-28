@@ -50,13 +50,28 @@ class TestComponentRegistryInitialization:
         import builtins
 
         target_imports = {
-            "pyadm1.components.biological.digester": ("Digester", type("Digester", (), {})),
-            "pyadm1.components.biological.hydrolysis": ("Hydrolysis", type("Hydrolysis", (), {})),
-            "pyadm1.components.biological.separator": ("Separator", type("Separator", (), {})),
+            "pyadm1.components.biological.digester": (
+                "Digester",
+                type("Digester", (), {}),
+            ),
+            "pyadm1.components.biological.hydrolysis": (
+                "Hydrolysis",
+                type("Hydrolysis", (), {}),
+            ),
+            "pyadm1.components.biological.separator": (
+                "Separator",
+                type("Separator", (), {}),
+            ),
             "pyadm1.components.energy.chp": ("CHP", type("CHP", (), {})),
-            "pyadm1.components.energy.heating": ("HeatingSystem", type("HeatingSystem", (), {})),
+            "pyadm1.components.energy.heating": (
+                "HeatingSystem",
+                type("HeatingSystem", (), {}),
+            ),
             "pyadm1.components.energy.boiler": ("Boiler", type("Boiler", (), {})),
-            "pyadm1.components.energy.gas_storage": ("GasStorage", type("GasStorage", (), {})),
+            "pyadm1.components.energy.gas_storage": (
+                "GasStorage",
+                type("GasStorage", (), {}),
+            ),
             "pyadm1.components.energy.flare": ("Flare", type("Flare", (), {})),
         }
         real_import = builtins.__import__

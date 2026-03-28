@@ -10,7 +10,12 @@ from pyadm1.components.energy.flare import Flare
 def test_gas_storage_basic_charge_and_vent():
     """GasStorage stores inflow and vents overflow above capacity."""
     gs = GasStorage(
-        "test_stor", storage_type="membrane", capacity_m3=100.0, p_min_bar=0.95, p_max_bar=1.05, initial_fill_fraction=0.0
+        "test_stor",
+        storage_type="membrane",
+        capacity_m3=100.0,
+        p_min_bar=0.95,
+        p_max_bar=1.05,
+        initial_fill_fraction=0.0,
     )
     gs.initialize()
 
@@ -23,7 +28,14 @@ def test_gas_storage_basic_charge_and_vent():
 
 def test_gas_storage_supply_limits_and_setpoint():
     """GasStorage restricts outflow when setpoint requests higher pressure."""
-    gs = GasStorage("s2", storage_type="membrane", capacity_m3=50.0, initial_fill_fraction=0.5, p_min_bar=0.95, p_max_bar=1.05)
+    gs = GasStorage(
+        "s2",
+        storage_type="membrane",
+        capacity_m3=50.0,
+        initial_fill_fraction=0.5,
+        p_min_bar=0.95,
+        p_max_bar=1.05,
+    )
     gs.initialize()
     # request large outflow with a high setpoint that requests charging => outflow restricted
     gs.outputs_data.copy()
@@ -50,7 +62,12 @@ def test_gas_storage_initialize_restores_state_and_clamps_volume():
 
 def test_gas_storage_compressed_pressure_estimation_uses_nonlinear_branch():
     gs = GasStorage(
-        "c1", storage_type="compressed", capacity_m3=100.0, p_min_bar=5.0, p_max_bar=200.0, initial_fill_fraction=0.5
+        "c1",
+        storage_type="compressed",
+        capacity_m3=100.0,
+        p_min_bar=5.0,
+        p_max_bar=200.0,
+        initial_fill_fraction=0.5,
     )
 
     pressure = gs._estimate_pressure_bar()
@@ -59,7 +76,9 @@ def test_gas_storage_compressed_pressure_estimation_uses_nonlinear_branch():
     assert math.isclose(pressure, expected, rel_tol=1e-9)
 
 
-def test_gas_storage_invalid_set_pressure_is_ignored_and_printed(capsys: pytest.CaptureFixture[str]):
+def test_gas_storage_invalid_set_pressure_is_ignored_and_printed(
+    capsys: pytest.CaptureFixture[str],
+):
     gs = GasStorage("sp_invalid", capacity_m3=10.0, initial_fill_fraction=0.2)
     gs.pressure_setpoint_bar = 1.0
 
@@ -82,7 +101,12 @@ def test_gas_storage_overflow_counts_as_vented_even_when_vent_flag_false():
 
 def test_gas_storage_step_handles_invalid_low_pressure_span_for_reserve_logic():
     gs = GasStorage(
-        "flat_lp", storage_type="membrane", capacity_m3=10.0, p_min_bar=1.01325, p_max_bar=1.01325, initial_fill_fraction=1.0
+        "flat_lp",
+        storage_type="membrane",
+        capacity_m3=10.0,
+        p_min_bar=1.01325,
+        p_max_bar=1.01325,
+        initial_fill_fraction=1.0,
     )
 
     out = gs.step(t=0.0, dt=1.0, inputs={"Q_gas_out_m3_per_day": 100.0})
@@ -93,7 +117,12 @@ def test_gas_storage_step_handles_invalid_low_pressure_span_for_reserve_logic():
 
 def test_gas_storage_step_handles_compressed_reserve_logic_branches():
     gs = GasStorage(
-        "comp_reserve", storage_type="compressed", capacity_m3=100.0, p_min_bar=5.0, p_max_bar=50.0, initial_fill_fraction=1.0
+        "comp_reserve",
+        storage_type="compressed",
+        capacity_m3=100.0,
+        p_min_bar=5.0,
+        p_max_bar=50.0,
+        initial_fill_fraction=1.0,
     )
 
     out = gs.step(t=0.0, dt=1.0, inputs={"Q_gas_out_m3_per_day": 200.0})
@@ -102,14 +131,26 @@ def test_gas_storage_step_handles_compressed_reserve_logic_branches():
     assert out["Q_gas_supplied_m3_per_day"] == pytest.approx(99.0)
 
     gs_flat = GasStorage(
-        "comp_flat", storage_type="compressed", capacity_m3=10.0, p_min_bar=5.0, p_max_bar=5.0, initial_fill_fraction=1.0
+        "comp_flat",
+        storage_type="compressed",
+        capacity_m3=10.0,
+        p_min_bar=5.0,
+        p_max_bar=5.0,
+        initial_fill_fraction=1.0,
     )
     out_flat = gs_flat.step(t=0.0, dt=1.0, inputs={"Q_gas_out_m3_per_day": 100.0})
     assert out_flat["stored_volume_m3"] == pytest.approx(0.0)
 
 
-def test_gas_storage_membrane_safety_overpressure_branch_can_vent(monkeypatch: pytest.MonkeyPatch):
-    gs = GasStorage("safety_mem", storage_type="membrane", capacity_m3=100.0, initial_fill_fraction=0.0)
+def test_gas_storage_membrane_safety_overpressure_branch_can_vent(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    gs = GasStorage(
+        "safety_mem",
+        storage_type="membrane",
+        capacity_m3=100.0,
+        initial_fill_fraction=0.0,
+    )
     gs.stored_volume_m3 = 120.0  # force impossible state to exercise safety branch
 
     pressures = iter([1.0, gs.p_max_bar + 0.1, gs.p_max_bar])
@@ -121,8 +162,15 @@ def test_gas_storage_membrane_safety_overpressure_branch_can_vent(monkeypatch: p
     assert out["stored_volume_m3"] == pytest.approx(100.0)
 
 
-def test_gas_storage_membrane_safety_overpressure_branch_can_compute_zero_vent(monkeypatch: pytest.MonkeyPatch):
-    gs = GasStorage("safety_mem_zero", storage_type="membrane", capacity_m3=100.0, initial_fill_fraction=1.0)
+def test_gas_storage_membrane_safety_overpressure_branch_can_compute_zero_vent(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    gs = GasStorage(
+        "safety_mem_zero",
+        storage_type="membrane",
+        capacity_m3=100.0,
+        initial_fill_fraction=1.0,
+    )
     gs.stored_volume_m3 = 100.0  # already at target volume
 
     pressures = iter([1.0, gs.p_max_bar + 0.1, gs.p_max_bar])
@@ -134,9 +182,16 @@ def test_gas_storage_membrane_safety_overpressure_branch_can_compute_zero_vent(m
     assert out["stored_volume_m3"] == pytest.approx(100.0)
 
 
-def test_gas_storage_compressed_safety_overpressure_branch_can_vent(monkeypatch: pytest.MonkeyPatch):
+def test_gas_storage_compressed_safety_overpressure_branch_can_vent(
+    monkeypatch: pytest.MonkeyPatch,
+):
     gs = GasStorage(
-        "safety_comp", storage_type="compressed", capacity_m3=100.0, p_min_bar=5.0, p_max_bar=200.0, initial_fill_fraction=0.0
+        "safety_comp",
+        storage_type="compressed",
+        capacity_m3=100.0,
+        p_min_bar=5.0,
+        p_max_bar=200.0,
+        initial_fill_fraction=0.0,
     )
     gs.stored_volume_m3 = 100.0
 
@@ -150,7 +205,13 @@ def test_gas_storage_compressed_safety_overpressure_branch_can_vent(monkeypatch:
 
 
 def test_gas_storage_to_dict_includes_state_and_connections():
-    gs = GasStorage("serde", storage_type="dome", capacity_m3=25.0, initial_fill_fraction=0.2, name="Tank")
+    gs = GasStorage(
+        "serde",
+        storage_type="dome",
+        capacity_m3=25.0,
+        initial_fill_fraction=0.2,
+        name="Tank",
+    )
     gs.add_input("digester_1")
     gs.add_output("chp_1")
     gs.step(t=0.0, dt=1.0, inputs={"Q_gas_in_m3_per_day": 1.0, "set_pressure": 1.01})
@@ -165,7 +226,9 @@ def test_gas_storage_to_dict_includes_state_and_connections():
     assert "outputs_data" in data
 
 
-def test_gas_storage_from_dict_restores_values_and_handles_invalid_stored_volume(capsys: pytest.CaptureFixture[str]):
+def test_gas_storage_from_dict_restores_values_and_handles_invalid_stored_volume(
+    capsys: pytest.CaptureFixture[str],
+):
     restored = GasStorage.from_dict(
         {
             "component_id": "gs_restored",

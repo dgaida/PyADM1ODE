@@ -10,7 +10,12 @@ from pyadm1.core.solver import AdaptiveODESolver, ODESolver, SolverConfig, creat
 
 
 def _ok_result(t, y):
-    return SimpleNamespace(success=True, message="ok", t=np.asarray(t, dtype=float), y=np.asarray(y, dtype=float))
+    return SimpleNamespace(
+        success=True,
+        message="ok",
+        t=np.asarray(t, dtype=float),
+        y=np.asarray(y, dtype=float),
+    )
 
 
 class TestODESolverSolve:
@@ -93,7 +98,11 @@ class TestODESolverIterativeMethods:
 
         monkeypatch.setattr(solver, "solve", fake_solve)
         state, final_time, converged = solver.solve_to_steady_state(
-            lambda t, y: y, [0.0, 0.0], max_time=20.0, check_interval=10.0, steady_state_tol=1e-12  # noqa: ARG005
+            lambda t, y: y,
+            [0.0, 0.0],
+            max_time=20.0,
+            check_interval=10.0,
+            steady_state_tol=1e-12,  # noqa: ARG005
         )
 
         assert converged is False

@@ -145,7 +145,12 @@ class ConnectionManager:
 
         self.connections.append(connection)
 
-    def remove_connection(self, from_component: str, to_component: str, connection_type: Optional[str] = None) -> bool:
+    def remove_connection(
+        self,
+        from_component: str,
+        to_component: str,
+        connection_type: Optional[str] = None,
+    ) -> bool:
         """
         Remove a connection.
 

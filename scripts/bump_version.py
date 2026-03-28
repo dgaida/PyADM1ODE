@@ -56,16 +56,44 @@ def main():
     print(f"Bumping version: {current_version} -> {new_version}")
 
     # pyproject.toml: only update version in [project] section
-    update_file("pyproject.toml", r'(\[project\]\n(?:.*\n)*?version\s*=\s*)"[^"]*"', r'\g<1>"' + new_version + '"')
+    update_file(
+        "pyproject.toml",
+        r'(\[project\]\n(?:.*\n)*?version\s*=\s*)"[^"]*"',
+        r'\g<1>"' + new_version + '"',
+    )
 
     # Other files
     updates = [
-        ("pyadm1/__version__.py", r'(__version__\s*=\s*)"[^"]*"', r'\g<1>"' + new_version + '"'),
-        ("tests/__init__.py", r'(__version__\s*=\s*)"[^"]*"', r'\g<1>"' + new_version + '"'),
-        ("docs/en/metrics.md", r"(\*\*Changelog\*\*:\s*Up to date \(v)[^)]*(\))", r"\g<1>" + new_version + r"\g<2>"),
-        ("docs/en/metrics.md", r"(\*\*Last Updated\*\*:\s*)\d{4}-\d{2}-\d{2}", r"\g<1>" + today_iso),
-        ("docs/de/metrics.md", r"(\*\*Changelog\*\*:\s*Aktuell \(v)[^)]*(\))", r"\g<1>" + new_version + r"\g<2>"),
-        ("docs/de/metrics.md", r"(\*\*Zuletzt aktualisiert\*\*:\s*)\d{2}\.\d{2}\.\d{4}", r"\g<1>" + today_german),
+        (
+            "pyadm1/__version__.py",
+            r'(__version__\s*=\s*)"[^"]*"',
+            r'\g<1>"' + new_version + '"',
+        ),
+        (
+            "tests/__init__.py",
+            r'(__version__\s*=\s*)"[^"]*"',
+            r'\g<1>"' + new_version + '"',
+        ),
+        (
+            "docs/en/metrics.md",
+            r"(\*\*Changelog\*\*:\s*Up to date \(v)[^)]*(\))",
+            r"\g<1>" + new_version + r"\g<2>",
+        ),
+        (
+            "docs/en/metrics.md",
+            r"(\*\*Last Updated\*\*:\s*)\d{4}-\d{2}-\d{2}",
+            r"\g<1>" + today_iso,
+        ),
+        (
+            "docs/de/metrics.md",
+            r"(\*\*Changelog\*\*:\s*Aktuell \(v)[^)]*(\))",
+            r"\g<1>" + new_version + r"\g<2>",
+        ),
+        (
+            "docs/de/metrics.md",
+            r"(\*\*Zuletzt aktualisiert\*\*:\s*)\d{2}\.\d{2}\.\d{4}",
+            r"\g<1>" + today_german,
+        ),
     ]
 
     for filepath, pattern, replacement in updates:

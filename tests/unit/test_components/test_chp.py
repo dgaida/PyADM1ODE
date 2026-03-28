@@ -72,7 +72,13 @@ class TestCHPInitialize:
         chp = CHP("chp_1")
         chp.initialize()
 
-        required_keys = ["load_factor", "P_el", "P_th", "Q_gas_consumed", "operating_hours"]
+        required_keys = [
+            "load_factor",
+            "P_el",
+            "P_th",
+            "Q_gas_consumed",
+            "operating_hours",
+        ]
         for key in required_keys:
             assert key in chp.state, f"State should have '{key}' key"
 
@@ -231,7 +237,13 @@ class TestCHPSerialization:
 
         config = chp.to_dict()
 
-        required_fields = ["component_id", "component_type", "P_el_nom", "eta_el", "eta_th"]
+        required_fields = [
+            "component_id",
+            "component_type",
+            "P_el_nom",
+            "eta_el",
+            "eta_th",
+        ]
         for field in required_fields:
             assert field in config, f"to_dict should include '{field}'"
 
