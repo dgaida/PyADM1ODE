@@ -1,6 +1,6 @@
 
 <!doctype html>
-<html lang="en" class="no-js">
+<html lang="de" class="no-js">
   <head>
     
       <meta charset="utf-8">
@@ -12,35 +12,35 @@
         <meta name="author" content="Daniel Gaida">
       
       
-        <link rel="canonical" href="https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/components/feeding/">
+        <link rel="canonical" href="https://dgaida.github.io/PyADM1ODE/dev/user_guide/adm1_implementation/">
       
       
-        <link rel="prev" href="../energy/">
+        <link rel="prev" href="../quickstart/">
       
       
-        <link rel="next" href="../mechanical/">
+        <link rel="next" href="../components/">
       
       
         
-          <link rel="alternate" href="../../../../user_guide/components/feeding/" hreflang="de">
+          <link rel="alternate" href="./" hreflang="de">
         
-          <link rel="alternate" href="./" hreflang="en">
+          <link rel="alternate" href="../../en/user_guide/adm1_implementation/" hreflang="en">
         
       
       
-      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Fütterung - PyADM1ODE</title>
+        <title>ADM1-Implementierung - PyADM1ODE</title>
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -59,11 +59,9 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../../../../assets/_mkdocstrings.css">
-    
-    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -88,8 +86,8 @@
     <div data-md-component="skip">
       
         
-        <a href="#feeding-components" class="md-skip">
-          Skip to content
+        <a href="#adm1-implementierung-und-substratmodellierung" class="md-skip">
+          Zum Inhalt
         </a>
       
     </div>
@@ -101,8 +99,8 @@
       
 
 <header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../../" title="PyADM1ODE" class="md-header__button md-logo" aria-label="PyADM1ODE" data-md-component="logo">
+  <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
+    <a href="../.." title="PyADM1ODE" class="md-header__button md-logo" aria-label="PyADM1ODE" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -122,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Fütterung
+              ADM1-Implementierung
             
           </span>
         </div>
@@ -162,20 +160,20 @@
       <div class="md-header__option">
   <div class="md-select">
     
-    <button class="md-header__button md-icon" aria-label="Select language">
+    <button class="md-header__button md-icon" aria-label="Sprache wechseln">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
     </button>
     <div class="md-select__inner">
       <ul class="md-select__list">
         
           <li class="md-select__item">
-            <a href="../../../../user_guide/components/feeding/" hreflang="de" class="md-select__link">
+            <a href="./" hreflang="de" class="md-select__link">
               Deutsch
             </a>
           </li>
         
           <li class="md-select__item">
-            <a href="./" hreflang="en" class="md-select__link">
+            <a href="../../en/user_guide/adm1_implementation/" hreflang="en" class="md-select__link">
               English
             </a>
           </li>
@@ -196,16 +194,16 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <input type="text" class="md-search__input" name="query" aria-label="Suche" placeholder="Suche" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </label>
-      <nav class="md-search__options" aria-label="Search">
+      <nav class="md-search__options" aria-label="Suche">
         
-        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Zurücksetzen" aria-label="Zurücksetzen" tabindex="-1">
           
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
@@ -218,7 +216,7 @@
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
-            Initializing search
+            Suche wird initialisiert
           </div>
           <ol class="md-search-result__list" role="presentation"></ol>
         </div>
@@ -230,7 +228,7 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/dgaida/PyADM1ODE" title="Go to repository" class="md-source" data-md-component="source">
+        <a href="https://github.com/dgaida/PyADM1ODE" title="Zum Repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
@@ -251,7 +249,7 @@
         
           
             
-<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+<nav class="md-tabs" aria-label="Hauptnavigation" data-md-component="tabs">
   <div class="md-grid">
     <ul class="md-tabs__list">
       
@@ -261,7 +259,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../" class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -282,7 +280,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../installation/" class="md-tabs__link">
+        <a href="../installation/" class="md-tabs__link">
           
   
   
@@ -304,7 +302,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../adm1_implementation/" class="md-tabs__link">
+        <a href="./" class="md-tabs__link">
           
   
   
@@ -322,7 +320,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../troubleshooting/" class="md-tabs__link">
+      <a href="../troubleshooting/" class="md-tabs__link">
         
   
   
@@ -341,7 +339,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../metrics/" class="md-tabs__link">
+      <a href="../../metrics/" class="md-tabs__link">
         
   
   
@@ -360,7 +358,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../CHANGELOG/" class="md-tabs__link">
+      <a href="../../CHANGELOG/" class="md-tabs__link">
         
   
   
@@ -381,7 +379,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../../api/core/" class="md-tabs__link">
+        <a href="../../api/core/" class="md-tabs__link">
           
   
   
@@ -415,7 +413,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../" title="PyADM1ODE" class="md-nav__button md-logo" aria-label="PyADM1ODE" data-md-component="logo">
+    <a href="../.." title="PyADM1ODE" class="md-nav__button md-logo" aria-label="PyADM1ODE" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -425,7 +423,7 @@
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/dgaida/PyADM1ODE" title="Go to repository" class="md-source" data-md-component="source">
+      <a href="https://github.com/dgaida/PyADM1ODE" title="Zum Repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
@@ -445,7 +443,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../" class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -526,7 +524,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
@@ -554,7 +552,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quickstart/" class="md-nav__link">
+      <a href="../quickstart/" class="md-nav__link">
         
   
   
@@ -643,10 +641,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../adm1_implementation/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADM1-Implementierung
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -662,6 +687,132 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#adm1-als-reines-ode-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADM1 als reines ODE-System
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ADM1 als reines ODE-System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hauptunterschiede-zum-standard-modell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hauptunterschiede zum Standard-Modell
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modellierung-landwirtschaftlicher-substrate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modellierung landwirtschaftlicher Substrate
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modellierung landwirtschaftlicher Substrate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#charakterisierung-via-weender-analyse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Charakterisierung via Weender-Analyse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mapping-auf-adm1-eingangsgroen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mapping auf ADM1-Eingangsgrößen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mathematische-grundlage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mathematische Grundlage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technische-umsetzung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technische Umsetzung
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Technische Umsetzung">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#beispiel-substrat-einfluss-auf-die-kinetik" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Beispiel: Substrat-Einfluss auf die Kinetik
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -671,8 +822,6 @@
                 
   
   
-    
-  
   
   
     
@@ -688,11 +837,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
         
           
           <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
@@ -713,7 +864,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -731,7 +882,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../components/" class="md-nav__link">
         
   
   
@@ -759,7 +910,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../biological/" class="md-nav__link">
+      <a href="../components/biological/" class="md-nav__link">
         
   
   
@@ -787,7 +938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../energy/" class="md-nav__link">
+      <a href="../components/energy/" class="md-nav__link">
         
   
   
@@ -812,37 +963,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Fütterung
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../components/feeding/" class="md-nav__link">
         
   
   
@@ -858,98 +982,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#substrate-storage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Substrate Storage
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#feeder" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Feeder
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Troubleshooting
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Troubleshooting">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rapid-quality-loss" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Rapid Quality Loss
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#optimization-strategies" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Optimization Strategies
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Best Practices
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -962,7 +994,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mechanical/" class="md-nav__link">
+      <a href="../components/mechanical/" class="md-nav__link">
         
   
   
@@ -990,7 +1022,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sensors/" class="md-nav__link">
+      <a href="../components/sensors/" class="md-nav__link">
         
   
   
@@ -1083,7 +1115,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/basic_digester/" class="md-nav__link">
+      <a href="../../examples/basic_digester/" class="md-nav__link">
         
   
   
@@ -1111,7 +1143,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/two_stage_plant/" class="md-nav__link">
+      <a href="../../examples/two_stage_plant/" class="md-nav__link">
         
   
   
@@ -1139,7 +1171,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/parallel_simulation/" class="md-nav__link">
+      <a href="../../examples/parallel_simulation/" class="md-nav__link">
         
   
   
@@ -1175,7 +1207,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/" class="md-nav__link">
+      <a href="../../architecture/" class="md-nav__link">
         
   
   
@@ -1260,7 +1292,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../development/style_guide/" class="md-nav__link">
+      <a href="../../development/style_guide/" class="md-nav__link">
         
   
   
@@ -1303,7 +1335,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/" class="md-nav__link">
+      <a href="../troubleshooting/" class="md-nav__link">
         
   
   
@@ -1330,7 +1362,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../metrics/" class="md-nav__link">
+      <a href="../../metrics/" class="md-nav__link">
         
   
   
@@ -1357,7 +1389,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../CHANGELOG/" class="md-nav__link">
+      <a href="../../CHANGELOG/" class="md-nav__link">
         
   
   
@@ -1438,7 +1470,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../api/core/" class="md-nav__link">
+      <a href="../../api/core/" class="md-nav__link">
         
   
   
@@ -1466,7 +1498,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../api/biological/" class="md-nav__link">
+      <a href="../../api/biological/" class="md-nav__link">
         
   
   
@@ -1494,7 +1526,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../api/energy/" class="md-nav__link">
+      <a href="../../api/energy/" class="md-nav__link">
         
   
   
@@ -1522,7 +1554,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../api/mechanical/" class="md-nav__link">
+      <a href="../../api/mechanical/" class="md-nav__link">
         
   
   
@@ -1550,7 +1582,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../api/feeding/" class="md-nav__link">
+      <a href="../../api/feeding/" class="md-nav__link">
         
   
   
@@ -1578,7 +1610,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../api/configurator/" class="md-nav__link">
+      <a href="../../api/configurator/" class="md-nav__link">
         
   
   
@@ -1606,7 +1638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../api/simulation/" class="md-nav__link">
+      <a href="../../api/simulation/" class="md-nav__link">
         
   
   
@@ -1634,7 +1666,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../api/substrates/" class="md-nav__link">
+      <a href="../../api/substrates/" class="md-nav__link">
         
   
   
@@ -1675,7 +1707,7 @@
                   <div class="md-sidebar__inner">
                     
 
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
   
   
   
@@ -1684,49 +1716,27 @@
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
-      Table of contents
+      Inhaltsverzeichnis
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#substrate-storage" class="md-nav__link">
+  <a href="#adm1-als-reines-ode-system" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Substrate Storage
+        ADM1 als reines ODE-System
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#feeder" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Feeder
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Troubleshooting
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Troubleshooting">
+    <nav class="md-nav" aria-label="ADM1 als reines ODE-System">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#rapid-quality-loss" class="md-nav__link">
+  <a href="#hauptunterschiede-zum-standard-modell" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Rapid Quality Loss
+        Hauptunterschiede zum Standard-Modell
       
     </span>
   </a>
@@ -1739,24 +1749,80 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#optimization-strategies" class="md-nav__link">
+  <a href="#modellierung-landwirtschaftlicher-substrate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Optimization Strategies
+        Modellierung landwirtschaftlicher Substrate
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modellierung landwirtschaftlicher Substrate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#charakterisierung-via-weender-analyse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Charakterisierung via Weender-Analyse
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#mapping-auf-adm1-eingangsgroen" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Mapping auf ADM1-Eingangsgrößen
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mathematische-grundlage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mathematische Grundlage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technische-umsetzung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technische Umsetzung
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Technische Umsetzung">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#beispiel-substrat-einfluss-auf-die-kinetik" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Beispiel: Substrat-Einfluss auf die Kinetik
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1780,25 +1846,43 @@
   
 
 
-<h1 id="feeding-components">Feeding Components<a class="headerlink" href="#feeding-components" title="Permanent link">&para;</a></h1>
-<p>Components for substrate storage and dosing.</p>
-<h2 id="substrate-storage">Substrate Storage<a class="headerlink" href="#substrate-storage" title="Permanent link">&para;</a></h2>
-<p>Models substrate inventory with quality degradation.</p>
-<h2 id="feeder">Feeder<a class="headerlink" href="#feeder" title="Permanent link">&para;</a></h2>
-<p>Automated dosing systems for solid or liquid substrates.</p>
-<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
-<h3 id="rapid-quality-loss">Rapid Quality Loss<a class="headerlink" href="#rapid-quality-loss" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Check storage temperature and type.</li>
+<h1 id="adm1-implementierung-und-substratmodellierung">ADM1-Implementierung und Substratmodellierung<a class="headerlink" href="#adm1-implementierung-und-substratmodellierung" title="Permanent link">&para;</a></h1>
+<p>Diese Seite beschreibt die technischen Details der in PyADM1ODE verwendeten Implementierung des Anaerobic Digestion Model No. 1 (ADM1) und wie landwirtschaftliche Substrate in das Modell integriert werden.</p>
+<h2 id="adm1-als-reines-ode-system">ADM1 als reines ODE-System<a class="headerlink" href="#adm1-als-reines-ode-system" title="Permanent link">&para;</a></h2>
+<p>Im Gegensatz zum Standard-ADM1 (IWA Task Group, 2002), das oft als System von differentiell-algebraischen Gleichungen (DAE) formuliert wird, ist diese Implementierung ein <strong>reines System gewöhnlicher Differentialgleichungen (ODE)</strong>.</p>
+<h3 id="hauptunterschiede-zum-standard-modell">Hauptunterschiede zum Standard-Modell<a class="headerlink" href="#hauptunterschiede-zum-standard-modell" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Keine algebraischen Zustände</strong>: Säure-Base-Gleichgewichte und der Gas-Flüssig-Transfer werden kinetisch modelliert. Dies vermeidet die Notwendigkeit von iterativen algebraischen Solvern innerhalb jedes Zeitschritts des ODE-Solvers, was die numerische Stabilität erhöht.</li>
+<li><strong>37 Zustandsvariablen</strong>: Das Modell trackt insgesamt 37 Variablen, um den vollständigen Prozess abzubilden:<ul>
+<li><strong>Gelöste Komponenten (12)</strong>: Monosaccharide, Aminosäuren, langkettige Fettsäuren (LCFA), Valerat, Butyrat, Propionat, Acetat, Wasserstoff, Methan, anorganischer Kohlenstoff ($S_{CO2}$), anorganischer Stickstoff ($S_{NH4}$), lösliche Inerte.</li>
+<li><strong>Partikuläre Komponenten (13)</strong>: Verbundstoffe ($X_{xc}$), Kohlenhydrate, Proteine, Lipide, 7 bakterielle Populationen, partikuläre Inerte, partikuläre Zerfallsprodukte ($X_p$).</li>
+<li><strong>Säure-Base-Variablen (8)</strong>: Kationen, Anionen sowie die ionisierten Formen der organischen Säuren und anorganischen Spezies.</li>
+<li><strong>Gasphase (4)</strong>: Partialdrücke von $H_2$, $CH_4$, $CO_2$ und der Gesamtdruck.</li>
 </ul>
-<h2 id="optimization-strategies">Optimization Strategies<a class="headerlink" href="#optimization-strategies" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Optimize feed mixtures for stable biogas production.</li>
-</ul>
-<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Maintain 7-14 days of substrate inventory.</li>
-</ul>
+</li>
+</ol>
+<h2 id="modellierung-landwirtschaftlicher-substrate">Modellierung landwirtschaftlicher Substrate<a class="headerlink" href="#modellierung-landwirtschaftlicher-substrate" title="Permanent link">&para;</a></h2>
+<p>Ein wesentliches Merkmal dieses Repositories ist die detaillierte Abbildung landwirtschaftlicher Substrate (z. B. Maissilage, Gülle) auf die ADM1-Inputvariablen.</p>
+<h3 id="charakterisierung-via-weender-analyse">Charakterisierung via Weender-Analyse<a class="headerlink" href="#charakterisierung-via-weender-analyse" title="Permanent link">&para;</a></h3>
+<p>Substrate werden nicht direkt als ADM1-Komponenten eingegeben, sondern über praxisübliche Laborparameter definiert:
+*   <strong>Erweiterte Weender-Analyse</strong>: Rohfaser (RF), Rohprotein (RP), Rohfett (RL).
+*   <strong>Van-Soest-Fraktionen</strong>: NDF, ADF, ADL (Lignin).
+*   <strong>Physikalische Werte</strong>: Trockensubstanz (TS), organische Trockensubstanz (oTS/VS), pH-Wert.</p>
+<h3 id="mapping-auf-adm1-eingangsgroen">Mapping auf ADM1-Eingangsgrößen<a class="headerlink" href="#mapping-auf-adm1-eingangsgroen" title="Permanent link">&para;</a></h3>
+<p>Die Umrechnung der Substratfraktionen in den ADM1-Zulaufstrom erfolgt dynamisch:
+1.  <strong>Zusammensetzung der Verbundstoffe ($X_c$)</strong>: Basierend auf den Protein-, Fett- und Faseranteilen werden die stöchiometrischen Koeffizienten $f_{ch,xc}$, $f_{pr,xc}$, $f_{li,xc}$, $f_{xI,xc}$ und $f_{sI,xc}$ für jedes Substrat individuell berechnet.
+2.  <strong>Kinetische Parameter</strong>: Substrate bringen ihre eigenen Raten für Desintegration ($k_{dis}$) und Hydrolyse ($k_{hyd}$) mit. Bei Substratgemischen werden diese Parameter gewichtet nach dem Volumenstrom berechnet.
+3.  <strong>VFA-Gehalt</strong>: Bereits im Substrat vorhandene organische Säuren (z. B. in Silagen) werden direkt den entsprechenden gelösten ADM1-Komponenten zugeordnet.</p>
+<h3 id="mathematische-grundlage">Mathematische Grundlage<a class="headerlink" href="#mathematische-grundlage" title="Permanent link">&para;</a></h3>
+<p>Die Implementierung basiert auf der Dissertation von <strong>Daniel Gaida (2014)</strong>: <em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants</em>. Sie kombiniert die biochemische Struktur des ADM1 mit einem robusten Modell für die Substrat-Zulaufcharakterisierung, das speziell für landwirtschaftliche Anwendungen optimiert wurde.</p>
+<h2 id="technische-umsetzung">Technische Umsetzung<a class="headerlink" href="#technische-umsetzung" title="Permanent link">&para;</a></h2>
+<p>Die Berechnung der Substratparameter und des gemischten ADM1-Zulaufstroms erfolgt über hochoptimierte C#-DLLs (im Ordner <code>pyadm1/dlls/</code>), die via <code>pythonnet</code> in die Python-Umgebung eingebunden sind. Dies ermöglicht eine schnelle Berechnung auch bei komplexen Substratgemischen und großen Simulationsstudien.</p>
+<h3 id="beispiel-substrat-einfluss-auf-die-kinetik">Beispiel: Substrat-Einfluss auf die Kinetik<a class="headerlink" href="#beispiel-substrat-einfluss-auf-die-kinetik" title="Permanent link">&para;</a></h3>
+<p>Wenn Sie verschiedene Substrate mischen, berechnet das System automatisch die resultierenden kinetischen Raten:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Die ADM1-Klasse ermittelt intern die gemittelten Parameter</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">substrate_params</span> <span class="o">=</span> <span class="n">adm1</span><span class="o">.</span><span class="n">_get_substrate_dependent_params</span><span class="p">()</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Dies beinhaltet k_dis, k_hyd_ch, k_hyd_pr, k_hyd_li basierend auf dem aktuellen Feed-Mix</span>
+</code></pre></div>
 
 
 
@@ -1824,7 +1908,7 @@
           <button type="button" class="md-top md-icon" data-md-component="top" hidden>
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
-  Back to top
+  Zurück zum Seitenanfang
 </button>
         
       </main>
@@ -1887,10 +1971,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "navigation.instant", "navigation.tracking", "content.tabs.link"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "navigation.instant", "navigation.tracking", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
