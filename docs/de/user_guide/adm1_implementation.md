@@ -15,11 +15,27 @@ Im Gegensatz zum Standard-ADM1 (IWA Task Group, 2002), das oft als System von di
     *   **Säure-Base-Variablen (8)**: Kationen, Anionen sowie die ionisierten Formen der organischen Säuren und anorganischen Spezies.
     *   **Gasphase (4)**: Partialdrücke von $H_2$, $CH_4$, $CO_2$ und der Gesamtdruck.
 
-## Modellierung landwirtschaftlicher Substrate
+### pH-Wert Berechnung
 
-Ein wesentliches Merkmal dieses Repositories ist die detaillierte Abbildung landwirtschaftlicher Substrate (z. B. Maissilage, Gülle) auf die ADM1-Inputvariablen.
+In der Original-Publikation des ADM1 wird der pH-Wert oft über eine algebraische Ladungsbilanz gelöst, die eine iterative Bestimmung der Wasserstoffionen-Konzentration $[H^+]$ erfordert.
 
-### Charakterisierung via Weender-Analyse
+In dieser Implementierung wird der pH-Wert direkt aus der Ladungsbilanz der **dynamischen Ionen-Zustände** berechnet. Da Kationen ($S_{cat}$), Anionen ($S_{an}$) und die ionisierten Formen der organischen Säuren sowie des anorganischen Kohlenstoffs/Stickstoffs als eigene Zustandsvariablen im ODE-System geführt werden, kann der pH-Wert in jedem Schritt explizit bestimmt werden. Dies ist insbesondere bei hohen Feststoffgehalten und variierenden Pufferkapazitäten, wie sie in landwirtschaftlichen Anlagen üblich sind, robuster.
+
+## Erweiterungen für landwirtschaftliche Substrate
+
+Die Implementierung enthält wichtige Erweiterungen, die speziell für die Vergärung von Energiepflanzen und Gülle optimiert wurden (nach **Koch et al., 2010**):
+
+### Einfluss des TS-Gehalts auf die Hydrolyse
+
+In landwirtschaftlichen Biogasanlagen mit hohen Feststoffgehalten (TS) ist die Hydrolyse oft der ratenlimitierende Schritt. Die Implementierung berücksichtigt dies durch eine Korrekturfunktion:
+$$ hydro\_factor = \frac{1}{1 + (\frac{TS}{K_{hyd}})^{n_{hyd}}} $$
+Dieser Faktor reduziert die Hydrolyseraten für Kohlenhydrate, Proteine und Lipide bei steigendem Feststoffgehalt im Fermenter, was zu einer realistischeren Vorhersage der Ammoniumfreisetzung und der Gasproduktion führt.
+
+### Modellierung von Zerfallsprodukten ($X_p$)
+
+Analog zum ASM1 (Activated Sludge Model) wurde ein separater Zustand für partikuläre Zerfallsprodukte ($X_p$) eingeführt. Dies ermöglicht eine präzisere Schließung der Stickstoffbilanz und beschreibt die Akkumulation von inerten organischen Stoffen aus abgestorbener Biomasse genauer.
+
+## Charakterisierung via Weender-Analyse
 
 Substrate werden nicht direkt als ADM1-Komponenten eingegeben, sondern über praxisübliche Laborparameter definiert:
 *   **Erweiterte Weender-Analyse**: Rohfaser (RF), Rohprotein (RP), Rohfett (RL).
@@ -31,22 +47,13 @@ Substrate werden nicht direkt als ADM1-Komponenten eingegeben, sondern über pra
 Die Umrechnung der Substratfraktionen in den ADM1-Zulaufstrom erfolgt dynamisch:
 1.  **Zusammensetzung der Verbundstoffe ($X_c$)**: Basierend auf den Protein-, Fett- und Faseranteilen werden die stöchiometrischen Koeffizienten $f_{ch,xc}$, $f_{pr,xc}$, $f_{li,xc}$, $f_{xI,xc}$ und $f_{sI,xc}$ für jedes Substrat individuell berechnet.
 2.  **Kinetische Parameter**: Substrate bringen ihre eigenen Raten für Desintegration ($k_{dis}$) und Hydrolyse ($k_{hyd}$) mit. Bei Substratgemischen werden diese Parameter gewichtet nach dem Volumenstrom berechnet.
-3.  **VFA-Gehalt**: Bereits im Substrat vorhandene organische Säuren (z. B. in Silagen) werden direkt den entsprechenden gelösten ADM1-Komponenten zugeordnet.
 
 ### Mathematische Grundlage
 
-Die Implementierung basiert auf der Dissertation von **Daniel Gaida (2014)**: *Dynamic real-time substrate feed optimization of anaerobic co-digestion plants*. Sie kombiniert die biochemische Struktur des ADM1 mit einem robusten Modell für die Substrat-Zulaufcharakterisierung, das speziell für landwirtschaftliche Anwendungen optimiert wurde.
+Die Implementierung basiert auf den Arbeiten von:
+*   **Gaida, D. (2014)**: *Dynamic real-time substrate feed optimization of anaerobic co-digestion plants*. PhD thesis, Leiden University.
+*   **Koch, K. et al. (2010)**: *Biogas from grass silage – Measurements and modeling with ADM1*. Bioresource Technology.
 
 ## Technische Umsetzung
 
 Die Berechnung der Substratparameter und des gemischten ADM1-Zulaufstroms erfolgt über hochoptimierte C#-DLLs (im Ordner `pyadm1/dlls/`), die via `pythonnet` in die Python-Umgebung eingebunden sind. Dies ermöglicht eine schnelle Berechnung auch bei komplexen Substratgemischen und großen Simulationsstudien.
-
-### Beispiel: Substrat-Einfluss auf die Kinetik
-
-Wenn Sie verschiedene Substrate mischen, berechnet das System automatisch die resultierenden kinetischen Raten:
-
-```python
-# Die ADM1-Klasse ermittelt intern die gemittelten Parameter
-substrate_params = adm1._get_substrate_dependent_params()
-# Dies beinhaltet k_dis, k_hyd_ch, k_hyd_pr, k_hyd_li basierend auf dem aktuellen Feed-Mix
-```
