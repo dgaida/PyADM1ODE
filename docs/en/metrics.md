@@ -24,5 +24,5 @@ Current coverage: **98.1%** (Target: 95%)
 
 ## Maintenance
 
-- **Changelog**: Up to date (v0.1.1)
-- **Last Updated**: 2026-02-21
+- **Changelog**: Up to date (v0.1.2)
+- **Last Updated**: 2026-04-07

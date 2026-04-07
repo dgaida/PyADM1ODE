@@ -24,5 +24,5 @@ Aktuelle Abdeckung: **98.1%** (Ziel: 95%)
 
 ## Wartung
 
-- **Changelog**: Aktuell (v0.1.1)
-- **Zuletzt aktualisiert**: 21.02.2026
+- **Changelog**: Aktuell (v0.1.2)
+- **Zuletzt aktualisiert**: 07.04.2026
