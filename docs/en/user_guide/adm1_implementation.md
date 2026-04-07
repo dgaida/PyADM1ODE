@@ -15,11 +15,29 @@ Unlike the standard ADM1 (IWA Task Group, 2002), which is often formulated as a 
     *   **Acid-Base Variables (8)**: Cations, anions, and the ionized forms of organic acids and inorganic species.
     *   **Gas Phase (4)**: Partial pressures of $H_2$, $CH_4$, $CO_2$, and total pressure.
 
-## Modeling Agricultural Substrates
+### pH Calculation
 
-A key feature of this repository is the detailed mapping of agricultural substrates (e.g., maize silage, manure) to ADM1 input variables.
+In the original ADM1 publication, the pH value is often solved via an algebraic charge balance, requiring an iterative determination of the hydrogen ion concentration $[H^+]$.
 
-### Characterization via Weender Analysis
+In this implementation, the pH value is calculated directly from the charge balance of the **dynamic ion states**. Since cations ($S_{cat}$), anions ($S_{an}$), and the ionized forms of organic acids and inorganic carbon/nitrogen are maintained as separate state variables within the ODE system, the pH value can be explicitly determined at each step. This approach increases the numerical stability (robustness) of the solver, as no algebraic equations need to be solved within the integration step.
+
+## Enhancements for Agricultural Substrates
+
+The implementation includes important enhancements specifically optimized for the digestion of energy crops and manure (based on **Koch et al., 2010**):
+
+### Influence of Solids (TS) Content on Hydrolysis
+
+In agricultural biogas plants with high total solids (TS) content, hydrolysis is often the rate-limiting step. The model provides a correction function for this:
+$$ hydro\_factor = \frac{1}{1 + (\frac{TS}{K_{hyd}})^{n_{hyd}}} $$
+
+!!! info "Note on Current Implementation"
+    While the mathematical structure for TS-dependent hydrolysis correction is implemented in the code (see `adm_equations.py`), it is currently **disabled** by default. The `hydro_factor` is set to `1.0` when calculating process rates, meaning the correction equation is bypassed in standard operation.
+
+### Modeling Decay Products ($X_p$)
+
+Similar to the ASM1 (Activated Sludge Model), a separate state for particulate decay products ($X_p$) was introduced. This allows for a more precise closing of the nitrogen balance and describes the accumulation of inert organic matter from decayed biomass more accurately.
+
+## Characterization via Weender Analysis
 
 Substrates are not entered directly as ADM1 components but are defined via common laboratory parameters:
 *   **Extended Weender Analysis**: Crude fiber (RF), crude protein (RP), crude fat (RL).
@@ -31,22 +49,13 @@ Substrates are not entered directly as ADM1 components but are defined via commo
 The conversion of substrate fractions into the ADM1 influent stream is performed dynamically:
 1.  **Composite ($X_c$) Composition**: Based on protein, fat, and fiber content, the stoichiometric coefficients $f_{ch,xc}$, $f_{pr,xc}$, $f_{li,xc}$, $f_{xI,xc}$, and $f_{sI,xc}$ are calculated individually for each substrate.
 2.  **Kinetic Parameters**: Substrates provide their own rates for disintegration ($k_{dis}$) and hydrolysis ($k_{hyd}$). For substrate mixtures, these parameters are calculated weighted by volumetric flow rate.
-3.  **VFA Content**: Organic acids already present in the substrate (e.g., in silages) are directly assigned to the corresponding soluble ADM1 components.
 
 ### Mathematical Foundation
 
-The implementation is based on the PhD thesis of **Daniel Gaida (2014)**: *Dynamic real-time substrate feed optimization of anaerobic co-digestion plants*. It combines the biochemical structure of ADM1 with a robust model for substrate influent characterization, specifically optimized for agricultural applications.
+The implementation is based on the research of:
+*   **Gaida, D. (2014)**: *Dynamic real-time substrate feed optimization of anaerobic co-digestion plants*. PhD thesis, Leiden University.
+*   **Koch, K. et al. (2010)**: *Biogas from grass silage – Measurements and modeling with ADM1*. Bioresource Technology.
 
 ## Technical Implementation
 
 Substrate parameter calculations and the mixed ADM1 influent stream are handled by highly optimized C# DLLs (located in the `pyadm1/dlls/` folder), integrated into the Python environment via `pythonnet`. This enables fast calculation even for complex substrate mixtures and large-scale simulation studies.
-
-### Example: Substrate Impact on Kinetics
-
-When you mix different substrates, the system automatically calculates the resulting kinetic rates:
-
-```python
-# The ADM1 class internally determines weighted parameters
-substrate_params = adm1._get_substrate_dependent_params()
-# This includes k_dis, k_hyd_ch, k_hyd_pr, k_hyd_li based on the current feed mix
-```
