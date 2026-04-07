@@ -19,7 +19,7 @@ Unlike the standard ADM1 (IWA Task Group, 2002), which is often formulated as a 
 
 In the original ADM1 publication, the pH value is often solved via an algebraic charge balance, requiring an iterative determination of the hydrogen ion concentration $[H^+]$.
 
-In this implementation, the pH value is calculated directly from the charge balance of the **dynamic ion states**. Since cations ($S_{cat}$), anions ($S_{an}$), and the ionized forms of organic acids and inorganic carbon/nitrogen are maintained as separate state variables within the ODE system, the pH value can be explicitly determined at each step. This approach is more robust, especially with high solids content and varying buffer capacities common in agricultural plants.
+In this implementation, the pH value is calculated directly from the charge balance of the **dynamic ion states**. Since cations ($S_{cat}$), anions ($S_{an}$), and the ionized forms of organic acids and inorganic carbon/nitrogen are maintained as separate state variables within the ODE system, the pH value can be explicitly determined at each step. This approach increases the numerical stability (robustness) of the solver, as no algebraic equations need to be solved within the integration step.
 
 ## Enhancements for Agricultural Substrates
 
@@ -27,9 +27,11 @@ The implementation includes important enhancements specifically optimized for th
 
 ### Influence of Solids (TS) Content on Hydrolysis
 
-In agricultural biogas plants with high total solids (TS) content, hydrolysis is often the rate-limiting step. This implementation accounts for this using a correction function:
+In agricultural biogas plants with high total solids (TS) content, hydrolysis is often the rate-limiting step. The model provides a correction function for this:
 $$ hydro\_factor = \frac{1}{1 + (\frac{TS}{K_{hyd}})^{n_{hyd}}} $$
-This factor reduces the hydrolysis rates for carbohydrates, proteins, and lipids as the solids content in the digester increases, leading to a more realistic prediction of ammonium release and gas production.
+
+!!! info "Note on Current Implementation"
+    While the mathematical structure for TS-dependent hydrolysis correction is implemented in the code (see `adm_equations.py`), it is currently **disabled** by default. The `hydro_factor` is set to `1.0` when calculating process rates, meaning the correction equation is bypassed in standard operation.
 
 ### Modeling Decay Products ($X_p$)
 

@@ -19,7 +19,7 @@ Im Gegensatz zum Standard-ADM1 (IWA Task Group, 2002), das oft als System von di
 
 In der Original-Publikation des ADM1 wird der pH-Wert oft über eine algebraische Ladungsbilanz gelöst, die eine iterative Bestimmung der Wasserstoffionen-Konzentration $[H^+]$ erfordert.
 
-In dieser Implementierung wird der pH-Wert direkt aus der Ladungsbilanz der **dynamischen Ionen-Zustände** berechnet. Da Kationen ($S_{cat}$), Anionen ($S_{an}$) und die ionisierten Formen der organischen Säuren sowie des anorganischen Kohlenstoffs/Stickstoffs als eigene Zustandsvariablen im ODE-System geführt werden, kann der pH-Wert in jedem Schritt explizit bestimmt werden. Dies ist insbesondere bei hohen Feststoffgehalten und variierenden Pufferkapazitäten, wie sie in landwirtschaftlichen Anlagen üblich sind, robuster.
+In dieser Implementierung wird der pH-Wert direkt aus der Ladungsbilanz der **dynamischen Ionen-Zustände** berechnet. Da Kationen ($S_{cat}$), Anionen ($S_{an}$) und die ionisierten Formen der organischen Säuren sowie des anorganischen Kohlenstoffs/Stickstoffs als eigene Zustandsvariablen im ODE-System geführt werden, kann der pH-Wert in jedem Schritt explizit bestimmt werden. Dieser Ansatz erhöht die numerische Stabilität (Robustheit) des Solvers, da keine algebraischen Gleichungen innerhalb des Integrationsschritts gelöst werden müssen.
 
 ## Erweiterungen für landwirtschaftliche Substrate
 
@@ -27,9 +27,11 @@ Die Implementierung enthält wichtige Erweiterungen, die speziell für die Verg�
 
 ### Einfluss des TS-Gehalts auf die Hydrolyse
 
-In landwirtschaftlichen Biogasanlagen mit hohen Feststoffgehalten (TS) ist die Hydrolyse oft der ratenlimitierende Schritt. Die Implementierung berücksichtigt dies durch eine Korrekturfunktion:
+In landwirtschaftlichen Biogasanlagen mit hohen Feststoffgehalten (TS) ist die Hydrolyse oft der ratenlimitierende Schritt. Das Modell sieht hierfür eine Korrekturfunktion vor:
 $$ hydro\_factor = \frac{1}{1 + (\frac{TS}{K_{hyd}})^{n_{hyd}}} $$
-Dieser Faktor reduziert die Hydrolyseraten für Kohlenhydrate, Proteine und Lipide bei steigendem Feststoffgehalt im Fermenter, was zu einer realistischeren Vorhersage der Ammoniumfreisetzung und der Gasproduktion führt.
+
+!!! info "Hinweis zur aktuellen Implementierung"
+    Obwohl die mathematische Struktur zur TS-abhängigen Hydrolysekorrektur im Code implementiert ist (siehe `adm_equations.py`), ist sie in der aktuellen Version standardmäßig **deaktiviert**. Der `hydro_factor` wird beim Aufruf der Prozessraten fest auf `1.0` gesetzt, sodass die Korrekturgleichung im Standardbetrieb übersprungen wird.
 
 ### Modellierung von Zerfallsprodukten ($X_p$)
 
