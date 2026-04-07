@@ -92,6 +92,7 @@ nav:
       - Installation: user_guide/installation.md
       - Schnellstart: user_guide/quickstart.md
   - Dokumentation:
+      - ADM1-Implementierung: user_guide/adm1_implementation.md
       - Komponenten:
           - Übersicht: user_guide/components/index.md
           - Biologisch: user_guide/components/biological.md
