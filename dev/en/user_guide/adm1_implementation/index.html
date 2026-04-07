@@ -728,24 +728,62 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#ph-calculation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pH Calculation
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#modeling-agricultural-substrates" class="md-nav__link">
+  <a href="#enhancements-for-agricultural-substrates" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Modeling Agricultural Substrates
+        Enhancements for Agricultural Substrates
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Modeling Agricultural Substrates">
+    <nav class="md-nav" aria-label="Enhancements for Agricultural Substrates">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#influence-of-solids-ts-content-on-hydrolysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Influence of Solids (TS) Content on Hydrolysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modeling-decay-products-x_p" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modeling Decay Products ($X_p$)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#characterization-via-weender-analysis" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -754,7 +792,8 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Characterization via Weender Analysis">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#mapping-to-adm1-input-variables" class="md-nav__link">
@@ -791,23 +830,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Technical Implementation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-substrate-impact-on-kinetics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example: Substrate Impact on Kinetics
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1745,24 +1767,62 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#ph-calculation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pH Calculation
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#modeling-agricultural-substrates" class="md-nav__link">
+  <a href="#enhancements-for-agricultural-substrates" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Modeling Agricultural Substrates
+        Enhancements for Agricultural Substrates
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Modeling Agricultural Substrates">
+    <nav class="md-nav" aria-label="Enhancements for Agricultural Substrates">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#influence-of-solids-ts-content-on-hydrolysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Influence of Solids (TS) Content on Hydrolysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modeling-decay-products-x_p" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modeling Decay Products ($X_p$)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#characterization-via-weender-analysis" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1771,7 +1831,8 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Characterization via Weender Analysis">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#mapping-to-adm1-input-variables" class="md-nav__link">
@@ -1808,23 +1869,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Technical Implementation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-substrate-impact-on-kinetics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example: Substrate Impact on Kinetics
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1863,9 +1907,21 @@
 </ul>
 </li>
 </ol>
-<h2 id="modeling-agricultural-substrates">Modeling Agricultural Substrates<a class="headerlink" href="#modeling-agricultural-substrates" title="Permanent link">&para;</a></h2>
-<p>A key feature of this repository is the detailed mapping of agricultural substrates (e.g., maize silage, manure) to ADM1 input variables.</p>
-<h3 id="characterization-via-weender-analysis">Characterization via Weender Analysis<a class="headerlink" href="#characterization-via-weender-analysis" title="Permanent link">&para;</a></h3>
+<h3 id="ph-calculation">pH Calculation<a class="headerlink" href="#ph-calculation" title="Permanent link">&para;</a></h3>
+<p>In the original ADM1 publication, the pH value is often solved via an algebraic charge balance, requiring an iterative determination of the hydrogen ion concentration $[H^+]$.</p>
+<p>In this implementation, the pH value is calculated directly from the charge balance of the <strong>dynamic ion states</strong>. Since cations ($S_{cat}$), anions ($S_{an}$), and the ionized forms of organic acids and inorganic carbon/nitrogen are maintained as separate state variables within the ODE system, the pH value can be explicitly determined at each step. This approach increases the numerical stability (robustness) of the solver, as no algebraic equations need to be solved within the integration step.</p>
+<h2 id="enhancements-for-agricultural-substrates">Enhancements for Agricultural Substrates<a class="headerlink" href="#enhancements-for-agricultural-substrates" title="Permanent link">&para;</a></h2>
+<p>The implementation includes important enhancements specifically optimized for the digestion of energy crops and manure (based on <strong>Koch et al., 2010</strong>):</p>
+<h3 id="influence-of-solids-ts-content-on-hydrolysis">Influence of Solids (TS) Content on Hydrolysis<a class="headerlink" href="#influence-of-solids-ts-content-on-hydrolysis" title="Permanent link">&para;</a></h3>
+<p>In agricultural biogas plants with high total solids (TS) content, hydrolysis is often the rate-limiting step. The model provides a correction function for this:
+$$ hydro_factor = \frac{1}{1 + (\frac{TS}{K_{hyd}})^{n_{hyd}}} $$</p>
+<div class="admonition info">
+<p class="admonition-title">Note on Current Implementation</p>
+<p>While the mathematical structure for TS-dependent hydrolysis correction is implemented in the code (see <code>adm_equations.py</code>), it is currently <strong>disabled</strong> by default. The <code>hydro_factor</code> is set to <code>1.0</code> when calculating process rates, meaning the correction equation is bypassed in standard operation.</p>
+</div>
+<h3 id="modeling-decay-products-x_p">Modeling Decay Products ($X_p$)<a class="headerlink" href="#modeling-decay-products-x_p" title="Permanent link">&para;</a></h3>
+<p>Similar to the ASM1 (Activated Sludge Model), a separate state for particulate decay products ($X_p$) was introduced. This allows for a more precise closing of the nitrogen balance and describes the accumulation of inert organic matter from decayed biomass more accurately.</p>
+<h2 id="characterization-via-weender-analysis">Characterization via Weender Analysis<a class="headerlink" href="#characterization-via-weender-analysis" title="Permanent link">&para;</a></h2>
 <p>Substrates are not entered directly as ADM1 components but are defined via common laboratory parameters:
 *   <strong>Extended Weender Analysis</strong>: Crude fiber (RF), crude protein (RP), crude fat (RL).
 *   <strong>Van Soest Fractions</strong>: NDF, ADF, ADL (lignin).
@@ -1873,18 +1929,13 @@
 <h3 id="mapping-to-adm1-input-variables">Mapping to ADM1 Input Variables<a class="headerlink" href="#mapping-to-adm1-input-variables" title="Permanent link">&para;</a></h3>
 <p>The conversion of substrate fractions into the ADM1 influent stream is performed dynamically:
 1.  <strong>Composite ($X_c$) Composition</strong>: Based on protein, fat, and fiber content, the stoichiometric coefficients $f_{ch,xc}$, $f_{pr,xc}$, $f_{li,xc}$, $f_{xI,xc}$, and $f_{sI,xc}$ are calculated individually for each substrate.
-2.  <strong>Kinetic Parameters</strong>: Substrates provide their own rates for disintegration ($k_{dis}$) and hydrolysis ($k_{hyd}$). For substrate mixtures, these parameters are calculated weighted by volumetric flow rate.
-3.  <strong>VFA Content</strong>: Organic acids already present in the substrate (e.g., in silages) are directly assigned to the corresponding soluble ADM1 components.</p>
+2.  <strong>Kinetic Parameters</strong>: Substrates provide their own rates for disintegration ($k_{dis}$) and hydrolysis ($k_{hyd}$). For substrate mixtures, these parameters are calculated weighted by volumetric flow rate.</p>
 <h3 id="mathematical-foundation">Mathematical Foundation<a class="headerlink" href="#mathematical-foundation" title="Permanent link">&para;</a></h3>
-<p>The implementation is based on the PhD thesis of <strong>Daniel Gaida (2014)</strong>: <em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants</em>. It combines the biochemical structure of ADM1 with a robust model for substrate influent characterization, specifically optimized for agricultural applications.</p>
+<p>The implementation is based on the research of:
+*   <strong>Gaida, D. (2014)</strong>: <em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants</em>. PhD thesis, Leiden University.
+*   <strong>Koch, K. et al. (2010)</strong>: <em>Biogas from grass silage – Measurements and modeling with ADM1</em>. Bioresource Technology.</p>
 <h2 id="technical-implementation">Technical Implementation<a class="headerlink" href="#technical-implementation" title="Permanent link">&para;</a></h2>
 <p>Substrate parameter calculations and the mixed ADM1 influent stream are handled by highly optimized C# DLLs (located in the <code>pyadm1/dlls/</code> folder), integrated into the Python environment via <code>pythonnet</code>. This enables fast calculation even for complex substrate mixtures and large-scale simulation studies.</p>
-<h3 id="example-substrate-impact-on-kinetics">Example: Substrate Impact on Kinetics<a class="headerlink" href="#example-substrate-impact-on-kinetics" title="Permanent link">&para;</a></h3>
-<p>When you mix different substrates, the system automatically calculates the resulting kinetic rates:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># The ADM1 class internally determines weighted parameters</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">substrate_params</span> <span class="o">=</span> <span class="n">adm1</span><span class="o">.</span><span class="n">_get_substrate_dependent_params</span><span class="p">()</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># This includes k_dis, k_hyd_ch, k_hyd_pr, k_hyd_li based on the current feed mix</span>
-</code></pre></div>
 
 
 
