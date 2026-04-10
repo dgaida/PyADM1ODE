@@ -169,6 +169,23 @@ class Digester(Component):
         # Mark as initialized
         self._initialized = True
 
+    def _has_valid_state_input(self) -> bool:
+        """Return True when ADM1 influent state looks like a usable 34+ element sequence."""
+        state_input = getattr(self.adm1, "_state_input", None)
+        if state_input is None:
+            return False
+        try:
+            float(state_input[33])
+        except (TypeError, ValueError, IndexError):
+            return False
+        return True
+
+    def _resolve_q_out(self) -> float:
+        """Resolve effluent flow robustly, falling back to fresh substrate flow."""
+        if self._has_valid_state_input():
+            return float(self.adm1._state_input[33])
+        return float(np.sum(self.Q_substrates))
+
     def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Perform one simulation time step.
@@ -196,15 +213,31 @@ class Digester(Component):
         if "Q_substrates" in inputs:
             self.Q_substrates = inputs["Q_substrates"]
 
-        # Create influent stream
-        # If connected to previous digester, mix with its effluent
+        # Create influent stream and mix with previous-stage effluent if connected
         if "state_in" in inputs and "Q_in" in inputs:
-            # TODO: Implement mixing of substrate feed with previous stage effluent
-            # For now, just use substrate feed
-            pass
+            Q_in = float(inputs["Q_in"])  # effluent flow from stage 1 [m³/d]
+            state_in = inputs["state_in"]  # 37-element ADM1 state from stage 1
 
-        # Update ADM1 influent
-        self.adm1.create_influent(self.Q_substrates, int(t / dt))
+            # Calculate fresh substrate influent first (populates adm1._state_input)
+            self.adm1.create_influent(self.Q_substrates, int(t / dt))
+
+            Q_sub = float(self.adm1._state_input[33])  # fresh substrate flow [m³/d]
+            Q_total = Q_in + Q_sub
+
+            if Q_total > 0:
+                # Flow-weighted mixing of liquid-phase components (indices 0–32).
+                # The first 33 elements of the ADM1 state vector are the effluent
+                # concentrations (CSTR), which equal the influent for stage 2.
+                for idx in range(33):
+                    c_sub = self.adm1._state_input[idx]
+                    c_in = float(state_in[idx])
+                    self.adm1._state_input[idx] = (c_sub * Q_sub + c_in * Q_in) / Q_total
+
+                # Total hydraulic flow into this digester
+                self.adm1._state_input[33] = Q_total
+        else:
+            # No upstream digester: standard fresh substrate influent
+            self.adm1.create_influent(self.Q_substrates, int(t / dt))
 
         # Simulate ADM1
         t_span = [t, t + dt]
@@ -233,8 +266,8 @@ class Digester(Component):
             # Fallback if DLL not available
             print(f"Warning: Could not calculate process indicators: {e}")
 
-        # Prepare output
-        Q_out = np.sum(self.Q_substrates)
+        # Prepare output: total effluent = fresh substrate feed + upstream effluent (if any)
+        Q_out = float(self.adm1._state_input[33]) if self.adm1._state_input is not None else np.sum(self.Q_substrates)
 
         # --- integrate with attached gas storage ---
         gs_inputs = {

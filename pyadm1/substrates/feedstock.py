@@ -109,20 +109,22 @@ class Feedstock:
     @staticmethod
     def get_substrate_feed_mixtures(Q, n=13):
         Qnew = [[q for q in Q] for i in range(0, n)]
-        # TODO: assumes that we only have two substrates
-        # 2nd simulation runs with a volumetric flow rate of Q + 1.5 m^3/d
-        Qnew[1][0] = Q[0] + 1.5
-        Qnew[1][1] = Q[1] + 1.5
+        # Perturb all active substrates (Q[i] > 0) by ±1.5 m³/d
+        active = [i for i, q in enumerate(Q) if q > 0]
+
+        # 2nd simulation: Q + 1.5 m³/d for all active substrates
+        for idx in active:
+            Qnew[1][idx] = Q[idx] + 1.5
 
         if n > 2:
-            # 3rd simulation runs with a volumetric flow rate of Q - 1.5 m^3/d
-            Qnew[2][0] = Q[0] - 1.5
-            Qnew[2][1] = Q[1] - 1.5
+            # 3rd simulation: Q - 1.5 m³/d for all active substrates
+            for idx in active:
+                Qnew[2][idx] = max(0.0, Q[idx] - 1.5)
 
-        # create n - 3 random flow rates
+        # remaining simulations: random perturbation in [-1.5, +1.5] m³/d
         for i in range(3, n):
-            Qnew[i][0] = Q[0] + np.random.uniform() * 3.0 - 1.5
-            Qnew[i][1] = Q[1] + np.random.uniform() * 3.0 - 1.5
+            for idx in active:
+                Qnew[i][idx] = max(0.0, Q[idx] + np.random.uniform() * 3.0 - 1.5)
 
         return Qnew
 

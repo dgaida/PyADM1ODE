@@ -51,11 +51,6 @@ class PumpType(str, Enum):
     PISTON = "piston"
 
 
-# TODO: pump has to be connected between digesters or between substrate feed and primary digester so that it knows
-#  how much fluid it is pumping (m^3/d).
-# TODO: it must be a mistake that Q_nom: Nominal flow rate [m³/h], this must be m^3/d.
-
-
 class Pump(Component):
     """
     Pump component for material handling in biogas plants.
@@ -66,13 +61,13 @@ class Pump(Component):
 
     Attributes:
         pump_type: Type of pump (centrifugal, progressive_cavity, piston)
-        Q_nom: Nominal flow rate [m³/h]
+        Q_nom: Nominal flow rate [m³/d]
         pressure_head: Pressure head [m] or [bar]
         efficiency: Pump efficiency at nominal point (0-1)
         motor_efficiency: Motor efficiency (0-1)
         fluid_density: Fluid density [kg/m³]
         speed_control: Enable variable speed drive (VSD)
-        current_flow: Current flow rate [m³/h]
+        current_flow: Current flow rate [m³/d]
         is_running: Pump operating state
 
     Example:
@@ -104,7 +99,7 @@ class Pump(Component):
         Args:
             component_id: Unique identifier
             pump_type: Type of pump ("centrifugal", "progressive_cavity", "piston")
-            Q_nom: Nominal flow rate [m³/h]
+            Q_nom: Nominal flow rate [m³/d]
             pressure_head: Design pressure head [m]
             efficiency: Pump efficiency (0-1), calculated if None
             motor_efficiency: Motor efficiency (0-1)
@@ -146,7 +141,7 @@ class Pump(Component):
         Args:
             initial_state: Optional initial state dictionary with keys:
                 - 'is_running': Initial pump state
-                - 'current_flow': Initial flow rate [m³/h]
+                - 'current_flow': Initial flow rate [m³/d]
                 - 'operating_hours': Cumulative operating hours
                 - 'energy_consumed': Cumulative energy [kWh]
                 - 'total_volume_pumped': Cumulative volume [m³]
@@ -186,7 +181,12 @@ class Pump(Component):
             t: Current time [days]
             dt: Time step [days]
             inputs: Input data with optional keys:
-                - 'Q_setpoint': Desired flow rate [m³/h]
+                - 'Q_setpoint': Desired flow rate [m³/d]
+                - 'Q_actual': Actual flow from connected upstream component [m³/d].
+                  If provided, overrides setpoint-based calculation and is used
+                  directly for power consumption.
+                - 'Q_out': Actual effluent flow from an upstream digester [m³/d].
+                  Used when the pump is connected between digesters.
                 - 'enable_pump': Enable/disable pump
                 - 'fluid_density': Fluid density [kg/m³]
                 - 'fluid_viscosity': Fluid viscosity [Pa·s]
@@ -195,7 +195,7 @@ class Pump(Component):
         Returns:
             Dict with keys:
                 - 'P_consumed': Power consumption [kW]
-                - 'Q_actual': Actual flow rate [m³/h]
+                - 'Q_actual': Actual flow rate [m³/d]
                 - 'is_running': Current running state
                 - 'efficiency': Current operating efficiency
                 - 'pressure_actual': Actual pressure head [m]
@@ -210,8 +210,17 @@ class Pump(Component):
         Q_setpoint = inputs.get("Q_setpoint", self.Q_nom)
         pressure_head_req = inputs.get("pressure_head", self.pressure_head)
 
+        # Use connected upstream flow when the pump sits between a feeder/storage and
+        # a digester or between two digesters.
+        Q_from_connection = inputs.get("Q_actual")
+        if Q_from_connection is None:
+            Q_from_connection = inputs.get("Q_out")
+
         # Determine if pump should run
-        self.is_running = enable_pump and Q_setpoint > 0
+        if Q_from_connection is not None:
+            self.is_running = enable_pump and float(Q_from_connection) > 0.0
+        else:
+            self.is_running = enable_pump and Q_setpoint > 0
 
         if not self.is_running:
             # Pump is off
@@ -221,9 +230,12 @@ class Pump(Component):
             pressure_actual = 0.0
 
         else:
-            # Calculate operating point
-            if self.speed_control:
-                # Variable speed: adjust speed to match flow
+            if Q_from_connection is not None:
+                # Flow is dictated by the connected components (e.g. digester → pump → digester)
+                Q_actual = float(Q_from_connection)
+                self.speed_fraction = min(1.2, Q_actual / max(self.Q_nom, 1e-9))
+            elif self.speed_control:
+                # Variable speed: adjust speed to match setpoint
                 self.speed_fraction = min(1.2, Q_setpoint / self.Q_nom)  # Allow 20% overload
                 Q_actual = min(Q_setpoint, self.Q_nom * 1.2)
             else:
@@ -246,7 +258,7 @@ class Pump(Component):
         dt_hours = dt * 24.0
         if self.is_running:
             self.operating_hours += dt_hours
-            self.total_volume_pumped += self.current_flow * dt_hours
+            self.total_volume_pumped += self.current_flow * dt  # m³/d * d = m³
 
         self.energy_consumed += P_consumed * dt_hours
 
@@ -271,7 +283,8 @@ class Pump(Component):
             "efficiency": float(self.actual_efficiency),
             "pressure_actual": float(pressure_actual),
             "speed_fraction": float(self.speed_fraction),
-            "specific_energy": float(P_consumed / max(self.current_flow, 1e-6)),  # kWh/m³
+            # P [kW] / (Q [m³/d] / 24 [h/d]) = kWh/m³
+            "specific_energy": float(P_consumed * 24.0 / max(self.current_flow, 1e-6)),  # kWh/m³
         }
 
         return self.outputs_data
@@ -325,7 +338,7 @@ class Pump(Component):
         occurs at design point (Q_nom, H_nom).
 
         Args:
-            Q: Flow rate [m³/h]
+            Q: Flow rate [m³/d]
             H: Pressure head [m]
 
         Returns:
@@ -371,7 +384,7 @@ class Pump(Component):
         decreases with flow. For volumetric pumps, head is nearly constant.
 
         Args:
-            Q: Flow rate [m³/h]
+            Q: Flow rate [m³/d]
 
         Returns:
             Pressure head [m]
@@ -397,7 +410,7 @@ class Pump(Component):
         Uses hydraulic power formula with efficiency corrections.
 
         Args:
-            Q: Flow rate [m³/h]
+            Q: Flow rate [m³/d]
             H: Pressure head [m]
 
         Returns:
@@ -406,8 +419,8 @@ class Pump(Component):
         if Q <= 0:
             return 0.0
 
-        # Convert flow to m³/s
-        Q_m3_per_s = Q / 3600.0
+        # Convert flow from m³/d to m³/s
+        Q_m3_per_s = Q / 86400.0
 
         # Hydraulic power: P_hyd = ρ * g * Q * H [W]
         g = 9.81  # m/s²

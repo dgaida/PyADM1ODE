@@ -43,7 +43,7 @@ class TestPumpInitialization:
         """Test that pump has reasonable default values."""
         pump = Pump("pump_1")
 
-        assert pump.Q_nom == 10.0, "Default Q_nom should be 10.0 m³/h"
+        assert pump.Q_nom == 10.0, "Default Q_nom should be 10.0 m³/d"
         assert pump.pressure_head == 50.0, "Default pressure_head should be 50.0 m"
         assert pump.pump_type == PumpType.PROGRESSIVE_CAVITY, "Default type should be progressive_cavity"
 
@@ -191,6 +191,16 @@ class TestPumpStep:
 
         assert abs(result["Q_actual"] - pump.Q_nom) < 0.1, "Fixed speed pump should run at Q_nom"
 
+    def test_step_uses_connected_digester_flow(self) -> None:
+        """Test that digester effluent flow is used when pump is connected between digesters."""
+        pump = Pump("pump_1", Q_nom=10.0, speed_control=True)
+        pump.initialize()
+
+        result = pump.step(t=0.0, dt=1.0 / 24.0, inputs={"Q_setpoint": 0.0, "Q_out": 6.5})
+
+        assert abs(result["Q_actual"] - 6.5) < 0.1, "Pump should use upstream digester flow"
+        assert result["is_running"] is True, "Pump should run when connected flow is positive"
+
     def test_step_updates_operating_hours(self) -> None:
         """Test that step updates operating hours."""
         pump = Pump("pump_1")
@@ -212,12 +222,12 @@ class TestPumpStep:
 
         # initial_volume = pump.total_volume_pumped
         dt = 1.0 / 24.0  # 1 hour
-        Q_setpoint = 8.0  # m³/h
+        Q_setpoint = 8.0
 
         inputs = {"Q_setpoint": Q_setpoint}
         pump.step(t=0.0, dt=dt, inputs=inputs)
 
-        expected_volume = Q_setpoint * 1.0  # m³
+        expected_volume = Q_setpoint * dt
         assert abs(pump.total_volume_pumped - expected_volume) < 0.1, "Volume should be accumulated"
 
     def test_step_with_zero_setpoint(self) -> None:

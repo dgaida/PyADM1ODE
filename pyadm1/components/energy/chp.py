@@ -139,7 +139,9 @@ class CHP(Component):
         P_available = Q_ch4_available / 24.0 * E_ch4  # kW (convert m³/d to m³/h)
 
         # Determine actual load
-        P_el_max = min(self.P_el_nom, P_available / self.eta_el)
+        # P_available is the input thermal power from methane; multiply by eta_el
+        # to get the maximum possible electrical output power.
+        P_el_max = min(self.P_el_nom, P_available * self.eta_el)
         self.load_factor = min(load_setpoint, P_el_max / self.P_el_nom) if self.P_el_nom > 0 else 0.0
 
         # Calculate outputs
@@ -158,6 +160,7 @@ class CHP(Component):
         self.outputs_data = {
             "P_el": P_el,
             "P_th": P_th,
+            "P_th_available": P_th,  # Key expected by HeatingSystem
             "Q_gas_consumed": Q_gas_consumed,
             "Q_gas_out_m3_per_day": Q_gas_consumed,  # Demand signal for storages
             "Q_ch4_remaining": Q_ch4_available - Q_ch4_consumed,

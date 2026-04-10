@@ -34,7 +34,7 @@ class Flare(Component):
         destruction_efficiency: float = 0.98,
         name: Optional[str] = None,
     ):
-        super().__init__(component_id, ComponentType.STORAGE, name)
+        super().__init__(component_id, ComponentType.FLARE, name)
         self.destruction_efficiency: float = float(destruction_efficiency)
         self._cum_vented_m3: float = 0.0
         self.initialize()

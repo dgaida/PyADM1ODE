@@ -603,6 +603,7 @@ class TestDigesterUncoveredBranches:
 
         with patch.object(digester, "adm1") as mock_adm1:
             mock_adm1.create_influent = Mock()
+            mock_adm1._state_input = [0.01] * 33 + [10.0]
             mock_adm1.calc_gas = Mock(return_value=(12.0, 7.0, 5.0, 1.01))
             with patch.object(digester.simulator, "simulate_AD_plant", return_value=simulated_state):
                 digester.gas_storage.outputs_data = {}
@@ -630,7 +631,7 @@ class TestDigesterUncoveredBranches:
                         )
 
         assert mock_storage_step.called
-        assert result["Q_out"] == pytest.approx(10.0)
+        assert result["Q_out"] == pytest.approx(12.5)
         assert result["pH"] == 7.0
         assert "Warning: Could not calculate process indicators" in capsys.readouterr().out
 

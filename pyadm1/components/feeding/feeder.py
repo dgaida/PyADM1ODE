@@ -102,7 +102,7 @@ class Feeder(Component):
         component_id: str,
         feeder_type: Optional[str] = None,
         Q_max: float = 20.0,
-        substrate_type: str = "solid",
+        substrate_type: Optional[str] = None,
         dosing_accuracy: Optional[float] = None,
         power_installed: Optional[float] = None,
         enable_dosing_noise: bool = True,
@@ -123,6 +123,12 @@ class Feeder(Component):
         """
         super().__init__(component_id, ComponentType.MIXER, name)  # Use MIXER as closest type
 
+        if substrate_type is None:
+            if feeder_type is None:
+                substrate_type = "solid"
+            else:
+                substrate_type = self._default_substrate_for_feeder_type(feeder_type)
+
         if feeder_type is None:
             # Default to screw feeder for solid substrates
             if substrate_type.lower() in ["solid", "fibrous"]:
@@ -133,8 +139,7 @@ class Feeder(Component):
         # Configuration
         self.feeder_type = FeederType(feeder_type.lower())
         self.substrate_type = SubstrateCategory(substrate_type.lower())
-        # TODO: check whether substrate type fits to feeder_type. E.g. liquid substrate should not be transported
-        #  with a screw
+        self._validate_feeder_substrate_compatibility()
         self.Q_max = float(Q_max)
         self.enable_dosing_noise = enable_dosing_noise
 
@@ -159,6 +164,40 @@ class Feeder(Component):
 
         # Initialize
         self.initialize()
+
+    # feeder types that cannot handle the given substrate category
+    _INCOMPATIBLE: Dict[FeederType, set] = {
+        FeederType.SCREW: {SubstrateCategory.LIQUID},
+        FeederType.TWIN_SCREW: {SubstrateCategory.LIQUID},
+        FeederType.CENTRIFUGAL_PUMP: {SubstrateCategory.SOLID, SubstrateCategory.FIBROUS},
+        FeederType.PISTON: {SubstrateCategory.LIQUID},
+        FeederType.PROGRESSIVE_CAVITY: {SubstrateCategory.SOLID, SubstrateCategory.FIBROUS},
+        FeederType.MIXER_WAGON: set(),  # handles all substrate types
+    }
+
+    @staticmethod
+    def _default_substrate_for_feeder_type(feeder_type: str) -> str:
+        """Infer a compatible default substrate category for a chosen feeder."""
+        defaults = {
+            FeederType.SCREW.value: SubstrateCategory.SOLID.value,
+            FeederType.TWIN_SCREW.value: SubstrateCategory.SOLID.value,
+            FeederType.PROGRESSIVE_CAVITY.value: SubstrateCategory.SLURRY.value,
+            FeederType.PISTON.value: SubstrateCategory.FIBROUS.value,
+            FeederType.CENTRIFUGAL_PUMP.value: SubstrateCategory.LIQUID.value,
+            FeederType.MIXER_WAGON.value: SubstrateCategory.SOLID.value,
+        }
+        return defaults.get(feeder_type.lower(), SubstrateCategory.SOLID.value)
+
+    def _validate_feeder_substrate_compatibility(self) -> None:
+        """Raise ValueError if feeder type cannot handle the substrate category."""
+        incompatible = self._INCOMPATIBLE.get(self.feeder_type, set())
+        if self.substrate_type in incompatible:
+            raise ValueError(
+                f"Feeder type '{self.feeder_type.value}' is not compatible with "
+                f"substrate category '{self.substrate_type.value}'. "
+                f"Incompatible combinations for this feeder: "
+                f"{[s.value for s in incompatible]}."
+            )
 
     def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
         """

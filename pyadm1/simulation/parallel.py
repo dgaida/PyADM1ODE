@@ -71,6 +71,11 @@ _CALIBRATION_PARAM_KEYS = frozenset(
         "k_m_pro",
         "k_m_ac",
         "k_m_h2",
+        "k_p",
+        "k_L_a",
+        "K_H_co2",
+        "K_H_ch4",
+        "K_H_h2",
     )
 )
 

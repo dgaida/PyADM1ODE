@@ -73,6 +73,18 @@ class TestComponentRegistryInitialization:
                 type("GasStorage", (), {}),
             ),
             "pyadm1.components.energy.flare": ("Flare", type("Flare", (), {})),
+            "pyadm1.components.sensors.physical": (
+                "PhysicalSensor",
+                type("PhysicalSensor", (), {}),
+            ),
+            "pyadm1.components.sensors.chemical": (
+                "ChemicalSensor",
+                type("ChemicalSensor", (), {}),
+            ),
+            "pyadm1.components.sensors.gas": (
+                "GasSensor",
+                type("GasSensor", (), {}),
+            ),
         }
         real_import = builtins.__import__
 
@@ -99,6 +111,9 @@ class TestComponentRegistryInitialization:
             "Boiler",
             "GasStorage",
             "Flare",
+            "PhysicalSensor",
+            "ChemicalSensor",
+            "GasSensor",
         }
 
     def test_auto_register_components_skips_import_errors(self, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -113,6 +128,9 @@ class TestComponentRegistryInitialization:
             "pyadm1.components.energy.boiler",
             "pyadm1.components.energy.gas_storage",
             "pyadm1.components.energy.flare",
+            "pyadm1.components.sensors.physical",
+            "pyadm1.components.sensors.chemical",
+            "pyadm1.components.sensors.gas",
         )
         real_import = builtins.__import__
 

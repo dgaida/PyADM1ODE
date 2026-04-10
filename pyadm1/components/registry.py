@@ -99,6 +99,27 @@ class ComponentRegistry:
         except ImportError:
             pass
 
+        try:
+            from pyadm1.components.sensors.physical import PhysicalSensor
+
+            self._registry["PhysicalSensor"] = PhysicalSensor
+        except ImportError:
+            pass
+
+        try:
+            from pyadm1.components.sensors.chemical import ChemicalSensor
+
+            self._registry["ChemicalSensor"] = ChemicalSensor
+        except ImportError:
+            pass
+
+        try:
+            from pyadm1.components.sensors.gas import GasSensor
+
+            self._registry["GasSensor"] = GasSensor
+        except ImportError:
+            pass
+
     def register(self, name: str, component_class: Type[Component]) -> None:
         """
         Register a component class with a given name.

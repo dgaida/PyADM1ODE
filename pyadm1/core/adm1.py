@@ -45,15 +45,18 @@ Example:
     >>> q_gas, q_ch4, q_co2, p_gas = adm1.calc_gas(*state[33:37])
 """
 
+import logging
 import os
 import clr
 import numpy as np
 import pandas as pd
 from typing import List, Tuple, Optional
-
 from pyadm1.core.adm_params import ADMParams
 from pyadm1.core.adm_equations import BiochemicalProcesses
 from pyadm1.substrates.feedstock import Feedstock
+
+logger = logging.getLogger(__name__)
+
 
 # CLR reference must be added before importing from DLL
 dll_path = os.path.join(os.path.dirname(__file__), "..", "dlls")
@@ -244,6 +247,8 @@ class ADM1:
             >>> print(f"Biogas: {q_gas:.1f} m³/d, Methane: {q_ch4:.1f} m³/d")
         """
         _, k_p, _, _, _, _ = ADMParams.getADMgasparams(self._R, self._T_base, self._T_ad)
+        if hasattr(self, "_calibration_params") and self._calibration_params and "k_p" in self._calibration_params:
+            k_p = float(self._calibration_params["k_p"])
 
         # Ideal gas law constant for conversion
         NQ = 44.643
@@ -476,6 +481,11 @@ class ADM1:
             "K_H_ch4": params_tuple[85],
             "K_H_h2": params_tuple[86],
         }
+
+        if hasattr(self, "_calibration_params") and self._calibration_params:
+            for key in gas_params:
+                if key in self._calibration_params:
+                    gas_params[key] = float(self._calibration_params[key])
 
         # Get pH and inhibition parameters
         K_pH_aa, nn_aa, K_pH_ac, n_ac, K_pH_h2, n_h2 = ADMParams.getADMinhibitionparams()
@@ -896,7 +906,14 @@ class ADM1:
         if hasattr(self, "_calibration_params") and self._calibration_params:
             for param_name, param_value in self._calibration_params.items():
                 if param_name in base_params:
+                    old_value = base_params[param_name]
                     base_params[param_name] = param_value
+                    logger.warning(
+                        "Calibration override: %s = %g (was %g, substrate-derived)",
+                        param_name,
+                        param_value,
+                        old_value,
+                    )
 
         return base_params
 

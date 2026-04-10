@@ -290,7 +290,7 @@ def test_flare_to_dict_serializes_configuration_and_state():
     result = f.to_dict()
 
     assert result["component_id"] == "flare_cfg"
-    assert result["component_type"] == "storage"
+    assert result["component_type"] == "flare"
     assert result["name"] == "Emergency Flare"
     assert result["destruction_efficiency"] == 0.85
     assert result["cumulative_vented_m3"] == 4.0

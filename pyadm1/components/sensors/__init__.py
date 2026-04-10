@@ -33,12 +33,13 @@ Example:
     ...                       measurement_range=(0, 100), accuracy=0.5)
 """
 
-# from pyadm1.components.sensors.physical import PhysicalSensor
-# from pyadm1.components.sensors.chemical import ChemicalSensor
-# from pyadm1.components.sensors.gas import GasSensor
+from pyadm1.components.sensors.physical import PhysicalSensor
+from pyadm1.components.sensors.chemical import ChemicalSensor
+from pyadm1.components.sensors.gas import GasSensor
+
 #
-# __all__ = [
-#     "PhysicalSensor",
-#     "ChemicalSensor",
-#     "GasSensor",
-# ]
+__all__ = [
+    "PhysicalSensor",
+    "ChemicalSensor",
+    "GasSensor",
+]
