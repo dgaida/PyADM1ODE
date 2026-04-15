@@ -10,10 +10,10 @@ Aktuelle Abdeckung: **98.1%** (Ziel: 95%)
 
 | Modul | Abdeckung |
 |-------|-----------|
-| `pyadm1.core` | 98.1% |
-| `pyadm1.components` | 98.5% |
-| `pyadm1.simulation` | 100.0% |
-| `pyadm1.configurator` | 98.2% |
+| \`pyadm1.core\` | 98.1% |
+| \`pyadm1.components\` | 98.5% |
+| \`pyadm1.simulation\` | 100.0% |
+| \`pyadm1.configurator\` | 98.2% |
 
 ## Build-Status
 
@@ -24,5 +24,4 @@ Aktuelle Abdeckung: **98.1%** (Ziel: 95%)
 
 ## Wartung
 
-- **Changelog**: Aktuell (v0.1.3)
-- **Zuletzt aktualisiert**: 07.04.2026
+Bitte beachten Sie die [Haupt-README](../../README.md) für die aktuelle Version und den Wartungsstatus.
