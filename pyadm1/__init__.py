@@ -26,7 +26,17 @@ Example:
     >>> results = plant.simulate(duration=30, dt=1/24)
 """
 
-from pyadm1.__version__ import __version__
+try:
+    from importlib.metadata import version, PackageNotFoundError
+except ImportError:  # pragma: no cover
+    # For Python < 3.8
+    from importlib_metadata import version, PackageNotFoundError  # type: ignore
+
+try:
+    __version__ = version("pyadm1")
+except PackageNotFoundError:  # pragma: no cover
+    # package is not installed
+    __version__ = "unknown"
 
 # Core imports
 from .configurator import BiogasPlant

@@ -10,10 +10,10 @@ Current coverage: **98.1%** (Target: 95%)
 
 | Module | Coverage |
 |--------|----------|
-| `pyadm1.core` | 98.1% |
-| `pyadm1.components` | 98.5% |
-| `pyadm1.simulation` | 100.0% |
-| `pyadm1.configurator` | 98.2% |
+| \`pyadm1.core\` | 98.1% |
+| \`pyadm1.components\` | 98.5% |
+| \`pyadm1.simulation\` | 100.0% |
+| \`pyadm1.configurator\` | 98.2% |
 
 ## Build Status
 
@@ -24,5 +24,4 @@ Current coverage: **98.1%** (Target: 95%)
 
 ## Maintenance
 
-- **Changelog**: Up to date (v0.1.3)
-- **Last Updated**: 2026-04-07
+Please see the [main README](../../README.md) for the latest version and maintenance status.
