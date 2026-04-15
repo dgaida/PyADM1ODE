@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import argparse
 from datetime import date
 
 
@@ -9,7 +10,15 @@ def bump_version(current_version):
     if len(parts) != 3:
         raise ValueError(f"Invalid version format: {current_version}")
     major, minor, patch = map(int, parts)
+
     patch += 1
+    if patch > 9:
+        patch = 0
+        minor += 1
+    if minor > 9:
+        minor = 0
+        major += 1
+
     return f"{major}.{minor}.{patch}"
 
 
@@ -30,6 +39,10 @@ def update_file(filepath, pattern, replacement, flags=0):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Bump project version.")
+    parser.add_argument("--no-pyproject", action="store_true", help="Skip updating pyproject.toml")
+    args = parser.parse_args()
+
     pyproject_path = "pyproject.toml"
     if not os.path.exists(pyproject_path):
         print(f"Error: {pyproject_path} not found.")
@@ -55,12 +68,15 @@ def main():
 
     print(f"Bumping version: {current_version} -> {new_version}")
 
-    # pyproject.toml: only update version in [project] section
-    update_file(
-        "pyproject.toml",
-        r'(\[project\]\n(?:.*\n)*?version\s*=\s*)"[^"]*"',
-        r'\g<1>"' + new_version + '"',
-    )
+    # pyproject.toml: only update version in [project] section if not skipped
+    if not args.no_pyproject:
+        update_file(
+            "pyproject.toml",
+            r'(\[project\]\n(?:.*\n)*?version\s*=\s*)"[^"]*"',
+            r'\g<1>"' + new_version + '"',
+        )
+    else:
+        print("Skipping pyproject.toml update as requested.")
 
     # Other files
     updates = [
