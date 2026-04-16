@@ -1,265 +1,144 @@
 
-<!doctype html>
-<html lang="de" class="no-js">
-  <head>
-    
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
-      
-        <meta name="description" content="Python framework for modeling, simulating, and optimizing agricultural biogas plants">
-      
-      
-        <meta name="author" content="Daniel Gaida">
-      
-      
-        <link rel="canonical" href="https://dgaida.github.io/PyADM1ODE/dev/examples/two_stage_plant/">
-      
-      
-        <link rel="prev" href="../basic_digester/">
-      
-      
-        <link rel="next" href="../parallel_simulation/">
-      
-      
-        
-          <link rel="alternate" href="./" hreflang="de">
-        
-          <link rel="alternate" href="../../en/examples/two_stage_plant/" hreflang="en">
-        
-      
-      
-      <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
-    
-    
-      
-        <title>Zweistufige Anlage - PyADM1ODE</title>
-      
-    
-    
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
-      
-        
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
-      
-      
+<!DOCTYPE html>
 
-
-    
-    
-      
-    
-    
-      
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
-      
-    
-    
-      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
-    
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
-    
-      
-
-    
-    
-  </head>
-  
-  
-    
-    
-      
-    
-    
-    
-    
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
-  
-    
-    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
-    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
-    <label class="md-overlay" for="__drawer"></label>
-    <div data-md-component="skip">
-      
-        
-        <a href="#beispiele" class="md-skip">
+<html class="no-js" lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Python framework for modeling, simulating, and optimizing agricultural biogas plants" name="description"/>
+<meta content="Daniel Gaida" name="author"/>
+<link href="https://dgaida.github.io/PyADM1ODE/dev/examples/two_stage_plant/" rel="canonical"/>
+<link href="../basic_digester/" rel="prev"/>
+<link href="../parallel_simulation/" rel="next"/>
+<link href="./" hreflang="de" rel="alternate"/>
+<link href="../../en/examples/two_stage_plant/" hreflang="en" rel="alternate"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Zweistufige Anlage - PyADM1ODE</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../assets/_mkdocstrings.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#zweistufige-biogasanlage-beispiel">
           Zum Inhalt
         </a>
-      
-    </div>
-    <div data-md-component="announce">
-      
-    </div>
-    
-    
-      
-
+</div>
+<div data-md-component="announce">
+</div>
 <header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
-    <a href="../.." title="PyADM1ODE" class="md-header__button md-logo" aria-label="PyADM1ODE" data-md-component="logo">
-      
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
-
-    </a>
-    <label class="md-header__button md-icon" for="__drawer">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
-    </label>
-    <div class="md-header__title" data-md-component="header-title">
-      <div class="md-header__ellipsis">
-        <div class="md-header__topic">
-          <span class="md-ellipsis">
+<nav aria-label="Kopfzeile" class="md-header__inner md-grid">
+<a aria-label="PyADM1ODE" class="md-header__button md-logo" data-md-component="logo" href="../.." title="PyADM1ODE">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
             PyADM1ODE
           </span>
-        </div>
-        <div class="md-header__topic" data-md-component="header-topic">
-          <span class="md-ellipsis">
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
             
               Zweistufige Anlage
             
           </span>
-        </div>
-      </div>
-    </div>
-    
-      
-        <form class="md-header__option" data-md-component="palette">
-  
-    
-    
-    
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
-    
-      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
-      </label>
-    
-  
-    
-    
-    
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
-    
-      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
-      </label>
-    
-  
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
 </form>
-      
-    
-    
-      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
-    
-    
-      <div class="md-header__option">
-  <div class="md-select">
-    
-    <button class="md-header__button md-icon" aria-label="Sprache wechseln">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
-    </button>
-    <div class="md-select__inner">
-      <ul class="md-select__list">
-        
-          <li class="md-select__item">
-            <a href="./" hreflang="de" class="md-select__link">
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<div class="md-header__option">
+<div class="md-select">
+<button aria-label="Sprache wechseln" class="md-header__button md-icon">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"></path></svg>
+</button>
+<div class="md-select__inner">
+<ul class="md-select__list">
+<li class="md-select__item">
+<a class="md-select__link" href="./" hreflang="de">
               Deutsch
             </a>
-          </li>
-        
-          <li class="md-select__item">
-            <a href="../../en/examples/two_stage_plant/" hreflang="en" class="md-select__link">
+</li>
+<li class="md-select__item">
+<a class="md-select__link" href="../../en/examples/two_stage_plant/" hreflang="en">
               English
             </a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
+</li>
+</ul>
 </div>
-    
-    
-      
-      
-        <label class="md-header__button md-icon" for="__search">
-          
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
-        </label>
-        <div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Suche" placeholder="Suche" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
-      <label class="md-search__icon md-icon" for="__search">
-        
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
-        
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
-      </label>
-      <nav class="md-search__options" aria-label="Suche">
-        
-        <button type="reset" class="md-search__icon md-icon" title="Zurücksetzen" aria-label="Zurücksetzen" tabindex="-1">
-          
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-        </button>
-      </nav>
-      
-        <div class="md-search__suggest" data-md-component="search-suggest"></div>
-      
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="search-result">
-          <div class="md-search-result__meta">
+</div>
+</div>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Suche" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Suche" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Suche" class="md-search__options">
+<button aria-label="Zurücksetzen" class="md-search__icon md-icon" tabindex="-1" title="Zurücksetzen" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
             Suche wird initialisiert
           </div>
-          <ol class="md-search-result__list" role="presentation"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+<ol class="md-search-result__list" role="presentation"></ol>
 </div>
-      
-    
-    
-      <div class="md-header__source">
-        <a href="https://github.com/dgaida/PyADM1ODE" title="Zum Repository" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/dgaida/PyADM1ODE" title="Zum Repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
     dgaida/PyADM1ODE
   </div>
 </a>
-      </div>
-    
-  </nav>
-  
+</div>
+</nav>
 </header>
-    
-    <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-            
-<nav class="md-tabs" aria-label="Hauptnavigation" data-md-component="tabs">
-  <div class="md-grid">
-    <ul class="md-tabs__list">
-      
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+<div class="md-container" data-md-component="container">
+<nav aria-label="Hauptnavigation" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
         
   
   
@@ -268,97 +147,45 @@
   Home
 
       </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../user_guide/installation/" class="md-tabs__link">
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../user_guide/installation/">
           
   
   
-  Erste Schritte
+  Handbuch
 
         </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-    
-  
-  
-    
-    
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../user_guide/adm1_implementation/" class="md-tabs__link">
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../basic_digester/">
           
   
   
-  Dokumentation
+  Beispiele
 
         </a>
-      </li>
-    
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../development/style_guide/">
+          
   
+  
+  Entwicklung
 
-      
-        
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/core/">
+          
   
   
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../user_guide/troubleshooting/" class="md-tabs__link">
-        
-  
-  
-    
-  
-  Fehlerbehebung
+  API-Referenz
 
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../metrics/" class="md-tabs__link">
-        
-  
-  
-    
-  
-  Metriken
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../CHANGELOG/" class="md-tabs__link">
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../CHANGELOG/">
         
   
   
@@ -367,87 +194,36 @@
   Changelog
 
       </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../api/core/" class="md-tabs__link">
-          
-  
-  
-  API-Referenz
-
-        </a>
-      </li>
-    
-  
-
-      
-    </ul>
-  </div>
+</li>
+</ul>
+</div>
 </nav>
-          
-        
-      
-      <main class="md-main" data-md-component="main">
-        <div class="md-main__inner md-grid">
-          
-            
-              
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-  
-
-
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
-  <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="PyADM1ODE" class="md-nav__button md-logo" aria-label="PyADM1ODE" data-md-component="logo">
-      
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
-
-    </a>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="PyADM1ODE" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="PyADM1ODE">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
     PyADM1ODE
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/dgaida/PyADM1ODE" title="Zum Repository" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/dgaida/PyADM1ODE" title="Zum Repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
     dgaida/PyADM1ODE
   </div>
 </a>
-    </div>
-  
-  <ul class="md-nav__list" data-md-scrollfix>
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
     
   
     Home
@@ -455,80 +231,34 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
     
   
-    Erste Schritte
+    Handbuch
   
 
     
   </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
-            <span class="md-nav__icon md-icon"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
             
   
-    Erste Schritte
+    Handbuch
   
 
           </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../user_guide/installation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../user_guide/installation/">
+<span class="md-ellipsis">
     
   
     Installation
@@ -536,27 +266,11 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../user_guide/quickstart/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../user_guide/quickstart/">
+<span class="md-ellipsis">
     
   
     Schnellstart
@@ -564,91 +278,11 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-      
-        
-        
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Dokumentation
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Dokumentation
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../user_guide/adm1_implementation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../user_guide/adm1_implementation/">
+<span class="md-ellipsis">
     
   
     ADM1-Implementierung
@@ -656,48 +290,12 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-          
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_2_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+<span class="md-ellipsis">
     
   
     Komponenten
@@ -705,35 +303,21 @@
 
     
   </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_2">
-            <span class="md-nav__icon md-icon"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_2_4">
+<span class="md-nav__icon md-icon"></span>
             
   
     Komponenten
   
 
           </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../user_guide/components/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../user_guide/components/">
+<span class="md-ellipsis">
     
   
     Übersicht
@@ -741,27 +325,11 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../user_guide/components/biological/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../user_guide/components/biological/">
+<span class="md-ellipsis">
     
   
     Biologisch
@@ -769,27 +337,11 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../user_guide/components/energy/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../user_guide/components/energy/">
+<span class="md-ellipsis">
     
   
     Energie
@@ -797,27 +349,11 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../user_guide/components/feeding/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../user_guide/components/feeding/">
+<span class="md-ellipsis">
     
   
     Fütterung
@@ -825,27 +361,11 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../user_guide/components/mechanical/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../user_guide/components/mechanical/">
+<span class="md-ellipsis">
     
   
     Mechanisch
@@ -853,27 +373,11 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../user_guide/components/sensors/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../user_guide/components/sensors/">
+<span class="md-ellipsis">
     
   
     Sensoren
@@ -881,653 +385,14 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-          
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Beispiele
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Beispiele
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../basic_digester/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Basis-Fermenter
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Zweistufige Anlage
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../parallel_simulation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Parallele Simulation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architektur
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-          
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Entwicklung
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Entwicklung
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../development/style_guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Styleguide
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../user_guide/troubleshooting/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Fehlerbehebung
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../metrics/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metriken
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../CHANGELOG/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Changelog
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API-Referenz
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    API-Referenz
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/core/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Core
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/biological/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Biologisch
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/energy/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Energie
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/mechanical/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Mechanisch
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/feeding/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Fütterung
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/configurator/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Konfigurator
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/simulation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Simulation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/substrates/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../user_guide/substrates/">
+<span class="md-ellipsis">
     
   
     Substrate
@@ -1535,154 +400,2131 @@
 
     
   </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../user_guide/applications/">
+<span class="md-ellipsis">
+    
   
+    Anwendungen
   
 
-      </a>
-    </li>
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../user_guide/advanced_features/">
+<span class="md-ellipsis">
+    
+  
+    Fortgeschrittene Funktionen
   
 
-              
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architektur
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../user_guide/troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Fehlerbehebung
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Beispiele
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
             
-          </ul>
-        </nav>
+  
+    Beispiele
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../basic_digester/">
+<span class="md-ellipsis">
+    
+  
+    Basis-Fermenter
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Zweistufige Anlage
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Zweistufige Anlage
+  
+
+    
+  </span>
+</a>
+<nav aria-label="Inhaltsverzeichnis" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#anlagenschema">
+<span class="md-ellipsis">
       
-    </li>
+        Anlagenschema
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#systemarchitektur">
+<span class="md-ellipsis">
+      
+        Systemarchitektur
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ubersicht">
+<span class="md-ellipsis">
+      
+        Übersicht
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#anlagenkonfiguration">
+<span class="md-ellipsis">
+      
+        Anlagenkonfiguration
+      
+    </span>
+</a>
+<nav aria-label="Anlagenkonfiguration" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#biologische-komponenten">
+<span class="md-ellipsis">
+      
+        Biologische Komponenten
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mechanische-komponenten">
+<span class="md-ellipsis">
+      
+        Mechanische Komponenten
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#energiekomponenten">
+<span class="md-ellipsis">
+      
+        Energiekomponenten
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gasmanagement-system">
+<span class="md-ellipsis">
+      
+        Gasmanagement-System
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-durchgang">
+<span class="md-ellipsis">
+      
+        Code-Durchgang
+      
+    </span>
+</a>
+<nav aria-label="Code-Durchgang" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-erweiterte-imports">
+<span class="md-ellipsis">
+      
+        1. Erweiterte Imports
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-zweistufige-fermenter-konfiguration">
+<span class="md-ellipsis">
+      
+        2. Zweistufige Fermenter-Konfiguration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-mechanische-komponenten-hinzufugen">
+<span class="md-ellipsis">
+      
+        3. Mechanische Komponenten hinzufügen
+      
+    </span>
+</a>
+<nav aria-label="3. Mechanische Komponenten hinzufügen" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#futterungspumpe">
+<span class="md-ellipsis">
+      
+        Fütterungspumpe
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#transferpumpe">
+<span class="md-ellipsis">
+      
+        Transferpumpe
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ruhrwerke">
+<span class="md-ellipsis">
+      
+        Rührwerke
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-energieintegration-mit-automatischer-fackel">
+<span class="md-ellipsis">
+      
+        4. Energieintegration mit automatischer Fackel
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-drei-pass-gasfluss-simulation">
+<span class="md-ellipsis">
+      
+        5. Drei-Pass-Gasfluss-Simulation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#erwartete-ausgabe">
+<span class="md-ellipsis">
+      
+        Erwartete Ausgabe
+      
+    </span>
+</a>
+<nav aria-label="Erwartete Ausgabe" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#anlagenzusammenfassung">
+<span class="md-ellipsis">
+      
+        Anlagenzusammenfassung
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#finale-ergebnisse-tag-10">
+<span class="md-ellipsis">
+      
+        Finale Ergebnisse (Tag 10)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#energiebilanz">
+<span class="md-ellipsis">
+      
+        Energiebilanz
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prozessstabilitat">
+<span class="md-ellipsis">
+      
+        Prozessstabilität
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#vorteile-des-zweistufigen-designs">
+<span class="md-ellipsis">
+      
+        Vorteile des zweistufigen Designs
+      
+    </span>
+</a>
+<nav aria-label="Vorteile des zweistufigen Designs" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-prozessoptimierung">
+<span class="md-ellipsis">
+      
+        1. Prozessoptimierung
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-substratflexibilitat">
+<span class="md-ellipsis">
+      
+        2. Substratflexibilität
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-operative-vorteile">
+<span class="md-ellipsis">
+      
+        3. Operative Vorteile
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#leistungsvergleich">
+<span class="md-ellipsis">
+      
+        Leistungsvergleich
+      
+    </span>
+</a>
+<nav aria-label="Leistungsvergleich" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#einstufig-vs-zweistufig">
+<span class="md-ellipsis">
+      
+        Einstufig vs. Zweistufig
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#leistung-mechanischer-komponenten">
+<span class="md-ellipsis">
+      
+        Leistung mechanischer Komponenten
+      
+    </span>
+</a>
+<nav aria-label="Leistung mechanischer Komponenten" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pumpenbetrieb">
+<span class="md-ellipsis">
+      
+        Pumpenbetrieb
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ruhrwerksleistung">
+<span class="md-ellipsis">
+      
+        Rührwerksleistung
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gasspeicher-und-fackelmanagement">
+<span class="md-ellipsis">
+      
+        Gasspeicher- und Fackelmanagement
+      
+    </span>
+</a>
+<nav aria-label="Gasspeicher- und Fackelmanagement" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#speicherdynamik">
+<span class="md-ellipsis">
+      
+        Speicherdynamik
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fackelbetrieb">
+<span class="md-ellipsis">
+      
+        Fackelbetrieb
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prozesssteuerungsstrategien">
+<span class="md-ellipsis">
+      
+        Prozesssteuerungsstrategien
+      
+    </span>
+</a>
+<nav aria-label="Prozesssteuerungsstrategien" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#temperatursteuerung">
+<span class="md-ellipsis">
+      
+        Temperatursteuerung
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ruhrwerkssteuerung">
+<span class="md-ellipsis">
+      
+        Rührwerkssteuerung
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#futterungssteuerung">
+<span class="md-ellipsis">
+      
+        Fütterungssteuerung
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#haufige-probleme-und-losungen">
+<span class="md-ellipsis">
+      
+        Häufige Probleme und Lösungen
+      
+    </span>
+</a>
+<nav aria-label="Häufige Probleme und Lösungen" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#problem-1-hohe-vfa-in-fermenter-1">
+<span class="md-ellipsis">
+      
+        Problem 1: Hohe VFA in Fermenter 1
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#problem-2-niedriger-methangehalt">
+<span class="md-ellipsis">
+      
+        Problem 2: Niedriger Methangehalt
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#problem-3-schaumbildung-in-fermenter-1">
+<span class="md-ellipsis">
+      
+        Problem 3: Schaumbildung in Fermenter 1
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#problem-4-ubermaige-fackelnutzung">
+<span class="md-ellipsis">
+      
+        Problem 4: Übermäßige Fackelnutzung
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fortgeschrittene-anwendungen">
+<span class="md-ellipsis">
+      
+        Fortgeschrittene Anwendungen
+      
+    </span>
+</a>
+<nav aria-label="Fortgeschrittene Anwendungen" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-parameter-sweep-zur-optimierung">
+<span class="md-ellipsis">
+      
+        1. Parameter-Sweep zur Optimierung
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-online-kalibrierung">
+<span class="md-ellipsis">
+      
+        2. Online-Kalibrierung
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-modellgestutzte-pradiktive-regelung-mpc">
+<span class="md-ellipsis">
+      
+        3. Modellgestützte prädiktive Regelung (MPC)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#referenzen">
+<span class="md-ellipsis">
+      
+        Referenzen
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ahnliche-beispiele">
+<span class="md-ellipsis">
+      
+        Ähnliche Beispiele
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../parallel_simulation/">
+<span class="md-ellipsis">
+    
+  
+    Parallele Simulation
   
 
     
-  </ul>
+  </span>
+</a>
+</li>
+</ul>
 </nav>
-                  </div>
-                </div>
-              </div>
-            
-            
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
-  
-  
-  
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
     
   
+    Entwicklung
   
-</nav>
-                  </div>
-                </div>
-              </div>
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
             
-          
-          
-            <div class="md-content" data-md-component="content">
-              
-              <article class="md-content__inner md-typeset">
-                
-                  
-
-
   
+    Entwicklung
   
 
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../development/style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Styleguide
+  
 
-<h1 id="beispiele">Beispiele<a class="headerlink" href="#beispiele" title="Permanent link">&para;</a></h1>
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../metrics/">
+<span class="md-ellipsis">
+    
+  
+    Metriken
+  
 
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API-Referenz
+  
 
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API-Referenz
+  
 
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/core/">
+<span class="md-ellipsis">
+    
+  
+    Core
+  
 
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/biological/">
+<span class="md-ellipsis">
+    
+  
+    Biologisch
+  
 
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/energy/">
+<span class="md-ellipsis">
+    
+  
+    Energie
+  
 
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/mechanical/">
+<span class="md-ellipsis">
+    
+  
+    Mechanisch
+  
 
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/feeding/">
+<span class="md-ellipsis">
+    
+  
+    Fütterung
+  
 
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/configurator/">
+<span class="md-ellipsis">
+    
+  
+    Konfigurator
+  
 
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/simulation/">
+<span class="md-ellipsis">
+    
+  
+    Simulation
+  
 
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/substrates/">
+<span class="md-ellipsis">
+    
+  
+    Substrate
+  
 
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
 
-                
-              </article>
-            </div>
-          
-          
-  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Inhaltsverzeichnis" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#anlagenschema">
+<span class="md-ellipsis">
+      
+        Anlagenschema
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#systemarchitektur">
+<span class="md-ellipsis">
+      
+        Systemarchitektur
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ubersicht">
+<span class="md-ellipsis">
+      
+        Übersicht
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#anlagenkonfiguration">
+<span class="md-ellipsis">
+      
+        Anlagenkonfiguration
+      
+    </span>
+</a>
+<nav aria-label="Anlagenkonfiguration" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#biologische-komponenten">
+<span class="md-ellipsis">
+      
+        Biologische Komponenten
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mechanische-komponenten">
+<span class="md-ellipsis">
+      
+        Mechanische Komponenten
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#energiekomponenten">
+<span class="md-ellipsis">
+      
+        Energiekomponenten
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gasmanagement-system">
+<span class="md-ellipsis">
+      
+        Gasmanagement-System
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-durchgang">
+<span class="md-ellipsis">
+      
+        Code-Durchgang
+      
+    </span>
+</a>
+<nav aria-label="Code-Durchgang" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-erweiterte-imports">
+<span class="md-ellipsis">
+      
+        1. Erweiterte Imports
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-zweistufige-fermenter-konfiguration">
+<span class="md-ellipsis">
+      
+        2. Zweistufige Fermenter-Konfiguration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-mechanische-komponenten-hinzufugen">
+<span class="md-ellipsis">
+      
+        3. Mechanische Komponenten hinzufügen
+      
+    </span>
+</a>
+<nav aria-label="3. Mechanische Komponenten hinzufügen" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#futterungspumpe">
+<span class="md-ellipsis">
+      
+        Fütterungspumpe
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#transferpumpe">
+<span class="md-ellipsis">
+      
+        Transferpumpe
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ruhrwerke">
+<span class="md-ellipsis">
+      
+        Rührwerke
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-energieintegration-mit-automatischer-fackel">
+<span class="md-ellipsis">
+      
+        4. Energieintegration mit automatischer Fackel
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-drei-pass-gasfluss-simulation">
+<span class="md-ellipsis">
+      
+        5. Drei-Pass-Gasfluss-Simulation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#erwartete-ausgabe">
+<span class="md-ellipsis">
+      
+        Erwartete Ausgabe
+      
+    </span>
+</a>
+<nav aria-label="Erwartete Ausgabe" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#anlagenzusammenfassung">
+<span class="md-ellipsis">
+      
+        Anlagenzusammenfassung
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#finale-ergebnisse-tag-10">
+<span class="md-ellipsis">
+      
+        Finale Ergebnisse (Tag 10)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#energiebilanz">
+<span class="md-ellipsis">
+      
+        Energiebilanz
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prozessstabilitat">
+<span class="md-ellipsis">
+      
+        Prozessstabilität
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#vorteile-des-zweistufigen-designs">
+<span class="md-ellipsis">
+      
+        Vorteile des zweistufigen Designs
+      
+    </span>
+</a>
+<nav aria-label="Vorteile des zweistufigen Designs" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-prozessoptimierung">
+<span class="md-ellipsis">
+      
+        1. Prozessoptimierung
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-substratflexibilitat">
+<span class="md-ellipsis">
+      
+        2. Substratflexibilität
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-operative-vorteile">
+<span class="md-ellipsis">
+      
+        3. Operative Vorteile
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#leistungsvergleich">
+<span class="md-ellipsis">
+      
+        Leistungsvergleich
+      
+    </span>
+</a>
+<nav aria-label="Leistungsvergleich" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#einstufig-vs-zweistufig">
+<span class="md-ellipsis">
+      
+        Einstufig vs. Zweistufig
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#leistung-mechanischer-komponenten">
+<span class="md-ellipsis">
+      
+        Leistung mechanischer Komponenten
+      
+    </span>
+</a>
+<nav aria-label="Leistung mechanischer Komponenten" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pumpenbetrieb">
+<span class="md-ellipsis">
+      
+        Pumpenbetrieb
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ruhrwerksleistung">
+<span class="md-ellipsis">
+      
+        Rührwerksleistung
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gasspeicher-und-fackelmanagement">
+<span class="md-ellipsis">
+      
+        Gasspeicher- und Fackelmanagement
+      
+    </span>
+</a>
+<nav aria-label="Gasspeicher- und Fackelmanagement" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#speicherdynamik">
+<span class="md-ellipsis">
+      
+        Speicherdynamik
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fackelbetrieb">
+<span class="md-ellipsis">
+      
+        Fackelbetrieb
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prozesssteuerungsstrategien">
+<span class="md-ellipsis">
+      
+        Prozesssteuerungsstrategien
+      
+    </span>
+</a>
+<nav aria-label="Prozesssteuerungsstrategien" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#temperatursteuerung">
+<span class="md-ellipsis">
+      
+        Temperatursteuerung
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ruhrwerkssteuerung">
+<span class="md-ellipsis">
+      
+        Rührwerkssteuerung
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#futterungssteuerung">
+<span class="md-ellipsis">
+      
+        Fütterungssteuerung
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#haufige-probleme-und-losungen">
+<span class="md-ellipsis">
+      
+        Häufige Probleme und Lösungen
+      
+    </span>
+</a>
+<nav aria-label="Häufige Probleme und Lösungen" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#problem-1-hohe-vfa-in-fermenter-1">
+<span class="md-ellipsis">
+      
+        Problem 1: Hohe VFA in Fermenter 1
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#problem-2-niedriger-methangehalt">
+<span class="md-ellipsis">
+      
+        Problem 2: Niedriger Methangehalt
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#problem-3-schaumbildung-in-fermenter-1">
+<span class="md-ellipsis">
+      
+        Problem 3: Schaumbildung in Fermenter 1
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#problem-4-ubermaige-fackelnutzung">
+<span class="md-ellipsis">
+      
+        Problem 4: Übermäßige Fackelnutzung
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fortgeschrittene-anwendungen">
+<span class="md-ellipsis">
+      
+        Fortgeschrittene Anwendungen
+      
+    </span>
+</a>
+<nav aria-label="Fortgeschrittene Anwendungen" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-parameter-sweep-zur-optimierung">
+<span class="md-ellipsis">
+      
+        1. Parameter-Sweep zur Optimierung
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-online-kalibrierung">
+<span class="md-ellipsis">
+      
+        2. Online-Kalibrierung
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-modellgestutzte-pradiktive-regelung-mpc">
+<span class="md-ellipsis">
+      
+        3. Modellgestützte prädiktive Regelung (MPC)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#referenzen">
+<span class="md-ellipsis">
+      
+        Referenzen
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ahnliche-beispiele">
+<span class="md-ellipsis">
+      
+        Ähnliche Beispiele
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="zweistufige-biogasanlage-beispiel">Zweistufige Biogasanlage Beispiel<a class="headerlink" href="#zweistufige-biogasanlage-beispiel" title="Permanent link">¶</a></h1>
+<p>Das Beispiel <a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py">examples/02_two_stage_plant.py</a> zeigt eine komplette zweistufige Biogasanlage mit mechanischen Komponenten, Energieintegration und umfassender Prozessüberwachung.</p>
+<h2 id="anlagenschema">Anlagenschema<a class="headerlink" href="#anlagenschema" title="Permanent link">¶</a></h2>
+<p><img alt="Anlagenschema" src="../two_stage_plant_schematic.png"/></p>
+<h2 id="systemarchitektur">Systemarchitektur<a class="headerlink" href="#systemarchitektur" title="Permanent link">¶</a></h2>
+<pre class="mermaid"><code>graph TB
+    %% Substratzulauf
+    Feed[Substratzulauf&lt;br/&gt;Maissilage: 15 m³/d&lt;br/&gt;Rindergülle: 10 m³/d]
 
+    %% Fütterungspumpe
+    Feed --&gt;|25 m³/d| FeedPump[Fütterungspumpe&lt;br/&gt;Exzenterschneckenpumpe&lt;br/&gt;30 m³/h Kapazität]
+
+    %% Erste Stufe - Hydrolyse
+    FeedPump --&gt; Dig1[Fermenter 1 - Hydrolyse&lt;br/&gt;V_liq: 1977 m³, V_gas: 304 m³&lt;br/&gt;T: 45°C thermophil&lt;br/&gt;Verbesserte Hydrolyse]
+
+    %% Rührwerk 1
+    Mixer1[Rührwerk 1&lt;br/&gt;Propeller, 15 kW&lt;br/&gt;Hohe Intensität&lt;br/&gt;25% Einschaltdauer] -.-&gt;|Rühren| Dig1
+
+    %% Gasspeicher 1
+    Dig1 --&gt;|Biogas ~850 m³/d| Storage1[Gasspeicher 1&lt;br/&gt;Membran&lt;br/&gt;304 m³ Kapazität]
+
+    %% Heizung 1
+    Heating1[Heizsystem 1&lt;br/&gt;Soll: 45°C&lt;br/&gt;Wärmeverlust: 0.5 kW/K] -.-&gt;|Wärme| Dig1
+
+    %% Transferpumpe
+    Dig1 --&gt;|Ablauf 25 m³/d| TransPump[Transferpumpe&lt;br/&gt;Exzenterschneckenpumpe&lt;br/&gt;25 m³/h Kapazität]
+
+    %% Zweite Stufe - Methanogenese
+    TransPump --&gt; Dig2[Fermenter 2 - Methanogenese&lt;br/&gt;V_liq: 1000 m³, V_gas: 150 m³&lt;br/&gt;T: 35°C mesophil&lt;br/&gt;Stabile CH₄-Produktion]
+
+    %% Rührwerk 2
+    Mixer2[Rührwerk 2&lt;br/&gt;Propeller, 10 kW&lt;br/&gt;Mittlere Intensität&lt;br/&gt;25% Einschaltdauer] -.-&gt;|Rühren| Dig2
+
+    %% Gasspeicher 2
+    Dig2 --&gt;|Biogas ~400 m³/d| Storage2[Gasspeicher 2&lt;br/&gt;Membran&lt;br/&gt;150 m³ Kapazität]
+
+    %% Heizung 2
+    Heating2[Heizsystem 2&lt;br/&gt;Soll: 35°C&lt;br/&gt;Wärmeverlust: 0.3 kW/K] -.-&gt;|Wärme| Dig2
+
+    %% Kombinierter Gasfluss zum BHKW
+    Storage1 --&gt;|Gasversorgung| CHP[BHKW-Einheit&lt;br/&gt;500 kWe nominal&lt;br/&gt;ηe: 40%, ηth: 45%&lt;br/&gt;Gesamt: ~1250 m³/d]
+    Storage2 --&gt;|Gasversorgung| CHP
+
+    %% BHKW-Ausgänge
+    CHP --&gt;|Elektrisch| Power[Stromausgang&lt;br/&gt;~480 kWe]
+    CHP --&gt;|Thermisch ~540 kW| HeatDist[Wärmeverteilung]
+    CHP --&gt;|Überschüssiges Gas| Flare[Fackel&lt;br/&gt;Sicherheitsverbrennung&lt;br/&gt;98% Zerstörung]
+
+    %% Wärmeverteilung
+    HeatDist --&gt;|Wärmeversorgung| Heating1
+    HeatDist --&gt;|Wärmeversorgung| Heating2
+
+    %% Finale Ausgänge
+    Dig2 --&gt;|Gärrest&lt;br/&gt;25 m³/d| Effluent[Gärrestaustrag]
+
+    %% Styling
+    classDef processBox fill:#e1f5fe,stroke:#01579b,stroke-width:3px
+    classDef storageBox fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef mechanicalBox fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef energyBox fill:#e8f5e9,stroke:#1b5e20,stroke-width:3px
+    classDef inputBox fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    classDef outputBox fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+
+    class Dig1,Dig2 processBox
+    class Storage1,Storage2 storageBox
+    class FeedPump,TransPump,Mixer1,Mixer2 mechanicalBox
+    class CHP,Heating1,Heating2,HeatDist,Flare energyBox
+    class Feed inputBox
+    class Power,Effluent outputBox</code></pre>
+<h2 id="ubersicht">Übersicht<a class="headerlink" href="#ubersicht" title="Permanent link">¶</a></h2>
+<p>Die zweistufige Anlage demonstriert:
+- <strong>Temperature-Phased Anaerobic Digestion (TPAD)</strong>: Thermophile Hydrolyse (45°C) gefolgt von mesophiler Methanogenese (35°C)
+- <strong>Mechanische Komponenten</strong>: Pumpen für den Materialtransport und Rührwerke zur Prozessunterstützung
+- <strong>Energieintegration</strong>: BHKW zur Stromerzeugung und Abwärmenutzung
+- <strong>Prozesssteuerung</strong>: Mehrere Heizsysteme für ein präzises Temperaturmanagement
+- <strong>Gasmanagement</strong>: Dedizierter Speicher für jeden Fermenter mit automatischem Überlaufschutz und zentraler Fackel</p>
+<h2 id="anlagenkonfiguration">Anlagenkonfiguration<a class="headerlink" href="#anlagenkonfiguration" title="Permanent link">¶</a></h2>
+<h3 id="biologische-komponenten">Biologische Komponenten<a class="headerlink" href="#biologische-komponenten" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Komponente</th>
+<th>Volumen</th>
+<th>Temperatur</th>
+<th>Funktion</th>
+<th>HRT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Fermenter 1</strong></td>
+<td>1977 m³ liq + 304 m³ gas</td>
+<td>45°C (thermophil)</td>
+<td>Hydrolyse komplexer Organik</td>
+<td>79 Tage</td>
+</tr>
+<tr>
+<td><strong>Fermenter 2</strong></td>
+<td>1000 m³ liq + 150 m³ gas</td>
+<td>35°C (mesophil)</td>
+<td>Methanogenese (CH₄-Produktion)</td>
+<td>40 Tage</td>
+</tr>
+<tr>
+<td><strong>Gesamt</strong></td>
+<td>2977 m³</td>
+<td>-</td>
+<td>-</td>
+<td>119 Tage</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Gesamte organische Raumbelastung (OLR)</strong>: 25 m³/d ÷ 2977 m³ ≈ <strong>0,0084 d⁻¹</strong> oder <strong>8,4 kg CSB/(m³·d)</strong></p>
+<h3 id="mechanische-komponenten">Mechanische Komponenten<a class="headerlink" href="#mechanische-komponenten" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Komponente</th>
+<th>Typ</th>
+<th>Kapazität</th>
+<th>Leistung</th>
+<th>Funktion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Fütterungspumpe</strong></td>
+<td>Exzenterschnecke</td>
+<td>30 m³/h</td>
+<td>~5 kW</td>
+<td>Substratfütterung in Fermenter 1</td>
+</tr>
+<tr>
+<td><strong>Transferpumpe</strong></td>
+<td>Exzenterschnecke</td>
+<td>25 m³/h</td>
+<td>~8 kW</td>
+<td>Ablauf-Transfer: F1 → F2</td>
+</tr>
+<tr>
+<td><strong>Rührwerk 1</strong></td>
+<td>Propeller</td>
+<td>15 kW</td>
+<td>15 kW</td>
+<td>Hochintensive Durchmischung für Hydrolyse</td>
+</tr>
+<tr>
+<td><strong>Rührwerk 2</strong></td>
+<td>Propeller</td>
+<td>10 kW</td>
+<td>10 kW</td>
+<td>Mittlere Durchmischung für Methanogenese</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Gesamter Eigenverbrauch</strong>: ~20 kW (Rührwerke laufen mit 25 % Einschaltdauer)</p>
+<h3 id="energiekomponenten">Energiekomponenten<a class="headerlink" href="#energiekomponenten" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Komponente</th>
+<th>Spezifikation</th>
+<th>Wirkungsgrad</th>
+<th>Leistung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>BHKW-Einheit</strong></td>
+<td>500 kW$ nominal</td>
+<td>η$ = 40 %, ηcat{th}$ = 45 %</td>
+<td>500 kW$ + 562 kWcat{th}$</td>
+</tr>
+<tr>
+<td><strong>Heizung 1</strong></td>
+<td>Fermenter 1 Heizung</td>
+<td>-</td>
+<td>Hält 45°C</td>
+</tr>
+<tr>
+<td><strong>Heizung 2</strong></td>
+<td>Fermenter 2 Heizung</td>
+<td>-</td>
+<td>Hält 35°C</td>
+</tr>
+<tr>
+<td><strong>Fackel</strong></td>
+<td>Sicherheitsverbrennung</td>
+<td>98 % Zerstörung</td>
+<td>Entsorgung von Überschussgas</td>
+</tr>
+</tbody>
+</table>
+<h3 id="gasmanagement-system">Gasmanagement-System<a class="headerlink" href="#gasmanagement-system" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Komponente</th>
+<th>Typ</th>
+<th>Kapazität</th>
+<th>Funktion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Speicher 1</strong></td>
+<td>Membran</td>
+<td>304 m³</td>
+<td>Puffer für Gas aus Fermenter 1</td>
+</tr>
+<tr>
+<td><strong>Speicher 2</strong></td>
+<td>Membran</td>
+<td>150 m³</td>
+<td>Puffer für Gas aus Fermenter 2</td>
+</tr>
+<tr>
+<td><strong>BHKW-Fackel</strong></td>
+<td>Verbrennung</td>
+<td>Variabel</td>
+<td>Sicherheitsentsorgung von Überschussgas</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Gasfluss-Architektur</strong>:
+1. Jeder Fermenter produziert Gas → Dedizierter Speicher
+2. Beide Speicher liefern Gas → Einzelne BHKW-Einheit
+3. BHKW-Überschuss/Überlauf → Automatische Fackelverbrennung</p>
+<h2 id="code-durchgang">Code-Durchgang<a class="headerlink" href="#code-durchgang" title="Permanent link">¶</a></h2>
+<h3 id="1-erweiterte-imports">1. Erweiterte Imports<a class="headerlink" href="#1-erweiterte-imports" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.components.mechanical.mixer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mixer</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.components.mechanical.pump</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pump</span>
+</code></pre></div>
+<p>Diese importieren die mechanischen Komponenten, die im Basisbeispiel nicht verwendet wurden.</p>
+<h3 id="2-zweistufige-fermenter-konfiguration">2. Zweistufige Fermenter-Konfiguration<a class="headerlink" href="#2-zweistufige-fermenter-konfiguration" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Fermenter 1: Thermophile Hydrolyse</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_digester</span><span class="p">(</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="n">digester_id</span><span class="o">=</span><span class="s2">"digester_1"</span><span class="p">,</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="n">V_liq</span><span class="o">=</span><span class="mf">1977.0</span><span class="p">,</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    <span class="n">V_gas</span><span class="o">=</span><span class="mf">304.0</span><span class="p">,</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="n">T_ad</span><span class="o">=</span><span class="mf">318.15</span><span class="p">,</span>  <span class="c1"># 45°C für verbesserte Hydrolyse</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    <span class="n">Q_substrates</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="p">)</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="c1"># Fermenter 2: Mesophile Methanogenese</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_digester</span><span class="p">(</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    <span class="n">digester_id</span><span class="o">=</span><span class="s2">"digester_2"</span><span class="p">,</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    <span class="n">V_liq</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    <span class="n">V_gas</span><span class="o">=</span><span class="mf">150.0</span><span class="p">,</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    <span class="n">T_ad</span><span class="o">=</span><span class="mf">308.15</span><span class="p">,</span>  <span class="c1"># 35°C optimal für Methanogene</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    <span class="n">Q_substrates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c1"># Empfängt nur Ablauf</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="p">)</span>
+</code></pre></div>
+<p><strong>Design-Überlegungen</strong>:
+- <strong>Stufe 1 (thermophil)</strong>: Höhere Temperaturen verbessern die Hydrolyse komplexer Substrate (Zellulose, Hemizellulose, Proteine).
+- <strong>Stufe 2 (mesophil)</strong>: Niedrigere Temperaturen sind stabiler und effizienter für die Methanogenese.
+- <strong>Nur Ablauf-Fütterung für Stufe 2</strong>: Verhindert Überlastung, erhält vorhydrolysiertes Material.</p>
+<p><strong>Automatische Gasspeicher-Erstellung</strong>:
+- <code>add_digester()</code> erstellt automatisch:
+  - <code>digester_1_storage</code> (304 m³ Membranspeicher)
+  - <code>digester_2_storage</code> (150 m³ Membranspeicher)
+- Die Speicher werden automatisch mit ihren Fermentern verbunden.</p>
+<h3 id="3-mechanische-komponenten-hinzufugen">3. Mechanische Komponenten hinzufügen<a class="headerlink" href="#3-mechanische-komponenten-hinzufugen" title="Permanent link">¶</a></h3>
+<h4 id="futterungspumpe">Fütterungspumpe<a class="headerlink" href="#futterungspumpe" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">feed_pump</span> <span class="o">=</span> <span class="n">Pump</span><span class="p">(</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="n">component_id</span><span class="o">=</span><span class="s2">"feed_pump"</span><span class="p">,</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="n">pump_type</span><span class="o">=</span><span class="s2">"progressive_cavity"</span><span class="p">,</span>  <span class="c1"># Handhabt dicke Suspensionen</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="n">Q_nom</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>  <span class="c1"># m³/h nominal</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="n">pressure_head</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>  <span class="c1"># Niedriger Druck</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="p">)</span>
+</code></pre></div>
+<p><strong>Exzenterschneckenpumpen</strong> sind ideal für Biogassubstrate, weil sie:
+- Hohe Feststoffgehalte (&gt;12 % TS) bewältigen
+- Scherkräfte minimieren (Faserstruktur bleibt erhalten)
+- Selbstansaugend sind
+- Einen weiten Viskositätsbereich abdecken</p>
+<h4 id="transferpumpe">Transferpumpe<a class="headerlink" href="#transferpumpe" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">transfer_pump</span> <span class="o">=</span> <span class="n">Pump</span><span class="p">(</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>    <span class="n">component_id</span><span class="o">=</span><span class="s2">"transfer_pump"</span><span class="p">,</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    <span class="n">pump_type</span><span class="o">=</span><span class="s2">"progressive_cavity"</span><span class="p">,</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    <span class="n">Q_nom</span><span class="o">=</span><span class="mf">25.0</span><span class="p">,</span>  <span class="c1"># m³/h</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="n">pressure_head</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span>  <span class="c1"># Höherer Druck für Transfer zwischen Fermentern</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="p">)</span>
+</code></pre></div>
+<p>Höherer Druck erforderlich für:
+- Überwindung von Rohrreibungslasten
+- Höhenunterschiede
+- Injektion in unter Druck stehenden Fermenter</p>
+<h4 id="ruhrwerke">Rührwerke<a class="headerlink" href="#ruhrwerke" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">mixer_1</span> <span class="o">=</span> <span class="n">Mixer</span><span class="p">(</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    <span class="n">component_id</span><span class="o">=</span><span class="s2">"mixer_1"</span><span class="p">,</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="n">mixer_type</span><span class="o">=</span><span class="s2">"propeller"</span><span class="p">,</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="n">tank_volume</span><span class="o">=</span><span class="mf">1977.0</span><span class="p">,</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="n">mixing_intensity</span><span class="o">=</span><span class="s2">"high"</span><span class="p">,</span>  <span class="c1"># Aggressiv für Hydrolyse</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    <span class="n">power_installed</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="n">intermittent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="n">on_time_fraction</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>  <span class="c1"># 6 Stunden an, 18 Stunden aus</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="p">)</span>
+</code></pre></div>
+<p><strong>Rührstrategie</strong>:
+- <strong>Intermittierender Betrieb</strong>: Reduziert den Energieverbrauch um 75 %.
+- <strong>Hohe Intensität in der Hydrolyse</strong>: Aufbrechen von Schwimmschichten, verbessert den Substratkontakt.
+- <strong>Mittlere Intensität in der Methanogenese</strong>: Schonendes Rühren verhindert die Hemmung empfindlicher Methanogener.</p>
+<p><strong>Spezifischer Leistungseintrag</strong>:
+- Fermenter 1: 15 kW × 0,25 ÷ 1977 m³ = <strong>1,9 W/m³</strong> (hoch)
+- Fermenter 2: 10 kW × 0,25 ÷ 1000 m³ = <strong>2,5 W/m³</strong> (mittel)</p>
+<h3 id="4-energieintegration-mit-automatischer-fackel">4. Energieintegration mit automatischer Fackel<a class="headerlink" href="#4-energieintegration-mit-automatischer-fackel" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># BHKW hinzufügen (erstellt automatisch Fackel)</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_chp</span><span class="p">(</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    <span class="n">chp_id</span><span class="o">=</span><span class="s2">"chp_1"</span><span class="p">,</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="n">P_el_nom</span><span class="o">=</span><span class="mf">500.0</span><span class="p">,</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">eta_el</span><span class="o">=</span><span class="mf">0.40</span><span class="p">,</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="n">eta_th</span><span class="o">=</span><span class="mf">0.45</span><span class="p">,</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"Haupt-BHKW"</span><span class="p">,</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="p">)</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="c1"># Automatische Verbindungen handhaben das Gas-Routing</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_digester_to_chp</span><span class="p">(</span><span class="s2">"digester_1"</span><span class="p">,</span> <span class="s2">"chp_1"</span><span class="p">)</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_digester_to_chp</span><span class="p">(</span><span class="s2">"digester_2"</span><span class="p">,</span> <span class="s2">"chp_1"</span><span class="p">)</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="c1"># Wärmerückgewinnung für beide Fermenter</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_chp_to_heating</span><span class="p">(</span><span class="s2">"chp_1"</span><span class="p">,</span> <span class="s2">"heating_1"</span><span class="p">)</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_chp_to_heating</span><span class="p">(</span><span class="s2">"chp_1"</span><span class="p">,</span> <span class="s2">"heating_2"</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>Verbindungskette</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>Fermenter 1 → Speicher 1 ↘
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>                          → BHKW → Fackel (automatisch)
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>Fermenter 2 → Speicher 2 ↗      ↓
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>                          Wärme → Heizung 1 &amp; 2
+</code></pre></div></p>
+<p><strong>Automatische Fackelerstellung</strong>:
+- <code>add_chp()</code> erstellt automatisch eine Fackelkomponente.
+- Fackel-ID: <code>{chp_id}_flare</code> (z. B. "chp_1_flare")
+- Funktion: Sicherheitsverbrennung von Überschussgas (98 % CH₄-Zerstörung)
+- Automatische Verbindung: BHKW → Fackel</p>
+<h3 id="5-drei-pass-gasfluss-simulation">5. Drei-Pass-Gasfluss-Simulation<a class="headerlink" href="#5-drei-pass-gasfluss-simulation" title="Permanent link">¶</a></h3>
+<p>Die Simulation erfolgt in drei Durchgängen für ein realistisches Gasmanagement:</p>
+<p><strong>Pass 1 - Gasproduktion</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Fermenter produzieren Gas → Speichertanks</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="n">Fermenter</span> <span class="mi">1</span><span class="p">:</span> <span class="n">Q_gas</span> <span class="o">=</span> <span class="mi">850</span> <span class="n">m</span><span class="err">³</span><span class="o">/</span><span class="n">d</span> <span class="err">→</span> <span class="n">Speicher</span> <span class="mi">1</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="n">Fermenter</span> <span class="mi">2</span><span class="p">:</span> <span class="n">Q_gas</span> <span class="o">=</span> <span class="mi">400</span> <span class="n">m</span><span class="err">³</span><span class="o">/</span><span class="n">d</span> <span class="err">→</span> <span class="n">Speicher</span> <span class="mi">2</span>
+</code></pre></div></p>
+<p><strong>Pass 2 - Speicher-Aktualisierung</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1"># Speicher empfangen Gas, aktualisieren Druck und Volumen</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="n">Speicher</span> <span class="mi">1</span><span class="p">:</span> <span class="n">gespeichertes_volumen</span> <span class="o">+=</span> <span class="mi">850</span> <span class="o">*</span> <span class="n">dt</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="n">Speicher</span> <span class="mi">2</span><span class="p">:</span> <span class="n">gespeichertes_volumen</span> <span class="o">+=</span> <span class="mi">400</span> <span class="o">*</span> <span class="n">dt</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="c1"># Wenn voll: Überschuss an die Atmosphäre ablassen</span>
+</code></pre></div></p>
+<p><strong>Pass 3 - Gasverbrauch</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># BHKW fordert Gas von den Speichern an</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="n">BHKW</span><span class="o">-</span><span class="n">Bedarf</span><span class="p">:</span> <span class="mi">1150</span> <span class="n">m</span><span class="err">³</span><span class="o">/</span><span class="n">d</span> <span class="n">Biogas</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="n">Speicher</span> <span class="mi">1</span> <span class="n">liefert</span><span class="p">:</span> <span class="o">~</span><span class="mi">675</span> <span class="n">m</span><span class="err">³</span><span class="o">/</span><span class="n">d</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="n">Speicher</span> <span class="mi">2</span> <span class="n">liefert</span><span class="p">:</span> <span class="o">~</span><span class="mi">475</span> <span class="n">m</span><span class="err">³</span><span class="o">/</span><span class="n">d</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="c1"># BHKW arbeitet mit tatsächlichem Angebot</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="c1"># Überschuss zur Fackel: (Angebot - Verbrauch)</span>
+</code></pre></div></p>
+<p>Dies gewährleistet:
+- Realistisches Druckmanagement in Speichern
+- BHKW arbeitet mit verfügbarem Gas, nicht mit idealisiertem Angebot
+- Automatisches Abblasen verhindert Überdruck
+- Die Fackel handhabt das gesamte Überschussgas sicher</p>
+<h2 id="erwartete-ausgabe">Erwartete Ausgabe<a class="headerlink" href="#erwartete-ausgabe" title="Permanent link">¶</a></h2>
+<h3 id="anlagenzusammenfassung">Anlagenzusammenfassung<a class="headerlink" href="#anlagenzusammenfassung" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>=== Zweistufige Anlage mit mechanischen Komponenten ===
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>Simulationszeit: 0.00 Tage
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>Komponenten (12):
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>  - Hydrolyse-Fermenter (digester)
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>  - Hydrolyse-Fermenter Gasspeicher (storage)
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>  - Methanogenese-Fermenter (digester)
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>  - Methanogenese-Fermenter Gasspeicher (storage)
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>  - Substratfütterungspumpe (pump)
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>  - Fermenter Transferpumpe (pump)
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>  - Hydrolyse-Rührwerk (mixer)
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>  - Methanogenese-Rührwerk (mixer)
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>  - Haupt-BHKW (chp)
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>  - Haupt-BHKW Fackel (flare)
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>  - Hydrolyse-Heizung (heating)
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>  - Methanogenese-Heizung (heating)
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>Verbindungen (10):
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>  - Hydrolyse-Fermenter -&gt; Methanogenese-Fermenter (liquid)
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>  - Hydrolyse-Fermenter Gasspeicher -&gt; Haupt-BHKW (gas)
+<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a>  - Methanogenese-Fermenter Gasspeicher -&gt; Haupt-BHKW (gas)
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a>  - Haupt-BHKW -&gt; Haupt-BHKW Fackel (gas)
+<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a>  - Haupt-BHKW -&gt; Hydrolyse-Heizung (heat)
+<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a>  - Haupt-BHKW -&gt; Methanogenese-Heizung (heat)
+</code></pre></div>
+<h3 id="finale-ergebnisse-tag-10">Finale Ergebnisse (Tag 10)<a class="headerlink" href="#finale-ergebnisse-tag-10" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>ERGEBNISANALYSE
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>======================================================================
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>Finaler Zustand (Tag 10.0):
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>----------------------------------------------------------------------
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>Hydrolyse-Fermenter:
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>  Biogasproduktion:        850.3 m³/d
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>  Methanproduktion:       493.2 m³/d
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>  pH:                         7.15
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>  VFA:                        3.82 g/L
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>  Temperatur:               45.0 °C
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>  Gasspeicher:
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>    - Gespeichertes Volumen:  152.1 m³ (50%)
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>    - Druck:               1.00 bar
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>    - Abgeblasen:                  0.0 m³
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>Methanogenese-Fermenter:
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>  Biogasproduktion:        402.8 m³/d
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>  Methanproduktion:       258.7 m³/d
+<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a>  pH:                         7.32
+<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a>  VFA:                        1.95 g/L
+<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a>  Temperatur:               35.0 °C
+<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a>  Gasspeicher:
+<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a>    - Gespeichertes Volumen:   75.0 m³ (50%)
+<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a>    - Druck:               1.00 bar
+<a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a>    - Abgeblasen:                  0.0 m³
+<a href="#__codelineno-11-28" id="__codelineno-11-28" name="__codelineno-11-28"></a>
+<a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a>Gesamtproduktion der Anlage:
+<a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a>  Gesamtbiogas:            1253.1 m³/d
+<a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a>  Gesamtmethan:            751.9 m³/d
+<a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a>  Methangehalt:           60.0 %
+<a href="#__codelineno-11-33" id="__codelineno-11-33" name="__codelineno-11-33"></a>
+<a href="#__codelineno-11-34" id="__codelineno-11-34" name="__codelineno-11-34"></a>BHKW-Leistung:
+<a href="#__codelineno-11-35" id="__codelineno-11-35" name="__codelineno-11-35"></a>  Elektrische Leistung:     480.5 kW
+<a href="#__codelineno-11-36" id="__codelineno-11-36" name="__codelineno-11-36"></a>  Thermische Leistung:      540.6 kW
+<a href="#__codelineno-11-37" id="__codelineno-11-37" name="__codelineno-11-37"></a>  Gasverbrauch:            1150.0 m³/d
+<a href="#__codelineno-11-38" id="__codelineno-11-38" name="__codelineno-11-38"></a>  Gas aus Speicher 1:       675.2 m³/d
+<a href="#__codelineno-11-39" id="__codelineno-11-39" name="__codelineno-11-39"></a>  Gas aus Speicher 2:       474.8 m³/d
+<a href="#__codelineno-11-40" id="__codelineno-11-40" name="__codelineno-11-40"></a>  Überschuss zur Fackel:    103.1 m³/d
+<a href="#__codelineno-11-41" id="__codelineno-11-41" name="__codelineno-11-41"></a>  Betriebsstunden:          240.0 h
+<a href="#__codelineno-11-42" id="__codelineno-11-42" name="__codelineno-11-42"></a>
+<a href="#__codelineno-11-43" id="__codelineno-11-43" name="__codelineno-11-43"></a>Fackel-Leistung:
+<a href="#__codelineno-11-44" id="__codelineno-11-44" name="__codelineno-11-44"></a>  Gas erhalten:             103.1 m³/d
+<a href="#__codelineno-11-45" id="__codelineno-11-45" name="__codelineno-11-45"></a>  CH₄ zerstört:             60.6 m³/d (98% Effizienz)
+<a href="#__codelineno-11-46" id="__codelineno-11-46" name="__codelineno-11-46"></a>  Kumulativ abgeblasen:    1031.0 m³
+<a href="#__codelineno-11-47" id="__codelineno-11-47" name="__codelineno-11-47"></a>
+<a href="#__codelineno-11-48" id="__codelineno-11-48" name="__codelineno-11-48"></a>Hydrolyse-Rührwerk:
+<a href="#__codelineno-11-49" id="__codelineno-11-49" name="__codelineno-11-49"></a>  Leistungsaufnahme:          3.75 kW
+<a href="#__codelineno-11-50" id="__codelineno-11-50" name="__codelineno-11-50"></a>  Mischqualität:             0.92
+<a href="#__codelineno-11-51" id="__codelineno-11-51" name="__codelineno-11-51"></a>  Reynolds-Zahl:         12500
+<a href="#__codelineno-11-52" id="__codelineno-11-52" name="__codelineno-11-52"></a>
+<a href="#__codelineno-11-53" id="__codelineno-11-53" name="__codelineno-11-53"></a>Methanogenese-Rührwerk:
+<a href="#__codelineno-11-54" id="__codelineno-11-54" name="__codelineno-11-54"></a>  Leistungsaufnahme:          2.50 kW
+<a href="#__codelineno-11-55" id="__codelineno-11-55" name="__codelineno-11-55"></a>  Mischqualität:             0.88
+<a href="#__codelineno-11-56" id="__codelineno-11-56" name="__codelineno-11-56"></a>  Reynolds-Zahl:          8300
+</code></pre></div>
+<h3 id="energiebilanz">Energiebilanz<a class="headerlink" href="#energiebilanz" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>ENERGIEBILANZ
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>======================================================================
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>Energieproduktion:
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>  Elektrisch (brutto):      480.5 kW
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>  Thermisch:                 540.6 kW
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>Eigenverbrauch:
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>  Rührwerk 1:                 3.75 kW
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>  Rührwerk 2:                 2.50 kW
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>  Pumpen (geschätzt):          2.00 kW
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>  Gesamter Eigenverbrauch:    8.25 kW
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>Netto-Elektrizitätsleistung: 472.3 kW
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>Wärmenutzung:
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>  Heizbedarf:               125.4 kW
+<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>  BHKW-Wärmeangebot:        540.6 kW
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a>  Wärmeabdeckung:           431.0 %
+<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a>
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a>Gasmanagement:
+<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a>  Gesamtproduktion:        1253.1 m³/d
+<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a>  BHKW-Verbrauch:          1150.0 m³/d
+<a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a>  Zur Fackel:               103.1 m³/d (8.2%)
+</code></pre></div>
+<p><strong>Analyse</strong>:
+- <strong>Netto-Wirkungsgrad</strong>: (472 kW + 125 kW) ÷ (751,9 m³/d × 10 kWh/m³ ÷ 24 h) = <strong>190 %</strong> (exzellente Wärmerückgewinnung)
+- <strong>Eigenverbrauchsquote</strong>: 8,25 ÷ 480,5 = <strong>1,7 %</strong> (sehr niedrig)
+- <strong>Überschusswärme</strong>: 540,6 - 125,4 = <strong>415 kW</strong> für externe Nutzung verfügbar
+- <strong>Fackelnutzung</strong>: 8,2 % der Produktion abgeblasen (typisch bei BHKW-Teillast)</p>
+<h3 id="prozessstabilitat">Prozessstabilität<a class="headerlink" href="#prozessstabilitat" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>BEWERTUNG DER PROZESSSTABILITÄT
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>======================================================================
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>Fermenter 1 (Hydrolyse):
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>  pH-Stabilität:        PRÜFEN (7.15 - etwas niedrig)
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>  VFA-Level:            HOCH (3.82 g/L)
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>  FOS/TAC-Verhältnis:   0.418 (Beobachten)
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>  Speicherstatus:       NORMAL (50% voll)
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>Fermenter 2 (Methanogenese):
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>  pH-Stabilität:        GUT (7.32)
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>  VFA-Level:            GUT (1.95 g/L)
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>  FOS/TAC-Verhältnis:   0.245 (Stabil)
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>  Speicherstatus:       NORMAL (50% voll)
+</code></pre></div>
+<p><strong>Interpretation</strong>:
+- <strong>Fermenter 1</strong>: Höhere VFA-Werte werden in der thermophilen Hydrolysestufe erwartet - Säuren werden in Stufe 2 verbraucht.
+- <strong>Fermenter 2</strong>: Exzellente Stabilitätsindikatoren - Methanogene verbrauchen VFAs effektiv.
+- <strong>pH-Gradient</strong>: 7,15 → 7,32 zeigt ordnungsgemäße zweistufige Funktion.
+- <strong>Gasspeicher</strong>: Beide auf gesundem 50 % Füllstand mit stabilem Druck.</p>
+<h2 id="vorteile-des-zweistufigen-designs">Vorteile des zweistufigen Designs<a class="headerlink" href="#vorteile-des-zweistufigen-designs" title="Permanent link">¶</a></h2>
+<h3 id="1-prozessoptimierung">1. Prozessoptimierung<a class="headerlink" href="#1-prozessoptimierung" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspekt</th>
+<th>Einstufig</th>
+<th>Zweistufig</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hydrolyse</strong></td>
+<td>Begrenzt durch mesophile Temp</td>
+<td>Verbessert bei 45°C</td>
+</tr>
+<tr>
+<td><strong>Methanogenese</strong></td>
+<td>Muss VFA-Spitzen tolerieren</td>
+<td>Stabile, gepufferte Fütterung</td>
+</tr>
+<tr>
+<td><strong>OLR-Kapazität</strong></td>
+<td>3-4 kg CSB/(m³·d)</td>
+<td>5-8 kg CSB/(m³·d)</td>
+</tr>
+<tr>
+<td><strong>Prozessstabilität</strong></td>
+<td>Moderat</td>
+<td>Hoch</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-substratflexibilitat">2. Substratflexibilität<a class="headerlink" href="#2-substratflexibilitat" title="Permanent link">¶</a></h3>
+<p>Das zweistufige System kommt besser mit schwierigen Substraten zurecht:
+- <strong>Faserreiche Materialien</strong>: Verbesserte Hydrolyse in Stufe 1.
+- <strong>Proteinreiche Substrate</strong>: Ammoniakpufferung über die Stufen hinweg.
+- <strong>Variable Zulaufzusammensetzung</strong>: Stufe 2 bietet Pufferkapazität.</p>
+<h3 id="3-operative-vorteile">3. Operative Vorteile<a class="headerlink" href="#3-operative-vorteile" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Reduzierte Schaumbildung</strong>: Separate Hydrolysephase.</li>
+<li><strong>Bessere Hygienisierung</strong>: Thermophile Stufe (45°C) tötet Pathogene ab.</li>
+<li><strong>Einfachere Prozesssteuerung</strong>: Überwachung und Steuerung jeder Stufe unabhängig voneinander.</li>
+<li><strong>Erholung von Störungen</strong>: Stufe 2 kann Störungen in Stufe 1 abpuffern.</li>
+</ul>
+<h2 id="leistungsvergleich">Leistungsvergleich<a class="headerlink" href="#leistungsvergleich" title="Permanent link">¶</a></h2>
+<h3 id="einstufig-vs-zweistufig">Einstufig vs. Zweistufig<a class="headerlink" href="#einstufig-vs-zweistufig" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metrik</th>
+<th>Einstufig (2000 m³ @ 35°C)</th>
+<th>Zweistufig (1977+1000 m³)</th>
+<th>Verbesserung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Biogasertrag</strong></td>
+<td>1150 m³/d</td>
+<td>1253 m³/d</td>
+<td>+9 %</td>
+</tr>
+<tr>
+<td><strong>CH₄-Gehalt</strong></td>
+<td>58 %</td>
+<td>60 %</td>
+<td>+3,4 %</td>
+</tr>
+<tr>
+<td><strong>Spezifischer Ertrag</strong></td>
+<td>46 m³/m³ Zulauf</td>
+<td>50 m³/m³ Zulauf</td>
+<td>+8,7 %</td>
+</tr>
+<tr>
+<td><strong>Prozessstabilität</strong></td>
+<td>Moderat (FOS/TAC: 0,35)</td>
+<td>Hoch (FOS/TAC: 0,25)</td>
+<td>Besser</td>
+</tr>
+<tr>
+<td><strong>OLR-Kapazität</strong></td>
+<td>3,5 kg CSB/(m³·d)</td>
+<td>8,4 kg CSB/(m³·d)</td>
+<td>+140 %</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Kosten-Nutzen</strong>:
+- <strong>Zusatzinvestition</strong>: ~15-20 % (zweiter Fermenter, Pumpen)
+- <strong>Energiegewinn</strong>: ~9 % mehr Biogas
+- <strong>Stabilität</strong>: Signifikant reduziertes Risiko von Prozessversagen
+- <strong>ROI</strong>: Typischerweise 3-5 Jahre bei schwierigen Substraten</p>
+<h2 id="leistung-mechanischer-komponenten">Leistung mechanischer Komponenten<a class="headerlink" href="#leistung-mechanischer-komponenten" title="Permanent link">¶</a></h2>
+<h3 id="pumpenbetrieb">Pumpenbetrieb<a class="headerlink" href="#pumpenbetrieb" title="Permanent link">¶</a></h3>
+<p><strong>Fütterungspumpe</strong>:
+- <strong>Betriebspunkt</strong>: 25 m³/d ÷ 24 = 1,04 m³/h (3,5 % der Nennkapazität)
+- <strong>Effizienz bei niedrigem Durchfluss</strong>: Exzenterschneckenpumpen behalten ca. 60 % Wirkungsgrad auch bei 3 % Kapazität bei.
+- <strong>Jährliche Energie</strong>: 5 kW × 8760 h = 43.800 kWh</p>
+<p><strong>Transferpumpe</strong>:
+- <strong>Betriebspunkt</strong>: 25 m³/d ÷ 24 = 1,04 m³/h
+- <strong>Tatsächliche Leistung</strong>: 8 kW × (1,04/25) × 1,2 (Abschlag für niedrige Effizienz) ≈ <strong>0,4 kW</strong>
+- <strong>Jährliche Energie</strong>: 0,4 kW × 8760 h = 3.504 kWh</p>
+<h3 id="ruhrwerksleistung">Rührwerksleistung<a class="headerlink" href="#ruhrwerksleistung" title="Permanent link">¶</a></h3>
+<p><strong>Hydrolyse-Rührwerk</strong>:
+- <strong>Mischzeit</strong>: ~15 Minuten (aus Reynolds-Zahl und Geometrie)
+- <strong>Umfangsgeschwindigkeit</strong>: ~4,5 m/s (turbulenter Bereich)
+- <strong>Scherrate</strong>: ~50 s⁻¹ (hohe Intensität)
+- <strong>Leistungsbeiwert</strong>: 0,32 (typisch für Propeller bei Re &gt; 10.000)</p>
+<p><strong>Methanogenese-Rührwerk</strong>:
+- <strong>Mischzeit</strong>: ~20 Minuten
+- <strong>Umfangsgeschwindigkeit</strong>: ~3,8 m/s
+- <strong>Scherrate</strong>: ~35 s⁻¹ (mittlere Intensität)
+- <strong>Verhindert Entmischung</strong>, ohne empfindliche Methanogene zu schädigen.</p>
+<h2 id="gasspeicher-und-fackelmanagement">Gasspeicher- und Fackelmanagement<a class="headerlink" href="#gasspeicher-und-fackelmanagement" title="Permanent link">¶</a></h2>
+<h3 id="speicherdynamik">Speicherdynamik<a class="headerlink" href="#speicherdynamik" title="Permanent link">¶</a></h3>
+<p><strong>Speicher 1 (Hydrolyse)</strong>:
+- Erhält ~850 m³/d (höhere Produktion durch verbesserte Hydrolyse).
+- Liefert ~675 m³/d an BHKW (proportional zum Gesamtbedarf).
+- Netto-Akkumulation: +175 m³/d.
+- Erreicht 50 % Kapazität in ~0,9 Tagen.</p>
+<p><strong>Speicher 2 (Methanogenese)</strong>:
+- Erhält ~400 m³/d (niedriger, aber stabiler).
+- Liefert ~475 m³/d an BHKW.
+- Netto-Abzug: -75 m³/d (ergänzt Speicher 1).
+- Bietet Puffer für Produktionsschwankungen.</p>
+<h3 id="fackelbetrieb">Fackelbetrieb<a class="headerlink" href="#fackelbetrieb" title="Permanent link">¶</a></h3>
+<p><strong>Wann wird die Fackel aktiviert?</strong>:
+1. <strong>Speicherüberlauf</strong>: Wenn einer der Speicher 100 % Kapazität erreicht.
+2. <strong>BHKW-Teillast</strong>: Wenn das BHKW unter Volllast arbeitet.
+3. <strong>Wartung</strong>: Wenn das BHKW offline ist, die Fermenter aber weiterlaufen.
+4. <strong>Anfahren/Abfahren</strong>: Während transienter Betriebszustände.</p>
+<p><strong>Fackelleistung</strong>:
+- <strong>Zerstörungsgrad</strong>: 98 % CH₄-Konvertierung zu CO₂.
+- <strong>Temperatur</strong>: ~1000°C Verbrennungstemperatur.
+- <strong>Emissionen</strong>: 2 % unverbranntes CH₄ + CO₂ aus der Verbrennung.
+- <strong>Sicherheit</strong>: Automatische Zündung, Flammenüberwachung.</p>
+<h2 id="prozesssteuerungsstrategien">Prozesssteuerungsstrategien<a class="headerlink" href="#prozesssteuerungsstrategien" title="Permanent link">¶</a></h2>
+<h3 id="temperatursteuerung">Temperatursteuerung<a class="headerlink" href="#temperatursteuerung" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># Heizung 1 hält 45°C für Hydrolyse</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="n">heating_1</span><span class="o">.</span><span class="n">target_temperature</span> <span class="o">=</span> <span class="mf">318.15</span>  <span class="c1"># K</span>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="n">heating_1</span><span class="o">.</span><span class="n">heat_loss_coefficient</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># Höher aufgrund von ΔT</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="c1"># Heizung 2 hält 35°C für Methanogenese</span>
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="n">heating_2</span><span class="o">.</span><span class="n">target_temperature</span> <span class="o">=</span> <span class="mf">308.15</span>  <span class="c1"># K</span>
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="n">heating_2</span><span class="o">.</span><span class="n">heat_loss_coefficient</span> <span class="o">=</span> <span class="mf">0.3</span>  <span class="c1"># Niedrigeres ΔT</span>
+</code></pre></div>
+<p><strong>Berechnung des Wärmebedarfs</strong>:
+- <strong>Fermenter 1</strong>: Q = 0,5 kW/K × (45 - 15)°C = <strong>15 kW</strong> Basisverlust + <strong>80 kW</strong> Prozessheizung = <strong>95 kW</strong>
+- <strong>Fermenter 2</strong>: Q = 0,3 kW/K × (35 - 15)°C = <strong>6 kW</strong> Basisverlust + <strong>24 kW</strong> Prozessheizung = <strong>30 kW</strong>
+- <strong>Gesamt</strong>: <strong>125 kW</strong> (gut abgedeckt durch 541 kW BHKW-Wärmeleistung)</p>
+<h3 id="ruhrwerkssteuerung">Rührwerkssteuerung<a class="headerlink" href="#ruhrwerkssteuerung" title="Permanent link">¶</a></h3>
+<p><strong>Strategie</strong>: Intermittierendes Rühren mit adaptiver Zeitsteuerung
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># Hohe Durchmischung bei Fütterung (4× täglich)</span>
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="k">if</span> <span class="n">feeding_event</span><span class="p">:</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>    <span class="n">mixer</span><span class="o">.</span><span class="n">on_time_fraction</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># 50% Einschaltdauer</span>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="k">else</span><span class="p">:</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>    <span class="n">mixer</span><span class="o">.</span><span class="n">on_time_fraction</span> <span class="o">=</span> <span class="mf">0.15</span>  <span class="c1"># 15% Basislinie</span>
+</code></pre></div></p>
+<h3 id="futterungssteuerung">Fütterungssteuerung<a class="headerlink" href="#futterungssteuerung" title="Permanent link">¶</a></h3>
+<p><strong>Model Predictive Control (MPC)</strong> Ansatz:
+1. Messen der aktuellen VFA und des pH-Werts.
+2. Vorhersagen der 48h-Reaktion mit verschiedenen Fütterungsraten.
+3. Auswählen der Fütterungsrate, die CH₄ optimiert, während pH &gt; 7,0 bleibt.</p>
+<h2 id="haufige-probleme-und-losungen">Häufige Probleme und Lösungen<a class="headerlink" href="#haufige-probleme-und-losungen" title="Permanent link">¶</a></h2>
+<h3 id="problem-1-hohe-vfa-in-fermenter-1">Problem 1: Hohe VFA in Fermenter 1<a class="headerlink" href="#problem-1-hohe-vfa-in-fermenter-1" title="Permanent link">¶</a></h3>
+<p><strong>Symptome</strong>:
+- VFA &gt; 5 g/L
+- pH &lt; 7,0
+- Reduzierte Gasproduktion</p>
+<p><strong>Lösungen</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># Organische Belastung reduzieren</span>
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Reduzieren von [15, 10, ...]</span>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="c1"># Temperatur in Stufe 1 erhöhen (Vorsicht - max. 55°C)</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="n">T_ad_1</span> <span class="o">=</span> <span class="mf">323.15</span>  <span class="c1"># 50°C</span>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="c1"># Rühren verstärken, um Akkumulation zu verhindern</span>
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="n">mixer_1</span><span class="o">.</span><span class="n">on_time_fraction</span> <span class="o">=</span> <span class="mf">0.35</span>
+</code></pre></div></p>
+<h3 id="problem-2-niedriger-methangehalt">Problem 2: Niedriger Methangehalt<a class="headerlink" href="#problem-2-niedriger-methangehalt" title="Permanent link">¶</a></h3>
+<p><strong>Symptome</strong>:
+- CH₄ &lt; 55 %
+- CO₂ erhöht
+- Niedrige spezifische Gasproduktion</p>
+<p><strong>Lösungen</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># HRT erhöhen (Fütterung reduzieren)</span>
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="c1"># Temperatur in Stufe 2 optimieren</span>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="n">T_ad_2</span> <span class="o">=</span> <span class="mf">311.15</span>  <span class="c1"># 38°C (optimal für viele Methanogene)</span>
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="c1"># Auf Lufteintritt prüfen (O₂ hemmt Methanogene)</span>
+</code></pre></div></p>
+<h3 id="problem-3-schaumbildung-in-fermenter-1">Problem 3: Schaumbildung in Fermenter 1<a class="headerlink" href="#problem-3-schaumbildung-in-fermenter-1" title="Permanent link">¶</a></h3>
+<p><strong>Symptome</strong>:
+- Gasspeicher zeigt Druckschwankungen
+- Ablauf enthält übermäßige Gasblasen</p>
+<p><strong>Lösungen</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># Rührintensität reduzieren</span>
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="n">mixer_1</span><span class="o">.</span><span class="n">mixing_intensity</span> <span class="o">=</span> <span class="s2">"medium"</span>
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a><span class="c1"># Antischaummittel hinzufügen (Substrat-Index 8)</span>
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># 50 L/d Antischaum</span>
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>
+<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a><span class="c1"># Transferrate zu Stufe 2 erhöhen</span>
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="c1"># (implementieren eines Timer-basierten periodischen Abzugs)</span>
+</code></pre></div></p>
+<h3 id="problem-4-ubermaige-fackelnutzung">Problem 4: Übermäßige Fackelnutzung<a class="headerlink" href="#problem-4-ubermaige-fackelnutzung" title="Permanent link">¶</a></h3>
+<p><strong>Symptome</strong>:
+- Fackel läuft kontinuierlich
+- &gt;20 % der Produktion zur Fackel
+- Hoher Speicherdruck</p>
+<p><strong>Ursachen</strong>:
+- BHKW zu klein für Gasproduktion
+- BHKW im Teillastbetrieb
+- Übermäßiger Substratzulauf</p>
+<p><strong>Lösungen</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># Option 1: Substratzulauf reduzieren</span>
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>
+<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="c1"># Option 2: BHKW-Kapazität erhöhen</span>
+<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_chp</span><span class="p">(</span><span class="s2">"chp1"</span><span class="p">,</span> <span class="n">P_el_nom</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>  <span class="c1"># Erhöhen von 500</span>
+<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a>
+<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a><span class="c1"># Option 3: Zweite BHKW-Einheit hinzufügen</span>
+<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_chp</span><span class="p">(</span><span class="s2">"chp2"</span><span class="p">,</span> <span class="n">P_el_nom</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_digester_to_chp</span><span class="p">(</span><span class="s2">"digester_1"</span><span class="p">,</span> <span class="s2">"chp2"</span><span class="p">)</span>
+<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a>
+<a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a><span class="c1"># Option 4: Gasspeicherkapazität erhöhen</span>
+<a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a><span class="c1"># (V_gas beim Hinzufügen von Fermentern anpassen)</span>
+</code></pre></div></p>
+<h2 id="fortgeschrittene-anwendungen">Fortgeschrittene Anwendungen<a class="headerlink" href="#fortgeschrittene-anwendungen" title="Permanent link">¶</a></h2>
+<h3 id="1-parameter-sweep-zur-optimierung">1. Parameter-Sweep zur Optimierung<a class="headerlink" href="#1-parameter-sweep-zur-optimierung" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParallelSimulator</span>
+<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a>
+<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a><span class="c1"># Verschiedene Temperaturen für Stufe 1 testen</span>
+<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="n">parallel</span> <span class="o">=</span> <span class="n">ParallelSimulator</span><span class="p">(</span><span class="n">adm1</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a><span class="n">scenarios</span> <span class="o">=</span> <span class="p">[</span>
+<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a>    <span class="p">{</span><span class="s2">"T_ad_1"</span><span class="p">:</span> <span class="mf">313.15</span><span class="p">,</span> <span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>  <span class="c1"># 40°C</span>
+<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a>    <span class="p">{</span><span class="s2">"T_ad_1"</span><span class="p">:</span> <span class="mf">318.15</span><span class="p">,</span> <span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>  <span class="c1"># 45°C</span>
+<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a>    <span class="p">{</span><span class="s2">"T_ad_1"</span><span class="p">:</span> <span class="mf">323.15</span><span class="p">,</span> <span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>  <span class="c1"># 50°C</span>
+<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a><span class="p">]</span>
+<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span><span class="n">scenarios</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="2-online-kalibrierung">2. Online-Kalibrierung<a class="headerlink" href="#2-online-kalibrierung" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.calibration</span><span class="w"> </span><span class="kn">import</span> <span class="n">Calibrator</span>
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a>
+<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="c1"># Hydrolyseparameter der Stufe 1 kalibrieren</span>
+<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="n">calibrator</span> <span class="o">=</span> <span class="n">Calibrator</span><span class="p">(</span><span class="n">plant</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s2">"digester_1"</span><span class="p">])</span>
+<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a><span class="n">params</span> <span class="o">=</span> <span class="n">calibrator</span><span class="o">.</span><span class="n">calibrate_initial</span><span class="p">(</span>
+<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a>    <span class="n">measurements</span><span class="o">=</span><span class="n">measurement_data</span><span class="p">,</span>
+<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a>    <span class="n">parameters</span><span class="o">=</span><span class="p">[</span><span class="s2">"k_hyd_ch"</span><span class="p">,</span> <span class="s2">"k_hyd_pr"</span><span class="p">,</span> <span class="s2">"k_hyd_li"</span><span class="p">],</span>
+<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a><span class="p">)</span>
+</code></pre></div>
+<h3 id="3-modellgestutzte-pradiktive-regelung-mpc">3. Modellgestützte prädiktive Regelung (MPC)<a class="headerlink" href="#3-modellgestutzte-pradiktive-regelung-mpc" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="c1"># Optimale Fütterung für die nächsten 48 Stunden vorhersagen</span>
+<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="n">Q_best</span><span class="p">,</span> <span class="n">Q_ch4_pred</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">determine_best_feed_by_n_sims</span><span class="p">(</span>
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a>    <span class="n">state_zero</span><span class="o">=</span><span class="n">current_state</span><span class="p">,</span>
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a>    <span class="n">Q</span><span class="o">=</span><span class="n">current_feed</span><span class="p">,</span>
+<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a>    <span class="n">Qch4sp</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>  <span class="c1"># Sollwert: 800 m³/d CH4</span>
+<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a>    <span class="n">feeding_freq</span><span class="o">=</span><span class="mi">48</span><span class="p">,</span>
+<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a>    <span class="n">n</span><span class="o">=</span><span class="mi">20</span>  <span class="c1"># Test von 20 Szenarien</span>
+<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a><span class="p">)</span>
+</code></pre></div>
+<h2 id="referenzen">Referenzen<a class="headerlink" href="#referenzen" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>TPAD Design</strong>: Simeonov, I., Chorukova, E., &amp; Kabaivanova, L. (2025). <em>Two-stage anaerobic digestion for green energy production: A review</em>. Processes, 13(2), 294.</li>
+<li><strong>Prozesssteuerung</strong>: Gaida (2014). <em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants</em>. PhD thesis, Leiden University.</li>
+</ul>
+<h2 id="ahnliche-beispiele">Ähnliche Beispiele<a class="headerlink" href="#ahnliche-beispiele" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="../basic_digester/"><code>basic_digester.md</code></a>: Einfaches einstufiges System</li>
+<li><code>calibration_workflow.md</code>: Parameterschätzung aus Messdaten</li>
+<li><code>substrate_optimization.py</code>: Optimale Fütterungsstrategie</li>
+<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py"><code>parallel_two_stage_simulation.py</code></a>: Parallele Simulationen</li>
+</ul>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
-        </div>
-        
-          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
   Zurück zum Seitenanfang
 </button>
-        
-      </main>
-      
-        <footer class="md-footer">
-  
-  <div class="md-footer-meta md-typeset">
-    <div class="md-footer-meta__inner md-grid">
-      <div class="md-copyright">
-  
-    <div class="md-copyright__highlight">
-      Copyright &copy; 2026 Daniel Gaida
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 Daniel Gaida
     </div>
   
   
     Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
       Material for MkDocs
     </a>
-  
 </div>
-      
-        
 <div class="md-social">
-  
-    
-    
-    
-    
-      
-      
-    
-    <a href="https://github.com/dgaida/PyADM1ODE" target="_blank" rel="noopener" title="github.com" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
-    </a>
-  
-    
-    
-    
-    
-      
-      
-    
-    <a href="https://pypi.org/project/PyADM1ODE/" target="_blank" rel="noopener" title="pypi.org" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6M286.2 444.7a20.4 20.4 0 1 1 0-40.7 20.4 20.4 0 1 1 0 40.7M167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4m-6.6-183.4a20.4 20.4 0 1 1 0 40.8 20.4 20.4 0 1 1 0-40.8"/></svg>
-    </a>
-  
+<a class="md-social__link" href="https://github.com/dgaida/PyADM1ODE" rel="noopener" target="_blank" title="github.com">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</a>
+<a class="md-social__link" href="https://pypi.org/project/PyADM1ODE/" rel="noopener" target="_blank" title="pypi.org">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6M286.2 444.7a20.4 20.4 0 1 1 0-40.7 20.4 20.4 0 1 1 0 40.7M167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4m-6.6-183.4a20.4 20.4 0 1 1 0 40.8 20.4 20.4 0 1 1 0-40.8"></path></svg>
+</a>
 </div>
-      
-    </div>
-  </div>
+</div>
+</div>
 </footer>
-      
-    </div>
-    <div class="md-dialog" data-md-component="dialog">
-      <div class="md-dialog__inner md-typeset"></div>
-    </div>
-    
-    
-    
-      
-      
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "navigation.instant", "navigation.tracking", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
-    
-    
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
-      
-    
-  </body>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "navigation.instant", "navigation.tracking", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+</body>
 </html>
