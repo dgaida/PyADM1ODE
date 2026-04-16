@@ -12,14 +12,14 @@ Mixers ensure homogenization and heat distribution in the digester.
 
 ## Troubleshooting
 
-### Pump Not Delivering
-- Check pressure head and blockages.
+### Pump Not Delivering  
+- Check pressure head and blockages.  
 
-## Optimization Strategies
-- Use intermittent mixing to save energy.
+## Optimization Strategies  
+- Use intermittent mixing to save energy.  
 
-## Best Practices
-- Size pumps for 80-90% of nominal flow.
+## Best Practices  
+- Size pumps for 80-90% of nominal flow.  
 
-## Sizing Guidelines
-- Typical mixing power: 5-8 W/m³.
+## Sizing Guidelines  
+- Typical mixing power: 5-8 W/m³.  

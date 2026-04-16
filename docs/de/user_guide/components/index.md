@@ -44,32 +44,32 @@ PyADM1 bietet verschiedene Komponentenkategorien:
 
 Komponenten für biologische Umwandlungsprozesse:
 
-- **Digester**: Hauptfermenter mit ADM1-Modell für anaerobe Vergärung
-- **Hydrolysis**: Vorbehandlungstank für Hydrolyseprozesse
-- **Separator**: Fest-Flüssig-Trennung für Gärrestaufbereitung
+- **Digester**: Hauptfermenter mit ADM1-Modell für anaerobe Vergärung  
+- **Hydrolysis**: Vorbehandlungstank für Hydrolyseprozesse  
+- **Separator**: Fest-Flüssig-Trennung für Gärrestaufbereitung  
 
 ### [Energiekomponenten](energy.md)
 
 Komponenten für Energieerzeugung und -speicherung:
 
-- **CHP**: Blockheizkraftwerk zur Strom- und Wärmeerzeugung
-- **Heating**: Heizsystem zur Temperaturkontrolle
-- **GasStorage**: Biogasspeicher mit Druckmanagement
-- **Flare**: Sicherheitsfackel für Überschussgas
+- **CHP**: Blockheizkraftwerk zur Strom- und Wärmeerzeugung  
+- **Heating**: Heizsystem zur Temperaturkontrolle  
+- **GasStorage**: Biogasspeicher mit Druckmanagement  
+- **Flare**: Sicherheitsfackel für Überschussgas  
 
 ### [Mechanische Komponenten](mechanical.md)
 
 Mechanische Anlagenkomponenten:
 
-- **Pump**: Pumpen für Substratförderung und Rezirkulation
-- **Mixer**: Rührwerke zur Homogenisierung im Fermenter
+- **Pump**: Pumpen für Substratförderung und Rezirkulation  
+- **Mixer**: Rührwerke zur Homogenisierung im Fermenter  
 
 ### [Fütterungskomponenten](feeding.md)
 
 Substrathandhabung und -dosierung:
 
-- **SubstrateStorage**: Substratlagerbehälter mit Qualitätsverfolgung
-- **Feeder**: Automatische Dosiersysteme
+- **SubstrateStorage**: Substratlagerbehälter mit Qualitätsverfolgung  
+- **Feeder**: Automatische Dosiersysteme  
 
 ### [Sensoren](sensors.md)
 
@@ -85,9 +85,9 @@ Mess- und Überwachungskomponenten (in Entwicklung)
 configurator.connect("digester_1", "digester_2", "liquid")
 ```
 
-**Datenübertragung:**
-- `Q_out`: Flüssigkeitsdurchfluss [m³/d]
-- `state_out`: Vollständiger ADM1-Zustandsvektor
+**Datenübertragung:**  
+- `Q_out`: Flüssigkeitsdurchfluss [m³/d]  
+- `state_out`: Vollständiger ADM1-Zustandsvektor  
 
 ### Gasverbindungen
 
@@ -97,9 +97,9 @@ configurator.connect("digester_1", "digester_2", "liquid")
 configurator.connect("digester_1_storage", "chp_1", "gas")
 ```
 
-**Datenübertragung:**
-- `Q_gas_supplied_m3_per_day`: Verfügbares Gas [m³/d]
-- Gaszusammensetzung (CH4%, CO2%)
+**Datenübertragung:**  
+- `Q_gas_supplied_m3_per_day`: Verfügbares Gas [m³/d]  
+- Gaszusammensetzung (CH4%, CO2%)  
 
 ### Wärmeverbindungen
 
@@ -109,9 +109,9 @@ configurator.connect("digester_1_storage", "chp_1", "gas")
 configurator.connect("chp_1", "heating_1", "heat")
 ```
 
-**Datenübertragung:**
-- `P_th`: Verfügbare thermische Leistung [kW]
-- Temperaturniveaus
+**Datenübertragung:**  
+- `P_th`: Verfügbare thermische Leistung [kW]  
+- Temperaturniveaus  
 
 ### Auto-Verbindungshelfer
 
@@ -400,14 +400,14 @@ storage_good = SubstrateStorage(
 
 ## Nächste Schritte
 
-- **Beispiele**: Siehe detaillierte Komponentenguides für vollständige Implementierungen
-- **Optimierung**: Nutze Parameterstudien zur Optimierung der Komponentendimensionierung
-- **[API-Referenz](../../api/biological.md)**: Siehe detaillierte Klassendokumentation für erweiterte Funktionen
+- **Beispiele**: Siehe detaillierte Komponentenguides für vollständige Implementierungen  
+- **Optimierung**: Nutze Parameterstudien zur Optimierung der Komponentendimensionierung  
+- **[API-Referenz](../../api/biological.md)**: Siehe detaillierte Klassendokumentation für erweiterte Funktionen  
 
 ## Weiterführende Dokumentation
 
-- [Biologische Komponenten](biological.md)
-- [Energiekomponenten](energy.md)
-- [Mechanische Komponenten](mechanical.md)
-- [Fütterungskomponenten](feeding.md)
-- [Sensoren](sensors.md)
+- [Biologische Komponenten](biological.md)  
+- [Energiekomponenten](energy.md)  
+- [Mechanische Komponenten](mechanical.md)  
+- [Fütterungskomponenten](feeding.md)  
+- [Sensoren](sensors.md)  

@@ -17,10 +17,10 @@ Aktuelle Abdeckung: **98.1%** (Ziel: 95%)
 
 ## Build-Status
 
-- **MkDocs Build**: ✅ Erfolgreich
-- **Link-Checker**: ✅ Keine defekten Links
-- **Docstring-Stil**: Google Style (Verifiziert)
-- **Bilingualität**: 🇩🇪 Deutsch & 🇬🇧 Englisch (Vollständig)
+- **MkDocs Build**: ✅ Erfolgreich  
+- **Link-Checker**: ✅ Keine defekten Links  
+- **Docstring-Stil**: Google Style (Verifiziert)  
+- **Bilingualität**: 🇩🇪 Deutsch & 🇬🇧 Englisch (Vollständig)  
 
 ## Wartung
 

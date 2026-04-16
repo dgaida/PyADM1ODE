@@ -9,7 +9,7 @@ Willkommen bei PyADM1ODE - Einem Python-Framework zur Modellierung, Simulation u
 
 <div class="grid cards" markdown>
 
--   :material-clock-fast:{ .lg .middle } __Schnellstart__
+-   :material-clock-fast:{ .lg .middle } __Schnellstart__  
 
     ---
 
@@ -17,7 +17,7 @@ Willkommen bei PyADM1ODE - Einem Python-Framework zur Modellierung, Simulation u
 
     [:octicons-arrow-right-24: Schnellstart-Anleitung](user_guide/quickstart.md)
 
--   :material-download:{ .lg .middle } __Installation__
+-   :material-download:{ .lg .middle } __Installation__  
 
     ---
 
@@ -25,7 +25,7 @@ Willkommen bei PyADM1ODE - Einem Python-Framework zur Modellierung, Simulation u
 
     [:octicons-arrow-right-24: Installations-Anleitung](user_guide/installation.md)
 
--   :material-book-open-variant:{ .lg .middle } __Handbuch__
+-   :material-book-open-variant:{ .lg .middle } __Handbuch__  
 
     ---
 
@@ -33,7 +33,7 @@ Willkommen bei PyADM1ODE - Einem Python-Framework zur Modellierung, Simulation u
 
     [:octicons-arrow-right-24: Handbuch](user_guide/adm1_implementation.md)
 
--   :material-code-braces:{ .lg .middle } __Beispiele__
+-   :material-code-braces:{ .lg .middle } __Beispiele__  
 
     ---
 
@@ -47,10 +47,10 @@ Willkommen bei PyADM1ODE - Einem Python-Framework zur Modellierung, Simulation u
 
 PyADM1ODE ist ein umfassendes Python-Framework für die Modellierung landwirtschaftlicher Biogasanlagen, das Folgendes kombiniert:
 
-- **Wissenschaftliche Genauigkeit**: Basierend auf dem ADM1-Modell der IWA, dem internationalen Standard für die anaerobe Vergärung.
-- **Modulare Architektur**: Kombinieren Sie Komponenten (Fermenter, BHKW, Pumpen, Rührwerke), um jede beliebige Anlagenkonfiguration zu erstellen.
-- **Praxisnähe**: Validiert mit Daten von in Betrieb befindlichen Biogasanlagen.
-- **Python-Ökosystem**: Integriert mit NumPy, SciPy, Pandas und Visualisierungsbibliotheken.
+- **Wissenschaftliche Genauigkeit**: Basierend auf dem ADM1-Modell der IWA, dem internationalen Standard für die anaerobe Vergärung.  
+- **Modulare Architektur**: Kombinieren Sie Komponenten (Fermenter, BHKW, Pumpen, Rührwerke), um jede beliebige Anlagenkonfiguration zu erstellen.  
+- **Praxisnähe**: Validiert mit Daten von in Betrieb befindlichen Biogasanlagen.  
+- **Python-Ökosystem**: Integriert mit NumPy, SciPy, Pandas und Visualisierungsbibliotheken.  
 
 ## Kurzes Beispiel
 
@@ -97,9 +97,9 @@ print(f"pH: {final['pH']:.2f}")
 
 ## Community und Support
 
-- **GitHub Repository**: [dgaida/PyADM1ODE](https://github.com/dgaida/PyADM1ODE)
-- **Issue Tracker**: [Bugs melden oder Features anfragen](https://github.com/dgaida/PyADM1ODE/issues)
-- **Discussions**: [Fragen stellen und Ideen austauschen](https://github.com/dgaida/PyADM1ODE/discussions)
+- **GitHub Repository**: [dgaida/PyADM1ODE](https://github.com/dgaida/PyADM1ODE)  
+- **Issue Tracker**: [Bugs melden oder Features anfragen](https://github.com/dgaida/PyADM1ODE/issues)  
+- **Discussions**: [Fragen stellen und Ideen austauschen](https://github.com/dgaida/PyADM1ODE/discussions)  
 
 ## Lizenz
 

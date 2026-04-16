@@ -276,10 +276,10 @@ flare = Flare(
 
 ### Fackelsteuerung
 
-Die Fackel wird automatisch aktiviert, wenn:
-- Gasspeicher Überdruck erreicht
-- BHKW weniger Gas verbraucht als produziert
-- Notabschaltung erforderlich ist
+Die Fackel wird automatisch aktiviert, wenn:  
+- Gasspeicher Überdruck erreicht  
+- BHKW weniger Gas verbraucht als produziert  
+- Notabschaltung erforderlich ist  
 
 ```python
 # Gas vom Speicher zur Fackel
@@ -536,7 +536,7 @@ if heat_outputs['P_aux_heat'] > 50:  # kW Zusatzheizung
 
 ## Nächste Schritte
 
-- [Biologische Komponenten](biological.md): Fermenter und Prozesssteuerung
-- [Mechanische Komponenten](mechanical.md): Pumpen und Rührwerke
-- [Fütterungskomponenten](feeding.md): Lagerung und Dosierung
-- [API-Referenz](../../api/energy.md): Detaillierte Klassendokumentation
+- [Biologische Komponenten](biological.md): Fermenter und Prozesssteuerung  
+- [Mechanische Komponenten](mechanical.md): Pumpen und Rührwerke  
+- [Fütterungskomponenten](feeding.md): Lagerung und Dosierung  
+- [API-Referenz](../../api/energy.md): Detaillierte Klassendokumentation  

@@ -4,16 +4,16 @@ This guide covers the installation of PyADM1ODE on different operating systems.
 
 ## System Requirements
 
-### Minimum Requirements
-- **Python**: 3.8 or higher (3.10+ recommended, needed by [fastmcp](https://github.com/jlowin/fastmcp) package, used in the optional package [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp))
-- **Operating System**: Windows, Linux, or macOS
-- **Memory**: 2 GB RAM minimum (4 GB recommended)
-- **Disk Space**: 10 MB for installation
+### Minimum Requirements  
+- **Python**: 3.8 or higher (3.10+ recommended, needed by [fastmcp](https://github.com/jlowin/fastmcp) package, used in the optional package [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp))  
+- **Operating System**: Windows, Linux, or macOS  
+- **Memory**: 2 GB RAM minimum (4 GB recommended)  
+- **Disk Space**: 10 MB for installation  
 
 ### Runtime Requirements
 PyADM1ODE uses C# DLLs for substrate characterization, which requires:  
 - **Linux/macOS**: Mono runtime  
-- **Windows**: .NET Framework (usually pre-installed)
+- **Windows**: .NET Framework (usually pre-installed)  
 
 ## Installation Methods
 
@@ -57,11 +57,11 @@ pip install -e .
 
 ### Windows Installation
 
-1. **Install Python** (if not already installed):
-   - Download from [python.org](https://www.python.org/downloads/)
-   - Ensure "Add Python to PATH" is checked during installation
+1. **Install Python** (if not already installed):  
+   - Download from [python.org](https://www.python.org/downloads/)  
+   - Ensure "Add Python to PATH" is checked during installation  
 
-2. **Install PyADM1**:
+2. **Install PyADM1**:  
    ```cmd
    pip install pyadm1ode  # pip not yet supported
    # or from source:
@@ -73,29 +73,29 @@ pip install -e .
    pip install -r requirements-windows.txt
    ```
 
-3. **.NET Framework** should be pre-installed on Windows 10/11. If needed:
-   - Download from [Microsoft .NET Framework](https://dotnet.microsoft.com/download/dotnet-framework)
+3. **.NET Framework** should be pre-installed on Windows 10/11. If needed:  
+   - Download from [Microsoft .NET Framework](https://dotnet.microsoft.com/download/dotnet-framework)  
 
-4. **Verify Installation**:
+4. **Verify Installation**:  
    ```cmd
    python -c "import pyadm1; print(pyadm1.__version__)"
    ```
 
 ### Linux Installation (Ubuntu/Debian)
 
-1. **Install Python and dependencies**:
+1. **Install Python and dependencies**:  
    ```bash
    sudo apt-get update
    sudo apt-get install python3 python3-pip
    ```
 
-2. **Install Mono runtime** (required for C# DLLs):
+2. **Install Mono runtime** (required for C# DLLs):  
    ```bash
    sudo apt-get install mono-complete
    mono --version
    ```
 
-3. **Install PyADM1ODE**:
+3. **Install PyADM1ODE**:  
    ```bash
    pip install pyadm1ode
    # or from source:
@@ -104,30 +104,30 @@ pip install -e .
    pip install -e .
    ```
 
-4. **Verify Installation**:
+4. **Verify Installation**:  
    ```bash
    python3 -c "import pyadm1; print(pyadm1.__version__)"
    ```
 
 ### macOS Installation
 
-1. **Install Homebrew** (if not already installed):
+1. **Install Homebrew** (if not already installed):  
    ```bash
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
 
-2. **Install Python**:
+2. **Install Python**:  
    ```bash
    brew install python@3.11
    ```
 
-3. **Install Mono runtime**:
+3. **Install Mono runtime**:  
    ```bash
    brew install mono
    mono --version
    ```
 
-4. **Install PyADM1ODE**:
+4. **Install PyADM1ODE**:  
    ```bash
    pip3 install pyadm1ode
    # or from source:
@@ -136,7 +136,7 @@ pip install -e .
    pip3 install -e .
    ```
 
-5. **Verify Installation**:
+5. **Verify Installation**:  
    ```bash
    python3 -c "import pyadm1; print(pyadm1.__version__)"
    ```
@@ -302,22 +302,22 @@ import clr  # First import may take 10-30 seconds
 
 If you encounter issues:
 
-1. **Check GitHub Issues**: [PyADM1ODE Issues](https://github.com/dgaida/PyADM1ODE/issues)
-2. **Create New Issue**: Include:
-   - Operating system and version
-   - Python version (`python --version`)
-   - Error messages and stack traces
-   - Output from `verify_install.py`
+1. **Check GitHub Issues**: [PyADM1ODE Issues](https://github.com/dgaida/PyADM1ODE/issues)  
+2. **Create New Issue**: Include:  
+   - Operating system and version  
+   - Python version (`python --version`)  
+   - Error messages and stack traces  
+   - Output from `verify_install.py`  
 
-3. **Contact**: daniel.gaida@th-koeln.de
+3. **Contact**: daniel.gaida@th-koeln.de  
 
 ## Next Steps
 
 After successful installation:
 
-1. **Try the Quickstart**: See [Quickstart Guide](quickstart.md)
-2. **Explore Examples**: See [Example: Basic Digester](../examples/basic_digester.md)
-3. **Read Component Documentation**: [Components Guide](components/index.md)
+1. **Try the Quickstart**: See [Quickstart Guide](quickstart.md)  
+2. **Explore Examples**: See [Example: Basic Digester](../examples/basic_digester.md)  
+3. **Read Component Documentation**: [Components Guide](components/index.md)  
 
 ## Updating PyADM1ODE
 
@@ -346,10 +346,10 @@ cd PyADM1ODE_mcp
 pip install -e .
 ```
 
-**Features:**
-- Natural language plant design via LLM (e.g., Claude)
-- MCP server for LLM integration
-- Interactive plant configuration
+**Features:**  
+- Natural language plant design via LLM (e.g., Claude)  
+- MCP server for LLM integration  
+- Interactive plant configuration  
 
 **Use cases:** Non-expert plant design, rapid prototyping, educational tools
 
@@ -366,12 +366,12 @@ cd PyADM1ODE_calibration
 pip install -e .
 ```
 
-**Features:**
-- Initial calibration from historical data
-- Online re-calibration during operation
-- Multiple optimization algorithms (DE, PSO, Nelder-Mead)
-- Comprehensive validation metrics
-- Database integration for measurement data
+**Features:**  
+- Initial calibration from historical data  
+- Online re-calibration during operation  
+- Multiple optimization algorithms (DE, PSO, Nelder-Mead)  
+- Comprehensive validation metrics  
+- Database integration for measurement data  
 
 **Use cases:** Model parameterization, real plant adaptation, uncertainty quantification
 

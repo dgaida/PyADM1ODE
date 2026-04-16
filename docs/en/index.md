@@ -9,7 +9,7 @@ Welcome to PyADM1ODE - A Python framework for modeling, simulating, and optimizi
 
 <div class="grid cards" markdown>
 
--   :material-clock-fast:{ .lg .middle } __Quick Start__
+-   :material-clock-fast:{ .lg .middle } __Quick Start__  
 
     ---
 
@@ -17,7 +17,7 @@ Welcome to PyADM1ODE - A Python framework for modeling, simulating, and optimizi
 
     [:octicons-arrow-right-24: Quickstart Guide](user_guide/quickstart.md)
 
--   :material-download:{ .lg .middle } __Installation__
+-   :material-download:{ .lg .middle } __Installation__  
 
     ---
 
@@ -25,7 +25,7 @@ Welcome to PyADM1ODE - A Python framework for modeling, simulating, and optimizi
 
     [:octicons-arrow-right-24: Installation Guide](user_guide/installation.md)
 
--   :material-book-open-variant:{ .lg .middle } __User Guide__
+-   :material-book-open-variant:{ .lg .middle } __User Guide__  
 
     ---
 
@@ -33,7 +33,7 @@ Welcome to PyADM1ODE - A Python framework for modeling, simulating, and optimizi
 
     [:octicons-arrow-right-24: Handbuch](user_guide/adm1_implementation.md)
 
--   :material-code-braces:{ .lg .middle } __Examples__
+-   :material-code-braces:{ .lg .middle } __Examples__  
 
     ---
 
@@ -47,10 +47,10 @@ Welcome to PyADM1ODE - A Python framework for modeling, simulating, and optimizi
 
 PyADM1ODE is a comprehensive Python framework for agricultural biogas plant modeling that combines:
 
-- **Scientific accuracy**: Based on IWA's ADM1 model, the international standard for anaerobic digestion.
-- **Modular architecture**: Mix and match components (digesters, CHP units, pumps, mixers) to build any plant configuration.
-- **Real-world applicability**: Validated with data from operating biogas plants.
-- **Python ecosystem**: Integrates with NumPy, SciPy, Pandas, and visualization libraries.
+- **Scientific accuracy**: Based on IWA's ADM1 model, the international standard for anaerobic digestion.  
+- **Modular architecture**: Mix and match components (digesters, CHP units, pumps, mixers) to build any plant configuration.  
+- **Real-world applicability**: Validated with data from operating biogas plants.  
+- **Python ecosystem**: Integrates with NumPy, SciPy, Pandas, and visualization libraries.  
 
 ## Quick Example
 
@@ -97,9 +97,9 @@ print(f"pH: {final['pH']:.2f}")
 
 ## Community and Support
 
-- **GitHub Repository**: [dgaida/PyADM1ODE](https://github.com/dgaida/PyADM1ODE)
-- **Issue Tracker**: [Report bugs or request features](https://github.com/dgaida/PyADM1ODE/issues)
-- **Discussions**: [Ask questions and share ideas](https://github.com/dgaida/PyADM1ODE/discussions)
+- **GitHub Repository**: [dgaida/PyADM1ODE](https://github.com/dgaida/PyADM1ODE)  
+- **Issue Tracker**: [Report bugs or request features](https://github.com/dgaida/PyADM1ODE/issues)  
+- **Discussions**: [Ask questions and share ideas](https://github.com/dgaida/PyADM1ODE/discussions)  
 
 ## License
 

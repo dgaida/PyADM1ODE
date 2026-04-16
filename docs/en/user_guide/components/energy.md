@@ -29,15 +29,15 @@ Models biogas storage with pressure management.
 
 Safety flare for excess gas combustion.
 
-## Optimization Strategies
-- Use waste heat for digester heating.
-- Buffer gas during peak production.
+## Optimization Strategies  
+- Use waste heat for digester heating.  
+- Buffer gas during peak production.  
 
-## Performance Metrics
-- Electrical efficiency.
-- Heat utilization rate.
+## Performance Metrics  
+- Electrical efficiency.  
+- Heat utilization rate.  
 
 ## Troubleshooting
 
-### CHP Not Running
-- Check gas availability and pressure.
+### CHP Not Running  
+- Check gas availability and pressure.  

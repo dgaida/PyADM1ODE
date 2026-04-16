@@ -77,12 +77,12 @@ graph TB
 
 ## Übersicht
 
-Die zweistufige Anlage demonstriert:
-- **Temperature-Phased Anaerobic Digestion (TPAD)**: Thermophile Hydrolyse (45°C) gefolgt von mesophiler Methanogenese (35°C)
-- **Mechanische Komponenten**: Pumpen für den Materialtransport und Rührwerke zur Prozessunterstützung
-- **Energieintegration**: BHKW zur Stromerzeugung und Abwärmenutzung
-- **Prozesssteuerung**: Mehrere Heizsysteme für ein präzises Temperaturmanagement
-- **Gasmanagement**: Dedizierter Speicher für jeden Fermenter mit automatischem Überlaufschutz und zentraler Fackel
+Die zweistufige Anlage demonstriert:  
+- **Temperature-Phased Anaerobic Digestion (TPAD)**: Thermophile Hydrolyse (45°C) gefolgt von mesophiler Methanogenese (35°C)  
+- **Mechanische Komponenten**: Pumpen für den Materialtransport und Rührwerke zur Prozessunterstützung  
+- **Energieintegration**: BHKW zur Stromerzeugung und Abwärmenutzung  
+- **Prozesssteuerung**: Mehrere Heizsysteme für ein präzises Temperaturmanagement  
+- **Gasmanagement**: Dedizierter Speicher für jeden Fermenter mit automatischem Überlaufschutz und zentraler Fackel  
 
 ## Anlagenkonfiguration
 
@@ -124,10 +124,10 @@ Die zweistufige Anlage demonstriert:
 | **Speicher 2** | Membran | 150 m³ | Puffer für Gas aus Fermenter 2 |
 | **BHKW-Fackel** | Verbrennung | Variabel | Sicherheitsentsorgung von Überschussgas |
 
-**Gasfluss-Architektur**:
-1. Jeder Fermenter produziert Gas → Dedizierter Speicher
-2. Beide Speicher liefern Gas → Einzelne BHKW-Einheit
-3. BHKW-Überschuss/Überlauf → Automatische Fackelverbrennung
+**Gasfluss-Architektur**:  
+1. Jeder Fermenter produziert Gas → Dedizierter Speicher  
+2. Beide Speicher liefern Gas → Einzelne BHKW-Einheit  
+3. BHKW-Überschuss/Überlauf → Automatische Fackelverbrennung  
 
 ## Code-Durchgang
 
@@ -162,16 +162,16 @@ configurator.add_digester(
 )
 ```
 
-**Design-Überlegungen**:
-- **Stufe 1 (thermophil)**: Höhere Temperaturen verbessern die Hydrolyse komplexer Substrate (Zellulose, Hemizellulose, Proteine).
-- **Stufe 2 (mesophil)**: Niedrigere Temperaturen sind stabiler und effizienter für die Methanogenese.
-- **Nur Ablauf-Fütterung für Stufe 2**: Verhindert Überlastung, erhält vorhydrolysiertes Material.
+**Design-Überlegungen**:  
+- **Stufe 1 (thermophil)**: Höhere Temperaturen verbessern die Hydrolyse komplexer Substrate (Zellulose, Hemizellulose, Proteine).  
+- **Stufe 2 (mesophil)**: Niedrigere Temperaturen sind stabiler und effizienter für die Methanogenese.  
+- **Nur Ablauf-Fütterung für Stufe 2**: Verhindert Überlastung, erhält vorhydrolysiertes Material.  
 
-**Automatische Gasspeicher-Erstellung**:
-- `add_digester()` erstellt automatisch:
-  - `digester_1_storage` (304 m³ Membranspeicher)
-  - `digester_2_storage` (150 m³ Membranspeicher)
-- Die Speicher werden automatisch mit ihren Fermentern verbunden.
+**Automatische Gasspeicher-Erstellung**:  
+- `add_digester()` erstellt automatisch:  
+  - `digester_1_storage` (304 m³ Membranspeicher)  
+  - `digester_2_storage` (150 m³ Membranspeicher)  
+- Die Speicher werden automatisch mit ihren Fermentern verbunden.  
 
 ### 3. Mechanische Komponenten hinzufügen
 
@@ -185,11 +185,11 @@ feed_pump = Pump(
 )
 ```
 
-**Exzenterschneckenpumpen** sind ideal für Biogassubstrate, weil sie:
-- Hohe Feststoffgehalte (>12 % TS) bewältigen
-- Scherkräfte minimieren (Faserstruktur bleibt erhalten)
-- Selbstansaugend sind
-- Einen weiten Viskositätsbereich abdecken
+**Exzenterschneckenpumpen** sind ideal für Biogassubstrate, weil sie:  
+- Hohe Feststoffgehalte (>12 % TS) bewältigen  
+- Scherkräfte minimieren (Faserstruktur bleibt erhalten)  
+- Selbstansaugend sind  
+- Einen weiten Viskositätsbereich abdecken  
 
 #### Transferpumpe
 ```python
@@ -201,10 +201,10 @@ transfer_pump = Pump(
 )
 ```
 
-Höherer Druck erforderlich für:
-- Überwindung von Rohrreibungslasten
-- Höhenunterschiede
-- Injektion in unter Druck stehenden Fermenter
+Höherer Druck erforderlich für:  
+- Überwindung von Rohrreibungslasten  
+- Höhenunterschiede  
+- Injektion in unter Druck stehenden Fermenter  
 
 #### Rührwerke
 ```python
@@ -219,14 +219,14 @@ mixer_1 = Mixer(
 )
 ```
 
-**Rührstrategie**:
-- **Intermittierender Betrieb**: Reduziert den Energieverbrauch um 75 %.
-- **Hohe Intensität in der Hydrolyse**: Aufbrechen von Schwimmschichten, verbessert den Substratkontakt.
-- **Mittlere Intensität in der Methanogenese**: Schonendes Rühren verhindert die Hemmung empfindlicher Methanogener.
+**Rührstrategie**:  
+- **Intermittierender Betrieb**: Reduziert den Energieverbrauch um 75 %.  
+- **Hohe Intensität in der Hydrolyse**: Aufbrechen von Schwimmschichten, verbessert den Substratkontakt.  
+- **Mittlere Intensität in der Methanogenese**: Schonendes Rühren verhindert die Hemmung empfindlicher Methanogener.  
 
-**Spezifischer Leistungseintrag**:
-- Fermenter 1: 15 kW × 0,25 ÷ 1977 m³ = **1,9 W/m³** (hoch)
-- Fermenter 2: 10 kW × 0,25 ÷ 1000 m³ = **2,5 W/m³** (mittel)
+**Spezifischer Leistungseintrag**:  
+- Fermenter 1: 15 kW × 0,25 ÷ 1977 m³ = **1,9 W/m³** (hoch)  
+- Fermenter 2: 10 kW × 0,25 ÷ 1000 m³ = **2,5 W/m³** (mittel)  
 
 ### 4. Energieintegration mit automatischer Fackel
 
@@ -257,11 +257,11 @@ Fermenter 2 → Speicher 2 ↗      ↓
                           Wärme → Heizung 1 & 2
 ```
 
-**Automatische Fackelerstellung**:
-- `add_chp()` erstellt automatisch eine Fackelkomponente.
-- Fackel-ID: `{chp_id}_flare` (z. B. "chp_1_flare")
-- Funktion: Sicherheitsverbrennung von Überschussgas (98 % CH₄-Zerstörung)
-- Automatische Verbindung: BHKW → Fackel
+**Automatische Fackelerstellung**:  
+- `add_chp()` erstellt automatisch eine Fackelkomponente.  
+- Fackel-ID: `{chp_id}_flare` (z. B. "chp_1_flare")  
+- Funktion: Sicherheitsverbrennung von Überschussgas (98 % CH₄-Zerstörung)  
+- Automatische Verbindung: BHKW → Fackel  
 
 ### 5. Drei-Pass-Gasfluss-Simulation
 
@@ -292,11 +292,11 @@ Speicher 2 liefert: ~475 m³/d
 # Überschuss zur Fackel: (Angebot - Verbrauch)
 ```
 
-Dies gewährleistet:
-- Realistisches Druckmanagement in Speichern
-- BHKW arbeitet mit verfügbarem Gas, nicht mit idealisiertem Angebot
-- Automatisches Abblasen verhindert Überdruck
-- Die Fackel handhabt das gesamte Überschussgas sicher
+Dies gewährleistet:  
+- Realistisches Druckmanagement in Speichern  
+- BHKW arbeitet mit verfügbarem Gas, nicht mit idealisiertem Angebot  
+- Automatisches Abblasen verhindert Überdruck  
+- Die Fackel handhabt das gesamte Überschussgas sicher  
 
 ## Erwartete Ausgabe
 
@@ -418,11 +418,11 @@ Gasmanagement:
   Zur Fackel:               103.1 m³/d (8.2%)
 ```
 
-**Analyse**:
-- **Netto-Wirkungsgrad**: (472 kW + 125 kW) ÷ (751,9 m³/d × 10 kWh/m³ ÷ 24 h) = **190 %** (exzellente Wärmerückgewinnung)
-- **Eigenverbrauchsquote**: 8,25 ÷ 480,5 = **1,7 %** (sehr niedrig)
-- **Überschusswärme**: 540,6 - 125,4 = **415 kW** für externe Nutzung verfügbar
-- **Fackelnutzung**: 8,2 % der Produktion abgeblasen (typisch bei BHKW-Teillast)
+**Analyse**:  
+- **Netto-Wirkungsgrad**: (472 kW + 125 kW) ÷ (751,9 m³/d × 10 kWh/m³ ÷ 24 h) = **190 %** (exzellente Wärmerückgewinnung)  
+- **Eigenverbrauchsquote**: 8,25 ÷ 480,5 = **1,7 %** (sehr niedrig)  
+- **Überschusswärme**: 540,6 - 125,4 = **415 kW** für externe Nutzung verfügbar  
+- **Fackelnutzung**: 8,2 % der Produktion abgeblasen (typisch bei BHKW-Teillast)  
 
 ### Prozessstabilität
 
@@ -443,11 +443,11 @@ Fermenter 2 (Methanogenese):
   Speicherstatus:       NORMAL (50% voll)
 ```
 
-**Interpretation**:
-- **Fermenter 1**: Höhere VFA-Werte werden in der thermophilen Hydrolysestufe erwartet - Säuren werden in Stufe 2 verbraucht.
-- **Fermenter 2**: Exzellente Stabilitätsindikatoren - Methanogene verbrauchen VFAs effektiv.
-- **pH-Gradient**: 7,15 → 7,32 zeigt ordnungsgemäße zweistufige Funktion.
-- **Gasspeicher**: Beide auf gesundem 50 % Füllstand mit stabilem Druck.
+**Interpretation**:  
+- **Fermenter 1**: Höhere VFA-Werte werden in der thermophilen Hydrolysestufe erwartet - Säuren werden in Stufe 2 verbraucht.  
+- **Fermenter 2**: Exzellente Stabilitätsindikatoren - Methanogene verbrauchen VFAs effektiv.  
+- **pH-Gradient**: 7,15 → 7,32 zeigt ordnungsgemäße zweistufige Funktion.  
+- **Gasspeicher**: Beide auf gesundem 50 % Füllstand mit stabilem Druck.  
 
 ## Vorteile des zweistufigen Designs
 
@@ -462,17 +462,17 @@ Fermenter 2 (Methanogenese):
 
 ### 2. Substratflexibilität
 
-Das zweistufige System kommt besser mit schwierigen Substraten zurecht:
-- **Faserreiche Materialien**: Verbesserte Hydrolyse in Stufe 1.
-- **Proteinreiche Substrate**: Ammoniakpufferung über die Stufen hinweg.
-- **Variable Zulaufzusammensetzung**: Stufe 2 bietet Pufferkapazität.
+Das zweistufige System kommt besser mit schwierigen Substraten zurecht:  
+- **Faserreiche Materialien**: Verbesserte Hydrolyse in Stufe 1.  
+- **Proteinreiche Substrate**: Ammoniakpufferung über die Stufen hinweg.  
+- **Variable Zulaufzusammensetzung**: Stufe 2 bietet Pufferkapazität.  
 
 ### 3. Operative Vorteile
 
-- **Reduzierte Schaumbildung**: Separate Hydrolysephase.
-- **Bessere Hygienisierung**: Thermophile Stufe (45°C) tötet Pathogene ab.
-- **Einfachere Prozesssteuerung**: Überwachung und Steuerung jeder Stufe unabhängig voneinander.
-- **Erholung von Störungen**: Stufe 2 kann Störungen in Stufe 1 abpuffern.
+- **Reduzierte Schaumbildung**: Separate Hydrolysephase.  
+- **Bessere Hygienisierung**: Thermophile Stufe (45°C) tötet Pathogene ab.  
+- **Einfachere Prozesssteuerung**: Überwachung und Steuerung jeder Stufe unabhängig voneinander.  
+- **Erholung von Störungen**: Stufe 2 kann Störungen in Stufe 1 abpuffern.  
 
 ## Leistungsvergleich
 
@@ -486,69 +486,69 @@ Das zweistufige System kommt besser mit schwierigen Substraten zurecht:
 | **Prozessstabilität** | Moderat (FOS/TAC: 0,35) | Hoch (FOS/TAC: 0,25) | Besser |
 | **OLR-Kapazität** | 3,5 kg CSB/(m³·d) | 8,4 kg CSB/(m³·d) | +140 % |
 
-**Kosten-Nutzen**:
-- **Zusatzinvestition**: ~15-20 % (zweiter Fermenter, Pumpen)
-- **Energiegewinn**: ~9 % mehr Biogas
-- **Stabilität**: Signifikant reduziertes Risiko von Prozessversagen
-- **ROI**: Typischerweise 3-5 Jahre bei schwierigen Substraten
+**Kosten-Nutzen**:  
+- **Zusatzinvestition**: ~15-20 % (zweiter Fermenter, Pumpen)  
+- **Energiegewinn**: ~9 % mehr Biogas  
+- **Stabilität**: Signifikant reduziertes Risiko von Prozessversagen  
+- **ROI**: Typischerweise 3-5 Jahre bei schwierigen Substraten  
 
 ## Leistung mechanischer Komponenten
 
 ### Pumpenbetrieb
 
-**Fütterungspumpe**:
-- **Betriebspunkt**: 25 m³/d ÷ 24 = 1,04 m³/h (3,5 % der Nennkapazität)
-- **Effizienz bei niedrigem Durchfluss**: Exzenterschneckenpumpen behalten ca. 60 % Wirkungsgrad auch bei 3 % Kapazität bei.
-- **Jährliche Energie**: 5 kW × 8760 h = 43.800 kWh
+**Fütterungspumpe**:  
+- **Betriebspunkt**: 25 m³/d ÷ 24 = 1,04 m³/h (3,5 % der Nennkapazität)  
+- **Effizienz bei niedrigem Durchfluss**: Exzenterschneckenpumpen behalten ca. 60 % Wirkungsgrad auch bei 3 % Kapazität bei.  
+- **Jährliche Energie**: 5 kW × 8760 h = 43.800 kWh  
 
-**Transferpumpe**:
-- **Betriebspunkt**: 25 m³/d ÷ 24 = 1,04 m³/h
-- **Tatsächliche Leistung**: 8 kW × (1,04/25) × 1,2 (Abschlag für niedrige Effizienz) ≈ **0,4 kW**
-- **Jährliche Energie**: 0,4 kW × 8760 h = 3.504 kWh
+**Transferpumpe**:  
+- **Betriebspunkt**: 25 m³/d ÷ 24 = 1,04 m³/h  
+- **Tatsächliche Leistung**: 8 kW × (1,04/25) × 1,2 (Abschlag für niedrige Effizienz) ≈ **0,4 kW**  
+- **Jährliche Energie**: 0,4 kW × 8760 h = 3.504 kWh  
 
 ### Rührwerksleistung
 
-**Hydrolyse-Rührwerk**:
-- **Mischzeit**: ~15 Minuten (aus Reynolds-Zahl und Geometrie)
-- **Umfangsgeschwindigkeit**: ~4,5 m/s (turbulenter Bereich)
-- **Scherrate**: ~50 s⁻¹ (hohe Intensität)
-- **Leistungsbeiwert**: 0,32 (typisch für Propeller bei Re > 10.000)
+**Hydrolyse-Rührwerk**:  
+- **Mischzeit**: ~15 Minuten (aus Reynolds-Zahl und Geometrie)  
+- **Umfangsgeschwindigkeit**: ~4,5 m/s (turbulenter Bereich)  
+- **Scherrate**: ~50 s⁻¹ (hohe Intensität)  
+- **Leistungsbeiwert**: 0,32 (typisch für Propeller bei Re > 10.000)  
 
-**Methanogenese-Rührwerk**:
-- **Mischzeit**: ~20 Minuten
-- **Umfangsgeschwindigkeit**: ~3,8 m/s
-- **Scherrate**: ~35 s⁻¹ (mittlere Intensität)
-- **Verhindert Entmischung**, ohne empfindliche Methanogene zu schädigen.
+**Methanogenese-Rührwerk**:  
+- **Mischzeit**: ~20 Minuten  
+- **Umfangsgeschwindigkeit**: ~3,8 m/s  
+- **Scherrate**: ~35 s⁻¹ (mittlere Intensität)  
+- **Verhindert Entmischung**, ohne empfindliche Methanogene zu schädigen.  
 
 ## Gasspeicher- und Fackelmanagement
 
 ### Speicherdynamik
 
-**Speicher 1 (Hydrolyse)**:
-- Erhält ~850 m³/d (höhere Produktion durch verbesserte Hydrolyse).
-- Liefert ~675 m³/d an BHKW (proportional zum Gesamtbedarf).
-- Netto-Akkumulation: +175 m³/d.
-- Erreicht 50 % Kapazität in ~0,9 Tagen.
+**Speicher 1 (Hydrolyse)**:  
+- Erhält ~850 m³/d (höhere Produktion durch verbesserte Hydrolyse).  
+- Liefert ~675 m³/d an BHKW (proportional zum Gesamtbedarf).  
+- Netto-Akkumulation: +175 m³/d.  
+- Erreicht 50 % Kapazität in ~0,9 Tagen.  
 
-**Speicher 2 (Methanogenese)**:
-- Erhält ~400 m³/d (niedriger, aber stabiler).
-- Liefert ~475 m³/d an BHKW.
-- Netto-Abzug: -75 m³/d (ergänzt Speicher 1).
-- Bietet Puffer für Produktionsschwankungen.
+**Speicher 2 (Methanogenese)**:  
+- Erhält ~400 m³/d (niedriger, aber stabiler).  
+- Liefert ~475 m³/d an BHKW.  
+- Netto-Abzug: -75 m³/d (ergänzt Speicher 1).  
+- Bietet Puffer für Produktionsschwankungen.  
 
 ### Fackelbetrieb
 
-**Wann wird die Fackel aktiviert?**:
-1. **Speicherüberlauf**: Wenn einer der Speicher 100 % Kapazität erreicht.
-2. **BHKW-Teillast**: Wenn das BHKW unter Volllast arbeitet.
-3. **Wartung**: Wenn das BHKW offline ist, die Fermenter aber weiterlaufen.
-4. **Anfahren/Abfahren**: Während transienter Betriebszustände.
+**Wann wird die Fackel aktiviert?**:  
+1. **Speicherüberlauf**: Wenn einer der Speicher 100 % Kapazität erreicht.  
+2. **BHKW-Teillast**: Wenn das BHKW unter Volllast arbeitet.  
+3. **Wartung**: Wenn das BHKW offline ist, die Fermenter aber weiterlaufen.  
+4. **Anfahren/Abfahren**: Während transienter Betriebszustände.  
 
-**Fackelleistung**:
-- **Zerstörungsgrad**: 98 % CH₄-Konvertierung zu CO₂.
-- **Temperatur**: ~1000°C Verbrennungstemperatur.
-- **Emissionen**: 2 % unverbranntes CH₄ + CO₂ aus der Verbrennung.
-- **Sicherheit**: Automatische Zündung, Flammenüberwachung.
+**Fackelleistung**:  
+- **Zerstörungsgrad**: 98 % CH₄-Konvertierung zu CO₂.  
+- **Temperatur**: ~1000°C Verbrennungstemperatur.  
+- **Emissionen**: 2 % unverbranntes CH₄ + CO₂ aus der Verbrennung.  
+- **Sicherheit**: Automatische Zündung, Flammenüberwachung.  
 
 ## Prozesssteuerungsstrategien
 
@@ -564,10 +564,10 @@ heating_2.target_temperature = 308.15  # K
 heating_2.heat_loss_coefficient = 0.3  # Niedrigeres ΔT
 ```
 
-**Berechnung des Wärmebedarfs**:
-- **Fermenter 1**: Q = 0,5 kW/K × (45 - 15)°C = **15 kW** Basisverlust + **80 kW** Prozessheizung = **95 kW**
-- **Fermenter 2**: Q = 0,3 kW/K × (35 - 15)°C = **6 kW** Basisverlust + **24 kW** Prozessheizung = **30 kW**
-- **Gesamt**: **125 kW** (gut abgedeckt durch 541 kW BHKW-Wärmeleistung)
+**Berechnung des Wärmebedarfs**:  
+- **Fermenter 1**: Q = 0,5 kW/K × (45 - 15)°C = **15 kW** Basisverlust + **80 kW** Prozessheizung = **95 kW**  
+- **Fermenter 2**: Q = 0,3 kW/K × (35 - 15)°C = **6 kW** Basisverlust + **24 kW** Prozessheizung = **30 kW**  
+- **Gesamt**: **125 kW** (gut abgedeckt durch 541 kW BHKW-Wärmeleistung)  
 
 ### Rührwerkssteuerung
 
@@ -582,19 +582,19 @@ else:
 
 ### Fütterungssteuerung
 
-**Model Predictive Control (MPC)** Ansatz:
-1. Messen der aktuellen VFA und des pH-Werts.
-2. Vorhersagen der 48h-Reaktion mit verschiedenen Fütterungsraten.
-3. Auswählen der Fütterungsrate, die CH₄ optimiert, während pH > 7,0 bleibt.
+**Model Predictive Control (MPC)** Ansatz:  
+1. Messen der aktuellen VFA und des pH-Werts.  
+2. Vorhersagen der 48h-Reaktion mit verschiedenen Fütterungsraten.  
+3. Auswählen der Fütterungsrate, die CH₄ optimiert, während pH > 7,0 bleibt.  
 
 ## Häufige Probleme und Lösungen
 
 ### Problem 1: Hohe VFA in Fermenter 1
 
-**Symptome**:
-- VFA > 5 g/L
-- pH < 7,0
-- Reduzierte Gasproduktion
+**Symptome**:  
+- VFA > 5 g/L  
+- pH < 7,0  
+- Reduzierte Gasproduktion  
 
 **Lösungen**:
 ```python
@@ -610,10 +610,10 @@ mixer_1.on_time_fraction = 0.35
 
 ### Problem 2: Niedriger Methangehalt
 
-**Symptome**:
-- CH₄ < 55 %
-- CO₂ erhöht
-- Niedrige spezifische Gasproduktion
+**Symptome**:  
+- CH₄ < 55 %  
+- CO₂ erhöht  
+- Niedrige spezifische Gasproduktion  
 
 **Lösungen**:
 ```python
@@ -628,9 +628,9 @@ T_ad_2 = 311.15  # 38°C (optimal für viele Methanogene)
 
 ### Problem 3: Schaumbildung in Fermenter 1
 
-**Symptome**:
-- Gasspeicher zeigt Druckschwankungen
-- Ablauf enthält übermäßige Gasblasen
+**Symptome**:  
+- Gasspeicher zeigt Druckschwankungen  
+- Ablauf enthält übermäßige Gasblasen  
 
 **Lösungen**:
 ```python
@@ -646,15 +646,15 @@ Q_substrates = [15, 10, 0, 0, 0, 0, 0, 0, 0.05, 0]  # 50 L/d Antischaum
 
 ### Problem 4: Übermäßige Fackelnutzung
 
-**Symptome**:
-- Fackel läuft kontinuierlich
-- >20 % der Produktion zur Fackel
-- Hoher Speicherdruck
+**Symptome**:  
+- Fackel läuft kontinuierlich  
+- >20 % der Produktion zur Fackel  
+- Hoher Speicherdruck  
 
-**Ursachen**:
-- BHKW zu klein für Gasproduktion
-- BHKW im Teillastbetrieb
-- Übermäßiger Substratzulauf
+**Ursachen**:  
+- BHKW zu klein für Gasproduktion  
+- BHKW im Teillastbetrieb  
+- Übermäßiger Substratzulauf  
 
 **Lösungen**:
 ```python
@@ -717,12 +717,12 @@ Q_best, Q_ch4_pred = simulator.determine_best_feed_by_n_sims(
 
 ## Referenzen
 
-- **TPAD Design**: Simeonov, I., Chorukova, E., & Kabaivanova, L. (2025). *Two-stage anaerobic digestion for green energy production: A review*. Processes, 13(2), 294.
-- **Prozesssteuerung**: Gaida (2014). *Dynamic real-time substrate feed optimization of anaerobic co-digestion plants*. PhD thesis, Leiden University.
+- **TPAD Design**: Simeonov, I., Chorukova, E., & Kabaivanova, L. (2025). *Two-stage anaerobic digestion for green energy production: A review*. Processes, 13(2), 294.  
+- **Prozesssteuerung**: Gaida (2014). *Dynamic real-time substrate feed optimization of anaerobic co-digestion plants*. PhD thesis, Leiden University.  
 
 ## Ähnliche Beispiele
 
-- [`basic_digester.md`](basic_digester.md): Einfaches einstufiges System
-- `calibration_workflow.md`: Parameterschätzung aus Messdaten
-- `substrate_optimization.py`: Optimale Fütterungsstrategie
-- [`parallel_two_stage_simulation.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py): Parallele Simulationen
+- [`basic_digester.md`](basic_digester.md): Einfaches einstufiges System  
+- `calibration_workflow.md`: Parameterschätzung aus Messdaten  
+- `substrate_optimization.py`: Optimale Fütterungsstrategie  
+- [`parallel_two_stage_simulation.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py): Parallele Simulationen  

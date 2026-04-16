@@ -12,30 +12,30 @@ PyADM1 wird in Zukunft ein umfassendes Sensormodul für realistische Prozessübe
 
 Sensoren für physikalische Eigenschaften:
 
-- **pH-Elektroden**: Mit Kalibrierungsdrift und Temperaturkompensation
-- **Temperatursensoren**: PT100, Thermoelemente mit Genauigkeitsspezifikationen
-- **Drucksensoren**: Für Gas- und Flüssigkeitsdruck
-- **Füllstandssensoren**: Ultraschall, Radar, hydrostatisch
-- **Durchflussmesser**: Magnetisch-induktiv, Ultraschall, Coriolis
+- **pH-Elektroden**: Mit Kalibrierungsdrift und Temperaturkompensation  
+- **Temperatursensoren**: PT100, Thermoelemente mit Genauigkeitsspezifikationen  
+- **Drucksensoren**: Für Gas- und Flüssigkeitsdruck  
+- **Füllstandssensoren**: Ultraschall, Radar, hydrostatisch  
+- **Durchflussmesser**: Magnetisch-induktiv, Ultraschall, Coriolis  
 
 ### Chemische Sensoren
 
 Sensoren für Prozessflüssigkeitsanalyse:
 
-- **VFA-Analysatoren**: Online-Titration, GC-Analyse
-- **Ammoniak-Sensoren**: Ionenselektive Elektroden
-- **CSB-Analysatoren**: Online-Spektroskopie
-- **Nährstoffanalysatoren**: N, P, K-Messung
+- **VFA-Analysatoren**: Online-Titration, GC-Analyse  
+- **Ammoniak-Sensoren**: Ionenselektive Elektroden  
+- **CSB-Analysatoren**: Online-Spektroskopie  
+- **Nährstoffanalysatoren**: N, P, K-Messung  
 
 ### Gas-Analysatoren
 
 Sensoren für Biogaszusammensetzung:
 
-- **Methan-Sensoren**: Infrarot, kalorimetrisch
-- **CO2-Sensoren**: NDIR-Technologie
-- **H2S-Sensoren**: Elektrochemisch
-- **Sauerstoff-Sensoren**: Für Leckageerkennung
-- **Spurengas-Analysatoren**: Mit Nachweisgrenzen
+- **Methan-Sensoren**: Infrarot, kalorimetrisch  
+- **CO2-Sensoren**: NDIR-Technologie  
+- **H2S-Sensoren**: Elektrochemisch  
+- **Sauerstoff-Sensoren**: Für Leckageerkennung  
+- **Spurengas-Analysatoren**: Mit Nachweisgrenzen  
 
 ## Beispiel-Konzept
 
@@ -431,30 +431,30 @@ if monitoring_data['VFA'] / monitoring_data['TAC'] > 0.4:
 
 Das Sensormodul wird erweitert um:
 
-1. **Realistische Sensor-Modelle**
-   - Rauschen und Drift
-   - Kalibrierungszyklen
-   - Ausfallmodelle
+1. **Realistische Sensor-Modelle**  
+   - Rauschen und Drift  
+   - Kalibrierungszyklen  
+   - Ausfallmodelle  
 
-2. **Erweiterte Prozesssteuerung**
-   - PID-Regler
-   - Modellprädiktive Regelung (MPC)
-   - Adaptive Steuerung
+2. **Erweiterte Prozesssteuerung**  
+   - PID-Regler  
+   - Modellprädiktive Regelung (MPC)  
+   - Adaptive Steuerung  
 
-3. **Datenanalyse-Tools**
-   - Trendanalyse
-   - Anomalie-Erkennung
-   - Prädiktive Wartung
+3. **Datenanalyse-Tools**  
+   - Trendanalyse  
+   - Anomalie-Erkennung  
+   - Prädiktive Wartung  
 
-4. **Visualisierung**
-   - Echtzeit-Dashboards
-   - Historische Trends
-   - Alarm-Übersichten
+4. **Visualisierung**  
+   - Echtzeit-Dashboards  
+   - Historische Trends  
+   - Alarm-Übersichten  
 
 ## Nächste Schritte
 
-- [Biologische Komponenten](biological.md): Fermenter und Prozesssteuerung
-- [Energiekomponenten](energy.md): BHKW und Wärmesysteme
-- [Mechanische Komponenten](mechanical.md): Pumpen und Rührwerke
-- [Fütterungskomponenten](feeding.md): Lagerung und Dosierung
-- API-Referenz (in Kürze): Detaillierte Klassendokumentation (wenn verfügbar)
+- [Biologische Komponenten](biological.md): Fermenter und Prozesssteuerung  
+- [Energiekomponenten](energy.md): BHKW und Wärmesysteme  
+- [Mechanische Komponenten](mechanical.md): Pumpen und Rührwerke  
+- [Fütterungskomponenten](feeding.md): Lagerung und Dosierung  
+- API-Referenz (in Kürze): Detaillierte Klassendokumentation (wenn verfügbar)  

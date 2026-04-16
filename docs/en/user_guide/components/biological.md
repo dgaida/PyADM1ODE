@@ -32,17 +32,17 @@ configurator.add_digester(
 
 ### Temperature Options
 
-- **Psychrophilic**: 298.15 K (25°C)
-- **Mesophilic**: 308.15 K (35°C) - Most common
-- **Thermophilic**: 328.15 K (55°C) - For fiber-rich substrates
+- **Psychrophilic**: 298.15 K (25°C)  
+- **Mesophilic**: 308.15 K (35°C) - Most common  
+- **Thermophilic**: 328.15 K (55°C) - For fiber-rich substrates  
 
 ### Outputs
 
-The `step()` method returns a dictionary containing:
-- `Q_gas`, `Q_ch4`, `Q_co2`: Gas production rates [m³/d]
-- `pH`: pH value
-- `VFA`: Volatile fatty acids [g/L]
-- `TAC`: Total alkalinity [g CaCO3/L]
+The `step()` method returns a dictionary containing:  
+- `Q_gas`, `Q_ch4`, `Q_co2`: Gas production rates [m³/d]  
+- `pH`: pH value  
+- `VFA`: Volatile fatty acids [g/L]  
+- `TAC`: Total alkalinity [g CaCO3/L]  
 
 ## Hydrolysis
 
@@ -54,17 +54,17 @@ Solid-liquid separation for digestate processing (Stub for future implementation
 
 ## Process Monitoring
 
-Monitoring key indicators is crucial for stable operation:
-- **pH value**: Should be between 6.8 and 7.5.
-- **VFA/TAC ratio**: Should be below 0.4.
-- **Methane content**: Typically > 55%.
+Monitoring key indicators is crucial for stable operation:  
+- **pH value**: Should be between 6.8 and 7.5.  
+- **VFA/TAC ratio**: Should be below 0.4.  
+- **Methane content**: Typically > 55%.  
 
 ## Troubleshooting
 
-### Low pH Value
-- **Cause**: High OLR or insufficient buffering.
-- **Solution**: Reduce feed rate or add lime.
+### Low pH Value  
+- **Cause**: High OLR or insufficient buffering.  
+- **Solution**: Reduce feed rate or add lime.  
 
-## Best Practices
-- Start with moderate loading rates.
-- Monitor VFA levels regularly.
+## Best Practices  
+- Start with moderate loading rates.  
+- Monitor VFA levels regularly.  

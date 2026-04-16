@@ -258,10 +258,10 @@ monitor_digester_health(results)
 
 ### Niedriger pH-Wert
 
-**Ursachen:**
-- Zu hohe organische Raumbelastung (OLR)
-- Unzureichende Pufferkapazität
-- Plötzliche Substratänderung
+**Ursachen:**  
+- Zu hohe organische Raumbelastung (OLR)  
+- Unzureichende Pufferkapazität  
+- Plötzliche Substratänderung  
 
 **Lösungen:**
 ```python
@@ -274,23 +274,23 @@ Q = [15, 10, 0, 0, 0, 0, 0, 1, 0, 0]  # 1 m³/d Kalk
 
 ### Schaumbildung
 
-**Ursachen:**
-- Zu hoher Proteingehalt im Substrat
-- Plötzliche pH-Änderungen
-- Hohe VFA-Konzentrationen
+**Ursachen:**  
+- Zu hoher Proteingehalt im Substrat  
+- Plötzliche pH-Änderungen  
+- Hohe VFA-Konzentrationen  
 
-**Lösungen:**
-- Reduziere proteinreiche Substrate
-- Stabilisiere pH-Wert durch Pufferung
-- Implementiere Anti-Schaum-Maßnahmen
+**Lösungen:**  
+- Reduziere proteinreiche Substrate  
+- Stabilisiere pH-Wert durch Pufferung  
+- Implementiere Anti-Schaum-Maßnahmen  
 
 ### Geringe Gasproduktion
 
-**Ursachen:**
-- Niedrige organische Belastung
-- Substrat niedriger Qualität
-- Inhibition (NH3, H2S, Schwermetalle)
-- Zu kurze Verweilzeit
+**Ursachen:**  
+- Niedrige organische Belastung  
+- Substrat niedriger Qualität  
+- Inhibition (NH3, H2S, Schwermetalle)  
+- Zu kurze Verweilzeit  
 
 **Diagnose:**
 ```python
@@ -320,30 +320,30 @@ diagnose_low_gas_production(digester.outputs_data)
 
 ## Best Practices
 
-1. **Starten Sie mit realistischen Betriebsparametern**
-   - Nutze typische HRT-Werte (30-40 Tage)
-   - Beginne mit moderater OLR (2-4 kg VS/m³/d)
+1. **Starten Sie mit realistischen Betriebsparametern**  
+   - Nutze typische HRT-Werte (30-40 Tage)  
+   - Beginne mit moderater OLR (2-4 kg VS/m³/d)  
 
-2. **Überwache kritische Parameter**
-   - pH-Wert sollte stabil sein (±0.2)
-   - VFA/TAC-Verhältnis < 0.4
-   - Methangehalt > 55%
+2. **Überwache kritische Parameter**  
+   - pH-Wert sollte stabil sein (±0.2)  
+   - VFA/TAC-Verhältnis < 0.4  
+   - Methangehalt > 55%  
 
-3. **Implementiere Puffersysteme**
-   - Füge Kalk oder andere Puffer bei niedrigem pH hinzu
-   - Halte TAC > 4 g CaCO3/L
+3. **Implementiere Puffersysteme**  
+   - Füge Kalk oder andere Puffer bei niedrigem pH hinzu  
+   - Halte TAC > 4 g CaCO3/L  
 
-4. **Nutze zweistufige Systeme für schwierige Substrate**
-   - Thermophile Hydrolyse für faserreiche Substrate
-   - Mesophile Methanogenese für stabile Gasproduktion
+4. **Nutze zweistufige Systeme für schwierige Substrate**  
+   - Thermophile Hydrolyse für faserreiche Substrate  
+   - Mesophile Methanogenese für stabile Gasproduktion  
 
-5. **Kalibriere das Modell mit realen Daten**
-   - Nutze Kalibrierungsparameter für genauere Vorhersagen
-   - Validiere mit Betriebsdaten
+5. **Kalibriere das Modell mit realen Daten**  
+   - Nutze Kalibrierungsparameter für genauere Vorhersagen  
+   - Validiere mit Betriebsdaten  
 
 ## Nächste Schritte
 
-- [Energiekomponenten](energy.md): BHKW und Wärmesysteme
-- [Mechanische Komponenten](mechanical.md): Pumpen und Rührwerke
-- [Fütterungskomponenten](feeding.md): Lagerung und Dosierung
-- [API-Referenz](../../api/biological.md): Detaillierte Klassendokumentation
+- [Energiekomponenten](energy.md): BHKW und Wärmesysteme  
+- [Mechanische Komponenten](mechanical.md): Pumpen und Rührwerke  
+- [Fütterungskomponenten](feeding.md): Lagerung und Dosierung  
+- [API-Referenz](../../api/biological.md): Detaillierte Klassendokumentation  

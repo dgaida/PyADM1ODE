@@ -4,15 +4,15 @@ This guide will get you up and running with PyADM1ODE in minutes.
 
 ## Table of Contents
 
-1. [Your First Simulation](#your-first-simulation)
-2. [Basic Single Digester](#basic-single-digester)
-3. [Complete Plant with CHP and Heating](#complete-plant-with-chp-and-heating)
-4. [Two-Stage Digestion](#two-stage-digestion)
-5. [Working with Different Substrates](#working-with-different-substrates)
-6. [Save and Load Configurations](#save-and-load-configurations)
-7. [Understanding Results](#understanding-results)
-8. [Common Patterns](#common-patterns)
-9. [Next Steps](#next-steps)
+1. [Your First Simulation](#your-first-simulation)  
+2. [Basic Single Digester](#basic-single-digester)  
+3. [Complete Plant with CHP and Heating](#complete-plant-with-chp-and-heating)  
+4. [Two-Stage Digestion](#two-stage-digestion)  
+5. [Working with Different Substrates](#working-with-different-substrates)  
+6. [Save and Load Configurations](#save-and-load-configurations)  
+7. [Understanding Results](#understanding-results)  
+8. [Common Patterns](#common-patterns)  
+9. [Next Steps](#next-steps)  
 
 ## Your First Simulation
 
@@ -96,10 +96,10 @@ The basic digester consists of:
 
 ### Key Features
 
-- **Single-stage CSTR**: Continuously stirred tank reactor
-- **Automatic gas storage**: Created per digester (low-pressure membrane)
-- **Substrate mixing**: Corn silage + cattle manure
-- **Temperature control**: Mesophilic (35°C)
+- **Single-stage CSTR**: Continuously stirred tank reactor  
+- **Automatic gas storage**: Created per digester (low-pressure membrane)  
+- **Substrate mixing**: Corn silage + cattle manure  
+- **Temperature control**: Mesophilic (35°C)  
 
 ### Plant Configuration Details
 
@@ -135,11 +135,11 @@ configurator.add_digester(
 }
 ```
 
-**When storage fills up:**
-- Pressure increases from 0.95 to 1.05 bar
-- At 1.05 bar (full), excess gas is vented
-- Venting prevents overpressure and equipment damage
-- In real plants, vented gas goes to flare
+**When storage fills up:**  
+- Pressure increases from 0.95 to 1.05 bar  
+- At 1.05 bar (full), excess gas is vented  
+- Venting prevents overpressure and equipment damage  
+- In real plants, vented gas goes to flare  
 
 ### Process Stability Indicators
 
@@ -248,9 +248,9 @@ print(f"  Auxiliary Heat:   {heating['P_aux_heat']:.1f} kW")
 
 **Automatic Component Creation:**
 
-PlantConfigurator creates and connects:
-- **Gas Storage**: One per digester (membrane, sized to V_gas)
-- **Flare**: One per CHP (safety combustion, 98% CH₄ destruction)
+PlantConfigurator creates and connects:  
+- **Gas Storage**: One per digester (membrane, sized to V_gas)  
+- **Flare**: One per CHP (safety combustion, 98% CH₄ destruction)  
 
 **Connection Chain:**
 ```
@@ -277,11 +277,11 @@ See the complete example in [`examples/02_two_stage_plant.py`](https://github.co
 
 ### Key Features
 
-- **Temperature-phased**: Thermophilic (45°C) + Mesophilic (35°C)
-- **Enhanced hydrolysis**: Higher temp in first stage
-- **Stable methanogenesis**: Optimized conditions in second stage
-- **Mechanical components**: Pumps and mixers for material handling
-- **Energy integration**: Combined heat and power with waste heat recovery
+- **Temperature-phased**: Thermophilic (45°C) + Mesophilic (35°C)  
+- **Enhanced hydrolysis**: Higher temp in first stage  
+- **Stable methanogenesis**: Optimized conditions in second stage  
+- **Mechanical components**: Pumps and mixers for material handling  
+- **Energy integration**: Combined heat and power with waste heat recovery  
 
 ### Configuration
 
@@ -433,16 +433,16 @@ Gas Management:
 
 PyADM1 includes 10 pre-configured agricultural substrates:
 
-1. **Corn silage (maize)** - Energy crop, high biogas yield
-2. **Liquid manure (swinemanure)** - High nitrogen content
-3. **Green rye (greenrye)** - Early-harvest energy crop
-4. **Grass silage (grass)** - Grassland biomass
-5. **Wheat (wheat)** - Cereal crop
-6. **GPS (gps)** - Whole-crop grain silage
-7. **CCM (ccm)** - Corn-cob-mix
-8. **Feed lime (futterkalk)** - pH buffer additive
-9. **Cow manure (cowmanure)** - Dairy farm manure
-10. **Onions (onions)** - Vegetable waste
+1. **Corn silage (maize)** - Energy crop, high biogas yield  
+2. **Liquid manure (swinemanure)** - High nitrogen content  
+3. **Green rye (greenrye)** - Early-harvest energy crop  
+4. **Grass silage (grass)** - Grassland biomass  
+5. **Wheat (wheat)** - Cereal crop  
+6. **GPS (gps)** - Whole-crop grain silage  
+7. **CCM (ccm)** - Corn-cob-mix  
+8. **Feed lime (futterkalk)** - pH buffer additive  
+9. **Cow manure (cowmanure)** - Dairy farm manure  
+10. **Onions (onions)** - Vegetable waste  
 
 ### Substrate Feed Examples
 
@@ -505,31 +505,31 @@ results = plant.simulate(duration=10.0, dt=1.0/24.0)
 
 ### Key Output Variables
 
-#### Digester Outputs
-- `Q_gas` - Total biogas production [m³/d]
-- `Q_ch4` - Methane production [m³/d]
-- `Q_co2` - CO2 production [m³/d]
-- `pH` - pH value [-]
-- `VFA` - Volatile fatty acids [g HAceq/L]
-- `TAC` - Total alkalinity [g CaCO3/L]
+#### Digester Outputs  
+- `Q_gas` - Total biogas production [m³/d]  
+- `Q_ch4` - Methane production [m³/d]  
+- `Q_co2` - CO2 production [m³/d]  
+- `pH` - pH value [-]  
+- `VFA` - Volatile fatty acids [g HAceq/L]  
+- `TAC` - Total alkalinity [g CaCO3/L]  
 
-#### CHP Outputs
-- `P_el` - Electrical power [kW]
-- `P_th` - Thermal power [kW]
-- `Q_gas_consumed` - Gas consumption [m³/d]
-- `load_factor` - Operating point [0-1]
+#### CHP Outputs  
+- `P_el` - Electrical power [kW]  
+- `P_th` - Thermal power [kW]  
+- `Q_gas_consumed` - Gas consumption [m³/d]  
+- `load_factor` - Operating point [0-1]  
 
-#### Heating Outputs
-- `Q_heat_supplied` - Heat delivered [kW]
-- `P_th_used` - CHP heat used [kW]
-- `P_aux_heat` - Auxiliary heat needed [kW]
+#### Heating Outputs  
+- `Q_heat_supplied` - Heat delivered [kW]  
+- `P_th_used` - CHP heat used [kW]  
+- `P_aux_heat` - Auxiliary heat needed [kW]  
 
-#### Gas Storage Outputs
-- `stored_volume_m3` - Current volume [m³ STP]
-- `pressure_bar` - Current pressure [bar]
-- `utilization` - Fill level [0-1]
-- `vented_volume_m3` - Gas vented [m³]
-- `Q_gas_supplied_m3_per_day` - Gas available [m³/d]
+#### Gas Storage Outputs  
+- `stored_volume_m3` - Current volume [m³ STP]  
+- `pressure_bar` - Current pressure [bar]  
+- `utilization` - Fill level [0-1]  
+- `vented_volume_m3` - Gas vented [m³]  
+- `Q_gas_supplied_m3_per_day` - Gas available [m³/d]  
 
 ## Common Patterns
 
@@ -598,15 +598,15 @@ plt.savefig('simulation_results.png')
 
 Now that you've run your first simulations:
 
-1. **Learn about components**: [Components Guide](components/index.md)
-2. **Explore advanced examples**:
-   - [`examples/01_basic_digester.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py)
-   - [`examples/02_two_stage_plant.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py)
-   - [`examples/parallel_two_stage_simulation.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py)
-3. **Try parallel simulations**: Multiple scenarios simultaneously
-4. **Explore MCP server**: [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp) for LLM-driven plant design
-5. **Calibrate your model**: [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration) for parameter fitting
-6. **Read API documentation**: Full reference for all classes
+1. **Learn about components**: [Components Guide](components/index.md)  
+2. **Explore advanced examples**:  
+   - [`examples/01_basic_digester.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py)  
+   - [`examples/02_two_stage_plant.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py)  
+   - [`examples/parallel_two_stage_simulation.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py)  
+3. **Try parallel simulations**: Multiple scenarios simultaneously  
+4. **Explore MCP server**: [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp) for LLM-driven plant design  
+5. **Calibrate your model**: [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration) for parameter fitting  
+6. **Read API documentation**: Full reference for all classes  
 
 ## Quick Reference
 
@@ -673,30 +673,30 @@ Q_high = 40            # High loading [m³/d]
 
 **Symptoms**: pH drops, VFA rises, methane production decreases
 
-**Solutions**:
-- Reduce substrate feed rate
-- Increase retention time (larger V_liq)
-- Add buffer material (feed lime)
-- Check substrate composition
+**Solutions**:  
+- Reduce substrate feed rate  
+- Increase retention time (larger V_liq)  
+- Add buffer material (feed lime)  
+- Check substrate composition  
 
 ### Issue: Low gas production
 
-**Solutions**:
-- Increase substrate feed
-- Check substrate degradability
-- Verify temperature is optimal
-- Ensure adequate mixing (implicit in model)
+**Solutions**:  
+- Increase substrate feed  
+- Check substrate degradability  
+- Verify temperature is optimal  
+- Ensure adequate mixing (implicit in model)  
 
 ### Issue: Slow simulation
 
-**Solutions**:
-- Increase time step `dt` (but keep < 0.1 days)
-- Reduce `save_interval` for less output
-- Use parallel simulation for parameter sweeps
+**Solutions**:  
+- Increase time step `dt` (but keep < 0.1 days)  
+- Reduce `save_interval` for less output  
+- Use parallel simulation for parameter sweeps  
 
 For more help, see the [Installation Guide](installation.md) or contact daniel.gaida@th-koeln.de.
 
 ## References
 
-- **ADM1 Model**: Batstone et al. (2002). *Anaerobic Digestion Model No. 1*. IWA Publishing.
-- **Leitfaden Biogas**: FNR (2016). https://mediathek.fnr.de/leitfaden-biogas.html
+- **ADM1 Model**: Batstone et al. (2002). *Anaerobic Digestion Model No. 1*. IWA Publishing.  
+- **Leitfaden Biogas**: FNR (2016). https://mediathek.fnr.de/leitfaden-biogas.html  

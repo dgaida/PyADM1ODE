@@ -77,12 +77,12 @@ graph TB
 
 ## Overview
 
-The two-stage plant demonstrates:
-- **Temperature-Phased Anaerobic Digestion (TPAD)**: Thermophilic hydrolysis (45°C) followed by mesophilic methanogenesis (35°C)
-- **Mechanical Components**: Pumps for material transport and mixers for process enhancement
-- **Energy Integration**: CHP for power generation and waste heat recovery
-- **Process Control**: Multiple heating systems for precise temperature management
-- **Gas Management**: Dedicated storage for each digester with automatic overflow protection and centralized flare
+The two-stage plant demonstrates:  
+- **Temperature-Phased Anaerobic Digestion (TPAD)**: Thermophilic hydrolysis (45°C) followed by mesophilic methanogenesis (35°C)  
+- **Mechanical Components**: Pumps for material transport and mixers for process enhancement  
+- **Energy Integration**: CHP for power generation and waste heat recovery  
+- **Process Control**: Multiple heating systems for precise temperature management  
+- **Gas Management**: Dedicated storage for each digester with automatic overflow protection and centralized flare  
 
 ## Plant Configuration
 
@@ -124,10 +124,10 @@ The two-stage plant demonstrates:
 | **Storage 2** | Membrane | 150 m³ | Buffer for Digester 2 gas |
 | **CHP Flare** | Combustion | Variable | Safety disposal of excess gas |
 
-**Gas Flow Architecture**:
-1. Each digester produces gas → Dedicated storage
-2. Both storages supply gas → Single CHP unit
-3. CHP excess/overflow → Automatic flare combustion
+**Gas Flow Architecture**:  
+1. Each digester produces gas → Dedicated storage  
+2. Both storages supply gas → Single CHP unit  
+3. CHP excess/overflow → Automatic flare combustion  
 
 ## Code Walkthrough
 
@@ -162,16 +162,16 @@ configurator.add_digester(
 )
 ```
 
-**Design Rationale**:
-- **Stage 1 (Thermophilic)**: Higher temperature enhances hydrolysis of complex substrates (cellulose, hemicellulose, proteins)
-- **Stage 2 (Mesophilic)**: Lower temperature is more stable and efficient for methanogenesis
-- **Effluent-only feed to Stage 2**: Prevents overloading, receives pre-hydrolyzed material
+**Design Rationale**:  
+- **Stage 1 (Thermophilic)**: Higher temperature enhances hydrolysis of complex substrates (cellulose, hemicellulose, proteins)  
+- **Stage 2 (Mesophilic)**: Lower temperature is more stable and efficient for methanogenesis  
+- **Effluent-only feed to Stage 2**: Prevents overloading, receives pre-hydrolyzed material  
 
-**Automatic Gas Storage Creation**:
-- `add_digester()` automatically creates:
-  - `digester_1_storage` (304 m³ membrane storage)
-  - `digester_2_storage` (150 m³ membrane storage)
-- Storages are automatically connected to their digesters
+**Automatic Gas Storage Creation**:  
+- `add_digester()` automatically creates:  
+  - `digester_1_storage` (304 m³ membrane storage)  
+  - `digester_2_storage` (150 m³ membrane storage)  
+- Storages are automatically connected to their digesters  
 
 ### 3. Adding Mechanical Components
 
@@ -185,11 +185,11 @@ feed_pump = Pump(
 )
 ```
 
-**Progressive Cavity Pumps** are ideal for biogas substrates because:
-- Handle high solids content (>12% TS)
-- Low shear (preserves fiber structure)
-- Self-priming capability
-- Wide viscosity range
+**Progressive Cavity Pumps** are ideal for biogas substrates because:  
+- Handle high solids content (>12% TS)  
+- Low shear (preserves fiber structure)  
+- Self-priming capability  
+- Wide viscosity range  
 
 #### Transfer Pump
 ```python
@@ -201,10 +201,10 @@ transfer_pump = Pump(
 )
 ```
 
-Higher pressure head needed for:
-- Overcoming pipe friction losses
-- Elevation differences
-- Injection into pressurized digester
+Higher pressure head needed for:  
+- Overcoming pipe friction losses  
+- Elevation differences  
+- Injection into pressurized digester  
 
 #### Mixers
 ```python
@@ -219,14 +219,14 @@ mixer_1 = Mixer(
 )
 ```
 
-**Mixing Strategy**:
-- **Intermittent operation**: Reduces energy consumption by 75%
-- **High intensity in hydrolysis**: Breaks up floating layers, enhances substrate contact
-- **Medium intensity in methanogenesis**: Gentle mixing prevents inhibition of sensitive methanogens
+**Mixing Strategy**:  
+- **Intermittent operation**: Reduces energy consumption by 75%  
+- **High intensity in hydrolysis**: Breaks up floating layers, enhances substrate contact  
+- **Medium intensity in methanogenesis**: Gentle mixing prevents inhibition of sensitive methanogens  
 
-**Specific Power Input**:
-- Digester 1: 15 kW × 0.25 ÷ 1977 m³ = **1.9 W/m³** (high)
-- Digester 2: 10 kW × 0.25 ÷ 1000 m³ = **2.5 W/m³** (medium)
+**Specific Power Input**:  
+- Digester 1: 15 kW × 0.25 ÷ 1977 m³ = **1.9 W/m³** (high)  
+- Digester 2: 10 kW × 0.25 ÷ 1000 m³ = **2.5 W/m³** (medium)  
 
 ### 4. Energy Integration with Automatic Flare
 
@@ -257,11 +257,11 @@ Digester 2 → Storage 2 ↗      ↓
                           Heat → Heating 1 & 2
 ```
 
-**Automatic Flare Creation**:
-- `add_chp()` automatically creates a flare component
-- Flare ID: `{chp_id}_flare` (e.g., "chp_1_flare")
-- Function: Safety combustion of excess gas (98% CH₄ destruction)
-- Automatic connection: CHP → Flare
+**Automatic Flare Creation**:  
+- `add_chp()` automatically creates a flare component  
+- Flare ID: `{chp_id}_flare` (e.g., "chp_1_flare")  
+- Function: Safety combustion of excess gas (98% CH₄ destruction)  
+- Automatic connection: CHP → Flare  
 
 ### 5. Three-Pass Gas Flow Simulation
 
@@ -292,11 +292,11 @@ Storage 2 supplies: ~475 m³/d
 # Excess to flare: (supply - consumption)
 ```
 
-This ensures:
-- Realistic pressure management in storages
-- CHP operates with available gas, not idealized supply
-- Automatic venting prevents overpressure
-- Flare handles all excess gas safely
+This ensures:  
+- Realistic pressure management in storages  
+- CHP operates with available gas, not idealized supply  
+- Automatic venting prevents overpressure  
+- Flare handles all excess gas safely  
 
 ## Expected Output
 
@@ -418,11 +418,11 @@ Gas Management:
   To flare:                 103.1 m³/d (8.2%)
 ```
 
-**Analysis**:
-- **Net efficiency**: (472 kW + 125 kW) ÷ (751.9 m³/d × 10 kWh/m³ ÷ 24 h) = **190%** (excellent heat recovery)
-- **Parasitic ratio**: 8.25 ÷ 480.5 = **1.7%** (very low)
-- **Excess heat**: 540.6 - 125.4 = **415 kW** available for external use
-- **Flare usage**: 8.2% of production vented (typical when CHP at part load)
+**Analysis**:  
+- **Net efficiency**: (472 kW + 125 kW) ÷ (751.9 m³/d × 10 kWh/m³ ÷ 24 h) = **190%** (excellent heat recovery)  
+- **Parasitic ratio**: 8.25 ÷ 480.5 = **1.7%** (very low)  
+- **Excess heat**: 540.6 - 125.4 = **415 kW** available for external use  
+- **Flare usage**: 8.2% of production vented (typical when CHP at part load)  
 
 ### Process Stability
 
@@ -443,11 +443,11 @@ Digester 2 (Methanogenesis):
   Storage status:       NORMAL (50% full)
 ```
 
-**Interpretation**:
-- **Digester 1**: Higher VFA is expected in thermophilic hydrolysis stage - acids are consumed in stage 2
-- **Digester 2**: Excellent stability indicators - methanogens effectively consume VFAs
-- **pH gradient**: 7.15 → 7.32 shows proper two-stage function
-- **Gas storages**: Both at healthy 50% fill level with stable pressure
+**Interpretation**:  
+- **Digester 1**: Higher VFA is expected in thermophilic hydrolysis stage - acids are consumed in stage 2  
+- **Digester 2**: Excellent stability indicators - methanogens effectively consume VFAs  
+- **pH gradient**: 7.15 → 7.32 shows proper two-stage function  
+- **Gas storages**: Both at healthy 50% fill level with stable pressure  
 
 ## Advantages of Two-Stage Design
 
@@ -462,17 +462,17 @@ Digester 2 (Methanogenesis):
 
 ### 2. Substrate Flexibility
 
-The two-stage system handles difficult substrates better:
-- **High-fiber materials**: Enhanced hydrolysis in Stage 1
-- **High-protein substrates**: Ammonia buffering across stages
-- **Variable feed composition**: Stage 2 provides buffer capacity
+The two-stage system handles difficult substrates better:  
+- **High-fiber materials**: Enhanced hydrolysis in Stage 1  
+- **High-protein substrates**: Ammonia buffering across stages  
+- **Variable feed composition**: Stage 2 provides buffer capacity  
 
 ### 3. Operational Benefits
 
-- **Reduced foaming**: Separate hydrolysis phase
-- **Better pathogen reduction**: Thermophilic stage (45°C) kills pathogens
-- **Easier process control**: Monitor and control each stage independently
-- **Recovery from upsets**: Stage 2 can buffer Stage 1 disturbances
+- **Reduced foaming**: Separate hydrolysis phase  
+- **Better pathogen reduction**: Thermophilic stage (45°C) kills pathogens  
+- **Easier process control**: Monitor and control each stage independently  
+- **Recovery from upsets**: Stage 2 can buffer Stage 1 disturbances  
 
 ## Performance Comparison
 
@@ -486,69 +486,69 @@ The two-stage system handles difficult substrates better:
 | **Process stability** | Moderate (FOS/TAC: 0.35) | High (FOS/TAC: 0.25) | Better |
 | **OLR capacity** | 3.5 kg COD/(m³·d) | 8.4 kg COD/(m³·d) | +140% |
 
-**Cost-Benefit**:
-- **Additional investment**: ~15-20% (second digester, pumps)
-- **Energy gain**: ~9% more biogas
-- **Stability**: Significantly reduced risk of process failure
-- **ROI**: Typically 3-5 years for difficult substrates
+**Cost-Benefit**:  
+- **Additional investment**: ~15-20% (second digester, pumps)  
+- **Energy gain**: ~9% more biogas  
+- **Stability**: Significantly reduced risk of process failure  
+- **ROI**: Typically 3-5 years for difficult substrates  
 
 ## Mechanical Component Performance
 
 ### Pump Operation
 
-**Feed Pump**:
-- **Operating point**: 25 m³/d ÷ 24 = 1.04 m³/h (3.5% of nominal capacity)
-- **Efficiency at low flow**: Progressive cavity pumps maintain ~60% efficiency even at 3% capacity
-- **Annual energy**: 5 kW × 8760 h = 43,800 kWh
+**Feed Pump**:  
+- **Operating point**: 25 m³/d ÷ 24 = 1.04 m³/h (3.5% of nominal capacity)  
+- **Efficiency at low flow**: Progressive cavity pumps maintain ~60% efficiency even at 3% capacity  
+- **Annual energy**: 5 kW × 8760 h = 43,800 kWh  
 
-**Transfer Pump**:
-- **Operating point**: 25 m³/d ÷ 24 = 1.04 m³/h
-- **Actual power**: 8 kW × (1.04/25) × 1.2 (low efficiency penalty) ≈ **0.4 kW**
-- **Annual energy**: 0.4 kW × 8760 h = 3,504 kWh
+**Transfer Pump**:  
+- **Operating point**: 25 m³/d ÷ 24 = 1.04 m³/h  
+- **Actual power**: 8 kW × (1.04/25) × 1.2 (low efficiency penalty) ≈ **0.4 kW**  
+- **Annual energy**: 0.4 kW × 8760 h = 3,504 kWh  
 
 ### Mixer Performance
 
-**Hydrolysis Mixer**:
-- **Mixing time**: ~15 minutes (from Reynolds number and geometry)
-- **Tip speed**: ~4.5 m/s (turbulent regime)
-- **Shear rate**: ~50 s⁻¹ (high intensity)
-- **Power number**: 0.32 (typical for propeller at Re > 10,000)
+**Hydrolysis Mixer**:  
+- **Mixing time**: ~15 minutes (from Reynolds number and geometry)  
+- **Tip speed**: ~4.5 m/s (turbulent regime)  
+- **Shear rate**: ~50 s⁻¹ (high intensity)  
+- **Power number**: 0.32 (typical for propeller at Re > 10,000)  
 
-**Methanogenesis Mixer**:
-- **Mixing time**: ~20 minutes
-- **Tip speed**: ~3.8 m/s
-- **Shear rate**: ~35 s⁻¹ (medium intensity)
-- **Prevents stratification** without damaging sensitive methanogens
+**Methanogenesis Mixer**:  
+- **Mixing time**: ~20 minutes  
+- **Tip speed**: ~3.8 m/s  
+- **Shear rate**: ~35 s⁻¹ (medium intensity)  
+- **Prevents stratification** without damaging sensitive methanogens  
 
 ## Gas Storage and Flare Management
 
 ### Storage Dynamics
 
-**Storage 1 (Hydrolysis)**:
-- Receives ~850 m³/d (higher production due to enhanced hydrolysis)
-- Supplies ~675 m³/d to CHP (proportional to total demand)
-- Net accumulation: +175 m³/d
-- Reaches 50% capacity in ~0.9 days
+**Storage 1 (Hydrolysis)**:  
+- Receives ~850 m³/d (higher production due to enhanced hydrolysis)  
+- Supplies ~675 m³/d to CHP (proportional to total demand)  
+- Net accumulation: +175 m³/d  
+- Reaches 50% capacity in ~0.9 days  
 
-**Storage 2 (Methanogenesis)**:
-- Receives ~400 m³/d (lower but more stable)
-- Supplies ~475 m³/d to CHP
-- Net draw: -75 m³/d (supplements Storage 1)
-- Provides buffer for production variations
+**Storage 2 (Methanogenesis)**:  
+- Receives ~400 m³/d (lower but more stable)  
+- Supplies ~475 m³/d to CHP  
+- Net draw: -75 m³/d (supplements Storage 1)  
+- Provides buffer for production variations  
 
 ### Flare Operation
 
-**When does the flare activate?**:
-1. **Storage overflow**: When either storage reaches 100% capacity
-2. **CHP part-load**: When CHP operates below full capacity
-3. **Maintenance**: When CHP is offline but digesters continue
-4. **Start-up/shutdown**: During transient operations
+**When does the flare activate?**:  
+1. **Storage overflow**: When either storage reaches 100% capacity  
+2. **CHP part-load**: When CHP operates below full capacity  
+3. **Maintenance**: When CHP is offline but digesters continue  
+4. **Start-up/shutdown**: During transient operations  
 
-**Flare performance**:
-- **Destruction efficiency**: 98% CH₄ conversion to CO₂
-- **Temperature**: ~1000°C combustion temperature
-- **Emissions**: 2% uncombusted CH₄ + CO₂ from combustion
-- **Safety**: Automatic ignition, flame detection
+**Flare performance**:  
+- **Destruction efficiency**: 98% CH₄ conversion to CO₂  
+- **Temperature**: ~1000°C combustion temperature  
+- **Emissions**: 2% uncombusted CH₄ + CO₂ from combustion  
+- **Safety**: Automatic ignition, flame detection  
 
 ## Process Control Strategies
 
@@ -564,10 +564,10 @@ heating_2.target_temperature = 308.15  # K
 heating_2.heat_loss_coefficient = 0.3  # Lower ΔT
 ```
 
-**Heat Demand Calculation**:
-- **Digester 1**: Q = 0.5 kW/K × (45 - 15)°C = **15 kW** base loss + **80 kW** process heating = **95 kW**
-- **Digester 2**: Q = 0.3 kW/K × (35 - 15)°C = **6 kW** base loss + **24 kW** process = **30 kW**
-- **Total**: **125 kW** (well covered by 541 kW CHP thermal output)
+**Heat Demand Calculation**:  
+- **Digester 1**: Q = 0.5 kW/K × (45 - 15)°C = **15 kW** base loss + **80 kW** process heating = **95 kW**  
+- **Digester 2**: Q = 0.3 kW/K × (35 - 15)°C = **6 kW** base loss + **24 kW** process = **30 kW**  
+- **Total**: **125 kW** (well covered by 541 kW CHP thermal output)  
 
 ### Mixing Control
 
@@ -582,19 +582,19 @@ else:
 
 ### Feed Control
 
-**Model Predictive Control (MPC)** approach:
-1. Measure current VFA and pH
-2. Predict 48h response with different feed rates
-3. Select feed rate optimizing CH₄ while maintaining pH > 7.0
+**Model Predictive Control (MPC)** approach:  
+1. Measure current VFA and pH  
+2. Predict 48h response with different feed rates  
+3. Select feed rate optimizing CH₄ while maintaining pH > 7.0  
 
 ## Common Issues and Solutions
 
 ### Issue 1: High VFA in Digester 1
 
-**Symptoms**:
-- VFA > 5 g/L
-- pH < 7.0
-- Reduced gas production
+**Symptoms**:  
+- VFA > 5 g/L  
+- pH < 7.0  
+- Reduced gas production  
 
 **Solutions**:
 ```python
@@ -610,10 +610,10 @@ mixer_1.on_time_fraction = 0.35
 
 ### Issue 2: Low Methane Content
 
-**Symptoms**:
-- CH₄ < 55%
-- CO₂ elevated
-- Low specific gas production
+**Symptoms**:  
+- CH₄ < 55%  
+- CO₂ elevated  
+- Low specific gas production  
 
 **Solutions**:
 ```python
@@ -628,9 +628,9 @@ T_ad_2 = 311.15  # 38°C (optimal for many methanogens)
 
 ### Issue 3: Foaming in Digester 1
 
-**Symptoms**:
-- Gas storage shows pressure fluctuations
-- Effluent contains excessive gas bubbles
+**Symptoms**:  
+- Gas storage shows pressure fluctuations  
+- Effluent contains excessive gas bubbles  
 
 **Solutions**:
 ```python
@@ -646,15 +646,15 @@ Q_substrates = [15, 10, 0, 0, 0, 0, 0, 0, 0.05, 0]  # 50 L/d antifoam
 
 ### Issue 4: Excessive Flare Usage
 
-**Symptoms**:
-- Flare operates continuously
-- >20% of production to flare
-- High storage pressure
+**Symptoms**:  
+- Flare operates continuously  
+- >20% of production to flare  
+- High storage pressure  
 
-**Causes**:
-- CHP undersized for gas production
-- CHP in part-load operation
-- Excess substrate feed
+**Causes**:  
+- CHP undersized for gas production  
+- CHP in part-load operation  
+- Excess substrate feed  
 
 **Solutions**:
 ```python
@@ -717,12 +717,12 @@ Q_best, Q_ch4_pred = simulator.determine_best_feed_by_n_sims(
 
 ## References
 
-- **TPAD Design**: Simeonov, I., Chorukova, E., & Kabaivanova, L. (2025). *Two-stage anaerobic digestion for green energy production: A review*. Processes, 13(2), 294.
-- **Process Control**: Gaida (2014). *Dynamic real-time substrate feed optimization of anaerobic co-digestion plants*. PhD thesis, Leiden University.
+- **TPAD Design**: Simeonov, I., Chorukova, E., & Kabaivanova, L. (2025). *Two-stage anaerobic digestion for green energy production: A review*. Processes, 13(2), 294.  
+- **Process Control**: Gaida (2014). *Dynamic real-time substrate feed optimization of anaerobic co-digestion plants*. PhD thesis, Leiden University.  
 
 ## Related Examples
 
-- [`basic_digester.md`](basic_digester.md): Simple single-stage system
-- `calibration_workflow.md`(calibration_workflow.md): Parameter estimation from measurement data
-- `substrate_optimization.py`: Optimal feed strategy
-- [`parallel_two_stage_simulation.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py): Parallel simulations
+- [`basic_digester.md`](basic_digester.md): Simple single-stage system  
+- `calibration_workflow.md`(calibration_workflow.md): Parameter estimation from measurement data  
+- `substrate_optimization.py`: Optimal feed strategy  
+- [`parallel_two_stage_simulation.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py): Parallel simulations  

@@ -17,10 +17,10 @@ Current coverage: **98.1%** (Target: 95%)
 
 ## Build Status
 
-- **MkDocs Build**: ✅ Passing
-- **Link Checker**: ✅ No broken links
-- **Docstring Style**: Google Style (Verified)
-- **Bilingualism**: 🇩🇪 German & 🇬🇧 English (Complete)
+- **MkDocs Build**: ✅ Passing  
+- **Link Checker**: ✅ No broken links  
+- **Docstring Style**: Google Style (Verified)  
+- **Bilingualism**: 🇩🇪 German & 🇬🇧 English (Complete)  
 
 ## Maintenance
 

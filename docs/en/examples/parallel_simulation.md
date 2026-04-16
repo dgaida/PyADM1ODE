@@ -4,12 +4,12 @@ The [examples/05_parallel_two_stage_simulation.py](https://github.com/dgaida/PyA
 
 ## Overview
 
-This example demonstrates:
-- **Parallel Scenario Execution**: Running multiple simulations concurrently across CPU cores
-- **Parameter Sweeps**: Systematic exploration of single and multiple parameter variations
-- **Monte Carlo Analysis**: Uncertainty quantification with parameter distributions
-- **Statistical Analysis**: Result aggregation and comparative statistics
-- **Performance Metrics**: Speedup and parallel efficiency measurement
+This example demonstrates:  
+- **Parallel Scenario Execution**: Running multiple simulations concurrently across CPU cores  
+- **Parameter Sweeps**: Systematic exploration of single and multiple parameter variations  
+- **Monte Carlo Analysis**: Uncertainty quantification with parameter distributions  
+- **Statistical Analysis**: Result aggregation and comparative statistics  
+- **Performance Metrics**: Speedup and parallel efficiency measurement  
 
 ## Architecture
 
@@ -73,11 +73,11 @@ results = parallel.run_scenarios(
 )
 ```
 
-**Key Features**:
-- **Multiprocessing**: Uses Python's `multiprocessing.Pool` for true parallelism
-- **Automatic Workload Distribution**: Scenarios distributed evenly across workers
-- **Progress Tracking**: Real-time progress reporting for long-running analyses
-- **Error Isolation**: Individual scenario failures don't crash entire execution
+**Key Features**:  
+- **Multiprocessing**: Uses Python's `multiprocessing.Pool` for true parallelism  
+- **Automatic Workload Distribution**: Scenarios distributed evenly across workers  
+- **Progress Tracking**: Real-time progress reporting for long-running analyses  
+- **Error Isolation**: Individual scenario failures don't crash entire execution  
 
 ### 2. ScenarioResult
 
@@ -97,17 +97,17 @@ class ScenarioResult:
     execution_time: float                     # Wall clock time [seconds]
 ```
 
-**Computed Metrics** (when `compute_metrics=True`):
-- `Q_gas`: Total biogas production [m³/d]
-- `Q_ch4`: Methane production [m³/d]
-- `Q_co2`: CO2 production [m³/d]
-- `CH4_content`: Methane fraction [0-1]
-- `pH`: pH value [-]
-- `VFA`: Volatile fatty acids [g/L]
-- `TAC`: Total alkalinity [g CaCO3/L]
-- `FOS_TAC`: VFA/TA ratio [-]
-- `HRT`: Hydraulic retention time [days]
-- `specific_gas_production`: Biogas yield [m³/m³ feed]
+**Computed Metrics** (when `compute_metrics=True`):  
+- `Q_gas`: Total biogas production [m³/d]  
+- `Q_ch4`: Methane production [m³/d]  
+- `Q_co2`: CO2 production [m³/d]  
+- `CH4_content`: Methane fraction [0-1]  
+- `pH`: pH value [-]  
+- `VFA`: Volatile fatty acids [g/L]  
+- `TAC`: Total alkalinity [g CaCO3/L]  
+- `FOS_TAC`: VFA/TA ratio [-]  
+- `HRT`: Hydraulic retention time [days]  
+- `specific_gas_production`: Biogas yield [m³/m³ feed]  
 
 ## Simulation Types
 
@@ -135,10 +135,10 @@ results = parallel.run_scenarios(
 )
 ```
 
-**Use Cases**:
-- Comparing different operational strategies
-- Testing substrate composition variations
-- Evaluating design alternatives
+**Use Cases**:  
+- Comparing different operational strategies  
+- Testing substrate composition variations  
+- Evaluating design alternatives  
 
 ### Single-Parameter Sweep
 
@@ -167,11 +167,11 @@ best_idx = np.argmax(ch4_productions)
 optimal_k_dis = sweep_config.values[best_idx]
 ```
 
-**Common Parameters to Sweep**:
-- **Kinetic parameters**: `k_dis`, `k_hyd_ch`, `k_hyd_pr`, `k_hyd_li`
-- **Yield parameters**: `Y_su`, `Y_aa`, `Y_fa`, `Y_c4`, `Y_pro`, `Y_ac`, `Y_h2`
-- **Uptake rates**: `k_m_su`, `k_m_aa`, `k_m_fa`, `k_m_c4`, `k_m_pro`, `k_m_ac`
-- **Operational parameters**: Feed rates, temperatures, retention times
+**Common Parameters to Sweep**:  
+- **Kinetic parameters**: `k_dis`, `k_hyd_ch`, `k_hyd_pr`, `k_hyd_li`  
+- **Yield parameters**: `Y_su`, `Y_aa`, `Y_fa`, `Y_c4`, `Y_pro`, `Y_ac`, `Y_h2`  
+- **Uptake rates**: `k_m_su`, `k_m_aa`, `k_m_fa`, `k_m_c4`, `k_m_pro`, `k_m_ac`  
+- **Operational parameters**: Feed rates, temperatures, retention times  
 
 ### Multi-Parameter Sweep
 
@@ -244,11 +244,11 @@ print(f"  95% CI: [{summary['metrics']['Q_ch4']['q25']:.1f}, "
       f"{summary['metrics']['Q_ch4']['q75']:.1f}]")
 ```
 
-**Probability Distribution Selection**:
-- **Normal**: Most kinetic parameters (symmetric uncertainty)
-- **Log-normal**: Always-positive parameters with multiplicative uncertainty
-- **Uniform**: When only bounds are known
-- **Triangular**: Expert judgment with most likely value
+**Probability Distribution Selection**:  
+- **Normal**: Most kinetic parameters (symmetric uncertainty)  
+- **Log-normal**: Always-positive parameters with multiplicative uncertainty  
+- **Uniform**: When only bounds are known  
+- **Triangular**: Expert judgment with most likely value  
 
 ## Expected Output
 
@@ -293,11 +293,11 @@ High Feed:
   Exec Time: 2.38 seconds
 ```
 
-**Interpretation**:
-- **Biogas production scales linearly** with feed rate (expected for stable operation)
-- **pH decreases** with higher loading (more VFA production)
-- **FOS/TAC increases** but remains below critical threshold (0.4)
-- **Execution time is similar** across scenarios (same computational complexity)
+**Interpretation**:  
+- **Biogas production scales linearly** with feed rate (expected for stable operation)  
+- **pH decreases** with higher loading (more VFA production)  
+- **FOS/TAC increases** but remains below critical threshold (0.4)  
+- **Execution time is similar** across scenarios (same computational complexity)  
 
 ### Parameter Sweep Results
 
@@ -322,11 +322,11 @@ High Feed:
    ✓ Optimal k_dis = 0.30 (CH4 = 610.9 m³/d)
 ```
 
-**Observations**:
-- **Methane production increases** with k_dis (faster disintegration)
-- **Diminishing returns** above k_dis = 0.26 (only 1.5 m³/d increase)
-- **pH decreases slightly** due to faster organic acid production
-- **Trade-off**: Higher k_dis → more gas but lower pH stability
+**Observations**:  
+- **Methane production increases** with k_dis (faster disintegration)  
+- **Diminishing returns** above k_dis = 0.26 (only 1.5 m³/d increase)  
+- **pH decreases slightly** due to faster organic acid production  
+- **Trade-off**: Higher k_dis → more gas but lower pH stability  
 
 ### Monte Carlo Statistics
 
@@ -370,15 +370,15 @@ High Feed:
    Success Rate: 100.0%
 ```
 
-**Uncertainty Analysis**:
-- **Coefficient of variation (CV)**:
-  - Biogas: 58.32 / 1002.45 = 5.8% (moderate uncertainty)
-  - Methane: 35.00 / 601.47 = 5.8% (same relative uncertainty)
-  - pH: 0.08 / 7.21 = 1.1% (very stable)
-- **95% Confidence Interval** (≈ Q25 to Q75):
-  - Biogas: 965–1038 m³/d (±3.7% from median)
-  - Methane: 579–623 m³/d (±3.7% from median)
-- **Interpretation**: Parameter uncertainty has moderate impact on gas production predictions
+**Uncertainty Analysis**:  
+- **Coefficient of variation (CV)**:  
+  - Biogas: 58.32 / 1002.45 = 5.8% (moderate uncertainty)  
+  - Methane: 35.00 / 601.47 = 5.8% (same relative uncertainty)  
+  - pH: 0.08 / 7.21 = 1.1% (very stable)  
+- **95% Confidence Interval** (≈ Q25 to Q75):  
+  - Biogas: 965–1038 m³/d (±3.7% from median)  
+  - Methane: 579–623 m³/d (±3.7% from median)  
+- **Interpretation**: Parameter uncertainty has moderate impact on gas production predictions  
 
 ## Performance Analysis
 
@@ -399,13 +399,13 @@ Parallel efficiency:
   Parallel efficiency: 95.0%
 ```
 
-**Performance Metrics**:
-- **Speedup**: 475.8 / 125.3 = 3.80×
-- **Efficiency**: 3.80 / 4 = 95.0%
-- **Overhead**: 5% due to:
-  - Process creation/destruction
-  - Data serialization/deserialization
-  - Result aggregation
+**Performance Metrics**:  
+- **Speedup**: 475.8 / 125.3 = 3.80×  
+- **Efficiency**: 3.80 / 4 = 95.0%  
+- **Overhead**: 5% due to:  
+  - Process creation/destruction  
+  - Data serialization/deserialization  
+  - Result aggregation  
 
 **Optimal Worker Count**:
 ```python
@@ -417,10 +417,10 @@ optimal_workers = max(1, mp.cpu_count() - 1)
 parallel = ParallelSimulator(adm1, n_workers=optimal_workers)
 ```
 
-**Scalability**:
-- **Linear speedup**: Up to CPU core count (ideal: 95%+ efficiency)
-- **Diminishing returns**: Beyond core count (hyperthreading limited)
-- **Overhead dominates**: Very short simulations (<1 second)
+**Scalability**:  
+- **Linear speedup**: Up to CPU core count (ideal: 95%+ efficiency)  
+- **Diminishing returns**: Beyond core count (hyperthreading limited)  
+- **Overhead dominates**: Very short simulations (<1 second)  
 
 ### Memory Considerations
 
@@ -724,25 +724,25 @@ results = parallel.run_scenarios(..., save_time_series=False)
 
 ## Related Examples
 
-- [`basic_digester.md`](basic_digester.md): Single digester simulation basics
-- [`two_stage_plant.md`](two_stage_plant.md): Two-stage plant configuration
-- `calibration_workflow.md`: Parameter calibration using parallel optimization
+- [`basic_digester.md`](basic_digester.md): Single digester simulation basics  
+- [`two_stage_plant.md`](two_stage_plant.md): Two-stage plant configuration  
+- `calibration_workflow.md`: Parameter calibration using parallel optimization  
 
 ## References
 
-- **Multiprocessing**: Python documentation on `multiprocessing` module
-- **Parallel Computing**: Pacheco, P. (2011). *An Introduction to Parallel Programming*
-- **Design of Experiments**: Montgomery, D.C. (2017). *Design and Analysis of Experiments*
-- **Uncertainty Quantification**: Sullivan, T.J. (2015). *Introduction to Uncertainty Quantification*
+- **Multiprocessing**: Python documentation on `multiprocessing` module  
+- **Parallel Computing**: Pacheco, P. (2011). *An Introduction to Parallel Programming*  
+- **Design of Experiments**: Montgomery, D.C. (2017). *Design and Analysis of Experiments*  
+- **Uncertainty Quantification**: Sullivan, T.J. (2015). *Introduction to Uncertainty Quantification*  
 
 ## Summary
 
 The parallel simulation example demonstrates:
 
-1. **Efficient Parameter Exploration**: Test multiple scenarios 3-4× faster using parallel execution
-2. **Systematic Optimization**: Parameter sweeps identify optimal operating conditions
-3. **Uncertainty Quantification**: Monte Carlo analysis quantifies prediction uncertainty
-4. **Scalable Architecture**: Handle 100s of scenarios with proper batching and error handling
-5. **Statistical Analysis**: Comprehensive result aggregation and comparative statistics
+1. **Efficient Parameter Exploration**: Test multiple scenarios 3-4× faster using parallel execution  
+2. **Systematic Optimization**: Parameter sweeps identify optimal operating conditions  
+3. **Uncertainty Quantification**: Monte Carlo analysis quantifies prediction uncertainty  
+4. **Scalable Architecture**: Handle 100s of scenarios with proper batching and error handling  
+5. **Statistical Analysis**: Comprehensive result aggregation and comparative statistics  
 
 **Key Takeaway**: Parallel simulation enables rapid exploration of the design and operating space, making it feasible to perform comprehensive sensitivity analysis, optimization, and uncertainty quantification that would be impractical with sequential execution.

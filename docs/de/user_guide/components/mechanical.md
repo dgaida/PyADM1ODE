@@ -112,12 +112,12 @@ P_shaft = P_hydraulic / η_pump
 P_electrical = P_shaft / η_motor
 ```
 
-Wobei:
-- ρ = Fluiddichte [kg/m³]
-- g = 9.81 m/s²
-- Q = Durchflussrate [m³/s]
-- H = Druckhöhe [m]
-- η = Wirkungsgrad
+Wobei:  
+- ρ = Fluiddichte [kg/m³]  
+- g = 9.81 m/s²  
+- Q = Durchflussrate [m³/s]  
+- H = Druckhöhe [m]  
+- η = Wirkungsgrad  
 
 **Typische Leistungsaufnahme:**
 
@@ -302,15 +302,15 @@ wobei:
 
 **Leistungszahl (abhängig von Rührwerkstyp und Reynolds-Zahl):**
 
-- **Propeller:**
-  - Laminar (Re < 100): Np = 14.0 * Re^(-0.67)
-  - Übergang (100 < Re < 10000): Np = 1.2 * Re^(-0.15)
-  - Turbulent (Re > 10000): Np = 0.32
+- **Propeller:**  
+  - Laminar (Re < 100): Np = 14.0 * Re^(-0.67)  
+  - Übergang (100 < Re < 10000): Np = 1.2 * Re^(-0.15)  
+  - Turbulent (Re > 10000): Np = 0.32  
 
-- **Paddelrührwerk:**
-  - Laminar (Re < 10): Np = 300.0 / Re
-  - Übergang (10 < Re < 10000): Np = 8.0 * Re^(-0.25)
-  - Turbulent (Re > 10000): Np = 5.0
+- **Paddelrührwerk:**  
+  - Laminar (Re < 10): Np = 300.0 / Re  
+  - Übergang (10 < Re < 10000): Np = 8.0 * Re^(-0.25)  
+  - Turbulent (Re > 10000): Np = 5.0  
 
 ### Mischzeit-Schätzung
 
@@ -603,10 +603,10 @@ if pump_result['Q_actual'] < 0.8 * pump_result.get('Q_setpoint', 15):
         print("- WARNUNG: Pumpe überlastet!")
 ```
 
-**Lösungen:**
-- Erhöhe Pumpengröße wenn konsistent überlastet
-- Reduziere Reibungsverluste in Rohrleitungen
-- Prüfe auf Blockaden oder Verschleiß
+**Lösungen:**  
+- Erhöhe Pumpengröße wenn konsistent überlastet  
+- Reduziere Reibungsverluste in Rohrleitungen  
+- Prüfe auf Blockaden oder Verschleiß  
 
 ### Problem: Rührwerk verbraucht zu viel Energie
 
@@ -655,36 +655,36 @@ if mixer_result['mixing_quality'] < 0.7:
         print("- Lange Mischzeit - erhöhe Intensität oder Einschaltzeit")
 ```
 
-**Lösungen:**
-- Erhöhe Mischintensität für schwierige Substrate
-- Verlängere Einschaltzeit bei intermittierendem Betrieb
-- Erwäge größeres Rührblatt oder höhere Drehzahl
+**Lösungen:**  
+- Erhöhe Mischintensität für schwierige Substrate  
+- Verlängere Einschaltzeit bei intermittierendem Betrieb  
+- Erwäge größeres Rührblatt oder höhere Drehzahl  
 
 ## Best Practices
 
-1. **Pumpen für optimalen Wirkungsgrad dimensionieren**
-   - Betreibe bei 80-90% Nennlast
-   - Nutze FU für variable Lastanforderungen
+1. **Pumpen für optimalen Wirkungsgrad dimensionieren**  
+   - Betreibe bei 80-90% Nennlast  
+   - Nutze FU für variable Lastanforderungen  
 
-2. **Implementiere intermittierendes Mischen**
-   - 25% Einschaltzeit für die meisten Anwendungen
-   - Passe an Substrattyp an
+2. **Implementiere intermittierendes Mischen**  
+   - 25% Einschaltzeit für die meisten Anwendungen  
+   - Passe an Substrattyp an  
 
-3. **Regelmäßige Wartung**
-   - Überwache Pumpenwirkungsgrad über Zeit
-   - Prüfe Rührwerkverschleiß
+3. **Regelmäßige Wartung**  
+   - Überwache Pumpenwirkungsgrad über Zeit  
+   - Prüfe Rührwerkverschleiß  
 
-4. **Optimiere Systemdesign**
-   - Minimiere Rohrleitungsverlu ste
-   - Richtige Pumpenplatzierung
+4. **Optimiere Systemdesign**  
+   - Minimiere Rohrleitungsverlu ste  
+   - Richtige Pumpenplatzierung  
 
-5. **Überwache Energieverbrauch**
-   - Verfolge parasitäre Last
-   - Ziel: <10% der BHKW-Produktion
+5. **Überwache Energieverbrauch**  
+   - Verfolge parasitäre Last  
+   - Ziel: <10% der BHKW-Produktion  
 
 ## Nächste Schritte
 
-- [Biologische Komponenten](biological.md): Fermenter und Prozesssteuerung
-- [Energiekomponenten](energy.md): BHKW und Wärmesysteme
-- [Fütterungskomponenten](feeding.md): Lagerung und Dosierung
-- [API-Referenz](../../api/mechanical.md): Detaillierte Klassendokumentation
+- [Biologische Komponenten](biological.md): Fermenter und Prozesssteuerung  
+- [Energiekomponenten](energy.md): BHKW und Wärmesysteme  
+- [Fütterungskomponenten](feeding.md): Lagerung und Dosierung  
+- [API-Referenz](../../api/mechanical.md): Detaillierte Klassendokumentation  

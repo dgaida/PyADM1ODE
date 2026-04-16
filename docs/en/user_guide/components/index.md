@@ -33,36 +33,36 @@ PyADM1 provides several categories of components:
 
 ### [Biological Components](biological.md)
 
-Components for biological conversion processes:
-- **Digester**: Main fermenter implementing the ADM1 model for anaerobic digestion.
-- **Hydrolysis**: Pre-treatment tank for hydrolysis processes.
-- **Separator**: Solid-liquid separation for digestate processing.
+Components for biological conversion processes:  
+- **Digester**: Main fermenter implementing the ADM1 model for anaerobic digestion.  
+- **Hydrolysis**: Pre-treatment tank for hydrolysis processes.  
+- **Separator**: Solid-liquid separation for digestate processing.  
 
 ### [Energy Components](energy.md)
 
-Components for energy generation and storage:
-- **CHP**: Combined Heat and Power unit for electricity and heat generation.
-- **Heating**: Heating system for temperature control.
-- **GasStorage**: Biogas storage with pressure management.
-- **Flare**: Safety flare for excess gas.
+Components for energy generation and storage:  
+- **CHP**: Combined Heat and Power unit for electricity and heat generation.  
+- **Heating**: Heating system for temperature control.  
+- **GasStorage**: Biogas storage with pressure management.  
+- **Flare**: Safety flare for excess gas.  
 
 ### [Mechanical Components](mechanical.md)
 
-Mechanical plant components:
-- **Pump**: Pumps for substrate transport and recirculation.
-- **Mixer**: Agitators for homogenization in the fermenter.
+Mechanical plant components:  
+- **Pump**: Pumps for substrate transport and recirculation.  
+- **Mixer**: Agitators for homogenization in the fermenter.  
 
 ### [Feeding Components](feeding.md)
 
-Substrate handling and dosing:
-- **SubstrateStorage**: Substrate storage tanks with quality tracking.
-- **Feeder**: Automated dosing systems.
+Substrate handling and dosing:  
+- **SubstrateStorage**: Substrate storage tanks with quality tracking.  
+- **Feeder**: Automated dosing systems.  
 
 ## Connection Types
 
-- **Liquid Connections**: Transfer digestate between fermenters.
-- **Gas Connections**: Transfer biogas from storage to CHP.
-- **Heat Connections**: Transfer waste heat from CHP to heating systems.
+- **Liquid Connections**: Transfer digestate between fermenters.  
+- **Gas Connections**: Transfer biogas from storage to CHP.  
+- **Heat Connections**: Transfer waste heat from CHP to heating systems.  
 
 ## Auto-Connection Helpers
 

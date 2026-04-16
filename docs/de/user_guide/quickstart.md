@@ -54,8 +54,8 @@ for result in results:
 
 ## Nächste Schritte
 
-- Erfahren Sie mehr über die [Komponenten](components/index.md).
-- Sehen Sie sich die [Beispiele](../examples/basic_digester.md) an.
+- Erfahren Sie mehr über die [Komponenten](components/index.md).  
+- Sehen Sie sich die [Beispiele](../examples/basic_digester.md) an.  
 
 ## Fehlerbehebung
 

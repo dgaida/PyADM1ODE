@@ -19,10 +19,10 @@ PyADM1ODE includes 10 agricultural substrates with literature-validated paramete
 
 ## Substrate Characterization
 
-All substrates are characterized with:
-- Dry matter (DM) and volatile solids (VS) content
-- ADM1 fractionation (carbohydrates, proteins, lipids)
-- Biochemical methane potential (BMP)
-- pH and alkalinity
+All substrates are characterized with:  
+- Dry matter (DM) and volatile solids (VS) content  
+- ADM1 fractionation (carbohydrates, proteins, lipids)  
+- Biochemical methane potential (BMP)  
+- pH and alkalinity  
 
 For more details on how these are mapped to ADM1, see the [ADM1 Implementation](adm1_implementation.md) page.

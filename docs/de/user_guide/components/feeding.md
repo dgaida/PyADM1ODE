@@ -559,10 +559,10 @@ if feeder.state['n_blockages'] > 5:
     print("- Verschleiß oder Wartung erforderlich")
 ```
 
-**Lösungen:**
-- Wechsle zu robusterem Dosierertyp (Twin Screw)
-- Verbessere Substratvorbereitung
-- Implementiere Wartungsplan
+**Lösungen:**  
+- Wechsle zu robusterem Dosierertyp (Twin Screw)  
+- Verbessere Substratvorbereitung  
+- Implementiere Wartungsplan  
 
 ### Problem: Inkonsistente Dosierung
 
@@ -582,34 +582,34 @@ if avg_error > 10:
 
 ## Best Practices
 
-1. **Qualitätsüberwachung implementieren**
-   - Verfolge quality_factor über Zeit
-   - Alarmiere bei <90% Qualität
-   - Plane FIFO-Rotation
+1. **Qualitätsüberwachung implementieren**  
+   - Verfolge quality_factor über Zeit  
+   - Alarmiere bei <90% Qualität  
+   - Plane FIFO-Rotation  
 
-2. **Bestandssicherheit aufrechterhalten**
-   - 7-14 Tage Mindestsicherheitsbestand
-   - Plane Nachfüllungen im Voraus
-   - Berücksichtige saisonale Verfügbarkeit
+2. **Bestandssicherheit aufrechterhalten**  
+   - 7-14 Tage Mindestsicherheitsbestand  
+   - Plane Nachfüllungen im Voraus  
+   - Berücksichtige saisonale Verfügbarkeit  
 
-3. **Optimiere Energieverbrauch**
-   - Nutze FU für variable Dosierung
-   - Minimiere Leerl aufzeiten
-   - Richtige Dosierer-Dimensionierung
+3. **Optimiere Energieverbrauch**  
+   - Nutze FU für variable Dosierung  
+   - Minimiere Leerl aufzeiten  
+   - Richtige Dosierer-Dimensionierung  
 
-4. **Substratmischung optimieren**
-   - Ausgewogene oTS-Belastung
-   - Kostenoptimierung
-   - Nährstoffbilanzierung
+4. **Substratmischung optimieren**  
+   - Ausgewogene oTS-Belastung  
+   - Kostenoptimierung  
+   - Nährstoffbilanzierung  
 
-5. **Wartung planen**
-   - Überwache Verschleißteile
-   - Präventive Wartung für Dosierer
-   - Lagerbehälter-Inspektionen
+5. **Wartung planen**  
+   - Überwache Verschleißteile  
+   - Präventive Wartung für Dosierer  
+   - Lagerbehälter-Inspektionen  
 
 ## Nächste Schritte
 
-- [Biologische Komponenten](biological.md): Fermenter und Prozesssteuerung
-- [Energiekomponenten](energy.md): BHKW und Wärmesysteme
-- [Mechanische Komponenten](mechanical.md): Pumpen und Rührwerke
-- [API-Referenz](../../api/feeding.md): Detaillierte Klassendokumentation
+- [Biologische Komponenten](biological.md): Fermenter und Prozesssteuerung  
+- [Energiekomponenten](energy.md): BHKW und Wärmesysteme  
+- [Mechanische Komponenten](mechanical.md): Pumpen und Rührwerke  
+- [API-Referenz](../../api/feeding.md): Detaillierte Klassendokumentation  

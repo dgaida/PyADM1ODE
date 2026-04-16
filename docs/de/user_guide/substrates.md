@@ -19,10 +19,10 @@ PyADM1ODE enthält 10 landwirtschaftliche Substrate mit in der Literatur validie
 
 ## Substratcharakterisierung
 
-Alle Substrate sind charakterisiert durch:
-- Trockensubstanz (TS) und organische Trockensubstanz (oTS)
-- ADM1-Fraktionierung (Kohlenhydrate, Proteine, Lipide)
-- Biochemisches Methanpotenzial (BMP)
-- pH-Wert und Alkalinität
+Alle Substrate sind charakterisiert durch:  
+- Trockensubstanz (TS) und organische Trockensubstanz (oTS)  
+- ADM1-Fraktionierung (Kohlenhydrate, Proteine, Lipide)  
+- Biochemisches Methanpotenzial (BMP)  
+- pH-Wert und Alkalinität  
 
 Weitere Details zur Abbildung auf ADM1 finden Sie auf der Seite [ADM1-Implementierung](adm1_implementation.md).

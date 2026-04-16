@@ -19,50 +19,50 @@ A comprehensive Python framework for modeling, simulating, and optimizing agricu
 
 PyADM1 provides a modular, extensible platform for:
 
-- **Component-based plant modeling**: Build complex biogas plant configurations from modular components (digesters, CHP units, pumps, mixers, feeders, gas storage, etc.)
-- **High-fidelity ADM1 simulation**: Agricultural biogas-specific implementation of ADM1 as pure ODE system
-- **Automated model configuration**: Build plant models programmatically via MCP server for LLM integration (see [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp))
-- **Parallel scenario simulation**: Run multiple simulations with varying parameters simultaneously
-- **Online calibration**: Automatic parameter calibration and re-calibration during plant operation (see [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration))
-- **Validation framework**: Comprehensive testing against established models (SIMBA#, [ADM1F](https://github.com/lanl/ADM1F))
+- **Component-based plant modeling**: Build complex biogas plant configurations from modular components (digesters, CHP units, pumps, mixers, feeders, gas storage, etc.)  
+- **High-fidelity ADM1 simulation**: Agricultural biogas-specific implementation of ADM1 as pure ODE system  
+- **Automated model configuration**: Build plant models programmatically via MCP server for LLM integration (see [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp))  
+- **Parallel scenario simulation**: Run multiple simulations with varying parameters simultaneously  
+- **Online calibration**: Automatic parameter calibration and re-calibration during plant operation (see [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration))  
+- **Validation framework**: Comprehensive testing against established models (SIMBA#, [ADM1F](https://github.com/lanl/ADM1F))  
 
 ## Key Features
 
-### 🧩 Modular Component System
-- **Biological**: Digesters with integrated gas storage, hydrolysis tanks, separators
-- **Mechanical**: Pumps, mixers, valves, heat exchangers
-- **Energy**: CHP units, boilers, gas storage (low/high pressure), flares
-- **Feeding**: Substrate storage with quality degradation, dosing systems with accuracy modeling, mixer wagons
-- **Sensors**: Physical, chemical, and gas sensors with realistic measurement characteristics
+### 🧩 Modular Component System  
+- **Biological**: Digesters with integrated gas storage, hydrolysis tanks, separators  
+- **Mechanical**: Pumps, mixers, valves, heat exchangers  
+- **Energy**: CHP units, boilers, gas storage (low/high pressure), flares  
+- **Feeding**: Substrate storage with quality degradation, dosing systems with accuracy modeling, mixer wagons  
+- **Sensors**: Physical, chemical, and gas sensors with realistic measurement characteristics  
 
-### 🔧 Plant Configurator
-- Template-based plant design (single-stage, two-stage, custom)
-- JSON-based configuration with validation
-- Component registry for dynamic loading
-- Connection management with type safety
-- Automatic gas storage creation for each digester
-- Integrated flare for CHP units
+### 🔧 Plant Configurator  
+- Template-based plant design (single-stage, two-stage, custom)  
+- JSON-based configuration with validation  
+- Component registry for dynamic loading  
+- Connection management with type safety  
+- Automatic gas storage creation for each digester  
+- Integrated flare for CHP units  
 
 ### 🤖 MCP Server Integration
 See [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp).
 
-### ⚡ High-Performance Simulation
-- Pure ODE implementation (no DAEs) for numerical stability
-- Three-pass execution model for gas flow management:
-  1. Execute digesters → produce gas to storage
-  2. Execute CHPs → determine gas demand from storage
-  3. Execute storages → supply gas based on actual demand and availability
-- Parallel execution of multiple scenarios
-- Parameter sweeps for sensitivity analysis
-- Time-series data management (see [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration))
+### ⚡ High-Performance Simulation  
+- Pure ODE implementation (no DAEs) for numerical stability  
+- Three-pass execution model for gas flow management:  
+  1. Execute digesters → produce gas to storage  
+  2. Execute CHPs → determine gas demand from storage  
+  3. Execute storages → supply gas based on actual demand and availability  
+- Parallel execution of multiple scenarios  
+- Parameter sweeps for sensitivity analysis  
+- Time-series data management (see [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration))  
 
 ### 🎯 Calibration Framework
 See [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration).
 
-### ✅ Validation & Testing
-- Comparison with SIMBA# and ADM1F models
-- Measurement data validation
-- Comprehensive test suite (unit, integration, validation)
+### ✅ Validation & Testing  
+- Comparison with SIMBA# and ADM1F models  
+- Measurement data validation  
+- Comprehensive test suite (unit, integration, validation)  
 
 ## Project Structure
 ```
@@ -326,96 +326,96 @@ See [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration).
 
 ### Components
 
-All plant components inherit from `Component` base class and provide:
-- `step(t, dt, inputs)`: Perform one simulation time step
-- `initialize(state)`: Initialize component state
-- `to_dict()` / `from_dict()`: Serialization
+All plant components inherit from `Component` base class and provide:  
+- `step(t, dt, inputs)`: Perform one simulation time step  
+- `initialize(state)`: Initialize component state  
+- `to_dict()` / `from_dict()`: Serialization  
 
 ### Plant Configuration
 
-Plants are configured through:
-- **Programmatic API**: Direct component instantiation using PlantConfigurator
-- **JSON files**: Load/save complete configurations
-- **Templates**: Pre-defined plant layouts
-- **MCP Server**: LLM-driven configuration from natural language
+Plants are configured through:  
+- **Programmatic API**: Direct component instantiation using PlantConfigurator  
+- **JSON files**: Load/save complete configurations  
+- **Templates**: Pre-defined plant layouts  
+- **MCP Server**: LLM-driven configuration from natural language  
 
 ### Gas Flow Management
 
 The simulation uses a three-pass execution model:
 
-1. **Pass 1**: Digesters produce gas → Gas storages
-2. **Pass 2**: Gas storages receive production (no demand yet)
-3. **Pass 3**: CHPs request gas → Storages supply → CHPs re-execute with actual supply
+1. **Pass 1**: Digesters produce gas → Gas storages  
+2. **Pass 2**: Gas storages receive production (no demand yet)  
+3. **Pass 3**: CHPs request gas → Storages supply → CHPs re-execute with actual supply  
 
-This ensures:
-- Realistic gas buffering in storage tanks
-- Pressure management in gas systems
-- CHP operates with available gas, not idealized supply
-- Excess gas venting to flare when storage is full
+This ensures:  
+- Realistic gas buffering in storage tanks  
+- Pressure management in gas systems  
+- CHP operates with available gas, not idealized supply  
+- Excess gas venting to flare when storage is full  
 
 ### Automatic Component Creation
 
-PlantConfigurator automatically creates and connects:
-- **Gas Storage**: One per digester (membrane type, sized to gas volume)
-- **Flare**: One per CHP unit (safety combustion of excess gas)
+PlantConfigurator automatically creates and connects:  
+- **Gas Storage**: One per digester (membrane type, sized to gas volume)  
+- **Flare**: One per CHP unit (safety combustion of excess gas)  
 
 This reduces configuration complexity while ensuring realistic plant behavior.
 
 ### Substrate Management
 
-Substrates are characterized by:
-- Weender analysis (fiber, protein, lipids)
-- Van Soest fractions (NDF, ADF, ADL)
-- Physical properties (pH, TS, VS, COD)
-- Kinetic parameters (disintegration, hydrolysis rates)
+Substrates are characterized by:  
+- Weender analysis (fiber, protein, lipids)  
+- Van Soest fractions (NDF, ADF, ADL)  
+- Physical properties (pH, TS, VS, COD)  
+- Kinetic parameters (disintegration, hydrolysis rates)  
 
 ### Simulation Engine
 
-The simulation engine:
-- Uses BDF solver for stiff ODEs
-- Supports variable time steps
-- Manages component dependencies
-- Handles liquid, gas, heat, and power flows
+The simulation engine:  
+- Uses BDF solver for stiff ODEs  
+- Supports variable time steps  
+- Manages component dependencies  
+- Handles liquid, gas, heat, and power flows  
 
 ## Research Applications
 
 This framework supports research in:
 
-- **Process optimization**: Substrate feed strategies, retention time
-- **Control systems**: Model predictive control, feedback controllers
-- **Plant design**: Component sizing, layout optimization
-- **Energy management**: CHP scheduling, heat integration
-- **Substrate evaluation**: Biogas potential assessment
+- **Process optimization**: Substrate feed strategies, retention time  
+- **Control systems**: Model predictive control, feedback controllers  
+- **Plant design**: Component sizing, layout optimization  
+- **Energy management**: CHP scheduling, heat integration  
+- **Substrate evaluation**: Biogas potential assessment  
 
 ## Validation
 
-The framework has been validated against:
-- **SIMBA#**: Commercial biogas simulation software
-- **[ADM1F](https://github.com/lanl/ADM1F)**: LANL's Fortran ADM1 implementation
-- **Real plant data**: Multiple agricultural biogas plants
+The framework has been validated against:  
+- **SIMBA#**: Commercial biogas simulation software  
+- **[ADM1F](https://github.com/lanl/ADM1F)**: LANL's Fortran ADM1 implementation  
+- **Real plant data**: Multiple agricultural biogas plants  
 
 ## Development Status
 
-- ✅ Core ADM1 implementation
-- ✅ Basic components (Digester with integrated storage, CHP with flare, Heating)
-- ✅ Plant configuration and JSON I/O
-- ✅ Three-pass gas flow simulation
-- ✅ Mechanical components (Pumps, Mixers)
-- ✅ Feeding components (Storage with degradation, Feeders with accuracy)
-- 🚧 Extended component library (in progress)
-- 🚧 Parallel simulation (in progress)
-- 📋 Validation framework (planned)
+- ✅ Core ADM1 implementation  
+- ✅ Basic components (Digester with integrated storage, CHP with flare, Heating)  
+- ✅ Plant configuration and JSON I/O  
+- ✅ Three-pass gas flow simulation  
+- ✅ Mechanical components (Pumps, Mixers)  
+- ✅ Feeding components (Storage with degradation, Feeders with accuracy)  
+- 🚧 Extended component library (in progress)  
+- 🚧 Parallel simulation (in progress)  
+- 📋 Validation framework (planned)  
 
 ## Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-Areas where we need help:
-- Additional component implementations
-- Validation data from real plants
-- Performance optimization
-- Documentation and examples
-- Integration with other tools
+Areas where we need help:  
+- Additional component implementations  
+- Validation data from real plants  
+- Performance optimization  
+- Documentation and examples  
+- Integration with other tools  
 
 ## Citation
 
@@ -438,11 +438,11 @@ If you use PyADM1ODE in your research, please cite:
 
 ## Related Publications
 
-- **Gaida, D. (2024).** *Synergizing Language Models and Biogas Plant Control: A GPT-4 Approach.* 18th IWA World Conference on Anaerobic Digestion, Istanbul, Turkey.
+- **Gaida, D. (2024).** *Synergizing Language Models and Biogas Plant Control: A GPT-4 Approach.* 18th IWA World Conference on Anaerobic Digestion, Istanbul, Turkey.  
 
-- **Batstone, D.J., et al. (2002).** *Anaerobic Digestion Model No. 1 (ADM1).* IWA Publishing, London.
+- **Batstone, D.J., et al. (2002).** *Anaerobic Digestion Model No. 1 (ADM1).* IWA Publishing, London.  
 
-- **Sadrimajd, P., Mannion, P., Howley, E., & Lens, P.N.L. (2021).** *PyADM1: a Python implementation of Anaerobic Digestion Model No. 1.* bioRxiv. DOI: [10.1101/2021.03.03.433746](https://doi.org/10.1101/2021.03.03.433746)
+- **Sadrimajd, P., Mannion, P., Howley, E., & Lens, P.N.L. (2021).** *PyADM1: a Python implementation of Anaerobic Digestion Model No. 1.* bioRxiv. DOI: [10.1101/2021.03.03.433746](https://doi.org/10.1101/2021.03.03.433746)  
 
 ## License
 
@@ -450,16 +450,16 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) for deta
 
 ## Acknowledgments
 
-- Original [PyADM1](https://github.com/CaptainFerMag/PyADM1) implementation by Peyman Sadrimajd et al. that motivated me to create this project
-- ADM1 development by IWA Task Group
-- SIMBA implementation by ifak e.V.
+- Original [PyADM1](https://github.com/CaptainFerMag/PyADM1) implementation by Peyman Sadrimajd et al. that motivated me to create this project  
+- ADM1 development by IWA Task Group  
+- SIMBA implementation by ifak e.V.  
 
 ## Contact
 
-**Daniel Gaida**
+**Daniel Gaida**  
 - Email: daniel.gaida@th-koeln.de  
 - GitHub: [@dgaida](https://github.com/dgaida)  
-- Institution: TH Köln - University of Applied Sciences
+- Institution: TH Köln - University of Applied Sciences  
 
 ---
 

@@ -5,27 +5,27 @@ complex biogas plant configurations.
 
 ### Key Features
 
-- **Modular Components**: Digesters, CHP units, heating systems, and more
-- **Flexible Connections**: Connect components in series, parallel, or custom configurations
-- **JSON Configuration**: Save and load complete plant configurations
-- **Component Library**: Extensible system for adding new component types
+- **Modular Components**: Digesters, CHP units, heating systems, and more  
+- **Flexible Connections**: Connect components in series, parallel, or custom configurations  
+- **JSON Configuration**: Save and load complete plant configurations  
+- **Component Library**: Extensible system for adding new component types  
 
 ### Available Components
 
-#### Digester
-- Wraps PyADM1 model
-- Supports multiple digesters in series/parallel
-- Full ADM1 state tracking
+#### Digester  
+- Wraps PyADM1 model  
+- Supports multiple digesters in series/parallel  
+- Full ADM1 state tracking  
 
-#### CHP (Combined Heat and Power)
-- Converts biogas to electricity and heat
-- Configurable efficiency and capacity
-- Integration with C# DLL calculations
+#### CHP (Combined Heat and Power)  
+- Converts biogas to electricity and heat  
+- Configurable efficiency and capacity  
+- Integration with C# DLL calculations  
 
-#### Heating System
-- Maintains digester temperature
-- Uses CHP waste heat
-- Calculates auxiliary heat demand
+#### Heating System  
+- Maintains digester temperature  
+- Uses CHP waste heat  
+- Calculates auxiliary heat demand  
 
 ### Quick Start
 
@@ -128,9 +128,9 @@ configuration with CHP and heating systems.
 
 ### Integration with C# DLLs
 
-Component calculations can leverage existing C# DLLs:
-- `plant.dll`: Plant-level calculations
-- `biogas.dll`: Biogas production and composition
-- `physchem.dll`: Physical-chemical properties
+Component calculations can leverage existing C# DLLs:  
+- `plant.dll`: Plant-level calculations  
+- `biogas.dll`: Biogas production and composition  
+- `physchem.dll`: Physical-chemical properties  
 
 Simply add `clr.AddReference()` calls in component methods to access DLL functions.

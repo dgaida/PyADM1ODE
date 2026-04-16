@@ -4,12 +4,12 @@ Das Beispiel [examples/05_parallel_two_stage_simulation.py](https://github.com/d
 
 ## Übersicht
 
-Dieses Beispiel demonstriert:
-- **Parallele Szenarienausführung**: Gleichzeitiges Ausführen mehrerer Simulationen auf verschiedenen CPU-Kernen.
-- **Parameterstudien (Parameter Sweeps)**: Systematische Untersuchung einzelner und mehrerer Parametervariationen.
-- **Monte-Carlo-Analyse**: Unsicherheitsquantifizierung mit Parameterverteilungen.
-- **Statistische Analyse**: Aggregation von Ergebnissen und vergleichende Statistiken.
-- **Leistungsmetriken**: Messung von Speedup und paralleler Effizienz.
+Dieses Beispiel demonstriert:  
+- **Parallele Szenarienausführung**: Gleichzeitiges Ausführen mehrerer Simulationen auf verschiedenen CPU-Kernen.  
+- **Parameterstudien (Parameter Sweeps)**: Systematische Untersuchung einzelner und mehrerer Parametervariationen.  
+- **Monte-Carlo-Analyse**: Unsicherheitsquantifizierung mit Parameterverteilungen.  
+- **Statistische Analyse**: Aggregation von Ergebnissen und vergleichende Statistiken.  
+- **Leistungsmetriken**: Messung von Speedup und paralleler Effizienz.  
 
 ## Architektur
 
@@ -73,11 +73,11 @@ results = parallel.run_scenarios(
 )
 ```
 
-**Hauptmerkmale**:
-- **Multiprocessing**: Nutzt Pythons `multiprocessing.Pool` für echte Parallelität.
-- **Automatische Lastverteilung**: Szenarien werden gleichmäßig auf die Worker verteilt.
-- **Fortschrittsanzeige**: Echtzeit-Bericht über den Fortschritt bei langlaufenden Analysen.
-- **Fehlerisolierung**: Fehler in einzelnen Szenarien führen nicht zum Abbruch der gesamten Ausführung.
+**Hauptmerkmale**:  
+- **Multiprocessing**: Nutzt Pythons `multiprocessing.Pool` für echte Parallelität.  
+- **Automatische Lastverteilung**: Szenarien werden gleichmäßig auf die Worker verteilt.  
+- **Fortschrittsanzeige**: Echtzeit-Bericht über den Fortschritt bei langlaufenden Analysen.  
+- **Fehlerisolierung**: Fehler in einzelnen Szenarien führen nicht zum Abbruch der gesamten Ausführung.  
 
 ### 2. ScenarioResult
 
@@ -97,17 +97,17 @@ class ScenarioResult:
     execution_time: float                     # Reale Laufzeit [Sekunden]
 ```
 
-**Berechnete Metriken** (wenn `compute_metrics=True`):
-- `Q_gas`: Gesamtbiogasproduktion [m³/d]
-- `Q_ch4`: Methanproduktion [m³/d]
-- `Q_co2`: CO2-Produktion [m³/d]
-- `CH4_content`: Methananteil [0-1]
-- `pH`: pH-Wert [-]
-- `VFA`: Flüchtige Fettsäuren [g/L]
-- `TAC`: Gesamte Alkalinität [g CaCO3/L]
-- `FOS_TAC`: VFA/TA-Verhältnis [-]
-- `HRT`: Hydraulische Verweilzeit [Tage]
-- `specific_gas_production`: Biogasertrag [m³/m³ Zulauf]
+**Berechnete Metriken** (wenn `compute_metrics=True`):  
+- `Q_gas`: Gesamtbiogasproduktion [m³/d]  
+- `Q_ch4`: Methanproduktion [m³/d]  
+- `Q_co2`: CO2-Produktion [m³/d]  
+- `CH4_content`: Methananteil [0-1]  
+- `pH`: pH-Wert [-]  
+- `VFA`: Flüchtige Fettsäuren [g/L]  
+- `TAC`: Gesamte Alkalinität [g CaCO3/L]  
+- `FOS_TAC`: VFA/TA-Verhältnis [-]  
+- `HRT`: Hydraulische Verweilzeit [Tage]  
+- `specific_gas_production`: Biogasertrag [m³/m³ Zulauf]  
 
 ## Simulationstypen
 
@@ -135,10 +135,10 @@ results = parallel.run_scenarios(
 )
 ```
 
-**Anwendungsfälle**:
-- Vergleich verschiedener Betriebsstrategien.
-- Testen von Variationen in der Substratzusammensetzung.
-- Bewertung von Designalternativen.
+**Anwendungsfälle**:  
+- Vergleich verschiedener Betriebsstrategien.  
+- Testen von Variationen in der Substratzusammensetzung.  
+- Bewertung von Designalternativen.  
 
 ### Einzelparameter-Sweep
 
@@ -167,11 +167,11 @@ best_idx = np.argmax(ch4_productions)
 optimal_k_dis = sweep_config.values[best_idx]
 ```
 
-**Häufig untersuchte Parameter**:
-- **Kinetische Parameter**: `k_dis`, `k_hyd_ch`, `k_hyd_pr`, `k_hyd_li`
-- **Ertragskoeffizienten**: `Y_su`, `Y_aa`, `Y_fa`, `Y_c4`, `Y_pro`, `Y_ac`, `Y_h2`
-- **Aufnahmeraten**: `k_m_su`, `k_m_aa`, `k_m_fa`, `k_m_c4`, `k_m_pro`, `k_m_ac`
-- **Betriebsparameter**: Fütterungsraten, Temperaturen, Verweilzeiten.
+**Häufig untersuchte Parameter**:  
+- **Kinetische Parameter**: `k_dis`, `k_hyd_ch`, `k_hyd_pr`, `k_hyd_li`  
+- **Ertragskoeffizienten**: `Y_su`, `Y_aa`, `Y_fa`, `Y_c4`, `Y_pro`, `Y_ac`, `Y_h2`  
+- **Aufnahmeraten**: `k_m_su`, `k_m_aa`, `k_m_fa`, `k_m_c4`, `k_m_pro`, `k_m_ac`  
+- **Betriebsparameter**: Fütterungsraten, Temperaturen, Verweilzeiten.  
 
 ### Multiparameter-Sweep
 
@@ -272,11 +272,11 @@ Hohe Fütterung:
   Laufzeit:       2.38 Sekunden
 ```
 
-**Interpretation**:
-- **Die Biogasproduktion skaliert linear** mit der Fütterungsrate (erwartet bei stabilem Betrieb).
-- **Der pH-Wert sinkt** bei höherer Belastung (mehr VFA-Produktion).
-- **FOS/TAC steigt**, bleibt aber unter dem kritischen Schwellenwert (0,4).
-- **Die Laufzeit ist ähnlich** über alle Szenarien (gleiche Rechenkomplexität).
+**Interpretation**:  
+- **Die Biogasproduktion skaliert linear** mit der Fütterungsrate (erwartet bei stabilem Betrieb).  
+- **Der pH-Wert sinkt** bei höherer Belastung (mehr VFA-Produktion).  
+- **FOS/TAC steigt**, bleibt aber unter dem kritischen Schwellenwert (0,4).  
+- **Die Laufzeit ist ähnlich** über alle Szenarien (gleiche Rechenkomplexität).  
 
 ### Parameter-Sweep Ergebnisse
 
@@ -301,11 +301,11 @@ Hohe Fütterung:
    ✓ Optimales k_dis = 0.30 (CH4 = 610.9 m³/d)
 ```
 
-**Beobachtungen**:
-- **Die Methanproduktion steigt** mit k_dis (schnellerer Zerfall).
-- **Abnehmender Grenznutzen** oberhalb von k_dis = 0,26 (nur 1,5 m³/d Steigerung).
-- **Der pH-Wert sinkt leicht** aufgrund der schnelleren Produktion organischer Säuren.
-- **Zielkonflikt**: Höheres k_dis → mehr Gas, aber geringere pH-Stabilität.
+**Beobachtungen**:  
+- **Die Methanproduktion steigt** mit k_dis (schnellerer Zerfall).  
+- **Abnehmender Grenznutzen** oberhalb von k_dis = 0,26 (nur 1,5 m³/d Steigerung).  
+- **Der pH-Wert sinkt leicht** aufgrund der schnelleren Produktion organischer Säuren.  
+- **Zielkonflikt**: Höheres k_dis → mehr Gas, aber geringere pH-Stabilität.  
 
 ### Monte-Carlo-Statistiken
 
@@ -368,13 +368,13 @@ Parallele Effizienz:
   Parallele Effizienz: 95.0%
 ```
 
-**Leistungsmetriken**:
-- **Speedup**: 475,8 / 125,3 = 3,80×
-- **Effizienz**: 3,80 / 4 = 95,0 %
-- **Overhead**: 5 % aufgrund von:
-  - Prozesserstellung/-abbau.
-  - Datenserialisierung/-deserialisierung.
-  - Ergebnistransfer.
+**Leistungsmetriken**:  
+- **Speedup**: 475,8 / 125,3 = 3,80×  
+- **Effizienz**: 3,80 / 4 = 95,0 %  
+- **Overhead**: 5 % aufgrund von:  
+  - Prozesserstellung/-abbau.  
+  - Datenserialisierung/-deserialisierung.  
+  - Ergebnistransfer.  
 
 ## Best Practices
 
@@ -391,22 +391,22 @@ parallel = ParallelSimulator(adm1, n_workers=optimal_workers)
 
 ### 2. Balance zwischen Simulationsdauer und Anzahl der Szenarien
 
-- Kurze Simulationen (< 1 Sekunde): Overhead dominiert → Dauer erhöhen oder sequentiell ausführen.
-- Mittlere Simulationen (1-10 Sekunden): Gute Parallelisierung → Ideal für Parameterstudien.
-- Lange Simulationen (> 60 Sekunden): Speicherintensiv → Anzahl der Worker reduzieren oder Batching verwenden.
+- Kurze Simulationen (< 1 Sekunde): Overhead dominiert → Dauer erhöhen oder sequentiell ausführen.  
+- Mittlere Simulationen (1-10 Sekunden): Gute Parallelisierung → Ideal für Parameterstudien.  
+- Lange Simulationen (> 60 Sekunden): Speicherintensiv → Anzahl der Worker reduzieren oder Batching verwenden.  
 
 ## Ähnliche Beispiele
 
-- [`basic_digester.md`](basic_digester.md): Grundlagen der Fermentersimulation.
-- [`two_stage_plant.md`](two_stage_plant.md): Konfiguration zweistufiger Anlagen.
-- `calibration_workflow.md`: Parameterkalibrierung mittels paralleler Optimierung.
+- [`basic_digester.md`](basic_digester.md): Grundlagen der Fermentersimulation.  
+- [`two_stage_plant.md`](two_stage_plant.md): Konfiguration zweistufiger Anlagen.  
+- `calibration_workflow.md`: Parameterkalibrierung mittels paralleler Optimierung.  
 
 ## Zusammenfassung
 
 Das Beispiel für parallele Simulation zeigt:
 
-1. **Effiziente Parameterexploration**: Testen mehrerer Szenarien 3-4× schneller durch parallele Ausführung.
-2. **Systematische Optimierung**: Parameter-Sweeps identifizieren optimale Betriebsbedingungen.
-3. **Unsicherheitsquantifizierung**: Die Monte-Carlo-Analyse quantifiziert die Vorhersageunsicherheit.
-4. **Skalierbare Architektur**: Handhabung von Hunderten von Szenarien mit ordnungsgemäßem Batching und Fehlerbehandlung.
-5. **Statistische Analyse**: Umfassende Ergebniszusammenfassung und vergleichende Statistiken.
+1. **Effiziente Parameterexploration**: Testen mehrerer Szenarien 3-4× schneller durch parallele Ausführung.  
+2. **Systematische Optimierung**: Parameter-Sweeps identifizieren optimale Betriebsbedingungen.  
+3. **Unsicherheitsquantifizierung**: Die Monte-Carlo-Analyse quantifiziert die Vorhersageunsicherheit.  
+4. **Skalierbare Architektur**: Handhabung von Hunderten von Szenarien mit ordnungsgemäßem Batching und Fehlerbehandlung.  
+5. **Statistische Analyse**: Umfassende Ergebniszusammenfassung und vergleichende Statistiken.  
