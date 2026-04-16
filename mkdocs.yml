@@ -88,10 +88,9 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Erste Schritte:
+  - Handbuch:
       - Installation: user_guide/installation.md
       - Schnellstart: user_guide/quickstart.md
-  - Dokumentation:
       - ADM1-Implementierung: user_guide/adm1_implementation.md
       - Komponenten:
           - Übersicht: user_guide/components/index.md
@@ -100,16 +99,18 @@ nav:
           - Fütterung: user_guide/components/feeding.md
           - Mechanisch: user_guide/components/mechanical.md
           - Sensoren: user_guide/components/sensors.md
-      - Beispiele:
-          - Basis-Fermenter: examples/basic_digester.md
-          - Zweistufige Anlage: examples/two_stage_plant.md
-          - Parallele Simulation: examples/parallel_simulation.md
+      - Substrate: user_guide/substrates.md
+      - Anwendungen: user_guide/applications.md
+      - Fortgeschrittene Funktionen: user_guide/advanced_features.md
       - Architektur: architecture/index.md
-      - Entwicklung:
-          - Styleguide: development/style_guide.md
-  - Fehlerbehebung: user_guide/troubleshooting.md
-  - Metriken: metrics.md
-  - Changelog: CHANGELOG.md
+      - Fehlerbehebung: user_guide/troubleshooting.md
+  - Beispiele:
+      - Basis-Fermenter: examples/basic_digester.md
+      - Zweistufige Anlage: examples/two_stage_plant.md
+      - Parallele Simulation: examples/parallel_simulation.md
+  - Entwicklung:
+      - Styleguide: development/style_guide.md
+      - Metriken: metrics.md
   - API-Referenz:
       - Core: api/core.md
       - Biologisch: api/biological.md
@@ -119,6 +120,7 @@ nav:
       - Konfigurator: api/configurator.md
       - Simulation: api/simulation.md
       - Substrate: api/substrates.md
+  - Changelog: CHANGELOG.md
 
 extra:
   social:

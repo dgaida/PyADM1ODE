@@ -3,6 +3,9 @@
 Willkommen bei PyADM1ODE - Einem Python-Framework zur Modellierung, Simulation und Optimierung von landwirtschaftlichen Biogasanlagen basierend auf dem Anaerobic Digestion Model No. 1 (ADM1).
 
 ## 🎯 Quick Links
+<div align="center">
+  <a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_01_basic_digester.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
+</div>
 
 <div class="grid cards" markdown>
 
@@ -22,13 +25,13 @@ Willkommen bei PyADM1ODE - Einem Python-Framework zur Modellierung, Simulation u
 
     [:octicons-arrow-right-24: Installations-Anleitung](user_guide/installation.md)
 
--   :material-book-open-variant:{ .lg .middle } __Komponenten-Leitfaden__
+-   :material-book-open-variant:{ .lg .middle } __Handbuch__
 
     ---
 
-    Erfahren Sie mehr über Fermenter, BHKWs, Pumpen und mehr
+    Erfahren Sie mehr über das Framework, Komponenten und Substrate
 
-    [:octicons-arrow-right-24: Komponentendokumentation](user_guide/components/index.md)
+    [:octicons-arrow-right-24: Handbuch](user_guide/adm1_implementation.md)
 
 -   :material-code-braces:{ .lg .middle } __Beispiele__
 
@@ -48,71 +51,6 @@ PyADM1ODE ist ein umfassendes Python-Framework für die Modellierung landwirtsch
 - **Modulare Architektur**: Kombinieren Sie Komponenten (Fermenter, BHKW, Pumpen, Rührwerke), um jede beliebige Anlagenkonfiguration zu erstellen.
 - **Praxisnähe**: Validiert mit Daten von in Betrieb befindlichen Biogasanlagen.
 - **Python-Ökosystem**: Integriert mit NumPy, SciPy, Pandas und Visualisierungsbibliotheken.
-
-### Hauptmerkmale
-
-✨ **Umfassende Komponentenbibliothek**
-
-- Biologisch: Ein-/mehrstufige Fermenter, Hydrolysetanks, Separatoren
-- Energie: BHKW-Einheiten, Heizsysteme, Gasspeicher, Fackeln
-- Mechanisch: Pumpen, Rührwerke mit realistischem Stromverbrauch
-- Fütterung: Substratlagerung, automatisierte Dosiersysteme
-
-🔧 **Flexible Anlagenkonfiguration**
-
-- Erstellen Sie komplexe Anlagen programmatisch oder über Vorlagen
-- Automatische Komponentenverbindung und Validierung
-- Speichern/Laden von Konfigurationen als JSON
-
-📊 **Fortgeschrittene Simulation**
-
-- Parallele Ausführung für Parameterstudien und Monte-Carlo-Analysen
-- Adaptive ODE-Solver, optimiert für steife Biogassysteme
-- Zeitreihen-Datenverarbeitung und Ergebnisanalyse
-
-🎓 **Bildung & Professionell**
-
-- Geeignet für die Lehre im Bereich Biogasanlagendesign
-- Forschungswerkzeug zur Prozessoptimierung
-- Engineering-Anwendungen für die Anlagenplanung
-
-## Systemarchitektur
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     PyADM1ODE Framework                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
-│  │ Biologische  │  │   Energie-   │  │ Mechanische  │         │
-│  │ Komponenten  │  │ Komponenten  │  │ Komponenten  │         │
-│  ├──────────────┤  ├──────────────┤  ├──────────────┤         │
-│  │ • Fermenter  │  │ • BHKW       │  │ • Pumpen     │         │
-│  │ • Hydrolyse  │  │ • Heizung    │  │ • Rührwerke  │         │
-│  │ • Separatoren│  │ • Speicher   │  │              │         │
-│  │              │  │ • Fackeln    │  │              │         │
-│  └──────────────┘  └──────────────┘  └──────────────┘         │
-│                                                                  │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
-│  │   Fütterung  │  │   Sensoren   │  │ Konfigurator │         │
-│  │ Komponenten  │  │  (geplant)   │  │              │         │
-│  ├──────────────┤  ├──────────────┤  ├──────────────┤         │
-│  │ • Lagerung   │  │ • pH         │  │ • Builder    │         │
-│  │ • Dosierer   │  │ • VFA        │  │ • Vorlagen   │         │
-│  │              │  │ • Gas        │  │ • Validator  │         │
-│  └──────────────┘  └──────────────┘  └──────────────┘         │
-│                                                                  │
-├─────────────────────────────────────────────────────────────────┤
-│                       Kern-ADM1-Engine                           │
-│  • 37 Zustandsvariablen • pH-Dynamik • Gas-Flüssig-Transfer     │
-│  • Temperaturabhängige Kinetik • Inhibitionsmodellierung        │
-├─────────────────────────────────────────────────────────────────┤
-│                    Substratmanagement                            │
-│  • 10 vorkonfigurierte landwirtschaftliche Substrate            │
-│  • Automatische ADM1-Input-Strom-Generierung                    │
-│  • Zeitlich variierende Fütterungspläne                         │
-└─────────────────────────────────────────────────────────────────┘
-```
 
 ## Kurzes Beispiel
 
@@ -155,21 +93,14 @@ print(f"Methan: {final['Q_ch4']:.1f} m³/d")
 print(f"pH: {final['pH']:.2f}")
 ```
 
-**Ausgabe:**
-```
-Biogas: 1245.3 m³/d
-Methan: 748.2 m³/d
-pH: 7.28
-```
+---
 
-## Typische Anwendungen
+## Community und Support
 
-### 1. Anlagendesign und Optimierung
+- **GitHub Repository**: [dgaida/PyADM1ODE](https://github.com/dgaida/PyADM1ODE)
+- **Issue Tracker**: [Bugs melden oder Features anfragen](https://github.com/dgaida/PyADM1ODE/issues)
+- **Discussions**: [Fragen stellen und Ideen austauschen](https://github.com/dgaida/PyADM1ODE/discussions)
 
-### 2. Substratoptimierung
+## Lizenz
 
-### 3. Energiebilanzanalyse
-
-### 4. Zweistufiges Prozessdesign
-
-(Details siehe englische Version oder Unterseiten)
+PyADM1ODE ist Open-Source-Software unter der MIT-Lizenz.
