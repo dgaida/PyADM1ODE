@@ -40,6 +40,7 @@ except PackageNotFoundError:  # pragma: no cover
 
 # Initialize DLL loader before importing other modules
 from pyadm1.utils.dll_loader import load_dlls
+
 load_dlls()
 
 # Core imports

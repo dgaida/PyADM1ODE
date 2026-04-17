@@ -8,7 +8,6 @@ This module provides the Digester class which encapsulates the ADM1 model
 for anaerobic digestion in a component-based framework.
 """
 
-
 import numpy as np
 from typing import Dict, Any, List, Optional
 from ..base import Component, ComponentType  # noqa: E402  # type: ignore
@@ -21,6 +20,8 @@ try:
     from biogas import ADMstate
 except ImportError:
     ADMstate = None
+
+
 class Digester(Component):
     """
     Digester component using ADM1 model.

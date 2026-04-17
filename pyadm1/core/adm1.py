@@ -56,11 +56,11 @@ from pyadm1.substrates.feedstock import Feedstock
 logger = logging.getLogger(__name__)
 
 
-
 try:
     from biogas import ADMstate
 except ImportError:
     ADMstate = None
+
 
 def get_state_zero_from_initial_state(csv_file: str) -> List[float]:
     """

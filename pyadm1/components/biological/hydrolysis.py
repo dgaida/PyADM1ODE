@@ -49,7 +49,6 @@ Example:
     ... })
 """
 
-
 import numpy as np
 from typing import Dict, Any, List, Optional
 from ..base import Component, ComponentType  # noqa: E402
@@ -62,6 +61,8 @@ try:
     from biogas import ADMstate
 except ImportError:
     ADMstate = None
+
+
 class Hydrolysis(Component):
     """
     Hydrolysis pre-treatment tank for two-stage anaerobic digestion.

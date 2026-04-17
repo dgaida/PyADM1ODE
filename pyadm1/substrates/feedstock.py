@@ -39,11 +39,40 @@ class Feedstock:
     # Class-level storage for compatibility with existing code
     _mySubstrates = None
     _header = [
-        "S_su", "S_aa", "S_fa", "S_va", "S_bu", "S_pro", "S_ac", "S_h2",
-        "S_ch4", "S_co2", "S_nh4", "S_I", "X_xc", "X_ch", "X_pr", "X_li",
-        "X_su", "X_aa", "X_fa", "X_c4", "X_pro", "X_ac", "X_h2", "X_I",
-        "X_p", "S_cation", "S_anion", "S_va_ion", "S_bu_ion", "S_pro_ion",
-        "S_ac_ion", "S_hco3_ion", "S_nh3", "Q"
+        "S_su",
+        "S_aa",
+        "S_fa",
+        "S_va",
+        "S_bu",
+        "S_pro",
+        "S_ac",
+        "S_h2",
+        "S_ch4",
+        "S_co2",
+        "S_nh4",
+        "S_I",
+        "X_xc",
+        "X_ch",
+        "X_pr",
+        "X_li",
+        "X_su",
+        "X_aa",
+        "X_fa",
+        "X_c4",
+        "X_pro",
+        "X_ac",
+        "X_h2",
+        "X_I",
+        "X_p",
+        "S_cation",
+        "S_anion",
+        "S_va_ion",
+        "S_bu_ion",
+        "S_pro_ion",
+        "S_ac_ion",
+        "S_hco3_ion",
+        "S_nh3",
+        "Q",
     ]
 
     # *** CONSTRUCTORS ***
@@ -281,11 +310,15 @@ class Feedstock:
             "Biochemical methane potential: {7} l/gFM \n"
             "Total Kjeldahl Nitrogen: {8} %FM"
         ).format(
-            pH, TS, VS, Xc.printValue(),
+            pH,
+            TS,
+            VS,
+            Xc.printValue(),
             mySubstrate.calcCOD_SX().printValue(),
             self._get_TOC(substrate_id).printValue(),
             np.round(mySubstrate.calcCtoNratio(), 2),
-            BMP, TKN,
+            BMP,
+            TKN,
         )
 
     def _get_TOC(self, substrate_id):

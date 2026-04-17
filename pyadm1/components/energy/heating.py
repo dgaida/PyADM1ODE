@@ -56,6 +56,8 @@ def _init_heating_dll() -> None:
     _BIOGAS = _biogas
     _SUBSTRATES_FACTORY = getattr(_biogas, "substrates", None)
     _PHYSVALUE = _phys_value
+
+
 def _get_substrates_instance():
     """Get the substrate instance from factory."""
     global _SUBSTRATES_INSTANCE
