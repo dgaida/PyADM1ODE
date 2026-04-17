@@ -43,12 +43,12 @@ from pyadm1.utils.dll_loader import load_dlls
 load_dlls()
 
 # Core imports
-from .configurator import BiogasPlant
-from .substrates import Feedstock
-from .simulation import Simulator
+from .configurator import BiogasPlant  # noqa: E402
+from .substrates import Feedstock  # noqa: E402
+from .simulation import Simulator  # noqa: E402
 
 # Component base classes
-from .components import Component, ComponentType
+from .components import Component, ComponentType  # noqa: E402
 
 __all__ = [
     "__version__",

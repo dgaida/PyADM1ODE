@@ -50,7 +50,6 @@ Example:
 """
 
 
-import os
 import numpy as np
 from typing import Dict, Any, List, Optional
 from ..base import Component, ComponentType  # noqa: E402

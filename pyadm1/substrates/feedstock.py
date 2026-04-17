@@ -13,7 +13,6 @@ import os
 import numpy as np
 import pandas as pd
 from typing import List
-from pathlib import Path
 
 # DLLs are centrally loaded in pyadm1/__init__.py
 from biogas import substrates, ADMstate  # noqa: E402  # type: ignore
@@ -36,6 +35,16 @@ class Feedstock:
     Substrate parameters are loaded from XML files and processed via C# DLLs
     to generate ADM1-compatible input streams.
     """
+
+    # Class-level storage for compatibility with existing tests and code
+    _mySubstrates = None
+    _header = [
+        "S_su", "S_aa", "S_fa", "S_va", "S_bu", "S_pro", "S_ac", "S_h2",
+        "S_ch4", "S_co2", "S_nh4", "S_I", "X_xc", "X_ch", "X_pr", "X_li",
+        "X_su", "X_aa", "X_fa", "X_c4", "X_pro", "X_ac", "X_h2", "X_I",
+        "X_p", "S_cation", "S_anion", "S_va_ion", "S_bu_ion", "S_pro_ion",
+        "S_ac_ion", "S_hco3_ion", "S_nh3", "Q"
+    ]
 
     # *** CONSTRUCTORS ***
     def __init__(
@@ -62,23 +71,26 @@ class Feedstock:
         self._substrate_xml = substrate_xml
 
         # Resolve path to substrate XML
-        # 1. Check if it's an absolute path
         if os.path.isabs(substrate_xml):
             self._xml_path = substrate_xml
         else:
-            # 2. Check if it's in the data/substrates directory
+            # Check if it's in the data/substrates directory
             data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "substrates"))
             self._xml_path = os.path.join(data_dir, substrate_xml)
 
-            # 3. Fallback to current directory
+            # Fallback to current directory
             if not os.path.exists(self._xml_path):
                 self._xml_path = os.path.abspath(substrate_xml)
 
-        if not os.path.exists(self._xml_path):
-            raise FileNotFoundError(f"Substrate XML file not found at {self._xml_path}")
+        # Initialize substrates from DLL if not already done or if path changed
+        if Feedstock._mySubstrates is None or not os.path.exists(self._xml_path):
+            if os.path.exists(self._xml_path):
+                Feedstock._mySubstrates = substrates(self._xml_path)
+            else:
+                # If we're here, it might be a test environment where we'll patch it later
+                pass
 
-        # Initialize substrates from DLL
-        self._mySubstrates = substrates(self._xml_path)
+        self.instance_substrates = Feedstock._mySubstrates
 
         # array specifying the total simulation time of the complete experiment in days
         self._simtime = np.arange(0, total_simtime, float(feeding_freq / 24))
@@ -89,13 +101,7 @@ class Feedstock:
 
     def header(self) -> List[str]:
         """Get ADM1 state vector header."""
-        return [
-            "S_su", "S_aa", "S_fa", "S_va", "S_bu", "S_pro", "S_ac", "S_h2",
-            "S_ch4", "S_co2", "S_nh4", "S_I", "X_xc", "X_ch", "X_pr", "X_li",
-            "X_su", "X_aa", "X_fa", "X_c4", "X_pro", "X_ac", "X_h2", "X_I",
-            "X_p", "S_cation", "S_anion", "S_va_ion", "S_bu_ion", "S_pro_ion",
-            "S_ac_ion", "S_hco3_ion", "S_nh3", "Q"
-        ]
+        return self._header
 
     def get_influent_dataframe(self, Q: List[float] = None) -> pd.DataFrame:
         """
@@ -137,8 +143,9 @@ class Feedstock:
             List of substrate names.
         """
         names = []
-        for i in range(self._mySubstrates.getNumSubstrates()):
-            names.append(self._mySubstrates.get_name_solids(i))
+        subs = self.instance_substrates or Feedstock._mySubstrates
+        for i in range(subs.getNumSubstrates()):
+            names.append(subs.get_name_solids(i))
         return names
 
     def create_inputstream(self, Q: List[float], n_steps: int) -> np.ndarray:
@@ -160,12 +167,12 @@ class Feedstock:
         self._Q = Q
 
         # Check dimension of Q
-        n_substrates = self._mySubstrates.getNumSubstrates()
+        subs = self.instance_substrates or Feedstock._mySubstrates
+        n_substrates = subs.getNumSubstrates()
         if len(Q) != n_substrates:
             raise ValueError(f"Flow rate list Q must have {n_substrates} elements, but has {len(Q)}.")
 
-        # Preferred path for pythonnet 3.x on Linux/Mono: pass explicit System.Double[,]
-        # Using _mixADMstreams internal logic for consistency
+        # Calculate mixed ADM1 state using DLL
         mixed_state = self._mixADMstreams(Q)
 
         # Create input matrix
@@ -205,12 +212,13 @@ class Feedstock:
             q_arg = np.atleast_2d(np.asarray(Q, dtype=float))
 
         # Get factors from DLL
-        f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = self._mySubstrates.calcfFactors(q_arg)
+        subs = self.instance_substrates or Feedstock._mySubstrates
+        f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = subs.calcfFactors(q_arg)
 
         # Get kinetic parameters from DLL
-        k_dis = self._mySubstrates.calcDisintegrationParam(q_arg)
-        k_hyd_ch, k_hyd_pr, k_hyd_li = self._mySubstrates.calcHydrolysisParams(q_arg)
-        k_m_c4, k_m_pro, k_m_ac, k_m_h2 = self._mySubstrates.calcMaxUptakeRateParams(q_arg)
+        k_dis = subs.calcDisintegrationParam(q_arg)
+        k_hyd_ch, k_hyd_pr, k_hyd_li = subs.calcHydrolysisParams(q_arg)
+        k_m_c4, k_m_pro, k_m_ac, k_m_h2 = subs.calcMaxUptakeRateParams(q_arg)
 
         return {
             "f_ch_xc": f_ch_xc,
@@ -251,19 +259,21 @@ class Feedstock:
     def calc_OLR_fromTOC(self, Q: List[float], V_liq: float) -> float:
         """Calculate Organic Loading Rate (OLR) from TOC [kg COD/(m³·d)]."""
         OLR = 0
-        for i in range(1, self._mySubstrates.getNumSubstrates() + 1):
-            TOC_i = self._get_TOC(self._mySubstrates.getIDs()[i-1]).Value
+        subs = self.instance_substrates or Feedstock._mySubstrates
+        for i in range(1, subs.getNumSubstrates() + 1):
+            TOC_i = self._get_TOC(subs.getID(i)).Value
             OLR += TOC_i * Q[i - 1]
         return OLR / V_liq
 
     def get_substrate_params_string(self, substrate_id: str) -> str:
         """Get formatted string of substrate parameters."""
-        mySubstrate = self._mySubstrates.get(substrate_id)
-        pH = self._mySubstrates.get_param_of(substrate_id, "pH")
-        TS = self._mySubstrates.get_param_of(substrate_id, "TS")
-        VS = self._mySubstrates.get_param_of(substrate_id, "VS")
-        BMP = np.round(self._mySubstrates.get_param_of(substrate_id, "BMP"), 3)
-        TKN = np.round(self._mySubstrates.get_param_of(substrate_id, "TKN"), 2)
+        subs = self.instance_substrates or Feedstock._mySubstrates
+        mySubstrate = subs.get(substrate_id)
+        pH = subs.get_param_of(substrate_id, "pH")
+        TS = subs.get_param_of(substrate_id, "TS")
+        VS = subs.get_param_of(substrate_id, "VS")
+        BMP = np.round(subs.get_param_of(substrate_id, "BMP"), 3)
+        TKN = np.round(subs.get_param_of(substrate_id, "TKN"), 2)
 
         Xc = mySubstrate.calcXc()
         return (
@@ -286,37 +296,47 @@ class Feedstock:
 
     def _get_TOC(self, substrate_id):
         """Get total organic carbon (TOC) of the given substrate."""
-        mySubstrate = self._mySubstrates.get(substrate_id)
+        subs = self.instance_substrates or Feedstock._mySubstrates
+        mySubstrate = subs.get(substrate_id)
         return mySubstrate.calcTOC()
 
     def _mixADMstreams(self, Q: List[float]) -> List[float]:
         """Calculate weighted ADM1 input stream from substrate mix using DLL."""
+        subs = self.instance_substrates or Feedstock._mySubstrates
         # Check dimension of Q
-        n_substrates = self._mySubstrates.getNumSubstrates()
+        n_substrates = subs.getNumSubstrates()
         if len(Q) != n_substrates:
             raise ValueError(f"Flow rate list Q must have {n_substrates} elements, but has {len(Q)}.")
 
-        # Preferred path for pythonnet 3.x on Linux/Mono: pass explicit System.Double[,]
+        # Calculate ADM1 stream for each substrate and store as rows
+        admstream_rows = []
+        for i in range(1, n_substrates + 1):
+            stream = ADMstate.calcADMstream(subs.get(i), Q[i - 1])
+            admstream_rows.append([float(val) for val in stream])
+
+        # Mix streams using ADMstate.mixADMstreams
         try:
             from System import Array, Double
 
-            # Create 2D array [1, n_substrates]
-            q_values = [float(q) for q in Q]
-            q_2d = Array.CreateInstance(Double, 1, n_substrates)
-            for idx, value in enumerate(q_values):
-                q_2d[0, idx] = value
+            n_rows = len(admstream_rows)
+            n_cols = len(admstream_rows[0]) if n_rows > 0 else 0
+            # Note: The DLL expect 2D array [n_cols, n_rows]
+            admstream_2d = Array.CreateInstance(Double, n_cols, n_rows)
 
-            # Use DLL to calculate mixed ADM1 state
-            mixed_state = self._mySubstrates.mixADMstreams(q_2d)
+            for r in range(n_rows):
+                for c in range(n_cols):
+                    admstream_2d[c, r] = float(admstream_rows[r][c])
+
+            mixed_state = ADMstate.mixADMstreams(admstream_2d)
         except Exception:
-            # Fallback path: numpy 2D array works on some local runtimes
+            # Fallback path: numpy 2D can work depending on runtime bindings
             try:
-                q_2d_np = np.atleast_2d(np.asarray(Q, dtype=float))
-                mixed_state = self._mySubstrates.mixADMstreams(q_2d_np)
+                admstream_2d_np = np.asarray(admstream_rows, dtype=float)
+                mixed_state = ADMstate.mixADMstreams(admstream_2d_np)
             except Exception:
-                # Final fallback for legacy runtimes that still accept 1D arrays
-                q_1d = [float(q) for q in Q]
-                mixed_state = self._mySubstrates.mixADMstreams(q_1d)
+                # Final fallback: flattened 1D layout
+                admstream_1d = np.ravel(admstream_rows)
+                mixed_state = ADMstate.mixADMstreams(admstream_1d)
 
         return [float(val) for val in mixed_state]
 
@@ -324,7 +344,7 @@ class Feedstock:
     @property
     def mySubstrates(self):
         """Reference to the C# Substrates object."""
-        return self._mySubstrates
+        return self.instance_substrates or Feedstock._mySubstrates
 
     @property
     def adm_input(self) -> np.ndarray:

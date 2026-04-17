@@ -23,8 +23,6 @@ an auxiliary heater:
 Units: UA in kW/K, heat flows in kW, auxiliary energy in kWh.
 """
 
-import os
-import platform
 from pathlib import Path
 from typing import Dict, Any, Optional
 

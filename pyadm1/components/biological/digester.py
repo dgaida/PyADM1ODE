@@ -9,7 +9,6 @@ for anaerobic digestion in a component-based framework.
 """
 
 
-import os
 import numpy as np
 from typing import Dict, Any, List, Optional
 from ..base import Component, ComponentType  # noqa: E402  # type: ignore
