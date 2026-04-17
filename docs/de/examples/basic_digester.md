@@ -1,8 +1,6 @@
 # Basis-Fermenter Beispiel
-n<div align="center">
-  <a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_01_basic_digester.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="In Google Colab öffnen (Basis)"></a>
-  <a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_02_complex_plant.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="In Google Colab öffnen (Komplex)"></a>
-</div>
+[![In Google Colab öffnen](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_01_basic_digester.ipynb)
+
 
 Das Beispiel [examples/01_basic_digester.py](https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py) zeigt die einfachstmögliche PyADM1-Konfiguration: einen einzelnen Fermenter mit Substratzulauf und integriertem Gasspeicher.
 

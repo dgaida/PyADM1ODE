@@ -1,4 +1,6 @@
 # Basic Digester Example
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_01_basic_digester.ipynb)
+
 
 The [examples/basic_digester.py](https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py) example demonstrates the simplest possible PyADM1 configuration: a single digester with substrate feed and integrated gas storage.
 

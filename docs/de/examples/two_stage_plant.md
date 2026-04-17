@@ -1,4 +1,6 @@
 # Zweistufige Biogasanlage Beispiel
+[![In Google Colab öffnen](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_02_complex_plant.ipynb)
+
 
 Das Beispiel [examples/02_two_stage_plant.py](https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py) zeigt eine komplette zweistufige Biogasanlage mit mechanischen Komponenten, Energieintegration und umfassender Prozessüberwachung.
 
