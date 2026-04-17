@@ -1712,6 +1712,7 @@
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
 <h1 id="two-stage-biogas-plant-example">Two-Stage Biogas Plant Example<a class="headerlink" href="#two-stage-biogas-plant-example" title="Permanent link">¶</a></h1>
+<p><a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_02_complex_plant.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
 <p>The <a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py">examples/two_stage_plant.py</a> example demonstrates a complete two-stage biogas plant with mechanical components, energy integration, and comprehensive process monitoring.</p>
 <h2 id="plant-schematic">Plant Schematic<a class="headerlink" href="#plant-schematic" title="Permanent link">¶</a></h2>
 <p><img alt="Plant Schematic" src="../two_stage_plant_schematic.png"/></p>
@@ -1781,12 +1782,12 @@
     class Feed inputBox
     class Power,Effluent outputBox</code></pre>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
-<p>The two-stage plant demonstrates:
-- <strong>Temperature-Phased Anaerobic Digestion (TPAD)</strong>: Thermophilic hydrolysis (45°C) followed by mesophilic methanogenesis (35°C)
-- <strong>Mechanical Components</strong>: Pumps for material transport and mixers for process enhancement
-- <strong>Energy Integration</strong>: CHP for power generation and waste heat recovery
-- <strong>Process Control</strong>: Multiple heating systems for precise temperature management
-- <strong>Gas Management</strong>: Dedicated storage for each digester with automatic overflow protection and centralized flare</p>
+<p>The two-stage plant demonstrates:<br/>
+- <strong>Temperature-Phased Anaerobic Digestion (TPAD)</strong>: Thermophilic hydrolysis (45°C) followed by mesophilic methanogenesis (35°C)<br/>
+- <strong>Mechanical Components</strong>: Pumps for material transport and mixers for process enhancement<br/>
+- <strong>Energy Integration</strong>: CHP for power generation and waste heat recovery<br/>
+- <strong>Process Control</strong>: Multiple heating systems for precise temperature management<br/>
+- <strong>Gas Management</strong>: Dedicated storage for each digester with automatic overflow protection and centralized flare  </p>
 <h2 id="plant-configuration">Plant Configuration<a class="headerlink" href="#plant-configuration" title="Permanent link">¶</a></h2>
 <h3 id="biological-components">Biological Components<a class="headerlink" href="#biological-components" title="Permanent link">¶</a></h3>
 <table>
@@ -1935,10 +1936,10 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Gas Flow Architecture</strong>:
-1. Each digester produces gas → Dedicated storage
-2. Both storages supply gas → Single CHP unit
-3. CHP excess/overflow → Automatic flare combustion</p>
+<p><strong>Gas Flow Architecture</strong>:<br/>
+1. Each digester produces gas → Dedicated storage<br/>
+2. Both storages supply gas → Single CHP unit<br/>
+3. CHP excess/overflow → Automatic flare combustion  </p>
 <h2 id="code-walkthrough">Code Walkthrough<a class="headerlink" href="#code-walkthrough" title="Permanent link">¶</a></h2>
 <h3 id="1-enhanced-imports">1. Enhanced Imports<a class="headerlink" href="#1-enhanced-imports" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.components.mechanical.mixer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mixer</span>
@@ -1964,15 +1965,15 @@
 <a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    <span class="n">Q_substrates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c1"># Only receives effluent</span>
 <a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="p">)</span>
 </code></pre></div>
-<p><strong>Design Rationale</strong>:
-- <strong>Stage 1 (Thermophilic)</strong>: Higher temperature enhances hydrolysis of complex substrates (cellulose, hemicellulose, proteins)
-- <strong>Stage 2 (Mesophilic)</strong>: Lower temperature is more stable and efficient for methanogenesis
-- <strong>Effluent-only feed to Stage 2</strong>: Prevents overloading, receives pre-hydrolyzed material</p>
-<p><strong>Automatic Gas Storage Creation</strong>:
-- <code>add_digester()</code> automatically creates:
-  - <code>digester_1_storage</code> (304 m³ membrane storage)
-  - <code>digester_2_storage</code> (150 m³ membrane storage)
-- Storages are automatically connected to their digesters</p>
+<p><strong>Design Rationale</strong>:<br/>
+- <strong>Stage 1 (Thermophilic)</strong>: Higher temperature enhances hydrolysis of complex substrates (cellulose, hemicellulose, proteins)<br/>
+- <strong>Stage 2 (Mesophilic)</strong>: Lower temperature is more stable and efficient for methanogenesis<br/>
+- <strong>Effluent-only feed to Stage 2</strong>: Prevents overloading, receives pre-hydrolyzed material  </p>
+<p><strong>Automatic Gas Storage Creation</strong>:<br/>
+- <code>add_digester()</code> automatically creates:<br/>
+  - <code>digester_1_storage</code> (304 m³ membrane storage)<br/>
+  - <code>digester_2_storage</code> (150 m³ membrane storage)<br/>
+- Storages are automatically connected to their digesters  </p>
 <h3 id="3-adding-mechanical-components">3. Adding Mechanical Components<a class="headerlink" href="#3-adding-mechanical-components" title="Permanent link">¶</a></h3>
 <h4 id="feed-pump">Feed Pump<a class="headerlink" href="#feed-pump" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">feed_pump</span> <span class="o">=</span> <span class="n">Pump</span><span class="p">(</span>
@@ -1982,11 +1983,11 @@
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="n">pressure_head</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>  <span class="c1"># Low pressure (gravity assist)</span>
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="p">)</span>
 </code></pre></div>
-<p><strong>Progressive Cavity Pumps</strong> are ideal for biogas substrates because:
-- Handle high solids content (&gt;12% TS)
-- Low shear (preserves fiber structure)
-- Self-priming capability
-- Wide viscosity range</p>
+<p><strong>Progressive Cavity Pumps</strong> are ideal for biogas substrates because:<br/>
+- Handle high solids content (&gt;12% TS)<br/>
+- Low shear (preserves fiber structure)<br/>
+- Self-priming capability<br/>
+- Wide viscosity range  </p>
 <h4 id="transfer-pump">Transfer Pump<a class="headerlink" href="#transfer-pump" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">transfer_pump</span> <span class="o">=</span> <span class="n">Pump</span><span class="p">(</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>    <span class="n">component_id</span><span class="o">=</span><span class="s2">"transfer_pump"</span><span class="p">,</span>
@@ -1995,10 +1996,10 @@
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="n">pressure_head</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span>  <span class="c1"># Higher head for inter-digester transfer</span>
 <a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="p">)</span>
 </code></pre></div>
-<p>Higher pressure head needed for:
-- Overcoming pipe friction losses
-- Elevation differences
-- Injection into pressurized digester</p>
+<p>Higher pressure head needed for:<br/>
+- Overcoming pipe friction losses<br/>
+- Elevation differences<br/>
+- Injection into pressurized digester  </p>
 <h4 id="mixers">Mixers<a class="headerlink" href="#mixers" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">mixer_1</span> <span class="o">=</span> <span class="n">Mixer</span><span class="p">(</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    <span class="n">component_id</span><span class="o">=</span><span class="s2">"mixer_1"</span><span class="p">,</span>
@@ -2010,13 +2011,13 @@
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="n">on_time_fraction</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>  <span class="c1"># 6 hours on, 18 hours off</span>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="p">)</span>
 </code></pre></div>
-<p><strong>Mixing Strategy</strong>:
-- <strong>Intermittent operation</strong>: Reduces energy consumption by 75%
-- <strong>High intensity in hydrolysis</strong>: Breaks up floating layers, enhances substrate contact
-- <strong>Medium intensity in methanogenesis</strong>: Gentle mixing prevents inhibition of sensitive methanogens</p>
-<p><strong>Specific Power Input</strong>:
-- Digester 1: 15 kW × 0.25 ÷ 1977 m³ = <strong>1.9 W/m³</strong> (high)
-- Digester 2: 10 kW × 0.25 ÷ 1000 m³ = <strong>2.5 W/m³</strong> (medium)</p>
+<p><strong>Mixing Strategy</strong>:<br/>
+- <strong>Intermittent operation</strong>: Reduces energy consumption by 75%<br/>
+- <strong>High intensity in hydrolysis</strong>: Breaks up floating layers, enhances substrate contact<br/>
+- <strong>Medium intensity in methanogenesis</strong>: Gentle mixing prevents inhibition of sensitive methanogens  </p>
+<p><strong>Specific Power Input</strong>:<br/>
+- Digester 1: 15 kW × 0.25 ÷ 1977 m³ = <strong>1.9 W/m³</strong> (high)<br/>
+- Digester 2: 10 kW × 0.25 ÷ 1000 m³ = <strong>2.5 W/m³</strong> (medium)  </p>
 <h3 id="4-energy-integration-with-automatic-flare">4. Energy Integration with Automatic Flare<a class="headerlink" href="#4-energy-integration-with-automatic-flare" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Add CHP (automatically creates flare)</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_chp</span><span class="p">(</span>
@@ -2041,11 +2042,11 @@
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>Digester 2 → Storage 2 ↗      ↓
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>                          Heat → Heating 1 &amp; 2
 </code></pre></div></p>
-<p><strong>Automatic Flare Creation</strong>:
-- <code>add_chp()</code> automatically creates a flare component
-- Flare ID: <code>{chp_id}_flare</code> (e.g., "chp_1_flare")
-- Function: Safety combustion of excess gas (98% CH₄ destruction)
-- Automatic connection: CHP → Flare</p>
+<p><strong>Automatic Flare Creation</strong>:<br/>
+- <code>add_chp()</code> automatically creates a flare component<br/>
+- Flare ID: <code>{chp_id}_flare</code> (e.g., "chp_1_flare")<br/>
+- Function: Safety combustion of excess gas (98% CH₄ destruction)<br/>
+- Automatic connection: CHP → Flare  </p>
 <h3 id="5-three-pass-gas-flow-simulation">5. Three-Pass Gas Flow Simulation<a class="headerlink" href="#5-three-pass-gas-flow-simulation" title="Permanent link">¶</a></h3>
 <p>The simulation executes in three passes for realistic gas management:</p>
 <p><strong>Pass 1 - Gas Production</strong>:
@@ -2067,11 +2068,11 @@
 <a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="c1"># CHP operates with actual supply</span>
 <a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="c1"># Excess to flare: (supply - consumption)</span>
 </code></pre></div></p>
-<p>This ensures:
-- Realistic pressure management in storages
-- CHP operates with available gas, not idealized supply
-- Automatic venting prevents overpressure
-- Flare handles all excess gas safely</p>
+<p>This ensures:<br/>
+- Realistic pressure management in storages<br/>
+- CHP operates with available gas, not idealized supply<br/>
+- Automatic venting prevents overpressure<br/>
+- Flare handles all excess gas safely  </p>
 <h2 id="expected-output">Expected Output<a class="headerlink" href="#expected-output" title="Permanent link">¶</a></h2>
 <h3 id="plant-summary">Plant Summary<a class="headerlink" href="#plant-summary" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>=== Two-Stage Plant with Mechanical Components ===
@@ -2183,11 +2184,11 @@
 <a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a>  CHP consumption:         1150.0 m³/d
 <a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a>  To flare:                 103.1 m³/d (8.2%)
 </code></pre></div>
-<p><strong>Analysis</strong>:
-- <strong>Net efficiency</strong>: (472 kW + 125 kW) ÷ (751.9 m³/d × 10 kWh/m³ ÷ 24 h) = <strong>190%</strong> (excellent heat recovery)
-- <strong>Parasitic ratio</strong>: 8.25 ÷ 480.5 = <strong>1.7%</strong> (very low)
-- <strong>Excess heat</strong>: 540.6 - 125.4 = <strong>415 kW</strong> available for external use
-- <strong>Flare usage</strong>: 8.2% of production vented (typical when CHP at part load)</p>
+<p><strong>Analysis</strong>:<br/>
+- <strong>Net efficiency</strong>: (472 kW + 125 kW) ÷ (751.9 m³/d × 10 kWh/m³ ÷ 24 h) = <strong>190%</strong> (excellent heat recovery)<br/>
+- <strong>Parasitic ratio</strong>: 8.25 ÷ 480.5 = <strong>1.7%</strong> (very low)<br/>
+- <strong>Excess heat</strong>: 540.6 - 125.4 = <strong>415 kW</strong> available for external use<br/>
+- <strong>Flare usage</strong>: 8.2% of production vented (typical when CHP at part load)  </p>
 <h3 id="process-stability">Process Stability<a class="headerlink" href="#process-stability" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>PROCESS STABILITY ASSESSMENT
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>======================================================================
@@ -2204,11 +2205,11 @@
 <a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>  FOS/TAC ratio:        0.245 (Stable)
 <a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>  Storage status:       NORMAL (50% full)
 </code></pre></div>
-<p><strong>Interpretation</strong>:
-- <strong>Digester 1</strong>: Higher VFA is expected in thermophilic hydrolysis stage - acids are consumed in stage 2
-- <strong>Digester 2</strong>: Excellent stability indicators - methanogens effectively consume VFAs
-- <strong>pH gradient</strong>: 7.15 → 7.32 shows proper two-stage function
-- <strong>Gas storages</strong>: Both at healthy 50% fill level with stable pressure</p>
+<p><strong>Interpretation</strong>:<br/>
+- <strong>Digester 1</strong>: Higher VFA is expected in thermophilic hydrolysis stage - acids are consumed in stage 2<br/>
+- <strong>Digester 2</strong>: Excellent stability indicators - methanogens effectively consume VFAs<br/>
+- <strong>pH gradient</strong>: 7.15 → 7.32 shows proper two-stage function<br/>
+- <strong>Gas storages</strong>: Both at healthy 50% fill level with stable pressure  </p>
 <h2 id="advantages-of-two-stage-design">Advantages of Two-Stage Design<a class="headerlink" href="#advantages-of-two-stage-design" title="Permanent link">¶</a></h2>
 <h3 id="1-process-optimization">1. Process Optimization<a class="headerlink" href="#1-process-optimization" title="Permanent link">¶</a></h3>
 <table>
@@ -2243,16 +2244,16 @@
 </tbody>
 </table>
 <h3 id="2-substrate-flexibility">2. Substrate Flexibility<a class="headerlink" href="#2-substrate-flexibility" title="Permanent link">¶</a></h3>
-<p>The two-stage system handles difficult substrates better:
-- <strong>High-fiber materials</strong>: Enhanced hydrolysis in Stage 1
-- <strong>High-protein substrates</strong>: Ammonia buffering across stages
-- <strong>Variable feed composition</strong>: Stage 2 provides buffer capacity</p>
+<p>The two-stage system handles difficult substrates better:<br/>
+- <strong>High-fiber materials</strong>: Enhanced hydrolysis in Stage 1<br/>
+- <strong>High-protein substrates</strong>: Ammonia buffering across stages<br/>
+- <strong>Variable feed composition</strong>: Stage 2 provides buffer capacity  </p>
 <h3 id="3-operational-benefits">3. Operational Benefits<a class="headerlink" href="#3-operational-benefits" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong>Reduced foaming</strong>: Separate hydrolysis phase</li>
-<li><strong>Better pathogen reduction</strong>: Thermophilic stage (45°C) kills pathogens</li>
-<li><strong>Easier process control</strong>: Monitor and control each stage independently</li>
-<li><strong>Recovery from upsets</strong>: Stage 2 can buffer Stage 1 disturbances</li>
+<li><strong>Reduced foaming</strong>: Separate hydrolysis phase  </li>
+<li><strong>Better pathogen reduction</strong>: Thermophilic stage (45°C) kills pathogens  </li>
+<li><strong>Easier process control</strong>: Monitor and control each stage independently  </li>
+<li><strong>Recovery from upsets</strong>: Stage 2 can buffer Stage 1 disturbances  </li>
 </ul>
 <h2 id="performance-comparison">Performance Comparison<a class="headerlink" href="#performance-comparison" title="Permanent link">¶</a></h2>
 <h3 id="single-stage-vs-two-stage">Single-Stage vs Two-Stage<a class="headerlink" href="#single-stage-vs-two-stage" title="Permanent link">¶</a></h3>
@@ -2298,55 +2299,55 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Cost-Benefit</strong>:
-- <strong>Additional investment</strong>: ~15-20% (second digester, pumps)
-- <strong>Energy gain</strong>: ~9% more biogas
-- <strong>Stability</strong>: Significantly reduced risk of process failure
-- <strong>ROI</strong>: Typically 3-5 years for difficult substrates</p>
+<p><strong>Cost-Benefit</strong>:<br/>
+- <strong>Additional investment</strong>: ~15-20% (second digester, pumps)<br/>
+- <strong>Energy gain</strong>: ~9% more biogas<br/>
+- <strong>Stability</strong>: Significantly reduced risk of process failure<br/>
+- <strong>ROI</strong>: Typically 3-5 years for difficult substrates  </p>
 <h2 id="mechanical-component-performance">Mechanical Component Performance<a class="headerlink" href="#mechanical-component-performance" title="Permanent link">¶</a></h2>
 <h3 id="pump-operation">Pump Operation<a class="headerlink" href="#pump-operation" title="Permanent link">¶</a></h3>
-<p><strong>Feed Pump</strong>:
-- <strong>Operating point</strong>: 25 m³/d ÷ 24 = 1.04 m³/h (3.5% of nominal capacity)
-- <strong>Efficiency at low flow</strong>: Progressive cavity pumps maintain ~60% efficiency even at 3% capacity
-- <strong>Annual energy</strong>: 5 kW × 8760 h = 43,800 kWh</p>
-<p><strong>Transfer Pump</strong>:
-- <strong>Operating point</strong>: 25 m³/d ÷ 24 = 1.04 m³/h
-- <strong>Actual power</strong>: 8 kW × (1.04/25) × 1.2 (low efficiency penalty) ≈ <strong>0.4 kW</strong>
-- <strong>Annual energy</strong>: 0.4 kW × 8760 h = 3,504 kWh</p>
+<p><strong>Feed Pump</strong>:<br/>
+- <strong>Operating point</strong>: 25 m³/d ÷ 24 = 1.04 m³/h (3.5% of nominal capacity)<br/>
+- <strong>Efficiency at low flow</strong>: Progressive cavity pumps maintain ~60% efficiency even at 3% capacity<br/>
+- <strong>Annual energy</strong>: 5 kW × 8760 h = 43,800 kWh  </p>
+<p><strong>Transfer Pump</strong>:<br/>
+- <strong>Operating point</strong>: 25 m³/d ÷ 24 = 1.04 m³/h<br/>
+- <strong>Actual power</strong>: 8 kW × (1.04/25) × 1.2 (low efficiency penalty) ≈ <strong>0.4 kW</strong><br/>
+- <strong>Annual energy</strong>: 0.4 kW × 8760 h = 3,504 kWh  </p>
 <h3 id="mixer-performance">Mixer Performance<a class="headerlink" href="#mixer-performance" title="Permanent link">¶</a></h3>
-<p><strong>Hydrolysis Mixer</strong>:
-- <strong>Mixing time</strong>: ~15 minutes (from Reynolds number and geometry)
-- <strong>Tip speed</strong>: ~4.5 m/s (turbulent regime)
-- <strong>Shear rate</strong>: ~50 s⁻¹ (high intensity)
-- <strong>Power number</strong>: 0.32 (typical for propeller at Re &gt; 10,000)</p>
-<p><strong>Methanogenesis Mixer</strong>:
-- <strong>Mixing time</strong>: ~20 minutes
-- <strong>Tip speed</strong>: ~3.8 m/s
-- <strong>Shear rate</strong>: ~35 s⁻¹ (medium intensity)
-- <strong>Prevents stratification</strong> without damaging sensitive methanogens</p>
+<p><strong>Hydrolysis Mixer</strong>:<br/>
+- <strong>Mixing time</strong>: ~15 minutes (from Reynolds number and geometry)<br/>
+- <strong>Tip speed</strong>: ~4.5 m/s (turbulent regime)<br/>
+- <strong>Shear rate</strong>: ~50 s⁻¹ (high intensity)<br/>
+- <strong>Power number</strong>: 0.32 (typical for propeller at Re &gt; 10,000)  </p>
+<p><strong>Methanogenesis Mixer</strong>:<br/>
+- <strong>Mixing time</strong>: ~20 minutes<br/>
+- <strong>Tip speed</strong>: ~3.8 m/s<br/>
+- <strong>Shear rate</strong>: ~35 s⁻¹ (medium intensity)<br/>
+- <strong>Prevents stratification</strong> without damaging sensitive methanogens  </p>
 <h2 id="gas-storage-and-flare-management">Gas Storage and Flare Management<a class="headerlink" href="#gas-storage-and-flare-management" title="Permanent link">¶</a></h2>
 <h3 id="storage-dynamics">Storage Dynamics<a class="headerlink" href="#storage-dynamics" title="Permanent link">¶</a></h3>
-<p><strong>Storage 1 (Hydrolysis)</strong>:
-- Receives ~850 m³/d (higher production due to enhanced hydrolysis)
-- Supplies ~675 m³/d to CHP (proportional to total demand)
-- Net accumulation: +175 m³/d
-- Reaches 50% capacity in ~0.9 days</p>
-<p><strong>Storage 2 (Methanogenesis)</strong>:
-- Receives ~400 m³/d (lower but more stable)
-- Supplies ~475 m³/d to CHP
-- Net draw: -75 m³/d (supplements Storage 1)
-- Provides buffer for production variations</p>
+<p><strong>Storage 1 (Hydrolysis)</strong>:<br/>
+- Receives ~850 m³/d (higher production due to enhanced hydrolysis)<br/>
+- Supplies ~675 m³/d to CHP (proportional to total demand)<br/>
+- Net accumulation: +175 m³/d<br/>
+- Reaches 50% capacity in ~0.9 days  </p>
+<p><strong>Storage 2 (Methanogenesis)</strong>:<br/>
+- Receives ~400 m³/d (lower but more stable)<br/>
+- Supplies ~475 m³/d to CHP<br/>
+- Net draw: -75 m³/d (supplements Storage 1)<br/>
+- Provides buffer for production variations  </p>
 <h3 id="flare-operation">Flare Operation<a class="headerlink" href="#flare-operation" title="Permanent link">¶</a></h3>
-<p><strong>When does the flare activate?</strong>:
-1. <strong>Storage overflow</strong>: When either storage reaches 100% capacity
-2. <strong>CHP part-load</strong>: When CHP operates below full capacity
-3. <strong>Maintenance</strong>: When CHP is offline but digesters continue
-4. <strong>Start-up/shutdown</strong>: During transient operations</p>
-<p><strong>Flare performance</strong>:
-- <strong>Destruction efficiency</strong>: 98% CH₄ conversion to CO₂
-- <strong>Temperature</strong>: ~1000°C combustion temperature
-- <strong>Emissions</strong>: 2% uncombusted CH₄ + CO₂ from combustion
-- <strong>Safety</strong>: Automatic ignition, flame detection</p>
+<p><strong>When does the flare activate?</strong>:<br/>
+1. <strong>Storage overflow</strong>: When either storage reaches 100% capacity<br/>
+2. <strong>CHP part-load</strong>: When CHP operates below full capacity<br/>
+3. <strong>Maintenance</strong>: When CHP is offline but digesters continue<br/>
+4. <strong>Start-up/shutdown</strong>: During transient operations  </p>
+<p><strong>Flare performance</strong>:<br/>
+- <strong>Destruction efficiency</strong>: 98% CH₄ conversion to CO₂<br/>
+- <strong>Temperature</strong>: ~1000°C combustion temperature<br/>
+- <strong>Emissions</strong>: 2% uncombusted CH₄ + CO₂ from combustion<br/>
+- <strong>Safety</strong>: Automatic ignition, flame detection  </p>
 <h2 id="process-control-strategies">Process Control Strategies<a class="headerlink" href="#process-control-strategies" title="Permanent link">¶</a></h2>
 <h3 id="temperature-control">Temperature Control<a class="headerlink" href="#temperature-control" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># Heating 1 maintains 45°C for hydrolysis</span>
@@ -2357,10 +2358,10 @@
 <a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="n">heating_2</span><span class="o">.</span><span class="n">target_temperature</span> <span class="o">=</span> <span class="mf">308.15</span>  <span class="c1"># K</span>
 <a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="n">heating_2</span><span class="o">.</span><span class="n">heat_loss_coefficient</span> <span class="o">=</span> <span class="mf">0.3</span>  <span class="c1"># Lower ΔT</span>
 </code></pre></div>
-<p><strong>Heat Demand Calculation</strong>:
-- <strong>Digester 1</strong>: Q = 0.5 kW/K × (45 - 15)°C = <strong>15 kW</strong> base loss + <strong>80 kW</strong> process heating = <strong>95 kW</strong>
-- <strong>Digester 2</strong>: Q = 0.3 kW/K × (35 - 15)°C = <strong>6 kW</strong> base loss + <strong>24 kW</strong> process = <strong>30 kW</strong>
-- <strong>Total</strong>: <strong>125 kW</strong> (well covered by 541 kW CHP thermal output)</p>
+<p><strong>Heat Demand Calculation</strong>:<br/>
+- <strong>Digester 1</strong>: Q = 0.5 kW/K × (45 - 15)°C = <strong>15 kW</strong> base loss + <strong>80 kW</strong> process heating = <strong>95 kW</strong><br/>
+- <strong>Digester 2</strong>: Q = 0.3 kW/K × (35 - 15)°C = <strong>6 kW</strong> base loss + <strong>24 kW</strong> process = <strong>30 kW</strong><br/>
+- <strong>Total</strong>: <strong>125 kW</strong> (well covered by 541 kW CHP thermal output)  </p>
 <h3 id="mixing-control">Mixing Control<a class="headerlink" href="#mixing-control" title="Permanent link">¶</a></h3>
 <p><strong>Strategy</strong>: Intermittent mixing with adaptive timing
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># High mixing when feeding (4× daily)</span>
@@ -2370,16 +2371,16 @@
 <a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>    <span class="n">mixer</span><span class="o">.</span><span class="n">on_time_fraction</span> <span class="o">=</span> <span class="mf">0.15</span>  <span class="c1"># 15% baseline</span>
 </code></pre></div></p>
 <h3 id="feed-control">Feed Control<a class="headerlink" href="#feed-control" title="Permanent link">¶</a></h3>
-<p><strong>Model Predictive Control (MPC)</strong> approach:
-1. Measure current VFA and pH
-2. Predict 48h response with different feed rates
-3. Select feed rate optimizing CH₄ while maintaining pH &gt; 7.0</p>
+<p><strong>Model Predictive Control (MPC)</strong> approach:<br/>
+1. Measure current VFA and pH<br/>
+2. Predict 48h response with different feed rates<br/>
+3. Select feed rate optimizing CH₄ while maintaining pH &gt; 7.0  </p>
 <h2 id="common-issues-and-solutions">Common Issues and Solutions<a class="headerlink" href="#common-issues-and-solutions" title="Permanent link">¶</a></h2>
 <h3 id="issue-1-high-vfa-in-digester-1">Issue 1: High VFA in Digester 1<a class="headerlink" href="#issue-1-high-vfa-in-digester-1" title="Permanent link">¶</a></h3>
-<p><strong>Symptoms</strong>:
-- VFA &gt; 5 g/L
-- pH &lt; 7.0
-- Reduced gas production</p>
+<p><strong>Symptoms</strong>:<br/>
+- VFA &gt; 5 g/L<br/>
+- pH &lt; 7.0<br/>
+- Reduced gas production  </p>
 <p><strong>Solutions</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># Reduce organic loading</span>
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Reduce from [15, 10, ...]</span>
@@ -2391,10 +2392,10 @@
 <a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="n">mixer_1</span><span class="o">.</span><span class="n">on_time_fraction</span> <span class="o">=</span> <span class="mf">0.35</span>
 </code></pre></div></p>
 <h3 id="issue-2-low-methane-content">Issue 2: Low Methane Content<a class="headerlink" href="#issue-2-low-methane-content" title="Permanent link">¶</a></h3>
-<p><strong>Symptoms</strong>:
-- CH₄ &lt; 55%
-- CO₂ elevated
-- Low specific gas production</p>
+<p><strong>Symptoms</strong>:<br/>
+- CH₄ &lt; 55%<br/>
+- CO₂ elevated<br/>
+- Low specific gas production  </p>
 <p><strong>Solutions</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># Increase HRT (reduce feed)</span>
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
@@ -2405,9 +2406,9 @@
 <a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="c1"># Check for air leaks (O₂ inhibits methanogens)</span>
 </code></pre></div></p>
 <h3 id="issue-3-foaming-in-digester-1">Issue 3: Foaming in Digester 1<a class="headerlink" href="#issue-3-foaming-in-digester-1" title="Permanent link">¶</a></h3>
-<p><strong>Symptoms</strong>:
-- Gas storage shows pressure fluctuations
-- Effluent contains excessive gas bubbles</p>
+<p><strong>Symptoms</strong>:<br/>
+- Gas storage shows pressure fluctuations<br/>
+- Effluent contains excessive gas bubbles  </p>
 <p><strong>Solutions</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># Reduce mixing intensity</span>
 <a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="n">mixer_1</span><span class="o">.</span><span class="n">mixing_intensity</span> <span class="o">=</span> <span class="s2">"medium"</span>
@@ -2419,14 +2420,14 @@
 <a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="c1"># (implement timer-based periodic drawdown)</span>
 </code></pre></div></p>
 <h3 id="issue-4-excessive-flare-usage">Issue 4: Excessive Flare Usage<a class="headerlink" href="#issue-4-excessive-flare-usage" title="Permanent link">¶</a></h3>
-<p><strong>Symptoms</strong>:
-- Flare operates continuously
-- &gt;20% of production to flare
-- High storage pressure</p>
-<p><strong>Causes</strong>:
-- CHP undersized for gas production
-- CHP in part-load operation
-- Excess substrate feed</p>
+<p><strong>Symptoms</strong>:<br/>
+- Flare operates continuously<br/>
+- &gt;20% of production to flare<br/>
+- High storage pressure  </p>
+<p><strong>Causes</strong>:<br/>
+- CHP undersized for gas production<br/>
+- CHP in part-load operation<br/>
+- Excess substrate feed  </p>
 <p><strong>Solutions</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># Option 1: Reduce substrate feed</span>
 <a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
@@ -2476,15 +2477,15 @@
 </code></pre></div>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>TPAD Design</strong>: Simeonov, I., Chorukova, E., &amp; Kabaivanova, L. (2025). <em>Two-stage anaerobic digestion for green energy production: A review</em>. Processes, 13(2), 294.</li>
-<li><strong>Process Control</strong>: Gaida (2014). <em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants</em>. PhD thesis, Leiden University.</li>
+<li><strong>TPAD Design</strong>: Simeonov, I., Chorukova, E., &amp; Kabaivanova, L. (2025). <em>Two-stage anaerobic digestion for green energy production: A review</em>. Processes, 13(2), 294.  </li>
+<li><strong>Process Control</strong>: Gaida (2014). <em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants</em>. PhD thesis, Leiden University.  </li>
 </ul>
 <h2 id="related-examples">Related Examples<a class="headerlink" href="#related-examples" title="Permanent link">¶</a></h2>
 <ul>
-<li><a href="../basic_digester/"><code>basic_digester.md</code></a>: Simple single-stage system</li>
-<li><code>calibration_workflow.md</code>(calibration_workflow.md): Parameter estimation from measurement data</li>
-<li><code>substrate_optimization.py</code>: Optimal feed strategy</li>
-<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py"><code>parallel_two_stage_simulation.py</code></a>: Parallel simulations</li>
+<li><a href="../basic_digester/"><code>basic_digester.md</code></a>: Simple single-stage system  </li>
+<li><code>calibration_workflow.md</code>(calibration_workflow.md): Parameter estimation from measurement data  </li>
+<li><code>substrate_optimization.py</code>: Optimal feed strategy  </li>
+<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py"><code>parallel_two_stage_simulation.py</code></a>: Parallel simulations  </li>
 </ul>
 </article>
 </div>

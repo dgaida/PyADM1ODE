@@ -1215,10 +1215,7 @@
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
 <h1 id="basis-fermenter-beispiel">Basis-Fermenter Beispiel<a class="headerlink" href="#basis-fermenter-beispiel" title="Permanent link">¶</a></h1>
-<p>n<div align="center">
-<a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_01_basic_digester.ipynb"><img alt="In Google Colab öffnen (Basis)" src="https://colab.research.google.com/assets/colab-badge.svg"/></a>
-<a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_02_complex_plant.ipynb"><img alt="In Google Colab öffnen (Komplex)" src="https://colab.research.google.com/assets/colab-badge.svg"/></a>
-</div></p>
+<p><a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_01_basic_digester.ipynb"><img alt="In Google Colab öffnen" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
 <p>Das Beispiel <a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py">examples/01_basic_digester.py</a> zeigt die einfachstmögliche PyADM1-Konfiguration: einen einzelnen Fermenter mit Substratzulauf und integriertem Gasspeicher.</p>
 <h2 id="systemarchitektur">Systemarchitektur<a class="headerlink" href="#systemarchitektur" title="Permanent link">¶</a></h2>
 <pre class="mermaid"><code>graph LR
@@ -1251,18 +1248,18 @@
     class Feed inputBox
     class Output,Effluent,Vent outputBox</code></pre>
 <h2 id="ubersicht">Übersicht<a class="headerlink" href="#ubersicht" title="Permanent link">¶</a></h2>
-<p>Das Basis-Fermenter-Beispiel zeigt:
-- Laden von Substratdaten (Feedstock-Management)
-- Erstellen einer einstufigen Biogasanlage
-- Automatische Gasspeicher-Erstellung pro Fermenter
-- Initialisierung aus einer Steady-State-CSV-Datei
-- Durchführen einer kurzen Simulation (5 Tage)
-- Extrahieren und Anzeigen wichtiger Prozessindikatoren</p>
+<p>Das Basis-Fermenter-Beispiel zeigt:<br/>
+- Laden von Substratdaten (Feedstock-Management)<br/>
+- Erstellen einer einstufigen Biogasanlage<br/>
+- Automatische Gasspeicher-Erstellung pro Fermenter<br/>
+- Initialisierung aus einer Steady-State-CSV-Datei<br/>
+- Durchführen einer kurzen Simulation (5 Tage)<br/>
+- Extrahieren und Anzeigen wichtiger Prozessindikatoren  </p>
 <h2 id="anlagenkonfiguration">Anlagenkonfiguration<a class="headerlink" href="#anlagenkonfiguration" title="Permanent link">¶</a></h2>
-<p>Die Anlage besteht aus:
-- <strong>1 Fermenter</strong> (2000 m³ Flüssigkeitsvolumen, 300 m³ Gasvolumen)
-- <strong>1 Gasspeicher</strong> (automatisch erstellt, am Fermenter angeschlossen)
-- <strong>Substratzulauf</strong>: Maissilage (15 m³/d) + Rindergülle (10 m³/d)</p>
+<p>Die Anlage besteht aus:<br/>
+- <strong>1 Fermenter</strong> (2000 m³ Flüssigkeitsvolumen, 300 m³ Gasvolumen)<br/>
+- <strong>1 Gasspeicher</strong> (automatisch erstellt, am Fermenter angeschlossen)<br/>
+- <strong>Substratzulauf</strong>: Maissilage (15 m³/d) + Rindergülle (10 m³/d)  </p>
 <p><strong>Wichtiger Punkt</strong>: Der Gasspeicher wird automatisch durch <code>PlantConfigurator.add_digester()</code> erstellt und mit dem Fermenter verbunden. Dies gewährleistet eine realistische Gaspufferung und Druckmanagement.</p>
 <h2 id="code-durchgang">Code-Durchgang<a class="headerlink" href="#code-durchgang" title="Permanent link">¶</a></h2>
 <h3 id="1-setup-und-imports">1. Setup und Imports<a class="headerlink" href="#1-setup-und-imports" title="Permanent link">¶</a></h3>
@@ -1271,37 +1268,37 @@
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.core.adm1</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_state_zero_from_initial_state</span>
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.configurator.plant_configurator</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlantConfigurator</span>
 </code></pre></div>
-<p>Die wichtigsten Imports sind:
-- <code>BiogasPlant</code>: Container für alle Anlagenkomponenten
-- <code>Feedstock</code>: Verwaltet Substrateigenschaften und Mischungen
-- <code>PlantConfigurator</code>: High-Level-Helper zum Hinzufügen von Komponenten (verwaltet automatisch Gasspeicher)
-- <code>get_state_zero_from_initial_state</code>: Lädt den Initialzustand aus einer CSV-Datei</p>
+<p>Die wichtigsten Imports sind:<br/>
+- <code>BiogasPlant</code>: Container für alle Anlagenkomponenten<br/>
+- <code>Feedstock</code>: Verwaltet Substrateigenschaften und Mischungen<br/>
+- <code>PlantConfigurator</code>: High-Level-Helper zum Hinzufügen von Komponenten (verwaltet automatisch Gasspeicher)<br/>
+- <code>get_state_zero_from_initial_state</code>: Lädt den Initialzustand aus einer CSV-Datei  </p>
 <h3 id="2-feedstock-erstellen">2. Feedstock erstellen<a class="headerlink" href="#2-feedstock-erstellen" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">feeding_freq</span> <span class="o">=</span> <span class="mi">48</span>  <span class="c1"># Substrat kann alle 48 Stunden geändert werden</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">(</span><span class="n">feeding_freq</span><span class="o">=</span><span class="n">feeding_freq</span><span class="p">)</span>
 </code></pre></div>
-<p>Das Feedstock-Objekt lädt Substratparameter aus <a href="https://github.com/dgaida/PyADM1ODE/blob/master/data/substrates/substrate_gummersbach.xml"><code>substrate_gummersbach.xml</code></a> und verwaltet:
-- Substratzusammensetzung (Weender-Analyse)
-- ADM1-Parameterberechnung
-- Generierung des Zulaufstroms</p>
+<p>Das Feedstock-Objekt lädt Substratparameter aus <a href="https://github.com/dgaida/PyADM1ODE/blob/master/data/substrates/substrate_gummersbach.xml"><code>substrate_gummersbach.xml</code></a> und verwaltet:<br/>
+- Substratzusammensetzung (Weender-Analyse)<br/>
+- ADM1-Parameterberechnung<br/>
+- Generierung des Zulaufstroms  </p>
 <p><strong>Fütterungsfrequenz</strong>: Der Parameter <code>feeding_freq</code> (48 Stunden) definiert, wie oft die Steuerung den Substratzulauf anpassen kann. Dies ist wichtig für Optimierungs- und Regelungsanwendungen.</p>
 <h3 id="3-initialzustand-laden">3. Initialzustand laden<a class="headerlink" href="#3-initialzustand-laden" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">initial_state_file</span> <span class="o">=</span> <span class="n">data_path</span> <span class="o">/</span> <span class="s2">"digester_initial8.csv"</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="n">adm1_state</span> <span class="o">=</span> <span class="n">get_state_zero_from_initial_state</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">initial_state_file</span><span class="p">))</span>
 </code></pre></div>
 <p>Die CSV-Datei für den Initialzustand enthält 37 ADM1-Zustandsvariablen, die einen stabilen Zustand (Steady State) repräsentieren. Dies vermeidet lange Einschwingzeiten, in denen das Modell von unrealistischen Startwerten übergeht.</p>
-<p><strong>ADM1-Zustandsvektor</strong> (37 Variablen):
-- Gelöste Stoffe (0-11): S_su, S_aa, S_fa, S_va, S_bu, S_pro, S_ac, S_h2, S_ch4, S_co2, S_nh4, S_I
-- Partikuläre Stoffe (12-24): X_xc, X_ch, X_pr, X_li, X_su, X_aa, X_fa, X_c4, X_pro, X_ac, X_h2, X_I, X_p
-- Ionen (25-32): S_cation, S_anion, S_va_ion, S_bu_ion, S_pro_ion, S_ac_ion, S_hco3_ion, S_nh3
-- Gasphase (33-36): pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL</p>
+<p><strong>ADM1-Zustandsvektor</strong> (37 Variablen):<br/>
+- Gelöste Stoffe (0-11): S_su, S_aa, S_fa, S_va, S_bu, S_pro, S_ac, S_h2, S_ch4, S_co2, S_nh4, S_I<br/>
+- Partikuläre Stoffe (12-24): X_xc, X_ch, X_pr, X_li, X_su, X_aa, X_fa, X_c4, X_pro, X_ac, X_h2, X_I, X_p<br/>
+- Ionen (25-32): S_cation, S_anion, S_va_ion, S_bu_ion, S_pro_ion, S_ac_ion, S_hco3_ion, S_nh3<br/>
+- Gasphase (33-36): pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL  </p>
 <h3 id="4-substratzulauf-definieren">4. Substratzulauf definieren<a class="headerlink" href="#4-substratzulauf-definieren" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Maissilage und Gülle</span>
 </code></pre></div>
-<p>Der Zulaufvektor <code>Q_substrates</code> gibt die volumetrischen Durchflussraten [m³/d] für jedes in der XML-Datei definierte Substrat an. In diesem Beispiel:
-- Substrat 1 (Maissilage): 15 m³/d
-- Substrat 2 (Rindergülle): 10 m³/d
-- Substrate 3-10: Nicht verwendet (0 m³/d)</p>
+<p>Der Zulaufvektor <code>Q_substrates</code> gibt die volumetrischen Durchflussraten [m³/d] für jedes in der XML-Datei definierte Substrat an. In diesem Beispiel:<br/>
+- Substrat 1 (Maissilage): 15 m³/d<br/>
+- Substrat 2 (Rindergülle): 10 m³/d<br/>
+- Substrate 3-10: Nicht verwendet (0 m³/d)  </p>
 <p><strong>Hydraulische Verweilzeit (HRT)</strong>: 25 m³/d ÷ 2000 m³ = <strong>0,0125 d⁻¹</strong> oder <strong>HRT ≈ 80 Tage</strong></p>
 <h3 id="5-anlage-mit-plantconfigurator-bauen">5. Anlage mit PlantConfigurator bauen<a class="headerlink" href="#5-anlage-mit-plantconfigurator-bauen" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">plant</span> <span class="o">=</span> <span class="n">BiogasPlant</span><span class="p">(</span><span class="s2">"Quickstart Anlage"</span><span class="p">)</span>
@@ -1318,20 +1315,20 @@
 <a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    <span class="n">Q_substrates</span><span class="o">=</span><span class="n">Q_substrates</span><span class="p">,</span>
 <a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="p">)</span>
 </code></pre></div>
-<p><strong>PlantConfigurator</strong> bietet eine High-Level-API, die:
-- <strong>Automatisch einen Gasspeicher erstellt und an jeden Fermenter anschließt</strong>
-- Die Initialisierung mit ordnungsgemäßer Fehlerprüfung handhabt
-- Komponentenparameter validiert
-- Verbindungen zwischen Komponenten verwaltet</p>
-<p>Der Gasspeicher wird erstellt mit:
-- <strong>Typ</strong>: Membranspeicher (Niederdruck, typisch für Biogas)
-- <strong>Kapazität</strong>: Basierend auf dem V_gas Parameter (300 m³)
-- <strong>Druckbereich</strong>: 0.95-1.05 bar (typischer Membranspeicher)
-- <strong>Anfangsfüllung</strong>: 10 % der Kapazität</p>
-<p><strong>Design-Parameter</strong>:
-- <code>V_liq=2000.0</code>: Flüssigkeitsvolumen [m³] - typisch für eine mittelgroße landwirtschaftliche Anlage
-- <code>V_gas=300.0</code>: Gasraum [m³] - etwa 15 % des Flüssigkeitsvolumens
-- <code>T_ad=308.15</code>: Betriebstemperatur [K] = 35°C (mesophiler Bereich)</p>
+<p><strong>PlantConfigurator</strong> bietet eine High-Level-API, die:<br/>
+- <strong>Automatisch einen Gasspeicher erstellt und an jeden Fermenter anschließt</strong><br/>
+- Die Initialisierung mit ordnungsgemäßer Fehlerprüfung handhabt<br/>
+- Komponentenparameter validiert<br/>
+- Verbindungen zwischen Komponenten verwaltet  </p>
+<p>Der Gasspeicher wird erstellt mit:<br/>
+- <strong>Typ</strong>: Membranspeicher (Niederdruck, typisch für Biogas)<br/>
+- <strong>Kapazität</strong>: Basierend auf dem V_gas Parameter (300 m³)<br/>
+- <strong>Druckbereich</strong>: 0.95-1.05 bar (typischer Membranspeicher)<br/>
+- <strong>Anfangsfüllung</strong>: 10 % der Kapazität  </p>
+<p><strong>Design-Parameter</strong>:<br/>
+- <code>V_liq=2000.0</code>: Flüssigkeitsvolumen [m³] - typisch für eine mittelgroße landwirtschaftliche Anlage<br/>
+- <code>V_gas=300.0</code>: Gasraum [m³] - etwa 15 % des Flüssigkeitsvolumens<br/>
+- <code>T_ad=308.15</code>: Betriebstemperatur [K] = 35°C (mesophiler Bereich)  </p>
 <h3 id="6-initialisieren-und-simulieren">6. Initialisieren und Simulieren<a class="headerlink" href="#6-initialisieren-und-simulieren" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="n">plant</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
@@ -1341,15 +1338,15 @@
 <a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="n">save_interval</span><span class="o">=</span><span class="mf">1.0</span>    <span class="c1"># Ergebnisse täglich speichern</span>
 <a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="p">)</span>
 </code></pre></div>
-<p><strong>Simulations-Parameter</strong>:
-- <code>duration</code>: Gesamte Simulationszeit [Tage]
-- <code>dt</code>: Integrationszeitschritt [Tage]. 1 Stunde (1/24 Tag) ist Standard für ADM1
-- <code>save_interval</code>: Wie oft Ergebnisse gespeichert werden [Tage]. Tägliches Speichern reduziert den Speicherverbrauch</p>
+<p><strong>Simulations-Parameter</strong>:<br/>
+- <code>duration</code>: Gesamte Simulationszeit [Tage]<br/>
+- <code>dt</code>: Integrationszeitschritt [Tage]. 1 Stunde (1/24 Tag) ist Standard für ADM1<br/>
+- <code>save_interval</code>: Wie oft Ergebnisse gespeichert werden [Tage]. Tägliches Speichern reduziert den Speicherverbrauch  </p>
 <p><strong>Hinweis</strong>: Der Simulator verwendet einen BDF (Backward Differentiation Formula) Solver, der für steife ODEs wie ADM1 optimiert ist.</p>
-<p><strong>Drei-Pass-Gasfluss-Simulation</strong>:
-1. <strong>Pass 1</strong>: Fermenter produziert Biogas → Gasspeicher empfängt es
-2. <strong>Pass 2</strong>: Gasspeicher aktualisiert den internen Zustand (Druck, Volumen)
-3. <strong>Pass 3</strong>: Gas steht für nachgeschaltete Verbraucher (BHKWs etc.) zur Verfügung</p>
+<p><strong>Drei-Pass-Gasfluss-Simulation</strong>:<br/>
+1. <strong>Pass 1</strong>: Fermenter produziert Biogas → Gasspeicher empfängt es<br/>
+2. <strong>Pass 2</strong>: Gasspeicher aktualisiert den internen Zustand (Druck, Volumen)<br/>
+3. <strong>Pass 3</strong>: Gas steht für nachgeschaltete Verbraucher (BHKWs etc.) zur Verfügung  </p>
 <h3 id="7-ergebnisse-anzeigen">7. Ergebnisse anzeigen<a class="headerlink" href="#7-ergebnisse-anzeigen" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>    <span class="n">comp_results</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">"components"</span><span class="p">][</span><span class="s2">"main_digester"</span><span class="p">]</span>
@@ -1360,17 +1357,17 @@
 <a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  VFA:     </span><span class="si">{</span><span class="n">comp_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'VFA'</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;8.2f</span><span class="si">}</span><span class="s2"> g/L"</span><span class="p">)</span>
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  TAC:     </span><span class="si">{</span><span class="n">comp_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'TAC'</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;8.2f</span><span class="si">}</span><span class="s2"> g/L"</span><span class="p">)</span>
 </code></pre></div>
-<p><strong>Wichtige Prozessindikatoren</strong>:
-- <strong>Q_gas</strong>: Gesamtbiogasproduktion [m³/d]
-- <strong>Q_ch4</strong>: Methanproduktion [m³/d]
-- <strong>pH</strong>: Prozess-pH-Wert (optimal: 6,8-7,5)
-- <strong>VFA</strong>: Flüchtige Fettsäuren [g HAc-eq/L] (optimal: &lt;3 g/L)
-- <strong>TAC</strong>: Gesamte Alkalinität [g CaCO₃-eq/L] (optimal: &gt;6 g/L)</p>
-<p><strong>Gasspeicher-Indikatoren</strong> (in den Fermenter-Ergebnissen enthalten):
-- <strong>stored_volume_m3</strong>: Aktuelles Gasvolumen im Speicher [m³]
-- <strong>pressure_bar</strong>: Aktueller Speicherdruck [bar]
-- <strong>vented_volume_m3</strong>: In diesem Zeitschritt abgeblasenes Gas [m³]
-- <strong>Q_gas_supplied_m3_per_day</strong>: Gas, das für Verbraucher verfügbar ist [m³/d]</p>
+<p><strong>Wichtige Prozessindikatoren</strong>:<br/>
+- <strong>Q_gas</strong>: Gesamtbiogasproduktion [m³/d]<br/>
+- <strong>Q_ch4</strong>: Methanproduktion [m³/d]<br/>
+- <strong>pH</strong>: Prozess-pH-Wert (optimal: 6,8-7,5)<br/>
+- <strong>VFA</strong>: Flüchtige Fettsäuren [g HAc-eq/L] (optimal: &lt;3 g/L)<br/>
+- <strong>TAC</strong>: Gesamte Alkalinität [g CaCO₃-eq/L] (optimal: &gt;6 g/L)  </p>
+<p><strong>Gasspeicher-Indikatoren</strong> (in den Fermenter-Ergebnissen enthalten):<br/>
+- <strong>stored_volume_m3</strong>: Aktuelles Gasvolumen im Speicher [m³]<br/>
+- <strong>pressure_bar</strong>: Aktueller Speicherdruck [bar]<br/>
+- <strong>vented_volume_m3</strong>: In diesem Zeitschritt abgeblasenes Gas [m³]<br/>
+- <strong>Q_gas_supplied_m3_per_day</strong>: Gas, das für Verbraucher verfügbar ist [m³/d]  </p>
 <h2 id="erwartete-ausgabe">Erwartete Ausgabe<a class="headerlink" href="#erwartete-ausgabe" title="Permanent link">¶</a></h2>
 <p>Das Ausführen dieses Beispiels erzeugt eine Ausgabe wie:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>======================================================================
@@ -1485,25 +1482,25 @@
 </tbody>
 </table>
 <h3 id="prozessstabilitatsindikatoren">Prozessstabilitätsindikatoren<a class="headerlink" href="#prozessstabilitatsindikatoren" title="Permanent link">¶</a></h3>
-<p><strong>pH-Stabilität</strong>: Der pH-Wert bleibt bei ca. 7,3, was auf Folgendes hindeutet:
-- Gute Pufferkapazität (hoher TAC)
-- Ausgeglichene VFA-Produktion und -Verbrauch
-- Kein Risiko einer Versäuerung</p>
-<p><strong>VFA/TAC-Gleichgewicht</strong>: Ein VFA-Wert von 2,3 g/L bei einem TAC-Wert von 8,4 g/L ergibt einen FOS/TAC ≈ 0,27:
-- &lt; 0,3: Stabiler Prozess
-- 0,3-0,4: Genau beobachten
-- &gt; 0,4: Gefahr der Versäuerung</p>
-<p><strong>Methangehalt</strong>: 60 % CH₄ ist typisch für:
-- Energiepflanzen (Maissilage)
-- Tierische Exkremente
-- Mesophile Vergärung</p>
+<p><strong>pH-Stabilität</strong>: Der pH-Wert bleibt bei ca. 7,3, was auf Folgendes hindeutet:<br/>
+- Gute Pufferkapazität (hoher TAC)<br/>
+- Ausgeglichene VFA-Produktion und -Verbrauch<br/>
+- Kein Risiko einer Versäuerung  </p>
+<p><strong>VFA/TAC-Gleichgewicht</strong>: Ein VFA-Wert von 2,3 g/L bei einem TAC-Wert von 8,4 g/L ergibt einen FOS/TAC ≈ 0,27:<br/>
+- &lt; 0,3: Stabiler Prozess<br/>
+- 0,3-0,4: Genau beobachten<br/>
+- &gt; 0,4: Gefahr der Versäuerung  </p>
+<p><strong>Methangehalt</strong>: 60 % CH₄ ist typisch für:<br/>
+- Energiepflanzen (Maissilage)<br/>
+- Tierische Exkremente<br/>
+- Mesophile Vergärung  </p>
 <h2 id="gasspeicher-verhalten">Gasspeicher-Verhalten<a class="headerlink" href="#gasspeicher-verhalten" title="Permanent link">¶</a></h2>
-<p>Der automatisch erstellte Gasspeicher:
-- <strong>Typ</strong>: Niederdruck-Membranspeicher
-- <strong>Kapazität</strong>: ~300 m³ (basierend auf V_gas)
-- <strong>Druckbereich</strong>: 0,95-1,05 bar
-- <strong>Funktion</strong>: Puffert Schwankungen in der Gasproduktion
-- <strong>Sicherheit</strong>: Lässt überschüssiges Gas bei Vollfüllung ab, um Überdruck zu vermeiden</p>
+<p>Der automatisch erstellte Gasspeicher:<br/>
+- <strong>Typ</strong>: Niederdruck-Membranspeicher<br/>
+- <strong>Kapazität</strong>: ~300 m³ (basierend auf V_gas)<br/>
+- <strong>Druckbereich</strong>: 0,95-1,05 bar<br/>
+- <strong>Funktion</strong>: Puffert Schwankungen in der Gasproduktion<br/>
+- <strong>Sicherheit</strong>: Lässt überschüssiges Gas bei Vollfüllung ab, um Überdruck zu vermeiden  </p>
 <p><strong>Speicherdynamik</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="s1">'gas_storage'</span><span class="p">:</span> <span class="p">{</span>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>    <span class="s1">'stored_volume_m3'</span><span class="p">:</span> <span class="mf">150.0</span><span class="p">,</span>      <span class="c1"># Aktuelles Gasvolumen</span>
@@ -1513,11 +1510,11 @@
 <a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>    <span class="s1">'Q_gas_supplied_m3_per_day'</span><span class="p">:</span> <span class="mf">1250.0</span>  <span class="c1"># Verfügbar für Verbraucher</span>
 <a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="p">}</span>
 </code></pre></div></p>
-<p><strong>Wenn der Speicher voll ist</strong>:
-- Der Druck steigt von 0,95 auf 1,05 bar
-- Bei 1,05 bar (volle Kapazität) wird überschüssiges Gas abgeblasen
-- Das Abblasen verhindert Überdruck und Schäden an der Ausrüstung
-- In realen Anlagen wird das abgeblasene Gas zur Sicherheitsverbrennung an eine Fackel geleitet</p>
+<p><strong>Wenn der Speicher voll ist</strong>:<br/>
+- Der Druck steigt von 0,95 auf 1,05 bar<br/>
+- Bei 1,05 bar (volle Kapazität) wird überschüssiges Gas abgeblasen<br/>
+- Das Abblasen verhindert Überdruck und Schäden an der Ausrüstung<br/>
+- In realen Anlagen wird das abgeblasene Gas zur Sicherheitsverbrennung an eine Fackel geleitet  </p>
 <h2 id="konfigurationsexport">Konfigurationsexport<a class="headerlink" href="#konfigurationsexport" title="Permanent link">¶</a></h2>
 <p>Die Anlagenkonfiguration wird im JSON-Format gespeichert:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="p">{</span>
@@ -1556,23 +1553,23 @@
 <h2 id="nachste-schritte">Nächste Schritte<a class="headerlink" href="#nachste-schritte" title="Permanent link">¶</a></h2>
 <p>Nachdem Sie dieses Basisbeispiel ausgeführt haben:</p>
 <ol>
-<li><strong>Parameter variieren</strong>:</li>
-<li>Passen Sie die Substratzulaufraten in <code>Q_substrates</code> an</li>
-<li>Ändern Sie die Fermentertemperatur <code>T_ad</code></li>
+<li><strong>Parameter variieren</strong>:  </li>
+<li>Passen Sie die Substratzulaufraten in <code>Q_substrates</code> an  </li>
+<li>Ändern Sie die Fermentertemperatur <code>T_ad</code> </li>
 <li>
-<p>Ändern Sie das Fermentervolumen <code>V_liq</code></p>
+<p>Ändern Sie das Fermentervolumen <code>V_liq</code> </p>
 </li>
 <li>
-<p><strong>Simulationsdauer verlängern</strong>:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="n">results</span> <span class="o">=</span> <span class="n">plant</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">24.0</span><span class="p">)</span>
+<p><strong>Simulationsdauer verlängern</strong>:<br/>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="n">results</span> <span class="o">=</span> <span class="n">plant</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">24.0</span><span class="p">)</span>
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Energiekomponenten hinzufügen</strong>:
+<p><strong>Energiekomponenten hinzufügen</strong>:<br/>
    Siehe <a href="../two_stage_plant/"><code>two_stage_plant.md</code></a> für die Integration von BHKW und Heizung</p>
 </li>
 <li>
-<p><strong>Steuerung implementieren</strong>:
+<p><strong>Steuerung implementieren</strong>:<br/>
    Verwenden Sie <code>Simulator.determine_best_feed_by_n_sims()</code> zur Optimierung</p>
 </li>
 </ol>
@@ -1587,25 +1584,25 @@
 <a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="p">)</span>
 </code></pre></div>
 <h3 id="problem-niedrige-biogasproduktion">Problem: Niedrige Biogasproduktion<a class="headerlink" href="#problem-niedrige-biogasproduktion" title="Permanent link">¶</a></h3>
-<p><strong>Ursachen</strong>:
-- HRT zu kurz (V_liq erhöhen oder Q_substrates reduzieren)
-- Substratzulauf zu niedrig (Werte in Q_substrates erhöhen)
-- Temperatur zu niedrig (T_ad erhöhen)</p>
+<p><strong>Ursachen</strong>:<br/>
+- HRT zu kurz (V_liq erhöhen oder Q_substrates reduzieren)<br/>
+- Substratzulauf zu niedrig (Werte in Q_substrates erhöhen)<br/>
+- Temperatur zu niedrig (T_ad erhöhen)  </p>
 <p><strong>Beispiel-Fix</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Zulauf erhöhen</span>
 </code></pre></div></p>
 <h3 id="problem-prozessinstabilitat-ph-abfall">Problem: Prozessinstabilität (pH-Abfall)<a class="headerlink" href="#problem-prozessinstabilitat-ph-abfall" title="Permanent link">¶</a></h3>
-<p><strong>Ursachen</strong>:
-- Organische Überlastung (Q_substrates reduzieren)
-- Unzureichende Pufferkapazität</p>
+<p><strong>Ursachen</strong>:<br/>
+- Organische Überlastung (Q_substrates reduzieren)<br/>
+- Unzureichende Pufferkapazität  </p>
 <p><strong>Beispiel-Fix</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># Puffer-Substrat hinzufügen (z. B. Kalk bei Index 7)</span>
 <a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># 1 m³/d Kalk</span>
 </code></pre></div></p>
 <h3 id="problem-uberdruckwarnungen-im-gasspeicher">Problem: Überdruckwarnungen im Gasspeicher<a class="headerlink" href="#problem-uberdruckwarnungen-im-gasspeicher" title="Permanent link">¶</a></h3>
-<p><strong>Symptome</strong>:
-- Häufige Meldungen über Gasabblasungen
-- Speicher permanent auf maximalem Druck</p>
+<p><strong>Symptome</strong>:<br/>
+- Häufige Meldungen über Gasabblasungen<br/>
+- Speicher permanent auf maximalem Druck  </p>
 <p><strong>Lösungen</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># Gasspeicherkapazität erhöhen</span>
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_digester</span><span class="p">(</span>
@@ -1617,17 +1614,17 @@
 </code></pre></div></p>
 <h2 id="referenzen">Referenzen<a class="headerlink" href="#referenzen" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>ADM1-Modell</strong>: Batstone et al. (2002). <em>Anaerobic Digestion Model No. 1</em>. IWA Publishing.</li>
-<li><strong>PyADM1</strong>: Sadrimajd et al. (2021). <em>PyADM1: a Python implementation of ADM1</em>. bioRxiv.</li>
-<li><strong>Substratcharakterisierung</strong>: Gaida (2014). <em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants</em>. PhD thesis, Leiden University.</li>
-<li><strong>Leitfaden Biogas</strong>: FNR (2016). https://mediathek.fnr.de/leitfaden-biogas.html</li>
+<li><strong>ADM1-Modell</strong>: Batstone et al. (2002). <em>Anaerobic Digestion Model No. 1</em>. IWA Publishing.  </li>
+<li><strong>PyADM1</strong>: Sadrimajd et al. (2021). <em>PyADM1: a Python implementation of ADM1</em>. bioRxiv.  </li>
+<li><strong>Substratcharakterisierung</strong>: Gaida (2014). <em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants</em>. PhD thesis, Leiden University.  </li>
+<li><strong>Leitfaden Biogas</strong>: FNR (2016). https://mediathek.fnr.de/leitfaden-biogas.html  </li>
 </ul>
 <h2 id="ahnliche-beispiele">Ähnliche Beispiele<a class="headerlink" href="#ahnliche-beispiele" title="Permanent link">¶</a></h2>
 <ul>
-<li><a href="../two_stage_plant/"><code>two_stage_plant.md</code></a>: Zweistufige Vergärung mit BHKW und Heizung</li>
-<li><code>calibration_workflow.md</code>: Parameterschätzung aus Messdaten</li>
-<li><code>substrate_optimization.py</code>: Optimale Fütterungsstrategie</li>
-<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py"><code>parallel_two_stage_simulation.py</code></a>: Parallele Simulationen</li>
+<li><a href="../two_stage_plant/"><code>two_stage_plant.md</code></a>: Zweistufige Vergärung mit BHKW und Heizung  </li>
+<li><code>calibration_workflow.md</code>: Parameterschätzung aus Messdaten  </li>
+<li><code>substrate_optimization.py</code>: Optimale Fütterungsstrategie  </li>
+<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py"><code>parallel_two_stage_simulation.py</code></a>: Parallele Simulationen  </li>
 </ul>
 </article>
 </div>

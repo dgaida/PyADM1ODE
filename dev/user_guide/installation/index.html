@@ -2050,15 +2050,15 @@
 <h2 id="systemanforderungen">Systemanforderungen<a class="headerlink" href="#systemanforderungen" title="Permanent link">&para;</a></h2>
 <h3 id="mindestanforderungen">Mindestanforderungen<a class="headerlink" href="#mindestanforderungen" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Python</strong>: 3.8 oder höher (3.10+ empfohlen)</li>
-<li><strong>Betriebssystem</strong>: Windows, Linux oder macOS</li>
-<li><strong>Arbeitsspeicher</strong>: Mindestens 2 GB RAM (4 GB empfohlen)</li>
-<li><strong>Festplattenspeicher</strong>: 10 MB für die Installation</li>
+<li><strong>Python</strong>: 3.8 oder höher (3.10+ empfohlen)  </li>
+<li><strong>Betriebssystem</strong>: Windows, Linux oder macOS  </li>
+<li><strong>Arbeitsspeicher</strong>: Mindestens 2 GB RAM (4 GB empfohlen)  </li>
+<li><strong>Festplattenspeicher</strong>: 10 MB für die Installation  </li>
 </ul>
 <h3 id="laufzeitanforderungen">Laufzeitanforderungen<a class="headerlink" href="#laufzeitanforderungen" title="Permanent link">&para;</a></h3>
-<p>PyADM1ODE verwendet C#-DLLs für die Substratcharakterisierung, was Folgendes erfordert:
-- <strong>Linux/macOS</strong>: Mono-Laufzeitumgebung
-- <strong>Windows</strong>: .NET Framework (normalerweise vorinstalliert)</p>
+<p>PyADM1ODE verwendet C#-DLLs für die Substratcharakterisierung, was Folgendes erfordert:<br />
+- <strong>Linux/macOS</strong>: Mono-Laufzeitumgebung<br />
+- <strong>Windows</strong>: .NET Framework (normalerweise vorinstalliert)  </p>
 <h2 id="installationsmethoden">Installationsmethoden<a class="headerlink" href="#installationsmethoden" title="Permanent link">&para;</a></h2>
 <h3 id="methode-1-installation-uber-pypi-empfohlen-aber-noch-nicht-unterstutzt">Methode 1: Installation über PyPI (Empfohlen, aber noch nicht unterstützt)<a class="headerlink" href="#methode-1-installation-uber-pypi-empfohlen-aber-noch-nicht-unterstutzt" title="Permanent link">&para;</a></h3>
 <p>Sobald veröffentlicht, installieren Sie über pip:</p>
@@ -2087,13 +2087,13 @@
 <h2 id="plattformspezifische-einrichtung">Plattformspezifische Einrichtung<a class="headerlink" href="#plattformspezifische-einrichtung" title="Permanent link">&para;</a></h2>
 <h3 id="windows-installation">Windows-Installation<a class="headerlink" href="#windows-installation" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong>Python installieren</strong> (falls noch nicht geschehen):</li>
-<li>Von <a href="https://www.python.org/downloads/">python.org</a> herunterladen.</li>
+<li><strong>Python installieren</strong> (falls noch nicht geschehen):  </li>
+<li>Von <a href="https://www.python.org/downloads/">python.org</a> herunterladen.  </li>
 <li>
-<p>Stellen Sie sicher, dass "Add Python to PATH" während der Installation aktiviert ist.</p>
+<p>Stellen Sie sicher, dass "Add Python to PATH" während der Installation aktiviert ist.  </p>
 </li>
 <li>
-<p><strong>PyADM1 installieren</strong>:
+<p><strong>PyADM1 installieren</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git clone https://github.com/dgaida/PyADM1ODE.git
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>cd PyADM1ODE
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>pip install -e .
@@ -2101,25 +2101,25 @@
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>.NET Framework</strong> sollte unter Windows 10/11 vorinstalliert sein.</p>
+<p><strong>.NET Framework</strong> sollte unter Windows 10/11 vorinstalliert sein.  </p>
 </li>
 </ol>
 <h3 id="linux-installation-ubuntudebian">Linux-Installation (Ubuntu/Debian)<a class="headerlink" href="#linux-installation-ubuntudebian" title="Permanent link">&para;</a></h3>
 <ol>
 <li>
-<p><strong>Python und Abhängigkeiten installieren</strong>:
+<p><strong>Python und Abhängigkeiten installieren</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>python3<span class="w"> </span>python3-pip
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Mono-Laufzeitumgebung installieren</strong> (erforderlich für C#-DLLs):
+<p><strong>Mono-Laufzeitumgebung installieren</strong> (erforderlich für C#-DLLs):<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>mono-complete
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>mono<span class="w"> </span>--version
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>PyADM1ODE installieren</strong>:
+<p><strong>PyADM1ODE installieren</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/dgaida/PyADM1ODE.git
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">cd</span><span class="w"> </span>PyADM1ODE
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
@@ -2129,23 +2129,23 @@
 <h3 id="macos-installation">macOS-Installation<a class="headerlink" href="#macos-installation" title="Permanent link">&para;</a></h3>
 <ol>
 <li>
-<p><strong>Homebrew installieren</strong> (falls noch nicht geschehen):
+<p><strong>Homebrew installieren</strong> (falls noch nicht geschehen):<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="k">)</span><span class="s2">&quot;</span>
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Python installieren</strong>:
+<p><strong>Python installieren</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>brew<span class="w"> </span>install<span class="w"> </span>python@3.11
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Mono-Laufzeitumgebung installieren</strong>:
+<p><strong>Mono-Laufzeitumgebung installieren</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>brew<span class="w"> </span>install<span class="w"> </span>mono
 <a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>mono<span class="w"> </span>--version
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>PyADM1ODE installieren</strong>:
+<p><strong>PyADM1ODE installieren</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/dgaida/PyADM1ODE.git
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nb">cd</span><span class="w"> </span>PyADM1ODE
 <a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>pip3<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.

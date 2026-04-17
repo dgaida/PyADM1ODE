@@ -2615,15 +2615,15 @@
 <p>This guide will get you up and running with PyADM1ODE in minutes.</p>
 <h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">&para;</a></h2>
 <ol>
-<li><a href="#your-first-simulation">Your First Simulation</a></li>
-<li><a href="#basic-single-digester">Basic Single Digester</a></li>
-<li><a href="#complete-plant-with-chp-and-heating">Complete Plant with CHP and Heating</a></li>
-<li><a href="#two-stage-digestion">Two-Stage Digestion</a></li>
-<li><a href="#working-with-different-substrates">Working with Different Substrates</a></li>
-<li><a href="#save-and-load-configurations">Save and Load Configurations</a></li>
-<li><a href="#understanding-results">Understanding Results</a></li>
-<li><a href="#common-patterns">Common Patterns</a></li>
-<li><a href="#next-steps">Next Steps</a></li>
+<li><a href="#your-first-simulation">Your First Simulation</a>  </li>
+<li><a href="#basic-single-digester">Basic Single Digester</a>  </li>
+<li><a href="#complete-plant-with-chp-and-heating">Complete Plant with CHP and Heating</a>  </li>
+<li><a href="#two-stage-digestion">Two-Stage Digestion</a>  </li>
+<li><a href="#working-with-different-substrates">Working with Different Substrates</a>  </li>
+<li><a href="#save-and-load-configurations">Save and Load Configurations</a>  </li>
+<li><a href="#understanding-results">Understanding Results</a>  </li>
+<li><a href="#common-patterns">Common Patterns</a>  </li>
+<li><a href="#next-steps">Next Steps</a>  </li>
 </ol>
 <h2 id="your-first-simulation">Your First Simulation<a class="headerlink" href="#your-first-simulation" title="Permanent link">&para;</a></h2>
 <p>Let's simulate a simple single-stage biogas digester with corn silage and manure.</p>
@@ -2695,10 +2695,10 @@
 </code></pre></div>
 <h3 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Single-stage CSTR</strong>: Continuously stirred tank reactor</li>
-<li><strong>Automatic gas storage</strong>: Created per digester (low-pressure membrane)</li>
-<li><strong>Substrate mixing</strong>: Corn silage + cattle manure</li>
-<li><strong>Temperature control</strong>: Mesophilic (35°C)</li>
+<li><strong>Single-stage CSTR</strong>: Continuously stirred tank reactor  </li>
+<li><strong>Automatic gas storage</strong>: Created per digester (low-pressure membrane)  </li>
+<li><strong>Substrate mixing</strong>: Corn silage + cattle manure  </li>
+<li><strong>Temperature control</strong>: Mesophilic (35°C)  </li>
 </ul>
 <h3 id="plant-configuration-details">Plant Configuration Details<a class="headerlink" href="#plant-configuration-details" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># The add_digester method automatically creates:</span>
@@ -2727,11 +2727,11 @@
 <a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="s1">&#39;Q_gas_supplied_m3_per_day&#39;</span><span class="p">:</span> <span class="mf">1250.0</span>  <span class="c1"># Available for consumers</span>
 <a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="p">}</span>
 </code></pre></div>
-<p><strong>When storage fills up:</strong>
-- Pressure increases from 0.95 to 1.05 bar
-- At 1.05 bar (full), excess gas is vented
-- Venting prevents overpressure and equipment damage
-- In real plants, vented gas goes to flare</p>
+<p><strong>When storage fills up:</strong><br />
+- Pressure increases from 0.95 to 1.05 bar<br />
+- At 1.05 bar (full), excess gas is vented<br />
+- Venting prevents overpressure and equipment damage<br />
+- In real plants, vented gas goes to flare  </p>
 <h3 id="process-stability-indicators">Process Stability Indicators<a class="headerlink" href="#process-stability-indicators" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Check process stability</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">final</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;components&quot;</span><span class="p">][</span><span class="s2">&quot;main_digester&quot;</span><span class="p">]</span>
@@ -2866,9 +2866,9 @@
 <a id="__codelineno-6-59" name="__codelineno-6-59" href="#__codelineno-6-59"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Auxiliary Heat:   </span><span class="si">{</span><span class="n">heating</span><span class="p">[</span><span class="s1">&#39;P_aux_heat&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> kW&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p><strong>Automatic Component Creation:</strong></p>
-<p>PlantConfigurator creates and connects:
-- <strong>Gas Storage</strong>: One per digester (membrane, sized to V_gas)
-- <strong>Flare</strong>: One per CHP (safety combustion, 98% CH₄ destruction)</p>
+<p>PlantConfigurator creates and connects:<br />
+- <strong>Gas Storage</strong>: One per digester (membrane, sized to V_gas)<br />
+- <strong>Flare</strong>: One per CHP (safety combustion, 98% CH₄ destruction)  </p>
 <p><strong>Connection Chain:</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Digester → Gas Storage → CHP → Flare
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>                          ↓
@@ -2887,11 +2887,11 @@
 </code></pre></div>
 <h3 id="key-features_1">Key Features<a class="headerlink" href="#key-features_1" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Temperature-phased</strong>: Thermophilic (45°C) + Mesophilic (35°C)</li>
-<li><strong>Enhanced hydrolysis</strong>: Higher temp in first stage</li>
-<li><strong>Stable methanogenesis</strong>: Optimized conditions in second stage</li>
-<li><strong>Mechanical components</strong>: Pumps and mixers for material handling</li>
-<li><strong>Energy integration</strong>: Combined heat and power with waste heat recovery</li>
+<li><strong>Temperature-phased</strong>: Thermophilic (45°C) + Mesophilic (35°C)  </li>
+<li><strong>Enhanced hydrolysis</strong>: Higher temp in first stage  </li>
+<li><strong>Stable methanogenesis</strong>: Optimized conditions in second stage  </li>
+<li><strong>Mechanical components</strong>: Pumps and mixers for material handling  </li>
+<li><strong>Energy integration</strong>: Combined heat and power with waste heat recovery  </li>
 </ul>
 <h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Stage 1: Hydrolysis (thermophilic, 45°C)</span>
@@ -3059,16 +3059,16 @@
 <h3 id="available-substrates">Available Substrates<a class="headerlink" href="#available-substrates" title="Permanent link">&para;</a></h3>
 <p>PyADM1 includes 10 pre-configured agricultural substrates:</p>
 <ol>
-<li><strong>Corn silage (maize)</strong> - Energy crop, high biogas yield</li>
-<li><strong>Liquid manure (swinemanure)</strong> - High nitrogen content</li>
-<li><strong>Green rye (greenrye)</strong> - Early-harvest energy crop</li>
-<li><strong>Grass silage (grass)</strong> - Grassland biomass</li>
-<li><strong>Wheat (wheat)</strong> - Cereal crop</li>
-<li><strong>GPS (gps)</strong> - Whole-crop grain silage</li>
-<li><strong>CCM (ccm)</strong> - Corn-cob-mix</li>
-<li><strong>Feed lime (futterkalk)</strong> - pH buffer additive</li>
-<li><strong>Cow manure (cowmanure)</strong> - Dairy farm manure</li>
-<li><strong>Onions (onions)</strong> - Vegetable waste</li>
+<li><strong>Corn silage (maize)</strong> - Energy crop, high biogas yield  </li>
+<li><strong>Liquid manure (swinemanure)</strong> - High nitrogen content  </li>
+<li><strong>Green rye (greenrye)</strong> - Early-harvest energy crop  </li>
+<li><strong>Grass silage (grass)</strong> - Grassland biomass  </li>
+<li><strong>Wheat (wheat)</strong> - Cereal crop  </li>
+<li><strong>GPS (gps)</strong> - Whole-crop grain silage  </li>
+<li><strong>CCM (ccm)</strong> - Corn-cob-mix  </li>
+<li><strong>Feed lime (futterkalk)</strong> - pH buffer additive  </li>
+<li><strong>Cow manure (cowmanure)</strong> - Dairy farm manure  </li>
+<li><strong>Onions (onions)</strong> - Vegetable waste  </li>
 </ol>
 <h3 id="substrate-feed-examples">Substrate Feed Examples<a class="headerlink" href="#substrate-feed-examples" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># High-energy mix (corn + manure)</span>
@@ -3118,33 +3118,33 @@
 <h3 id="key-output-variables">Key Output Variables<a class="headerlink" href="#key-output-variables" title="Permanent link">&para;</a></h3>
 <h4 id="digester-outputs">Digester Outputs<a class="headerlink" href="#digester-outputs" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>Q_gas</code> - Total biogas production [m³/d]</li>
-<li><code>Q_ch4</code> - Methane production [m³/d]</li>
-<li><code>Q_co2</code> - CO2 production [m³/d]</li>
-<li><code>pH</code> - pH value [-]</li>
-<li><code>VFA</code> - Volatile fatty acids [g HAceq/L]</li>
-<li><code>TAC</code> - Total alkalinity [g CaCO3/L]</li>
+<li><code>Q_gas</code> - Total biogas production [m³/d]  </li>
+<li><code>Q_ch4</code> - Methane production [m³/d]  </li>
+<li><code>Q_co2</code> - CO2 production [m³/d]  </li>
+<li><code>pH</code> - pH value [-]  </li>
+<li><code>VFA</code> - Volatile fatty acids [g HAceq/L]  </li>
+<li><code>TAC</code> - Total alkalinity [g CaCO3/L]  </li>
 </ul>
 <h4 id="chp-outputs">CHP Outputs<a class="headerlink" href="#chp-outputs" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>P_el</code> - Electrical power [kW]</li>
-<li><code>P_th</code> - Thermal power [kW]</li>
-<li><code>Q_gas_consumed</code> - Gas consumption [m³/d]</li>
-<li><code>load_factor</code> - Operating point [0-1]</li>
+<li><code>P_el</code> - Electrical power [kW]  </li>
+<li><code>P_th</code> - Thermal power [kW]  </li>
+<li><code>Q_gas_consumed</code> - Gas consumption [m³/d]  </li>
+<li><code>load_factor</code> - Operating point [0-1]  </li>
 </ul>
 <h4 id="heating-outputs">Heating Outputs<a class="headerlink" href="#heating-outputs" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>Q_heat_supplied</code> - Heat delivered [kW]</li>
-<li><code>P_th_used</code> - CHP heat used [kW]</li>
-<li><code>P_aux_heat</code> - Auxiliary heat needed [kW]</li>
+<li><code>Q_heat_supplied</code> - Heat delivered [kW]  </li>
+<li><code>P_th_used</code> - CHP heat used [kW]  </li>
+<li><code>P_aux_heat</code> - Auxiliary heat needed [kW]  </li>
 </ul>
 <h4 id="gas-storage-outputs">Gas Storage Outputs<a class="headerlink" href="#gas-storage-outputs" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>stored_volume_m3</code> - Current volume [m³ STP]</li>
-<li><code>pressure_bar</code> - Current pressure [bar]</li>
-<li><code>utilization</code> - Fill level [0-1]</li>
-<li><code>vented_volume_m3</code> - Gas vented [m³]</li>
-<li><code>Q_gas_supplied_m3_per_day</code> - Gas available [m³/d]</li>
+<li><code>stored_volume_m3</code> - Current volume [m³ STP]  </li>
+<li><code>pressure_bar</code> - Current pressure [bar]  </li>
+<li><code>utilization</code> - Fill level [0-1]  </li>
+<li><code>vented_volume_m3</code> - Gas vented [m³]  </li>
+<li><code>Q_gas_supplied_m3_per_day</code> - Gas available [m³/d]  </li>
 </ul>
 <h2 id="common-patterns">Common Patterns<a class="headerlink" href="#common-patterns" title="Permanent link">&para;</a></h2>
 <h3 id="pattern-1-parameter-sweep">Pattern 1: Parameter Sweep<a class="headerlink" href="#pattern-1-parameter-sweep" title="Permanent link">&para;</a></h3>
@@ -3203,15 +3203,15 @@
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <p>Now that you've run your first simulations:</p>
 <ol>
-<li><strong>Learn about components</strong>: <a href="../components/">Components Guide</a></li>
-<li><strong>Explore advanced examples</strong>:</li>
-<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py"><code>examples/01_basic_digester.py</code></a></li>
-<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py"><code>examples/02_two_stage_plant.py</code></a></li>
-<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py"><code>examples/parallel_two_stage_simulation.py</code></a></li>
-<li><strong>Try parallel simulations</strong>: Multiple scenarios simultaneously</li>
-<li><strong>Explore MCP server</strong>: <a href="https://github.com/dgaida/PyADM1ODE_mcp">PyADM1ODE_mcp</a> for LLM-driven plant design</li>
-<li><strong>Calibrate your model</strong>: <a href="https://github.com/dgaida/PyADM1ODE_calibration">PyADM1ODE_calibration</a> for parameter fitting</li>
-<li><strong>Read API documentation</strong>: Full reference for all classes</li>
+<li><strong>Learn about components</strong>: <a href="../components/">Components Guide</a>  </li>
+<li><strong>Explore advanced examples</strong>:  </li>
+<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py"><code>examples/01_basic_digester.py</code></a>  </li>
+<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py"><code>examples/02_two_stage_plant.py</code></a>  </li>
+<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py"><code>examples/parallel_two_stage_simulation.py</code></a>  </li>
+<li><strong>Try parallel simulations</strong>: Multiple scenarios simultaneously  </li>
+<li><strong>Explore MCP server</strong>: <a href="https://github.com/dgaida/PyADM1ODE_mcp">PyADM1ODE_mcp</a> for LLM-driven plant design  </li>
+<li><strong>Calibrate your model</strong>: <a href="https://github.com/dgaida/PyADM1ODE_calibration">PyADM1ODE_calibration</a> for parameter fitting  </li>
+<li><strong>Read API documentation</strong>: Full reference for all classes  </li>
 </ol>
 <h2 id="quick-reference">Quick Reference<a class="headerlink" href="#quick-reference" title="Permanent link">&para;</a></h2>
 <h3 id="common-commands">Common Commands<a class="headerlink" href="#common-commands" title="Permanent link">&para;</a></h3>
@@ -3265,27 +3265,27 @@
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <h3 id="issue-simulation-unstable">Issue: Simulation unstable<a class="headerlink" href="#issue-simulation-unstable" title="Permanent link">&para;</a></h3>
 <p><strong>Symptoms</strong>: pH drops, VFA rises, methane production decreases</p>
-<p><strong>Solutions</strong>:
-- Reduce substrate feed rate
-- Increase retention time (larger V_liq)
-- Add buffer material (feed lime)
-- Check substrate composition</p>
+<p><strong>Solutions</strong>:<br />
+- Reduce substrate feed rate<br />
+- Increase retention time (larger V_liq)<br />
+- Add buffer material (feed lime)<br />
+- Check substrate composition  </p>
 <h3 id="issue-low-gas-production">Issue: Low gas production<a class="headerlink" href="#issue-low-gas-production" title="Permanent link">&para;</a></h3>
-<p><strong>Solutions</strong>:
-- Increase substrate feed
-- Check substrate degradability
-- Verify temperature is optimal
-- Ensure adequate mixing (implicit in model)</p>
+<p><strong>Solutions</strong>:<br />
+- Increase substrate feed<br />
+- Check substrate degradability<br />
+- Verify temperature is optimal<br />
+- Ensure adequate mixing (implicit in model)  </p>
 <h3 id="issue-slow-simulation">Issue: Slow simulation<a class="headerlink" href="#issue-slow-simulation" title="Permanent link">&para;</a></h3>
-<p><strong>Solutions</strong>:
-- Increase time step <code>dt</code> (but keep &lt; 0.1 days)
-- Reduce <code>save_interval</code> for less output
-- Use parallel simulation for parameter sweeps</p>
+<p><strong>Solutions</strong>:<br />
+- Increase time step <code>dt</code> (but keep &lt; 0.1 days)<br />
+- Reduce <code>save_interval</code> for less output<br />
+- Use parallel simulation for parameter sweeps  </p>
 <p>For more help, see the <a href="../installation/">Installation Guide</a> or contact daniel.gaida@th-koeln.de.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>ADM1 Model</strong>: Batstone et al. (2002). <em>Anaerobic Digestion Model No. 1</em>. IWA Publishing.</li>
-<li><strong>Leitfaden Biogas</strong>: FNR (2016). https://mediathek.fnr.de/leitfaden-biogas.html</li>
+<li><strong>ADM1 Model</strong>: Batstone et al. (2002). <em>Anaerobic Digestion Model No. 1</em>. IWA Publishing.  </li>
+<li><strong>Leitfaden Biogas</strong>: FNR (2016). https://mediathek.fnr.de/leitfaden-biogas.html  </li>
 </ul>
 
 

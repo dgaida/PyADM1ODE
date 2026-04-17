@@ -1895,12 +1895,12 @@
 <p>Im Gegensatz zum Standard-ADM1 (IWA Task Group, 2002), das oft als System von differentiell-algebraischen Gleichungen (DAE) formuliert wird, ist diese Implementierung ein <strong>reines System gewöhnlicher Differentialgleichungen (ODE)</strong>.</p>
 <h3 id="hauptunterschiede-zum-standard-modell">Hauptunterschiede zum Standard-Modell<a class="headerlink" href="#hauptunterschiede-zum-standard-modell" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong>Keine algebraischen Zustände</strong>: Säure-Base-Gleichgewichte und der Gas-Flüssig-Transfer werden kinetisch modelliert. Dies vermeidet die Notwendigkeit von iterativen algebraischen Solvern innerhalb jedes Zeitschritts des ODE-Solvers, was die numerische Stabilität erhöht.</li>
-<li><strong>37 Zustandsvariablen</strong>: Das Modell trackt insgesamt 37 Variablen, um den vollständigen Prozess abzubilden:<ul>
-<li><strong>Gelöste Komponenten (12)</strong>: Monosaccharide, Aminosäuren, langkettige Fettsäuren (LCFA), Valerat, Butyrat, Propionat, Acetat, Wasserstoff, Methan, anorganischer Kohlenstoff ($S_{CO2}$), anorganischer Stickstoff ($S_{NH4}$), lösliche Inerte.</li>
-<li><strong>Partikuläre Komponenten (13)</strong>: Verbundstoffe ($X_{xc}$), Kohlenhydrate, Proteine, Lipide, 7 bakterielle Populationen, partikuläre Inerte, partikuläre Zerfallsprodukte ($X_p$).</li>
-<li><strong>Säure-Base-Variablen (8)</strong>: Kationen, Anionen sowie die ionisierten Formen der organischen Säuren und anorganischen Spezies.</li>
-<li><strong>Gasphase (4)</strong>: Partialdrücke von $H_2$, $CH_4$, $CO_2$ und der Gesamtdruck.</li>
+<li><strong>Keine algebraischen Zustände</strong>: Säure-Base-Gleichgewichte und der Gas-Flüssig-Transfer werden kinetisch modelliert. Dies vermeidet die Notwendigkeit von iterativen algebraischen Solvern innerhalb jedes Zeitschritts des ODE-Solvers, was die numerische Stabilität erhöht.  </li>
+<li><strong>37 Zustandsvariablen</strong>: Das Modell trackt insgesamt 37 Variablen, um den vollständigen Prozess abzubilden:  <ul>
+<li><strong>Gelöste Komponenten (12)</strong>: Monosaccharide, Aminosäuren, langkettige Fettsäuren (LCFA), Valerat, Butyrat, Propionat, Acetat, Wasserstoff, Methan, anorganischer Kohlenstoff ($S_{CO2}$), anorganischer Stickstoff ($S_{NH4}$), lösliche Inerte.  </li>
+<li><strong>Partikuläre Komponenten (13)</strong>: Verbundstoffe ($X_{xc}$), Kohlenhydrate, Proteine, Lipide, 7 bakterielle Populationen, partikuläre Inerte, partikuläre Zerfallsprodukte ($X_p$).  </li>
+<li><strong>Säure-Base-Variablen (8)</strong>: Kationen, Anionen sowie die ionisierten Formen der organischen Säuren und anorganischen Spezies.  </li>
+<li><strong>Gasphase (4)</strong>: Partialdrücke von $H_2$, $CH_4$, $CO_2$ und der Gesamtdruck.  </li>
 </ul>
 </li>
 </ol>
@@ -1919,18 +1919,18 @@ $$ hydro_factor = \frac{1}{1 + (\frac{TS}{K_{hyd}})^{n_{hyd}}} $$</p>
 <h3 id="modellierung-von-zerfallsprodukten-x_p">Modellierung von Zerfallsprodukten ($X_p$)<a class="headerlink" href="#modellierung-von-zerfallsprodukten-x_p" title="Permanent link">&para;</a></h3>
 <p>Analog zum ASM1 (Activated Sludge Model) wurde ein separater Zustand für partikuläre Zerfallsprodukte ($X_p$) eingeführt. Dies ermöglicht eine präzisere Schließung der Stickstoffbilanz und beschreibt die Akkumulation von inerten organischen Stoffen aus abgestorbener Biomasse genauer.</p>
 <h2 id="charakterisierung-via-weender-analyse">Charakterisierung via Weender-Analyse<a class="headerlink" href="#charakterisierung-via-weender-analyse" title="Permanent link">&para;</a></h2>
-<p>Substrate werden nicht direkt als ADM1-Komponenten eingegeben, sondern über praxisübliche Laborparameter definiert:
-*   <strong>Erweiterte Weender-Analyse</strong>: Rohfaser (RF), Rohprotein (RP), Rohfett (RL).
-*   <strong>Van-Soest-Fraktionen</strong>: NDF, ADF, ADL (Lignin).
-*   <strong>Physikalische Werte</strong>: Trockensubstanz (TS), organische Trockensubstanz (oTS/VS), pH-Wert.</p>
+<p>Substrate werden nicht direkt als ADM1-Komponenten eingegeben, sondern über praxisübliche Laborparameter definiert:<br />
+<em>   </em><em>Erweiterte Weender-Analyse</em><em>: Rohfaser (RF), Rohprotein (RP), Rohfett (RL).<br />
+</em>   <strong>Van-Soest-Fraktionen</strong>: NDF, ADF, ADL (Lignin).<br />
+<em>   </em><em>Physikalische Werte</em>*: Trockensubstanz (TS), organische Trockensubstanz (oTS/VS), pH-Wert.  </p>
 <h3 id="mapping-auf-adm1-eingangsgroen">Mapping auf ADM1-Eingangsgrößen<a class="headerlink" href="#mapping-auf-adm1-eingangsgroen" title="Permanent link">&para;</a></h3>
-<p>Die Umrechnung der Substratfraktionen in den ADM1-Zulaufstrom erfolgt dynamisch:
-1.  <strong>Zusammensetzung der Verbundstoffe ($X_c$)</strong>: Basierend auf den Protein-, Fett- und Faseranteilen werden die stöchiometrischen Koeffizienten $f_{ch,xc}$, $f_{pr,xc}$, $f_{li,xc}$, $f_{xI,xc}$ und $f_{sI,xc}$ für jedes Substrat individuell berechnet.
-2.  <strong>Kinetische Parameter</strong>: Substrate bringen ihre eigenen Raten für Desintegration ($k_{dis}$) und Hydrolyse ($k_{hyd}$) mit. Bei Substratgemischen werden diese Parameter gewichtet nach dem Volumenstrom berechnet.</p>
+<p>Die Umrechnung der Substratfraktionen in den ADM1-Zulaufstrom erfolgt dynamisch:<br />
+1.  <strong>Zusammensetzung der Verbundstoffe ($X_c$)</strong>: Basierend auf den Protein-, Fett- und Faseranteilen werden die stöchiometrischen Koeffizienten $f_{ch,xc}$, $f_{pr,xc}$, $f_{li,xc}$, $f_{xI,xc}$ und $f_{sI,xc}$ für jedes Substrat individuell berechnet.<br />
+2.  <strong>Kinetische Parameter</strong>: Substrate bringen ihre eigenen Raten für Desintegration ($k_{dis}$) und Hydrolyse ($k_{hyd}$) mit. Bei Substratgemischen werden diese Parameter gewichtet nach dem Volumenstrom berechnet.  </p>
 <h3 id="mathematische-grundlage">Mathematische Grundlage<a class="headerlink" href="#mathematische-grundlage" title="Permanent link">&para;</a></h3>
-<p>Die Implementierung basiert auf den Arbeiten von:
-*   <strong>Gaida, D. (2014)</strong>: <em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants</em>. PhD thesis, Leiden University.
-*   <strong>Koch, K. et al. (2010)</strong>: <em>Biogas from grass silage – Measurements and modeling with ADM1</em>. Bioresource Technology.</p>
+<p>Die Implementierung basiert auf den Arbeiten von:<br />
+<em>   </em><em>Gaida, D. (2014)</em><em>: </em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants<em>. PhD thesis, Leiden University.<br />
+</em>   <strong>Koch, K. et al. (2010)</strong>: <em>Biogas from grass silage – Measurements and modeling with ADM1</em>. Bioresource Technology.  </p>
 <h2 id="technische-umsetzung">Technische Umsetzung<a class="headerlink" href="#technische-umsetzung" title="Permanent link">&para;</a></h2>
 <p>Die Berechnung der Substratparameter und des gemischten ADM1-Zulaufstroms erfolgt über hochoptimierte C#-DLLs (im Ordner <code>pyadm1/dlls/</code>), die via <code>pythonnet</code> in die Python-Umgebung eingebunden sind. Dies ermöglicht eine schnelle Berechnung auch bei komplexen Substratgemischen und großen Simulationsstudien.</p>
 

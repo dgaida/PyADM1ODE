@@ -2474,12 +2474,12 @@
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>P_shaft = P_hydraulic / η_pump
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>P_electrical = P_shaft / η_motor
 </code></pre></div>
-<p>Wobei:
-- ρ = Fluiddichte [kg/m³]
-- g = 9.81 m/s²
-- Q = Durchflussrate [m³/s]
-- H = Druckhöhe [m]
-- η = Wirkungsgrad</p>
+<p>Wobei:<br />
+- ρ = Fluiddichte [kg/m³]<br />
+- g = 9.81 m/s²<br />
+- Q = Durchflussrate [m³/s]<br />
+- H = Druckhöhe [m]<br />
+- η = Wirkungsgrad  </p>
 <p><strong>Typische Leistungsaufnahme:</strong></p>
 <table>
 <thead>
@@ -2745,18 +2745,18 @@
 </code></pre></div></p>
 <p><strong>Leistungszahl (abhängig von Rührwerkstyp und Reynolds-Zahl):</strong></p>
 <ul>
-<li><strong>Propeller:</strong></li>
-<li>Laminar (Re &lt; 100): Np = 14.0 * Re^(-0.67)</li>
-<li>Übergang (100 &lt; Re &lt; 10000): Np = 1.2 * Re^(-0.15)</li>
+<li><strong>Propeller:</strong>  </li>
+<li>Laminar (Re &lt; 100): Np = 14.0 * Re^(-0.67)  </li>
+<li>Übergang (100 &lt; Re &lt; 10000): Np = 1.2 * Re^(-0.15)  </li>
 <li>
-<p>Turbulent (Re &gt; 10000): Np = 0.32</p>
+<p>Turbulent (Re &gt; 10000): Np = 0.32  </p>
 </li>
 <li>
-<p><strong>Paddelrührwerk:</strong></p>
+<p><strong>Paddelrührwerk:</strong>  </p>
 </li>
-<li>Laminar (Re &lt; 10): Np = 300.0 / Re</li>
-<li>Übergang (10 &lt; Re &lt; 10000): Np = 8.0 * Re^(-0.25)</li>
-<li>Turbulent (Re &gt; 10000): Np = 5.0</li>
+<li>Laminar (Re &lt; 10): Np = 300.0 / Re  </li>
+<li>Übergang (10 &lt; Re &lt; 10000): Np = 8.0 * Re^(-0.25)  </li>
+<li>Turbulent (Re &gt; 10000): Np = 5.0  </li>
 </ul>
 <h3 id="mischzeit-schatzung">Mischzeit-Schätzung<a class="headerlink" href="#mischzeit-schatzung" title="Permanent link">&para;</a></h3>
 <p>Basierend auf Nienow-Korrelation:</p>
@@ -3050,10 +3050,10 @@
 <a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>    <span class="k">if</span> <span class="n">pump</span><span class="o">.</span><span class="n">speed_fraction</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
 <a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- WARNUNG: Pumpe überlastet!&quot;</span><span class="p">)</span>
 </code></pre></div></p>
-<p><strong>Lösungen:</strong>
-- Erhöhe Pumpengröße wenn konsistent überlastet
-- Reduziere Reibungsverluste in Rohrleitungen
-- Prüfe auf Blockaden oder Verschleiß</p>
+<p><strong>Lösungen:</strong><br />
+- Erhöhe Pumpengröße wenn konsistent überlastet<br />
+- Reduziere Reibungsverluste in Rohrleitungen<br />
+- Prüfe auf Blockaden oder Verschleiß  </p>
 <h3 id="problem-ruhrwerk-verbraucht-zu-viel-energie">Problem: Rührwerk verbraucht zu viel Energie<a class="headerlink" href="#problem-ruhrwerk-verbraucht-zu-viel-energie" title="Permanent link">&para;</a></h3>
 <p><strong>Diagnose:</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">mixer_result</span> <span class="o">=</span> <span class="n">mixer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">24</span><span class="p">,</span> <span class="p">{})</span>
@@ -3093,50 +3093,50 @@
 <a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>    <span class="k">if</span> <span class="n">mixer_result</span><span class="p">[</span><span class="s1">&#39;mixing_time&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
 <a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Lange Mischzeit - erhöhe Intensität oder Einschaltzeit&quot;</span><span class="p">)</span>
 </code></pre></div></p>
-<p><strong>Lösungen:</strong>
-- Erhöhe Mischintensität für schwierige Substrate
-- Verlängere Einschaltzeit bei intermittierendem Betrieb
-- Erwäge größeres Rührblatt oder höhere Drehzahl</p>
+<p><strong>Lösungen:</strong><br />
+- Erhöhe Mischintensität für schwierige Substrate<br />
+- Verlängere Einschaltzeit bei intermittierendem Betrieb<br />
+- Erwäge größeres Rührblatt oder höhere Drehzahl  </p>
 <h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Pumpen für optimalen Wirkungsgrad dimensionieren</strong></li>
-<li>Betreibe bei 80-90% Nennlast</li>
+<li><strong>Pumpen für optimalen Wirkungsgrad dimensionieren</strong>  </li>
+<li>Betreibe bei 80-90% Nennlast  </li>
 <li>
-<p>Nutze FU für variable Lastanforderungen</p>
+<p>Nutze FU für variable Lastanforderungen  </p>
 </li>
 <li>
-<p><strong>Implementiere intermittierendes Mischen</strong></p>
+<p><strong>Implementiere intermittierendes Mischen</strong>  </p>
 </li>
-<li>25% Einschaltzeit für die meisten Anwendungen</li>
+<li>25% Einschaltzeit für die meisten Anwendungen  </li>
 <li>
-<p>Passe an Substrattyp an</p>
-</li>
-<li>
-<p><strong>Regelmäßige Wartung</strong></p>
-</li>
-<li>Überwache Pumpenwirkungsgrad über Zeit</li>
-<li>
-<p>Prüfe Rührwerkverschleiß</p>
+<p>Passe an Substrattyp an  </p>
 </li>
 <li>
-<p><strong>Optimiere Systemdesign</strong></p>
+<p><strong>Regelmäßige Wartung</strong>  </p>
 </li>
-<li>Minimiere Rohrleitungsverlu ste</li>
+<li>Überwache Pumpenwirkungsgrad über Zeit  </li>
 <li>
-<p>Richtige Pumpenplatzierung</p>
+<p>Prüfe Rührwerkverschleiß  </p>
 </li>
 <li>
-<p><strong>Überwache Energieverbrauch</strong></p>
+<p><strong>Optimiere Systemdesign</strong>  </p>
 </li>
-<li>Verfolge parasitäre Last</li>
-<li>Ziel: &lt;10% der BHKW-Produktion</li>
+<li>Minimiere Rohrleitungsverlu ste  </li>
+<li>
+<p>Richtige Pumpenplatzierung  </p>
+</li>
+<li>
+<p><strong>Überwache Energieverbrauch</strong>  </p>
+</li>
+<li>Verfolge parasitäre Last  </li>
+<li>Ziel: &lt;10% der BHKW-Produktion  </li>
 </ol>
 <h2 id="nachste-schritte">Nächste Schritte<a class="headerlink" href="#nachste-schritte" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="../biological/">Biologische Komponenten</a>: Fermenter und Prozesssteuerung</li>
-<li><a href="../energy/">Energiekomponenten</a>: BHKW und Wärmesysteme</li>
-<li><a href="../feeding/">Fütterungskomponenten</a>: Lagerung und Dosierung</li>
-<li><a href="../../../api/mechanical/">API-Referenz</a>: Detaillierte Klassendokumentation</li>
+<li><a href="../biological/">Biologische Komponenten</a>: Fermenter und Prozesssteuerung  </li>
+<li><a href="../energy/">Energiekomponenten</a>: BHKW und Wärmesysteme  </li>
+<li><a href="../feeding/">Fütterungskomponenten</a>: Lagerung und Dosierung  </li>
+<li><a href="../../../api/mechanical/">API-Referenz</a>: Detaillierte Klassendokumentation  </li>
 </ul>
 
 

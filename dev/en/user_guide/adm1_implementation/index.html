@@ -1897,12 +1897,12 @@
 <p>Unlike the standard ADM1 (IWA Task Group, 2002), which is often formulated as a system of differential-algebraic equations (DAE), this implementation is a <strong>pure system of ordinary differential equations (ODE)</strong>.</p>
 <h3 id="key-differences-from-the-standard-model">Key Differences from the Standard Model<a class="headerlink" href="#key-differences-from-the-standard-model" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong>No Algebraic States</strong>: Acid-base equilibria and gas-liquid transfer are modeled kinetically. This avoids the need for iterative algebraic solvers within each timestep of the ODE solver, enhancing numerical stability.</li>
-<li><strong>37 State Variables</strong>: The model tracks a total of 37 variables to represent the entire process:<ul>
-<li><strong>Soluble Components (12)</strong>: Monosaccharides, amino acids, long-chain fatty acids (LCFA), valerate, butyrate, propionate, acetate, hydrogen, methane, inorganic carbon ($S_{CO2}$), inorganic nitrogen ($S_{NH4}$), soluble inerts.</li>
-<li><strong>Particulate Components (13)</strong>: Composites ($X_{xc}$), carbohydrates, proteins, lipids, 7 bacterial populations, particulate inerts, particulate products ($X_p$).</li>
-<li><strong>Acid-Base Variables (8)</strong>: Cations, anions, and the ionized forms of organic acids and inorganic species.</li>
-<li><strong>Gas Phase (4)</strong>: Partial pressures of $H_2$, $CH_4$, $CO_2$, and total pressure.</li>
+<li><strong>No Algebraic States</strong>: Acid-base equilibria and gas-liquid transfer are modeled kinetically. This avoids the need for iterative algebraic solvers within each timestep of the ODE solver, enhancing numerical stability.  </li>
+<li><strong>37 State Variables</strong>: The model tracks a total of 37 variables to represent the entire process:  <ul>
+<li><strong>Soluble Components (12)</strong>: Monosaccharides, amino acids, long-chain fatty acids (LCFA), valerate, butyrate, propionate, acetate, hydrogen, methane, inorganic carbon ($S_{CO2}$), inorganic nitrogen ($S_{NH4}$), soluble inerts.  </li>
+<li><strong>Particulate Components (13)</strong>: Composites ($X_{xc}$), carbohydrates, proteins, lipids, 7 bacterial populations, particulate inerts, particulate products ($X_p$).  </li>
+<li><strong>Acid-Base Variables (8)</strong>: Cations, anions, and the ionized forms of organic acids and inorganic species.  </li>
+<li><strong>Gas Phase (4)</strong>: Partial pressures of $H_2$, $CH_4$, $CO_2$, and total pressure.  </li>
 </ul>
 </li>
 </ol>
@@ -1921,18 +1921,18 @@ $$ hydro_factor = \frac{1}{1 + (\frac{TS}{K_{hyd}})^{n_{hyd}}} $$</p>
 <h3 id="modeling-decay-products-x_p">Modeling Decay Products ($X_p$)<a class="headerlink" href="#modeling-decay-products-x_p" title="Permanent link">&para;</a></h3>
 <p>Similar to the ASM1 (Activated Sludge Model), a separate state for particulate decay products ($X_p$) was introduced. This allows for a more precise closing of the nitrogen balance and describes the accumulation of inert organic matter from decayed biomass more accurately.</p>
 <h2 id="characterization-via-weender-analysis">Characterization via Weender Analysis<a class="headerlink" href="#characterization-via-weender-analysis" title="Permanent link">&para;</a></h2>
-<p>Substrates are not entered directly as ADM1 components but are defined via common laboratory parameters:
-*   <strong>Extended Weender Analysis</strong>: Crude fiber (RF), crude protein (RP), crude fat (RL).
-*   <strong>Van Soest Fractions</strong>: NDF, ADF, ADL (lignin).
-*   <strong>Physical Values</strong>: Total solids (TS), volatile solids (VS), pH value.</p>
+<p>Substrates are not entered directly as ADM1 components but are defined via common laboratory parameters:<br />
+<em>   </em><em>Extended Weender Analysis</em><em>: Crude fiber (RF), crude protein (RP), crude fat (RL).<br />
+</em>   <strong>Van Soest Fractions</strong>: NDF, ADF, ADL (lignin).<br />
+<em>   </em><em>Physical Values</em>*: Total solids (TS), volatile solids (VS), pH value.  </p>
 <h3 id="mapping-to-adm1-input-variables">Mapping to ADM1 Input Variables<a class="headerlink" href="#mapping-to-adm1-input-variables" title="Permanent link">&para;</a></h3>
-<p>The conversion of substrate fractions into the ADM1 influent stream is performed dynamically:
-1.  <strong>Composite ($X_c$) Composition</strong>: Based on protein, fat, and fiber content, the stoichiometric coefficients $f_{ch,xc}$, $f_{pr,xc}$, $f_{li,xc}$, $f_{xI,xc}$, and $f_{sI,xc}$ are calculated individually for each substrate.
-2.  <strong>Kinetic Parameters</strong>: Substrates provide their own rates for disintegration ($k_{dis}$) and hydrolysis ($k_{hyd}$). For substrate mixtures, these parameters are calculated weighted by volumetric flow rate.</p>
+<p>The conversion of substrate fractions into the ADM1 influent stream is performed dynamically:<br />
+1.  <strong>Composite ($X_c$) Composition</strong>: Based on protein, fat, and fiber content, the stoichiometric coefficients $f_{ch,xc}$, $f_{pr,xc}$, $f_{li,xc}$, $f_{xI,xc}$, and $f_{sI,xc}$ are calculated individually for each substrate.<br />
+2.  <strong>Kinetic Parameters</strong>: Substrates provide their own rates for disintegration ($k_{dis}$) and hydrolysis ($k_{hyd}$). For substrate mixtures, these parameters are calculated weighted by volumetric flow rate.  </p>
 <h3 id="mathematical-foundation">Mathematical Foundation<a class="headerlink" href="#mathematical-foundation" title="Permanent link">&para;</a></h3>
-<p>The implementation is based on the research of:
-*   <strong>Gaida, D. (2014)</strong>: <em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants</em>. PhD thesis, Leiden University.
-*   <strong>Koch, K. et al. (2010)</strong>: <em>Biogas from grass silage – Measurements and modeling with ADM1</em>. Bioresource Technology.</p>
+<p>The implementation is based on the research of:<br />
+<em>   </em><em>Gaida, D. (2014)</em><em>: </em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants<em>. PhD thesis, Leiden University.<br />
+</em>   <strong>Koch, K. et al. (2010)</strong>: <em>Biogas from grass silage – Measurements and modeling with ADM1</em>. Bioresource Technology.  </p>
 <h2 id="technical-implementation">Technical Implementation<a class="headerlink" href="#technical-implementation" title="Permanent link">&para;</a></h2>
 <p>Substrate parameter calculations and the mixed ADM1 influent stream are handled by highly optimized C# DLLs (located in the <code>pyadm1/dlls/</code> folder), integrated into the Python environment via <code>pythonnet</code>. This enables fast calculation even for complex substrate mixtures and large-scale simulation studies.</p>
 

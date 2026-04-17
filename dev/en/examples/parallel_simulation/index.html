@@ -1376,12 +1376,12 @@
 <h1 id="parallel-simulation-example">Parallel Simulation Example<a class="headerlink" href="#parallel-simulation-example" title="Permanent link">¶</a></h1>
 <p>The <a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/05_parallel_two_stage_simulation.py">examples/05_parallel_two_stage_simulation.py</a> example demonstrates efficient parallel execution of multiple biogas plant simulation scenarios for parameter optimization, sensitivity analysis, and uncertainty quantification.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
-<p>This example demonstrates:
-- <strong>Parallel Scenario Execution</strong>: Running multiple simulations concurrently across CPU cores
-- <strong>Parameter Sweeps</strong>: Systematic exploration of single and multiple parameter variations
-- <strong>Monte Carlo Analysis</strong>: Uncertainty quantification with parameter distributions
-- <strong>Statistical Analysis</strong>: Result aggregation and comparative statistics
-- <strong>Performance Metrics</strong>: Speedup and parallel efficiency measurement</p>
+<p>This example demonstrates:<br/>
+- <strong>Parallel Scenario Execution</strong>: Running multiple simulations concurrently across CPU cores<br/>
+- <strong>Parameter Sweeps</strong>: Systematic exploration of single and multiple parameter variations<br/>
+- <strong>Monte Carlo Analysis</strong>: Uncertainty quantification with parameter distributions<br/>
+- <strong>Statistical Analysis</strong>: Result aggregation and comparative statistics<br/>
+- <strong>Performance Metrics</strong>: Speedup and parallel efficiency measurement  </p>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h2>
 <pre class="mermaid"><code>graph TB
     subgraph "Main Process"
@@ -1435,11 +1435,11 @@
 <a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>    <span class="n">compute_metrics</span><span class="o">=</span><span class="kc">True</span>
 <a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="p">)</span>
 </code></pre></div>
-<p><strong>Key Features</strong>:
-- <strong>Multiprocessing</strong>: Uses Python's <code>multiprocessing.Pool</code> for true parallelism
-- <strong>Automatic Workload Distribution</strong>: Scenarios distributed evenly across workers
-- <strong>Progress Tracking</strong>: Real-time progress reporting for long-running analyses
-- <strong>Error Isolation</strong>: Individual scenario failures don't crash entire execution</p>
+<p><strong>Key Features</strong>:<br/>
+- <strong>Multiprocessing</strong>: Uses Python's <code>multiprocessing.Pool</code> for true parallelism<br/>
+- <strong>Automatic Workload Distribution</strong>: Scenarios distributed evenly across workers<br/>
+- <strong>Progress Tracking</strong>: Real-time progress reporting for long-running analyses<br/>
+- <strong>Error Isolation</strong>: Individual scenario failures don't crash entire execution  </p>
 <h3 id="2-scenarioresult">2. ScenarioResult<a class="headerlink" href="#2-scenarioresult" title="Permanent link">¶</a></h3>
 <p>Each simulation returns a <code>ScenarioResult</code> object:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nd">@dataclass</span>
@@ -1454,17 +1454,17 @@
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    <span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>                      <span class="c1"># Error message if failed</span>
 <a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="n">execution_time</span><span class="p">:</span> <span class="nb">float</span>                     <span class="c1"># Wall clock time [seconds]</span>
 </code></pre></div>
-<p><strong>Computed Metrics</strong> (when <code>compute_metrics=True</code>):
-- <code>Q_gas</code>: Total biogas production [m³/d]
-- <code>Q_ch4</code>: Methane production [m³/d]
-- <code>Q_co2</code>: CO2 production [m³/d]
-- <code>CH4_content</code>: Methane fraction [0-1]
-- <code>pH</code>: pH value [-]
-- <code>VFA</code>: Volatile fatty acids [g/L]
-- <code>TAC</code>: Total alkalinity [g CaCO3/L]
-- <code>FOS_TAC</code>: VFA/TA ratio [-]
-- <code>HRT</code>: Hydraulic retention time [days]
-- <code>specific_gas_production</code>: Biogas yield [m³/m³ feed]</p>
+<p><strong>Computed Metrics</strong> (when <code>compute_metrics=True</code>):<br/>
+- <code>Q_gas</code>: Total biogas production [m³/d]<br/>
+- <code>Q_ch4</code>: Methane production [m³/d]<br/>
+- <code>Q_co2</code>: CO2 production [m³/d]<br/>
+- <code>CH4_content</code>: Methane fraction [0-1]<br/>
+- <code>pH</code>: pH value [-]<br/>
+- <code>VFA</code>: Volatile fatty acids [g/L]<br/>
+- <code>TAC</code>: Total alkalinity [g CaCO3/L]<br/>
+- <code>FOS_TAC</code>: VFA/TA ratio [-]<br/>
+- <code>HRT</code>: Hydraulic retention time [days]<br/>
+- <code>specific_gas_production</code>: Biogas yield [m³/m³ feed]  </p>
 <h2 id="simulation-types">Simulation Types<a class="headerlink" href="#simulation-types" title="Permanent link">¶</a></h2>
 <h3 id="basic-parallel-scenarios">Basic Parallel Scenarios<a class="headerlink" href="#basic-parallel-scenarios" title="Permanent link">¶</a></h3>
 <p>Run multiple independent scenarios with different configurations:</p>
@@ -1486,10 +1486,10 @@
 <a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>    <span class="n">save_time_series</span><span class="o">=</span><span class="kc">False</span>  <span class="c1"># Set True for detailed time series</span>
 <a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="p">)</span>
 </code></pre></div>
-<p><strong>Use Cases</strong>:
-- Comparing different operational strategies
-- Testing substrate composition variations
-- Evaluating design alternatives</p>
+<p><strong>Use Cases</strong>:<br/>
+- Comparing different operational strategies<br/>
+- Testing substrate composition variations<br/>
+- Evaluating design alternatives  </p>
 <h3 id="single-parameter-sweep">Single-Parameter Sweep<a class="headerlink" href="#single-parameter-sweep" title="Permanent link">¶</a></h3>
 <p>Systematic exploration of one parameter:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.simulation.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterSweepConfig</span>
@@ -1513,11 +1513,11 @@
 <a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="n">best_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ch4_productions</span><span class="p">)</span>
 <a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="n">optimal_k_dis</span> <span class="o">=</span> <span class="n">sweep_config</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">best_idx</span><span class="p">]</span>
 </code></pre></div>
-<p><strong>Common Parameters to Sweep</strong>:
-- <strong>Kinetic parameters</strong>: <code>k_dis</code>, <code>k_hyd_ch</code>, <code>k_hyd_pr</code>, <code>k_hyd_li</code>
-- <strong>Yield parameters</strong>: <code>Y_su</code>, <code>Y_aa</code>, <code>Y_fa</code>, <code>Y_c4</code>, <code>Y_pro</code>, <code>Y_ac</code>, <code>Y_h2</code>
-- <strong>Uptake rates</strong>: <code>k_m_su</code>, <code>k_m_aa</code>, <code>k_m_fa</code>, <code>k_m_c4</code>, <code>k_m_pro</code>, <code>k_m_ac</code>
-- <strong>Operational parameters</strong>: Feed rates, temperatures, retention times</p>
+<p><strong>Common Parameters to Sweep</strong>:<br/>
+- <strong>Kinetic parameters</strong>: <code>k_dis</code>, <code>k_hyd_ch</code>, <code>k_hyd_pr</code>, <code>k_hyd_li</code><br/>
+- <strong>Yield parameters</strong>: <code>Y_su</code>, <code>Y_aa</code>, <code>Y_fa</code>, <code>Y_c4</code>, <code>Y_pro</code>, <code>Y_ac</code>, <code>Y_h2</code><br/>
+- <strong>Uptake rates</strong>: <code>k_m_su</code>, <code>k_m_aa</code>, <code>k_m_fa</code>, <code>k_m_c4</code>, <code>k_m_pro</code>, <code>k_m_ac</code><br/>
+- <strong>Operational parameters</strong>: Feed rates, temperatures, retention times  </p>
 <h3 id="multi-parameter-sweep">Multi-Parameter Sweep<a class="headerlink" href="#multi-parameter-sweep" title="Permanent link">¶</a></h3>
 <p>Full factorial design exploring parameter interactions:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">parameter_configs</span> <span class="o">=</span> <span class="p">{</span>
@@ -1579,11 +1579,11 @@
 <a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  95% CI: [</span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'metrics'</span><span class="p">][</span><span class="s1">'Q_ch4'</span><span class="p">][</span><span class="s1">'q25'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, "</span>
 <a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a>      <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'metrics'</span><span class="p">][</span><span class="s1">'Q_ch4'</span><span class="p">][</span><span class="s1">'q75'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
 </code></pre></div>
-<p><strong>Probability Distribution Selection</strong>:
-- <strong>Normal</strong>: Most kinetic parameters (symmetric uncertainty)
-- <strong>Log-normal</strong>: Always-positive parameters with multiplicative uncertainty
-- <strong>Uniform</strong>: When only bounds are known
-- <strong>Triangular</strong>: Expert judgment with most likely value</p>
+<p><strong>Probability Distribution Selection</strong>:<br/>
+- <strong>Normal</strong>: Most kinetic parameters (symmetric uncertainty)<br/>
+- <strong>Log-normal</strong>: Always-positive parameters with multiplicative uncertainty<br/>
+- <strong>Uniform</strong>: When only bounds are known<br/>
+- <strong>Triangular</strong>: Expert judgment with most likely value  </p>
 <h2 id="expected-output">Expected Output<a class="headerlink" href="#expected-output" title="Permanent link">¶</a></h2>
 <h3 id="basic-scenario-comparison">Basic Scenario Comparison<a class="headerlink" href="#basic-scenario-comparison" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>================================================================================
@@ -1623,11 +1623,11 @@
 <a href="#__codelineno-7-35" id="__codelineno-7-35" name="__codelineno-7-35"></a>  HRT:       61.8 days
 <a href="#__codelineno-7-36" id="__codelineno-7-36" name="__codelineno-7-36"></a>  Exec Time: 2.38 seconds
 </code></pre></div>
-<p><strong>Interpretation</strong>:
-- <strong>Biogas production scales linearly</strong> with feed rate (expected for stable operation)
-- <strong>pH decreases</strong> with higher loading (more VFA production)
-- <strong>FOS/TAC increases</strong> but remains below critical threshold (0.4)
-- <strong>Execution time is similar</strong> across scenarios (same computational complexity)</p>
+<p><strong>Interpretation</strong>:<br/>
+- <strong>Biogas production scales linearly</strong> with feed rate (expected for stable operation)<br/>
+- <strong>pH decreases</strong> with higher loading (more VFA production)<br/>
+- <strong>FOS/TAC increases</strong> but remains below critical threshold (0.4)<br/>
+- <strong>Execution time is similar</strong> across scenarios (same computational complexity)  </p>
 <h3 id="parameter-sweep-results">Parameter Sweep Results<a class="headerlink" href="#parameter-sweep-results" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>================================================================================
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>4. Running parameter sweep (Disintegration Rate k_dis)
@@ -1648,11 +1648,11 @@
 <a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>
 <a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>   ✓ Optimal k_dis = 0.30 (CH4 = 610.9 m³/d)
 </code></pre></div>
-<p><strong>Observations</strong>:
-- <strong>Methane production increases</strong> with k_dis (faster disintegration)
-- <strong>Diminishing returns</strong> above k_dis = 0.26 (only 1.5 m³/d increase)
-- <strong>pH decreases slightly</strong> due to faster organic acid production
-- <strong>Trade-off</strong>: Higher k_dis → more gas but lower pH stability</p>
+<p><strong>Observations</strong>:<br/>
+- <strong>Methane production increases</strong> with k_dis (faster disintegration)<br/>
+- <strong>Diminishing returns</strong> above k_dis = 0.26 (only 1.5 m³/d increase)<br/>
+- <strong>pH decreases slightly</strong> due to faster organic acid production<br/>
+- <strong>Trade-off</strong>: Higher k_dis → more gas but lower pH stability  </p>
 <h3 id="monte-carlo-statistics">Monte Carlo Statistics<a class="headerlink" href="#monte-carlo-statistics" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>================================================================================
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>6. Running Monte Carlo uncertainty analysis
@@ -1692,15 +1692,15 @@
 <a href="#__codelineno-9-36" id="__codelineno-9-36" name="__codelineno-9-36"></a>
 <a href="#__codelineno-9-37" id="__codelineno-9-37" name="__codelineno-9-37"></a>   Success Rate: 100.0%
 </code></pre></div>
-<p><strong>Uncertainty Analysis</strong>:
-- <strong>Coefficient of variation (CV)</strong>:
-  - Biogas: 58.32 / 1002.45 = 5.8% (moderate uncertainty)
-  - Methane: 35.00 / 601.47 = 5.8% (same relative uncertainty)
-  - pH: 0.08 / 7.21 = 1.1% (very stable)
-- <strong>95% Confidence Interval</strong> (≈ Q25 to Q75):
-  - Biogas: 965–1038 m³/d (±3.7% from median)
-  - Methane: 579–623 m³/d (±3.7% from median)
-- <strong>Interpretation</strong>: Parameter uncertainty has moderate impact on gas production predictions</p>
+<p><strong>Uncertainty Analysis</strong>:<br/>
+- <strong>Coefficient of variation (CV)</strong>:<br/>
+  - Biogas: 58.32 / 1002.45 = 5.8% (moderate uncertainty)<br/>
+  - Methane: 35.00 / 601.47 = 5.8% (same relative uncertainty)<br/>
+  - pH: 0.08 / 7.21 = 1.1% (very stable)<br/>
+- <strong>95% Confidence Interval</strong> (≈ Q25 to Q75):<br/>
+  - Biogas: 965–1038 m³/d (±3.7% from median)<br/>
+  - Methane: 579–623 m³/d (±3.7% from median)<br/>
+- <strong>Interpretation</strong>: Parameter uncertainty has moderate impact on gas production predictions  </p>
 <h2 id="performance-analysis">Performance Analysis<a class="headerlink" href="#performance-analysis" title="Permanent link">¶</a></h2>
 <h3 id="parallel-efficiency">Parallel Efficiency<a class="headerlink" href="#parallel-efficiency" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>================================================================================
@@ -1716,13 +1716,13 @@
 <a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>  Speedup: 3.80x
 <a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>  Parallel efficiency: 95.0%
 </code></pre></div>
-<p><strong>Performance Metrics</strong>:
-- <strong>Speedup</strong>: 475.8 / 125.3 = 3.80×
-- <strong>Efficiency</strong>: 3.80 / 4 = 95.0%
-- <strong>Overhead</strong>: 5% due to:
-  - Process creation/destruction
-  - Data serialization/deserialization
-  - Result aggregation</p>
+<p><strong>Performance Metrics</strong>:<br/>
+- <strong>Speedup</strong>: 475.8 / 125.3 = 3.80×<br/>
+- <strong>Efficiency</strong>: 3.80 / 4 = 95.0%<br/>
+- <strong>Overhead</strong>: 5% due to:<br/>
+  - Process creation/destruction<br/>
+  - Data serialization/deserialization<br/>
+  - Result aggregation  </p>
 <p><strong>Optimal Worker Count</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mp</span>
 <a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
@@ -1731,10 +1731,10 @@
 <a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>
 <a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="n">parallel</span> <span class="o">=</span> <span class="n">ParallelSimulator</span><span class="p">(</span><span class="n">adm1</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="n">optimal_workers</span><span class="p">)</span>
 </code></pre></div></p>
-<p><strong>Scalability</strong>:
-- <strong>Linear speedup</strong>: Up to CPU core count (ideal: 95%+ efficiency)
-- <strong>Diminishing returns</strong>: Beyond core count (hyperthreading limited)
-- <strong>Overhead dominates</strong>: Very short simulations (&lt;1 second)</p>
+<p><strong>Scalability</strong>:<br/>
+- <strong>Linear speedup</strong>: Up to CPU core count (ideal: 95%+ efficiency)<br/>
+- <strong>Diminishing returns</strong>: Beyond core count (hyperthreading limited)<br/>
+- <strong>Overhead dominates</strong>: Very short simulations (&lt;1 second)  </p>
 <h3 id="memory-considerations">Memory Considerations<a class="headerlink" href="#memory-considerations" title="Permanent link">¶</a></h3>
 <p>Each worker process creates a <strong>full copy</strong> of the ADM1 model:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="c1"># Memory per worker ≈ 50-100 MB (depends on model complexity)</span>
@@ -1996,25 +1996,25 @@
 </code></pre></div></p>
 <h2 id="related-examples">Related Examples<a class="headerlink" href="#related-examples" title="Permanent link">¶</a></h2>
 <ul>
-<li><a href="../basic_digester/"><code>basic_digester.md</code></a>: Single digester simulation basics</li>
-<li><a href="../two_stage_plant/"><code>two_stage_plant.md</code></a>: Two-stage plant configuration</li>
-<li><code>calibration_workflow.md</code>: Parameter calibration using parallel optimization</li>
+<li><a href="../basic_digester/"><code>basic_digester.md</code></a>: Single digester simulation basics  </li>
+<li><a href="../two_stage_plant/"><code>two_stage_plant.md</code></a>: Two-stage plant configuration  </li>
+<li><code>calibration_workflow.md</code>: Parameter calibration using parallel optimization  </li>
 </ul>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>Multiprocessing</strong>: Python documentation on <code>multiprocessing</code> module</li>
-<li><strong>Parallel Computing</strong>: Pacheco, P. (2011). <em>An Introduction to Parallel Programming</em></li>
-<li><strong>Design of Experiments</strong>: Montgomery, D.C. (2017). <em>Design and Analysis of Experiments</em></li>
-<li><strong>Uncertainty Quantification</strong>: Sullivan, T.J. (2015). <em>Introduction to Uncertainty Quantification</em></li>
+<li><strong>Multiprocessing</strong>: Python documentation on <code>multiprocessing</code> module  </li>
+<li><strong>Parallel Computing</strong>: Pacheco, P. (2011). <em>An Introduction to Parallel Programming</em> </li>
+<li><strong>Design of Experiments</strong>: Montgomery, D.C. (2017). <em>Design and Analysis of Experiments</em> </li>
+<li><strong>Uncertainty Quantification</strong>: Sullivan, T.J. (2015). <em>Introduction to Uncertainty Quantification</em> </li>
 </ul>
 <h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
 <p>The parallel simulation example demonstrates:</p>
 <ol>
-<li><strong>Efficient Parameter Exploration</strong>: Test multiple scenarios 3-4× faster using parallel execution</li>
-<li><strong>Systematic Optimization</strong>: Parameter sweeps identify optimal operating conditions</li>
-<li><strong>Uncertainty Quantification</strong>: Monte Carlo analysis quantifies prediction uncertainty</li>
-<li><strong>Scalable Architecture</strong>: Handle 100s of scenarios with proper batching and error handling</li>
-<li><strong>Statistical Analysis</strong>: Comprehensive result aggregation and comparative statistics</li>
+<li><strong>Efficient Parameter Exploration</strong>: Test multiple scenarios 3-4× faster using parallel execution  </li>
+<li><strong>Systematic Optimization</strong>: Parameter sweeps identify optimal operating conditions  </li>
+<li><strong>Uncertainty Quantification</strong>: Monte Carlo analysis quantifies prediction uncertainty  </li>
+<li><strong>Scalable Architecture</strong>: Handle 100s of scenarios with proper batching and error handling  </li>
+<li><strong>Statistical Analysis</strong>: Comprehensive result aggregation and comparative statistics  </li>
 </ol>
 <p><strong>Key Takeaway</strong>: Parallel simulation enables rapid exploration of the design and operating space, making it feasible to perform comprehensive sensitivity analysis, optimization, and uncertainty quantification that would be impractical with sequential execution.</p>
 </article>

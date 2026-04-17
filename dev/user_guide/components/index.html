@@ -2310,29 +2310,29 @@
 <h3 id="biologische-komponenten"><a href="biological/">Biologische Komponenten</a><a class="headerlink" href="#biologische-komponenten" title="Permanent link">&para;</a></h3>
 <p>Komponenten für biologische Umwandlungsprozesse:</p>
 <ul>
-<li><strong>Digester</strong>: Hauptfermenter mit ADM1-Modell für anaerobe Vergärung</li>
-<li><strong>Hydrolysis</strong>: Vorbehandlungstank für Hydrolyseprozesse</li>
-<li><strong>Separator</strong>: Fest-Flüssig-Trennung für Gärrestaufbereitung</li>
+<li><strong>Digester</strong>: Hauptfermenter mit ADM1-Modell für anaerobe Vergärung  </li>
+<li><strong>Hydrolysis</strong>: Vorbehandlungstank für Hydrolyseprozesse  </li>
+<li><strong>Separator</strong>: Fest-Flüssig-Trennung für Gärrestaufbereitung  </li>
 </ul>
 <h3 id="energiekomponenten"><a href="energy/">Energiekomponenten</a><a class="headerlink" href="#energiekomponenten" title="Permanent link">&para;</a></h3>
 <p>Komponenten für Energieerzeugung und -speicherung:</p>
 <ul>
-<li><strong>CHP</strong>: Blockheizkraftwerk zur Strom- und Wärmeerzeugung</li>
-<li><strong>Heating</strong>: Heizsystem zur Temperaturkontrolle</li>
-<li><strong>GasStorage</strong>: Biogasspeicher mit Druckmanagement</li>
-<li><strong>Flare</strong>: Sicherheitsfackel für Überschussgas</li>
+<li><strong>CHP</strong>: Blockheizkraftwerk zur Strom- und Wärmeerzeugung  </li>
+<li><strong>Heating</strong>: Heizsystem zur Temperaturkontrolle  </li>
+<li><strong>GasStorage</strong>: Biogasspeicher mit Druckmanagement  </li>
+<li><strong>Flare</strong>: Sicherheitsfackel für Überschussgas  </li>
 </ul>
 <h3 id="mechanische-komponenten"><a href="mechanical/">Mechanische Komponenten</a><a class="headerlink" href="#mechanische-komponenten" title="Permanent link">&para;</a></h3>
 <p>Mechanische Anlagenkomponenten:</p>
 <ul>
-<li><strong>Pump</strong>: Pumpen für Substratförderung und Rezirkulation</li>
-<li><strong>Mixer</strong>: Rührwerke zur Homogenisierung im Fermenter</li>
+<li><strong>Pump</strong>: Pumpen für Substratförderung und Rezirkulation  </li>
+<li><strong>Mixer</strong>: Rührwerke zur Homogenisierung im Fermenter  </li>
 </ul>
 <h3 id="futterungskomponenten"><a href="feeding/">Fütterungskomponenten</a><a class="headerlink" href="#futterungskomponenten" title="Permanent link">&para;</a></h3>
 <p>Substrathandhabung und -dosierung:</p>
 <ul>
-<li><strong>SubstrateStorage</strong>: Substratlagerbehälter mit Qualitätsverfolgung</li>
-<li><strong>Feeder</strong>: Automatische Dosiersysteme</li>
+<li><strong>SubstrateStorage</strong>: Substratlagerbehälter mit Qualitätsverfolgung  </li>
+<li><strong>Feeder</strong>: Automatische Dosiersysteme  </li>
 </ul>
 <h3 id="sensoren"><a href="sensors/">Sensoren</a><a class="headerlink" href="#sensoren" title="Permanent link">&para;</a></h3>
 <p>Mess- und Überwachungskomponenten (in Entwicklung)</p>
@@ -2341,23 +2341,23 @@
 <p>Übertragen Gärrest zwischen Fermentern:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">configurator</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;digester_1&quot;</span><span class="p">,</span> <span class="s2">&quot;digester_2&quot;</span><span class="p">,</span> <span class="s2">&quot;liquid&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p><strong>Datenübertragung:</strong>
-- <code>Q_out</code>: Flüssigkeitsdurchfluss [m³/d]
-- <code>state_out</code>: Vollständiger ADM1-Zustandsvektor</p>
+<p><strong>Datenübertragung:</strong><br />
+- <code>Q_out</code>: Flüssigkeitsdurchfluss [m³/d]<br />
+- <code>state_out</code>: Vollständiger ADM1-Zustandsvektor  </p>
 <h3 id="gasverbindungen">Gasverbindungen<a class="headerlink" href="#gasverbindungen" title="Permanent link">&para;</a></h3>
 <p>Übertragen Biogas vom Speicher zum BHKW:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">configurator</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;digester_1_storage&quot;</span><span class="p">,</span> <span class="s2">&quot;chp_1&quot;</span><span class="p">,</span> <span class="s2">&quot;gas&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p><strong>Datenübertragung:</strong>
-- <code>Q_gas_supplied_m3_per_day</code>: Verfügbares Gas [m³/d]
-- Gaszusammensetzung (CH4%, CO2%)</p>
+<p><strong>Datenübertragung:</strong><br />
+- <code>Q_gas_supplied_m3_per_day</code>: Verfügbares Gas [m³/d]<br />
+- Gaszusammensetzung (CH4%, CO2%)  </p>
 <h3 id="warmeverbindungen">Wärmeverbindungen<a class="headerlink" href="#warmeverbindungen" title="Permanent link">&para;</a></h3>
 <p>Übertragen Abwärme vom BHKW zur Heizung:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">configurator</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;chp_1&quot;</span><span class="p">,</span> <span class="s2">&quot;heating_1&quot;</span><span class="p">,</span> <span class="s2">&quot;heat&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p><strong>Datenübertragung:</strong>
-- <code>P_th</code>: Verfügbare thermische Leistung [kW]
-- Temperaturniveaus</p>
+<p><strong>Datenübertragung:</strong><br />
+- <code>P_th</code>: Verfügbare thermische Leistung [kW]<br />
+- Temperaturniveaus  </p>
 <h3 id="auto-verbindungshelfer">Auto-Verbindungshelfer<a class="headerlink" href="#auto-verbindungshelfer" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Automatisches Gas-Routing: Fermenter → Speicher → BHKW → Fackel</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_digester_to_chp</span><span class="p">(</span><span class="s2">&quot;dig1&quot;</span><span class="p">,</span> <span class="s2">&quot;chp1&quot;</span><span class="p">)</span>
@@ -2640,17 +2640,17 @@
 </table>
 <h2 id="nachste-schritte">Nächste Schritte<a class="headerlink" href="#nachste-schritte" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Beispiele</strong>: Siehe detaillierte Komponentenguides für vollständige Implementierungen</li>
-<li><strong>Optimierung</strong>: Nutze Parameterstudien zur Optimierung der Komponentendimensionierung</li>
-<li><strong><a href="../../api/biological/">API-Referenz</a></strong>: Siehe detaillierte Klassendokumentation für erweiterte Funktionen</li>
+<li><strong>Beispiele</strong>: Siehe detaillierte Komponentenguides für vollständige Implementierungen  </li>
+<li><strong>Optimierung</strong>: Nutze Parameterstudien zur Optimierung der Komponentendimensionierung  </li>
+<li><strong><a href="../../api/biological/">API-Referenz</a></strong>: Siehe detaillierte Klassendokumentation für erweiterte Funktionen  </li>
 </ul>
 <h2 id="weiterfuhrende-dokumentation">Weiterführende Dokumentation<a class="headerlink" href="#weiterfuhrende-dokumentation" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="biological/">Biologische Komponenten</a></li>
-<li><a href="energy/">Energiekomponenten</a></li>
-<li><a href="mechanical/">Mechanische Komponenten</a></li>
-<li><a href="feeding/">Fütterungskomponenten</a></li>
-<li><a href="sensors/">Sensoren</a></li>
+<li><a href="biological/">Biologische Komponenten</a>  </li>
+<li><a href="energy/">Energiekomponenten</a>  </li>
+<li><a href="mechanical/">Mechanische Komponenten</a>  </li>
+<li><a href="feeding/">Fütterungskomponenten</a>  </li>
+<li><a href="sensors/">Sensoren</a>  </li>
 </ul>
 
 

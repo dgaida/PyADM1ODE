@@ -2430,15 +2430,15 @@
 <h2 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">&para;</a></h2>
 <h3 id="minimum-requirements">Minimum Requirements<a class="headerlink" href="#minimum-requirements" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Python</strong>: 3.8 or higher (3.10+ recommended, needed by <a href="https://github.com/jlowin/fastmcp">fastmcp</a> package, used in the optional package <a href="https://github.com/dgaida/PyADM1ODE_mcp">PyADM1ODE_mcp</a>)</li>
-<li><strong>Operating System</strong>: Windows, Linux, or macOS</li>
-<li><strong>Memory</strong>: 2 GB RAM minimum (4 GB recommended)</li>
-<li><strong>Disk Space</strong>: 10 MB for installation</li>
+<li><strong>Python</strong>: 3.8 or higher (3.10+ recommended, needed by <a href="https://github.com/jlowin/fastmcp">fastmcp</a> package, used in the optional package <a href="https://github.com/dgaida/PyADM1ODE_mcp">PyADM1ODE_mcp</a>)  </li>
+<li><strong>Operating System</strong>: Windows, Linux, or macOS  </li>
+<li><strong>Memory</strong>: 2 GB RAM minimum (4 GB recommended)  </li>
+<li><strong>Disk Space</strong>: 10 MB for installation  </li>
 </ul>
 <h3 id="runtime-requirements">Runtime Requirements<a class="headerlink" href="#runtime-requirements" title="Permanent link">&para;</a></h3>
 <p>PyADM1ODE uses C# DLLs for substrate characterization, which requires:<br />
 - <strong>Linux/macOS</strong>: Mono runtime<br />
-- <strong>Windows</strong>: .NET Framework (usually pre-installed)</p>
+- <strong>Windows</strong>: .NET Framework (usually pre-installed)  </p>
 <h2 id="installation-methods">Installation Methods<a class="headerlink" href="#installation-methods" title="Permanent link">&para;</a></h2>
 <h3 id="method-1-install-from-pypi-recommended-but-not-yet-supported">Method 1: Install from PyPI (Recommended, but not yet supported)<a class="headerlink" href="#method-1-install-from-pypi-recommended-but-not-yet-supported" title="Permanent link">&para;</a></h3>
 <p>Once released, install via pip:</p>
@@ -2467,13 +2467,13 @@
 <h2 id="platform-specific-setup">Platform-Specific Setup<a class="headerlink" href="#platform-specific-setup" title="Permanent link">&para;</a></h2>
 <h3 id="windows-installation">Windows Installation<a class="headerlink" href="#windows-installation" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong>Install Python</strong> (if not already installed):</li>
-<li>Download from <a href="https://www.python.org/downloads/">python.org</a></li>
+<li><strong>Install Python</strong> (if not already installed):  </li>
+<li>Download from <a href="https://www.python.org/downloads/">python.org</a>  </li>
 <li>
-<p>Ensure "Add Python to PATH" is checked during installation</p>
+<p>Ensure "Add Python to PATH" is checked during installation  </p>
 </li>
 <li>
-<p><strong>Install PyADM1</strong>:
+<p><strong>Install PyADM1</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pip install pyadm1ode  # pip not yet supported
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a># or from source:
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>git clone https://github.com/dgaida/PyADM1ODE.git
@@ -2485,13 +2485,13 @@
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>.NET Framework</strong> should be pre-installed on Windows 10/11. If needed:</p>
+<p><strong>.NET Framework</strong> should be pre-installed on Windows 10/11. If needed:  </p>
 </li>
 <li>
-<p>Download from <a href="https://dotnet.microsoft.com/download/dotnet-framework">Microsoft .NET Framework</a></p>
+<p>Download from <a href="https://dotnet.microsoft.com/download/dotnet-framework">Microsoft .NET Framework</a>  </p>
 </li>
 <li>
-<p><strong>Verify Installation</strong>:
+<p><strong>Verify Installation</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python -c &quot;import pyadm1; print(pyadm1.__version__)&quot;
 </code></pre></div></p>
 </li>
@@ -2499,19 +2499,19 @@
 <h3 id="linux-installation-ubuntudebian">Linux Installation (Ubuntu/Debian)<a class="headerlink" href="#linux-installation-ubuntudebian" title="Permanent link">&para;</a></h3>
 <ol>
 <li>
-<p><strong>Install Python and dependencies</strong>:
+<p><strong>Install Python and dependencies</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>python3<span class="w"> </span>python3-pip
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Install Mono runtime</strong> (required for C# DLLs):
+<p><strong>Install Mono runtime</strong> (required for C# DLLs):<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>mono-complete
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>mono<span class="w"> </span>--version
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Install PyADM1ODE</strong>:
+<p><strong>Install PyADM1ODE</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>pip<span class="w"> </span>install<span class="w"> </span>pyadm1ode
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># or from source:</span>
 <a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/dgaida/PyADM1ODE.git
@@ -2520,7 +2520,7 @@
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Verify Installation</strong>:
+<p><strong>Verify Installation</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import pyadm1; print(pyadm1.__version__)&quot;</span>
 </code></pre></div></p>
 </li>
@@ -2528,23 +2528,23 @@
 <h3 id="macos-installation">macOS Installation<a class="headerlink" href="#macos-installation" title="Permanent link">&para;</a></h3>
 <ol>
 <li>
-<p><strong>Install Homebrew</strong> (if not already installed):
+<p><strong>Install Homebrew</strong> (if not already installed):<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="k">)</span><span class="s2">&quot;</span>
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Install Python</strong>:
+<p><strong>Install Python</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>brew<span class="w"> </span>install<span class="w"> </span>python@3.11
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Install Mono runtime</strong>:
+<p><strong>Install Mono runtime</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>brew<span class="w"> </span>install<span class="w"> </span>mono
 <a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>mono<span class="w"> </span>--version
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Install PyADM1ODE</strong>:
+<p><strong>Install PyADM1ODE</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>pip3<span class="w"> </span>install<span class="w"> </span>pyadm1ode
 <a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># or from source:</span>
 <a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/dgaida/PyADM1ODE.git
@@ -2553,7 +2553,7 @@
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Verify Installation</strong>:
+<p><strong>Verify Installation</strong>:<br />
    <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import pyadm1; print(pyadm1.__version__)&quot;</span>
 </code></pre></div></p>
 </li>
@@ -2682,24 +2682,24 @@
 <h3 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h3>
 <p>If you encounter issues:</p>
 <ol>
-<li><strong>Check GitHub Issues</strong>: <a href="https://github.com/dgaida/PyADM1ODE/issues">PyADM1ODE Issues</a></li>
-<li><strong>Create New Issue</strong>: Include:</li>
-<li>Operating system and version</li>
-<li>Python version (<code>python --version</code>)</li>
-<li>Error messages and stack traces</li>
+<li><strong>Check GitHub Issues</strong>: <a href="https://github.com/dgaida/PyADM1ODE/issues">PyADM1ODE Issues</a>  </li>
+<li><strong>Create New Issue</strong>: Include:  </li>
+<li>Operating system and version  </li>
+<li>Python version (<code>python --version</code>)  </li>
+<li>Error messages and stack traces  </li>
 <li>
-<p>Output from <code>verify_install.py</code></p>
+<p>Output from <code>verify_install.py</code>  </p>
 </li>
 <li>
-<p><strong>Contact</strong>: daniel.gaida@th-koeln.de</p>
+<p><strong>Contact</strong>: daniel.gaida@th-koeln.de  </p>
 </li>
 </ol>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <p>After successful installation:</p>
 <ol>
-<li><strong>Try the Quickstart</strong>: See <a href="../quickstart/">Quickstart Guide</a></li>
-<li><strong>Explore Examples</strong>: See <a href="../../examples/basic_digester/">Example: Basic Digester</a></li>
-<li><strong>Read Component Documentation</strong>: <a href="../components/">Components Guide</a></li>
+<li><strong>Try the Quickstart</strong>: See <a href="../quickstart/">Quickstart Guide</a>  </li>
+<li><strong>Explore Examples</strong>: See <a href="../../examples/basic_digester/">Example: Basic Digester</a>  </li>
+<li><strong>Read Component Documentation</strong>: <a href="../components/">Components Guide</a>  </li>
 </ol>
 <h2 id="updating-pyadm1ode">Updating PyADM1ODE<a class="headerlink" href="#updating-pyadm1ode" title="Permanent link">&para;</a></h2>
 <h3 id="update-from-pypi-not-yet-supported">Update from PyPI (not yet supported)<a class="headerlink" href="#update-from-pypi-not-yet-supported" title="Permanent link">&para;</a></h3>
@@ -2718,10 +2718,10 @@
 <a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="nb">cd</span><span class="w"> </span>PyADM1ODE_mcp
 <a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </code></pre></div>
-<p><strong>Features:</strong>
-- Natural language plant design via LLM (e.g., Claude)
-- MCP server for LLM integration
-- Interactive plant configuration</p>
+<p><strong>Features:</strong><br />
+- Natural language plant design via LLM (e.g., Claude)<br />
+- MCP server for LLM integration<br />
+- Interactive plant configuration  </p>
 <p><strong>Use cases:</strong> Non-expert plant design, rapid prototyping, educational tools</p>
 <p>See <a href="https://github.com/dgaida/PyADM1ODE_mcp">PyADM1ODE_mcp documentation</a> for details.</p>
 <h3 id="pyadm1ode_calibration-parameter-calibration-framework"><a href="https://github.com/dgaida/PyADM1ODE_calibration">PyADM1ODE_calibration</a> - Parameter Calibration Framework<a class="headerlink" href="#pyadm1ode_calibration-parameter-calibration-framework" title="Permanent link">&para;</a></h3>
@@ -2731,12 +2731,12 @@
 <a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="nb">cd</span><span class="w"> </span>PyADM1ODE_calibration
 <a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </code></pre></div>
-<p><strong>Features:</strong>
-- Initial calibration from historical data
-- Online re-calibration during operation
-- Multiple optimization algorithms (DE, PSO, Nelder-Mead)
-- Comprehensive validation metrics
-- Database integration for measurement data</p>
+<p><strong>Features:</strong><br />
+- Initial calibration from historical data<br />
+- Online re-calibration during operation<br />
+- Multiple optimization algorithms (DE, PSO, Nelder-Mead)<br />
+- Comprehensive validation metrics<br />
+- Database integration for measurement data  </p>
 <p><strong>Use cases:</strong> Model parameterization, real plant adaptation, uncertainty quantification</p>
 <p>See <a href="https://github.com/dgaida/PyADM1ODE_calibration">PyADM1ODE_calibration documentation</a> for details.</p>
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">&para;</a></h2>

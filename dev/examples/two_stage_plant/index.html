@@ -1711,6 +1711,7 @@
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
 <h1 id="zweistufige-biogasanlage-beispiel">Zweistufige Biogasanlage Beispiel<a class="headerlink" href="#zweistufige-biogasanlage-beispiel" title="Permanent link">¶</a></h1>
+<p><a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_02_complex_plant.ipynb"><img alt="In Google Colab öffnen" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
 <p>Das Beispiel <a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py">examples/02_two_stage_plant.py</a> zeigt eine komplette zweistufige Biogasanlage mit mechanischen Komponenten, Energieintegration und umfassender Prozessüberwachung.</p>
 <h2 id="anlagenschema">Anlagenschema<a class="headerlink" href="#anlagenschema" title="Permanent link">¶</a></h2>
 <p><img alt="Anlagenschema" src="../two_stage_plant_schematic.png"/></p>
@@ -1780,12 +1781,12 @@
     class Feed inputBox
     class Power,Effluent outputBox</code></pre>
 <h2 id="ubersicht">Übersicht<a class="headerlink" href="#ubersicht" title="Permanent link">¶</a></h2>
-<p>Die zweistufige Anlage demonstriert:
-- <strong>Temperature-Phased Anaerobic Digestion (TPAD)</strong>: Thermophile Hydrolyse (45°C) gefolgt von mesophiler Methanogenese (35°C)
-- <strong>Mechanische Komponenten</strong>: Pumpen für den Materialtransport und Rührwerke zur Prozessunterstützung
-- <strong>Energieintegration</strong>: BHKW zur Stromerzeugung und Abwärmenutzung
-- <strong>Prozesssteuerung</strong>: Mehrere Heizsysteme für ein präzises Temperaturmanagement
-- <strong>Gasmanagement</strong>: Dedizierter Speicher für jeden Fermenter mit automatischem Überlaufschutz und zentraler Fackel</p>
+<p>Die zweistufige Anlage demonstriert:<br/>
+- <strong>Temperature-Phased Anaerobic Digestion (TPAD)</strong>: Thermophile Hydrolyse (45°C) gefolgt von mesophiler Methanogenese (35°C)<br/>
+- <strong>Mechanische Komponenten</strong>: Pumpen für den Materialtransport und Rührwerke zur Prozessunterstützung<br/>
+- <strong>Energieintegration</strong>: BHKW zur Stromerzeugung und Abwärmenutzung<br/>
+- <strong>Prozesssteuerung</strong>: Mehrere Heizsysteme für ein präzises Temperaturmanagement<br/>
+- <strong>Gasmanagement</strong>: Dedizierter Speicher für jeden Fermenter mit automatischem Überlaufschutz und zentraler Fackel  </p>
 <h2 id="anlagenkonfiguration">Anlagenkonfiguration<a class="headerlink" href="#anlagenkonfiguration" title="Permanent link">¶</a></h2>
 <h3 id="biologische-komponenten">Biologische Komponenten<a class="headerlink" href="#biologische-komponenten" title="Permanent link">¶</a></h3>
 <table>
@@ -1934,10 +1935,10 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Gasfluss-Architektur</strong>:
-1. Jeder Fermenter produziert Gas → Dedizierter Speicher
-2. Beide Speicher liefern Gas → Einzelne BHKW-Einheit
-3. BHKW-Überschuss/Überlauf → Automatische Fackelverbrennung</p>
+<p><strong>Gasfluss-Architektur</strong>:<br/>
+1. Jeder Fermenter produziert Gas → Dedizierter Speicher<br/>
+2. Beide Speicher liefern Gas → Einzelne BHKW-Einheit<br/>
+3. BHKW-Überschuss/Überlauf → Automatische Fackelverbrennung  </p>
 <h2 id="code-durchgang">Code-Durchgang<a class="headerlink" href="#code-durchgang" title="Permanent link">¶</a></h2>
 <h3 id="1-erweiterte-imports">1. Erweiterte Imports<a class="headerlink" href="#1-erweiterte-imports" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.components.mechanical.mixer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mixer</span>
@@ -1963,15 +1964,15 @@
 <a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    <span class="n">Q_substrates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c1"># Empfängt nur Ablauf</span>
 <a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="p">)</span>
 </code></pre></div>
-<p><strong>Design-Überlegungen</strong>:
-- <strong>Stufe 1 (thermophil)</strong>: Höhere Temperaturen verbessern die Hydrolyse komplexer Substrate (Zellulose, Hemizellulose, Proteine).
-- <strong>Stufe 2 (mesophil)</strong>: Niedrigere Temperaturen sind stabiler und effizienter für die Methanogenese.
-- <strong>Nur Ablauf-Fütterung für Stufe 2</strong>: Verhindert Überlastung, erhält vorhydrolysiertes Material.</p>
-<p><strong>Automatische Gasspeicher-Erstellung</strong>:
-- <code>add_digester()</code> erstellt automatisch:
-  - <code>digester_1_storage</code> (304 m³ Membranspeicher)
-  - <code>digester_2_storage</code> (150 m³ Membranspeicher)
-- Die Speicher werden automatisch mit ihren Fermentern verbunden.</p>
+<p><strong>Design-Überlegungen</strong>:<br/>
+- <strong>Stufe 1 (thermophil)</strong>: Höhere Temperaturen verbessern die Hydrolyse komplexer Substrate (Zellulose, Hemizellulose, Proteine).<br/>
+- <strong>Stufe 2 (mesophil)</strong>: Niedrigere Temperaturen sind stabiler und effizienter für die Methanogenese.<br/>
+- <strong>Nur Ablauf-Fütterung für Stufe 2</strong>: Verhindert Überlastung, erhält vorhydrolysiertes Material.  </p>
+<p><strong>Automatische Gasspeicher-Erstellung</strong>:<br/>
+- <code>add_digester()</code> erstellt automatisch:<br/>
+  - <code>digester_1_storage</code> (304 m³ Membranspeicher)<br/>
+  - <code>digester_2_storage</code> (150 m³ Membranspeicher)<br/>
+- Die Speicher werden automatisch mit ihren Fermentern verbunden.  </p>
 <h3 id="3-mechanische-komponenten-hinzufugen">3. Mechanische Komponenten hinzufügen<a class="headerlink" href="#3-mechanische-komponenten-hinzufugen" title="Permanent link">¶</a></h3>
 <h4 id="futterungspumpe">Fütterungspumpe<a class="headerlink" href="#futterungspumpe" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">feed_pump</span> <span class="o">=</span> <span class="n">Pump</span><span class="p">(</span>
@@ -1981,11 +1982,11 @@
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="n">pressure_head</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>  <span class="c1"># Niedriger Druck</span>
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="p">)</span>
 </code></pre></div>
-<p><strong>Exzenterschneckenpumpen</strong> sind ideal für Biogassubstrate, weil sie:
-- Hohe Feststoffgehalte (&gt;12 % TS) bewältigen
-- Scherkräfte minimieren (Faserstruktur bleibt erhalten)
-- Selbstansaugend sind
-- Einen weiten Viskositätsbereich abdecken</p>
+<p><strong>Exzenterschneckenpumpen</strong> sind ideal für Biogassubstrate, weil sie:<br/>
+- Hohe Feststoffgehalte (&gt;12 % TS) bewältigen<br/>
+- Scherkräfte minimieren (Faserstruktur bleibt erhalten)<br/>
+- Selbstansaugend sind<br/>
+- Einen weiten Viskositätsbereich abdecken  </p>
 <h4 id="transferpumpe">Transferpumpe<a class="headerlink" href="#transferpumpe" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">transfer_pump</span> <span class="o">=</span> <span class="n">Pump</span><span class="p">(</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>    <span class="n">component_id</span><span class="o">=</span><span class="s2">"transfer_pump"</span><span class="p">,</span>
@@ -1994,10 +1995,10 @@
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="n">pressure_head</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span>  <span class="c1"># Höherer Druck für Transfer zwischen Fermentern</span>
 <a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="p">)</span>
 </code></pre></div>
-<p>Höherer Druck erforderlich für:
-- Überwindung von Rohrreibungslasten
-- Höhenunterschiede
-- Injektion in unter Druck stehenden Fermenter</p>
+<p>Höherer Druck erforderlich für:<br/>
+- Überwindung von Rohrreibungslasten<br/>
+- Höhenunterschiede<br/>
+- Injektion in unter Druck stehenden Fermenter  </p>
 <h4 id="ruhrwerke">Rührwerke<a class="headerlink" href="#ruhrwerke" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">mixer_1</span> <span class="o">=</span> <span class="n">Mixer</span><span class="p">(</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    <span class="n">component_id</span><span class="o">=</span><span class="s2">"mixer_1"</span><span class="p">,</span>
@@ -2009,13 +2010,13 @@
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="n">on_time_fraction</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>  <span class="c1"># 6 Stunden an, 18 Stunden aus</span>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="p">)</span>
 </code></pre></div>
-<p><strong>Rührstrategie</strong>:
-- <strong>Intermittierender Betrieb</strong>: Reduziert den Energieverbrauch um 75 %.
-- <strong>Hohe Intensität in der Hydrolyse</strong>: Aufbrechen von Schwimmschichten, verbessert den Substratkontakt.
-- <strong>Mittlere Intensität in der Methanogenese</strong>: Schonendes Rühren verhindert die Hemmung empfindlicher Methanogener.</p>
-<p><strong>Spezifischer Leistungseintrag</strong>:
-- Fermenter 1: 15 kW × 0,25 ÷ 1977 m³ = <strong>1,9 W/m³</strong> (hoch)
-- Fermenter 2: 10 kW × 0,25 ÷ 1000 m³ = <strong>2,5 W/m³</strong> (mittel)</p>
+<p><strong>Rührstrategie</strong>:<br/>
+- <strong>Intermittierender Betrieb</strong>: Reduziert den Energieverbrauch um 75 %.<br/>
+- <strong>Hohe Intensität in der Hydrolyse</strong>: Aufbrechen von Schwimmschichten, verbessert den Substratkontakt.<br/>
+- <strong>Mittlere Intensität in der Methanogenese</strong>: Schonendes Rühren verhindert die Hemmung empfindlicher Methanogener.  </p>
+<p><strong>Spezifischer Leistungseintrag</strong>:<br/>
+- Fermenter 1: 15 kW × 0,25 ÷ 1977 m³ = <strong>1,9 W/m³</strong> (hoch)<br/>
+- Fermenter 2: 10 kW × 0,25 ÷ 1000 m³ = <strong>2,5 W/m³</strong> (mittel)  </p>
 <h3 id="4-energieintegration-mit-automatischer-fackel">4. Energieintegration mit automatischer Fackel<a class="headerlink" href="#4-energieintegration-mit-automatischer-fackel" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># BHKW hinzufügen (erstellt automatisch Fackel)</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_chp</span><span class="p">(</span>
@@ -2040,11 +2041,11 @@
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>Fermenter 2 → Speicher 2 ↗      ↓
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>                          Wärme → Heizung 1 &amp; 2
 </code></pre></div></p>
-<p><strong>Automatische Fackelerstellung</strong>:
-- <code>add_chp()</code> erstellt automatisch eine Fackelkomponente.
-- Fackel-ID: <code>{chp_id}_flare</code> (z. B. "chp_1_flare")
-- Funktion: Sicherheitsverbrennung von Überschussgas (98 % CH₄-Zerstörung)
-- Automatische Verbindung: BHKW → Fackel</p>
+<p><strong>Automatische Fackelerstellung</strong>:<br/>
+- <code>add_chp()</code> erstellt automatisch eine Fackelkomponente.<br/>
+- Fackel-ID: <code>{chp_id}_flare</code> (z. B. "chp_1_flare")<br/>
+- Funktion: Sicherheitsverbrennung von Überschussgas (98 % CH₄-Zerstörung)<br/>
+- Automatische Verbindung: BHKW → Fackel  </p>
 <h3 id="5-drei-pass-gasfluss-simulation">5. Drei-Pass-Gasfluss-Simulation<a class="headerlink" href="#5-drei-pass-gasfluss-simulation" title="Permanent link">¶</a></h3>
 <p>Die Simulation erfolgt in drei Durchgängen für ein realistisches Gasmanagement:</p>
 <p><strong>Pass 1 - Gasproduktion</strong>:
@@ -2066,11 +2067,11 @@
 <a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="c1"># BHKW arbeitet mit tatsächlichem Angebot</span>
 <a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="c1"># Überschuss zur Fackel: (Angebot - Verbrauch)</span>
 </code></pre></div></p>
-<p>Dies gewährleistet:
-- Realistisches Druckmanagement in Speichern
-- BHKW arbeitet mit verfügbarem Gas, nicht mit idealisiertem Angebot
-- Automatisches Abblasen verhindert Überdruck
-- Die Fackel handhabt das gesamte Überschussgas sicher</p>
+<p>Dies gewährleistet:<br/>
+- Realistisches Druckmanagement in Speichern<br/>
+- BHKW arbeitet mit verfügbarem Gas, nicht mit idealisiertem Angebot<br/>
+- Automatisches Abblasen verhindert Überdruck<br/>
+- Die Fackel handhabt das gesamte Überschussgas sicher  </p>
 <h2 id="erwartete-ausgabe">Erwartete Ausgabe<a class="headerlink" href="#erwartete-ausgabe" title="Permanent link">¶</a></h2>
 <h3 id="anlagenzusammenfassung">Anlagenzusammenfassung<a class="headerlink" href="#anlagenzusammenfassung" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>=== Zweistufige Anlage mit mechanischen Komponenten ===
@@ -2182,11 +2183,11 @@
 <a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a>  BHKW-Verbrauch:          1150.0 m³/d
 <a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a>  Zur Fackel:               103.1 m³/d (8.2%)
 </code></pre></div>
-<p><strong>Analyse</strong>:
-- <strong>Netto-Wirkungsgrad</strong>: (472 kW + 125 kW) ÷ (751,9 m³/d × 10 kWh/m³ ÷ 24 h) = <strong>190 %</strong> (exzellente Wärmerückgewinnung)
-- <strong>Eigenverbrauchsquote</strong>: 8,25 ÷ 480,5 = <strong>1,7 %</strong> (sehr niedrig)
-- <strong>Überschusswärme</strong>: 540,6 - 125,4 = <strong>415 kW</strong> für externe Nutzung verfügbar
-- <strong>Fackelnutzung</strong>: 8,2 % der Produktion abgeblasen (typisch bei BHKW-Teillast)</p>
+<p><strong>Analyse</strong>:<br/>
+- <strong>Netto-Wirkungsgrad</strong>: (472 kW + 125 kW) ÷ (751,9 m³/d × 10 kWh/m³ ÷ 24 h) = <strong>190 %</strong> (exzellente Wärmerückgewinnung)<br/>
+- <strong>Eigenverbrauchsquote</strong>: 8,25 ÷ 480,5 = <strong>1,7 %</strong> (sehr niedrig)<br/>
+- <strong>Überschusswärme</strong>: 540,6 - 125,4 = <strong>415 kW</strong> für externe Nutzung verfügbar<br/>
+- <strong>Fackelnutzung</strong>: 8,2 % der Produktion abgeblasen (typisch bei BHKW-Teillast)  </p>
 <h3 id="prozessstabilitat">Prozessstabilität<a class="headerlink" href="#prozessstabilitat" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>BEWERTUNG DER PROZESSSTABILITÄT
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>======================================================================
@@ -2203,11 +2204,11 @@
 <a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>  FOS/TAC-Verhältnis:   0.245 (Stabil)
 <a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>  Speicherstatus:       NORMAL (50% voll)
 </code></pre></div>
-<p><strong>Interpretation</strong>:
-- <strong>Fermenter 1</strong>: Höhere VFA-Werte werden in der thermophilen Hydrolysestufe erwartet - Säuren werden in Stufe 2 verbraucht.
-- <strong>Fermenter 2</strong>: Exzellente Stabilitätsindikatoren - Methanogene verbrauchen VFAs effektiv.
-- <strong>pH-Gradient</strong>: 7,15 → 7,32 zeigt ordnungsgemäße zweistufige Funktion.
-- <strong>Gasspeicher</strong>: Beide auf gesundem 50 % Füllstand mit stabilem Druck.</p>
+<p><strong>Interpretation</strong>:<br/>
+- <strong>Fermenter 1</strong>: Höhere VFA-Werte werden in der thermophilen Hydrolysestufe erwartet - Säuren werden in Stufe 2 verbraucht.<br/>
+- <strong>Fermenter 2</strong>: Exzellente Stabilitätsindikatoren - Methanogene verbrauchen VFAs effektiv.<br/>
+- <strong>pH-Gradient</strong>: 7,15 → 7,32 zeigt ordnungsgemäße zweistufige Funktion.<br/>
+- <strong>Gasspeicher</strong>: Beide auf gesundem 50 % Füllstand mit stabilem Druck.  </p>
 <h2 id="vorteile-des-zweistufigen-designs">Vorteile des zweistufigen Designs<a class="headerlink" href="#vorteile-des-zweistufigen-designs" title="Permanent link">¶</a></h2>
 <h3 id="1-prozessoptimierung">1. Prozessoptimierung<a class="headerlink" href="#1-prozessoptimierung" title="Permanent link">¶</a></h3>
 <table>
@@ -2242,16 +2243,16 @@
 </tbody>
 </table>
 <h3 id="2-substratflexibilitat">2. Substratflexibilität<a class="headerlink" href="#2-substratflexibilitat" title="Permanent link">¶</a></h3>
-<p>Das zweistufige System kommt besser mit schwierigen Substraten zurecht:
-- <strong>Faserreiche Materialien</strong>: Verbesserte Hydrolyse in Stufe 1.
-- <strong>Proteinreiche Substrate</strong>: Ammoniakpufferung über die Stufen hinweg.
-- <strong>Variable Zulaufzusammensetzung</strong>: Stufe 2 bietet Pufferkapazität.</p>
+<p>Das zweistufige System kommt besser mit schwierigen Substraten zurecht:<br/>
+- <strong>Faserreiche Materialien</strong>: Verbesserte Hydrolyse in Stufe 1.<br/>
+- <strong>Proteinreiche Substrate</strong>: Ammoniakpufferung über die Stufen hinweg.<br/>
+- <strong>Variable Zulaufzusammensetzung</strong>: Stufe 2 bietet Pufferkapazität.  </p>
 <h3 id="3-operative-vorteile">3. Operative Vorteile<a class="headerlink" href="#3-operative-vorteile" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong>Reduzierte Schaumbildung</strong>: Separate Hydrolysephase.</li>
-<li><strong>Bessere Hygienisierung</strong>: Thermophile Stufe (45°C) tötet Pathogene ab.</li>
-<li><strong>Einfachere Prozesssteuerung</strong>: Überwachung und Steuerung jeder Stufe unabhängig voneinander.</li>
-<li><strong>Erholung von Störungen</strong>: Stufe 2 kann Störungen in Stufe 1 abpuffern.</li>
+<li><strong>Reduzierte Schaumbildung</strong>: Separate Hydrolysephase.  </li>
+<li><strong>Bessere Hygienisierung</strong>: Thermophile Stufe (45°C) tötet Pathogene ab.  </li>
+<li><strong>Einfachere Prozesssteuerung</strong>: Überwachung und Steuerung jeder Stufe unabhängig voneinander.  </li>
+<li><strong>Erholung von Störungen</strong>: Stufe 2 kann Störungen in Stufe 1 abpuffern.  </li>
 </ul>
 <h2 id="leistungsvergleich">Leistungsvergleich<a class="headerlink" href="#leistungsvergleich" title="Permanent link">¶</a></h2>
 <h3 id="einstufig-vs-zweistufig">Einstufig vs. Zweistufig<a class="headerlink" href="#einstufig-vs-zweistufig" title="Permanent link">¶</a></h3>
@@ -2297,55 +2298,55 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Kosten-Nutzen</strong>:
-- <strong>Zusatzinvestition</strong>: ~15-20 % (zweiter Fermenter, Pumpen)
-- <strong>Energiegewinn</strong>: ~9 % mehr Biogas
-- <strong>Stabilität</strong>: Signifikant reduziertes Risiko von Prozessversagen
-- <strong>ROI</strong>: Typischerweise 3-5 Jahre bei schwierigen Substraten</p>
+<p><strong>Kosten-Nutzen</strong>:<br/>
+- <strong>Zusatzinvestition</strong>: ~15-20 % (zweiter Fermenter, Pumpen)<br/>
+- <strong>Energiegewinn</strong>: ~9 % mehr Biogas<br/>
+- <strong>Stabilität</strong>: Signifikant reduziertes Risiko von Prozessversagen<br/>
+- <strong>ROI</strong>: Typischerweise 3-5 Jahre bei schwierigen Substraten  </p>
 <h2 id="leistung-mechanischer-komponenten">Leistung mechanischer Komponenten<a class="headerlink" href="#leistung-mechanischer-komponenten" title="Permanent link">¶</a></h2>
 <h3 id="pumpenbetrieb">Pumpenbetrieb<a class="headerlink" href="#pumpenbetrieb" title="Permanent link">¶</a></h3>
-<p><strong>Fütterungspumpe</strong>:
-- <strong>Betriebspunkt</strong>: 25 m³/d ÷ 24 = 1,04 m³/h (3,5 % der Nennkapazität)
-- <strong>Effizienz bei niedrigem Durchfluss</strong>: Exzenterschneckenpumpen behalten ca. 60 % Wirkungsgrad auch bei 3 % Kapazität bei.
-- <strong>Jährliche Energie</strong>: 5 kW × 8760 h = 43.800 kWh</p>
-<p><strong>Transferpumpe</strong>:
-- <strong>Betriebspunkt</strong>: 25 m³/d ÷ 24 = 1,04 m³/h
-- <strong>Tatsächliche Leistung</strong>: 8 kW × (1,04/25) × 1,2 (Abschlag für niedrige Effizienz) ≈ <strong>0,4 kW</strong>
-- <strong>Jährliche Energie</strong>: 0,4 kW × 8760 h = 3.504 kWh</p>
+<p><strong>Fütterungspumpe</strong>:<br/>
+- <strong>Betriebspunkt</strong>: 25 m³/d ÷ 24 = 1,04 m³/h (3,5 % der Nennkapazität)<br/>
+- <strong>Effizienz bei niedrigem Durchfluss</strong>: Exzenterschneckenpumpen behalten ca. 60 % Wirkungsgrad auch bei 3 % Kapazität bei.<br/>
+- <strong>Jährliche Energie</strong>: 5 kW × 8760 h = 43.800 kWh  </p>
+<p><strong>Transferpumpe</strong>:<br/>
+- <strong>Betriebspunkt</strong>: 25 m³/d ÷ 24 = 1,04 m³/h<br/>
+- <strong>Tatsächliche Leistung</strong>: 8 kW × (1,04/25) × 1,2 (Abschlag für niedrige Effizienz) ≈ <strong>0,4 kW</strong><br/>
+- <strong>Jährliche Energie</strong>: 0,4 kW × 8760 h = 3.504 kWh  </p>
 <h3 id="ruhrwerksleistung">Rührwerksleistung<a class="headerlink" href="#ruhrwerksleistung" title="Permanent link">¶</a></h3>
-<p><strong>Hydrolyse-Rührwerk</strong>:
-- <strong>Mischzeit</strong>: ~15 Minuten (aus Reynolds-Zahl und Geometrie)
-- <strong>Umfangsgeschwindigkeit</strong>: ~4,5 m/s (turbulenter Bereich)
-- <strong>Scherrate</strong>: ~50 s⁻¹ (hohe Intensität)
-- <strong>Leistungsbeiwert</strong>: 0,32 (typisch für Propeller bei Re &gt; 10.000)</p>
-<p><strong>Methanogenese-Rührwerk</strong>:
-- <strong>Mischzeit</strong>: ~20 Minuten
-- <strong>Umfangsgeschwindigkeit</strong>: ~3,8 m/s
-- <strong>Scherrate</strong>: ~35 s⁻¹ (mittlere Intensität)
-- <strong>Verhindert Entmischung</strong>, ohne empfindliche Methanogene zu schädigen.</p>
+<p><strong>Hydrolyse-Rührwerk</strong>:<br/>
+- <strong>Mischzeit</strong>: ~15 Minuten (aus Reynolds-Zahl und Geometrie)<br/>
+- <strong>Umfangsgeschwindigkeit</strong>: ~4,5 m/s (turbulenter Bereich)<br/>
+- <strong>Scherrate</strong>: ~50 s⁻¹ (hohe Intensität)<br/>
+- <strong>Leistungsbeiwert</strong>: 0,32 (typisch für Propeller bei Re &gt; 10.000)  </p>
+<p><strong>Methanogenese-Rührwerk</strong>:<br/>
+- <strong>Mischzeit</strong>: ~20 Minuten<br/>
+- <strong>Umfangsgeschwindigkeit</strong>: ~3,8 m/s<br/>
+- <strong>Scherrate</strong>: ~35 s⁻¹ (mittlere Intensität)<br/>
+- <strong>Verhindert Entmischung</strong>, ohne empfindliche Methanogene zu schädigen.  </p>
 <h2 id="gasspeicher-und-fackelmanagement">Gasspeicher- und Fackelmanagement<a class="headerlink" href="#gasspeicher-und-fackelmanagement" title="Permanent link">¶</a></h2>
 <h3 id="speicherdynamik">Speicherdynamik<a class="headerlink" href="#speicherdynamik" title="Permanent link">¶</a></h3>
-<p><strong>Speicher 1 (Hydrolyse)</strong>:
-- Erhält ~850 m³/d (höhere Produktion durch verbesserte Hydrolyse).
-- Liefert ~675 m³/d an BHKW (proportional zum Gesamtbedarf).
-- Netto-Akkumulation: +175 m³/d.
-- Erreicht 50 % Kapazität in ~0,9 Tagen.</p>
-<p><strong>Speicher 2 (Methanogenese)</strong>:
-- Erhält ~400 m³/d (niedriger, aber stabiler).
-- Liefert ~475 m³/d an BHKW.
-- Netto-Abzug: -75 m³/d (ergänzt Speicher 1).
-- Bietet Puffer für Produktionsschwankungen.</p>
+<p><strong>Speicher 1 (Hydrolyse)</strong>:<br/>
+- Erhält ~850 m³/d (höhere Produktion durch verbesserte Hydrolyse).<br/>
+- Liefert ~675 m³/d an BHKW (proportional zum Gesamtbedarf).<br/>
+- Netto-Akkumulation: +175 m³/d.<br/>
+- Erreicht 50 % Kapazität in ~0,9 Tagen.  </p>
+<p><strong>Speicher 2 (Methanogenese)</strong>:<br/>
+- Erhält ~400 m³/d (niedriger, aber stabiler).<br/>
+- Liefert ~475 m³/d an BHKW.<br/>
+- Netto-Abzug: -75 m³/d (ergänzt Speicher 1).<br/>
+- Bietet Puffer für Produktionsschwankungen.  </p>
 <h3 id="fackelbetrieb">Fackelbetrieb<a class="headerlink" href="#fackelbetrieb" title="Permanent link">¶</a></h3>
-<p><strong>Wann wird die Fackel aktiviert?</strong>:
-1. <strong>Speicherüberlauf</strong>: Wenn einer der Speicher 100 % Kapazität erreicht.
-2. <strong>BHKW-Teillast</strong>: Wenn das BHKW unter Volllast arbeitet.
-3. <strong>Wartung</strong>: Wenn das BHKW offline ist, die Fermenter aber weiterlaufen.
-4. <strong>Anfahren/Abfahren</strong>: Während transienter Betriebszustände.</p>
-<p><strong>Fackelleistung</strong>:
-- <strong>Zerstörungsgrad</strong>: 98 % CH₄-Konvertierung zu CO₂.
-- <strong>Temperatur</strong>: ~1000°C Verbrennungstemperatur.
-- <strong>Emissionen</strong>: 2 % unverbranntes CH₄ + CO₂ aus der Verbrennung.
-- <strong>Sicherheit</strong>: Automatische Zündung, Flammenüberwachung.</p>
+<p><strong>Wann wird die Fackel aktiviert?</strong>:<br/>
+1. <strong>Speicherüberlauf</strong>: Wenn einer der Speicher 100 % Kapazität erreicht.<br/>
+2. <strong>BHKW-Teillast</strong>: Wenn das BHKW unter Volllast arbeitet.<br/>
+3. <strong>Wartung</strong>: Wenn das BHKW offline ist, die Fermenter aber weiterlaufen.<br/>
+4. <strong>Anfahren/Abfahren</strong>: Während transienter Betriebszustände.  </p>
+<p><strong>Fackelleistung</strong>:<br/>
+- <strong>Zerstörungsgrad</strong>: 98 % CH₄-Konvertierung zu CO₂.<br/>
+- <strong>Temperatur</strong>: ~1000°C Verbrennungstemperatur.<br/>
+- <strong>Emissionen</strong>: 2 % unverbranntes CH₄ + CO₂ aus der Verbrennung.<br/>
+- <strong>Sicherheit</strong>: Automatische Zündung, Flammenüberwachung.  </p>
 <h2 id="prozesssteuerungsstrategien">Prozesssteuerungsstrategien<a class="headerlink" href="#prozesssteuerungsstrategien" title="Permanent link">¶</a></h2>
 <h3 id="temperatursteuerung">Temperatursteuerung<a class="headerlink" href="#temperatursteuerung" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># Heizung 1 hält 45°C für Hydrolyse</span>
@@ -2356,10 +2357,10 @@
 <a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="n">heating_2</span><span class="o">.</span><span class="n">target_temperature</span> <span class="o">=</span> <span class="mf">308.15</span>  <span class="c1"># K</span>
 <a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="n">heating_2</span><span class="o">.</span><span class="n">heat_loss_coefficient</span> <span class="o">=</span> <span class="mf">0.3</span>  <span class="c1"># Niedrigeres ΔT</span>
 </code></pre></div>
-<p><strong>Berechnung des Wärmebedarfs</strong>:
-- <strong>Fermenter 1</strong>: Q = 0,5 kW/K × (45 - 15)°C = <strong>15 kW</strong> Basisverlust + <strong>80 kW</strong> Prozessheizung = <strong>95 kW</strong>
-- <strong>Fermenter 2</strong>: Q = 0,3 kW/K × (35 - 15)°C = <strong>6 kW</strong> Basisverlust + <strong>24 kW</strong> Prozessheizung = <strong>30 kW</strong>
-- <strong>Gesamt</strong>: <strong>125 kW</strong> (gut abgedeckt durch 541 kW BHKW-Wärmeleistung)</p>
+<p><strong>Berechnung des Wärmebedarfs</strong>:<br/>
+- <strong>Fermenter 1</strong>: Q = 0,5 kW/K × (45 - 15)°C = <strong>15 kW</strong> Basisverlust + <strong>80 kW</strong> Prozessheizung = <strong>95 kW</strong><br/>
+- <strong>Fermenter 2</strong>: Q = 0,3 kW/K × (35 - 15)°C = <strong>6 kW</strong> Basisverlust + <strong>24 kW</strong> Prozessheizung = <strong>30 kW</strong><br/>
+- <strong>Gesamt</strong>: <strong>125 kW</strong> (gut abgedeckt durch 541 kW BHKW-Wärmeleistung)  </p>
 <h3 id="ruhrwerkssteuerung">Rührwerkssteuerung<a class="headerlink" href="#ruhrwerkssteuerung" title="Permanent link">¶</a></h3>
 <p><strong>Strategie</strong>: Intermittierendes Rühren mit adaptiver Zeitsteuerung
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># Hohe Durchmischung bei Fütterung (4× täglich)</span>
@@ -2369,16 +2370,16 @@
 <a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>    <span class="n">mixer</span><span class="o">.</span><span class="n">on_time_fraction</span> <span class="o">=</span> <span class="mf">0.15</span>  <span class="c1"># 15% Basislinie</span>
 </code></pre></div></p>
 <h3 id="futterungssteuerung">Fütterungssteuerung<a class="headerlink" href="#futterungssteuerung" title="Permanent link">¶</a></h3>
-<p><strong>Model Predictive Control (MPC)</strong> Ansatz:
-1. Messen der aktuellen VFA und des pH-Werts.
-2. Vorhersagen der 48h-Reaktion mit verschiedenen Fütterungsraten.
-3. Auswählen der Fütterungsrate, die CH₄ optimiert, während pH &gt; 7,0 bleibt.</p>
+<p><strong>Model Predictive Control (MPC)</strong> Ansatz:<br/>
+1. Messen der aktuellen VFA und des pH-Werts.<br/>
+2. Vorhersagen der 48h-Reaktion mit verschiedenen Fütterungsraten.<br/>
+3. Auswählen der Fütterungsrate, die CH₄ optimiert, während pH &gt; 7,0 bleibt.  </p>
 <h2 id="haufige-probleme-und-losungen">Häufige Probleme und Lösungen<a class="headerlink" href="#haufige-probleme-und-losungen" title="Permanent link">¶</a></h2>
 <h3 id="problem-1-hohe-vfa-in-fermenter-1">Problem 1: Hohe VFA in Fermenter 1<a class="headerlink" href="#problem-1-hohe-vfa-in-fermenter-1" title="Permanent link">¶</a></h3>
-<p><strong>Symptome</strong>:
-- VFA &gt; 5 g/L
-- pH &lt; 7,0
-- Reduzierte Gasproduktion</p>
+<p><strong>Symptome</strong>:<br/>
+- VFA &gt; 5 g/L<br/>
+- pH &lt; 7,0<br/>
+- Reduzierte Gasproduktion  </p>
 <p><strong>Lösungen</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># Organische Belastung reduzieren</span>
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Reduzieren von [15, 10, ...]</span>
@@ -2390,10 +2391,10 @@
 <a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="n">mixer_1</span><span class="o">.</span><span class="n">on_time_fraction</span> <span class="o">=</span> <span class="mf">0.35</span>
 </code></pre></div></p>
 <h3 id="problem-2-niedriger-methangehalt">Problem 2: Niedriger Methangehalt<a class="headerlink" href="#problem-2-niedriger-methangehalt" title="Permanent link">¶</a></h3>
-<p><strong>Symptome</strong>:
-- CH₄ &lt; 55 %
-- CO₂ erhöht
-- Niedrige spezifische Gasproduktion</p>
+<p><strong>Symptome</strong>:<br/>
+- CH₄ &lt; 55 %<br/>
+- CO₂ erhöht<br/>
+- Niedrige spezifische Gasproduktion  </p>
 <p><strong>Lösungen</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># HRT erhöhen (Fütterung reduzieren)</span>
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
@@ -2404,9 +2405,9 @@
 <a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="c1"># Auf Lufteintritt prüfen (O₂ hemmt Methanogene)</span>
 </code></pre></div></p>
 <h3 id="problem-3-schaumbildung-in-fermenter-1">Problem 3: Schaumbildung in Fermenter 1<a class="headerlink" href="#problem-3-schaumbildung-in-fermenter-1" title="Permanent link">¶</a></h3>
-<p><strong>Symptome</strong>:
-- Gasspeicher zeigt Druckschwankungen
-- Ablauf enthält übermäßige Gasblasen</p>
+<p><strong>Symptome</strong>:<br/>
+- Gasspeicher zeigt Druckschwankungen<br/>
+- Ablauf enthält übermäßige Gasblasen  </p>
 <p><strong>Lösungen</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># Rührintensität reduzieren</span>
 <a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="n">mixer_1</span><span class="o">.</span><span class="n">mixing_intensity</span> <span class="o">=</span> <span class="s2">"medium"</span>
@@ -2418,14 +2419,14 @@
 <a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="c1"># (implementieren eines Timer-basierten periodischen Abzugs)</span>
 </code></pre></div></p>
 <h3 id="problem-4-ubermaige-fackelnutzung">Problem 4: Übermäßige Fackelnutzung<a class="headerlink" href="#problem-4-ubermaige-fackelnutzung" title="Permanent link">¶</a></h3>
-<p><strong>Symptome</strong>:
-- Fackel läuft kontinuierlich
-- &gt;20 % der Produktion zur Fackel
-- Hoher Speicherdruck</p>
-<p><strong>Ursachen</strong>:
-- BHKW zu klein für Gasproduktion
-- BHKW im Teillastbetrieb
-- Übermäßiger Substratzulauf</p>
+<p><strong>Symptome</strong>:<br/>
+- Fackel läuft kontinuierlich<br/>
+- &gt;20 % der Produktion zur Fackel<br/>
+- Hoher Speicherdruck  </p>
+<p><strong>Ursachen</strong>:<br/>
+- BHKW zu klein für Gasproduktion<br/>
+- BHKW im Teillastbetrieb<br/>
+- Übermäßiger Substratzulauf  </p>
 <p><strong>Lösungen</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># Option 1: Substratzulauf reduzieren</span>
 <a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
@@ -2475,15 +2476,15 @@
 </code></pre></div>
 <h2 id="referenzen">Referenzen<a class="headerlink" href="#referenzen" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>TPAD Design</strong>: Simeonov, I., Chorukova, E., &amp; Kabaivanova, L. (2025). <em>Two-stage anaerobic digestion for green energy production: A review</em>. Processes, 13(2), 294.</li>
-<li><strong>Prozesssteuerung</strong>: Gaida (2014). <em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants</em>. PhD thesis, Leiden University.</li>
+<li><strong>TPAD Design</strong>: Simeonov, I., Chorukova, E., &amp; Kabaivanova, L. (2025). <em>Two-stage anaerobic digestion for green energy production: A review</em>. Processes, 13(2), 294.  </li>
+<li><strong>Prozesssteuerung</strong>: Gaida (2014). <em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants</em>. PhD thesis, Leiden University.  </li>
 </ul>
 <h2 id="ahnliche-beispiele">Ähnliche Beispiele<a class="headerlink" href="#ahnliche-beispiele" title="Permanent link">¶</a></h2>
 <ul>
-<li><a href="../basic_digester/"><code>basic_digester.md</code></a>: Einfaches einstufiges System</li>
-<li><code>calibration_workflow.md</code>: Parameterschätzung aus Messdaten</li>
-<li><code>substrate_optimization.py</code>: Optimale Fütterungsstrategie</li>
-<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py"><code>parallel_two_stage_simulation.py</code></a>: Parallele Simulationen</li>
+<li><a href="../basic_digester/"><code>basic_digester.md</code></a>: Einfaches einstufiges System  </li>
+<li><code>calibration_workflow.md</code>: Parameterschätzung aus Messdaten  </li>
+<li><code>substrate_optimization.py</code>: Optimale Fütterungsstrategie  </li>
+<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py"><code>parallel_two_stage_simulation.py</code></a>: Parallele Simulationen  </li>
 </ul>
 </article>
 </div>
