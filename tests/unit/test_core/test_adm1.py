@@ -671,7 +671,7 @@ class TestADM1ODEIntegration:
         mock_substrates.calcHydrolysisParams.return_value = (10, 10, 10)
         mock_substrates.calcMaxUptakeRateParams.return_value = (20, 13, 8, 35)
 
-        feedstock.mySubstrates.return_value = mock_substrates
+        feedstock.mySubstrates = Mock(return_value=mock_substrates)
 
         return feedstock
 

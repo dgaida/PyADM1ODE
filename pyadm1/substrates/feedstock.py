@@ -36,7 +36,7 @@ class Feedstock:
     to generate ADM1-compatible input streams.
     """
 
-    # Class-level storage for compatibility with existing tests and code
+    # Class-level storage for compatibility with existing code
     _mySubstrates = None
     _header = [
         "S_su", "S_aa", "S_fa", "S_va", "S_bu", "S_pro", "S_ac", "S_h2",
@@ -82,15 +82,9 @@ class Feedstock:
             if not os.path.exists(self._xml_path):
                 self._xml_path = os.path.abspath(substrate_xml)
 
-        # Initialize substrates from DLL if not already done or if path changed
-        if Feedstock._mySubstrates is None or not os.path.exists(self._xml_path):
-            if os.path.exists(self._xml_path):
-                Feedstock._mySubstrates = substrates(self._xml_path)
-            else:
-                # If we're here, it might be a test environment where we'll patch it later
-                pass
-
-        self.instance_substrates = Feedstock._mySubstrates
+        # Initialize substrates from DLL if not already done
+        if Feedstock._mySubstrates is None and os.path.exists(self._xml_path):
+            Feedstock._mySubstrates = substrates(self._xml_path)
 
         # array specifying the total simulation time of the complete experiment in days
         self._simtime = np.arange(0, total_simtime, float(feeding_freq / 24))
@@ -143,7 +137,7 @@ class Feedstock:
             List of substrate names.
         """
         names = []
-        subs = self.instance_substrates or Feedstock._mySubstrates
+        subs = self.mySubstrates()
         for i in range(subs.getNumSubstrates()):
             names.append(subs.get_name_solids(i))
         return names
@@ -167,7 +161,7 @@ class Feedstock:
         self._Q = Q
 
         # Check dimension of Q
-        subs = self.instance_substrates or Feedstock._mySubstrates
+        subs = self.mySubstrates()
         n_substrates = subs.getNumSubstrates()
         if len(Q) != n_substrates:
             raise ValueError(f"Flow rate list Q must have {n_substrates} elements, but has {len(Q)}.")
@@ -212,7 +206,7 @@ class Feedstock:
             q_arg = np.atleast_2d(np.asarray(Q, dtype=float))
 
         # Get factors from DLL
-        subs = self.instance_substrates or Feedstock._mySubstrates
+        subs = self.mySubstrates()
         f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = subs.calcfFactors(q_arg)
 
         # Get kinetic parameters from DLL
@@ -259,7 +253,7 @@ class Feedstock:
     def calc_OLR_fromTOC(self, Q: List[float], V_liq: float) -> float:
         """Calculate Organic Loading Rate (OLR) from TOC [kg COD/(m³·d)]."""
         OLR = 0
-        subs = self.instance_substrates or Feedstock._mySubstrates
+        subs = self.mySubstrates()
         for i in range(1, subs.getNumSubstrates() + 1):
             TOC_i = self._get_TOC(subs.getID(i)).Value
             OLR += TOC_i * Q[i - 1]
@@ -267,7 +261,7 @@ class Feedstock:
 
     def get_substrate_params_string(self, substrate_id: str) -> str:
         """Get formatted string of substrate parameters."""
-        subs = self.instance_substrates or Feedstock._mySubstrates
+        subs = self.mySubstrates()
         mySubstrate = subs.get(substrate_id)
         pH = subs.get_param_of(substrate_id, "pH")
         TS = subs.get_param_of(substrate_id, "TS")
@@ -296,13 +290,13 @@ class Feedstock:
 
     def _get_TOC(self, substrate_id):
         """Get total organic carbon (TOC) of the given substrate."""
-        subs = self.instance_substrates or Feedstock._mySubstrates
+        subs = self.mySubstrates()
         mySubstrate = subs.get(substrate_id)
         return mySubstrate.calcTOC()
 
     def _mixADMstreams(self, Q: List[float]) -> List[float]:
         """Calculate weighted ADM1 input stream from substrate mix using DLL."""
-        subs = self.instance_substrates or Feedstock._mySubstrates
+        subs = self.mySubstrates()
         # Check dimension of Q
         n_substrates = subs.getNumSubstrates()
         if len(Q) != n_substrates:
@@ -341,10 +335,9 @@ class Feedstock:
         return [float(val) for val in mixed_state]
 
     # *** PROPERTIES ***
-    @property
     def mySubstrates(self):
         """Reference to the C# Substrates object."""
-        return self.instance_substrates or Feedstock._mySubstrates
+        return Feedstock._mySubstrates
 
     @property
     def adm_input(self) -> np.ndarray:
