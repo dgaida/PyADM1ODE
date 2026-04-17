@@ -9,43 +9,19 @@ for anaerobic digestion in a component-based framework.
 """
 
 
-def try_load_clr():
-    import platform
-
-    if platform.system() == "Darwin":
-        return None
-    try:
-        import clr
-
-        return clr
-    except Exception as e:
-        print(e)
-        return None
-
-
-clr = try_load_clr()
-
-
-import os  # noqa: E402  # type: ignore
-
-from typing import Dict, Any, List, Optional  # noqa: E402  # type: ignore
-import numpy as np  # noqa: E402  # type: ignore
-
+import os
+import numpy as np
+from typing import Dict, Any, List, Optional
 from ..base import Component, ComponentType  # noqa: E402  # type: ignore
 from ...core import ADM1  # noqa: E402  # type: ignore
 from ...substrates import Feedstock  # noqa: E402  # type: ignore
 from ...simulation import Simulator  # noqa: E402  # type: ignore
 from ..energy import GasStorage  # noqa: E402  # type: ignore
 
-if clr is None:
-    raise RuntimeError("CLR features unavailable on this platform")
-else:
-    # CLR reference must be added before importing from DLL
-    dll_path = os.path.join(os.path.dirname(__file__), "..", "..", "dlls")
-    clr.AddReference(os.path.join(dll_path, "plant"))
-    from biogas import ADMstate  # noqa: E402  # type: ignore
-
-
+try:
+    from biogas import ADMstate
+except ImportError:
+    ADMstate = None
 class Digester(Component):
     """
     Digester component using ADM1 model.

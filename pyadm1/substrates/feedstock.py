@@ -9,20 +9,13 @@ Substrate parameters are defined in XML files and accessed via C# DLLs.
 @author: Daniel Gaida
 """
 
-import clr
 import os
 import numpy as np
 import pandas as pd
 from typing import List
 from pathlib import Path
 
-# CLR reference must be added before importing from DLL
-dll_path = os.path.join(os.path.dirname(__file__), "..", "dlls")
-clr.AddReference(os.path.join(dll_path, "substrates"))
-clr.AddReference(os.path.join(dll_path, "biogas"))
-clr.AddReference(os.path.join(dll_path, "plant"))
-clr.AddReference(os.path.join(dll_path, "physchem"))
-
+# DLLs are centrally loaded in pyadm1/__init__.py
 from biogas import substrates, ADMstate  # noqa: E402  # type: ignore
 
 """
@@ -59,129 +52,221 @@ class Feedstock:
         feeding_freq : int
             Sample time between feeding events [hours]
         total_simtime : int, optional
-            Total simulation time [days], by default 60
+            Total simulation time [days]. Default is 60.
         substrate_xml : str, optional
-            Path to substrate XML file, by default "substrate_gummersbach.xml"
+            Name of the XML file containing substrate parameters.
+            Default is 'substrate_gummersbach.xml'.
         """
-        # the length of the total experiment here is 60 days
+        self._feeding_freq = feeding_freq
+        self._total_simtime = total_simtime
+        self._substrate_xml = substrate_xml
+
+        # Resolve path to substrate XML
+        # 1. Check if it's an absolute path
+        if os.path.isabs(substrate_xml):
+            self._xml_path = substrate_xml
+        else:
+            # 2. Check if it's in the data/substrates directory
+            data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "substrates"))
+            self._xml_path = os.path.join(data_dir, substrate_xml)
+
+            # 3. Fallback to current directory
+            if not os.path.exists(self._xml_path):
+                self._xml_path = os.path.abspath(substrate_xml)
+
+        if not os.path.exists(self._xml_path):
+            raise FileNotFoundError(f"Substrate XML file not found at {self._xml_path}")
+
+        # Initialize substrates from DLL
+        self._mySubstrates = substrates(self._xml_path)
+
+        # array specifying the total simulation time of the complete experiment in days
         self._simtime = np.arange(0, total_simtime, float(feeding_freq / 24))
 
-    # *** PUBLIC SET methods ***
+        # Storage for calculation results
+        self._adm_input = None
+        self._Q = None
 
-    # *** PUBLIC GET methods ***
+    def header(self) -> List[str]:
+        """Get ADM1 state vector header."""
+        return [
+            "S_su", "S_aa", "S_fa", "S_va", "S_bu", "S_pro", "S_ac", "S_h2",
+            "S_ch4", "S_co2", "S_nh4", "S_I", "X_xc", "X_ch", "X_pr", "X_li",
+            "X_su", "X_aa", "X_fa", "X_c4", "X_pro", "X_ac", "X_h2", "X_I",
+            "X_p", "S_cation", "S_anion", "S_va_ion", "S_bu_ion", "S_pro_ion",
+            "S_ac_ion", "S_hco3_ion", "S_nh3", "Q"
+        ]
 
-    def get_influent_dataframe(self, Q: List[float]) -> pd.DataFrame:
+    def get_influent_dataframe(self, Q: List[float] = None) -> pd.DataFrame:
         """
         Generate ADM1 input stream as DataFrame for entire simulation.
 
-        The input stream is constant over the simulation duration and depends
-        on the volumetric flow rate of each substrate.
-
         Parameters
         ----------
-        Q : List[float]
-            Volumetric flow rates [m³/d], e.g., [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
+        Q : List[float], optional
+            Volumetric flow rates [m³/d]. If provided, calls create_inputstream first.
+            If None, uses the last calculated adm_input.
 
         Returns
         -------
         pd.DataFrame
             ADM1 input stream with columns: time, S_su, S_aa, ..., Q
         """
-        ADMstreamMix = self._mixADMstreams(Q)
+        if Q is not None:
+            self.create_inputstream(Q, len(self._simtime))
 
-        # Create the data object
-        data = [[i, *ADMstreamMix] for i in self._simtime]
+        if self._adm_input is None:
+            return pd.DataFrame()
 
-        header = ["time", *self._header]
+        # Create the data object with time column
+        data = []
+        for i, time in enumerate(self._simtime):
+            row = [time] + list(self._adm_input[i])
+            data.append(row)
 
-        # Check if the data rows match the header length
-        if any(len(row) != len(header) for row in data):
-            raise ValueError("Data rows do not match the header length")
+        header = ["time"] + self.header()
+        return pd.DataFrame(data, columns=header)
 
-        df = pd.DataFrame(data, columns=header)
+    def get_substrate_names(self) -> List[str]:
+        """
+        Get list of all substrate names defined in the XML file.
 
-        return df
+        Returns
+        -------
+        List[str]
+            List of substrate names.
+        """
+        names = []
+        for i in range(self._mySubstrates.getNumSubstrates()):
+            names.append(self._mySubstrates.get_name_solids(i))
+        return names
 
-    # *** PUBLIC methods ***
+    def create_inputstream(self, Q: List[float], n_steps: int) -> np.ndarray:
+        """
+        Create ADM1 input stream for a given substrate mix and number of steps.
 
-    # *** PUBLIC STATIC/CLASS GET methods ***
+        Parameters
+        ----------
+        Q : List[float]
+            Volumetric flow rates for each substrate [m^3/d].
+        n_steps : int
+            Number of simulation steps.
+
+        Returns
+        -------
+        np.ndarray
+            Matrix of ADM1 input states (n_steps x 34).
+        """
+        self._Q = Q
+
+        # Check dimension of Q
+        n_substrates = self._mySubstrates.getNumSubstrates()
+        if len(Q) != n_substrates:
+            raise ValueError(f"Flow rate list Q must have {n_substrates} elements, but has {len(Q)}.")
+
+        # Preferred path for pythonnet 3.x on Linux/Mono: pass explicit System.Double[,]
+        # Using _mixADMstreams internal logic for consistency
+        mixed_state = self._mixADMstreams(Q)
+
+        # Create input matrix
+        self._adm_input = np.tile(mixed_state, (n_steps, 1))
+
+        return self._adm_input
+
+    def get_substrate_params(self, Q: List[float]) -> dict:
+        """
+        Calculate substrate-dependent ADM1 parameters for a mix.
+
+        Parameters
+        ----------
+        Q : List[float]
+            Volumetric flow rates for each substrate [m^3/d].
+
+        Returns
+        -------
+        dict
+            Substrate-dependent parameters.
+        """
+        # Create input stream first to populate internal state
+        self.create_inputstream(Q, 1)
+
+        # Preferred path for pythonnet 3.x on Linux/Mono: pass explicit System.Double[,]
+        try:
+            from System import Array, Double
+
+            q_values = [float(q) for q in Q]
+            q_2d = Array.CreateInstance(Double, 1, len(q_values))
+            for idx, value in enumerate(q_values):
+                q_2d[0, idx] = value
+
+            q_arg = q_2d
+        except Exception:
+            # Fallback path: numpy 2D array
+            q_arg = np.atleast_2d(np.asarray(Q, dtype=float))
+
+        # Get factors from DLL
+        f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = self._mySubstrates.calcfFactors(q_arg)
+
+        # Get kinetic parameters from DLL
+        k_dis = self._mySubstrates.calcDisintegrationParam(q_arg)
+        k_hyd_ch, k_hyd_pr, k_hyd_li = self._mySubstrates.calcHydrolysisParams(q_arg)
+        k_m_c4, k_m_pro, k_m_ac, k_m_h2 = self._mySubstrates.calcMaxUptakeRateParams(q_arg)
+
+        return {
+            "f_ch_xc": f_ch_xc,
+            "f_pr_xc": f_pr_xc,
+            "f_li_xc": f_li_xc,
+            "f_xI_xc": f_xI_xc,
+            "f_sI_xc": f_sI_xc,
+            "f_xp_xc": max(f_xp_xc, 0.0),
+            "k_dis": k_dis,
+            "k_hyd_ch": k_hyd_ch,
+            "k_hyd_pr": k_hyd_pr,
+            "k_hyd_li": k_hyd_li,
+            "k_m_c4": k_m_c4,
+            "k_m_pro": k_m_pro,
+            "k_m_ac": k_m_ac,
+            "k_m_h2": k_m_h2,
+        }
 
     @staticmethod
     def get_substrate_feed_mixtures(Q, n=13):
+        """Generate variations of substrate feed mixtures for optimization/sensitivity."""
         Qnew = [[q for q in Q] for i in range(0, n)]
-        # Perturb all active substrates (Q[i] > 0) by ±1.5 m³/d
         active = [i for i, q in enumerate(Q) if q > 0]
 
-        # 2nd simulation: Q + 1.5 m³/d for all active substrates
         for idx in active:
             Qnew[1][idx] = Q[idx] + 1.5
 
         if n > 2:
-            # 3rd simulation: Q - 1.5 m³/d for all active substrates
             for idx in active:
                 Qnew[2][idx] = max(0.0, Q[idx] - 1.5)
 
-        # remaining simulations: random perturbation in [-1.5, +1.5] m³/d
         for i in range(3, n):
             for idx in active:
                 Qnew[i][idx] = max(0.0, Q[idx] + np.random.uniform() * 3.0 - 1.5)
 
         return Qnew
 
-    @classmethod
-    def calc_OLR_fromTOC(cls, Q: List[float], V_liq: float) -> float:
-        """
-        Calculate Organic Loading Rate (OLR) from substrate mix given by Q and the liquid volume of the digester.
-
-        Parameters
-        ----------
-        Q : List[float]
-            Volumetric flow rates [m³/d], e.g.: Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
-        V_liq : float
-            Liquid volume of digester [m³]
-
-        Returns
-        -------
-        float
-            Organic loading rate [kg COD/(m³·d)]
-        """
+    def calc_OLR_fromTOC(self, Q: List[float], V_liq: float) -> float:
+        """Calculate Organic Loading Rate (OLR) from TOC [kg COD/(m³·d)]."""
         OLR = 0
-
-        for i in range(1, cls._mySubstrates.getNumSubstrates() + 1):
-            TOC_i = cls._get_TOC(cls._mySubstrates.getID(i)).Value
-
+        for i in range(1, self._mySubstrates.getNumSubstrates() + 1):
+            TOC_i = self._get_TOC(self._mySubstrates.getIDs()[i-1]).Value
             OLR += TOC_i * Q[i - 1]
+        return OLR / V_liq
 
-        OLR = OLR / V_liq
-
-        return OLR
-
-    @classmethod
-    def get_substrate_params_string(cls, substrate_id: str) -> str:
-        """
-        Get substrate parameters of substrate substrate_id that are stored in substrate_...xml as formatted string.
-
-        Parameters
-        ----------
-        substrate_id : str
-            Substrate ID as defined in XML file: substrate_...xml
-
-        Returns
-        -------
-        str
-            Formatted string containing substrate parameters
-        """
-        mySubstrate = cls._mySubstrates.get(substrate_id)
-
-        pH = cls._mySubstrates.get_param_of(substrate_id, "pH")
-        TS = cls._mySubstrates.get_param_of(substrate_id, "TS")
-        VS = cls._mySubstrates.get_param_of(substrate_id, "VS")
-        BMP = np.round(cls._mySubstrates.get_param_of(substrate_id, "BMP"), 3)
-        TKN = np.round(cls._mySubstrates.get_param_of(substrate_id, "TKN"), 2)
+    def get_substrate_params_string(self, substrate_id: str) -> str:
+        """Get formatted string of substrate parameters."""
+        mySubstrate = self._mySubstrates.get(substrate_id)
+        pH = self._mySubstrates.get_param_of(substrate_id, "pH")
+        TS = self._mySubstrates.get_param_of(substrate_id, "TS")
+        VS = self._mySubstrates.get_param_of(substrate_id, "VS")
+        BMP = np.round(self._mySubstrates.get_param_of(substrate_id, "BMP"), 3)
+        TKN = np.round(self._mySubstrates.get_param_of(substrate_id, "TKN"), 2)
 
         Xc = mySubstrate.calcXc()
-
-        params = (
+        return (
             "pH value: {0} \n"
             "Dry matter: {1} %FM \n"
             "Volatile solids content: {2} %TS \n"
@@ -192,170 +277,81 @@ class Feedstock:
             "Biochemical methane potential: {7} l/gFM \n"
             "Total Kjeldahl Nitrogen: {8} %FM"
         ).format(
-            pH,
-            TS,
-            VS,
-            Xc.printValue(),
+            pH, TS, VS, Xc.printValue(),
             mySubstrate.calcCOD_SX().printValue(),
-            cls._get_TOC(substrate_id).printValue(),
+            self._get_TOC(substrate_id).printValue(),
             np.round(mySubstrate.calcCtoNratio(), 2),
-            BMP,
-            TKN,
+            BMP, TKN,
         )
 
-        return params
+    def _get_TOC(self, substrate_id):
+        """Get total organic carbon (TOC) of the given substrate."""
+        mySubstrate = self._mySubstrates.get(substrate_id)
+        return mySubstrate.calcTOC()
 
-    # *** PRIVATE STATIC/CLASS methods ***
+    def _mixADMstreams(self, Q: List[float]) -> List[float]:
+        """Calculate weighted ADM1 input stream from substrate mix using DLL."""
+        # Check dimension of Q
+        n_substrates = self._mySubstrates.getNumSubstrates()
+        if len(Q) != n_substrates:
+            raise ValueError(f"Flow rate list Q must have {n_substrates} elements, but has {len(Q)}.")
 
-    @classmethod
-    def _get_TOC(cls, substrate_id):
-        """
-        Get total organic carbon (TOC) of the given substrate substrate_id. needed to calculate the
-        organic loading rate of the digester.
-
-        Parameters
-        ----------
-        substrate_id : str
-            Substrate ID
-
-        Returns
-        -------
-        PhysValue
-            TOC value with units
-        """
-        mySubstrate = cls._mySubstrates.get(substrate_id)
-        TOC = mySubstrate.calcTOC()
-        return TOC
-
-    @classmethod
-    def _mixADMstreams(cls, Q: List[float]) -> List[float]:
-        """
-        Calculate weighted ADM1 input stream from substrate mix.
-
-        Calls C# DLL methods (ADMstate.calcADMstream) to calculate ADM1 stream for each substrate
-        and weighs them according to volumetric flow rates.
-
-        How the input stream is calculated is defined in the
-        PhD thesis Gaida: Dynamic Real-Time Substrate feed optimization of anaerobic co-digestion plants, 2014
-
-        Parameters
-        ----------
-        Q : List[float]
-            Volumetric flow rates [m³/d]. length of Q must be equal to number of substrates defined in
-            substrate_...xml file
-
-        Returns
-        -------
-        List[float]
-            Mixed ADM1 input stream (34 dimensions)
-        """
-        admstream_rows = []
-
-        for i in range(1, cls._mySubstrates.getNumSubstrates() + 1):
-            ADMstream = ADMstate.calcADMstream(cls._mySubstrates.get(i), Q[i - 1])
-
-            myData_l = [row for row in ADMstream]
-            admstream_rows.append(myData_l)
-
-        errors = []
-
-        # Preferred path for pythonnet 3.x on Linux/Mono: explicit System.Double[,]
+        # Preferred path for pythonnet 3.x on Linux/Mono: pass explicit System.Double[,]
         try:
             from System import Array, Double
 
-            n_rows = len(admstream_rows)
-            n_cols = len(admstream_rows[0]) if n_rows > 0 else 0
-            admstream_2d = Array.CreateInstance(Double, n_cols, n_rows)
+            # Create 2D array [1, n_substrates]
+            q_values = [float(q) for q in Q]
+            q_2d = Array.CreateInstance(Double, 1, n_substrates)
+            for idx, value in enumerate(q_values):
+                q_2d[0, idx] = value
 
-            for r in range(n_rows):
-                for c in range(n_cols):
-                    admstream_2d[c, r] = float(admstream_rows[r][c])
-
-            ADMstreamMix = ADMstate.mixADMstreams(admstream_2d)
-        except Exception as exc:
-            errors.append(f"System.Double[,] path failed: {exc}")
-
-            # Fallback path: numpy 2D can work depending on runtime bindings
+            # Use DLL to calculate mixed ADM1 state
+            mixed_state = self._mySubstrates.mixADMstreams(q_2d)
+        except Exception:
+            # Fallback path: numpy 2D array works on some local runtimes
             try:
-                admstream_2d_np = np.asarray(admstream_rows, dtype=float)
-                ADMstreamMix = ADMstate.mixADMstreams(admstream_2d_np)
-            except Exception as exc_np:
-                errors.append(f"numpy 2D path failed: {exc_np}")
+                q_2d_np = np.atleast_2d(np.asarray(Q, dtype=float))
+                mixed_state = self._mySubstrates.mixADMstreams(q_2d_np)
+            except Exception:
+                # Final fallback for legacy runtimes that still accept 1D arrays
+                q_1d = [float(q) for q in Q]
+                mixed_state = self._mySubstrates.mixADMstreams(q_1d)
 
-                # Legacy fallback: flattened 1D layout
-                try:
-                    admstream_1d = np.ravel(admstream_rows)
-                    ADMstreamMix = ADMstate.mixADMstreams(admstream_1d)
-                except Exception as exc_1d:
-                    errors.append(f"flattened 1D path failed: {exc_1d}")
-                    raise TypeError("Failed to mix ADM streams. " + " | ".join(errors))
+        return [float(val) for val in mixed_state]
 
-        ADMstreamMix = [row for row in ADMstreamMix]
-
-        return ADMstreamMix
-
-    # *** PRIVATE methods ***
-
-    # *** PUBLIC properties ***
-
+    # *** PROPERTIES ***
+    @property
     def mySubstrates(self):
-        """Substrates object from C# DLL."""
+        """Reference to the C# Substrates object."""
         return self._mySubstrates
 
-    def header(self) -> List[str]:
-        """Names of ADM1 input stream components."""
-        return self._header
+    @property
+    def adm_input(self) -> np.ndarray:
+        """The calculated ADM1 input stream matrix."""
+        return self._adm_input
 
+    @property
+    def Q(self) -> List[float]:
+        """Volumetric flow rates used for calculation."""
+        return self._Q
+
+    @property
+    def feeding_freq(self) -> int:
+        """Feeding frequency in hours."""
+        return self._feeding_freq
+
+    @property
+    def total_simtime(self) -> int:
+        """Total simulation time in days."""
+        return self._total_simtime
+
+    @property
     def simtime(self) -> np.ndarray:
         """Simulation time array [days]."""
         return self._simtime
 
-    # *** PRIVATE variables ***
-
-    data_path = Path(__file__).parent.parent.parent / "data" / "substrates"
-
-    _mySubstrates = substrates(os.path.join(data_path, "substrate_gummersbach.xml"))
-    _admstream_mix_cache = {}
-
-    # names of ADM1 input stream components
-    _header = [
-        "S_su",
-        "S_aa",
-        "S_fa",
-        "S_va",
-        "S_bu",
-        "S_pro",
-        "S_ac",
-        "S_h2",
-        "S_ch4",
-        "S_co2",
-        "S_nh4",
-        "S_I",
-        "X_xc",
-        "X_ch",
-        "X_pr",
-        "X_li",
-        "X_su",
-        "X_aa",
-        "X_fa",
-        "X_c4",
-        "X_pro",
-        "X_ac",
-        "X_h2",
-        "X_I",
-        "X_p",
-        "S_cation",
-        "S_anion",
-        "S_va_ion",
-        "S_bu_ion",
-        "S_pro_ion",
-        "S_ac_ion",
-        "S_hco3_ion",
-        "S_nh3",
-        "Q",
-    ]
-
-    # array specifying the total simulation time of the complete experiment in days, has to start at 0 and include
-    # the timesteps where the substrate feed may change. Example [0, 2, 4, 6, ..., 50]. This means every 2 days the
-    # substrate feed may change and the total simulation duration is 50 days
-    _simtime = None
+    @property
+    def xml_path(self) -> str:
+        """Full path to the substrate XML file."""
+        return self._xml_path

@@ -45,34 +45,19 @@ def _init_heating_dll() -> None:
         return
     _DLL_INIT_DONE = True
 
-    if platform.system() == "Darwin":
-        return
-
     try:
-        import clr  # type: ignore
-
-        dll_path = os.path.join(os.path.dirname(__file__), "..", "..", "dlls")
-        clr.AddReference(os.path.join(dll_path, "biogas"))
-        clr.AddReference(os.path.join(dll_path, "substrates"))
-        clr.AddReference(os.path.join(dll_path, "physchem"))
-    except Exception:
-        return
-
-    try:
-        import biogas as _biogas  # type: ignore
-        from physchem import physValue as _phys_value  # type: ignore
+        import biogas as _biogas
+        from physchem import physValue as _phys_value
     except Exception:
         try:
-            import biogas as _biogas  # type: ignore
-            from physchem import PhysValue as _phys_value  # type: ignore
+            import biogas as _biogas
+            from physchem import PhysValue as _phys_value
         except Exception:
             return
 
     _BIOGAS = _biogas
     _SUBSTRATES_FACTORY = getattr(_biogas, "substrates", None)
     _PHYSVALUE = _phys_value
-
-
 def _get_substrates_instance():
     """Get the substrate instance from factory."""
     global _SUBSTRATES_INSTANCE

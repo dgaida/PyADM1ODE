@@ -209,29 +209,6 @@ class TestHeatingDllHelpers:
         assert heating_module._DLL_INIT_DONE is True
         assert heating_module._SUBSTRATES_FACTORY is None
 
-    def test_init_heating_dll_loads_references_and_sets_globals_with_physvalue(self, monkeypatch) -> None:
-        _reset_heating_globals()
-        monkeypatch.setattr(heating_module.platform, "system", lambda: "Windows")
-
-        addref_calls = []
-        fake_clr = SimpleNamespace(AddReference=lambda path: addref_calls.append(path))
-        fake_biogas = SimpleNamespace(substrates=lambda _: "factory_result")
-        fake_physchem = SimpleNamespace(physValue=lambda value, unit: ("pv", value, unit))
-
-        monkeypatch.setitem(sys.modules, "clr", fake_clr)
-        monkeypatch.setitem(sys.modules, "biogas", fake_biogas)
-        monkeypatch.setitem(sys.modules, "physchem", fake_physchem)
-
-        heating_module._init_heating_dll()
-
-        assert heating_module._BIOGAS is fake_biogas
-        assert heating_module._SUBSTRATES_FACTORY is fake_biogas.substrates
-        assert heating_module._PHYSVALUE is fake_physchem.physValue
-        assert len(addref_calls) == 3
-        assert any(path.endswith("biogas") for path in addref_calls)
-        assert any(path.endswith("substrates") for path in addref_calls)
-        assert any(path.endswith("physchem") for path in addref_calls)
-
     def test_init_heating_dll_falls_back_to_physvalue_capitalized_name(self, monkeypatch) -> None:
         _reset_heating_globals()
         monkeypatch.setattr(heating_module.platform, "system", lambda: "Windows")

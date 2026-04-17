@@ -256,6 +256,17 @@ PyADM1/
 
 See [Installation](docs/user_guide/installation.md).
 
+
+## Google Colab Examples
+
+To get started quickly without local installation, you can run the following examples directly in Google Colab:
+
+- **Basic Digester**: Single-stage digester with substrate feed and integrated gas storage.
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_01_basic_digester.ipynb)
+
+- **Complex Plant**: Two-stage biogas plant with hydrolysis, digester, CHP, and sensors.
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_02_complex_plant.ipynb)
+
 ## Quick Start
 
 See [Quickstart](docs/user_guide/quickstart.md).

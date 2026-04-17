@@ -519,53 +519,6 @@ class TestDigesterProperties:
         assert digester.state["Q_gas"] == 2000, "set_state should update state"
 
 
-class TestDigesterClrLoading:
-    """Tests for CLR loading helper branches and module import guards."""
-
-    def test_try_load_clr_returns_none_on_darwin(self) -> None:
-        """Darwin should short-circuit and return None."""
-        with patch("platform.system", return_value="Darwin"):
-            assert digester_module.try_load_clr() is None
-
-    def test_try_load_clr_prints_and_returns_none_on_import_error(self, capsys: pytest.CaptureFixture[str]) -> None:
-        """Import failures for clr should be handled gracefully."""
-        import builtins
-
-        original_import = builtins.__import__
-
-        def fake_import(name, *args, **kwargs):
-            if name == "clr":
-                raise RuntimeError("clr import failed")
-            return original_import(name, *args, **kwargs)
-
-        with patch("platform.system", return_value="Windows"):
-            with patch("builtins.__import__", side_effect=fake_import):
-                assert digester_module.try_load_clr() is None
-
-        captured = capsys.readouterr()
-        assert "clr import failed" in captured.out
-
-    def test_module_import_raises_when_clr_unavailable(self) -> None:
-        """Importing the module on Darwin should raise the runtime guard error."""
-        import importlib.util
-        import sys
-        from pathlib import Path
-
-        module_path = Path(digester_module.__file__)
-        module_name = "pyadm1.components.biological._digester_runtimeerror_test"
-        spec = importlib.util.spec_from_file_location(module_name, module_path)
-        assert spec is not None and spec.loader is not None
-
-        module = importlib.util.module_from_spec(spec)
-        sys.modules[module_name] = module
-        try:
-            with patch("platform.system", return_value="Darwin"):
-                with pytest.raises(RuntimeError, match="CLR features unavailable on this platform"):
-                    spec.loader.exec_module(module)
-        finally:
-            sys.modules.pop(module_name, None)
-
-
 class TestDigesterUncoveredBranches:
     """Tests for fallback branches not covered by the default happy path."""
 

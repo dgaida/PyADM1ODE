@@ -47,7 +47,6 @@ Example:
 
 import logging
 import os
-import clr
 import numpy as np
 import pandas as pd
 from typing import List, Tuple, Optional
@@ -58,11 +57,11 @@ from pyadm1.substrates.feedstock import Feedstock
 logger = logging.getLogger(__name__)
 
 
-# CLR reference must be added before importing from DLL
-dll_path = os.path.join(os.path.dirname(__file__), "..", "dlls")
-clr.AddReference(os.path.join(dll_path, "plant"))
-from biogas import ADMstate  # noqa: E402  # type: ignore
 
+try:
+    from biogas import ADMstate
+except ImportError:
+    ADMstate = None
 
 def get_state_zero_from_initial_state(csv_file: str) -> List[float]:
     """

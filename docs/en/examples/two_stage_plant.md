@@ -1,5 +1,7 @@
 # Two-Stage Biogas Plant Example
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_02_complex_plant.ipynb)
+
 The [examples/two_stage_plant.py](https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py) example demonstrates a complete two-stage biogas plant with mechanical components, energy integration, and comprehensive process monitoring.
 
 ## Plant Schematic

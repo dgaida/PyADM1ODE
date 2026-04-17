@@ -50,40 +50,19 @@ Example:
 """
 
 
-def _try_load_clr():
-    import platform
-
-    if platform.system() == "Darwin":
-        return None
-    try:
-        import clr
-
-        return clr
-    except Exception as e:
-        print(e)
-        return None
-
-
-clr = _try_load_clr()
-
-import os  # noqa: E402
-from typing import Dict, Any, List, Optional  # noqa: E402
-import numpy as np  # noqa: E402
-
+import os
+import numpy as np
+from typing import Dict, Any, List, Optional
 from ..base import Component, ComponentType  # noqa: E402
 from ...core import ADM1  # noqa: E402
 from ...substrates import Feedstock  # noqa: E402
 from ...simulation import Simulator  # noqa: E402
 from ..energy import GasStorage  # noqa: E402
 
-if clr is None:
-    raise RuntimeError("CLR features unavailable on this platform")
-else:
-    dll_path = os.path.join(os.path.dirname(__file__), "..", "..", "dlls")
-    clr.AddReference(os.path.join(dll_path, "plant"))
-    from biogas import ADMstate  # noqa: E402  # type: ignore
-
-
+try:
+    from biogas import ADMstate
+except ImportError:
+    ADMstate = None
 class Hydrolysis(Component):
     """
     Hydrolysis pre-treatment tank for two-stage anaerobic digestion.
