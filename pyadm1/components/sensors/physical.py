@@ -10,6 +10,7 @@ models practical measurement effects including:
 - linear calibration drift over time
 - first-order response lag
 - discrete sampling intervals
+- Nernst temperature compensation for pH sensors
 """
 
 from __future__ import annotations
@@ -19,7 +20,11 @@ from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 
-from ..base import Component, ComponentType
+from ._base import AbstractSensor
+
+# Physical constants for the Nernst equation
+_R = 8.314  # J / (mol·K)  — ideal gas constant
+_F = 96485.0  # C / mol      — Faraday constant
 
 
 class PhysicalSensorType(str, Enum):
@@ -66,25 +71,49 @@ _DEFAULT_SENSOR_CONFIG: Dict[PhysicalSensorType, Dict[str, Any]] = {
 }
 
 
-class PhysicalSensor(Component):
+class PhysicalSensor(AbstractSensor):
     """
     Generic physical sensor with realistic measurement behavior.
 
+    For ``sensor_type="pH"`` an optional Nernst temperature compensation can
+    be enabled by supplying *temperature_signal_key*.  Without it the sensor
+    behaves as if the process temperature always equals the calibration
+    reference (no systematic temperature error).
+
+    The Nernst correction models what an un-compensated pH electrode reads at
+    the actual process temperature::
+
+        pH_apparent = pH_iso + (pH_true − pH_iso) × (T_ref / T_actual)
+
+    This systematic shift is applied after the response lag and before the
+    noise / calibration errors, because it is a physical electrode property,
+    not measurement uncertainty.
+
     Args:
         component_id: Unique component identifier.
-        sensor_type: One of ``pH``, ``temperature``, ``pressure``, ``level``, or ``flow``.
-        signal_key: Input key to read from connected upstream outputs. If omitted,
-            a type-specific default is used.
+        sensor_type: One of ``pH``, ``temperature``, ``pressure``, ``level``,
+            or ``flow``.
+        signal_key: Input key to read from connected upstream outputs. If
+            omitted a type-specific default is used.
         measurement_range: Inclusive valid measurement range.
-        measurement_noise: Gaussian noise standard deviation in engineering units.
+        measurement_noise: Gaussian noise standard deviation in engineering
+            units.
         accuracy: Maximum fixed calibration offset in engineering units.
         drift_rate: Linear drift rate in engineering units per day.
         response_time: First-order lag time constant in days.
-        sample_interval: Sampling interval in days. The output is held between samples.
+        sample_interval: Sampling interval in days. The output is held between
+            samples.
         unit: Engineering unit label.
         output_key: Namespaced output key for the measured value.
         rng_seed: Optional random seed for deterministic runs.
         name: Human-readable component name.
+        temperature_signal_key: Input key that provides the process temperature
+            in Kelvin.  Only used when ``sensor_type="pH"``.  When ``None``
+            (default) no Nernst correction is applied.
+        temperature_reference: Electrode calibration temperature in Kelvin.
+            Defaults to 298.15 K (25 °C).
+        pH_isopotential: pH at which the electrode gives the same reading
+            regardless of temperature.  Defaults to 7.0.
     """
 
     def __init__(
@@ -102,33 +131,40 @@ class PhysicalSensor(Component):
         output_key: Optional[str] = None,
         rng_seed: Optional[int] = None,
         name: Optional[str] = None,
+        temperature_signal_key: Optional[str] = None,
+        temperature_reference: float = 298.15,
+        pH_isopotential: float = 7.0,
     ):
-        super().__init__(component_id, ComponentType.SENSOR, name)
-
         self.sensor_type = self._parse_sensor_type(sensor_type)
         defaults = _DEFAULT_SENSOR_CONFIG[self.sensor_type]
 
-        self.signal_key = signal_key or defaults["signal_key"]
-        self._candidate_keys = (self.signal_key,) if signal_key else defaults["candidate_keys"]
-        self.measurement_range = tuple(measurement_range or defaults["measurement_range"])
-        self.measurement_noise = float(max(0.0, measurement_noise))
-        self.accuracy = float(max(0.0, accuracy))
-        self.drift_rate = float(drift_rate)
+        resolved_signal_key = signal_key or defaults["signal_key"]
+        resolved_candidate_keys = (resolved_signal_key,) if signal_key else defaults["candidate_keys"]
+
+        super().__init__(
+            component_id=component_id,
+            signal_key=resolved_signal_key,
+            candidate_keys=resolved_candidate_keys,
+            measurement_range=measurement_range or defaults["measurement_range"],
+            measurement_noise=measurement_noise,
+            accuracy=accuracy,
+            drift_rate=drift_rate,
+            sample_interval=sample_interval,
+            unit=unit or defaults["unit"],
+            output_key=output_key,
+            rng_seed=rng_seed,
+            name=name,
+        )
+
         self.response_time = float(max(0.0, response_time))
-        self.sample_interval = float(max(0.0, sample_interval))
-        self.unit = unit or defaults["unit"]
-        self.output_key = output_key or f"{component_id}_measurement"
 
-        self._rng = np.random.default_rng(rng_seed)
-        self.calibration_offset = self._rng.uniform(-self.accuracy, self.accuracy) if self.accuracy > 0 else 0.0
+        # Nernst compensation — only active for pH sensors with a temperature key
+        self.temperature_signal_key = temperature_signal_key if self.sensor_type == PhysicalSensorType.PH else None
+        self.temperature_reference = float(temperature_reference)
+        self.pH_isopotential = float(pH_isopotential)
 
-        self.true_value = np.nan
-        self.filtered_value = np.nan
-        self.measured_value = np.nan
-        self.drift_offset = 0.0
-        self.last_sample_time = -np.inf
-        self.is_valid = False
-        self.in_range = True
+        self.filtered_value: float = np.nan
+        self._temperature_value: float = np.nan
 
         self.initialize()
 
@@ -149,36 +185,53 @@ class PhysicalSensor(Component):
             raise ValueError(f"Unsupported physical sensor type '{sensor_type}'")
         return aliases[normalized]
 
+    def _apply_nernst_correction(self, pH_value: float, inputs: Dict[str, Any]) -> float:
+        """Apply Nernst temperature correction to *pH_value*.
+
+        Returns *pH_value* unchanged when *temperature_signal_key* is not set,
+        when the temperature cannot be read, or when the temperature is
+        non-positive.
+
+        Side-effect: updates ``self._temperature_value`` with the temperature
+        that was used.
+        """
+        if self.temperature_signal_key is None:
+            return pH_value
+
+        raw_temp = inputs.get(self.temperature_signal_key)
+        if raw_temp is None:
+            return pH_value
+        try:
+            T_actual = float(raw_temp)
+        except (TypeError, ValueError):
+            return pH_value
+        if T_actual <= 0.0:
+            return pH_value
+
+        self._temperature_value = T_actual
+
+        # Without ATC, an electrode calibrated at T_ref reads at T_actual:
+        #   pH_apparent = pH_iso + (pH_true − pH_iso) × (T_ref / T_actual)
+        # The Nernst slope S(T) = RT·ln(10)/F scales linearly with T, so the
+        # electrode over-reports the deviation from the isopotential point when
+        # T_actual > T_ref.
+        return self.pH_isopotential + (pH_value - self.pH_isopotential) * (self.temperature_reference / T_actual)
+
     def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
         """Initialize or restore sensor state."""
-        self.true_value = np.nan
-        self.filtered_value = np.nan
-        self.measured_value = np.nan
-        self.drift_offset = 0.0
-        self.last_sample_time = -np.inf
-        self.is_valid = False
-        self.in_range = True
+        super().initialize(initial_state)
 
+        self.filtered_value = np.nan
+        self._temperature_value = np.nan
         if initial_state:
-            self.true_value = float(initial_state.get("true_value", np.nan))
             self.filtered_value = float(initial_state.get("filtered_value", self.true_value))
-            self.measured_value = float(initial_state.get("measured_value", self.filtered_value))
-            self.drift_offset = float(initial_state.get("drift_offset", 0.0))
-            self.last_sample_time = float(initial_state.get("last_sample_time", -np.inf))
-            self.is_valid = bool(initial_state.get("is_valid", False))
-            self.in_range = bool(initial_state.get("in_range", True))
+            self._temperature_value = float(initial_state.get("temperature_value", np.nan))
 
         self.state = {
-            "true_value": self.true_value,
-            "filtered_value": self.filtered_value,
-            "measured_value": self.measured_value,
-            "drift_offset": self.drift_offset,
-            "calibration_offset": self.calibration_offset,
-            "last_sample_time": self.last_sample_time,
-            "is_valid": self.is_valid,
-            "in_range": self.in_range,
+            **self._base_state_dict(),
+            "filtered_value": float(self.filtered_value),
+            "temperature_value": float(self._temperature_value),
         }
-
         self.outputs_data = {
             "measurement": float(self.measured_value),
             self.output_key: float(self.measured_value),
@@ -188,17 +241,17 @@ class PhysicalSensor(Component):
             "unit": self.unit,
             "is_valid": self.is_valid,
             "in_range": self.in_range,
+            "temperature_value": float(self._temperature_value),
         }
-
         self._initialized = True
 
     def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Advance the sensor by one simulation step.
 
-        The sensor reads the configured signal from upstream component outputs,
-        then applies response lag, calibration error, drift, noise, and range
-        limits.
+        Reads the configured signal from upstream outputs, then applies
+        response lag, Nernst temperature correction (pH only), calibration
+        error, drift, noise, and range limits.
         """
         self.drift_offset += self.drift_rate * dt
 
@@ -208,14 +261,12 @@ class PhysicalSensor(Component):
 
         should_sample = self._should_sample(t)
         if should_sample and not np.isnan(self.true_value):
-            self.filtered_value = self._apply_response_lag(self.true_value, dt)
-            measured_value = self.filtered_value + self.calibration_offset + self.drift_offset
-            if self.measurement_noise > 0:
-                measured_value += float(self._rng.normal(0.0, self.measurement_noise))
-
-            min_value, max_value = self.measurement_range
-            self.in_range = min_value <= measured_value <= max_value
-            self.measured_value = float(np.clip(measured_value, min_value, max_value))
+            self.filtered_value = self._apply_response_lag(self.true_value, self.filtered_value, self.response_time, dt)
+            # Nernst correction: applied after lag, before noise/calibration errors.
+            # Only active for pH sensors when temperature_signal_key is set.
+            corrected_value = self._apply_nernst_correction(self.filtered_value, inputs)
+            raw_value = self._apply_errors(corrected_value)
+            self.measured_value, self.in_range = self._clamp_to_range(raw_value)
             self.last_sample_time = t
             self.is_valid = True
         elif should_sample:
@@ -223,17 +274,11 @@ class PhysicalSensor(Component):
 
         self.state.update(
             {
-                "true_value": float(self.true_value),
+                **self._base_state_dict(),
                 "filtered_value": float(self.filtered_value),
-                "measured_value": float(self.measured_value),
-                "drift_offset": float(self.drift_offset),
-                "calibration_offset": float(self.calibration_offset),
-                "last_sample_time": float(self.last_sample_time),
-                "is_valid": bool(self.is_valid),
-                "in_range": bool(self.in_range),
+                "temperature_value": float(self._temperature_value),
             }
         )
-
         self.outputs_data = {
             "measurement": float(self.measured_value),
             self.output_key: float(self.measured_value),
@@ -244,52 +289,20 @@ class PhysicalSensor(Component):
             "drift_offset": float(self.drift_offset),
             "is_valid": bool(self.is_valid),
             "in_range": bool(self.in_range),
+            "temperature_value": float(self._temperature_value),
         }
         return self.outputs_data
-
-    def _read_true_value(self, inputs: Dict[str, Any]) -> Optional[float]:
-        """Resolve the measured variable from upstream inputs."""
-        for key in self._candidate_keys:
-            if key in inputs:
-                try:
-                    return float(inputs[key])
-                except (TypeError, ValueError):
-                    return None
-        return None
-
-    def _should_sample(self, t: float) -> bool:
-        """Return True when the next sample is due."""
-        if self.sample_interval <= 0:
-            return True
-        return (t - self.last_sample_time) >= self.sample_interval
-
-    def _apply_response_lag(self, true_value: float, dt: float) -> float:
-        """Apply first-order lag to the true signal."""
-        if np.isnan(self.filtered_value) or self.response_time <= 0:
-            return true_value
-
-        alpha = min(1.0, dt / max(self.response_time, 1.0e-12))
-        return self.filtered_value + alpha * (true_value - self.filtered_value)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize sensor configuration and state."""
         return {
-            "component_id": self.component_id,
-            "component_type": self.component_type.value,
-            "name": self.name,
+            **self._base_config_dict(),
             "sensor_type": self.sensor_type.value,
-            "signal_key": self.signal_key,
-            "measurement_range": list(self.measurement_range),
-            "measurement_noise": self.measurement_noise,
-            "accuracy": self.accuracy,
-            "drift_rate": self.drift_rate,
             "response_time": self.response_time,
-            "sample_interval": self.sample_interval,
-            "unit": self.unit,
-            "output_key": self.output_key,
+            "temperature_signal_key": self.temperature_signal_key,
+            "temperature_reference": self.temperature_reference,
+            "pH_isopotential": self.pH_isopotential,
             "state": self.state,
-            "inputs": self.inputs,
-            "outputs": self.outputs,
         }
 
     @classmethod
@@ -308,14 +321,14 @@ class PhysicalSensor(Component):
             unit=config.get("unit"),
             output_key=config.get("output_key"),
             name=config.get("name"),
+            temperature_signal_key=config.get("temperature_signal_key"),
+            temperature_reference=config.get("temperature_reference", 298.15),
+            pH_isopotential=config.get("pH_isopotential", 7.0),
         )
-
         if "state" in config:
             sensor.initialize(config["state"])
-
         for input_id in config.get("inputs", []):
             sensor.add_input(input_id)
         for output_id in config.get("outputs", []):
             sensor.add_output(output_id)
-
         return sensor

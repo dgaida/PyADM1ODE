@@ -12,6 +12,24 @@ sampling and analysis delay, so this model includes:
 - discrete sampling intervals
 - configurable analysis delay
 - detection limits and range checks
+
+References (default measurement parameters):
+    [1]  Hach EZ7200 / EZ7250 VFA online analyzer datasheet — FOS/TAC titration,
+         ±3% FS, cycle time 3–9 min, detection limit ≤ 10 mg/L.
+    [2]  Diamantis et al. (2014) Water Research 48:266 — online FOS/TAC comparison
+         in full-scale digesters; RSD < 5%, analysis cycle 5–15 min.
+    [3]  Ramos-Suárez et al. (2022) PMC9412176 — GC-FID VFA in biogas effluent;
+         LOD 0.91–2.25 mg/L, RSD < 3%, run time 25–40 min.
+    [4]  YSI ProDSS NH4-ISE manual (Dec 2015) — ±10% of reading, LOD 0.01 mg/L,
+         response ≤ 30 s; APHA Standard Methods 4500-NH3 (23rd ed., 2017).
+    [5]  EPA Method 350.1 — semi-automated colorimetric ammonia (Indophenol Blue);
+         online heated manifold analyzers (Hach Amtax, Seal AA500) complete
+         color development in 8–15 min.
+    [6]  Peng et al. (2022) PMC9054276 — UV-Vis COD proxy in wastewater, ±4%
+         for 0–60 mg/L range, ±3% for 0–1000 mg/L; online measurement < 3 min.
+    [7]  EPA Methods 365.2 (phosphorus) and 353.2 (nitrate/nitrite colorimetry);
+         Molybdenum Blue PO4 reaction ~25 min; Seal Analytical AA500 / SYSTEA
+         online nutrient analyzers complete cycle in 8–30 min.
 """
 
 from __future__ import annotations
@@ -21,7 +39,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
-from ..base import Component, ComponentType
+from ._base import AbstractSensor
 
 
 class ChemicalSensorType(str, Enum):
@@ -78,10 +96,66 @@ _DEFAULT_SENSOR_CONFIG: Dict[ChemicalSensorType, Dict[str, Any]] = {
     },
 }
 
+# Measurement characteristics per (sensor_type, analyzer_method).
+# measurement_delay is in days (e.g. 20.0 / 1440 = 20 minutes).
+# measurement_noise is the Gaussian std dev in engineering units.
+# These values apply when the user does not supply an explicit override.
+_ANALYZER_METHOD_DEFAULTS: Dict[ChemicalSensorType, Dict[ChemicalAnalyzerMethod, Dict[str, float]]] = {
+    ChemicalSensorType.VFA: {
+        ChemicalAnalyzerMethod.ONLINE_TITRATION: {
+            "measurement_noise": 0.06,  # g/L std dev — FOS/TAC ±3% FS → σ ≈ 5 mg/L [1,2]
+            "measurement_delay": 10.0 / 1440,  # 10 min — Hach EZ7200 cycle 3–9 min + flushing [1]
+            "response_time": 1.0 / 1440,  # 1 min — titration endpoint settling
+            "detection_limit": 0.01,  # g/L — Hach EZ7200 LOD ≤ 10 mg/L [1]
+        },
+        ChemicalAnalyzerMethod.GAS_CHROMATOGRAPHY: {
+            "measurement_noise": 0.02,  # g/L std dev — GC-FID RSD < 3% [3]
+            "measurement_delay": 45.0 / 1440,  # 45 min — run 25–40 min + sample prep [3]
+            "response_time": 0.0,  # GC result is instantaneous once run completes
+            "detection_limit": 0.005,  # g/L — practical online GC LOD ~5 mg/L [3]
+        },
+    },
+    ChemicalSensorType.AMMONIA: {
+        ChemicalAnalyzerMethod.ION_SELECTIVE: {
+            "measurement_noise": 0.03,  # g/L std dev — ISE ±10% reading + K+/Na+ interference [4]
+            "measurement_delay": 10.0 / 1440,  # 10 min — sample transport + conditioning [4]
+            "response_time": 3.0 / 1440,  # 3 min — ISE electrode equilibration [4]
+            "detection_limit": 0.01,  # g/L — ISE LOD 0.01 mg/L (practical process LOD higher) [4]
+        },
+        ChemicalAnalyzerMethod.SPECTROSCOPY: {
+            "measurement_noise": 0.02,  # g/L std dev — colorimetric ±5% → σ ≈ 0.02 g/L [5]
+            "measurement_delay": 15.0 / 1440,  # 15 min — Indophenol Blue reaction in heated manifold [5]
+            "response_time": 0.5 / 1440,  # 30 s — photometer settling
+            "detection_limit": 0.005,  # g/L — Hach Amtax / Seal AA500 LOD ~0.03 mg/L [5]
+        },
+    },
+    ChemicalSensorType.COD: {
+        ChemicalAnalyzerMethod.SPECTROSCOPY: {
+            "measurement_noise": 2.0,  # g/L std dev — UV-Vis proxy ±4–10% FS [6]
+            "measurement_delay": 3.0 / 1440,  # 3 min — online UV cell measurement [6]
+            "response_time": 0.0,  # UV cell reads in milliseconds
+            "detection_limit": 0.10,  # g/L [6]
+        },
+    },
+    ChemicalSensorType.NUTRIENTS: {
+        ChemicalAnalyzerMethod.COLORIMETRIC: {
+            "measurement_noise": 3.0,  # mg/L std dev — colorimetric nutrient analysis [7]
+            "measurement_delay": 30.0 / 1440,  # 30 min — phosphorus Molybdenum Blue: ~25 min [7]
+            "response_time": 1.0 / 1440,  # 1 min — photometer settling
+            "detection_limit": 1.0,  # mg/L [7]
+        },
+    },
+}
 
-class ChemicalSensor(Component):
+
+class ChemicalSensor(AbstractSensor):
     """
     Generic chemical analyzer with sampling delay and drift.
+
+    When *measurement_noise*, *measurement_delay*, or *detection_limit* are
+    omitted, they are taken from ``_ANALYZER_METHOD_DEFAULTS`` for the chosen
+    *analyzer_method*, so different analyzer types produce different
+    measurement fidelity and timing out of the box.
 
     Args:
         component_id: Unique component identifier.
@@ -91,11 +165,19 @@ class ChemicalSensor(Component):
             a type-specific default is used.
         measurement_range: Inclusive valid measurement range.
         measurement_noise: Gaussian noise standard deviation in engineering units.
+            ``None`` uses the analyzer-method default.
         accuracy: Maximum fixed calibration offset in engineering units.
         drift_rate: Linear drift rate in engineering units per day.
         sample_interval: Sampling interval in days.
         measurement_delay: Delay between sampling and reported result in days.
+            ``None`` uses the analyzer-method default.
+        response_time: First-order lag time constant in days applied to the
+            analytical result as it settles to its final reading (e.g. ISE
+            electrode equilibration). Applied every step toward the latest
+            matured result, independently of the sample queue.
+            ``None`` uses the analyzer-method default.
         detection_limit: Values below this threshold are reported as zero.
+            ``None`` uses the analyzer-method default.
         unit: Engineering unit label.
         output_key: Namespaced output key for the measured value.
         rng_seed: Optional random seed for deterministic runs.
@@ -109,47 +191,59 @@ class ChemicalSensor(Component):
         analyzer_method: Optional[str] = None,
         signal_key: Optional[str] = None,
         measurement_range: Optional[Tuple[float, float]] = None,
-        measurement_noise: float = 0.0,
+        measurement_noise: Optional[float] = None,
         accuracy: float = 0.0,
         drift_rate: float = 0.0,
         sample_interval: float = 0.0,
-        measurement_delay: float = 0.0,
+        measurement_delay: Optional[float] = None,
+        response_time: Optional[float] = None,
         detection_limit: Optional[float] = None,
         unit: Optional[str] = None,
         output_key: Optional[str] = None,
         rng_seed: Optional[int] = None,
         name: Optional[str] = None,
     ):
-        super().__init__(component_id, ComponentType.SENSOR, name)
-
         self.sensor_type = self._parse_sensor_type(sensor_type)
         defaults = _DEFAULT_SENSOR_CONFIG[self.sensor_type]
 
         self.analyzer_method = self._parse_analyzer_method(analyzer_method or defaults["analyzer_method"])
-        self.signal_key = signal_key or defaults["signal_key"]
-        self._candidate_keys = (self.signal_key,) if signal_key else defaults["candidate_keys"]
-        self.measurement_range = tuple(measurement_range or defaults["measurement_range"])
-        self.measurement_noise = float(max(0.0, measurement_noise))
-        self.accuracy = float(max(0.0, accuracy))
-        self.drift_rate = float(drift_rate)
-        self.sample_interval = float(max(0.0, sample_interval))
-        self.measurement_delay = float(max(0.0, measurement_delay))
-        self.detection_limit = float(max(0.0, detection_limit if detection_limit is not None else defaults["detection_limit"]))
-        self.unit = unit or defaults["unit"]
-        self.output_key = output_key or f"{component_id}_measurement"
 
-        self._rng = np.random.default_rng(rng_seed)
-        self.calibration_offset = self._rng.uniform(-self.accuracy, self.accuracy) if self.accuracy > 0 else 0.0
+        method_defaults = _ANALYZER_METHOD_DEFAULTS.get(self.sensor_type, {}).get(self.analyzer_method, {})
 
-        self.true_value = np.nan
-        self.measured_value = np.nan
-        self.reported_value = np.nan
-        self.drift_offset = 0.0
-        self.last_sample_time = -np.inf
-        self.last_result_time = -np.inf
-        self.is_valid = False
-        self.in_range = True
-        self.is_detected = False
+        resolved_signal_key = signal_key or defaults["signal_key"]
+        resolved_candidate_keys = (resolved_signal_key,) if signal_key else defaults["candidate_keys"]
+        resolved_noise = measurement_noise if measurement_noise is not None else method_defaults.get("measurement_noise", 0.0)
+        resolved_delay = measurement_delay if measurement_delay is not None else method_defaults.get("measurement_delay", 0.0)
+        resolved_response_time = response_time if response_time is not None else method_defaults.get("response_time", 0.0)
+        resolved_detection_limit = (
+            detection_limit
+            if detection_limit is not None
+            else method_defaults.get("detection_limit", defaults["detection_limit"])
+        )
+
+        super().__init__(
+            component_id=component_id,
+            signal_key=resolved_signal_key,
+            candidate_keys=resolved_candidate_keys,
+            measurement_range=measurement_range or defaults["measurement_range"],
+            measurement_noise=resolved_noise,
+            accuracy=accuracy,
+            drift_rate=drift_rate,
+            sample_interval=sample_interval,
+            unit=unit or defaults["unit"],
+            output_key=output_key,
+            rng_seed=rng_seed,
+            name=name,
+        )
+
+        self.measurement_delay = float(max(0.0, resolved_delay))
+        self.response_time = float(max(0.0, resolved_response_time))
+        self.detection_limit = float(max(0.0, resolved_detection_limit))
+
+        self.filtered_value: float = np.nan
+        self.reported_value: float = np.nan
+        self.last_result_time: float = -np.inf
+        self.is_detected: bool = False
         self._pending_samples: List[Tuple[float, float]] = []
 
         self.initialize()
@@ -194,44 +288,30 @@ class ChemicalSensor(Component):
 
     def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
         """Initialize or restore analyzer state."""
-        self.true_value = np.nan
-        self.measured_value = np.nan
+        super().initialize(initial_state)
+
+        self.filtered_value = np.nan
         self.reported_value = np.nan
-        self.drift_offset = 0.0
-        self.last_sample_time = -np.inf
         self.last_result_time = -np.inf
-        self.is_valid = False
-        self.in_range = True
         self.is_detected = False
         self._pending_samples = []
 
         if initial_state:
-            self.true_value = float(initial_state.get("true_value", np.nan))
-            self.measured_value = float(initial_state.get("measured_value", np.nan))
-            self.reported_value = float(initial_state.get("reported_value", self.measured_value))
-            self.drift_offset = float(initial_state.get("drift_offset", 0.0))
-            self.last_sample_time = float(initial_state.get("last_sample_time", -np.inf))
+            self.filtered_value = float(initial_state.get("filtered_value", self.measured_value))
+            self.reported_value = float(initial_state.get("reported_value", self.filtered_value))
             self.last_result_time = float(initial_state.get("last_result_time", -np.inf))
-            self.is_valid = bool(initial_state.get("is_valid", False))
-            self.in_range = bool(initial_state.get("in_range", True))
             self.is_detected = bool(initial_state.get("is_detected", False))
             pending = initial_state.get("pending_samples", [])
-            self._pending_samples = [(float(release_t), float(sample_value)) for release_t, sample_value in pending]
+            self._pending_samples = [(float(r), float(s)) for r, s in pending]
 
         self.state = {
-            "true_value": self.true_value,
-            "measured_value": self.measured_value,
-            "reported_value": self.reported_value,
-            "drift_offset": self.drift_offset,
-            "calibration_offset": self.calibration_offset,
-            "last_sample_time": self.last_sample_time,
-            "last_result_time": self.last_result_time,
-            "is_valid": self.is_valid,
-            "in_range": self.in_range,
-            "is_detected": self.is_detected,
+            **self._base_state_dict(),
+            "filtered_value": float(self.filtered_value),
+            "reported_value": float(self.reported_value),
+            "last_result_time": float(self.last_result_time),
+            "is_detected": bool(self.is_detected),
             "pending_samples": list(self._pending_samples),
         }
-
         self.outputs_data = {
             "measurement": float(self.reported_value),
             self.output_key: float(self.reported_value),
@@ -244,7 +324,6 @@ class ChemicalSensor(Component):
             "in_range": self.in_range,
             "is_detected": self.is_detected,
         }
-
         self._initialized = True
 
     def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
@@ -261,34 +340,28 @@ class ChemicalSensor(Component):
 
         matured_sample = self._pop_latest_ready_sample(t)
         if matured_sample is not None:
-            raw_value = matured_sample + self.calibration_offset + self.drift_offset
-            if self.measurement_noise > 0:
-                raw_value += float(self._rng.normal(0.0, self.measurement_noise))
-
-            min_value, max_value = self.measurement_range
-            self.in_range = min_value <= raw_value <= max_value
-            self.measured_value = float(np.clip(raw_value, min_value, max_value))
-            self.is_detected = self.measured_value >= self.detection_limit
-            self.reported_value = float(self.measured_value if self.is_detected else 0.0)
+            raw_value = self._apply_errors(matured_sample)
+            self.measured_value, self.in_range = self._clamp_to_range(raw_value)
             self.last_result_time = t
             self.is_valid = True
 
+        # Apply response lag toward the latest analytical result every step.
+        # With response_time=0 this is a direct assignment (backward compatible).
+        if not np.isnan(self.measured_value):
+            self.filtered_value = self._apply_response_lag(self.measured_value, self.filtered_value, self.response_time, dt)
+            self.is_detected = self.filtered_value >= self.detection_limit
+            self.reported_value = float(self.filtered_value if self.is_detected else 0.0)
+
         self.state.update(
             {
-                "true_value": float(self.true_value),
-                "measured_value": float(self.measured_value),
+                **self._base_state_dict(),
+                "filtered_value": float(self.filtered_value),
                 "reported_value": float(self.reported_value),
-                "drift_offset": float(self.drift_offset),
-                "calibration_offset": float(self.calibration_offset),
-                "last_sample_time": float(self.last_sample_time),
                 "last_result_time": float(self.last_result_time),
-                "is_valid": bool(self.is_valid),
-                "in_range": bool(self.in_range),
                 "is_detected": bool(self.is_detected),
                 "pending_samples": list(self._pending_samples),
             }
         )
-
         self.outputs_data = {
             "measurement": float(self.reported_value),
             self.output_key: float(self.reported_value),
@@ -303,22 +376,6 @@ class ChemicalSensor(Component):
             "is_detected": bool(self.is_detected),
         }
         return self.outputs_data
-
-    def _read_true_value(self, inputs: Dict[str, Any]) -> Optional[float]:
-        """Resolve the measured analyte from upstream inputs."""
-        for key in self._candidate_keys:
-            if key in inputs:
-                try:
-                    return float(inputs[key])
-                except (TypeError, ValueError):
-                    return None
-        return None
-
-    def _should_sample(self, t: float) -> bool:
-        """Return True when a new sample is due."""
-        if self.sample_interval <= 0:
-            return True
-        return (t - self.last_sample_time) >= self.sample_interval
 
     def _pop_latest_ready_sample(self, t: float) -> Optional[float]:
         """Return the latest sample whose analysis delay has elapsed."""
@@ -335,24 +392,13 @@ class ChemicalSensor(Component):
     def to_dict(self) -> Dict[str, Any]:
         """Serialize analyzer configuration and state."""
         return {
-            "component_id": self.component_id,
-            "component_type": self.component_type.value,
-            "name": self.name,
+            **self._base_config_dict(),
             "sensor_type": self.sensor_type.value,
             "analyzer_method": self.analyzer_method.value,
-            "signal_key": self.signal_key,
-            "measurement_range": list(self.measurement_range),
-            "measurement_noise": self.measurement_noise,
-            "accuracy": self.accuracy,
-            "drift_rate": self.drift_rate,
-            "sample_interval": self.sample_interval,
             "measurement_delay": self.measurement_delay,
+            "response_time": self.response_time,
             "detection_limit": self.detection_limit,
-            "unit": self.unit,
-            "output_key": self.output_key,
             "state": self.state,
-            "inputs": self.inputs,
-            "outputs": self.outputs,
         }
 
     @classmethod
@@ -364,23 +410,21 @@ class ChemicalSensor(Component):
             analyzer_method=config.get("analyzer_method"),
             signal_key=config.get("signal_key"),
             measurement_range=tuple(config.get("measurement_range", (0.0, 25.0))),
-            measurement_noise=config.get("measurement_noise", 0.0),
+            measurement_noise=config.get("measurement_noise"),
             accuracy=config.get("accuracy", 0.0),
             drift_rate=config.get("drift_rate", 0.0),
             sample_interval=config.get("sample_interval", 0.0),
-            measurement_delay=config.get("measurement_delay", 0.0),
+            measurement_delay=config.get("measurement_delay"),
+            response_time=config.get("response_time"),
             detection_limit=config.get("detection_limit"),
             unit=config.get("unit"),
             output_key=config.get("output_key"),
             name=config.get("name"),
         )
-
         if "state" in config:
             sensor.initialize(config["state"])
-
         for input_id in config.get("inputs", []):
             sensor.add_input(input_id)
         for output_id in config.get("outputs", []):
             sensor.add_output(output_id)
-
         return sensor
