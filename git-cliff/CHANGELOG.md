@@ -6,7 +6,17 @@ All notable changes to this project will be documented in this file.
 
 ### Documentation
 
+- Add Colab badges and Dockerfile  
+
+## [0.1.5] - 2026-04-16
+
+### Documentation
+
 - Improve documentation structure and content  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.1.4] - 2026-04-15
 
