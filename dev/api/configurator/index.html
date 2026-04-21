@@ -2692,7 +2692,7 @@ Supports JSON-based configuration.</p>
 <blockquote>
 <p>from pyadm1.substrates.feedstock import Feedstock
 from pyadm1.configurator.plant_builder import BiogasPlant
-from pyadm1.components.biological.digester import Digester</p>
+from pyadm1.components.biological.adm1_digester import Digester</p>
 <p>feedstock = Feedstock(feeding_freq=48)
 plant = BiogasPlant("My Plant")
 digester = Digester("dig1", feedstock, V_liq=2000)
@@ -3125,7 +3125,7 @@ plant.initialize()</p>
 <a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="sd">    Example:</span>
 <a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="sd">        &gt;&gt;&gt; from pyadm1.substrates.feedstock import Feedstock</span>
 <a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">        &gt;&gt;&gt; from pyadm1.configurator.plant_builder import BiogasPlant</span>
-<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">        &gt;&gt;&gt; from pyadm1.components.biological.digester import Digester</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">        &gt;&gt;&gt; from pyadm1.components.biological.adm1_digester import Digester</span>
 <a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">        &gt;&gt;&gt;</span>
 <a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="sd">        &gt;&gt;&gt; feedstock = Feedstock(feeding_freq=48)</span>
 <a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="sd">        &gt;&gt;&gt; plant = BiogasPlant(&quot;My Plant&quot;)</span>
@@ -3466,7 +3466,7 @@ plant.initialize()</p>
 <a id="__codelineno-0-376" name="__codelineno-0-376"></a>            <span class="k">if</span> <span class="n">comp_type</span> <span class="o">==</span> <span class="n">ComponentType</span><span class="o">.</span><span class="n">DIGESTER</span><span class="p">:</span>
 <a id="__codelineno-0-377" name="__codelineno-0-377"></a>                <span class="k">if</span> <span class="n">feedstock</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-0-378" name="__codelineno-0-378"></a>                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Feedstock required for loading plant with digesters&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-379" name="__codelineno-0-379"></a>                <span class="n">component</span> <span class="o">=</span> <span class="n">Digester</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">comp_config</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">)</span>
+<a id="__codelineno-0-379" name="__codelineno-0-379"></a>                <span class="n">component</span> <span class="o">=</span> <span class="n">ADM1Digester</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">comp_config</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">)</span>
 <a id="__codelineno-0-380" name="__codelineno-0-380"></a>            <span class="k">elif</span> <span class="n">comp_type</span> <span class="o">==</span> <span class="n">ComponentType</span><span class="o">.</span><span class="n">CHP</span><span class="p">:</span>
 <a id="__codelineno-0-381" name="__codelineno-0-381"></a>                <span class="n">component</span> <span class="o">=</span> <span class="n">CHP</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">comp_config</span><span class="p">)</span>
 <a id="__codelineno-0-382" name="__codelineno-0-382"></a>            <span class="k">elif</span> <span class="n">comp_type</span> <span class="o">==</span> <span class="n">ComponentType</span><span class="o">.</span><span class="n">HEATING</span><span class="p">:</span>
@@ -4011,7 +4011,7 @@ Required if plant has digesters.</p>
 <a id="__codelineno-0-376" name="__codelineno-0-376"></a>        <span class="k">if</span> <span class="n">comp_type</span> <span class="o">==</span> <span class="n">ComponentType</span><span class="o">.</span><span class="n">DIGESTER</span><span class="p">:</span>
 <a id="__codelineno-0-377" name="__codelineno-0-377"></a>            <span class="k">if</span> <span class="n">feedstock</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-0-378" name="__codelineno-0-378"></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Feedstock required for loading plant with digesters&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-379" name="__codelineno-0-379"></a>            <span class="n">component</span> <span class="o">=</span> <span class="n">Digester</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">comp_config</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">)</span>
+<a id="__codelineno-0-379" name="__codelineno-0-379"></a>            <span class="n">component</span> <span class="o">=</span> <span class="n">ADM1Digester</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">comp_config</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">)</span>
 <a id="__codelineno-0-380" name="__codelineno-0-380"></a>        <span class="k">elif</span> <span class="n">comp_type</span> <span class="o">==</span> <span class="n">ComponentType</span><span class="o">.</span><span class="n">CHP</span><span class="p">:</span>
 <a id="__codelineno-0-381" name="__codelineno-0-381"></a>            <span class="n">component</span> <span class="o">=</span> <span class="n">CHP</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">comp_config</span><span class="p">)</span>
 <a id="__codelineno-0-382" name="__codelineno-0-382"></a>        <span class="k">elif</span> <span class="n">comp_type</span> <span class="o">==</span> <span class="n">ComponentType</span><span class="o">.</span><span class="n">HEATING</span><span class="p">:</span>
@@ -5298,7 +5298,7 @@ sensible defaults and automatic setup of common configurations.</p>
 <a id="__codelineno-0-50" name="__codelineno-0-50"></a>        <span class="n">load_initial_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <a id="__codelineno-0-51" name="__codelineno-0-51"></a>        <span class="n">initial_state_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <a id="__codelineno-0-52" name="__codelineno-0-52"></a>        <span class="n">Q_substrates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-0-53" name="__codelineno-0-53"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">Digester</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">ADM1Digester</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
 <a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">        Add a digester component to the plant.</span>
 <a id="__codelineno-0-56" name="__codelineno-0-56"></a>
@@ -5326,7 +5326,7 @@ sensible defaults and automatic setup of common configurations.</p>
 <a id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="sd">            ... )</span>
 <a id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="sd">        &quot;&quot;&quot;</span>
 <a id="__codelineno-0-80" name="__codelineno-0-80"></a>        <span class="c1"># Create digester</span>
-<a id="__codelineno-0-81" name="__codelineno-0-81"></a>        <span class="n">digester</span> <span class="o">=</span> <span class="n">Digester</span><span class="p">(</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a>        <span class="n">digester</span> <span class="o">=</span> <span class="n">ADM1Digester</span><span class="p">(</span>
 <a id="__codelineno-0-82" name="__codelineno-0-82"></a>            <span class="n">component_id</span><span class="o">=</span><span class="n">digester_id</span><span class="p">,</span>
 <a id="__codelineno-0-83" name="__codelineno-0-83"></a>            <span class="n">feedstock</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feedstock</span><span class="p">,</span>
 <a id="__codelineno-0-84" name="__codelineno-0-84"></a>            <span class="n">V_liq</span><span class="o">=</span><span class="n">V_liq</span><span class="p">,</span>
@@ -6175,7 +6175,7 @@ sensible defaults and automatic setup of common configurations.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code>(<a class="autorefs autorefs-internal" title="pyadm1.components.biological.digester.Digester" href="../biological/#pyadm1.components.biological.digester.Digester">Digester</a>, <span title="str">str</span>)</code>
+                  <code>(<span title="pyadm1.components.biological.adm1_digester.ADM1Digester">ADM1Digester</span>, <span title="str">str</span>)</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -6312,7 +6312,7 @@ digester = config.add_digester(
 <a id="__codelineno-0-50" name="__codelineno-0-50"></a>    <span class="n">load_initial_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="n">initial_state_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <a id="__codelineno-0-52" name="__codelineno-0-52"></a>    <span class="n">Q_substrates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">Digester</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">ADM1Digester</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
 <a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">    Add a digester component to the plant.</span>
 <a id="__codelineno-0-56" name="__codelineno-0-56"></a>
@@ -6340,7 +6340,7 @@ digester = config.add_digester(
 <a id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="sd">        ... )</span>
 <a id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="sd">    &quot;&quot;&quot;</span>
 <a id="__codelineno-0-80" name="__codelineno-0-80"></a>    <span class="c1"># Create digester</span>
-<a id="__codelineno-0-81" name="__codelineno-0-81"></a>    <span class="n">digester</span> <span class="o">=</span> <span class="n">Digester</span><span class="p">(</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a>    <span class="n">digester</span> <span class="o">=</span> <span class="n">ADM1Digester</span><span class="p">(</span>
 <a id="__codelineno-0-82" name="__codelineno-0-82"></a>        <span class="n">component_id</span><span class="o">=</span><span class="n">digester_id</span><span class="p">,</span>
 <a id="__codelineno-0-83" name="__codelineno-0-83"></a>        <span class="n">feedstock</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feedstock</span><span class="p">,</span>
 <a id="__codelineno-0-84" name="__codelineno-0-84"></a>        <span class="n">V_liq</span><span class="o">=</span><span class="n">V_liq</span><span class="p">,</span>
