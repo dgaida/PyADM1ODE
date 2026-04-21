@@ -50,9 +50,9 @@ class TestComponentRegistryInitialization:
         import builtins
 
         target_imports = {
-            "pyadm1.components.biological.digester": (
-                "Digester",
-                type("Digester", (), {}),
+            "pyadm1.components.biological.adm1_digester": (
+                "ADM1Digester",
+                type("ADM1Digester", (), {}),
             ),
             "pyadm1.components.biological.hydrolysis": (
                 "Hydrolysis",
@@ -120,7 +120,7 @@ class TestComponentRegistryInitialization:
         import builtins
 
         prefixes = (
-            "pyadm1.components.biological.digester",
+            "pyadm1.components.biological.adm1_digester",
             "pyadm1.components.biological.hydrolysis",
             "pyadm1.components.biological.separator",
             "pyadm1.components.energy.chp",

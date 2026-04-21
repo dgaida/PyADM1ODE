@@ -663,7 +663,7 @@ def _compute_scenario_metrics(adm1: "ADM1", final_state: List[float], Q: List[fl
     try:
         # Calculate gas production
         pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL = final_state[33:37]
-        q_gas, q_ch4, q_co2, p_gas = adm1.calc_gas(pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL)
+        q_gas, q_ch4, q_co2, _, p_gas = adm1.calc_gas(pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL)
 
         metrics["Q_gas"] = float(q_gas)
         metrics["Q_ch4"] = float(q_ch4)

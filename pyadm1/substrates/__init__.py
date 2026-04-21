@@ -1,49 +1,39 @@
 """
 Substrate Management and Characterization
 
-This module handles substrate definitions, characterization, and ADM1 input
-stream calculation for agricultural biogas substrates.
-
 Modules:
-    feedstock: Main Feedstock class managing substrate mixing and ADM1 input stream
-              generation, with support for time-varying substrate feeds and automatic
-              weighting of substrate properties based on volumetric flow rates.
+    feedstock:         ADM1 Feedstock class (substrate mixing via C# DLLs).
+    adm1da_feedstock:  Pure-Python substrate characterization for ADM1da.
+                       Converts Weender analysis + pH/FFS/NH4 data into the
+                       38-column influent DataFrame expected by ADM1da.
 
-    substrate_db: Database interface for substrate properties including built-in
-                 database of common agricultural substrates (energy crops, manures,
-                 organic waste) with literature values and local calibrations.
-
-    xml_loader: Parser for substrate definition XML files following the schema used
-               in SIMBA and other biogas simulation tools, with validation and
-               error handling for malformed substrate definitions.
-
-    characterization: Substrate characterization methods for converting laboratory
-                     analysis data (Weender, Van Soest, BMP) into ADM1 model
-                     parameters, including COD fractionation and stoichiometry.
-
-Example:
-    >>> from pyadm1.substrates import Feedstock, SubstrateDB
-    >>>
-    >>> # Load substrates from database
-    >>> db = SubstrateDB()
-    >>> corn_silage = db.get_substrate("corn_silage")
-    >>>
-    >>> # Create feedstock for simulation
+Example (ADM1):
+    >>> from pyadm1.substrates import Feedstock
     >>> feedstock = Feedstock(feeding_freq=48)
-    >>> Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]  # m³/d for each substrate
-    >>> influent_df = feedstock.get_influent_dataframe(Q)
+    >>> influent_df = feedstock.get_influent_dataframe([15, 10, 0, 0, 0, 0, 0, 0, 0, 0])
+
+Example (ADM1da):
+    >>> from pyadm1.substrates import ADM1daFeedstock, SubstrateRegistry
+    >>> reg = SubstrateRegistry()
+    >>> fs = ADM1daFeedstock(reg.get("maize_silage_milk_ripeness"), feeding_freq=48)
+    >>> df = fs.get_influent_dataframe(Q=15.0)
+    >>> da.set_influent_dataframe(df)
 """
 
 from .feedstock import Feedstock
-
-# from pyadm1.substrates.substrate_db import SubstrateDB, Substrate
-# from pyadm1.substrates.xml_loader import XMLSubstrateLoader
-# from pyadm1.substrates.characterization import SubstrateCharacterization
+from .adm1da_feedstock import (
+    ADM1daSubstrateParams,
+    ADM1daFeedstock,
+    SubstrateRegistry,
+    load_substrate_xml,
+)
 
 __all__ = [
+    # ADM1 (DLL-based)
     "Feedstock",
-    #     "SubstrateDB",
-    #     "Substrate",
-    #     "XMLSubstrateLoader",
-    #     "SubstrateCharacterization",
+    # ADM1da (pure Python)
+    "ADM1daSubstrateParams",
+    "ADM1daFeedstock",
+    "SubstrateRegistry",
+    "load_substrate_xml",
 ]

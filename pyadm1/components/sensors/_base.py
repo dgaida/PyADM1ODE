@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import Any, Dict, Optional, Tuple
+from enum import Enum
+from typing import Any, Dict, Mapping, Optional, Tuple, Type, TypeVar
 
 import numpy as np
 
 from ..base import Component, ComponentType
+
+_E = TypeVar("_E", bound=Enum)
 
 
 class AbstractSensor(Component):
@@ -18,9 +21,15 @@ class AbstractSensor(Component):
     that are identical across PhysicalSensor, ChemicalSensor, and GasSensor.
 
     Subclasses must implement ``step()``, ``to_dict()``, and ``from_dict()``.
-    Their ``initialize()`` override should call ``super().initialize(initial_state)``
-    first to reset the common state, then handle subclass-specific state.
+    The shared ``initialize()`` calls the ``_initialize_subclass()`` hook to
+    let subclasses reset their own state and build ``state`` / ``outputs_data``
+    dicts; the ``_initialized`` flag is set automatically afterwards.
+
+    Subclasses must set ``sensor_type`` (a string-valued ``Enum``) before
+    calling ``super().__init__()``, since shared helpers read its ``.value``.
     """
+
+    sensor_type: Enum
 
     def __init__(
         self,
@@ -75,11 +84,11 @@ class AbstractSensor(Component):
     def from_dict(cls, config: Dict[str, Any]) -> "AbstractSensor": ...
 
     # ------------------------------------------------------------------
-    # Shared initialize — subclasses call super().initialize() first
+    # Shared initialize — template-method pattern
     # ------------------------------------------------------------------
 
     def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
-        """Reset common sensor state, optionally restoring from *initial_state*."""
+        """Reset common sensor state, restore from *initial_state*, run subclass hook."""
         self.true_value = np.nan
         self.measured_value = np.nan
         self.drift_offset = 0.0
@@ -95,9 +104,38 @@ class AbstractSensor(Component):
             self.is_valid = bool(initial_state.get("is_valid", False))
             self.in_range = bool(initial_state.get("in_range", True))
 
+        self._initialize_subclass(initial_state)
+        self._initialized = True
+
+    def _initialize_subclass(self, initial_state: Optional[Dict[str, Any]]) -> None:
+        """Hook for subclass-specific reset/restore and ``state`` / ``outputs_data`` build.
+
+        Default no-op so subclasses without extra state need not override.
+        """
+
     # ------------------------------------------------------------------
     # Common measurement helpers
     # ------------------------------------------------------------------
+
+    @staticmethod
+    def _parse_enum(
+        value: str,
+        aliases: Mapping[str, _E],
+        enum_cls: Type[_E],  # noqa: ARG004 — kept for type symmetry / future use
+        label: str,
+    ) -> _E:
+        """Normalize *value* (case- and whitespace-insensitive) via *aliases*."""
+        normalized = value.strip().lower()
+        if normalized not in aliases:
+            raise ValueError(f"Unsupported {label} '{value}'")
+        return aliases[normalized]
+
+    def _advance_drift_and_read(self, dt: float, inputs: Dict[str, Any]) -> None:
+        """Step preamble: integrate drift over *dt* and refresh ``true_value``."""
+        self.drift_offset += self.drift_rate * dt
+        true_value = self._read_true_value(inputs)
+        if true_value is not None:
+            self.true_value = true_value
 
     def _read_true_value(self, inputs: Dict[str, Any]) -> Optional[float]:
         """Resolve the measured signal from upstream component outputs."""
@@ -174,3 +212,41 @@ class AbstractSensor(Component):
             "inputs": self.inputs,
             "outputs": self.outputs,
         }
+
+    def _build_outputs(
+        self,
+        measurement: float,
+        extras: Optional[Dict[str, Any]] = None,
+        include_drift: bool = False,
+    ) -> Dict[str, Any]:
+        """Build the common ``outputs_data`` dict; *extras* are merged on top.
+
+        Includes ``drift_offset`` only when *include_drift* is True (step phase).
+        Subclasses pass type-specific keys (``analyzer_method``, ``is_detected``,
+        ``temperature_value``, …) via *extras*.
+        """
+        out: Dict[str, Any] = {
+            "measurement": float(measurement),
+            self.output_key: float(measurement),
+            "true_value": float(self.true_value),
+            "sensor_type": self.sensor_type.value,
+            "signal_key": self.signal_key,
+            "unit": self.unit,
+            "is_valid": bool(self.is_valid),
+            "in_range": bool(self.in_range),
+        }
+        if include_drift:
+            out["drift_offset"] = float(self.drift_offset)
+        if extras:
+            out.update(extras)
+        return out
+
+    @staticmethod
+    def _restore_io(sensor: "AbstractSensor", config: Dict[str, Any]) -> None:
+        """Restore ``state`` and wire ``inputs`` / ``outputs`` from a serialized config."""
+        if "state" in config:
+            sensor.initialize(config["state"])
+        for input_id in config.get("inputs", []):
+            sensor.add_input(input_id)
+        for output_id in config.get("outputs", []):
+            sensor.add_output(output_id)

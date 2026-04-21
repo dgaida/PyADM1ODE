@@ -218,7 +218,7 @@ def test_compute_scenario_metrics_ignores_dll_errors(monkeypatch):
 
         @staticmethod
         def calc_gas(*args):
-            return (10.0, 6.0, 4.0, 1.2)
+            return (10.0, 6.0, 4.0, 0.0, 1.2)
 
     class FakeADMState:
         @staticmethod
@@ -248,7 +248,7 @@ def test_compute_scenario_metrics_outer_exception_sets_error():
 
         @staticmethod
         def calc_gas(*args):
-            return (1.0, 1.0, 0.0, 1.0)
+            return (1.0, 1.0, 0.0, 0.0, 1.0)
 
     metrics = parallel_mod._compute_scenario_metrics(FakeADM1(), [0.0] * 10, [1.0])
 

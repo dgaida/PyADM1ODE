@@ -9,8 +9,8 @@ and provides a component-based interface for biogas plant simulations.
 import pytest
 from unittest.mock import Mock, patch
 
-import pyadm1.components.biological.digester as digester_module
-from pyadm1.components.biological.digester import Digester
+import pyadm1.components.biological.adm1_digester as digester_module
+from pyadm1.components.biological.adm1_digester import Digester
 from pyadm1.substrates.feedstock import Feedstock
 from pyadm1.components.energy.gas_storage import GasStorage
 
@@ -229,7 +229,7 @@ class TestDigesterStep:
 
         with patch.object(initialized_digester, "adm1") as mock_adm1:
             mock_adm1.create_influent = Mock()
-            mock_adm1.calc_gas = Mock(return_value=(1500, 900, 600, 0.95))
+            mock_adm1.calc_gas = Mock(return_value=(1500, 900, 600, 0.0, 0.95))
 
             with patch.object(initialized_digester.simulator, "simulate_AD_plant") as mock_sim:
                 mock_sim.return_value = [0.02] * 37
@@ -250,7 +250,7 @@ class TestDigesterStep:
 
         with patch.object(initialized_digester, "adm1") as mock_adm1:
             mock_adm1.create_influent = Mock()
-            mock_adm1.calc_gas = Mock(return_value=(1500, 900, 600, 0.95))
+            mock_adm1.calc_gas = Mock(return_value=(1500, 900, 600, 0.0, 0.95))
 
             with patch.object(initialized_digester.simulator, "simulate_AD_plant") as mock_sim:
                 new_state = [0.02] * 37
@@ -274,7 +274,7 @@ class TestDigesterStep:
             mock_adm1.create_influent = Mock()
             q_gas_expected = 1500.0
             q_ch4_expected = 900.0
-            mock_adm1.calc_gas = Mock(return_value=(q_gas_expected, q_ch4_expected, 600, 0.95))
+            mock_adm1.calc_gas = Mock(return_value=(q_gas_expected, q_ch4_expected, 600, 0.0, 0.95))
 
             with patch.object(initialized_digester.simulator, "simulate_AD_plant") as mock_sim:
                 mock_sim.return_value = [0.02] * 37
@@ -297,7 +297,7 @@ class TestDigesterStep:
 
         with patch.object(initialized_digester, "adm1") as mock_adm1:
             mock_adm1.create_influent = Mock()
-            mock_adm1.calc_gas = Mock(return_value=(0, 0, 0, 1.0))
+            mock_adm1.calc_gas = Mock(return_value=(0, 0, 0, 0.0, 1.0))
 
             with patch.object(initialized_digester.simulator, "simulate_AD_plant") as mock_sim:
                 mock_sim.return_value = initialized_digester.adm1_state
@@ -604,7 +604,7 @@ class TestDigesterUncoveredBranches:
         with patch.object(digester, "adm1") as mock_adm1:
             mock_adm1.create_influent = Mock()
             mock_adm1._state_input = [0.01] * 33 + [10.0]
-            mock_adm1.calc_gas = Mock(return_value=(12.0, 7.0, 5.0, 1.01))
+            mock_adm1.calc_gas = Mock(return_value=(12.0, 7.0, 5.0, 0.0, 1.01))
             with patch.object(digester.simulator, "simulate_AD_plant", return_value=simulated_state):
                 digester.gas_storage.outputs_data = {}
                 with patch.object(

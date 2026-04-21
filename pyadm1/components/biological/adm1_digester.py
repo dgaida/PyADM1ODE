@@ -1,11 +1,14 @@
 # ============================================================================
-# pyadm1/components/biological/digester.py
+# pyadm1/components/biological/adm1_digester.py
 # ============================================================================
 """
-Digester component wrapping PyADM1 model.
+ADM1 digester component.
 
-This module provides the Digester class which encapsulates the ADM1 model
-for anaerobic digestion in a component-based framework.
+Provides :class:`ADM1Digester`, which encapsulates the legacy 37-state ADM1
+model for anaerobic digestion in a component-based framework.  A
+module-level ``Digester = ADM1Digester`` alias is re-exported from
+:mod:`pyadm1.components.biological` for backwards compatibility with
+existing tests, examples and user code.
 """
 
 
@@ -28,14 +31,13 @@ clr = try_load_clr()
 
 import os  # noqa: E402  # type: ignore
 
-from typing import Dict, Any, List, Optional  # noqa: E402  # type: ignore
+from typing import Dict, Any, Optional  # noqa: E402  # type: ignore
 import numpy as np  # noqa: E402  # type: ignore
 
-from ..base import Component, ComponentType  # noqa: E402  # type: ignore
 from ...core import ADM1  # noqa: E402  # type: ignore
 from ...substrates import Feedstock  # noqa: E402  # type: ignore
 from ...simulation import Simulator  # noqa: E402  # type: ignore
-from ..energy import GasStorage  # noqa: E402  # type: ignore
+from .digester_base import DigesterBase  # noqa: E402  # type: ignore
 
 if clr is None:
     raise RuntimeError("CLR features unavailable on this platform")
@@ -46,28 +48,20 @@ else:
     from biogas import ADMstate  # noqa: E402  # type: ignore
 
 
-class Digester(Component):
+class ADM1Digester(DigesterBase):
     """
-    Digester component using ADM1 model.
+    Digester component using the legacy 37-state ADM1 model.
 
-    This component wraps the ADM1 implementation and can be
-    connected to other digesters or components in series/parallel.
-
-    Attributes:
-
-        feedstock (Feedstock): Feedstock object for substrate management.
-        V_liq (float): Liquid volume in m³.
-        V_gas (float): Gas volume in m³.
-        T_ad (float): Operating temperature in K.
-        adm1 (ADM1): ADM1 model instance.
-        simulator (Simulator): Simulator for ADM1.
-        adm1_state (List[float]): Current ADM1 state vector (37 dimensions).
-        Q_substrates (List[float]): Substrate feed rates in m³/d.
+    Wraps :class:`pyadm1.core.adm1.ADM1` via :class:`Simulator` and can be
+    connected to other digesters or components in series/parallel.  The
+    shared geometry, temperature and per-digester gas storage are provided
+    by :class:`DigesterBase`; this subclass adds the ADM1 model instance
+    and ADM1-specific step/initialize/serialization logic.
 
     Example:
 
         >>> feedstock = Feedstock(feeding_freq=48)
-        >>> digester = Digester("dig1", feedstock, V_liq=2000, V_gas=300)
+        >>> digester = ADM1Digester("dig1", feedstock, V_liq=2000, V_gas=300)
         >>> digester.initialize({"adm1_state": initial_state, "Q_substrates": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]})
     """
 
@@ -80,51 +74,14 @@ class Digester(Component):
         T_ad: float = 308.15,
         name: Optional[str] = None,
     ):
-        """
-        Initialize digester component.
+        super().__init__(component_id, feedstock, V_liq, V_gas, T_ad, name)
 
-        Args:
-            component_id (str): Unique identifier.
-            feedstock (Feedstock): Feedstock object for substrate management.
-            V_liq (float): Liquid volume in m³. Defaults to 1977.0.
-            V_gas (float): Gas volume in m³. Defaults to 304.0.
-            T_ad (float): Operating temperature in K. Defaults to 308.15 (35°C).
-            name (Optional[str]): Human-readable name. Defaults to component_id.
-        """
-        super().__init__(component_id, ComponentType.DIGESTER, name)
-
-        self.feedstock = feedstock
-        self.V_liq = V_liq
-        self.V_gas = V_gas
-        self.T_ad = T_ad
-
-        # Initialize ADM1
         self.adm1 = ADM1(feedstock)
         self.adm1.V_liq = V_liq
         self.adm1._V_gas = V_gas
         self.adm1._T_ad = T_ad
 
         self.simulator = Simulator(self.adm1)
-
-        # Gas storage attached to this digester (created per-digester)
-        storage_id = f"{self.component_id}_storage"
-        # create a low-pressure membrane storage sized roughly proportional to V_gas
-        # capacity_m3 is in m³ STP; use V_gas as a baseline
-        self.gas_storage: GasStorage = GasStorage(
-            component_id=storage_id,
-            storage_type="membrane",
-            capacity_m3=max(50.0, float(self.V_gas)),  # sensible minimum
-            p_min_bar=0.95,
-            p_max_bar=1.05,
-            initial_fill_fraction=0.1,
-            name=f"{self.name} Gas Storage",
-        )
-
-        # ADM1 state vector (37 dimensions)
-        self.adm1_state: List[float] = []
-
-        # Substrate feed rates [m³/d]
-        self.Q_substrates: List[float] = [0] * 10
 
     def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
         """
@@ -244,7 +201,7 @@ class Digester(Component):
         self.adm1_state = self.simulator.simulate_AD_plant(t_span, self.adm1_state)
 
         # Calculate gas production
-        q_gas, q_ch4, q_co2, p_gas = self.adm1.calc_gas(
+        q_gas, q_ch4, q_co2, _, p_gas = self.adm1.calc_gas(
             self.adm1_state[33],  # pi_Sh2
             self.adm1_state[34],  # pi_Sch4
             self.adm1_state[35],  # pi_Sco2
@@ -305,27 +262,8 @@ class Digester(Component):
 
         return self.outputs_data
 
-    def to_dict(self) -> Dict[str, Any]:
-        """
-        Serialize to dictionary.
-
-        Returns:
-            Dict[str, Any]: Component configuration as dictionary.
-        """
-        return {
-            "component_id": self.component_id,
-            "component_type": self.component_type.value,
-            "name": self.name,
-            "V_liq": self.V_liq,
-            "V_gas": self.V_gas,
-            "T_ad": self.T_ad,
-            "inputs": self.inputs,
-            "outputs": self.outputs,
-            "state": self.state,
-        }
-
     @classmethod
-    def from_dict(cls, config: Dict[str, Any], feedstock: Feedstock) -> "Digester":
+    def from_dict(cls, config: Dict[str, Any], feedstock: Feedstock) -> "ADM1Digester":
         """
         Create from dictionary.
 
@@ -334,7 +272,7 @@ class Digester(Component):
             feedstock (Feedstock): Feedstock object.
 
         Returns:
-            Digester: Initialized digester component.
+            ADM1Digester: Initialized digester component.
         """
         digester = cls(
             component_id=config["component_id"],
@@ -412,3 +350,9 @@ class Digester(Component):
 
         if hasattr(self, "_verbose") and self._verbose:
             print(f"Cleared calibration parameters from digester '{self.component_id}'")
+
+
+# Backwards-compatibility alias for code that imports ``Digester`` directly
+# from this module (e.g. ``from pyadm1.components.biological.adm1_digester
+# import Digester``).  The canonical name is now :class:`ADM1Digester`.
+Digester = ADM1Digester

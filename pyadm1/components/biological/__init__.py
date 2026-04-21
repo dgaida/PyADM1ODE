@@ -5,7 +5,7 @@ Components for biological conversion processes in biogas plants.
 
 Modules:
 
-    digester: Main fermenter component implementing ADM1 model for anaerobic digestion,
+    adm1_digester: Main fermenter component implementing ADM1 model for anaerobic digestion,
              supporting single or multiple fermenters in series/parallel, with flexible
              volume, temperature, and retention time configuration.
 
@@ -30,12 +30,22 @@ Example:
     >>> separator = Separator("sep1", separation_efficiency=0.95)
 """
 
-from .digester import Digester
+from .digester_base import DigesterBase
+from .adm1_digester import ADM1Digester
 from .hydrolysis import Hydrolysis
 from .separator import Separator
+from .adm1da_digester import ADM1daDigester
+
+# Backwards-compatibility alias: ``Digester`` used to be the only concrete
+# digester class.  Existing tests, examples, docs and configurator helpers
+# continue to import ``Digester`` — it now resolves to ``ADM1Digester``.
+Digester = ADM1Digester
 
 __all__ = [
+    "DigesterBase",
+    "ADM1Digester",
     "Digester",
     "Hydrolysis",
     "Separator",
+    "ADM1daDigester",
 ]

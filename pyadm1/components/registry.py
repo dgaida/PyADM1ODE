@@ -43,9 +43,10 @@ class ComponentRegistry:
         """
         # Try to register biological components
         try:
-            from pyadm1.components.biological.digester import Digester
+            from pyadm1.components.biological.adm1_digester import ADM1Digester
 
-            self._registry["Digester"] = Digester
+            # Public registry key stays "Digester" for backwards compatibility.
+            self._registry["Digester"] = ADM1Digester
         except ImportError:
             pass
 

@@ -11,7 +11,7 @@ from typing import Optional, Dict, Any
 from pathlib import Path
 
 from pyadm1.configurator.plant_builder import BiogasPlant
-from pyadm1.components.biological.digester import Digester
+from pyadm1.components.biological.adm1_digester import ADM1Digester
 from pyadm1.components.energy.chp import CHP
 from pyadm1.components.energy.heating import HeatingSystem
 from pyadm1.components.energy.gas_storage import GasStorage
@@ -50,7 +50,7 @@ class PlantConfigurator:
         load_initial_state: bool = True,
         initial_state_file: Optional[str] = None,
         Q_substrates: Optional[list] = None,
-    ) -> (Digester, str):
+    ) -> (ADM1Digester, str):
         """
         Add a digester component to the plant.
 
@@ -78,7 +78,7 @@ class PlantConfigurator:
             ... )
         """
         # Create digester
-        digester = Digester(
+        digester = ADM1Digester(
             component_id=digester_id,
             feedstock=self.feedstock,
             V_liq=V_liq,

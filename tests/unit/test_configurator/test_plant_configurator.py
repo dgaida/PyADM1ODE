@@ -14,7 +14,7 @@ from unittest.mock import Mock, patch
 from pyadm1.configurator.plant_configurator import PlantConfigurator
 from pyadm1.configurator.plant_builder import BiogasPlant
 from pyadm1.configurator.connection_manager import Connection
-from pyadm1.components.biological.digester import Digester
+from pyadm1.components.biological.adm1_digester import Digester
 from pyadm1.components.energy.chp import CHP
 from pyadm1.components.energy.heating import HeatingSystem
 from pyadm1.components.energy.gas_storage import GasStorage

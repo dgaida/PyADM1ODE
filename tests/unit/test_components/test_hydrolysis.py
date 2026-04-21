@@ -65,7 +65,7 @@ class TestHydrolysisBehavior:
                 [0.01] * 33 + [float(sum(q_substrates))],
             ),
         ):
-            with patch.object(hydrolysis.adm1, "calc_gas", return_value=(5.0, 3.0, 2.0, 1.01)):
+            with patch.object(hydrolysis.adm1, "calc_gas", return_value=(5.0, 3.0, 2.0, 0.0, 1.01)):
                 with patch.object(hydrolysis.simulator, "simulate_AD_plant", return_value=simulated_state):
                     with patch.object(
                         hydrolysis.gas_storage,

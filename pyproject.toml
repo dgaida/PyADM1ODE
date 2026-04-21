@@ -99,6 +99,11 @@ exclude = '''
 )/
 '''
 
+[tool.ruff.lint.per-file-ignores]
+# Example scripts need sys.path.insert before importing pyadm1, which puts
+# third-party imports after a statement. That's intentional for standalone runs.
+"examples/*.py" = ["E402"]
+
 [tool.isort]
 profile = "black"
 line_length = 127

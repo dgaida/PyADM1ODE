@@ -324,7 +324,6 @@ class GasSensor(AbstractSensor):
     @staticmethod
     def _parse_sensor_type(sensor_type: str) -> GasSensorType:
         """Normalize user input into a supported gas sensor type."""
-        normalized = sensor_type.strip().lower()
         aliases = {
             "ch4": GasSensorType.CH4,
             "methane": GasSensorType.CH4,
@@ -338,14 +337,11 @@ class GasSensor(AbstractSensor):
             "tracegas": GasSensorType.TRACE_GAS,
             "trace": GasSensorType.TRACE_GAS,
         }
-        if normalized not in aliases:
-            raise ValueError(f"Unsupported gas sensor type '{sensor_type}'")
-        return aliases[normalized]
+        return AbstractSensor._parse_enum(sensor_type, aliases, GasSensorType, "gas sensor type")
 
     @staticmethod
     def _parse_analyzer_method(analyzer_method: str) -> GasAnalyzerMethod:
         """Normalize analyzer method input."""
-        normalized = analyzer_method.strip().lower()
         aliases = {
             "infrared": GasAnalyzerMethod.INFRARED,
             "ndir": GasAnalyzerMethod.INFRARED,
@@ -357,9 +353,7 @@ class GasSensor(AbstractSensor):
             "gas_chromatography": GasAnalyzerMethod.GAS_CHROMATOGRAPHY,
             "gc": GasAnalyzerMethod.GAS_CHROMATOGRAPHY,
         }
-        if normalized not in aliases:
-            raise ValueError(f"Unsupported analyzer method '{analyzer_method}'")
-        return aliases[normalized]
+        return AbstractSensor._parse_enum(analyzer_method, aliases, GasAnalyzerMethod, "analyzer method")
 
     def _apply_cross_sensitivity(self, value: float, inputs: Dict[str, Any]) -> float:
         """Add interference bias from other signals in *inputs*."""
@@ -376,10 +370,8 @@ class GasSensor(AbstractSensor):
                 continue
         return value + bias
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
-        """Initialize or restore sensor state."""
-        super().initialize(initial_state)
-
+    def _initialize_subclass(self, initial_state: Optional[Dict[str, Any]]) -> None:
+        """Reset / restore gas-sensor extras and build state + outputs."""
         self.filtered_value = np.nan
         self.reported_value = np.nan
         self.is_detected = False
@@ -399,19 +391,13 @@ class GasSensor(AbstractSensor):
             "is_detected": bool(self.is_detected),
             "pending_samples": list(self._pending_samples),
         }
-        self.outputs_data = {
-            "measurement": float(self.reported_value),
-            self.output_key: float(self.reported_value),
-            "true_value": float(self.true_value),
-            "sensor_type": self.sensor_type.value,
-            "analyzer_method": self.analyzer_method.value,
-            "signal_key": self.signal_key,
-            "unit": self.unit,
-            "is_valid": self.is_valid,
-            "in_range": self.in_range,
-            "is_detected": self.is_detected,
-        }
-        self._initialized = True
+        self.outputs_data = self._build_outputs(
+            self.reported_value,
+            extras={
+                "analyzer_method": self.analyzer_method.value,
+                "is_detected": bool(self.is_detected),
+            },
+        )
 
     def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -425,11 +411,7 @@ class GasSensor(AbstractSensor):
         released after the analysis delay, then the response lag tracks the
         released result, matching the discrete output of a GC analyzer.
         """
-        self.drift_offset += self.drift_rate * dt
-
-        true_value = self._read_true_value(inputs)
-        if true_value is not None:
-            self.true_value = true_value
+        self._advance_drift_and_read(dt, inputs)
 
         should_sample = self._should_sample(t)
 
@@ -479,19 +461,14 @@ class GasSensor(AbstractSensor):
                 "pending_samples": list(self._pending_samples),
             }
         )
-        self.outputs_data = {
-            "measurement": float(self.reported_value),
-            self.output_key: float(self.reported_value),
-            "true_value": float(self.true_value),
-            "sensor_type": self.sensor_type.value,
-            "analyzer_method": self.analyzer_method.value,
-            "signal_key": self.signal_key,
-            "unit": self.unit,
-            "drift_offset": float(self.drift_offset),
-            "is_valid": bool(self.is_valid),
-            "in_range": bool(self.in_range),
-            "is_detected": bool(self.is_detected),
-        }
+        self.outputs_data = self._build_outputs(
+            self.reported_value,
+            extras={
+                "analyzer_method": self.analyzer_method.value,
+                "is_detected": bool(self.is_detected),
+            },
+            include_drift=True,
+        )
         return self.outputs_data
 
     def _pop_latest_ready_sample(self, t: float) -> Optional[float]:
@@ -540,10 +517,5 @@ class GasSensor(AbstractSensor):
             output_key=config.get("output_key"),
             name=config.get("name"),
         )
-        if "state" in config:
-            sensor.initialize(config["state"])
-        for input_id in config.get("inputs", []):
-            sensor.add_input(input_id)
-        for output_id in config.get("outputs", []):
-            sensor.add_output(output_id)
+        cls._restore_io(sensor, config)
         return sensor

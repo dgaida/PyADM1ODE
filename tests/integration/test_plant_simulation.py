@@ -151,7 +151,7 @@ class TestSimulatorDetermineBestFeed:
         adm1.V_liq = 1977
         adm1.createInfluent = Mock()
         adm1.ADM1_ODE = Mock(return_value=[0.01] * 37)
-        adm1.calc_gas = Mock(return_value=(1500, 900, 600, 0.95))
+        adm1.calc_gas = Mock(return_value=(1500, 900, 600, 0.0, 0.95))
         adm1.feedstock = Mock()
         adm1.feedstock.return_value.get_substrate_feed_mixtures = Mock(
             return_value=[[15, 10, 0, 0, 0, 0, 0, 0, 0, 0] for _ in range(13)]
@@ -319,7 +319,7 @@ class TestSimulatorPrivateMethods:
         adm1.V_liq = 1977
         adm1.createInfluent = Mock()
         adm1.ADM1_ODE = Mock(return_value=[0.01] * 37)
-        adm1.calc_gas = Mock(return_value=(1500, 900, 600, 0.95))
+        adm1.calc_gas = Mock(return_value=(1500, 900, 600, 0.0, 0.95))
         return adm1
 
     def test_simulate_uses_bdf_solver(self, mock_adm1_basic: Mock) -> None:
@@ -449,7 +449,7 @@ class TestSimulatorIntegration:
         adm1.ADM1_ODE = mock_ode
 
         # Realistic gas calculation
-        adm1.calc_gas = Mock(return_value=(1500.0, 900.0, 600.0, 0.95))
+        adm1.calc_gas = Mock(return_value=(1500.0, 900.0, 600.0, 0.0, 0.95))
 
         return adm1
 

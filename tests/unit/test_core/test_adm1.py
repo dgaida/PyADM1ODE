@@ -204,14 +204,14 @@ class TestADM1CalcGas:
 
     def test_calc_gas_returns_four_values(self, adm1_instance: ADM1) -> None:
         """
-        Test that calc_gas returns 4 values.
+        Test that calc_gas returns 5 values (q_gas, q_ch4, q_co2, q_h2o, p_gas).
 
         Args:
             adm1_instance: ADM1 fixture.
         """
         result = adm1_instance.calc_gas(pi_Sh2=5e-6, pi_Sch4=0.55, pi_Sco2=0.42, pTOTAL=0.98)
 
-        assert len(result) == 4, "calc_gas should return 4 values"
+        assert len(result) == 5, "calc_gas should return 5 values"
 
     def test_calc_gas_all_positive(self, adm1_instance: ADM1) -> None:
         """
@@ -220,11 +220,12 @@ class TestADM1CalcGas:
         Args:
             adm1_instance: ADM1 fixture.
         """
-        q_gas, q_ch4, q_co2, p_gas = adm1_instance.calc_gas(pi_Sh2=5e-6, pi_Sch4=0.55, pi_Sco2=0.42, pTOTAL=0.98)
+        q_gas, q_ch4, q_co2, q_h2o, p_gas = adm1_instance.calc_gas(pi_Sh2=5e-6, pi_Sch4=0.55, pi_Sco2=0.42, pTOTAL=0.98)
 
         assert q_gas >= 0, "Total gas flow should be non-negative"
         assert q_ch4 >= 0, "Methane flow should be non-negative"
         assert q_co2 >= 0, "CO2 flow should be non-negative"
+        assert q_h2o >= 0, "Water vapour flow should be non-negative"
         assert p_gas >= 0, "Gas pressure should be non-negative"
 
     def test_calc_gas_methane_less_than_total(self, adm1_instance: ADM1) -> None:
@@ -234,7 +235,7 @@ class TestADM1CalcGas:
         Args:
             adm1_instance: ADM1 fixture.
         """
-        q_gas, q_ch4, q_co2, p_gas = adm1_instance.calc_gas(pi_Sh2=5e-6, pi_Sch4=0.55, pi_Sco2=0.42, pTOTAL=0.98)
+        q_gas, q_ch4, q_co2, q_h2o, p_gas = adm1_instance.calc_gas(pi_Sh2=5e-6, pi_Sch4=0.55, pi_Sco2=0.42, pTOTAL=0.98)
 
         assert q_ch4 <= q_gas, "Methane flow should be <= total gas flow"
         assert q_co2 <= q_gas, "CO2 flow should be <= total gas flow"
@@ -246,7 +247,7 @@ class TestADM1CalcGas:
         Args:
             adm1_instance: ADM1 fixture.
         """
-        q_gas, q_ch4, q_co2, p_gas = adm1_instance.calc_gas(pi_Sh2=0.0, pi_Sch4=0.0, pi_Sco2=0.0, pTOTAL=1.0)
+        q_gas, q_ch4, q_co2, q_h2o, p_gas = adm1_instance.calc_gas(pi_Sh2=0.0, pi_Sch4=0.0, pi_Sco2=0.0, pTOTAL=1.0)
 
         # Should handle zero pressures gracefully
         assert np.isfinite(q_gas), "q_gas should be finite"
@@ -260,7 +261,7 @@ class TestADM1CalcGas:
             "getADMgasparams",
             return_value=(None, np.array([1.0]), None, None, None, None),
         ):
-            q_gas, q_ch4, q_co2, _ = adm1_instance.calc_gas(
+            q_gas, q_ch4, q_co2, _, _ = adm1_instance.calc_gas(
                 pi_Sh2=1e-6,
                 pi_Sch4=0.55,
                 pi_Sco2=0.42,
@@ -598,7 +599,7 @@ class TestADM1AdditionalBranches:
         )
 
         with patch.object(adm1_module, "ADMstate", admstate_mock):
-            with patch.object(adm1, "calc_gas", return_value=(100.0, 60.0, 40.0, 0.6)) as calc_gas:
+            with patch.object(adm1, "calc_gas", return_value=(100.0, 60.0, 40.0, 5.0, 0.6)) as calc_gas:
                 adm1.print_params_at_current_state(state)
 
         calc_gas.assert_called_once_with(0.1, 0.2, 0.3, 1.0)
@@ -610,6 +611,7 @@ class TestADM1AdditionalBranches:
         assert adm1._Q_GAS == [100.0, 100.0, 100.0]
         assert adm1._Q_CH4 == [60.0, 60.0, 60.0]
         assert adm1._Q_CO2 == [40.0, 40.0, 40.0]
+        assert adm1._Q_H2O == [5.0, 5.0, 5.0]
         assert adm1._P_GAS == [0.6, 0.6, 0.6]
 
     def test_get_substrate_dependent_params_returns_defaults_when_q_not_set(self, mock_feedstock: Mock) -> None:

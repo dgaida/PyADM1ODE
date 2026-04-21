@@ -186,7 +186,7 @@ class Simulator:
         pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL = final_state[33:37]
 
         # Calculate gas production rates
-        q_gas, q_ch4, q_co2, p_gas = self._adm1.calc_gas(pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL)
+        q_gas, q_ch4, q_co2, _, p_gas = self._adm1.calc_gas(pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL)
 
         return q_gas, q_ch4
 

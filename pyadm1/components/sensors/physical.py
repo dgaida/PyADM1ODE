@@ -171,7 +171,6 @@ class PhysicalSensor(AbstractSensor):
     @staticmethod
     def _parse_sensor_type(sensor_type: str) -> PhysicalSensorType:
         """Normalize user input into a supported sensor type."""
-        normalized = sensor_type.strip().lower()
         aliases = {
             "ph": PhysicalSensorType.PH,
             "p_h": PhysicalSensorType.PH,
@@ -181,9 +180,7 @@ class PhysicalSensor(AbstractSensor):
             "level": PhysicalSensorType.LEVEL,
             "flow": PhysicalSensorType.FLOW,
         }
-        if normalized not in aliases:
-            raise ValueError(f"Unsupported physical sensor type '{sensor_type}'")
-        return aliases[normalized]
+        return AbstractSensor._parse_enum(sensor_type, aliases, PhysicalSensorType, "physical sensor type")
 
     def _apply_nernst_correction(self, pH_value: float, inputs: Dict[str, Any]) -> float:
         """Apply Nernst temperature correction to *pH_value*.
@@ -217,10 +214,8 @@ class PhysicalSensor(AbstractSensor):
         # T_actual > T_ref.
         return self.pH_isopotential + (pH_value - self.pH_isopotential) * (self.temperature_reference / T_actual)
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
-        """Initialize or restore sensor state."""
-        super().initialize(initial_state)
-
+    def _initialize_subclass(self, initial_state: Optional[Dict[str, Any]]) -> None:
+        """Reset / restore physical-sensor extras and build state + outputs."""
         self.filtered_value = np.nan
         self._temperature_value = np.nan
         if initial_state:
@@ -232,18 +227,10 @@ class PhysicalSensor(AbstractSensor):
             "filtered_value": float(self.filtered_value),
             "temperature_value": float(self._temperature_value),
         }
-        self.outputs_data = {
-            "measurement": float(self.measured_value),
-            self.output_key: float(self.measured_value),
-            "true_value": float(self.true_value),
-            "sensor_type": self.sensor_type.value,
-            "signal_key": self.signal_key,
-            "unit": self.unit,
-            "is_valid": self.is_valid,
-            "in_range": self.in_range,
-            "temperature_value": float(self._temperature_value),
-        }
-        self._initialized = True
+        self.outputs_data = self._build_outputs(
+            self.measured_value,
+            extras={"temperature_value": float(self._temperature_value)},
+        )
 
     def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -253,11 +240,7 @@ class PhysicalSensor(AbstractSensor):
         response lag, Nernst temperature correction (pH only), calibration
         error, drift, noise, and range limits.
         """
-        self.drift_offset += self.drift_rate * dt
-
-        true_value = self._read_true_value(inputs)
-        if true_value is not None:
-            self.true_value = true_value
+        self._advance_drift_and_read(dt, inputs)
 
         should_sample = self._should_sample(t)
         if should_sample and not np.isnan(self.true_value):
@@ -279,18 +262,11 @@ class PhysicalSensor(AbstractSensor):
                 "temperature_value": float(self._temperature_value),
             }
         )
-        self.outputs_data = {
-            "measurement": float(self.measured_value),
-            self.output_key: float(self.measured_value),
-            "true_value": float(self.true_value),
-            "sensor_type": self.sensor_type.value,
-            "signal_key": self.signal_key,
-            "unit": self.unit,
-            "drift_offset": float(self.drift_offset),
-            "is_valid": bool(self.is_valid),
-            "in_range": bool(self.in_range),
-            "temperature_value": float(self._temperature_value),
-        }
+        self.outputs_data = self._build_outputs(
+            self.measured_value,
+            extras={"temperature_value": float(self._temperature_value)},
+            include_drift=True,
+        )
         return self.outputs_data
 
     def to_dict(self) -> Dict[str, Any]:
@@ -325,10 +301,5 @@ class PhysicalSensor(AbstractSensor):
             temperature_reference=config.get("temperature_reference", 298.15),
             pH_isopotential=config.get("pH_isopotential", 7.0),
         )
-        if "state" in config:
-            sensor.initialize(config["state"])
-        for input_id in config.get("inputs", []):
-            sensor.add_input(input_id)
-        for output_id in config.get("outputs", []):
-            sensor.add_output(output_id)
+        cls._restore_io(sensor, config)
         return sensor

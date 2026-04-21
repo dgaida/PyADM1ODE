@@ -1,6 +1,6 @@
 # Biologische Komponenten API
 
-::: pyadm1.components.biological.digester.Digester
+::: pyadm1.components.biological.adm1_digester.Digester
     options:
       show_root_heading: true
 

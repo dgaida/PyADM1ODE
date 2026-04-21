@@ -12,7 +12,7 @@ import json
 from typing import Dict, Any, List, Optional
 
 from pyadm1.components.base import Component, ComponentType
-from pyadm1.components.biological.digester import Digester
+from pyadm1.components.biological.adm1_digester import ADM1Digester
 from pyadm1.components.energy.chp import CHP
 from pyadm1.components.energy.heating import HeatingSystem
 from pyadm1.configurator.connection_manager import Connection
@@ -35,7 +35,7 @@ class BiogasPlant:
     Example:
         >>> from pyadm1.substrates.feedstock import Feedstock
         >>> from pyadm1.configurator.plant_builder import BiogasPlant
-        >>> from pyadm1.components.biological.digester import Digester
+        >>> from pyadm1.components.biological.adm1_digester import Digester
         >>>
         >>> feedstock = Feedstock(feeding_freq=48)
         >>> plant = BiogasPlant("My Plant")
@@ -376,7 +376,7 @@ class BiogasPlant:
             if comp_type == ComponentType.DIGESTER:
                 if feedstock is None:
                     raise ValueError("Feedstock required for loading plant with digesters")
-                component = Digester.from_dict(comp_config, feedstock)
+                component = ADM1Digester.from_dict(comp_config, feedstock)
             elif comp_type == ComponentType.CHP:
                 component = CHP.from_dict(comp_config)
             elif comp_type == ComponentType.HEATING:

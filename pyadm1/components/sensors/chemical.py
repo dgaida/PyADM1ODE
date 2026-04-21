@@ -251,7 +251,6 @@ class ChemicalSensor(AbstractSensor):
     @staticmethod
     def _parse_sensor_type(sensor_type: str) -> ChemicalSensorType:
         """Normalize user input into a supported chemical sensor type."""
-        normalized = sensor_type.strip().lower()
         aliases = {
             "vfa": ChemicalSensorType.VFA,
             "volatile_fatty_acids": ChemicalSensorType.VFA,
@@ -262,14 +261,11 @@ class ChemicalSensor(AbstractSensor):
             "nutrients": ChemicalSensorType.NUTRIENTS,
             "nutrient": ChemicalSensorType.NUTRIENTS,
         }
-        if normalized not in aliases:
-            raise ValueError(f"Unsupported chemical sensor type '{sensor_type}'")
-        return aliases[normalized]
+        return AbstractSensor._parse_enum(sensor_type, aliases, ChemicalSensorType, "chemical sensor type")
 
     @staticmethod
     def _parse_analyzer_method(analyzer_method: str) -> ChemicalAnalyzerMethod:
         """Normalize analyzer method input."""
-        normalized = analyzer_method.strip().lower()
         aliases = {
             "online_titration": ChemicalAnalyzerMethod.ONLINE_TITRATION,
             "titration": ChemicalAnalyzerMethod.ONLINE_TITRATION,
@@ -282,14 +278,10 @@ class ChemicalSensor(AbstractSensor):
             "spectroscopic": ChemicalAnalyzerMethod.SPECTROSCOPY,
             "colorimetric": ChemicalAnalyzerMethod.COLORIMETRIC,
         }
-        if normalized not in aliases:
-            raise ValueError(f"Unsupported analyzer method '{analyzer_method}'")
-        return aliases[normalized]
+        return AbstractSensor._parse_enum(analyzer_method, aliases, ChemicalAnalyzerMethod, "analyzer method")
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
-        """Initialize or restore analyzer state."""
-        super().initialize(initial_state)
-
+    def _initialize_subclass(self, initial_state: Optional[Dict[str, Any]]) -> None:
+        """Reset / restore chemical-analyzer extras and build state + outputs."""
         self.filtered_value = np.nan
         self.reported_value = np.nan
         self.last_result_time = -np.inf
@@ -312,33 +304,23 @@ class ChemicalSensor(AbstractSensor):
             "is_detected": bool(self.is_detected),
             "pending_samples": list(self._pending_samples),
         }
-        self.outputs_data = {
-            "measurement": float(self.reported_value),
-            self.output_key: float(self.reported_value),
-            "true_value": float(self.true_value),
-            "sensor_type": self.sensor_type.value,
-            "analyzer_method": self.analyzer_method.value,
-            "signal_key": self.signal_key,
-            "unit": self.unit,
-            "is_valid": self.is_valid,
-            "in_range": self.in_range,
-            "is_detected": self.is_detected,
-        }
-        self._initialized = True
+        self.outputs_data = self._build_outputs(
+            self.reported_value,
+            extras={
+                "analyzer_method": self.analyzer_method.value,
+                "is_detected": bool(self.is_detected),
+            },
+        )
 
     def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
         """Advance the analyzer by one simulation step."""
-        self.drift_offset += self.drift_rate * dt
-
-        true_value = self._read_true_value(inputs)
-        if true_value is not None:
-            self.true_value = true_value
+        self._advance_drift_and_read(dt, inputs)
 
         if self._should_sample(t) and not np.isnan(self.true_value):
             self._pending_samples.append((t + self.measurement_delay, self.true_value))
             self.last_sample_time = t
 
-        matured_sample = self._pop_latest_ready_sample(t)
+        matured_sample = self._pop_latest_ready_sample(t + dt)
         if matured_sample is not None:
             raw_value = self._apply_errors(matured_sample)
             self.measured_value, self.in_range = self._clamp_to_range(raw_value)
@@ -362,27 +344,32 @@ class ChemicalSensor(AbstractSensor):
                 "pending_samples": list(self._pending_samples),
             }
         )
-        self.outputs_data = {
-            "measurement": float(self.reported_value),
-            self.output_key: float(self.reported_value),
-            "true_value": float(self.true_value),
-            "sensor_type": self.sensor_type.value,
-            "analyzer_method": self.analyzer_method.value,
-            "signal_key": self.signal_key,
-            "unit": self.unit,
-            "drift_offset": float(self.drift_offset),
-            "is_valid": bool(self.is_valid),
-            "in_range": bool(self.in_range),
-            "is_detected": bool(self.is_detected),
-        }
+        self.outputs_data = self._build_outputs(
+            self.reported_value,
+            extras={
+                "analyzer_method": self.analyzer_method.value,
+                "is_detected": bool(self.is_detected),
+            },
+            include_drift=True,
+        )
         return self.outputs_data
 
-    def _pop_latest_ready_sample(self, t: float) -> Optional[float]:
-        """Return the latest sample whose analysis delay has elapsed."""
+    def _pop_latest_ready_sample(self, t_end: float) -> Optional[float]:
+        """
+        Return the latest sample whose analysis delay completes before *t_end*.
+
+        A sample added at time ``t_sample`` with delay ``d`` has release time
+        ``t_sample + d``; it matures during a simulation step covering the
+        half-open interval ``[t, t + dt)``.  Callers pass ``t_end = t + dt``
+        so that samples whose analysis finishes within the current step are
+        reported at the end of that step (strict ``<`` preserves the
+        half-open convention — a sample releasing exactly at ``t + dt``
+        matures on the next step).
+        """
         latest_ready: Optional[float] = None
         pending: List[Tuple[float, float]] = []
         for release_time, sample_value in self._pending_samples:
-            if release_time <= t + 1e-12:
+            if release_time < t_end:
                 latest_ready = sample_value
             else:
                 pending.append((release_time, sample_value))
@@ -421,10 +408,5 @@ class ChemicalSensor(AbstractSensor):
             output_key=config.get("output_key"),
             name=config.get("name"),
         )
-        if "state" in config:
-            sensor.initialize(config["state"])
-        for input_id in config.get("inputs", []):
-            sensor.add_input(input_id)
-        for output_id in config.get("outputs", []):
-            sensor.add_output(output_id)
+        cls._restore_io(sensor, config)
         return sensor

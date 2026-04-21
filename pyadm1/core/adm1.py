@@ -42,7 +42,7 @@ Example:
     >>>
     >>> # Calculate gas production
     >>> state = [0.01] * 37  # Initial state
-    >>> q_gas, q_ch4, q_co2, p_gas = adm1.calc_gas(*state[33:37])
+    >>> q_gas, q_ch4, q_co2, q_h2o, p_gas = adm1.calc_gas(*state[33:37])
 """
 
 import logging
@@ -50,7 +50,8 @@ import os
 import clr
 import numpy as np
 import pandas as pd
-from typing import List, Tuple, Optional
+from typing import List, Tuple
+from pyadm1.core.adm_base import ADMBase
 from pyadm1.core.adm_params import ADMParams
 from pyadm1.core.adm_equations import BiochemicalProcesses
 from pyadm1.substrates.feedstock import Feedstock
@@ -132,7 +133,7 @@ def get_state_zero_from_initial_state(csv_file: str) -> List[float]:
     return state_zero
 
 
-class ADM1:
+class ADM1(ADMBase):
     """
     Main class implementing ADM1 as pure ODE system.
 
@@ -167,40 +168,7 @@ class ADM1:
             V_gas: Gas volume [m³]
             T_ad: Operating temperature [K] (default: 308.15 = 35°C)
         """
-        # Physical parameters
-        self.V_liq = V_liq  # liquid volume of digester
-        self._V_gas = V_gas  # gas volume of digester
-        self._V_ad = self.V_liq + self._V_gas  # total volume of digester: liquid + gas volume
-        self._T_ad = T_ad  # temperature inside the digester
-
-        # Constants
-        self._R = 0.08314  # 0.083145  Gas constant [bar·M^-1·K^-1]
-        self._T_base = 298.15  # Base temperature [K] 25°C
-        self._p_atm = 1.013  # Atmospheric pressure [bar]
-
-        # Calculated parameters
-        self._RT = self._R * self._T_ad  # R * T_ad
-        # external pressures
-        self._p_ext = self._p_atm - 0.0084147 * np.exp(0.054 * (self._T_ad - 273.15))
-
-        # Feedstock and state
-        self._feedstock = feedstock
-        # vector of volumetric flow rates of the substrates. Length must be equal to the number of
-        # substrates defined in xml
-        self._Q: Optional[List[float]] = None
-        self._state_input: Optional[List[float]] = None  # contains ADM1 input stream as a 34dim vector
-
-        # Result tracking lists
-        # Result tracking lists
-        self._Q_GAS: List[float] = []  # produced biogas over all simulations [m³/d]
-        self._Q_CH4: List[float] = []  # produced methane over all simulations [m³/d]
-        self._Q_CO2: List[float] = []  # produced CO2 over all simulations [m³/d]
-        self._P_GAS: List[float] = []  # gas pressures over all simulations [bar]
-        self._pH_l: List[float] = []  # pH values over all simulations [-]
-        self._FOSTAC: List[float] = []  # ratio of VFA over TA over all simulations [-]
-        self._AcvsPro: List[float] = []  # ratio of acetic over propionic acid over all simulations [-]
-        self._VFA: List[float] = []  # VFA concentrations over all simulations [g/L]
-        self._TAC: List[float] = []  # TA concentrations over all simulations [g CaCO3/L]
+        super().__init__(feedstock, V_liq, V_gas, T_ad)
 
     def create_influent(self, Q: List[float], i: int) -> None:
         """
@@ -221,71 +189,6 @@ class ADM1:
         self._Q = Q
         influent_state = self._feedstock.get_influent_dataframe(Q)
         self._set_influent(influent_state, i)
-
-    def calc_gas(self, pi_Sh2: float, pi_Sch4: float, pi_Sco2: float, pTOTAL: float) -> Tuple[float, float, float, float]:
-        """
-        Calculate biogas production rates from partial pressures.
-
-        Uses the ideal gas law and Henry's constants to calculate gas flow rates
-        from the gas phase partial pressures.
-
-        Args:
-            pi_Sh2: Hydrogen partial pressure [bar]
-            pi_Sch4: Methane partial pressure [bar]
-            pi_Sco2: CO2 partial pressure [bar]
-            pTOTAL: Total gas pressure [bar]
-
-        Returns:
-            Tuple containing:
-                - q_gas: Total biogas flow rate [m³/d]
-                - q_ch4: Methane flow rate [m³/d]
-                - q_co2: CO2 flow rate [m³/d]
-                - p_gas: Total gas partial pressure (excl. H2O) [bar]
-
-        Example:
-            >>> q_gas, q_ch4, q_co2, p_gas = adm1.calc_gas(5e-6, 0.55, 0.42, 0.98)
-            >>> print(f"Biogas: {q_gas:.1f} m³/d, Methane: {q_ch4:.1f} m³/d")
-        """
-        _, k_p, _, _, _, _ = ADMParams.getADMgasparams(self._R, self._T_base, self._T_ad)
-        if hasattr(self, "_calibration_params") and self._calibration_params and "k_p" in self._calibration_params:
-            k_p = float(self._calibration_params["k_p"])
-
-        # Ideal gas law constant for conversion
-        NQ = 44.643
-
-        # Total biogas flow from pressure difference
-        q_gas = k_p * (pTOTAL - self._p_ext) / (self._RT / 1000 * NQ) * self.V_liq
-
-        # Total gas partial pressure (excluding water vapor)
-        p_gas = pi_Sh2 + pi_Sch4 + pi_Sco2
-
-        # Ensure non-negative gas flows
-        if isinstance(q_gas, np.ndarray):
-            q_gas = np.maximum(q_gas, 0.0)
-        else:
-            q_gas = max(q_gas, 0.0)
-
-        # Calculate component flows from partial pressures
-        if p_gas > 0:
-            q_ch4 = q_gas * (pi_Sch4 / p_gas)
-            q_co2 = q_gas * (pi_Sco2 / p_gas)
-        else:
-            q_ch4 = 0.0
-            q_co2 = 0.0
-
-        # Ensure non-negative
-        if isinstance(q_ch4, np.ndarray):
-            q_ch4 = np.maximum(q_ch4, 0.0)
-            q_co2 = np.maximum(q_co2, 0.0)
-        else:
-            q_ch4 = max(q_ch4, 0.0)
-            q_co2 = max(q_co2, 0.0)
-
-        return q_gas, q_ch4, q_co2, p_gas
-
-    def resume_from_broken_simulation(self, Q_CH4):
-        for Qch4 in Q_CH4:
-            self._Q_CH4.append(Qch4)
 
     def save_final_state_in_csv(self, simulate_results: List[List[float]], filename: str = "digester_final.csv") -> None:
         """
@@ -330,15 +233,13 @@ class ADM1:
         Example:
             >>> adm1.print_params_at_current_state(state_vector)
         """
-        # Calculate process indicators using DLL
+        # DLL-derived indicators (ADM1-specific)
         self._pH_l.append(np.round(ADMstate.calcPHOfADMstate(state_ADM1xp), 1))
         self._FOSTAC.append(np.round(ADMstate.calcFOSTACOfADMstate(state_ADM1xp).Value, 2))
         self._AcvsPro.append(np.round(ADMstate.calcAcetic_vs_PropionicOfADMstate(state_ADM1xp).Value, 1))
         self._VFA.append(np.round(ADMstate.calcVFAOfADMstate(state_ADM1xp, "gHAceq/l").Value, 2))
         self._TAC.append(np.round(ADMstate.calcTACOfADMstate(state_ADM1xp, "gCaCO3eq/l").Value, 1))
 
-        # Ensure at least 2 values in lists (because the last three values go to the controller)
-        # I am assuming here that we start from a steady state
         if len(self._pH_l) < 2:
             self._pH_l.append(self._pH_l[-1])
             self._FOSTAC.append(self._FOSTAC[-1])
@@ -346,22 +247,19 @@ class ADM1:
             self._VFA.append(self._VFA[-1])
             self._TAC.append(self._TAC[-1])
 
-        # Calculate and store gas production
-        q_gas, q_ch4, q_co2, p_gas = self.calc_gas(state_ADM1xp[33], state_ADM1xp[34], state_ADM1xp[35], state_ADM1xp[36])
+        q_gas, q_ch4, q_co2, q_h2o, p_gas = self.calc_gas(
+            state_ADM1xp[33], state_ADM1xp[34], state_ADM1xp[35], state_ADM1xp[36]
+        )
+        self._track_gas(q_gas, q_ch4, q_co2, q_h2o, p_gas)
 
-        self._Q_GAS.append(q_gas)
-        self._Q_CH4.append(q_ch4)
-        self._Q_CO2.append(q_co2)
-        self._P_GAS.append(p_gas)
+    def get_state_size(self) -> int:
+        """Return the number of state variables: 37 for standard ADM1."""
+        return 37
 
-        # Ensure at least 2 values, because the last three values go to controller.
-        # I am assuming here that we start from a steady state
-        if len(self._Q_GAS) < 2:
-            for _ in range(2):  # to have at least 4 values in the lists
-                self._Q_GAS.append(q_gas)
-                self._Q_CH4.append(q_ch4)
-                self._Q_CO2.append(q_co2)
-                self._P_GAS.append(p_gas)
+    @property
+    def model_name(self) -> str:
+        """Short identifier for this model variant."""
+        return "ADM1"
 
     def ADM1_ODE(self, t: float, state_zero: List[float]) -> Tuple[float, ...]:
         """
@@ -482,7 +380,7 @@ class ADM1:
             "K_H_h2": params_tuple[86],
         }
 
-        if hasattr(self, "_calibration_params") and self._calibration_params:
+        if self._calibration_params:
             for key in gas_params:
                 if key in self._calibration_params:
                     gas_params[key] = float(self._calibration_params[key])
@@ -747,6 +645,9 @@ class ADM1:
             diff_pTOTAL,
         )
 
+    # Satisfies the ADMBase abstract interface; existing code can still call ADM1_ODE.
+    ADM_ODE = ADM1_ODE
+
     def _set_influent(self, influent_state: pd.DataFrame, i: int) -> None:
         """
         Set influent values from dataframe.
@@ -903,7 +804,7 @@ class ADM1:
                         raise TypeError("Failed to evaluate substrate-dependent parameters. " + " | ".join(errors))
 
         # Apply calibration parameter overrides if they exist
-        if hasattr(self, "_calibration_params") and self._calibration_params:
+        if self._calibration_params:
             for param_name, param_value in self._calibration_params.items():
                 if param_name in base_params:
                     old_value = base_params[param_name]
@@ -916,104 +817,3 @@ class ADM1:
                     )
 
         return base_params
-
-    def set_calibration_parameters(self, parameters: dict) -> None:
-        """
-        Set calibration parameters that override substrate-dependent calculations.
-
-        Args:
-            parameters: Parameter values as {param_name: value}.
-
-        Example:
-            >>> adm1.set_calibration_parameters({
-            ...     'k_dis': 0.55,
-            ...     'k_hyd_ch': 11.0,
-            ...     'Y_su': 0.105
-            ... })
-        """
-        if not hasattr(self, "_calibration_params"):
-            self._calibration_params = {}
-
-        self._calibration_params.update(parameters)
-
-    def clear_calibration_parameters(self) -> None:
-        """
-        Clear all calibration parameters and revert to substrate-dependent calculations.
-
-        Example:
-            >>> adm1.clear_calibration_parameters()
-        """
-        if hasattr(self, "_calibration_params"):
-            self._calibration_params = {}
-
-    def get_calibration_parameters(self) -> dict:
-        """
-        Get currently set calibration parameters.
-
-        Returns:
-            dict: Current calibration parameters as {param_name: value}.
-
-        Example:
-            >>> params = adm1.get_calibration_parameters()
-            >>> print(params)
-            {'k_dis': 0.55, 'Y_su': 0.105}
-        """
-        if hasattr(self, "_calibration_params"):
-            return self._calibration_params.copy()
-        return {}
-
-    # Properties for accessing model parameters and results
-    @property
-    def T_ad(self) -> float:
-        """Operating temperature [K]."""
-        return self._T_ad
-
-    @property
-    def feedstock(self) -> Feedstock:
-        """Feedstock object."""
-        return self._feedstock
-
-    @property
-    def Q_GAS(self) -> List[float]:
-        """Biogas production rates over all simulations [m³/d]."""
-        return self._Q_GAS
-
-    @property
-    def Q_CH4(self) -> List[float]:
-        """Methane production rates over all simulations [m³/d]."""
-        return self._Q_CH4
-
-    @property
-    def Q_CO2(self) -> List[float]:
-        """CO2 production rates over all simulations [m³/d]."""
-        return self._Q_CO2
-
-    @property
-    def P_GAS(self) -> List[float]:
-        """Gas pressures over all simulations [bar]."""
-        return self._P_GAS
-
-    @property
-    def pH_l(self) -> List[float]:
-        """pH values over all simulations."""
-        return self._pH_l
-
-    @property
-    def VFA_TA(self) -> List[float]:
-        """VFA/TA ratios over all simulations."""
-        return self._FOSTAC
-
-    @property
-    def AcvsPro(self) -> List[float]:
-        """Acetic/Propionic acid ratios over all simulations."""
-        return self._AcvsPro
-
-    @property
-    def VFA(self) -> List[float]:
-        """VFA concentrations over all simulations [g/L]."""
-        return self._VFA
-
-    @property
-    def TAC(self) -> List[float]:
-        """TA concentrations over all simulations [g CaCO3 eq/L]."""
-        return self._TAC

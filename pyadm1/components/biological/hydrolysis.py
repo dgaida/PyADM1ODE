@@ -269,7 +269,7 @@ class Hydrolysis(Component):
         self.adm1_state = self.simulator.simulate_AD_plant(t_span, self.adm1_state)
 
         # Gas production
-        q_gas, q_ch4, q_co2, _ = self.adm1.calc_gas(
+        q_gas, q_ch4, q_co2, _, _ = self.adm1.calc_gas(
             self.adm1_state[33],  # pi_Sh2
             self.adm1_state[34],  # pi_Sch4
             self.adm1_state[35],  # pi_Sco2
