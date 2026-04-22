@@ -12,6 +12,7 @@ from pathlib import Path
 
 from pyadm1.configurator.plant_builder import BiogasPlant
 from pyadm1.components.biological.adm1_digester import ADM1Digester
+from pyadm1.components.biological.adm1da_digester import ADM1daDigester
 from pyadm1.components.energy.chp import CHP
 from pyadm1.components.energy.heating import HeatingSystem
 from pyadm1.components.energy.gas_storage import GasStorage
@@ -135,6 +136,81 @@ class PlantConfigurator:
         self.plant.add_component(storage)
 
         # Connect: digester → storage
+        self.connect(digester_id, storage_id, "gas")
+
+        return digester, state_info
+
+    def add_adm1da_digester(
+        self,
+        digester_id: str,
+        V_liq: float = 1050.0,
+        V_gas: float = 150.0,
+        T_ad: float = 315.15,
+        name: Optional[str] = None,
+        Q_substrates: Optional[list] = None,
+        k_L_a: Optional[float] = None,
+    ) -> (ADM1daDigester, str):
+        """
+        Add an ADM1da digester component to the plant.
+
+        The digester's influent DataFrame, influent density, and
+        steady-state initial state are derived automatically from the
+        attached :class:`ADM1daFeedstock` and the given ``Q_substrates``.
+        A gas storage is auto-created and connected.
+
+        Args:
+            digester_id: Unique identifier for this digester
+            V_liq: Liquid volume in m³ (default: 1050.0)
+            V_gas: Gas headspace volume in m³ (default: 150.0)
+            T_ad: Operating temperature in K (default: 315.15 = 42 °C)
+            name: Human-readable name (optional)
+            Q_substrates: Substrate feed rates [m³/d], one entry per
+                substrate slot in the feedstock (up to 10 slots).
+            k_L_a: Optional override of the gas-liquid mass-transfer
+                coefficient [1/d].  If ``None``, the ADM1da default
+                temperature-correlated value is used.
+
+        Returns:
+            Tuple ``(digester, state_info)``.
+
+        Example:
+            >>> fs = ADM1daFeedstock(["maize_silage_milk_ripeness", "swine_manure"])
+            >>> cfg = PlantConfigurator(plant, fs)
+            >>> dig, _ = cfg.add_adm1da_digester(
+            ...     "main_digester",
+            ...     V_liq=1050.0, V_gas=150.0, T_ad=315.15,
+            ...     Q_substrates=[11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0],
+            ... )
+        """
+        digester = ADM1daDigester(
+            component_id=digester_id,
+            feedstock=self.feedstock,
+            V_liq=V_liq,
+            V_gas=V_gas,
+            T_ad=T_ad,
+            name=name or digester_id,
+        )
+
+        if k_L_a is not None:
+            digester.adm1._calibration_params["k_L_a"] = float(k_L_a)
+
+        if Q_substrates is None:
+            Q_substrates = [0.0] * 10
+
+        digester.initialize({"Q_substrates": Q_substrates})
+        state_info = "  - Initial state: Auto-built steady-state from feedstock\n"
+
+        self.plant.add_component(digester)
+
+        # Automatic gas storage + connection (same pattern as add_digester)
+        storage_id = f"{digester_id}_storage"
+        storage = GasStorage(
+            component_id=storage_id,
+            storage_type="membrane",
+            capacity_m3=max(50.0, V_gas),
+            name=f"{name or digester_id} Gas Storage",
+        )
+        self.plant.add_component(storage)
         self.connect(digester_id, storage_id, "gas")
 
         return digester, state_info

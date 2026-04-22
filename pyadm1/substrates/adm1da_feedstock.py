@@ -35,10 +35,14 @@ Calculation overview
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, fields
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Dict, List, Sequence, Union
 
 import numpy as np
 import pandas as pd
+
+# Maximum number of substrates that can be fed simultaneously (matches ADM1
+# convention in pyadm1.substrates.feedstock.Feedstock.get_influent_dataframe).
+MAX_SUBSTRATES = 10
 
 # Default location of ADM1da substrate XML files
 _DEFAULT_XML_DIR = Path(__file__).parent.parent.parent / "data" / "substrates" / "adm1da"
@@ -357,106 +361,158 @@ class SubstrateRegistry:
 # ---------------------------------------------------------------------------
 
 
+_SubstrateInput = Union[ADM1daSubstrateParams, str, Path]
+
+
 class ADM1daFeedstock:
     """
     Computes ADM1da influent concentrations from substrate characterization.
 
-    Accepts either an ``ADM1daSubstrateParams`` object (obtained from
-    ``load_substrate_xml``) or a path to an XML file.
+    Accepts either a single substrate (``ADM1daSubstrateParams``, XML path)
+    or a list of up to ``MAX_SUBSTRATES`` substrates for co-digestion.
+    In multi-substrate mode the influent DataFrame is generated from a
+    volumetric-flow-weighted blend of per-substrate concentrations — the
+    same convention used by the ADM1 ``Feedstock`` class.
 
-    Usage
-    -----
+    Usage (single substrate)
+    ------------------------
     >>> from pyadm1.substrates import ADM1daFeedstock, load_substrate_xml
     >>> sub = load_substrate_xml("data/substrates/adm1da/maize_silage_milk_ripeness.xml")
     >>> fs = ADM1daFeedstock(sub, feeding_freq=48, total_simtime=60)
     >>> df = fs.get_influent_dataframe(Q=15.0)
 
-    Or using the registry shortcut:
-
-    >>> from pyadm1.substrates import SubstrateRegistry, ADM1daFeedstock
+    Usage (co-digestion, up to 10 substrates)
+    -----------------------------------------
+    >>> from pyadm1.substrates import ADM1daFeedstock, SubstrateRegistry
     >>> reg = SubstrateRegistry()
-    >>> fs = ADM1daFeedstock(reg.get("swine_manure"))
-    >>> df = fs.get_influent_dataframe(Q=10.0)
+    >>> fs = ADM1daFeedstock(
+    ...     [reg.get("maize_silage_milk_ripeness"), reg.get("swine_manure")],
+    ...     feeding_freq=24,
+    ...     total_simtime=160,
+    ... )
+    >>> Q = [11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0]  # m³/d, up to 10 slots
+    >>> df = fs.get_influent_dataframe(Q=Q)
     """
 
     def __init__(
         self,
-        substrate: Union[ADM1daSubstrateParams, str, Path],
+        substrates: Union[_SubstrateInput, Sequence[_SubstrateInput]],
         feeding_freq: int = 48,
         total_simtime: int = 60,
     ) -> None:
         """
         Parameters
         ----------
-        substrate : ADM1daSubstrateParams | str | Path
-            Substrate data object **or** path to a substrate XML file.
+        substrates : ADM1daSubstrateParams | str | Path | list of those
+            A single substrate object/XML path, or a list of up to
+            ``MAX_SUBSTRATES`` substrates (or XML paths) to co-digest.
         feeding_freq : int
             Time between feeding events [hours].
         total_simtime : int
             Total simulation duration [days].
         """
-        if isinstance(substrate, (str, Path)):
-            substrate = load_substrate_xml(substrate)
-        self._sub = substrate
+        # Detect multi-substrate vs single-substrate input and normalise
+        # everything to an internal list representation.
+        if isinstance(substrates, (list, tuple)):
+            if len(substrates) == 0:
+                raise ValueError("At least one substrate must be provided.")
+            if len(substrates) > MAX_SUBSTRATES:
+                raise ValueError(f"Up to {MAX_SUBSTRATES} substrates are supported; got {len(substrates)}.")
+            self._multi = True
+            raw_subs = list(substrates)
+        else:
+            self._multi = False
+            raw_subs = [substrates]
+
+        self._subs: List[ADM1daSubstrateParams] = [self._resolve_substrate(item) for item in raw_subs]
         self._simtime = np.arange(0, total_simtime, float(feeding_freq) / 24.0)
 
-        # Pre-compute once; reused for every get_influent_dataframe call
-        self._density = self._calc_density()
-        self._conc = self._calc_concentrations()
+        # Pre-compute once per substrate; reused for every get_influent_dataframe call
+        self._densities: List[float] = [self._calc_density(s) for s in self._subs]
+        self._conc_list: List[dict] = [self._calc_concentrations(s, rho) for s, rho in zip(self._subs, self._densities)]
 
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
 
-    def get_influent_dataframe(self, Q: Union[float, List[float]]) -> pd.DataFrame:
+    def get_influent_dataframe(self, Q: Union[float, Sequence[float]]) -> pd.DataFrame:
         """
         Generate an ADM1da influent DataFrame for the full simulation period.
 
-        The substrate concentrations are constant over time (steady-state
-        feed composition assumption).  Pass the result to
+        Substrate concentrations are constant in time (steady-state feed
+        composition assumption).  Pass the result to
         ``ADM1da.set_influent_dataframe()``.
 
         Parameters
         ----------
-        Q : float or List[float]
-            Total volumetric substrate flow rate(s) [m³/d].
+        Q : float or sequence of float
+            Volumetric flow rates [m³/d].
+
+            * Single-substrate mode: a scalar (or 1-element list).
+            * Multi-substrate mode: a list with one flow rate per substrate.
+              May include trailing zeros up to ``MAX_SUBSTRATES`` slots
+              (matching the ADM1 ``Feedstock`` convention), e.g.
+              ``[11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0]``.
 
         Returns
         -------
         pd.DataFrame
             Columns match ``INFLUENT_COLUMNS`` (37 state variables + Q).
         """
-        q_total = float(np.sum(Q))
-        row = dict(self._conc)
+        Q_arr = self._validate_Q(Q)
+        q_total = float(np.sum(Q_arr))
+        row = self._blended_concentrations(Q_arr)
         row["Q"] = q_total
 
         df = pd.DataFrame([row] * len(self._simtime))
         return df[INFLUENT_COLUMNS]
 
+    # ---- Single-substrate convenience accessors -----------------------
+
     @property
     def substrate(self) -> ADM1daSubstrateParams:
-        """The substrate characterization data."""
-        return self._sub
+        """Single substrate (raises if multiple substrates are configured)."""
+        self._require_single("substrate", hint="use .substrates[i]")
+        return self._subs[0]
 
     @property
     def density(self) -> float:
-        """Estimated fresh-matter density [kg/m³]."""
-        return self._density
+        """Fresh-matter density [kg/m³] (single-substrate mode)."""
+        self._require_single("density", hint="use .densities[i] or .blended_density(Q)")
+        return self._densities[0]
 
     @property
     def concentrations(self) -> dict:
-        """ADM1da influent concentrations [kg COD/m³ or kmol/m³]."""
-        return dict(self._conc)
+        """Influent concentrations [kg COD/m³ or kmol/m³] (single-substrate mode)."""
+        self._require_single("concentrations", hint="use .concentrations_list[i] or .blended_concentrations(Q)")
+        return dict(self._conc_list[0])
 
-    def vs_content(self) -> float:
-        """Volatile-solids content of the substrate [kg VS/m³]."""
-        s = self._sub
+    # ---- Multi-substrate accessors ------------------------------------
+
+    @property
+    def substrates(self) -> List[ADM1daSubstrateParams]:
+        """All configured substrates, in feed-index order."""
+        return list(self._subs)
+
+    @property
+    def densities(self) -> List[float]:
+        """Per-substrate fresh-matter densities [kg/m³]."""
+        return list(self._densities)
+
+    @property
+    def concentrations_list(self) -> List[dict]:
+        """Per-substrate influent concentrations."""
+        return [dict(c) for c in self._conc_list]
+
+    def vs_content(self, index: int = 0) -> float:
+        """Volatile-solids content of the i-th substrate [kg VS/m³]."""
+        s = self._subs[index]
         fTS = s.TS / 1000.0
-        return fTS * (1.0 - s.fRA) * self._density
+        return fTS * (1.0 - s.fRA) * self._densities[index]
 
-    def total_cod(self) -> float:
-        """Total COD concentration (particulate + dissolved) [kg COD/m³]."""
-        c = self._conc
+    def total_cod(self, index: int = 0) -> float:
+        """Total COD concentration of the i-th substrate [kg COD/m³]."""
+        c = self._conc_list[index]
         return (
             c["X_PS_ch"]
             + c["X_PS_pr"]
@@ -469,27 +525,109 @@ class ADM1daFeedstock:
             + c["S_I"]
         )
 
-    def bmp_theoretical(self) -> float:
+    def bmp_theoretical(self, index: int = 0) -> float:
         """
-        Theoretical biomethane potential from COD stoichiometry [Nm³ CH₄/t VS].
-
-        Assumes 100 % conversion of degradable COD.  The given BMP is lower
-        due to incomplete biodegradation and kinetic limitations.
+        Theoretical biomethane potential of the i-th substrate from COD
+        stoichiometry [Nm³ CH₄/t VS].  Assumes 100 % conversion of
+        degradable COD — the given BMP is lower due to incomplete
+        biodegradation and kinetic limitations.
         """
-        c = self._conc
-        s = self._sub
+        c = self._conc_list[index]
+        s = self._subs[index]
         th_yield = s.V_m / (s.CH4_cod_2_mol / 1000.0)  # Nm³ CH4 / kg COD
         degradable_cod = c["X_PS_ch"] + c["X_PS_pr"] + c["X_PS_li"] + c["X_PF_ch"] + c["X_PF_pr"] + c["X_PF_li"] + c["S_ac"]
-        vs = self.vs_content()
+        vs = self.vs_content(index)
         if vs <= 0.0:
             return 0.0
         return degradable_cod * th_yield / vs * 1000.0  # Nm³ CH4 / t VS
+
+    def blended_density(self, Q: Union[float, Sequence[float]]) -> float:
+        """Volumetric-flow-weighted fresh-matter density [kg/m³]."""
+        Q_arr = self._validate_Q(Q)
+        q_tot = float(np.sum(Q_arr))
+        if q_tot <= 0.0:
+            return 1000.0
+        return float(np.dot(Q_arr, self._densities) / q_tot)
+
+    def blended_vs_content(self, Q: Union[float, Sequence[float]]) -> float:
+        """Volumetric-flow-weighted VS content [kg VS/m³]."""
+        Q_arr = self._validate_Q(Q)
+        q_tot = float(np.sum(Q_arr))
+        if q_tot <= 0.0:
+            return 0.0
+        vs = np.array([self.vs_content(i) for i in range(len(self._subs))])
+        return float(np.dot(Q_arr, vs) / q_tot)
+
+    def blended_concentrations(self, Q: Union[float, Sequence[float]]) -> dict:
+        """Volumetric-flow-weighted influent concentrations (no Q field)."""
+        Q_arr = self._validate_Q(Q)
+        return self._blended_concentrations(Q_arr)
 
     # ------------------------------------------------------------------
     # Private helpers
     # ------------------------------------------------------------------
 
-    def _calc_density(self) -> float:
+    @staticmethod
+    def _resolve_substrate(item: _SubstrateInput) -> ADM1daSubstrateParams:
+        """
+        Accept a params object, a filesystem path, or a bare substrate ID
+        (XML file stem in the default ``data/substrates/adm1da/`` directory).
+        """
+        if isinstance(item, ADM1daSubstrateParams):
+            return item
+        p = Path(item)
+        if p.exists():
+            return load_substrate_xml(p)
+        # Treat as a substrate ID resolvable from the default XML directory
+        reg_path = _DEFAULT_XML_DIR / f"{p.stem}.xml"
+        if reg_path.exists():
+            return load_substrate_xml(reg_path)
+        raise FileNotFoundError(f"Substrate '{item}' not found as a path or as an ID in {_DEFAULT_XML_DIR}")
+
+    def _require_single(self, prop: str, hint: str) -> None:
+        if len(self._subs) != 1:
+            raise ValueError(
+                f"'{prop}' is a single-substrate accessor; this feedstock has " f"{len(self._subs)} substrates. {hint}."
+            )
+
+    def _validate_Q(self, Q: Union[float, Sequence[float]]) -> np.ndarray:
+        """Normalise *Q* to a per-substrate numpy array, padding trailing zeros."""
+        if np.isscalar(Q):
+            Q_arr = np.array([float(Q)], dtype=float)
+        else:
+            Q_arr = np.asarray(list(Q), dtype=float)
+
+        n_subs = len(self._subs)
+        if Q_arr.size < n_subs:
+            Q_arr = np.concatenate([Q_arr, np.zeros(n_subs - Q_arr.size)])
+        elif Q_arr.size > n_subs:
+            # Allow trailing zero slots (e.g. up to MAX_SUBSTRATES placeholders)
+            extras = Q_arr[n_subs:]
+            if np.any(extras != 0.0):
+                raise ValueError(
+                    f"Q has {Q_arr.size} entries with non-zero values beyond "
+                    f"the {n_subs} configured substrates: {list(extras)}"
+                )
+            Q_arr = Q_arr[:n_subs]
+        return Q_arr
+
+    def _blended_concentrations(self, Q_arr: np.ndarray) -> dict:
+        """Flow-weighted blend of per-substrate concentrations."""
+        q_tot = float(np.sum(Q_arr))
+        keys = INFLUENT_COLUMNS[:-1]  # exclude "Q"
+        if q_tot <= 0.0:
+            return {k: 0.0 for k in keys}
+        row = {k: 0.0 for k in keys}
+        for q, conc in zip(Q_arr, self._conc_list):
+            if q <= 0.0:
+                continue
+            w = q / q_tot
+            for k in keys:
+                row[k] += conc.get(k, 0.0) * w
+        return row
+
+    @staticmethod
+    def _calc_density(s: ADM1daSubstrateParams) -> float:
         """
         Estimate fresh-matter density from component densities [kg/m³].
 
@@ -502,8 +640,6 @@ class ADM1daFeedstock:
         mixing rule is used:
             1/ρ_FM = Σ (mass_fraction_i / ρ_i)
         """
-        s = self._sub
-
         # Liquid substrate convention (SIMBA# biogas 4.2)
         if s.TS < 200.0:
             return 1000.0
@@ -532,7 +668,8 @@ class ADM1daFeedstock:
 
         return 1.0 / max(v_spec, 1.0e-10)
 
-    def _calc_concentrations(self) -> dict:
+    @staticmethod
+    def _calc_concentrations(s: ADM1daSubstrateParams, rho: float) -> dict:
         """
         Compute all ADM1da influent concentrations per m³ of fresh substrate.
 
@@ -542,8 +679,6 @@ class ADM1daFeedstock:
             Keys match INFLUENT_COLUMNS (without Q).
             Organic fractions in kg COD/m³; ionic species in kmol/m³.
         """
-        s = self._sub
-        rho = self._density
         fTS = s.TS / 1000.0
 
         # --- Organic dry-mass fractions per kg FM ---

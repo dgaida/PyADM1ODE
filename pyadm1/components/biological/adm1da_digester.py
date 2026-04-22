@@ -108,19 +108,43 @@ class ADM1daDigester(DigesterBase):
 
         Keys accepted in *initial_state* mirror :class:`Digester`:
 
-        * ``adm1_state`` : list of 41 floats (ADM1da state vector)
-        * ``Q_substrates`` : list of substrate feed rates [m³/d]
+        * ``adm1_state`` : list of 41 floats (ADM1da state vector).
+          If omitted and ``Q_substrates`` is given together with an
+          :class:`ADM1daFeedstock`, a pre-inoculated steady-state vector at
+          pH 7 is computed automatically from the blended influent.
+        * ``Q_substrates`` : list of substrate feed rates [m³/d].  When
+          supplied together with an :class:`ADM1daFeedstock`, the underlying
+          ADM1da solver's influent DataFrame and density are set directly
+          from the feedstock — no manual blending required.
         * ``gas_storage`` : dict forwarded to the attached gas storage
         """
         if initial_state is None:
-            self.adm1_state = [0.01] * _ADM1DA_STATE_SIZE
-        else:
-            if "adm1_state" in initial_state:
-                self.adm1_state = list(initial_state["adm1_state"])
+            initial_state = {}
+
+        # --- Substrate feed: auto-wire the influent DataFrame/density ---
+        Q_substrates = initial_state.get("Q_substrates")
+        if Q_substrates is not None:
+            self.Q_substrates = list(Q_substrates)
+
+            # Auto-wire the influent DataFrame and density from an ADM1daFeedstock
+            from ...substrates.adm1da_feedstock import ADM1daFeedstock
+
+            if isinstance(self.feedstock, ADM1daFeedstock):
+                self.adm1.set_influent_dataframe(self.feedstock.get_influent_dataframe(Q=self.Q_substrates))
+                self.adm1.set_influent_density(self.feedstock.blended_density(self.Q_substrates))
+
+        # --- Biological state vector ---
+        if "adm1_state" in initial_state and initial_state["adm1_state"] is not None:
+            self.adm1_state = list(initial_state["adm1_state"])
+        elif Q_substrates is not None:
+            from ...substrates.adm1da_feedstock import ADM1daFeedstock
+
+            if isinstance(self.feedstock, ADM1daFeedstock):
+                self.adm1_state = self._build_pre_inoculated_state(self.Q_substrates)
             else:
                 self.adm1_state = [0.01] * _ADM1DA_STATE_SIZE
-            if "Q_substrates" in initial_state:
-                self.Q_substrates = list(initial_state["Q_substrates"])
+        else:
+            self.adm1_state = [0.01] * _ADM1DA_STATE_SIZE
 
         self.state = {
             "adm1_state": self.adm1_state,
@@ -133,13 +157,134 @@ class ADM1daDigester(DigesterBase):
             "TAC": 0.0,
         }
 
-        gs_state = initial_state.get("gas_storage") if initial_state else None
+        gs_state = initial_state.get("gas_storage")
         try:
             self.gas_storage.initialize(gs_state)
         except Exception:
             self.gas_storage.initialize()
 
         self._initialized = True
+
+    def _build_pre_inoculated_state(self, Q_substrates) -> list:
+        """
+        Build a pre-inoculated initial ADM1da state from the feedstock blend.
+
+        Particulate pools are seeded at their retention-factor steady state;
+        dissolved species correspond to a healthy digester at pH 7; biomass
+        concentrations sit above the bistability washout threshold so that
+        methanogenesis is active from t = 0.  ``S_cation`` is computed from
+        the charge balance to enforce pH = 7 exactly.
+        """
+        fs = self.feedstock
+        conc = fs.blended_concentrations(Q_substrates)
+        Q_total = float(np.sum(Q_substrates))
+        V_liq = float(self.V_liq)
+        T_ad = float(self.T_ad)
+
+        # --- Acid-base constants (temperature-corrected to T_ad) ---
+        R_gas = 0.08314  # bar·m³·kmol⁻¹·K⁻¹
+        T_base = 298.15  # 25 °C reference
+        K_a_va = 10.0**-4.86
+        K_a_bu = 10.0**-4.82
+        K_a_pro = 10.0**-4.88
+        K_a_ac = 10.0**-4.76
+        K_a_co2 = 10.0**-6.35
+        K_a_IN = 10.0**-9.25
+        K_w = 1.0e-14 * np.exp((55900.0 / (100.0 * R_gas)) * (1.0 / T_base - 1.0 / T_ad))
+
+        # --- Target pH 7 and typical healthy-digester dissolved concentrations ---
+        S_H_0 = 10.0**-7.0
+        S_ac_0, S_pro_0, S_bu_0, S_va_0 = 0.10, 0.02, 0.01, 0.01  # kg COD/m³
+        S_co2_0 = 0.18  # S_IC [kmol C/m³]
+        S_nh4_0 = conc.get("S_nh4", 0.0) * 1.5
+
+        # --- Ion concentrations at pH 7 ---
+        S_ac_ion_0 = K_a_ac / (K_a_ac + S_H_0) * S_ac_0
+        S_pro_ion_0 = K_a_pro / (K_a_pro + S_H_0) * S_pro_0
+        S_bu_ion_0 = K_a_bu / (K_a_bu + S_H_0) * S_bu_0
+        S_va_ion_0 = K_a_va / (K_a_va + S_H_0) * S_va_0
+        S_nh3_0 = K_a_IN / (K_a_IN + S_H_0) * S_nh4_0
+        S_hco3_0 = K_a_co2 * S_co2_0 / (S_H_0 + K_a_co2)
+
+        vfa_kmol_0 = S_ac_ion_0 / 64.0 + S_pro_ion_0 / 112.0 + S_bu_ion_0 / 160.0 + S_va_ion_0 / 208.0
+
+        # S_anion conservative tracer from influent; S_cation closes charge balance at pH 7.
+        S_anion_0 = conc.get("S_anion", 0.0)
+        S_cation_0 = S_anion_0 + S_hco3_0 + vfa_kmol_0 + K_w / S_H_0 - S_nh4_0 + S_nh3_0 - S_H_0
+
+        # --- Particulate pools at retention-factor steady state ---
+        # SIMBA# kinetics at 35 °C: k_dis_PF=0.4, k_dis_PS=0.04, k_hyd=4.0 d⁻¹.
+        D = Q_total / V_liq if V_liq > 0.0 else 0.0
+        dT = T_ad - 308.15
+        k_dis_PF = 0.4 * (1.035**dT)
+        k_dis_PS = 0.04 * (1.035**dT)
+        k_hyd = 4.0 * (1.07**dT)
+
+        ret_PF = D / (D + k_dis_PF) if (D + k_dis_PF) > 0.0 else 0.0
+        ret_PS = D / (D + k_dis_PS) if (D + k_dis_PS) > 0.0 else 0.0
+
+        X_PF_ch_ss = conc.get("X_PF_ch", 0.0) * ret_PF
+        X_PF_pr_ss = conc.get("X_PF_pr", 0.0) * ret_PF
+        X_PF_li_ss = conc.get("X_PF_li", 0.0) * ret_PF
+        X_PS_ch_ss = conc.get("X_PS_ch", 0.0) * ret_PS
+        X_PS_pr_ss = conc.get("X_PS_pr", 0.0) * ret_PS
+        X_PS_li_ss = conc.get("X_PS_li", 0.0) * ret_PS
+
+        # X_S pools at SS: produced by disintegration, consumed by hydrolysis (fXI = 0).
+        denom_hyd = D + k_hyd
+        X_S_ch_0 = (k_dis_PF * X_PF_ch_ss + k_dis_PS * X_PS_ch_ss) / denom_hyd
+        X_S_pr_0 = (k_dis_PF * X_PF_pr_ss + k_dis_PS * X_PS_pr_ss) / denom_hyd
+        X_S_li_0 = (k_dis_PF * X_PF_li_ss + k_dis_PS * X_PS_li_ss) / denom_hyd
+
+        X_I_0 = conc.get("X_I", 0.0)
+
+        # Gas phase (realistic partial pressures for a running digester)
+        p_h2_0, p_ch4_0, p_co2_0 = 1.02e-5, 0.65, 0.33
+        p_tot_0 = p_h2_0 + p_ch4_0 + p_co2_0
+
+        return [
+            0.01,
+            0.001,
+            0.05,  # 0-2   S_su, S_aa, S_fa
+            S_va_0,
+            S_bu_0,
+            S_pro_0,
+            S_ac_0,  # 3-6   S_va, S_bu, S_pro, S_ac
+            1.0e-7,
+            1.0e-4,  # 7-8   S_h2, S_ch4
+            S_co2_0,
+            S_nh4_0,
+            0.0,  # 9-11  S_IC, S_nh4, S_I
+            X_PS_ch_ss,
+            X_PS_pr_ss,
+            X_PS_li_ss,  # 12-14 X_PS_*
+            X_PF_ch_ss,
+            X_PF_pr_ss,
+            X_PF_li_ss,  # 15-17 X_PF_*
+            X_S_ch_0,
+            X_S_pr_0,
+            X_S_li_0,  # 18-20 X_S_*
+            X_I_0,  # 21    X_I
+            0.50,
+            0.50,
+            0.30,
+            0.40,
+            0.30,
+            1.20,
+            0.30,  # 22-28 biomass
+            S_cation_0,
+            S_anion_0,  # 29-30
+            S_va_ion_0,
+            S_bu_ion_0,
+            S_pro_ion_0,
+            S_ac_ion_0,
+            S_hco3_0,
+            S_nh3_0,  # 31-36
+            p_h2_0,
+            p_ch4_0,
+            p_co2_0,
+            p_tot_0,  # 37-40 gas phase
+        ]
 
     # ------------------------------------------------------------------
     # Helpers
