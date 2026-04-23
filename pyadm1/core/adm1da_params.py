@@ -225,8 +225,6 @@ class ADM1daParams:
         K_a_IN = 10.0**-9.25 * np.exp((51965.0 / (100.0 * R)) * (1.0 / T_base - 1.0 / T_ad))
 
         # Temperature offset from reference 35 °C [K = °C offset]
-        # Note: only used for K_I_h2_* and K_I_ac_* corrections.
-        # K_I_nh3 and K_I_nh3_pro are NOT temperature-corrected (reference values used).
         dT_C = T_ad - 308.15
 
         return {
@@ -246,16 +244,10 @@ class ADM1daParams:
             "k_A_B": 1.0e8,
             # N-limitation half-saturation constant [kmol N m⁻³]
             "K_S_IN": 1.0e-4,
-            # NH3 inhibition constant [kmol N m⁻³] — NO temperature correction.
-            # Standard ADM1 (Batstone 2002) specifies K_I_nh3 = 0.0018 at 35 °C
-            # without T-correction.  Applying exp(+0.086 × ΔT) increases the threshold
-            # at higher temperatures (less inhibition), which is physically incorrect
-            # for a toxicity threshold and causes the acetoclastic methanogen population
-            # to be systematically under-inhibited at operating temperatures above 35 °C.
-            # At 42 °C with S_nh3 ≈ 0.009 kmol/m³, the corrected value (3.28e-3) gives
-            # I_nh3 ≈ 0.27 (stable X_ac), while the reference value (1.8e-3) gives
-            # I_nh3 ≈ 0.17 (X_ac declines → VFA accumulation matching SIMBA# behaviour).
-            "K_I_nh3": 0.0018,
+            # NH3 inhibition constant for X_ac [kmol N m⁻³] — T-corrected per
+            # SIMBA# biogas 4.2 tutorial §6: K_I_NH3_XAC ~ exp(0.086·(T-35)).
+            # Reference value 0.0018 at 35 °C (Batstone 2002 / SIMBA# Table 6).
+            "K_I_nh3": 0.0018 * np.exp(0.086 * dT_C),
             # H2 inhibition constants [kg COD m⁻³] — T-corrected (θ_exp=0.080, SIMBA# Table 6)
             "K_I_h2_fa": 5.0e-6 * np.exp(0.080 * dT_C),
             "K_I_h2_c4": 1.0e-5 * np.exp(0.080 * dT_C),
@@ -266,9 +258,10 @@ class ADM1daParams:
             # KI_hac  = 0.1547 kg COD/m³ /  64 kg COD/kmol = 2.417e-3 kmol/m³
             "K_IH_pro": 8.0e-4,  # propionic acid → inhibits X_c4 and X_pro
             "K_IH_ac": 2.417e-3,  # acetic acid    → inhibits X_ac
-            # NH3 inhibition for propionate degraders [kmol N m⁻³] — no T-correction
-            # (same rationale as K_I_nh3 above; standard ADM1 reference value)
-            "K_I_nh3_pro": 0.0019,  # for propionate degraders (X_pro)
+            # NH3 inhibition for propionate degraders [kmol N m⁻³] — T-corrected
+            # per SIMBA# biogas 4.2 tutorial §6: K_I_NH3_XPRO ~ exp(0.060·(T-35)).
+            # Reference value 0.0019 at 35 °C (SIMBA# Table 6).
+            "K_I_nh3_pro": 0.0019 * np.exp(0.060 * dT_C),
             # CO2 half-saturation for H2 methanogens [kmol C m⁻³]
             "K_S_co2_h2": 5.0e-5,
             # Acetate competitive inhibition [kg COD m⁻³] — T-corrected (θ_exp=0.080, SIMBA# Table 6)

@@ -465,9 +465,15 @@ class ADM1da(ADMBase):
         I_h2_c4 = ip["K_I_h2_c4"] / (ip["K_I_h2_c4"] + S_h2)
         I_h2_pro = ip["K_I_h2_pro"] / (ip["K_I_h2_pro"] + S_h2)
 
-        # NH3 inhibition (X_ac and X_pro separately, SIMBA# adds K_I_nh3_pro)
-        I_nh3 = ip["K_I_nh3"] / (ip["K_I_nh3"] + S_nh3)
-        I_nh3_pro = ip["K_I_nh3_pro"] / (ip["K_I_nh3_pro"] + S_nh3)
+        # NH3 inhibition (X_ac and X_pro separately) — squared Hill form per
+        # SIMBA# biogas 4.2 tutorial §7.4–7.7: K^2/(K^2 + S_nh3^2). Sharper
+        # cut-off above K than the linear ADM1 form; required to reproduce
+        # SIMBA# acetate/propionate accumulation at thermophilic operation.
+        K_nh3_ac_sq = ip["K_I_nh3"] ** 2
+        K_nh3_pro_sq = ip["K_I_nh3_pro"] ** 2
+        S_nh3_sq = S_nh3 * S_nh3
+        I_nh3 = K_nh3_ac_sq / (K_nh3_ac_sq + S_nh3_sq)
+        I_nh3_pro = K_nh3_pro_sq / (K_nh3_pro_sq + S_nh3_sq)
 
         # CO2 limitation for H2 methanogens (SIMBA#: inorganic carbon as CO2 source)
         I_co2_h2 = S_co2 / (ip["K_S_co2_h2"] + S_co2 + 1.0e-20)

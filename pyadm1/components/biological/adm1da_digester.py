@@ -43,6 +43,7 @@ from ...core.adm1da import (
     _IDX_P_CH4,
     _IDX_P_CO2,
     _IDX_P_TOTAL,
+    _IDX_S_CO2,
     _IDX_S_NH4,
     _IDX_S_NH3,
     _IDX_S_HCO3,
@@ -301,7 +302,7 @@ class ADM1daDigester(DigesterBase):
         return True
 
     def _compute_indicators(self) -> Dict[str, float]:
-        """Compute pH and VFA directly from the ADM1da state (no DLL)."""
+        """Compute pH, VFA and TAC from the ADM1da state per SIMBA# §5.3.7."""
         st = self.adm1_state
         inhib = ADM1daParams.get_inhibition_params(self.adm1._R, self.adm1._T_base, self.adm1._T_ad)
         try:
@@ -321,14 +322,53 @@ class ADM1daDigester(DigesterBase):
         except Exception:
             pH = 7.0
 
-        # VFA as total volatile fatty acids expressed in g HAc-eq/L
-        # (sum of COD-based acids divided by their COD factors, then × M_HAc)
-        # Simple COD-weighted approximation: just report sum(S_va..S_ac) in g COD/L
-        vfa = float(st[_IDX_S_VA] + st[_IDX_S_BU] + st[_IDX_S_PRO] + st[_IDX_S_AC])
+        # --- VFA [kg HAc-eq/m³ = g HAc-eq/L] per SIMBA# §5.3.7 ------------
+        # VFA = M_HAc × Σ (S_i_total [kg COD/m³] / COD_MOL_i [g COD/mol])
+        M_HAc = 60.0
+        COD_AC, COD_PRO, COD_BU, COD_VA = 64.0, 112.0, 160.0, 208.0
+        vfa = M_HAc * (
+            float(st[_IDX_S_AC]) / COD_AC
+            + float(st[_IDX_S_PRO]) / COD_PRO
+            + float(st[_IDX_S_BU]) / COD_BU
+            + float(st[_IDX_S_VA]) / COD_VA
+        )
 
-        # TAC not natively available in ADM1da; report HCO3⁻ as carbonate alk proxy
-        # (kmol/m³ → g CaCO3/L: ×100 g/mol → ×100 kg/m³ → ×0.1 g/L equivalent)
-        tac = float(st[_IDX_S_HCO3]) * 100.0  # rough proxy, g CaCO3/L
+        # --- TAC [kg CaCO3/m³] per SIMBA# §5.3.7 (titration endpoint pH 5) --
+        # Acid demand to titrate from current pH down to pH 5, expressed in
+        # CaCO3 equivalents. Prefactor = M_CaCO3 / 2 = 50 (kg/keq), because
+        # CaCO3 carries 2 equivalents of acid-neutralising capacity per mole.
+        # Each weak-base species i contributes (A-_current − α_A(pH 5) · A_total)
+        # in [kmol/m³], plus the strong-anion / strong-cation imbalance.
+        H_pH5 = 1.0e-5
+        a_nh4 = inhib["K_a_IN"] / (H_pH5 + inhib["K_a_IN"])
+        a_co2 = inhib["K_a_co2"] / (H_pH5 + inhib["K_a_co2"])
+        a_ac = inhib["K_a_ac"] / (H_pH5 + inhib["K_a_ac"])
+        a_pro = inhib["K_a_pro"] / (H_pH5 + inhib["K_a_pro"])
+        a_bu = inhib["K_a_bu"] / (H_pH5 + inhib["K_a_bu"])
+        a_va = inhib["K_a_va"] / (H_pH5 + inhib["K_a_va"])
+
+        total_N = float(st[_IDX_S_NH4]) + float(st[_IDX_S_NH3])
+        total_IC = float(st[_IDX_S_CO2])
+        total_ac_mol = float(st[_IDX_S_AC]) / COD_AC
+        total_pro_mol = float(st[_IDX_S_PRO]) / COD_PRO
+        total_bu_mol = float(st[_IDX_S_BU]) / COD_BU
+        total_va_mol = float(st[_IDX_S_VA]) / COD_VA
+        ion_ac_mol = float(st[_IDX_S_AC_ION]) / COD_AC
+        ion_pro_mol = float(st[_IDX_S_PRO_ION]) / COD_PRO
+        ion_bu_mol = float(st[_IDX_S_BU_ION]) / COD_BU
+        ion_va_mol = float(st[_IDX_S_VA_ION]) / COD_VA
+
+        tac_mol = (
+            (float(st[_IDX_S_NH3]) - a_nh4 * total_N)
+            + (float(st[_IDX_S_HCO3]) - a_co2 * total_IC)
+            + (ion_ac_mol - a_ac * total_ac_mol)
+            + (ion_pro_mol - a_pro * total_pro_mol)
+            + (ion_bu_mol - a_bu * total_bu_mol)
+            + (ion_va_mol - a_va * total_va_mol)
+            + float(st[_IDX_S_ANION])
+            - float(st[_IDX_S_CATION])
+        )
+        tac = 50.0 * tac_mol
         return {"pH": pH, "VFA": vfa, "TAC": tac}
 
     # ------------------------------------------------------------------

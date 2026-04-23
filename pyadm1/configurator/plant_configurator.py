@@ -149,6 +149,7 @@ class PlantConfigurator:
         name: Optional[str] = None,
         Q_substrates: Optional[list] = None,
         k_L_a: Optional[float] = None,
+        adm1_state: Optional[list] = None,
     ) -> (ADM1daDigester, str):
         """
         Add an ADM1da digester component to the plant.
@@ -169,6 +170,10 @@ class PlantConfigurator:
             k_L_a: Optional override of the gas-liquid mass-transfer
                 coefficient [1/d].  If ``None``, the ADM1da default
                 temperature-correlated value is used.
+            adm1_state: Optional 41-element ADM1da initial state vector.
+                When supplied, it replaces the auto-built steady-state
+                vector (useful for seeding the digester from a reference
+                simulation such as SIMBA#).
 
         Returns:
             Tuple ``(digester, state_info)``.
@@ -197,8 +202,13 @@ class PlantConfigurator:
         if Q_substrates is None:
             Q_substrates = [0.0] * 10
 
-        digester.initialize({"Q_substrates": Q_substrates})
-        state_info = "  - Initial state: Auto-built steady-state from feedstock\n"
+        init_kwargs: Dict[str, Any] = {"Q_substrates": Q_substrates}
+        if adm1_state is not None:
+            init_kwargs["adm1_state"] = list(adm1_state)
+            state_info = "  - Initial state: User-supplied 41-element ADM1da vector\n"
+        else:
+            state_info = "  - Initial state: Auto-built steady-state from feedstock\n"
+        digester.initialize(init_kwargs)
 
         self.plant.add_component(digester)
 
