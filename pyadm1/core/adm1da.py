@@ -337,11 +337,21 @@ class ADM1da(ADMBase):
             is updated, which feeds into the volume-balance Q_out calculation.
             If omitted, ``_rho_in`` retains its previous value (default 1000).
         """
-        self._Q = Q
-        if rho is not None and len(rho) == len(Q):
-            q_total = sum(Q)
+        # Convert Q to actual liquid volume flows via the feedstock's
+        # SIMBA# mass-to-volume rule.  When the feedstock uses the default
+        # simba_q_convention=True, a maize-silage slot with Q=11.4 m³/d is
+        # scaled to ~10.05 m³/d actual volume (true fresh-matter density
+        # > water).  The volume balance (q_ad = sum(self._Q)) and the
+        # density-weighted ρ_in must see the same scaled flows.
+        if hasattr(self._feedstock, "actual_Q"):
+            Q_actual = self._feedstock.actual_Q(Q)
+        else:
+            Q_actual = list(Q)
+        self._Q = Q_actual
+        if rho is not None and len(rho) == len(Q_actual):
+            q_total = sum(Q_actual)
             if q_total > 0.0:
-                self._rho_in = sum(q * r for q, r in zip(Q, rho)) / q_total
+                self._rho_in = sum(q * r for q, r in zip(Q_actual, rho)) / q_total
 
         if self._influent_df is not None:
             # Use the externally provided ADM1da influent DataFrame directly.

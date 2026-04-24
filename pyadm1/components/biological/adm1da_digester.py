@@ -178,7 +178,8 @@ class ADM1daDigester(DigesterBase):
         """
         fs = self.feedstock
         conc = fs.blended_concentrations(Q_substrates)
-        Q_total = float(np.sum(Q_substrates))
+        # HRT uses the actual liquid volume flow, not the raw user input.
+        Q_total = float(np.sum(fs.actual_Q(Q_substrates))) if hasattr(fs, "actual_Q") else float(np.sum(Q_substrates))
         V_liq = float(self.V_liq)
         T_ad = float(self.T_ad)
 

@@ -399,6 +399,7 @@ class ADM1daFeedstock:
         substrates: Union[_SubstrateInput, Sequence[_SubstrateInput]],
         feeding_freq: int = 48,
         total_simtime: int = 60,
+        simba_q_convention: bool = True,
     ) -> None:
         """
         Parameters
@@ -410,6 +411,25 @@ class ADM1daFeedstock:
             Time between feeding events [hours].
         total_simtime : int
             Total simulation duration [days].
+        simba_q_convention : bool, default True
+            How to interpret ``Q`` in ``get_influent_dataframe(Q=...)``.
+
+            * ``True`` (default, SIMBA# biogas convention): each Q_i [m³/d]
+              is interpreted as a **mass-equivalent** flow — i.e. SIMBA#
+              internally multiplies by the water density (1000 kg/m³) to
+              get a mass flow in t/d, then divides by the true fresh-matter
+              density to obtain the actual liquid volume added to the
+              reactor.  Effective conversion factor is
+              ``Q_actual_i = Q_input_i · 1000 / ρ_FM_i``.
+              For liquid substrates (TS < 200) ρ_FM ≈ 1000 so no change.
+              For solid substrates like maize silage (ρ_FM ≈ 1134) the
+              actual volume is ~12 % smaller than the user input — this
+              reproduces SIMBA#'s volumetric behaviour so that the same
+              Q value from a SIMBA# study gives the same reactor loading.
+            * ``False``: Q is taken literally as the actual liquid volume
+              added to the reactor [m³/d], with no mass-to-volume
+              conversion.  Use this when you want full control over the
+              volumetric feed and don't care about SIMBA# parity.
         """
         # Detect multi-substrate vs single-substrate input and normalise
         # everything to an internal list representation.
@@ -430,6 +450,15 @@ class ADM1daFeedstock:
         # Pre-compute once per substrate; reused for every get_influent_dataframe call
         self._densities: List[float] = [self._calc_density(s) for s in self._subs]
         self._conc_list: List[dict] = [self._calc_concentrations(s, rho) for s, rho in zip(self._subs, self._densities)]
+
+        # SIMBA# mass-to-volume conversion factors (1 per substrate).
+        # For each substrate, a user-supplied Q_i is scaled by this factor
+        # before being used as the actual liquid volume flow.
+        self._simba_q_convention = bool(simba_q_convention)
+        if self._simba_q_convention:
+            self._q_factors: List[float] = [1000.0 / rho for rho in self._densities]
+        else:
+            self._q_factors = [1.0] * len(self._subs)
 
     # ------------------------------------------------------------------
     # Public API
@@ -498,6 +527,30 @@ class ADM1daFeedstock:
     def densities(self) -> List[float]:
         """Per-substrate fresh-matter densities [kg/m³]."""
         return list(self._densities)
+
+    def actual_Q(self, Q: Union[float, Sequence[float]]) -> List[float]:
+        """
+        Return the per-substrate actual liquid volume flows [m³/d].
+
+        Applies the SIMBA# mass-to-volume conversion when the feedstock was
+        created with ``simba_q_convention=True``; otherwise returns *Q* as
+        a list unchanged.  Use this anywhere you need the volumetric feed
+        rate that actually enters the reactor (volume balance, HRT, etc.).
+        """
+        return self._validate_Q(Q).tolist()
+
+    @property
+    def q_conversion_factors(self) -> List[float]:
+        """
+        Per-substrate SIMBA# Q-conversion factors [-].
+
+        With ``simba_q_convention=True``, each user-supplied Q_i is multiplied
+        by this factor to obtain the actual liquid volume added to the reactor.
+        Equals ``1000 / ρ_FM_i`` for solid substrates (< 1.0) and 1.0 for
+        liquid substrates (ρ_FM = 1000 by convention).  All 1.0 when
+        ``simba_q_convention=False``.
+        """
+        return list(self._q_factors)
 
     @property
     def concentrations_list(self) -> List[dict]:
@@ -591,7 +644,12 @@ class ADM1daFeedstock:
             )
 
     def _validate_Q(self, Q: Union[float, Sequence[float]]) -> np.ndarray:
-        """Normalise *Q* to a per-substrate numpy array, padding trailing zeros."""
+        """Normalise *Q* to a per-substrate numpy array, padding trailing zeros.
+
+        When ``simba_q_convention=True`` (constructor default), each Q_i is
+        also scaled by ``1000 / ρ_FM_i`` so that downstream users always see
+        the actual liquid-volume flow rate [m³/d].
+        """
         if np.isscalar(Q):
             Q_arr = np.array([float(Q)], dtype=float)
         else:
@@ -609,7 +667,10 @@ class ADM1daFeedstock:
                     f"the {n_subs} configured substrates: {list(extras)}"
                 )
             Q_arr = Q_arr[:n_subs]
-        return Q_arr
+
+        # Apply SIMBA# mass-to-volume conversion (no-op when factors are 1.0).
+        factors = np.asarray(self._q_factors, dtype=float)
+        return Q_arr * factors
 
     def _blended_concentrations(self, Q_arr: np.ndarray) -> dict:
         """Flow-weighted blend of per-substrate concentrations."""

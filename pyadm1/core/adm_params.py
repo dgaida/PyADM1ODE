@@ -288,9 +288,21 @@ class ADMParams:
         # k_p = 5 * 10 ** 4  # m^3.d^-1.bar^-1 #only for BSM2 AD conditions, recalibrate for other AD cases #gas outlet friction
         k_p = 1 * 10**4
         k_L_a = 200.0  # d^-1 OK in C# implementation there is klAH2, klaCH4, klaCO2, but all are equal to 200
-        K_H_co2 = 1 / (0.0271 * R * T_ad)
-        K_H_ch4 = 1 / (0.00116 * R * T_ad)
-        K_H_h2 = 1 / (7.38e-4 * R * T_ad)
+        # Henry's law solubility coefficients with van't Hoff T-correction per
+        # SIMBA# biogas 4.2 tutorial §9: H(T) = H(T_ref) · exp(-ΔH°/R · (1/T_ref - 1/T))
+        # Anchor at 35 °C with the Batstone 2002 values so mesophilic results
+        # are unchanged; ΔH° magnitudes from the SIMBA# tutorial table.
+        # Sign convention: dissolution is exothermic (ΔH° entered as positive
+        # magnitude here), so H decreases with T → less gas dissolved at higher T.
+        T_ref_H = 308.15  # 35 °C reference for the anchor values below
+        R_J = 100.0 * R  # convert R [bar·m³/(kmol·K)] → [J/(mol·K)]
+        dH_co2, dH_ch4, dH_h2 = 19410.0, 14240.0, 4180.0  # J/mol (positive magnitudes)
+        H_co2 = 0.0271 * np.exp(-dH_co2 / R_J * (1.0 / T_ref_H - 1.0 / T_ad))
+        H_ch4 = 0.00116 * np.exp(-dH_ch4 / R_J * (1.0 / T_ref_H - 1.0 / T_ad))
+        H_h2 = 7.38e-4 * np.exp(-dH_h2 / R_J * (1.0 / T_ref_H - 1.0 / T_ad))
+        K_H_co2 = 1 / (H_co2 * R * T_ad)
+        K_H_ch4 = 1 / (H_ch4 * R * T_ad)
+        K_H_h2 = 1 / (H_h2 * R * T_ad)
 
         return p_gas_h2o, k_p, k_L_a, K_H_co2, K_H_ch4, K_H_h2
 
