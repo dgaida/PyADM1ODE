@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - 2026-04-23
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
 ## [0.1.9] - 2026-04-22
 
 ### Miscellaneous Tasks
