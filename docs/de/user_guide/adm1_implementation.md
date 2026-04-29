@@ -10,9 +10,9 @@ Im Gegensatz zum Standard-ADM1, das oft als System differentiell-algebraischer G
 
 ### Hauptmerkmale
 
-1. **Kinetisches Säure-Base-Gleichgewicht**: Die ionisierten Spezies (Acetat-, Propionat-, Butyrat-, Valerat-Ion, $\text{HCO}_3^-$, $\text{NH}_3$) werden als dynamische Zustandsvariablen mit einer sehr hohen Reaktionsrate $k_{A,B} = 10^8\,\text{m}^3\,\text{kmol}^{-1}\,\text{d}^{-1}$ geführt. Dadurch verfolgen sie das thermodynamische Gleichgewicht praktisch direkt, ohne dass innerhalb des ODE-Schritts ein algebraischer Solver aufgerufen werden muss.
-2. **Kinetischer Gas-Flüssig-Transfer**: $\text{H}_2$, $\text{CH}_4$ und $\text{CO}_2$ werden über $k_L a$-Raten in die Gasphase überführt — keine algebraische Henry-Gleichgewichtsbedingung.
-3. **41 Zustandsvariablen**: Das Modell verfolgt insgesamt 41 Variablen, gegliedert in fünf Blöcke:
+1. **Kinetisches Säure-Base-Gleichgewicht**: Die ionisierten Spezies (Acetat-, Propionat-, Butyrat-, Valerat-Ion, $\text{HCO}_3^-$, $\text{NH}_3$) werden als dynamische Zustandsvariablen mit einer sehr hohen Reaktionsrate $k_{A,B} = 10^8\,\text{m}^3\,\text{kmol}^{-1}\,\text{d}^{-1}$ geführt. Dadurch verfolgen sie das thermodynamische Gleichgewicht praktisch direkt, ohne dass innerhalb des ODE-Schritts ein algebraischer Solver aufgerufen werden muss.  
+2. **Kinetischer Gas-Flüssig-Transfer**: $\text{H}_2$, $\text{CH}_4$ und $\text{CO}_2$ werden über $k_L a$-Raten in die Gasphase überführt — keine algebraische Henry-Gleichgewichtsbedingung.  
+3. **41 Zustandsvariablen**: Das Modell verfolgt insgesamt 41 Variablen, gegliedert in fünf Blöcke:  
 
    | Block                          | Indizes | Anzahl | Inhalt                                                                                                       |
    |--------------------------------|---------|--------|--------------------------------------------------------------------------------------------------------------|
@@ -127,11 +127,11 @@ Substrate werden weiterhin über praxisübliche Laborparameter definiert, jetzt 
 
 `load_substrate_xml()` liefert eine `SubstrateParams`-Dataclass; die `Feedstock`-Klasse berechnet daraus den vollständigen 38-spaltigen ADM1-Zulaufstrom (37 flüssige Zustandsspalten + Q):
 
-1. **Frischmasse-Dichte** $\rho_{FM}$ aus den Komponentendichten (Mischungsregel auf spezifischem Volumen).
-2. **Organische COD-Konzentrationen** $X_{ch}, X_{pr}, X_{li}$ in $\text{kg COD/m}^3$ über die COD-Umrechnungsfaktoren $M_{Xch}, M_{Xpr}, M_{Xli}$.
-3. **Routing in die Sub-Fraktionen** $X_{PS}/X_{PF}$ via $f_{sOTS}, f_{fOTS}$ und $f_{OTSrf}$ (siehe Tabelle oben).
-4. **Berechnung der Dissoziation** bei Substrat-pH: ionisierte VFA, $\text{HCO}_3^-$, $\text{NH}_3$.
-5. **Ladungsbilanz** schließt zu $S_{anion}$ (oder $S_{cation}$, falls negativ).
+1. **Frischmasse-Dichte** $\rho_{FM}$ aus den Komponentendichten (Mischungsregel auf spezifischem Volumen).  
+2. **Organische COD-Konzentrationen** $X_{ch}, X_{pr}, X_{li}$ in $\text{kg COD/m}^3$ über die COD-Umrechnungsfaktoren $M_{Xch}, M_{Xpr}, M_{Xli}$.  
+3. **Routing in die Sub-Fraktionen** $X_{PS}/X_{PF}$ via $f_{sOTS}, f_{fOTS}$ und $f_{OTSrf}$ (siehe Tabelle oben).  
+4. **Berechnung der Dissoziation** bei Substrat-pH: ionisierte VFA, $\text{HCO}_3^-$, $\text{NH}_3$.  
+5. **Ladungsbilanz** schließt zu $S_{anion}$ (oder $S_{cation}$, falls negativ).  
 
 ### Volumetrische ADM1da-Konvention für Q
 
@@ -151,10 +151,10 @@ Bei Multi-Substrat-Zuläufen werden die Konzentrationen volumetrisch flussgewich
 
 Die Implementierung basiert auf:
 
-- **Schlattmann, M. (2011)**: ADM1da — Beschreibung im *SIMBA#-biogas-Tutorial 4.2*, ifak e.V. Magdeburg.
-- **Batstone, D. J. et al. (2002)**: *Anaerobic Digestion Model No. 1 (ADM1)*. IWA Scientific and Technical Report No. 13.
-- **Gaida, D. (2014)**: *Dynamic real-time substrate feed optimization of anaerobic co-digestion plants*. PhD thesis, Leiden University. (Vorbild für die volumetrische Mischungslogik.)
-- **Koch, K. et al. (2010)**: *Biogas from grass silage – measurements and modeling with ADM1*. Bioresource Technology. (Kalibrierwerte für hochfeste Energiepflanzen.)
+- **Schlattmann, M. (2011)**: ADM1da — Beschreibung im *SIMBA#-biogas-Tutorial 4.2*, ifak e.V. Magdeburg.  
+- **Batstone, D. J. et al. (2002)**: *Anaerobic Digestion Model No. 1 (ADM1)*. IWA Scientific and Technical Report No. 13.  
+- **Gaida, D. (2014)**: *Dynamic real-time substrate feed optimization of anaerobic co-digestion plants*. PhD thesis, Leiden University. (Vorbild für die volumetrische Mischungslogik.)  
+- **Koch, K. et al. (2010)**: *Biogas from grass silage – measurements and modeling with ADM1*. Bioresource Technology. (Kalibrierwerte für hochfeste Energiepflanzen.)  
 
 ## Technische Umsetzung
 

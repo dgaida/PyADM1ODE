@@ -10,9 +10,9 @@ Unlike the standard ADM1, which is often formulated as a system of differential-
 
 ### Key Features
 
-1. **Kinetic acid-base equilibrium**: The ionised species (acetate, propionate, butyrate, valerate ions, $\text{HCO}_3^-$, $\text{NH}_3$) are carried as dynamic state variables with a very high reaction rate $k_{A,B} = 10^8\,\text{m}^3\,\text{kmol}^{-1}\,\text{d}^{-1}$. They therefore track the thermodynamic equilibrium essentially in real time, without an algebraic solver having to be invoked inside the ODE step.
-2. **Kinetic gas-liquid transfer**: $\text{H}_2$, $\text{CH}_4$, and $\text{CO}_2$ are transferred to the gas phase via $k_L a$ rates — no algebraic Henry equilibrium constraint.
-3. **41 state variables**: The model carries 41 variables in five blocks:
+1. **Kinetic acid-base equilibrium**: The ionised species (acetate, propionate, butyrate, valerate ions, $\text{HCO}_3^-$, $\text{NH}_3$) are carried as dynamic state variables with a very high reaction rate $k_{A,B} = 10^8\,\text{m}^3\,\text{kmol}^{-1}\,\text{d}^{-1}$. They therefore track the thermodynamic equilibrium essentially in real time, without an algebraic solver having to be invoked inside the ODE step.  
+2. **Kinetic gas-liquid transfer**: $\text{H}_2$, $\text{CH}_4$, and $\text{CO}_2$ are transferred to the gas phase via $k_L a$ rates — no algebraic Henry equilibrium constraint.  
+3. **41 state variables**: The model carries 41 variables in five blocks:  
 
    | Block                          | Indices | Count | Contents                                                                                                     |
    |--------------------------------|---------|-------|--------------------------------------------------------------------------------------------------------------|
@@ -127,11 +127,11 @@ Substrates are still defined via common laboratory parameters, but now stored as
 
 `load_substrate_xml()` returns a `SubstrateParams` dataclass; the `Feedstock` class derives from it the full 38-column ADM1 inflow stream (37 liquid state columns + Q):
 
-1. **Fresh-matter density** $\rho_{FM}$ from the component densities (specific-volume mixing rule).
-2. **Organic COD concentrations** $X_{ch}, X_{pr}, X_{li}$ in $\text{kg COD/m}^3$ via the COD conversion factors $M_{Xch}, M_{Xpr}, M_{Xli}$.
-3. **Routing into the sub-fractions** $X_{PS}/X_{PF}$ via $f_{sOTS}, f_{fOTS}$, and $f_{OTSrf}$ (see table above).
-4. **Dissociation** at the substrate pH: ionised VFAs, $\text{HCO}_3^-$, $\text{NH}_3$.
-5. **Charge balance** closes to $S_{anion}$ (or $S_{cation}$ if negative).
+1. **Fresh-matter density** $\rho_{FM}$ from the component densities (specific-volume mixing rule).  
+2. **Organic COD concentrations** $X_{ch}, X_{pr}, X_{li}$ in $\text{kg COD/m}^3$ via the COD conversion factors $M_{Xch}, M_{Xpr}, M_{Xli}$.  
+3. **Routing into the sub-fractions** $X_{PS}/X_{PF}$ via $f_{sOTS}, f_{fOTS}$, and $f_{OTSrf}$ (see table above).  
+4. **Dissociation** at the substrate pH: ionised VFAs, $\text{HCO}_3^-$, $\text{NH}_3$.  
+5. **Charge balance** closes to $S_{anion}$ (or $S_{cation}$ if negative).  
 
 ### Volumetric ADM1da convention for Q
 
@@ -151,10 +151,10 @@ For multi-substrate inflows, concentrations are blended by volumetric flow (`Fee
 
 The implementation builds on:
 
-- **Schlattmann, M. (2011)**: ADM1da — described in *SIMBA# biogas Tutorial 4.2*, ifak e.V. Magdeburg.
-- **Batstone, D. J. et al. (2002)**: *Anaerobic Digestion Model No. 1 (ADM1)*. IWA Scientific and Technical Report No. 13.
-- **Gaida, D. (2014)**: *Dynamic real-time substrate feed optimization of anaerobic co-digestion plants*. PhD thesis, Leiden University. (Template for the volumetric blending logic.)
-- **Koch, K. et al. (2010)**: *Biogas from grass silage – measurements and modeling with ADM1*. Bioresource Technology. (Calibration values for high-strength energy crops.)
+- **Schlattmann, M. (2011)**: ADM1da — described in *SIMBA# biogas Tutorial 4.2*, ifak e.V. Magdeburg.  
+- **Batstone, D. J. et al. (2002)**: *Anaerobic Digestion Model No. 1 (ADM1)*. IWA Scientific and Technical Report No. 13.  
+- **Gaida, D. (2014)**: *Dynamic real-time substrate feed optimization of anaerobic co-digestion plants*. PhD thesis, Leiden University. (Template for the volumetric blending logic.)  
+- **Koch, K. et al. (2010)**: *Biogas from grass silage – measurements and modeling with ADM1*. Bioresource Technology. (Calibration values for high-strength energy crops.)  
 
 ## Technical implementation
 
