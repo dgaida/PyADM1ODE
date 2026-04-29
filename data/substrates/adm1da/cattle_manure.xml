@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ADM1da substrate definition: Cattle manure
+
+  Source: SIMBA# biogas 4.2 substrate library (ifak e.V. Magdeburg)
+  Units are specified in the "unit" attribute of each parameter.
+  Parameters marked as "model_default" originate from the ADM1da
+  model constants and can be overridden here per substrate.
+
+  Note: TS and NH4 are given per m³ of fresh substrate (liquid manure).
+        Since density ≈ 1000 kg/m³ this is numerically equal to kg/t FM
+        and the same calculation path is used as for swine_manure.
+-->
+<substrate id="cattle_manure" name="Cattle manure">
+
+  <!-- ================================================================
+       Proximate analysis / measured substrate properties
+       ================================================================ -->
+
+  <param name="TS"       value="80.0"   unit="kg/m3_FM"
+         description="Total solids (liquid substrate: kg per m3 fresh matter)"/>
+  <param name="NH4"      value="2.0"    unit="kg_N/m3_FM"
+         description="Ammonia nitrogen (liquid substrate: kg N per m3 fresh matter)"/>
+  <param name="BGP"      value="260.0"  unit="Nm3/t_VS"
+         description="Biogas potential (reference)"/>
+  <param name="BMP"      value="136.7"  unit="Nm3_CH4/t_VS"
+         description="Biomethane potential (reference)"/>
+
+  <!-- COD fractionation -->
+  <param name="aXI"      value="0.628"  unit="kg_COD/kg_COD"
+         description="Particulate inert fraction of degradable COD"/>
+  <param name="fOTSrf"   value="0.7"    unit="-"
+         description="Biodegradable fraction of crude fibre (XF)"/>
+  <param name="fsOTS"    value="1.0"    unit="-"
+         description="Fraction of degradable VS entering slow disintegration pool (XPS)"/>
+  <param name="ffOTS"    value="0.0"    unit="-"
+         description="Fraction of degradable VS entering fast disintegration pool (XPF)"/>
+  <param name="aSi"      value="0.05"   unit="kg_COD/kg_COD"
+         description="Dissolved inert fraction of degradable COD"/>
+
+  <!-- Weender analysis (fractions of TS) -->
+  <param name="fRF"      value="0.18"   unit="kg_TS/kg_TS"
+         description="Crude fibre fraction of TS"/>
+  <param name="fRP"      value="0.14"   unit="kg_TS/kg_TS"
+         description="Crude protein fraction of TS"/>
+  <param name="fRFe"     value="0.035"  unit="kg_TS/kg_TS"
+         description="Crude lipid fraction of TS"/>
+  <param name="fRA"      value="0.10"   unit="kg_TS/kg_TS"
+         description="Ash fraction of TS"/>
+
+  <!-- Physical / chemical state -->
+  <param name="Temp"     value="20.0"   unit="degC"
+         description="Substrate temperature"/>
+  <param name="pH"       value="7.1"    unit="-"
+         description="pH value"/>
+  <param name="KS43"     value="80.0"   unit="mol/m3"
+         description="Acid capacity to pH 4.3"/>
+  <param name="FFS"      value="5.0"    unit="kg_HAc/m3"
+         description="Volatile fatty acids as acetic-acid equivalent"/>
+
+  <!-- ================================================================
+       ADM1da model constants (SIMBA# defaults)
+       ================================================================ -->
+
+  <!-- Component densities -->
+  <param name="roh_CH"   value="1550.0" unit="kg/m3"   model_default="true"
+         description="Density of carbohydrates (sugars)"/>
+  <param name="roh_PR"   value="1370.0" unit="kg/m3"   model_default="true"
+         description="Density of proteins"/>
+  <param name="roh_LI"   value="920.0"  unit="kg/m3"   model_default="true"
+         description="Density of lipids"/>
+  <param name="roh_MI"   value="2420.0" unit="kg/m3"   model_default="true"
+         description="Density of minerals (ash)"/>
+  <param name="roh_AC"   value="1050.0" unit="kg/m3"   model_default="true"
+         description="Density of acetic acid"/>
+  <param name="roh_H2O"  value="1000.0" unit="kg/m3"   model_default="true"
+         description="Density of water"/>
+
+  <!-- Methane potentials (fraction of theoretical, dimensionless) -->
+  <param name="MP_CH"    value="0.5"    unit="%/100"   model_default="true"
+         description="Methane potential of carbohydrates"/>
+  <param name="MP_PR"    value="0.71"   unit="%/100"   model_default="true"
+         description="Methane potential of proteins"/>
+  <param name="MP_LI"    value="0.68"   unit="%/100"   model_default="true"
+         description="Methane potential of lipids"/>
+  <param name="MP_AC"    value="0.5"    unit="%/100"   model_default="true"
+         description="Methane potential of acetate"/>
+
+  <!-- Physical constants -->
+  <param name="V_m"            value="0.022413"  unit="Nm3/mol"   model_default="true"
+         description="Molar volume at standard conditions"/>
+  <param name="CH4_cod_2_mol"  value="64.0"      unit="g_COD/mol" model_default="true"
+         description="COD per mole of CH4"/>
+
+  <!-- COD conversion factors [kg dry mass / kg COD] -->
+  <param name="M_Xch"    value="0.9375"                  unit="kg/kg_COD" model_default="true"
+         description="Mass-to-COD ratio of carbohydrates"/>
+  <param name="M_Xpr"    value="0.7736"                  unit="kg/kg_COD" model_default="true"
+         description="Mass-to-COD ratio of proteins"/>
+  <param name="M_Xli"    value="0.34741379310344828"      unit="kg/kg_COD" model_default="true"
+         description="Mass-to-COD ratio of lipids"/>
+  <param name="M_Sac"    value="0.9375"                  unit="kg/kg_COD" model_default="true"
+         description="Mass-to-COD ratio of acetate"/>
+  <param name="M_Spro"   value="0.6607142857142857"       unit="kg/kg_COD" model_default="true"
+         description="Mass-to-COD ratio of propionate"/>
+  <param name="M_Sbu"    value="0.55"                    unit="kg/kg_COD" model_default="true"
+         description="Mass-to-COD ratio of butyrate"/>
+  <param name="M_Sva"    value="0.49038461538461536"      unit="kg/kg_COD" model_default="true"
+         description="Mass-to-COD ratio of valerate"/>
+  <param name="M_Sh2"    value="0.125"                   unit="kg/kg_COD" model_default="true"
+         description="Mass-to-COD ratio of hydrogen"/>
+  <param name="M_XB"     value="0.76376137931034471"      unit="kg/kg_COD" model_default="true"
+         description="TS-to-COD ratio of active biomass"/>
+
+  <!-- Acid-base equilibrium constants at 35 °C [kmol/m³] -->
+  <param name="Kw_35"     value="1.0e-14"                 unit="kmol2/m6"      model_default="true"
+         description="Ionic product of water at 35 degC"/>
+  <param name="N_aa"      value="0.0076475885714285706"   unit="kmol_N/kg_COD" model_default="true"
+         description="N content of amino acids"/>
+  <param name="Kava"      value="1.3803842646028839e-05"  unit="kmol/m3"       model_default="true"
+         description="Acid-base equilibrium constant for valerate"/>
+  <param name="Kabu"      value="1.5135612484362071e-05"  unit="kmol/m3"       model_default="true"
+         description="Acid-base equilibrium constant for butyrate"/>
+  <param name="Kapro"     value="1.3182567385564074e-05"  unit="kmol/m3"       model_default="true"
+         description="Acid-base equilibrium constant for propionate"/>
+  <param name="Kaac"      value="1.7378008287493764e-05"  unit="kmol/m3"       model_default="true"
+         description="Acid-base equilibrium constant for acetate"/>
+  <param name="Kaco2_35"  value="4.4668359215096349e-07"  unit="kmol/m3"       model_default="true"
+         description="Acid-base equilibrium constant for CO2 at 35 degC"/>
+  <param name="Kain_35"   value="5.623413251903491e-10"   unit="kmol/m3"       model_default="true"
+         description="Acid-base equilibrium constant for ammonium at 35 degC"/>
+
+</substrate>

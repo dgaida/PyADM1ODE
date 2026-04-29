@@ -807,17 +807,20 @@ class ADM1daFeedstock:
         S_va_ion = alpha_va * 0.0
         S_nh3 = alpha_IN * S_nh4  # [kmol N/m³]
 
-        # --- Charge balance at substrate pH → S_anion (or S_cation) ---
-        # Balance:  S_cat + S_H + (S_nh4−S_nh3) = S_an + Kw/S_H + S_hco3 + vfa_anions
-        # Set S_cation = 0; solve for S_anion.  If negative → use as S_cation instead.
+        # --- Charge balance at substrate pH → S_anion ---
+        # SIMBA# biogas 4.2 manual §5.7.3 / §5.7.4 / §5.7.5 hard-codes
+        #   S_CAT = 0
+        #   S_AN  = S_CAT + S_H+ + S_NH4+ − S_HCO3− − S_AC−/64 − Kw/S_H+
+        # for every substrate type (silages, liquid manures, solid manures).
+        # S_AN is allowed to be negative — it represents a net-cationic
+        # substrate (NH4+ + HCO3− buffering exceeds H+ + acetate balance).
+        # The reactor's pH solver and buffering equations only care about the
+        # algebraic sum, so the sign is fine.  Do NOT flip a negative S_AN
+        # into a positive S_CAT — that would create spurious strong cations
+        # that build up in the reactor and depress TAC by ~50·S_cat.
         vfa_kmol = S_ac_ion / 64.0 + S_pro_ion / 112.0 + S_bu_ion / 160.0 + S_va_ion / 208.0
-
-        S_anion = (S_nh4 - S_nh3) - S_hco3 - vfa_kmol + S_H - s.Kw_35 / (S_H + 1.0e-30)
         S_cation = 0.0
-
-        if S_anion < 0.0:
-            S_cation = -S_anion
-            S_anion = 0.0
+        S_anion = S_cation + S_H + (S_nh4 - S_nh3) - S_hco3 - vfa_kmol - s.Kw_35 / (S_H + 1.0e-30)
 
         return {
             "S_su": 0.0,

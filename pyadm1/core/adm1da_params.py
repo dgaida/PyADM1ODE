@@ -10,7 +10,8 @@ ADM1da (Schlattmann 2011) extends ADM1 with:
     cubic for X_ac; undissociated acid inhibition (KIHPRO, KIHAC);
     acetate competitive inhibition; S_IN = S_nh4 + S_nh3 for N limitation.
   - Doubled decay rate (k_dec = 0.04 d⁻¹) and decay products recycled
-    to XPS fractions (f_ch_bac=0.16, f_pr_bac=0.56, f_li_bac=0.08).
+    to X_S fractions (f_ch_bac≈0.197, f_pr_bac≈0.567, f_li_bac≈0.036) per
+    SIMBA# adm1da.asm processes p13–p19.
   - NH3 inhibition constants (K_I_nh3, K_I_nh3_pro) use reference-temperature
     values without T-correction — see get_inhibition_params() for details.
 
@@ -58,12 +59,17 @@ class ADM1daParams:
             # --- Lipid hydrolysis fraction ---
             "f_fa_li": 0.95,  # LCFA fraction from lipid hydrolysis
             # --- Biomass decay product fractions (f_ch + f_pr + f_li + f_p = 1) ---
-            # SIMBA#: fBM_CH=0.20, fBM_PR=0.70, fBM_LI=0.10, fP=0.20
-            # Net fractions to XPS pools = (1 - fP) * fBM_*
-            "f_ch_bac": 0.16,  # = (1-0.20)*0.20 → XPS_ch
-            "f_pr_bac": 0.56,  # = (1-0.20)*0.70 → XPS_pr
-            "f_li_bac": 0.08,  # = (1-0.20)*0.10 → XPS_li
-            "f_p_bac": 0.20,  # endogenous residue fraction → X_I
+            # SIMBA# adm1da.asm processes p13–p19 route decayed biomass to the
+            # HYDROLYZABLE pools (X_S_*) and to X_I — NOT to the slow-disintegration
+            # pools (X_PS_*).  COD-basis fraction per macromolecule type:
+            #     fCH_XB = fBM_CH · M_Xch / M_XB = 0.20 · 0.9375 / 0.7637 = 0.2456
+            #     fPR_XB = fBM_PR · M_Xpr / M_XB = 0.70 · 0.7736 / 0.7637 = 0.7093
+            #     fLI_XB = fBM_LI · M_Xli / M_XB = 0.10 · 0.3474 / 0.7637 = 0.0455
+            # Then split (1−fP) → X_S_* and fP → X_I, with fP = 0.20.
+            "f_ch_bac": 0.2456 * 0.80,  # = 0.1965 → X_S_ch
+            "f_pr_bac": 0.7093 * 0.80,  # = 0.5674 → X_S_pr
+            "f_li_bac": 0.0455 * 0.80,  # = 0.0364 → X_S_li
+            "f_p_bac": 0.20,  # endogenous residue fraction → X_I (sum of fiCH+fiPR+fiLI)
             # --- Disintegration inert fractions (SIMBA#: zero) ---
             "fXI_PS": 0.0,  # particulate inert fraction from slow disintegration (XPS)
             "fXI_PF": 0.0,  # particulate inert fraction from fast disintegration (XPF)

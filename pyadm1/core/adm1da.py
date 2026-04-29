@@ -468,7 +468,8 @@ class ADM1da(ADMBase):
         I_pH_c4 = self._pH_inhib(S_H, ip["K_pH_aa"], n=2)
         I_pH_pro = self._pH_inhib(S_H, ip["K_pH_aa"], n=2)
         I_pH_ac = self._pH_inhib(S_H, ip["K_pH_ac"], n=3)  # cubic
-        I_pH_h2 = self._pH_inhib(S_H, ip["K_pH_h2"], n=1)
+        # SIMBA# adm1da.asm process p12 uses Minh(SH^3, KI_H_h2^3) — cubic.
+        I_pH_h2 = self._pH_inhib(S_H, ip["K_pH_h2"], n=3)
 
         # H2 inhibition
         I_h2_fa = ip["K_I_h2_fa"] / (ip["K_I_h2_fa"] + S_h2)
@@ -485,8 +486,11 @@ class ADM1da(ADMBase):
         I_nh3 = K_nh3_ac_sq / (K_nh3_ac_sq + S_nh3_sq)
         I_nh3_pro = K_nh3_pro_sq / (K_nh3_pro_sq + S_nh3_sq)
 
-        # CO2 limitation for H2 methanogens (SIMBA#: inorganic carbon as CO2 source)
-        I_co2_h2 = S_co2 / (ip["K_S_co2_h2"] + S_co2 + 1.0e-20)
+        # CO2 limitation for H2 methanogens — squared Hill form per
+        # SIMBA# adm1da.asm process p12: Msat(Sco2^2, KS_co2_h2^2).
+        K_co2_h2_sq = ip["K_S_co2_h2"] * ip["K_S_co2_h2"]
+        S_co2_sq = S_co2 * S_co2
+        I_co2_h2 = S_co2_sq / (K_co2_h2_sq + S_co2_sq + 1.0e-30)
 
         # Undissociated propionic acid inhibition [kmol m⁻³]
         Ka_pro = ip["K_a_pro"]
@@ -498,15 +502,16 @@ class ADM1da(ADMBase):
         S_HAc = (S_ac / 64.0) * S_H / (S_H + Ka_ac + 1.0e-20)
         I_HAc = ip["K_IH_ac"] / (ip["K_IH_ac"] + S_HAc + 1.0e-20)
 
-        # Acetate competitive inhibition (for X_fa and X_c4 only per SIMBA#)
-        I_ac_fa = ip["K_I_ac_xfa"] / (ip["K_I_ac_xfa"] + S_ac)
-        I_ac_c4 = ip["K_I_ac_xc4"] / (ip["K_I_ac_xc4"] + S_ac)
-
-        # Combined inhibition per process
+        # Combined inhibition per process.
+        # SIMBA# adm1da.asm processes p7 (X_fa) and p8/p9 (X_c4) do NOT include
+        # acetate inhibition or undissociated-propionate inhibition, despite the
+        # manual §7 listing them.  The asm is what SIMBA# actually executes, so
+        # PyADM1ODE matches the asm here.  HPr inhibition stays on X_pro (p10);
+        # HAc inhibition stays on X_ac (p11); both are present in the asm rates.
         I_su = I_pH_aa * I_IN
         I_aa = I_pH_aa * I_IN
-        I_fa = I_pH_fa * I_IN * I_h2_fa * I_ac_fa
-        I_c4 = I_pH_c4 * I_IN * I_h2_c4 * I_HPr * I_ac_c4
+        I_fa = I_pH_fa * I_IN * I_h2_fa
+        I_c4 = I_pH_c4 * I_IN * I_h2_c4
         I_pro = I_pH_pro * I_IN * I_h2_pro * I_HPr * I_nh3_pro
         I_ac = I_pH_ac * I_IN * I_nh3 * I_HAc
         I_h2 = I_pH_h2 * I_IN * I_co2_h2
@@ -732,11 +737,14 @@ class ADM1da(ADMBase):
         diff_S_I = D_in * s_in[11] - D_out * S_I + fSI * (Rho_hyd_ch + Rho_hyd_pr + Rho_hyd_li)
 
         # --- Particulate sub-fractions (12–21) ---
-        diff_X_PS_ch = D_in * s_in[12] - D_out * X_PS_ch - Rho_dis_PS_ch + f_ch_bac * sum_decay
+        # SIMBA# adm1da.asm: biomass decay products go to X_S_* (hydrolyzable)
+        # and X_I, NOT to X_PS_*.  X_PS_* and X_PF_* therefore only receive
+        # substrate input via fsOTS / ffOTS.
+        diff_X_PS_ch = D_in * s_in[12] - D_out * X_PS_ch - Rho_dis_PS_ch
 
-        diff_X_PS_pr = D_in * s_in[13] - D_out * X_PS_pr - Rho_dis_PS_pr + f_pr_bac * sum_decay
+        diff_X_PS_pr = D_in * s_in[13] - D_out * X_PS_pr - Rho_dis_PS_pr
 
-        diff_X_PS_li = D_in * s_in[14] - D_out * X_PS_li - Rho_dis_PS_li + f_li_bac * sum_decay
+        diff_X_PS_li = D_in * s_in[14] - D_out * X_PS_li - Rho_dis_PS_li
 
         diff_X_PF_ch = D_in * s_in[15] - D_out * X_PF_ch - Rho_dis_PF_ch
 
@@ -745,15 +753,30 @@ class ADM1da(ADMBase):
         diff_X_PF_li = D_in * s_in[17] - D_out * X_PF_li - Rho_dis_PF_li
 
         diff_X_S_ch = (
-            D_in * s_in[18] - D_out * X_S_ch + (1.0 - fXI_PS) * Rho_dis_PS_ch + (1.0 - fXI_PF) * Rho_dis_PF_ch - Rho_hyd_ch
+            D_in * s_in[18]
+            - D_out * X_S_ch
+            + (1.0 - fXI_PS) * Rho_dis_PS_ch
+            + (1.0 - fXI_PF) * Rho_dis_PF_ch
+            + f_ch_bac * sum_decay
+            - Rho_hyd_ch
         )
 
         diff_X_S_pr = (
-            D_in * s_in[19] - D_out * X_S_pr + (1.0 - fXI_PS) * Rho_dis_PS_pr + (1.0 - fXI_PF) * Rho_dis_PF_pr - Rho_hyd_pr
+            D_in * s_in[19]
+            - D_out * X_S_pr
+            + (1.0 - fXI_PS) * Rho_dis_PS_pr
+            + (1.0 - fXI_PF) * Rho_dis_PF_pr
+            + f_pr_bac * sum_decay
+            - Rho_hyd_pr
         )
 
         diff_X_S_li = (
-            D_in * s_in[20] - D_out * X_S_li + (1.0 - fXI_PS) * Rho_dis_PS_li + (1.0 - fXI_PF) * Rho_dis_PF_li - Rho_hyd_li
+            D_in * s_in[20]
+            - D_out * X_S_li
+            + (1.0 - fXI_PS) * Rho_dis_PS_li
+            + (1.0 - fXI_PF) * Rho_dis_PF_li
+            + f_li_bac * sum_decay
+            - Rho_hyd_li
         )
 
         diff_X_I = (
