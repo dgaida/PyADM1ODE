@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any, Dict, Tuple
 
 
 def build_single_digester_plant() -> Tuple[Any, Any, str, list[float]]:
     """
-    Build a simple one-fermenter biogas plant with maize silage and swine manure.
+    Build a simple one-fermenter biogas plant with maize silage + swine manure.
 
     Returns:
         Tuple of (plant, digester, storage_id, q_substrates)
@@ -17,11 +16,12 @@ def build_single_digester_plant() -> Tuple[Any, Any, str, list[float]]:
     from pyadm1.configurator.plant_configurator import PlantConfigurator
     from pyadm1.substrates.feedstock import Feedstock
 
-    feedstock = Feedstock(feeding_freq=48)
-    q_substrates = [15.0, 10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-
-    data_path = Path(__file__).resolve().parent.parent / "data" / "initial_states"
-    initial_state_file = data_path / "digester_initial8.csv"
+    feedstock = Feedstock(
+        ["maize_silage_milk_ripeness", "swine_manure"],
+        feeding_freq=48,
+        total_simtime=60,
+    )
+    q_substrates = [15.0, 10.0]
 
     plant = BiogasPlant("Single Digester Sensor Demo")
     configurator = PlantConfigurator(plant, feedstock)
@@ -31,8 +31,6 @@ def build_single_digester_plant() -> Tuple[Any, Any, str, list[float]]:
         V_gas=300.0,
         T_ad=308.15,
         name="Main Digester",
-        load_initial_state=initial_state_file.exists(),
-        initial_state_file=str(initial_state_file) if initial_state_file.exists() else None,
         Q_substrates=q_substrates,
     )
     configurator.add_chp(
@@ -58,7 +56,7 @@ def substrate_feed_profile(t_days: float) -> list[float]:
     import numpy as np
 
     swine_manure = 9.0 + 1.0 * np.sin(2.0 * np.pi * t_days / 2.0)
-    return [15.0, float(swine_manure), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    return [15.0, float(swine_manure)]
 
 
 def apply_substrate_feed(digester: Any, q_substrates: list[float]) -> None:

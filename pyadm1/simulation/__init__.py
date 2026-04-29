@@ -31,22 +31,24 @@ Modules:
 
 Example:
     >>> from pyadm1.simulation import Simulator, ParallelSimulator
-    >>> from pyadm1.core import ADM1, create_solver
-    >>> from pyadm1.substrates import Feedstock
+    >>> from pyadm1.core import ADM1, STATE_SIZE, create_solver
+    >>> from pyadm1 import Feedstock
     >>>
     >>> # Create model
-    >>> feedstock = Feedstock(feeding_freq=48)
-    >>> adm1 = ADM1(feedstock)
+    >>> fs = Feedstock(["maize_silage_milk_ripeness"], feeding_freq=24)
+    >>> adm1 = ADM1(fs, V_liq=1200, V_gas=216, T_ad=315.15)
+    >>> adm1.set_influent_dataframe(fs.get_influent_dataframe(Q=15.0))
+    >>> adm1.create_influent([15.0], 0)
     >>>
     >>> # Single simulation
-    >>> solver = create_solver(method='BDF', rtol=1e-7)
+    >>> solver = create_solver(method="BDF", rtol=1e-7)
     >>> simulator = Simulator(adm1, solver=solver)
-    >>> initial_state = [0.01] * 37
+    >>> initial_state = [0.01] * STATE_SIZE
     >>> final_state = simulator.simulate_AD_plant([0, 30], initial_state)
     >>>
     >>> # Parallel simulations
     >>> parallel = ParallelSimulator(adm1, n_workers=4)
-    >>> scenarios = [{"k_dis": 0.5, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]}]
+    >>> scenarios = [{"k_m_ac": 8.0, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]}]
     >>> results = parallel.run_scenarios(scenarios, duration=30, initial_state=initial_state)
 """
 

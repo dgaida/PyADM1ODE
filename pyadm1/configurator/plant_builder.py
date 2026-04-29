@@ -12,9 +12,7 @@ import json
 from typing import Dict, Any, List, Optional
 
 from pyadm1.components.base import Component, ComponentType
-from pyadm1.components.biological.adm1_digester import ADM1Digester
-from pyadm1.components.energy.chp import CHP
-from pyadm1.components.energy.heating import HeatingSystem
+from pyadm1.components.biological.digester import Digester
 from pyadm1.configurator.connection_manager import Connection
 from pyadm1.substrates.feedstock import Feedstock
 
@@ -33,13 +31,12 @@ class BiogasPlant:
         simulation_time (float): Current simulation time in days.
 
     Example:
-        >>> from pyadm1.substrates.feedstock import Feedstock
-        >>> from pyadm1.configurator.plant_builder import BiogasPlant
-        >>> from pyadm1.components.biological.adm1_digester import Digester
+        >>> from pyadm1 import Feedstock, BiogasPlant
+        >>> from pyadm1.components.biological import Digester
         >>>
-        >>> feedstock = Feedstock(feeding_freq=48)
+        >>> feedstock = Feedstock(["maize_silage_milk_ripeness", "swine_manure"], feeding_freq=24)
         >>> plant = BiogasPlant("My Plant")
-        >>> digester = Digester("dig1", feedstock, V_liq=2000)
+        >>> digester = Digester("dig1", feedstock, V_liq=1200, V_gas=216, T_ad=315.15)
         >>> plant.add_component(digester)
         >>> plant.initialize()
     """
@@ -369,18 +366,35 @@ class BiogasPlant:
         plant = cls(config.get("plant_name", "Biogas Plant"))
         plant.simulation_time = config.get("simulation_time", 0.0)
 
-        # Create components
+        # Create components.  Digesters need the supplied feedstock; for every
+        # other component type we delegate to the class's ``from_dict`` via the
+        # global component registry so all auto-attached children (gas storage,
+        # flares, mixers, sensors, …) round-trip without bespoke branches.
+        from pyadm1.components.registry import get_registry
+
+        registry = get_registry()
+        type_to_registry_key = {
+            ComponentType.DIGESTER: "Digester",
+            ComponentType.CHP: "CHP",
+            ComponentType.HEATING: "HeatingSystem",
+            ComponentType.STORAGE: "GasStorage",
+            ComponentType.FLARE: "Flare",
+            ComponentType.BOILER: "Boiler",
+            ComponentType.SEPARATOR: "Separator",
+        }
+
         for comp_config in config.get("components", []):
             comp_type = ComponentType(comp_config["component_type"])
 
             if comp_type == ComponentType.DIGESTER:
                 if feedstock is None:
                     raise ValueError("Feedstock required for loading plant with digesters")
-                component = ADM1Digester.from_dict(comp_config, feedstock)
-            elif comp_type == ComponentType.CHP:
-                component = CHP.from_dict(comp_config)
-            elif comp_type == ComponentType.HEATING:
-                component = HeatingSystem.from_dict(comp_config)
+                component = Digester.from_dict(comp_config, feedstock)
+            elif comp_type in type_to_registry_key:
+                cls_obj = registry.get_registered_components().get(type_to_registry_key[comp_type])
+                if cls_obj is None:
+                    raise ValueError(f"No registered class for component type: {comp_type}")
+                component = cls_obj.from_dict(comp_config)
             else:
                 raise ValueError(f"Unknown component type: {comp_type}")
 

@@ -17,9 +17,10 @@ Modules:
 
 Subpackages:
 
-    biological: Components for biological processes including digesters (single/multi-stage),
-               hydrolysis tanks for pre-treatment, and solid-liquid separators for
-               digestate processing.
+    biological: Components for biological processes including the ADM1 digester
+               (usable as primary fermenter, hydrolysis pre-tank, post-digester,
+               or digestate storage by varying V_liq/T_ad/HRT) and solid-liquid
+               separators for digestate processing.
 
     mechanical: Mechanical components including pumps (centrifugal, positive displacement),
                mixers/agitators (various types), valves (control, safety), and heat

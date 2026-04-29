@@ -1,381 +1,163 @@
 #!/usr/bin/env python3
-# ============================================================================
 # examples/05_parallel_two_stage_simulation.py
-# ============================================================================
 """
-Example: Parallel simulation of two-stage biogas plant with parameter sweeps.
+Parallel parameter sweeps and Monte Carlo analysis for ADM1 biogas plants.
 
 Demonstrates:
-- Building a two-stage plant with PlantConfigurator
-- Running multiple scenarios in parallel with ParallelSimulator
-- Parameter sweeps for optimization
-- Monte Carlo analysis for uncertainty quantification
-- Result visualization and comparison
+    - Building a base ADM1 model
+    - Running multiple feed-rate scenarios in parallel
+    - Single-parameter sweep on the maximum acetate-uptake rate (k_m_ac)
+    - Monte Carlo uncertainty quantification on k_m_ac
 
 Usage:
     python examples/05_parallel_two_stage_simulation.py
 """
 
 from pathlib import Path
-import numpy as np
+import sys
 import time
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+import numpy as np
 
 
 def main():
-    """Run parallel simulations of two-stage biogas plant."""
-    # Import required modules
-    from pyadm1.configurator.plant_builder import BiogasPlant
-    from pyadm1.substrates.feedstock import Feedstock
-    from pyadm1.core.adm1 import get_state_zero_from_initial_state
-    from pyadm1.configurator.plant_configurator import PlantConfigurator
+    from pyadm1 import Feedstock
+    from pyadm1.core.adm1 import ADM1, STATE_SIZE
     from pyadm1.simulation.parallel import (
+        MonteCarloConfig,
         ParallelSimulator,
         ParameterSweepConfig,
-        MonteCarloConfig,
     )
 
     print("=" * 70)
-    print("Parallel Two-Stage Biogas Plant Simulation")
+    print("PyADM1 Parallel Simulation Example")
     print("=" * 70)
 
-    # ========================================================================
-    # Step 1: Create Base Plant Model
-    # ========================================================================
-    print("\n1. Creating base two-stage plant model...")
+    # ------------------------------------------------------------------
+    # Step 1: Base ADM1 model
+    # ------------------------------------------------------------------
+    print("\n1. Building base ADM1 model...")
 
-    feeding_freq = 48
-    feedstock = Feedstock(feeding_freq=feeding_freq)
-
-    # Load initial state
-    data_path = Path(__file__).parent.parent / "data" / "initial_states"
-    initial_state_file = data_path / "digester_initial8.csv"
-
-    if initial_state_file.exists():
-        print(f"   Loading initial state from: {initial_state_file}")
-        adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
-    else:
-        print("   Warning: Initial state file not found, using defaults")
-        adm1_state = [0.01] * 37
-
-    # Base substrate feed rates
-    base_feed_hydro = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
-    base_feed_main = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
-    # Create plant
-    plant = BiogasPlant("Parallel Test Plant")
-    configurator = PlantConfigurator(plant, feedstock)
-
-    # Add components
-    print("   Adding digesters...")
-    configurator.add_digester(
-        digester_id="digester_1",
-        V_liq=1977.0,
-        V_gas=304.0,
-        T_ad=308.15,
-        name="Main Digester",
-        Q_substrates=base_feed_hydro,
+    feedstock = Feedstock(
+        ["maize_silage_milk_ripeness", "swine_manure"],
+        feeding_freq=24,
+        total_simtime=15,
     )
-    configurator.add_digester(
-        digester_id="digester_2",
-        V_liq=1000.0,
-        V_gas=150.0,
-        T_ad=308.15,
-        name="Post Digester",
-        Q_substrates=base_feed_main,
-    )
+    base_feed = [11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0]
 
-    print("   Adding CHP and heating...")
-    configurator.add_chp(chp_id="chp_1", P_el_nom=500.0, name="CHP Unit")
-    configurator.add_heating(heating_id="heating_1", target_temperature=308.15, name="Main Digester Heating")
-    configurator.add_heating(
-        heating_id="heating_2",
-        target_temperature=308.15,
-        name="Post Digester Heating",
-    )
+    adm1 = ADM1(feedstock, V_liq=1200.0, V_gas=216.0, T_ad=315.15)
+    adm1.set_influent_dataframe(feedstock.get_influent_dataframe(Q=base_feed))
+    adm1.create_influent(base_feed, 0)
 
-    # Connect components
-    print("   Connecting components...")
-    configurator.connect("digester_1", "digester_2", "liquid")
-    configurator.auto_connect_digester_to_chp("digester_1", "chp_1")
-    configurator.auto_connect_digester_to_chp("digester_2", "chp_1")
-    configurator.auto_connect_chp_to_heating("chp_1", "heating_1")
-    configurator.auto_connect_chp_to_heating("chp_1", "heating_2")
+    initial_state = [0.01] * STATE_SIZE
+    initial_state[37:41] = [1.02e-5, 0.65, 0.33, 0.65 + 0.33 + 1.02e-5]
 
-    # Initialize
-    print("   Initializing plant...")
-    plant.initialize()
+    parallel = ParallelSimulator(adm1, n_workers=4, verbose=True)
 
-    print("\n   ✓ Plant model created successfully")
+    # ------------------------------------------------------------------
+    # Step 2: Compare four feed rates in parallel
+    # ------------------------------------------------------------------
+    print("\n2. Running feed-rate comparison...")
 
-    # ========================================================================
-    # Step 2: Define Scenarios for Parallel Execution
-    # ========================================================================
-    print("\n2. Defining simulation scenarios...")
-
-    # Scenario 1: Different substrate feed rates
     feed_scenarios = [
-        {"name": "Low Feed", "Q_digester_1": [10, 8, 0, 0, 0, 0, 0, 0, 0, 0]},
-        {"name": "Base Feed", "Q_digester_1": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
-        {"name": "High Feed", "Q_digester_1": [20, 12, 0, 0, 0, 0, 0, 0, 0, 0]},
-        {
-            "name": "Very High Feed",
-            "Q_digester_1": [25, 15, 0, 0, 0, 0, 0, 0, 0, 0],
-        },
+        ("Low Feed", [8.0, 4.0, 0, 0, 0, 0, 0, 0, 0, 0]),
+        ("Base Feed", [11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0]),
+        ("High Feed", [15.0, 8.0, 0, 0, 0, 0, 0, 0, 0, 0]),
+        ("Very High Feed", [20.0, 10.0, 0, 0, 0, 0, 0, 0, 0, 0]),
     ]
+    scenarios = [{"Q": Q} for _, Q in feed_scenarios]
 
-    print(f"   Defined {len(feed_scenarios)} feed rate scenarios")
-
-    # ========================================================================
-    # Step 3: Run Basic Parallel Scenarios
-    # ========================================================================
-    print("\n3. Running basic parallel scenarios...")
-    print("   (This demonstrates running different feed rates in parallel)")
-
-    # Get the first digester's ADM1 model for parallel simulation
-    digester_1 = plant.components["digester_1"]
-    adm1_model = digester_1.adm1
-
-    # Create parallel simulator
-    parallel = ParallelSimulator(adm1_model, n_workers=4, verbose=True)
-
-    # Prepare scenarios for ParallelSimulator
-    scenarios = [{"Q": scenario["Q_digester_1"]} for scenario in feed_scenarios]
-
-    # Run parallel simulations
-    print("\n   Starting parallel execution...")
-    start_time = time.time()
-
+    start = time.time()
     results = parallel.run_scenarios(
         scenarios=scenarios,
-        duration=10.0,  # 10 days
-        initial_state=adm1_state,
-        dt=1.0 / 24.0,  # 1 hour time step
+        duration=10.0,
+        initial_state=initial_state,
+        dt=1.0,
         compute_metrics=True,
-        save_time_series=False,
     )
+    print(f"   Done in {time.time() - start:.1f} s")
 
-    elapsed = time.time() - start_time
-    print(f"\n   ✓ Parallel execution completed in {elapsed:.1f} seconds")
+    print("\n   Feed-rate results:")
+    print("   " + "-" * 60)
+    print(f"   {'Scenario':<18s} {'Q_total':>8s} {'Q_gas':>10s} {'Q_ch4':>10s} {'pH':>6s}")
+    for (label, Q), result in zip(feed_scenarios, results):
+        if not result.success:
+            print(f"   {label:<18s} FAILED: {result.error[:60]}")
+            continue
+        Q_total = sum(Q)
+        m = result.metrics
+        print(
+            f"   {label:<18s} {Q_total:>8.1f} {m.get('Q_gas', 0):>10.1f} " f"{m.get('Q_ch4', 0):>10.1f} {m.get('pH', 0):>6.2f}"
+        )
 
-    # Display results
-    print("\n" + "=" * 70)
-    print("SCENARIO COMPARISON RESULTS")
-    print("=" * 70)
+    # ------------------------------------------------------------------
+    # Step 3: Parameter sweep — acetate uptake rate (k_m_ac)
+    # ------------------------------------------------------------------
+    print("\n3. Parameter sweep over k_m_ac...")
 
-    for i, result in enumerate(results):
-        if result.success:
-            scenario_name = feed_scenarios[i]["name"]
-            Q_total = sum(scenarios[i]["Q"])
-
-            print(f"\n{scenario_name}:")
-            print(f"  Feed Rate: {Q_total:.1f} m³/d")
-            print(f"  Biogas:    {result.metrics.get('Q_gas', 0):.1f} m³/d")
-            print(f"  Methane:   {result.metrics.get('Q_ch4', 0):.1f} m³/d")
-            print(f"  CH4 %:     {result.metrics.get('CH4_content', 0)*100:.1f}%")
-            print(f"  pH:        {result.metrics.get('pH', 0):.2f}")
-            print(f"  VFA:       {result.metrics.get('VFA', 0):.2f} g/L")
-            print(f"  FOS/TAC:   {result.metrics.get('FOS_TAC', 0):.3f}")
-            print(f"  HRT:       {result.metrics.get('HRT', 0):.1f} days")
-            print(f"  Exec Time: {result.execution_time:.2f} seconds")
-        else:
-            print(f"\n{feed_scenarios[i]['name']}: FAILED")
-            print(f"  Error: {result.error[:100]}")
-
-    # ========================================================================
-    # Step 4: Parameter Sweep Example
-    # ========================================================================
-    print("\n" + "=" * 70)
-    print("4. Running parameter sweep (Disintegration Rate k_dis)")
-    print("=" * 70)
-
-    # Sweep disintegration rate parameter
     sweep_config = ParameterSweepConfig(
-        parameter_name="k_dis",
-        values=[0.10, 0.14, 0.18, 0.22, 0.26, 0.30],
-        other_params={"Q": base_feed_hydro},
+        parameter_name="k_m_ac",
+        values=[5.0, 7.0, 8.0, 10.0, 13.0],
+        other_params={"Q": base_feed},
     )
 
-    print("\n   Testing 6 different k_dis values...")
     sweep_results = parallel.parameter_sweep(
         config=sweep_config,
         duration=10.0,
-        initial_state=adm1_state,
-        compute_metrics=True,
+        initial_state=initial_state,
     )
 
-    print("\n   Parameter Sweep Results:")
+    print("\n   Sweep results:")
     print("   " + "-" * 60)
-    print(f"   {'k_dis':>8} | {'Q_gas':>10} | {'Q_ch4':>10} | {'pH':>6} | {'VFA':>8}")
-    print("   " + "-" * 60)
+    print(f"   {'k_m_ac':>8s} {'Q_gas':>10s} {'Q_ch4':>10s} {'pH':>6s}")
+    for k_val, r in zip(sweep_config.values, sweep_results):
+        if r.success:
+            m = r.metrics
+            print(f"   {k_val:>8.2f} {m.get('Q_gas', 0):>10.1f} {m.get('Q_ch4', 0):>10.1f} {m.get('pH', 0):>6.2f}")
 
-    for i, result in enumerate(sweep_results):
-        if result.success:
-            k_dis = sweep_config.values[i]
-            print(
-                f"   {k_dis:>8.2f} | "
-                f"{result.metrics.get('Q_gas', 0):>10.1f} | "
-                f"{result.metrics.get('Q_ch4', 0):>10.1f} | "
-                f"{result.metrics.get('pH', 0):>6.2f} | "
-                f"{result.metrics.get('VFA', 0):>8.2f}"
-            )
+    if sweep_results:
+        ch4_values = [r.metrics.get("Q_ch4", 0) for r in sweep_results if r.success]
+        if ch4_values:
+            best_idx = int(np.argmax(ch4_values))
+            print(f"\n   Best k_m_ac = {sweep_config.values[best_idx]:.2f} (CH4 = {ch4_values[best_idx]:.1f} m³/d)")
 
-    # Find optimal k_dis for maximum methane production
-    ch4_productions = [r.metrics.get("Q_ch4", 0) for r in sweep_results if r.success]
-    if ch4_productions:
-        best_idx = np.argmax(ch4_productions)
-        best_k_dis = sweep_config.values[best_idx]
-        best_ch4 = ch4_productions[best_idx]
-        print(f"\n   ✓ Optimal k_dis = {best_k_dis:.2f} (CH4 = {best_ch4:.1f} m³/d)")
-
-    # ========================================================================
-    # Step 5: Multi-Parameter Sweep Example
-    # ========================================================================
-    print("\n" + "=" * 70)
-    print("5. Running multi-parameter sweep (k_dis vs Feed Rate)")
-    print("=" * 70)
-
-    parameter_configs = {
-        "k_dis": [0.14, 0.18, 0.22],
-        # Vary total feed by adjusting first substrate
-        "Q_substrate_0": [12, 15, 18],  # Corn silage feed rate
-    }
-
-    # Build scenarios manually since Q is a list
-    multi_scenarios = []
-    for k_dis in parameter_configs["k_dis"]:
-        for q0 in parameter_configs["Q_substrate_0"]:
-            Q = [q0, 10, 0, 0, 0, 0, 0, 0, 0, 0]
-            multi_scenarios.append({"k_dis": k_dis, "Q": Q})
-
-    print(f"\n   Testing {len(multi_scenarios)} parameter combinations...")
-    multi_results = parallel.run_scenarios(
-        scenarios=multi_scenarios,
-        duration=10.0,
-        initial_state=adm1_state,
-        compute_metrics=True,
-    )
-
-    print("\n   Multi-Parameter Sweep Results:")
-    print("   " + "-" * 70)
-    print(f"   {'k_dis':>8} | {'Feed':>8} | {'Q_gas':>10} | {'Q_ch4':>10} | {'Yield':>8}")
-    print("   " + "-" * 70)
-
-    scenario_idx = 0
-    for k_dis in parameter_configs["k_dis"]:
-        for q0 in parameter_configs["Q_substrate_0"]:
-            result = multi_results[scenario_idx]
-            if result.success:
-                Q_total = q0 + 10
-                q_ch4 = result.metrics.get("Q_ch4", 0)
-                specific_yield = q_ch4 / Q_total if Q_total > 0 else 0
-                print(
-                    f"   {k_dis:>8.2f} | "
-                    f"{Q_total:>8.1f} | "
-                    f"{result.metrics.get('Q_gas', 0):>10.1f} | "
-                    f"{q_ch4:>10.1f} | "
-                    f"{specific_yield:>8.3f}"
-                )
-            scenario_idx += 1
-
-    # ========================================================================
-    # Step 6: Monte Carlo Analysis
-    # ========================================================================
-    print("\n" + "=" * 70)
-    print("6. Running Monte Carlo uncertainty analysis")
-    print("=" * 70)
+    # ------------------------------------------------------------------
+    # Step 4: Monte Carlo uncertainty
+    # ------------------------------------------------------------------
+    print("\n4. Monte Carlo uncertainty (50 samples)...")
 
     mc_config = MonteCarloConfig(
         n_samples=50,
-        parameter_distributions={
-            "k_dis": (0.18, 0.03),  # mean ± std
-        },
-        fixed_params={"Q": base_feed_hydro},
+        parameter_distributions={"k_m_ac": (8.0, 1.0)},
+        fixed_params={"Q": base_feed},
         seed=42,
     )
 
-    print("\n   Running 50 Monte Carlo samples...")
-    print("   (Testing parameter uncertainty)")
-
-    mc_results = parallel.monte_carlo(config=mc_config, duration=10.0, initial_state=adm1_state, compute_metrics=True)
-
-    # Summarize Monte Carlo results
+    mc_results = parallel.monte_carlo(
+        config=mc_config,
+        duration=10.0,
+        initial_state=initial_state,
+    )
     summary = parallel.summarize_results(mc_results)
 
-    print("\n   Monte Carlo Summary Statistics:")
-    print("   " + "-" * 60)
-
-    if "metrics" in summary:
-        for metric_name, stats in summary["metrics"].items():
-            print(f"\n   {metric_name}:")
-            print(f"      Mean:   {stats['mean']:>10.2f}")
-            print(f"      Std:    {stats['std']:>10.2f}")
-            print(f"      Min:    {stats['min']:>10.2f}")
-            print(f"      Max:    {stats['max']:>10.2f}")
-            print(f"      Median: {stats['median']:>10.2f}")
-            print(f"      Q25:    {stats['q25']:>10.2f}")
-            print(f"      Q75:    {stats['q75']:>10.2f}")
-
-    print(f"\n   Success Rate: {summary['success_rate']*100:.1f}%")
-
-    # ========================================================================
-    # Step 7: Statistical Analysis
-    # ========================================================================
-    print("\n" + "=" * 70)
-    print("7. Statistical Analysis of All Results")
-    print("=" * 70)
-
-    # Combine all successful results
-    all_results = results + sweep_results + multi_results + mc_results
-    successful_results = [r for r in all_results if r.success]
-
-    print(f"\n   Total simulations run: {len(all_results)}")
-    print(f"   Successful: {len(successful_results)}")
-    print(f"   Failed: {len(all_results) - len(successful_results)}")
-    print(f"   Success rate: {len(successful_results)/len(all_results)*100:.1f}%")
-
-    # Compute overall statistics
-    if successful_results:
-        ch4_values = [r.metrics.get("Q_ch4", 0) for r in successful_results]
-        gas_values = [r.metrics.get("Q_gas", 0) for r in successful_results]
-
-        print("\n   Methane Production Range:")
-        print(f"      Minimum: {min(ch4_values):.1f} m³/d")
-        print(f"      Maximum: {max(ch4_values):.1f} m³/d")
-        print(f"      Mean:    {np.mean(ch4_values):.1f} m³/d")
-        print(f"      Std Dev: {np.std(ch4_values):.1f} m³/d")
-
-        print("\n   Total Biogas Production Range:")
-        print(f"      Minimum: {min(gas_values):.1f} m³/d")
-        print(f"      Maximum: {max(gas_values):.1f} m³/d")
-        print(f"      Mean:    {np.mean(gas_values):.1f} m³/d")
-        print(f"      Std Dev: {np.std(gas_values):.1f} m³/d")
-
-    # ========================================================================
-    # Summary
-    # ========================================================================
-    print("\n" + "=" * 70)
-    print("SIMULATION SUMMARY")
-    print("=" * 70)
-
-    total_time = time.time() - start_time
-
-    print(f"\nTotal execution time: {total_time:.1f} seconds")
-    print(f"Average time per simulation: {total_time/len(all_results):.2f} seconds")
-    print("\nParallel efficiency:")
-    print(f"  Workers used: {parallel.n_workers}")
-    sequential_time = sum(r.execution_time for r in all_results)
-    speedup = sequential_time / total_time if total_time > 0 else 0
-    efficiency = speedup / parallel.n_workers if parallel.n_workers > 0 else 0
-    print(f"  Theoretical sequential time: {sequential_time:.1f} seconds")
-    print(f"  Speedup: {speedup:.2f}x")
-    print(f"  Parallel efficiency: {efficiency*100:.1f}%")
+    print(f"\n   Success rate: {summary['success_rate'] * 100:.1f}%")
+    if "metrics" in summary and "Q_ch4" in summary["metrics"]:
+        s = summary["metrics"]["Q_ch4"]
+        print("\n   Methane production [m³/d]:")
+        print(f"     mean ± std : {s['mean']:.1f} ± {s['std']:.1f}")
+        print(f"     min  / max : {s['min']:.1f} / {s['max']:.1f}")
+        print(f"     median     : {s['median']:.1f}")
 
     print("\n" + "=" * 70)
-    print("✓ Parallel simulation demonstration completed successfully!")
+    print("Parallel demonstration completed successfully!")
     print("=" * 70)
 
-    return all_results
+    return mc_results
 
 
 if __name__ == "__main__":
-    results = main()
+    main()

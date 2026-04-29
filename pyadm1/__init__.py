@@ -1,29 +1,37 @@
 """
-PyADM1 - Advanced Biogas Plant Simulation Framework
+PyADM1 - Biogas Plant Simulation Framework (ADM1da).
 
-A comprehensive Python framework for modeling, simulating, and optimizing
-agricultural biogas plants based on the Anaerobic Digestion Model No. 1 (ADM1).
+A pure-Python framework for modeling, simulating, and optimizing agricultural
+biogas plants based on **ADM1da** (Schlattmann 2011), an agricultural-biogas
+extension of ADM1 (Batstone et al. 2002).  The model is a 41-state ODE system
+with sub-fraction disintegration, temperature-dependent kinetics, and modified
+inhibition; no .NET / DLL dependency.
+
+This is an independent open-source implementation; not affiliated with the
+ifak e.V. Magdeburg or the commercial SIMBA# biogas product.  The SIMBA#
+biogas Tutorial 4.2 is referenced where appropriate as a published source for
+parameter values and process structure.
 
 Main modules:
-    core: Core ADM1 implementation with ODE system, parameters, and solver
-    components: Modular plant components (biological, mechanical, energy, feeding, sensors)
-    substrates: Substrate management and characterization
-    configurator: Plant model builder and MCP server for LLM integration
-    simulation: Simulation engine with parallel execution capabilities
-    calibration: Parameter calibration and online re-calibration
-    io: Data import/export (JSON, CSV, database, measurements)
-    utils: Utility functions for math, units, logging, validation
+    core: ADM1 ODE system, parameters, and solver.
+    substrates: Substrate characterization and influent generation (Feedstock).
+    components: Modular plant components (biological, mechanical, energy,
+                feeding, sensors).
+    configurator: Plant model builder and MCP server for LLM integration.
+    simulation: Single-plant Simulator and ParallelSimulator (parameter sweeps,
+                Monte Carlo).
 
 Example:
-    >>> from pyadm1 import BiogasPlant
+    >>> from pyadm1 import BiogasPlant, Feedstock
     >>> from pyadm1.components.biological import Digester
-    >>> from pyadm1 import Feedstock
     >>>
-    >>> feedstock = Feedstock(feeding_freq=48)
+    >>> fs = Feedstock(["maize_silage_milk_ripeness", "swine_manure"], feeding_freq=24)
     >>> plant = BiogasPlant("My Plant")
-    >>> plant.add_component(Digester("dig1", feedstock, V_liq=2000))
+    >>> dig = Digester("dig1", fs, V_liq=1200, V_gas=216, T_ad=315.15)
+    >>> dig.initialize({"Q_substrates": [11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0]})
+    >>> plant.add_component(dig)
     >>> plant.initialize()
-    >>> results = plant.simulate(duration=30, dt=1/24)
+    >>> results = plant.simulate(duration=30, dt=1.0)
 """
 
 try:

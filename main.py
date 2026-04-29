@@ -1,67 +1,43 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Nov 04 09:56:06 2023
+Minimal example script demonstrating PyADM1 usage.
 
-Example script demonstrating PyADM1 usage.
-
-@author: Daniel Gaida
+Run a 30-day single-digester simulation with a maize-silage / swine-manure
+feed and print daily gas production.
 """
 
-# from pathlib import Path
-from pyadm1 import PyADM1, Feedstock, Simulator, get_state_zero_from_initial_state
+from pyadm1 import BiogasPlant, Feedstock
+from pyadm1.configurator.plant_configurator import PlantConfigurator
 
 
 def main() -> None:
-    """Run example ADM1 simulation."""
+    """Run a 30-day ADM1 simulation."""
+    feedstock = Feedstock(
+        ["maize_silage_milk_ripeness", "swine_manure"],
+        feeding_freq=24,
+        total_simtime=30,
+    )
 
-    feeding_freq = 48  # every feeding_freq hours the controller can change the substrate feed of the digester
+    Q_substrates = [11.4, 6.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
-    myfeedstock = Feedstock(feeding_freq)
+    plant = BiogasPlant("ADM1 Demo Plant")
+    cfg = PlantConfigurator(plant, feedstock)
+    cfg.add_digester(
+        digester_id="main_digester",
+        V_liq=1200.0,
+        V_gas=216.0,
+        T_ad=315.15,
+        Q_substrates=Q_substrates,
+    )
+    plant.initialize()
 
-    adm1 = PyADM1(myfeedstock)
-    mySimulator = Simulator(adm1)
+    results = plant.simulate(duration=30.0, dt=1.0, save_interval=1.0)
 
-    # initial substrate feed for all substrates. At the moment only values for the first two substrates may be changed, rest 0
-    # first value: corn silage, 2nd value: liquid manure, both in m^3/d
-    Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
-    # Q = [69, 64, 0, 0, 0, 0, 0, 0, 0, 0]
-
-    # data_path = Path(__file__).parent.parent / "data" / "initial_states"
-    # initial ADM1 state vector where to start the simulation
-    # state_zero = get_state_zero_from_initial_state(str(data_path / "digester_initial8.csv"))
-    state_zero = get_state_zero_from_initial_state(str("data/initial_states/digester_initial8.csv"))
-
-    ## time array definition
-    t = myfeedstock.simtime()
-
-    # Initiate the cache data frame for storing simulation results
-    simulate_results = [state_zero]
-
-    t0 = 0
-
-    ## Dynamic simulation
-    # Loop for simulating at each time step and feeding the results to the next time step
-    for n, u in enumerate(t[1:], 1):
-        # you could change Q here to simulate with dynamically changing substrate feed
-
-        adm1.create_influent(Q, n)
-
-        # Span for next time step
-        tstep = [t0, u]
-
-        state_zero = mySimulator.simulate_AD_plant(tstep, state_zero)
-
-        simulate_results.append(state_zero)
-
-        t0 = u
-
-        if n % 100 == 0:
-            print(f"Simulated {n} of {len(t)} steps.")
-
-    # save final ADM1 state vector
-    # output_path = Path(__file__).parent.parent / "data" / "initial_states"
-    adm1.save_final_state_in_csv(simulate_results, str("output/digester_final.csv"))
-    # adm1.save_final_state_in_csv(simulate_results, str(output_path / "digester_final.csv"))
+    print(f"\n{'Day':>4s}  {'Biogas':>10s}  {'Methane':>10s}  {'pH':>6s}")
+    print("-" * 36)
+    for r in results:
+        c = r["components"]["main_digester"]
+        print(f"{r['time']:>4.0f}  {c['Q_gas']:>10.1f}  {c['Q_ch4']:>10.1f}  {c['pH']:>6.2f}")
 
 
 if __name__ == "__main__":

@@ -1,51 +1,25 @@
 """
-Biological Process Components
-
-Components for biological conversion processes in biogas plants.
+Biological process components.
 
 Modules:
-
-    adm1_digester: Main fermenter component implementing ADM1 model for anaerobic digestion,
-             supporting single or multiple fermenters in series/parallel, with flexible
-             volume, temperature, and retention time configuration.
-
-    hydrolysis: Pre-treatment tank for hydrolysis-dominated processes, useful for
-               substrates with high lignocellulosic content, can operate at different
-               temperatures and retention times than main digester.
-
-    separator: Solid-liquid separation component for digestate processing, models
-              mechanical (screw press, centrifuge) or gravitational separation with
-              configurable separation efficiency and dry matter content.
+    digester:  ADM1da fermenter component — usable as a primary
+               digester, hydrolysis pre-tank, post-fermenter, or digestate
+               storage simply by tuning V_liq, T_ad and the substrate feed.
+    separator: Solid–liquid separation component for digestate processing.
 
 Example:
-
-    >>> from pyadm1.components.biological import Digester, Hydrolysis, Separator
-    >>> from pyadm1.substrates import Feedstock
+    >>> from pyadm1.components.biological import Digester, Separator
+    >>> from pyadm1 import Feedstock
     >>>
-    >>> feedstock = Feedstock(feeding_freq=48)
-    >>>
-    >>> # Two-stage digestion with hydrolysis pre-treatment
-    >>> hydrolysis = Hydrolysis("hydro1", feedstock, V_liq=500, T_ad=318.15)
-    >>> digester = Digester("dig1", feedstock, V_liq=2000, T_ad=308.15)
+    >>> fs = Feedstock(["maize_silage_milk_ripeness", "swine_manure"], feeding_freq=24)
+    >>> digester = Digester("dig1", fs, V_liq=1200, V_gas=216, T_ad=315.15)
     >>> separator = Separator("sep1", separation_efficiency=0.95)
 """
 
-from .digester_base import DigesterBase
-from .adm1_digester import ADM1Digester
-from .hydrolysis import Hydrolysis
+from .digester import Digester
 from .separator import Separator
-from .adm1da_digester import ADM1daDigester
-
-# Backwards-compatibility alias: ``Digester`` used to be the only concrete
-# digester class.  Existing tests, examples, docs and configurator helpers
-# continue to import ``Digester`` — it now resolves to ``ADM1Digester``.
-Digester = ADM1Digester
 
 __all__ = [
-    "DigesterBase",
-    "ADM1Digester",
     "Digester",
-    "Hydrolysis",
     "Separator",
-    "ADM1daDigester",
 ]

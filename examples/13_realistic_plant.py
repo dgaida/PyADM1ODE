@@ -3,14 +3,13 @@
 # examples/13_realistic_plant.py
 # ============================================================================
 """
+Realistic four-stage biogas plant — Biogasanlage Perl-Borg.
 
-Model selector
---------------
-Set ``MODEL_TYPE = "adm1"`` (legacy Digester/Hydrolysis back-end) or
-``MODEL_TYPE = "adm1da"`` (SIMBA# ADM1da extension, 41-state).  The fermenter
-factory ``_make_fermenter()`` returns the appropriate component class so the
-plant topology stays identical across back-ends.  Both values are wired
-end-to-end in the Component framework.
+Builds the full plant topology from R&I 0199_BGA_Perl-Borg_A101b:
+Vorgrube V → Fermenter F1 → Nachgärer N → Gärproduktlager G,
+each as an :class:`pyadm1.components.biological.Digester` with its own gas
+storage, mixer, transfer pump, and heating circuit.  CHP and auxiliary boiler
+close the energy loop.
 """
 
 from pathlib import Path
@@ -19,12 +18,6 @@ import sys
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
-
-
-# ============================================================================
-# Model selector  — toggle ADM1 vs ADM1da here
-# ============================================================================
-MODEL_TYPE: str = "adm1da"  # "adm1" or "adm1da"
 
 
 # ============================================================================
@@ -72,12 +65,12 @@ P_BOILER_NOM = 150.0  # kW_th   EN 303-1 condensing gas boiler
 
 
 # ============================================================================
-# Fermenter factory  — routes ADM1 / ADM1da to the correct component
+# Fermenter factory
 # ============================================================================
 
 
 def _make_fermenter(
-    kind: str,  # "hydrolysis" | "digester"
+    kind: str,  # "hydrolysis" | "digester"  (cosmetic; same class either way)
     component_id: str,
     feedstock,
     V_liq: float,
@@ -86,59 +79,23 @@ def _make_fermenter(
     name: str,
 ):
     """
-    Build a biological reactor component that respects the active MODEL_TYPE.
+    Build an ADM1 reactor component.
 
-    Parameters
-    ----------
-    kind : {"hydrolysis", "digester"}
-        Role of the reactor in the plant train.
-    component_id, feedstock, V_liq, V_gas, T_ad, name
-        Passed through to the underlying component constructor.
-
-    Returns
-    -------
-    Component
-        Either a ``Hydrolysis`` or ``Digester`` instance.
-
-    Notes
-    -----
-    ``MODEL_TYPE == "adm1"`` returns the legacy ``Hydrolysis`` / ``Digester``
-    wrapper around :class:`pyadm1.core.adm1.ADM1` (37 states).
-    ``MODEL_TYPE == "adm1da"`` returns :class:`ADM1daDigester`, which wraps
-    :class:`pyadm1.core.adm1da.ADM1da` (41 states, SIMBA# biogas extension).
-    The Vorgrube (``kind="hydrolysis"``) uses the same ADM1daDigester class
-    under the ADM1da back-end — the low operating temperature and short HRT
-    naturally suppress methanogenesis, so no separate pre-treatment class
-    is required for the ADM1da topology.
+    The same :class:`Digester` class is used for hydrolysis pre-tanks, main
+    fermenters, post-digesters, and digestate storage.  The operating
+    temperature, liquid volume, and HRT determine the dominant biochemistry
+    (low T + short HRT in the Vorgrube naturally suppresses methanogenesis).
     """
-    from pyadm1.components.biological import (
-        Hydrolysis,
-        Digester,
-        ADM1daDigester,
+    from pyadm1.components.biological import Digester
+
+    return Digester(
+        component_id=component_id,
+        feedstock=feedstock,
+        V_liq=V_liq,
+        V_gas=V_gas,
+        T_ad=T_ad,
+        name=name,
     )
-
-    if MODEL_TYPE == "adm1":
-        cls = Hydrolysis if kind == "hydrolysis" else Digester
-        return cls(
-            component_id=component_id,
-            feedstock=feedstock,
-            V_liq=V_liq,
-            V_gas=V_gas,
-            T_ad=T_ad,
-            name=name,
-        )
-
-    if MODEL_TYPE == "adm1da":
-        return ADM1daDigester(
-            component_id=component_id,
-            feedstock=feedstock,
-            V_liq=V_liq,
-            V_gas=V_gas,
-            T_ad=T_ad,
-            name=name,
-        )
-
-    raise ValueError(f"Unknown MODEL_TYPE='{MODEL_TYPE}'. Expected 'adm1' or 'adm1da'.")
 
 
 # ============================================================================
@@ -164,9 +121,12 @@ def build_plant():
     from pyadm1.substrates.feedstock import Feedstock
 
     # ------------------------------------------------------------------
-    # Feedstock (ADM1-compatible — substrate flows left at 0 for now)
+    # Feedstock (substrate flows left at 0 for now — set them downstream)
     # ------------------------------------------------------------------
-    feedstock = Feedstock(feeding_freq=24)
+    feedstock = Feedstock(
+        ["maize_silage_milk_ripeness", "swine_manure"],
+        feeding_freq=24,
+    )
 
     plant = BiogasPlant("Biogasanlage Perl-Borg")
     cfg = PlantConfigurator(plant, feedstock)
@@ -464,7 +424,7 @@ def main():
     hdr = "=" * 74
     print(hdr)
     print("  PyADM1ODE — Biogasanlage Perl-Borg (R&I 0199, A101b)")
-    print(f"  Model back-end: {MODEL_TYPE}")
+    print("  Model: ADM1 (SIMBA# biogas, 41-state)")
     print(hdr)
 
     plant, standalone = build_plant()

@@ -1,609 +1,854 @@
 # pyadm1/core/adm1.py
 """
-Anaerobic Digestion Model No. 1 (ADM1) - Main Implementation
+ADM1da model implementation.
 
-This module contains the core ADM1 class implementing the complete ODE system
-for anaerobic digestion simulation, adapted for agricultural biogas plants.
+This module implements **ADM1da** (Schlattmann 2011), an agricultural-biogas
+extension of ADM1 (Batstone et al. 2002) that replaces the single composite
+disintegration variable (X_xc) with a two-pool sub-fraction approach and adds
+temperature-dependent kinetics plus modified inhibition.
 
-The implementation is based on:
-- Batstone et al. (2002): ADM1 IWA Task Group model
-- Rosen et al. (2006): BSM2 implementation
-- Gaida (2014): Agricultural substrate characterization
+Independent re-implementation; published parameter values are cited from
+Schlattmann (2011) / SIMBA# biogas 4.2 Tutorial.
 
-AND
+State vector (41 variables)
+----------------------------
+Dissolved (0–11):
+    0  S_su       monosaccharides              [kg COD m⁻³]
+    1  S_aa       amino acids                  [kg COD m⁻³]
+    2  S_fa       long-chain fatty acids        [kg COD m⁻³]
+    3  S_va       total valerate               [kg COD m⁻³]
+    4  S_bu       total butyrate               [kg COD m⁻³]
+    5  S_pro      total propionate             [kg COD m⁻³]
+    6  S_ac       total acetate                [kg COD m⁻³]
+    7  S_h2       dissolved hydrogen           [kg COD m⁻³]
+    8  S_ch4      dissolved methane            [kg COD m⁻³]
+    9  S_co2      inorganic carbon (S_IC)      [kmol C m⁻³]
+   10  S_nh4      inorganic nitrogen (S_IN)    [kmol N m⁻³]
+   11  S_I        soluble inerts               [kg COD m⁻³]
 
-@article {Sadrimajd2021.03.03.433746,
-        author = {Sadrimajd, Peyman and Mannion, Patrick and Howley, Enda and Lens, Piet N. L.},
-        title = {PyADM1: a Python implementation of Anaerobic Digestion Model No. 1},
-        elocation-id = {2021.03.03.433746},
-        year = {2021},
-        doi = {10.1101/2021.03.03.433746},
-        URL = {https://www.biorxiv.org/content/early/2021/03/04/2021.03.03.433746},
-        eprint = {https://www.biorxiv.org/content/early/2021/03/04/2021.03.03.433746.full.pdf},
-        journal = {bioRxiv}
-}
+Particulate sub-fractions (12–21):
+   12  X_PS_ch    slow-disint. carbohydrates   [kg COD m⁻³]
+   13  X_PS_pr    slow-disint. proteins        [kg COD m⁻³]
+   14  X_PS_li    slow-disint. lipids          [kg COD m⁻³]
+   15  X_PF_ch    fast-disint. carbohydrates   [kg COD m⁻³]
+   16  X_PF_pr    fast-disint. proteins        [kg COD m⁻³]
+   17  X_PF_li    fast-disint. lipids          [kg COD m⁻³]
+   18  X_S_ch     hydrolysable carbohydrates   [kg COD m⁻³]
+   19  X_S_pr     hydrolysable proteins        [kg COD m⁻³]
+   20  X_S_li     hydrolysable lipids          [kg COD m⁻³]
+   21  X_I        particulate inerts           [kg COD m⁻³]
 
-References:
-    Sadrimajd, P., et al. (2021). PyADM1: a Python implementation of
-        Anaerobic Digestion Model No. 1. bioRxiv.
-    Gaida, D. (2014). Dynamic real-time substrate feed optimization of
-        anaerobic co-digestion plants. PhD thesis, Leiden University.
+Biomass (22–28):
+   22  X_su       sugar degraders              [kg COD m⁻³]
+   23  X_aa       amino-acid degraders         [kg COD m⁻³]
+   24  X_fa       LCFA degraders               [kg COD m⁻³]
+   25  X_c4       valerate/butyrate degraders  [kg COD m⁻³]
+   26  X_pro      propionate degraders         [kg COD m⁻³]
+   27  X_ac       acetate degraders            [kg COD m⁻³]
+   28  X_h2       hydrogen degraders           [kg COD m⁻³]
 
-Example:
-    >>> from pyadm1.core import ADM1
-    >>> from pyadm1.substrates import Feedstock
-    >>>
-    >>> feedstock = Feedstock(feeding_freq=48)
-    >>> adm1 = ADM1(feedstock, V_liq=2000, T_ad=308.15)
-    >>>
-    >>> # Create influent stream
-    >>> Q = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]  # m³/d
-    >>> adm1.create_influent(Q, 0)
-    >>>
-    >>> # Calculate gas production
-    >>> state = [0.01] * 37  # Initial state
-    >>> q_gas, q_ch4, q_co2, q_h2o, p_gas = adm1.calc_gas(*state[33:37])
+Charge balance (29–36):
+   29  S_cation   strong-base cations          [kmol m⁻³]
+   30  S_anion    strong-acid anions           [kmol m⁻³]
+   31  S_va_ion   valerate ion                 [kg COD m⁻³]
+   32  S_bu_ion   butyrate ion                 [kg COD m⁻³]
+   33  S_pro_ion  propionate ion               [kg COD m⁻³]
+   34  S_ac_ion   acetate ion                  [kg COD m⁻³]
+   35  S_hco3_ion bicarbonate                  [kmol C m⁻³]
+   36  S_nh3      free ammonia                 [kmol N m⁻³]
+
+Gas phase (37–40):
+   37  p_gas_h2   H₂ partial pressure         [bar]
+   38  p_gas_ch4  CH₄ partial pressure        [bar]
+   39  p_gas_co2  CO₂ partial pressure        [bar]
+   40  pTOTAL     total gas pressure          [bar]
+
+Influent format (set via set_influent_dataframe)
+------------------------------------------------
+DataFrame with columns:
+    S_su … S_nh3 (indices 0–36), Q [m³ d⁻¹]
+    → 38 columns total (no gas-phase states in influent).
 """
 
 import logging
-import os
-import clr
 import numpy as np
 import pandas as pd
-from typing import List, Tuple
-from pyadm1.core.adm_base import ADMBase
+from typing import List, Optional, Tuple
+
 from pyadm1.core.adm_params import ADMParams
-from pyadm1.core.adm_equations import BiochemicalProcesses
-from pyadm1.substrates.feedstock import Feedstock
 
 logger = logging.getLogger(__name__)
 
+# --------------------------------------------------------------------------
+# Influent column names — defined here (not in feedstock) so that ADM1 can be
+# imported without touching the substrates package, avoiding circular imports.
+# --------------------------------------------------------------------------
+INFLUENT_COLUMNS = [
+    "S_su",
+    "S_aa",
+    "S_fa",
+    "S_va",
+    "S_bu",
+    "S_pro",
+    "S_ac",
+    "S_h2",
+    "S_ch4",
+    "S_co2",
+    "S_nh4",
+    "S_I",
+    "X_PS_ch",
+    "X_PS_pr",
+    "X_PS_li",
+    "X_PF_ch",
+    "X_PF_pr",
+    "X_PF_li",
+    "X_S_ch",
+    "X_S_pr",
+    "X_S_li",
+    "X_I",
+    "X_su",
+    "X_aa",
+    "X_fa",
+    "X_c4",
+    "X_pro",
+    "X_ac",
+    "X_h2",
+    "S_cation",
+    "S_anion",
+    "S_va_ion",
+    "S_bu_ion",
+    "S_pro_ion",
+    "S_ac_ion",
+    "S_hco3_ion",
+    "S_nh3",
+    "Q",
+]
 
-# CLR reference must be added before importing from DLL
-dll_path = os.path.join(os.path.dirname(__file__), "..", "dlls")
-clr.AddReference(os.path.join(dll_path, "plant"))
-from biogas import ADMstate  # noqa: E402  # type: ignore
+# --------------------------------------------------------------------------
+# State-vector index constants
+# --------------------------------------------------------------------------
+_IDX_S_SU = 0
+_IDX_S_AA = 1
+_IDX_S_FA = 2
+_IDX_S_VA = 3
+_IDX_S_BU = 4
+_IDX_S_PRO = 5
+_IDX_S_AC = 6
+_IDX_S_H2 = 7
+_IDX_S_CH4 = 8
+_IDX_S_CO2 = 9
+_IDX_S_NH4 = 10
+_IDX_S_I = 11
+_IDX_X_PS_CH = 12
+_IDX_X_PS_PR = 13
+_IDX_X_PS_LI = 14
+_IDX_X_PF_CH = 15
+_IDX_X_PF_PR = 16
+_IDX_X_PF_LI = 17
+_IDX_X_S_CH = 18
+_IDX_X_S_PR = 19
+_IDX_X_S_LI = 20
+_IDX_X_I = 21
+_IDX_X_SU = 22
+_IDX_X_AA = 23
+_IDX_X_FA = 24
+_IDX_X_C4 = 25
+_IDX_X_PRO = 26
+_IDX_X_AC = 27
+_IDX_X_H2 = 28
+_IDX_S_CATION = 29
+_IDX_S_ANION = 30
+_IDX_S_VA_ION = 31
+_IDX_S_BU_ION = 32
+_IDX_S_PRO_ION = 33
+_IDX_S_AC_ION = 34
+_IDX_S_HCO3 = 35
+_IDX_S_NH3 = 36
+_IDX_P_H2 = 37
+_IDX_P_CH4 = 38
+_IDX_P_CO2 = 39
+_IDX_P_TOTAL = 40
+
+STATE_SIZE = 41
 
 
-def get_state_zero_from_initial_state(csv_file: str) -> List[float]:
+def get_state_zero_from_csv(csv_file: str) -> List[float]:
     """
-    Load initial ADM1 state vector from CSV file.
+    Load an ADM1 initial state vector from a CSV file.
 
-    The CSV file should contain a single row with 37 columns representing
-    the complete ADM1 state vector.
-
-    Args:
-        csv_file: Path to CSV file containing initial state
-
-    Returns:
-        Initial ADM1 state vector (37 elements)
-
-    Raises:
-        FileNotFoundError: If CSV file does not exist
-        ValueError: If CSV format is invalid
-
-    Example:
-        >>> state = get_state_zero_from_initial_state('data/digester_initial.csv')
-        >>> len(state)
-        37
+    The CSV must have columns matching ``INFLUENT_COLUMNS`` (without ``Q``)
+    plus the four gas-phase columns (p_gas_h2, p_gas_ch4, p_gas_co2, pTOTAL).
     """
-    initial_state = pd.read_csv(csv_file)
-
-    # Extract state variables in correct order
-    state_zero = [
-        initial_state["S_su"][0],  # 0: kg COD.m^-3 monosaccharides
-        initial_state["S_aa"][0],  # 1: kg COD.m^-3 amino acids
-        initial_state["S_fa"][0],  # 2: kg COD.m^-3 total long chain fatty acids
-        initial_state["S_va"][0],  # 3: kg COD.m^-3 total valerate
-        initial_state["S_bu"][0],  # 4: kg COD.m^-3 total butyrate
-        initial_state["S_pro"][0],  # 5: kg COD.m^-3 total propionate
-        initial_state["S_ac"][0],  # 6: kg COD.m^-3 total acetate
-        initial_state["S_h2"][0],  # 7: kg COD.m^-3 hydrogen gas
-        initial_state["S_ch4"][0],  # 8: kg COD.m^-3 methane gas
-        initial_state["S_co2"][0],  # 9: kmole C.m^-3 inorganic carbon
-        initial_state["S_nh4"][0],  # 10: kmole N.m^-3 inorganic nitrogen
-        initial_state["S_I"][0],  # 11: kg COD.m^-3 soluble inerts
-        initial_state["X_xc"][0],  # 12: kg COD.m^-3 composites
-        initial_state["X_ch"][0],  # 13: kg COD.m^-3 carbohydrates
-        initial_state["X_pr"][0],  # 14: kg COD.m^-3 proteins
-        initial_state["X_li"][0],  # 15: kg COD.m^-3 lipids
-        initial_state["X_su"][0],  # 16: kg COD.m^-3 sugar degraders
-        initial_state["X_aa"][0],  # 17: kg COD.m^-3 amino acid degraders
-        initial_state["X_fa"][0],  # 18: kg COD.m^-3 LCFA degraders
-        initial_state["X_c4"][0],  # 19: kg COD.m^-3 valerate and butyrate degraders
-        initial_state["X_pro"][0],  # 20: kg COD.m^-3 propionate degraders
-        initial_state["X_ac"][0],  # 21: kg COD.m^-3 acetate degraders
-        initial_state["X_h2"][0],  # 22: kg COD.m^-3 hydrogen degraders
-        initial_state["X_I"][0],  # 23: kg COD.m^-3 particulate inerts
-        initial_state["X_p"][0],  # 24: kg COD.m^-3 particulate products
-        initial_state["S_cation"][0],  # 25: kmole.m^-3 cations (metallic ions, strong base)
-        initial_state["S_anion"][0],  # 26: kmole.m^-3 anions (metallic ions, strong acid)
-        initial_state["S_va_ion"][0],  # 27: kg COD.m^-3 valerate ion
-        initial_state["S_bu_ion"][0],  # 28: kg COD.m^-3 butyrate ion
-        initial_state["S_pro_ion"][0],  # 29: kg COD.m^-3 propionate ion
-        initial_state["S_ac_ion"][0],  # 30: kg COD.m^-3 acetate ion
-        initial_state["S_hco3_ion"][0],  # 31: kmole C.m^-3 bicarbonate
-        initial_state["S_nh3"][0],  # 32: kmole N.m^-3 ammonia
-        initial_state["pi_Sh2"][0],  # 33: kg COD.m^-3 hydrogen concentration in gas phase
-        initial_state["pi_Sch4"][0],  # 34: kg COD.m^-3 methane concentration in gas phase
-        initial_state["pi_Sco2"][0],  # 35: kmole C.m^-3 carbon dioxide concentration in gas phase
-        initial_state["pTOTAL"][0],  # 36: bar total pressure
-    ]
-
-    return state_zero
+    df = pd.read_csv(csv_file)
+    state = []
+    liquid_cols = INFLUENT_COLUMNS[:-1]  # drop Q
+    for col in liquid_cols:
+        state.append(float(df[col].iloc[0]))
+    for col in ("p_gas_h2", "p_gas_ch4", "p_gas_co2", "pTOTAL"):
+        state.append(float(df[col].iloc[0]))
+    return state
 
 
-class ADM1(ADMBase):
+class ADM1:
     """
-    Main class implementing ADM1 as pure ODE system.
+    ADM1da – 41-state ODE system.
 
-    This class manages the ADM1 state, parameters, and provides methods for
-    simulation including influent stream creation, gas production calculation,
-    and state tracking.
+    Implements the sub-fraction disintegration/hydrolysis approach,
+    temperature-dependent kinetics, and modified inhibition kinetics
+    described in Schlattmann (2011); SIMBA# biogas 4.2 Tutorial.
 
-    Attributes:
-        V_liq: Liquid volume [m³]
-        T_ad: Operating temperature [K]
-        feedstock: Feedstock object for substrate management
-
-    Example:
-        >>> feedstock = Feedstock(feeding_freq=48)
-        >>> adm1 = ADM1(feedstock, V_liq=2000, T_ad=308.15)
-        >>> adm1.create_influent([15, 10, 0, 0, 0, 0, 0, 0, 0, 0], 0)
+    Usage
+    -----
+    >>> from pyadm1 import Feedstock
+    >>> fs = Feedstock([...], feeding_freq=24)
+    >>> adm = ADM1(fs, V_liq=1200, V_gas=216, T_ad=315.15)
+    >>> adm.set_influent_dataframe(fs.get_influent_dataframe(Q=[11.4, 6.1]))
+    >>> adm.create_influent(Q=[11.4, 6.1], i=0)
+    >>> state0 = [0.01] * STATE_SIZE
+    >>> dydt = adm.ADM_ODE(0.0, state0)
     """
 
     def __init__(
         self,
-        feedstock: Feedstock,
+        feedstock,
         V_liq: float = 1977.0,
         V_gas: float = 304.0,
         T_ad: float = 308.15,
     ) -> None:
         """
-        Initialize ADM1 model.
+        Initialize the ADM1 model.
 
-        Args:
-            feedstock: Feedstock object containing substrate information. E.g. used to calculate ADM1 input stream.
-            V_liq: Liquid volume [m³]
-            V_gas: Gas volume [m³]
-            T_ad: Operating temperature [K] (default: 308.15 = 35°C)
+        Parameters
+        ----------
+        feedstock : Feedstock
+            Feedstock object (used by ``create_influent`` when no external
+            influent DataFrame has been provided via ``set_influent_dataframe``).
+        V_liq : float
+            Liquid digester volume [m³].
+        V_gas : float
+            Gas headspace volume [m³].
+        T_ad : float
+            Operating temperature [K] (default 308.15 K = 35 °C).
         """
-        super().__init__(feedstock, V_liq, V_gas, T_ad)
+        # --- Reactor volumes ---
+        self.V_liq = V_liq
+        self._V_gas = V_gas
+        self._V_ad = V_liq + V_gas
 
-    def create_influent(self, Q: List[float], i: int) -> None:
-        """
-        Create ADM1 input stream from volumetric flow rates.
+        # --- Temperature ---
+        self._T_ad = T_ad
 
-        Calculates the ADM1 influent state by mixing substrate streams according
-        to their volumetric flow rates. The resulting influent composition is
-        stored internally for use in ODE calculations.
+        # --- Physical constants ---
+        self._R = 0.08314  # bar·m³·kmol⁻¹·K⁻¹
+        self._T_base = 298.15  # 25 °C reference
+        self._p_atm = 1.013
 
-        Args:
-            Q: Volumetric flow rates for each substrate [m³/d]
-                Length must equal number of substrates in feedstock
-            i: Time step index for accessing influent dataframe
+        self._RT = self._R * self._T_ad
+        self._p_ext = self._p_atm - 0.0084147 * np.exp(0.054 * (self._T_ad - 273.15))
 
-        Example:
-            >>> adm1.create_influent([15, 10, 0, 0, 0, 0, 0, 0, 0, 0], 0)
-        """
-        self._Q = Q
-        influent_state = self._feedstock.get_influent_dataframe(Q)
-        self._set_influent(influent_state, i)
+        # --- Feedstock / influent ---
+        self._feedstock = feedstock
+        self._Q: Optional[List[float]] = None
+        self._state_input: Optional[List[float]] = None
 
-    def save_final_state_in_csv(self, simulate_results: List[List[float]], filename: str = "digester_final.csv") -> None:
-        """
-        Save final ADM1 state vector to CSV file.
+        # --- Calibration overrides ---
+        self._calibration_params: dict = {}
 
-        Exports only the last state from simulation results, which can be used
-        as initial state for subsequent simulations.
+        # --- Result-tracking lists ---
+        self._Q_GAS: List[float] = []
+        self._Q_CH4: List[float] = []
+        self._Q_CO2: List[float] = []
+        self._Q_H2O: List[float] = []
+        self._P_GAS: List[float] = []
+        self._pH_l: List[float] = []
+        self._FOSTAC: List[float] = []
+        self._AcvsPro: List[float] = []
+        self._VFA: List[float] = []
+        self._TAC: List[float] = []
 
-        Args:
-            simulate_results: List of ADM1 state vectors from simulation
-            filename: Output CSV filename
+        # --- Temperature-corrected kinetics (reused across ODE calls) ---
+        base_kinetic = ADMParams.get_kinetic_params()
+        theta = ADMParams.get_temperature_factors()
+        self._kinetic = ADMParams.apply_temperature_corrections(base_kinetic, theta, T_ad)
 
-        Example:
-            >>> results = [[0.01]*37, [0.02]*37, [0.03]*37]
-            >>> adm1.save_final_state_in_csv(results, 'final_state.csv')
-        """
-        columns = [
-            *self._feedstock.header()[:-1],
-            "pi_Sh2",
-            "pi_Sch4",
-            "pi_Sco2",
-            "pTOTAL",
-        ]
+        # --- Stoichiometric / fraction / inhibition parameters ---
+        self._stoich = ADMParams.get_stoichiometric_params()
+        self._fractions = ADMParams.get_product_fractions()
+        self._inhib_params = ADMParams.get_inhibition_params(self._R, self._T_base, T_ad)
 
-        simulate_results_df = pd.DataFrame.from_records(simulate_results)
-        simulate_results_df.columns = columns
+        # --- Gas parameters ---
+        p_gas_h2o, k_p, k_L_a, K_H_co2, K_H_ch4, K_H_h2 = ADMParams.getADMgasparams(self._R, self._T_base, T_ad)
+        self._p_gas_h2o = p_gas_h2o
+        self._k_p = k_p
+        self._k_L_a = k_L_a
+        self._K_H_co2 = K_H_co2
+        self._K_H_ch4 = K_H_ch4
+        self._K_H_h2 = K_H_h2
 
-        # Keep only the last row
-        last_simulated_result = simulate_results_df[-1:]
-        last_simulated_result.to_csv(filename, index=False)
+        # Gas volume reference conditions (theta = 20 °C, 1 atm) — ADM1da convention
+        self._T_gas_norm = 293.15
+        self._P_gas_norm = 1.01325
+        self._NQ = 1000.0 * self._P_gas_norm / (self._R * self._T_gas_norm)
 
-    def print_params_at_current_state(self, state_ADM1xp: List[float]) -> None:
-        """
-        Calculate and store process parameters from current state.
+        # Pressure threshold for linearised gas-outlet pipe formula [bar].
+        self._dP_min_pipe = 1.0e-3
 
-        Computes key process indicators including pH, VFA, TAC,
-        and gas production rates. Also stores values in tracking lists.
+        # Optional external influent DataFrame.
+        self._influent_df: Optional[pd.DataFrame] = None
 
-        Args:
-            state_ADM1xp: Current ADM1 state vector (37 elements)
+        # Influent / sludge densities (used by ``create_influent`` only).
+        self._rho_in: float = 1000.0
+        self._rho_sludge: float = 1000.0
 
-        Example:
-            >>> adm1.print_params_at_current_state(state_vector)
-        """
-        # DLL-derived indicators (ADM1-specific)
-        self._pH_l.append(np.round(ADMstate.calcPHOfADMstate(state_ADM1xp), 1))
-        self._FOSTAC.append(np.round(ADMstate.calcFOSTACOfADMstate(state_ADM1xp).Value, 2))
-        self._AcvsPro.append(np.round(ADMstate.calcAcetic_vs_PropionicOfADMstate(state_ADM1xp).Value, 1))
-        self._VFA.append(np.round(ADMstate.calcVFAOfADMstate(state_ADM1xp, "gHAceq/l").Value, 2))
-        self._TAC.append(np.round(ADMstate.calcTACOfADMstate(state_ADM1xp, "gCaCO3eq/l").Value, 1))
-
-        if len(self._pH_l) < 2:
-            self._pH_l.append(self._pH_l[-1])
-            self._FOSTAC.append(self._FOSTAC[-1])
-            self._AcvsPro.append(self._AcvsPro[-1])
-            self._VFA.append(self._VFA[-1])
-            self._TAC.append(self._TAC[-1])
-
-        q_gas, q_ch4, q_co2, q_h2o, p_gas = self.calc_gas(
-            state_ADM1xp[33], state_ADM1xp[34], state_ADM1xp[35], state_ADM1xp[36]
-        )
-        self._track_gas(q_gas, q_ch4, q_co2, q_h2o, p_gas)
-
-    def get_state_size(self) -> int:
-        """Return the number of state variables: 37 for standard ADM1."""
-        return 37
+    # ------------------------------------------------------------------
+    # Public read-only properties
+    # ------------------------------------------------------------------
 
     @property
     def model_name(self) -> str:
         """Short identifier for this model variant."""
         return "ADM1"
 
-    def ADM1_ODE(self, t: float, state_zero: List[float]) -> Tuple[float, ...]:
+    @property
+    def T_ad(self) -> float:
+        """Operating temperature [K]."""
+        return self._T_ad
+
+    @property
+    def feedstock(self):
+        """Feedstock object."""
+        return self._feedstock
+
+    @property
+    def Q_GAS(self) -> List[float]:
+        return self._Q_GAS
+
+    @property
+    def Q_CH4(self) -> List[float]:
+        return self._Q_CH4
+
+    @property
+    def Q_CO2(self) -> List[float]:
+        return self._Q_CO2
+
+    @property
+    def Q_H2O(self) -> List[float]:
+        return self._Q_H2O
+
+    @property
+    def P_GAS(self) -> List[float]:
+        return self._P_GAS
+
+    @property
+    def pH_l(self) -> List[float]:
+        return self._pH_l
+
+    @property
+    def VFA_TA(self) -> List[float]:
+        return self._FOSTAC
+
+    @property
+    def AcvsPro(self) -> List[float]:
+        return self._AcvsPro
+
+    @property
+    def VFA(self) -> List[float]:
+        return self._VFA
+
+    @property
+    def TAC(self) -> List[float]:
+        return self._TAC
+
+    def get_state_size(self) -> int:
+        """Return the number of state variables: 41."""
+        return STATE_SIZE
+
+    # ------------------------------------------------------------------
+    # Calibration parameter API
+    # ------------------------------------------------------------------
+
+    def set_calibration_parameters(self, parameters: dict) -> None:
+        """Set calibration overrides for kinetic / gas parameters."""
+        self._calibration_params.update(parameters)
+
+    def clear_calibration_parameters(self) -> None:
+        """Clear all calibration parameters."""
+        self._calibration_params = {}
+
+    def get_calibration_parameters(self) -> dict:
+        """Return a copy of the current calibration parameters."""
+        return self._calibration_params.copy()
+
+    # ------------------------------------------------------------------
+    # Gas calculation
+    # ------------------------------------------------------------------
+
+    def calc_gas(
+        self,
+        pi_Sh2: float,
+        pi_Sch4: float,
+        pi_Sco2: float,
+        pTOTAL: float,
+    ) -> Tuple[float, float, float, float, float]:
         """
-        Calculate derivatives for ADM1 ODE system.
+        Calculate biogas production rates, normalised to standard reference
+        conditions (theta = 20 °C, P = 1.01325 bar; ADM1da convention).
 
-        This is the main ODE function that computes dy/dt for all 37 state
-        variables. Uses process rate equations and stoichiometric relationships.
-
-        Args:
-            t: Current time [days] (not used, system is autonomous)
-            state_zero: Current ADM1 state vector (37 elements)
-
-        Returns:
-            Tuple of 37 derivatives (dy/dt)
-
-        Note:
-            This method is called by the ODE solver and should not be called
-            directly by users.
+        Returns
+        -------
+        q_gas, q_ch4, q_co2, q_h2o, p_gas
         """
-        # Get all ADM1 parameters
-        params_tuple = ADMParams.getADMparams(self._R, self._T_base, self._T_ad)
+        k_p = self._k_p
+        if self._calibration_params.get("k_p") is not None:
+            k_p = float(self._calibration_params["k_p"])
 
-        # Get substrate-dependent parameters
-        substrate_params = self._get_substrate_dependent_params()
-
-        # Unpack frequently used parameters
-        (
-            N_xc,
-            N_I,
-            N_aa,
-            C_xc,
-            C_sI,
-            C_ch,
-            C_pr,
-            C_li,
-            C_xI,
-            C_su,
-            C_aa,
-            f_fa_li,
-            C_fa,
-            f_h2_su,
-            f_bu_su,
-            f_pro_su,
-            f_ac_su,
-            N_bac,
-            C_bu,
-            C_pro,
-            C_ac,
-            C_bac,
-            Y_su,
-            f_h2_aa,
-            f_va_aa,
-            f_bu_aa,
-            f_pro_aa,
-            f_ac_aa,
-            C_va,
-            Y_aa,
-            Y_fa,
-            Y_c4,
-            Y_pro,
-            C_ch4,
-            Y_ac,
-            Y_h2,
-        ) = params_tuple[:36]
-
-        # Get kinetic parameters (starting from index 36)
-        kinetic_params = {
-            "K_S_IN": params_tuple[36],
-            "k_m_su": params_tuple[37],
-            "K_S_su": params_tuple[38],
-            "k_m_aa": params_tuple[41],
-            "K_S_aa": params_tuple[42],
-            "k_m_fa": params_tuple[43],
-            "K_S_fa": params_tuple[44],
-            "K_I_h2_fa": params_tuple[45],
-            "k_m_c4": params_tuple[46],
-            "K_S_c4": params_tuple[47],
-            "K_I_h2_c4": params_tuple[48],
-            "k_m_pro": params_tuple[49],
-            "K_S_pro": params_tuple[50],
-            "K_I_h2_pro": params_tuple[51],
-            "k_m_ac": params_tuple[52],
-            "K_S_ac": params_tuple[53],
-            "K_I_nh3": params_tuple[54],
-            "k_m_h2": params_tuple[57],
-            "K_S_h2": params_tuple[58],
-            "k_dec_X_su": params_tuple[61],
-            "k_dec_X_aa": params_tuple[62],
-            "k_dec_X_fa": params_tuple[63],
-            "k_dec_X_c4": params_tuple[64],
-            "k_dec_X_pro": params_tuple[65],
-            "k_dec_X_ac": params_tuple[66],
-            "k_dec_X_h2": params_tuple[67],
-        }
-
-        # Get acid-base and gas parameters
-        acid_base_params = {
-            "K_w": params_tuple[68],
-            "K_a_va": params_tuple[69],
-            "K_a_bu": params_tuple[70],
-            "K_a_pro": params_tuple[71],
-            "K_a_ac": params_tuple[72],
-            "K_a_co2": params_tuple[73],
-            "K_a_IN": params_tuple[74],
-            "k_A_B_va": params_tuple[75],
-            "k_A_B_bu": params_tuple[76],
-            "k_A_B_pro": params_tuple[77],
-            "k_A_B_ac": params_tuple[78],
-            "k_A_B_co2": params_tuple[79],
-            "k_A_B_IN": params_tuple[80],
-        }
-
-        gas_params = {
-            "k_p": params_tuple[82],
-            "k_L_a": params_tuple[83],
-            "K_H_co2": params_tuple[84],
-            "K_H_ch4": params_tuple[85],
-            "K_H_h2": params_tuple[86],
-        }
-
-        if self._calibration_params:
-            for key in gas_params:
-                if key in self._calibration_params:
-                    gas_params[key] = float(self._calibration_params[key])
-
-        # Get pH and inhibition parameters
-        K_pH_aa, nn_aa, K_pH_ac, n_ac, K_pH_h2, n_h2 = ADMParams.getADMinhibitionparams()
-
-        # Calculate pH and H+ concentration
-        pH = ADMstate.calcPHOfADMstate(state_zero)
-        S_H_ion = 10 ** (-pH)
-
-        # Unpack state variables
-        S_su, S_aa, S_fa, S_va, S_bu, S_pro, S_ac, S_h2 = state_zero[0:8]
-        S_ch4, S_co2, S_nh4_ion, S_I = state_zero[8:12]
-        X_xc, X_ch, X_pr, X_li = state_zero[12:16]
-        X_su, X_aa, X_fa, X_c4, X_pro, X_ac, X_h2, X_I, X_p = state_zero[16:25]
-        S_cation, S_anion = state_zero[25:27]
-        S_va_ion, S_bu_ion, S_pro_ion, S_ac_ion = state_zero[27:31]
-        S_hco3_ion, S_nh3 = state_zero[31:33]
-        p_gas_h2, p_gas_ch4, p_gas_co2, pTOTAL = state_zero[33:37]
-
-        # Get influent concentrations
-        q_ad = np.sum(self._Q) if self._Q is not None else 0.0
-        state_in = self._state_input if self._state_input is not None else [0.0] * 34
-
-        # Calculate inhibition factors
-        bio = BiochemicalProcesses()
-        inhibitions = bio.calculate_inhibition_factors(
-            S_H_ion,
-            S_h2,
-            S_nh4_ion,
-            S_nh3,
-            K_pH_aa,
-            nn_aa,
-            K_pH_ac,
-            n_ac,
-            K_pH_h2,
-            n_h2,
-            kinetic_params["K_S_IN"],
-            kinetic_params["K_I_h2_fa"],
-            kinetic_params["K_I_h2_c4"],
-            kinetic_params["K_I_h2_pro"],
-            kinetic_params["K_I_nh3"],
+        p_total_wet = pTOTAL + self._p_gas_h2o
+        q_gas = max(
+            k_p * (p_total_wet - self._p_ext) / (self._RT / 1000.0 * self._NQ) * self.V_liq,
+            0.0,
         )
 
-        # Calculate biochemical process rates
-        process_rates = bio.calculate_process_rates(state_zero, inhibitions, kinetic_params, substrate_params)
-        Rho_1, Rho_2, Rho_3, Rho_4, Rho_5, Rho_6, Rho_7, Rho_8, Rho_9 = process_rates[:9]
-        Rho_10, Rho_11, Rho_12, Rho_13, Rho_14, Rho_15, Rho_16 = process_rates[9:16]
-        Rho_17, Rho_18, Rho_19 = process_rates[16:19]
+        p_gas = pi_Sh2 + pi_Sch4 + pi_Sco2
+        p_gas_wet = p_gas + self._p_gas_h2o
+        if p_gas_wet > 0.0:
+            q_ch4 = max(q_gas * (pi_Sch4 / p_gas_wet), 0.0)
+            q_co2 = max(q_gas * (pi_Sco2 / p_gas_wet), 0.0)
+            q_h2o = max(q_gas * (self._p_gas_h2o / p_gas_wet), 0.0)
+        else:
+            q_ch4 = 0.0
+            q_co2 = 0.0
+            q_h2o = 0.0
 
-        # Calculate acid-base rates
-        acid_base_rates = bio.calculate_acid_base_rates(state_zero, acid_base_params)
-        Rho_A_4, Rho_A_5, Rho_A_6, Rho_A_7, Rho_A_10, Rho_A_11 = acid_base_rates
+        return q_gas, q_ch4, q_co2, q_h2o, p_gas
 
-        # Calculate gas transfer rates
-        gas_rates = bio.calculate_gas_transfer_rates(state_zero, gas_params, self._RT, self.V_liq, self._V_gas, self._p_ext)
-        Rho_T_8, Rho_T_9, Rho_T_10, Rho_T_11 = gas_rates
+    # ------------------------------------------------------------------
+    # Influent setup
+    # ------------------------------------------------------------------
 
-        # Extract substrate-dependent fractions
-        f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc, _, _, _, _, _, _, _, _ = substrate_params.values()
+    def set_influent_dataframe(self, df: pd.DataFrame) -> None:
+        """
+        Store an external ADM1 influent DataFrame.
 
-        # Calculate biomass decay fractions
-        f_p = 0.08
-        f_ch_xb = f_ch_xc / (f_ch_xc + f_pr_xc + f_li_xc) * (1 - f_p)
-        f_pr_xb = f_pr_xc / (f_ch_xc + f_pr_xc + f_li_xc) * (1 - f_p)
-        f_li_xb = f_li_xc / (f_ch_xc + f_pr_xc + f_li_xc) * (1 - f_p)
+        The DataFrame must have columns matching ``INFLUENT_COLUMNS`` (37
+        liquid-state columns + Q).  Once set, ``create_influent()`` reads
+        from this DataFrame instead of deriving values from the feedstock.
+        """
+        missing = [c for c in INFLUENT_COLUMNS if c not in df.columns]
+        if missing:
+            raise ValueError(f"Influent DataFrame missing columns: {missing}")
+        self._influent_df = df.reset_index(drop=True)
 
-        # Differential equations for soluble components (1-12)
-        diff_S_su = q_ad / self.V_liq * (state_in[0] - S_su) + Rho_2 + (1 - f_fa_li) * Rho_4 - Rho_5
+    def set_influent_density(self, rho_in: float, rho_sludge: float = 1000.0) -> None:
+        """Retained for API compatibility; stored but no longer affects Q_out."""
+        self._rho_in = float(rho_in)
+        self._rho_sludge = float(rho_sludge)
 
-        diff_S_aa = q_ad / self.V_liq * (state_in[1] - S_aa) + Rho_3 - Rho_6
+    def create_influent(
+        self,
+        Q: List[float],
+        i: int,
+        rho: Optional[List[float]] = None,
+    ) -> None:
+        """
+        Build the influent vector for time step *i*.
 
-        diff_S_fa = q_ad / self.V_liq * (state_in[2] - S_fa) + f_fa_li * Rho_4 - Rho_7
+        If an external influent DataFrame has been set via
+        ``set_influent_dataframe()``, that DataFrame is used.  Otherwise
+        the feedstock object is used to derive the influent.
+        """
+        if hasattr(self._feedstock, "actual_Q"):
+            Q_actual = self._feedstock.actual_Q(Q)
+        else:
+            Q_actual = list(Q)
+        self._Q = Q_actual
+        if rho is not None and len(rho) == len(Q_actual):
+            q_total = sum(Q_actual)
+            if q_total > 0.0:
+                self._rho_in = sum(q * r for q, r in zip(Q_actual, rho)) / q_total
 
-        diff_S_va = q_ad / self.V_liq * (state_in[3] - S_va) + (1 - Y_aa) * f_va_aa * Rho_6 - Rho_8
+        if self._influent_df is not None:
+            max_i = len(self._influent_df) - 1
+            row = self._influent_df.iloc[min(i, max_i)]
+            self._state_input = row[INFLUENT_COLUMNS[:-1]].tolist()
+        else:
+            df = self._feedstock.get_influent_dataframe(Q)
+            max_i = len(df) - 1
+            row = df.iloc[min(i, max_i)]
+            self._state_input = row[INFLUENT_COLUMNS[:-1]].tolist()
 
-        diff_S_bu = (
-            q_ad / self.V_liq * (state_in[4] - S_bu) + (1 - Y_su) * f_bu_su * Rho_5 + (1 - Y_aa) * f_bu_aa * Rho_6 - Rho_9
+    # ------------------------------------------------------------------
+    # ODE system
+    # ------------------------------------------------------------------
+
+    def ADM_ODE(self, t: float, state: List[float]) -> Tuple[float, ...]:
+        """
+        Compute dy/dt for the 41-element ADM1 state vector.
+
+        The system is autonomous; *t* is present only to satisfy the scipy
+        solver interface.
+        """
+        # ---- Unpack state ------------------------------------------------
+        S_su = state[_IDX_S_SU]
+        S_aa = state[_IDX_S_AA]
+        S_fa = state[_IDX_S_FA]
+        S_va = state[_IDX_S_VA]
+        S_bu = state[_IDX_S_BU]
+        S_pro = state[_IDX_S_PRO]
+        S_ac = state[_IDX_S_AC]
+        S_h2 = state[_IDX_S_H2]
+        S_ch4 = state[_IDX_S_CH4]
+        S_co2 = state[_IDX_S_CO2]
+        S_nh4 = state[_IDX_S_NH4]
+        S_I = state[_IDX_S_I]
+
+        X_PS_ch = state[_IDX_X_PS_CH]
+        X_PS_pr = state[_IDX_X_PS_PR]
+        X_PS_li = state[_IDX_X_PS_LI]
+        X_PF_ch = state[_IDX_X_PF_CH]
+        X_PF_pr = state[_IDX_X_PF_PR]
+        X_PF_li = state[_IDX_X_PF_LI]
+        X_S_ch = state[_IDX_X_S_CH]
+        X_S_pr = state[_IDX_X_S_PR]
+        X_S_li = state[_IDX_X_S_LI]
+        X_I = state[_IDX_X_I]
+
+        X_su = state[_IDX_X_SU]
+        X_aa = state[_IDX_X_AA]
+        X_fa = state[_IDX_X_FA]
+        X_c4 = state[_IDX_X_C4]
+        X_pro = state[_IDX_X_PRO]
+        X_ac = state[_IDX_X_AC]
+        X_h2 = state[_IDX_X_H2]
+
+        S_cation = state[_IDX_S_CATION]
+        S_anion = state[_IDX_S_ANION]
+        S_va_ion = state[_IDX_S_VA_ION]
+        S_bu_ion = state[_IDX_S_BU_ION]
+        S_pro_ion = state[_IDX_S_PRO_ION]
+        S_ac_ion = state[_IDX_S_AC_ION]
+        S_hco3 = state[_IDX_S_HCO3]
+        S_nh3 = state[_IDX_S_NH3]
+
+        p_gas_h2 = state[_IDX_P_H2]
+        p_gas_ch4 = state[_IDX_P_CH4]
+        p_gas_co2 = state[_IDX_P_CO2]
+        pTOTAL = state[_IDX_P_TOTAL]
+
+        # ---- Influent and hydraulic flow ---------------------------------
+        q_ad = float(np.sum(self._Q)) if self._Q is not None else 0.0
+        s_in = self._state_input if self._state_input is not None else [0.0] * 37
+
+        # ---- Parameters --------------------------------------------------
+        k = self._kinetic
+        st = self._stoich
+        fr = self._fractions
+        ip = self._inhib_params
+
+        f_fa_li = st["f_fa_li"]
+        f_ch_bac = st["f_ch_bac"]
+        f_pr_bac = st["f_pr_bac"]
+        f_li_bac = st["f_li_bac"]
+        f_p_bac = st["f_p_bac"]
+        fXI_PS = st["fXI_PS"]
+        fXI_PF = st["fXI_PF"]
+        fSI = st["fSI_hyd"]
+
+        Y_su = k["Y_su"]
+        Y_aa = k["Y_aa"]
+        Y_fa = k["Y_fa"]
+        Y_c4 = k["Y_c4"]
+        Y_pro = k["Y_pro"]
+        Y_ac = k["Y_ac"]
+        Y_h2 = k["Y_h2"]
+
+        # ---- pH (Newton–Raphson charge balance) --------------------------
+        S_H = self._calc_ph(S_nh4, S_nh3, S_hco3, S_ac_ion, S_pro_ion, S_bu_ion, S_va_ion, S_cation, S_anion, ip["K_w"])
+        S_H = max(S_H, 1.0e-14)
+
+        # ---- Inhibition factors ------------------------------------------
+        S_IN = S_nh4 + S_nh3
+        I_IN = S_IN / (ip["K_S_IN"] + S_IN + 1.0e-20)
+
+        I_pH_aa = self._pH_inhib(S_H, ip["K_pH_aa"], n=1)
+        I_pH_fa = self._pH_inhib(S_H, ip["K_pH_aa"], n=2)
+        I_pH_c4 = self._pH_inhib(S_H, ip["K_pH_aa"], n=2)
+        I_pH_pro = self._pH_inhib(S_H, ip["K_pH_aa"], n=2)
+        I_pH_ac = self._pH_inhib(S_H, ip["K_pH_ac"], n=3)
+        I_pH_h2 = self._pH_inhib(S_H, ip["K_pH_h2"], n=3)
+
+        I_h2_fa = ip["K_I_h2_fa"] / (ip["K_I_h2_fa"] + S_h2)
+        I_h2_c4 = ip["K_I_h2_c4"] / (ip["K_I_h2_c4"] + S_h2)
+        I_h2_pro = ip["K_I_h2_pro"] / (ip["K_I_h2_pro"] + S_h2)
+
+        K_nh3_ac_sq = ip["K_I_nh3"] ** 2
+        K_nh3_pro_sq = ip["K_I_nh3_pro"] ** 2
+        S_nh3_sq = S_nh3 * S_nh3
+        I_nh3 = K_nh3_ac_sq / (K_nh3_ac_sq + S_nh3_sq)
+        I_nh3_pro = K_nh3_pro_sq / (K_nh3_pro_sq + S_nh3_sq)
+
+        K_co2_h2_sq = ip["K_S_co2_h2"] * ip["K_S_co2_h2"]
+        S_co2_sq = S_co2 * S_co2
+        I_co2_h2 = S_co2_sq / (K_co2_h2_sq + S_co2_sq + 1.0e-30)
+
+        Ka_pro = ip["K_a_pro"]
+        S_HPr = (S_pro / 112.0) * S_H / (S_H + Ka_pro + 1.0e-20)
+        I_HPr = ip["K_IH_pro"] / (ip["K_IH_pro"] + S_HPr + 1.0e-20)
+
+        Ka_ac = ip["K_a_ac"]
+        S_HAc = (S_ac / 64.0) * S_H / (S_H + Ka_ac + 1.0e-20)
+        I_HAc = ip["K_IH_ac"] / (ip["K_IH_ac"] + S_HAc + 1.0e-20)
+
+        I_su = I_pH_aa * I_IN
+        I_aa = I_pH_aa * I_IN
+        I_fa = I_pH_fa * I_IN * I_h2_fa
+        I_c4 = I_pH_c4 * I_IN * I_h2_c4
+        I_pro = I_pH_pro * I_IN * I_h2_pro * I_HPr * I_nh3_pro
+        I_ac = I_pH_ac * I_IN * I_nh3 * I_HAc
+        I_h2 = I_pH_h2 * I_IN * I_co2_h2
+
+        # ---- Process rates -----------------------------------------------
+        Rho_dis_PS_ch = k["k_dis_PS"] * X_PS_ch
+        Rho_dis_PS_pr = k["k_dis_PS"] * X_PS_pr
+        Rho_dis_PS_li = k["k_dis_PS"] * X_PS_li
+        Rho_dis_PF_ch = k["k_dis_PF"] * X_PF_ch
+        Rho_dis_PF_pr = k["k_dis_PF"] * X_PF_pr
+        Rho_dis_PF_li = k["k_dis_PF"] * X_PF_li
+
+        Rho_hyd_ch = k["k_hyd_ch"] * X_S_ch
+        Rho_hyd_pr = k["k_hyd_pr"] * X_S_pr
+        Rho_hyd_li = k["k_hyd_li"] * X_S_li
+
+        Rho_su = k["k_m_su"] * S_su / (k["K_S_su"] + S_su + 1.0e-20) * X_su * I_su
+        Rho_aa = k["k_m_aa"] * S_aa / (k["K_S_aa"] + S_aa + 1.0e-20) * X_aa * I_aa
+        Rho_fa = k["k_m_fa"] * S_fa / (k["K_S_fa"] + S_fa + 1.0e-20) * X_fa * I_fa
+
+        S_vbu = S_va + S_bu + 1.0e-20
+        Rho_c4_va = k["k_m_c4"] * S_va / (k["K_S_c4"] + S_va + 1.0e-20) * X_c4 * (S_va / S_vbu) * I_c4
+        Rho_c4_bu = k["k_m_c4"] * S_bu / (k["K_S_c4"] + S_bu + 1.0e-20) * X_c4 * (S_bu / S_vbu) * I_c4
+
+        Rho_pro = k["k_m_pro"] * S_pro / (k["K_S_pro"] + S_pro + 1.0e-20) * X_pro * I_pro
+        Rho_ac = k["k_m_ac"] * S_ac / (k["K_S_ac"] + S_ac + 1.0e-20) * X_ac * I_ac
+        Rho_h2 = k["k_m_h2"] * S_h2 / (k["K_S_h2"] + S_h2 + 1.0e-20) * X_h2 * I_h2
+
+        Rho_dec_su = k["k_dec_su"] * X_su
+        Rho_dec_aa = k["k_dec_aa"] * X_aa
+        Rho_dec_fa = k["k_dec_fa"] * X_fa
+        Rho_dec_c4 = k["k_dec_c4"] * X_c4
+        Rho_dec_pro = k["k_dec_pro"] * X_pro
+        Rho_dec_ac = k["k_dec_ac"] * X_ac
+        Rho_dec_h2 = k["k_dec_h2"] * X_h2
+        sum_decay = Rho_dec_su + Rho_dec_aa + Rho_dec_fa + Rho_dec_c4 + Rho_dec_pro + Rho_dec_ac + Rho_dec_h2
+
+        # ---- Acid-base rates --------------------------------------------
+        k_AB = ip["k_A_B"]
+        Rho_A_va = k_AB * (S_va_ion * S_H - ip["K_a_va"] * (S_va - S_va_ion))
+        Rho_A_bu = k_AB * (S_bu_ion * S_H - ip["K_a_bu"] * (S_bu - S_bu_ion))
+        Rho_A_pro = k_AB * (S_pro_ion * S_H - ip["K_a_pro"] * (S_pro - S_pro_ion))
+        Rho_A_ac = k_AB * (S_ac_ion * S_H - ip["K_a_ac"] * (S_ac - S_ac_ion))
+        Rho_A_co2 = k_AB * (S_hco3 * S_H - ip["K_a_co2"] * (S_co2 - S_hco3))
+        Rho_A_IN = k_AB * (S_nh3 * S_H - ip["K_a_IN"] * (S_nh4 - S_nh3))
+
+        # ---- Gas transfer rates -----------------------------------------
+        k_L_a = self._k_L_a
+        if self._calibration_params.get("k_L_a") is not None:
+            k_L_a = float(self._calibration_params["k_L_a"])
+
+        Rho_T_h2 = k_L_a * (S_h2 - 16.0 * p_gas_h2 / (self._RT * self._K_H_h2)) * (self.V_liq / self._V_gas)
+        Rho_T_ch4 = k_L_a * (S_ch4 - 64.0 * p_gas_ch4 / (self._RT * self._K_H_ch4)) * (self.V_liq / self._V_gas)
+        S_co2_free = max(S_co2 - S_hco3, 0.0)
+        Rho_T_co2 = k_L_a * (S_co2_free - p_gas_co2 / (self._RT * self._K_H_co2)) * (self.V_liq / self._V_gas)
+
+        k_p = self._k_p
+        if self._calibration_params.get("k_p") is not None:
+            k_p = float(self._calibration_params["k_p"])
+        Rho_T_11 = max(k_p * (pTOTAL + self._p_gas_h2o - self._p_ext) * (self.V_liq / self._V_gas), 0.0)
+
+        # ---- Carbon stoichiometry coefficients for S_co2 balance --------
+        C = st
+        s_hyd_ch = -C["C_ch"] + (1.0 - fSI) * C["C_su"] + fSI * C["C_I_s"]
+        s_hyd_pr = -C["C_pr"] + (1.0 - fSI) * C["C_aa"] + fSI * C["C_I_s"]
+        s_hyd_li = -C["C_li"] + (1.0 - fSI) * (f_fa_li * C["C_fa"] + (1.0 - f_fa_li) * C["C_su"]) + fSI * C["C_I_s"]
+
+        s_su = (
+            -C["C_su"]
+            + (1.0 - Y_su) * (fr["f_bu_su"] * C["C_bu"] + fr["f_pro_su"] * C["C_pro"] + fr["f_ac_su"] * C["C_ac"])
+            + Y_su * C["C_bac"]
         )
-
-        diff_S_pro = (
-            q_ad / self.V_liq * (state_in[5] - S_pro)
-            + (1 - Y_su) * f_pro_su * Rho_5
-            + (1 - Y_aa) * f_pro_aa * Rho_6
-            + (1 - Y_c4) * 0.54 * Rho_8
-            - Rho_10
+        s_aa = (
+            -C["C_aa"]
+            + (1.0 - Y_aa)
+            * (fr["f_va_aa"] * C["C_va"] + fr["f_bu_aa"] * C["C_bu"] + fr["f_pro_aa"] * C["C_pro"] + fr["f_ac_aa"] * C["C_ac"])
+            + Y_aa * C["C_bac"]
         )
-
-        diff_S_ac = (
-            q_ad / self.V_liq * (state_in[6] - S_ac)
-            + (1 - Y_su) * f_ac_su * Rho_5
-            + (1 - Y_aa) * f_ac_aa * Rho_6
-            + (1 - Y_fa) * 0.7 * Rho_7
-            + (1 - Y_c4) * 0.31 * Rho_8
-            + (1 - Y_c4) * 0.8 * Rho_9
-            + (1 - Y_pro) * 0.57 * Rho_10
-            - Rho_11
-        )
-
-        diff_S_h2 = (
-            q_ad / self.V_liq * (state_in[7] - S_h2)
-            + (1 - Y_su) * f_h2_su * Rho_5
-            + (1 - Y_aa) * f_h2_aa * Rho_6
-            + (1 - Y_fa) * 0.3 * Rho_7
-            + (1 - Y_c4) * 0.15 * Rho_8
-            + (1 - Y_c4) * 0.2 * Rho_9
-            + (1 - Y_pro) * 0.43 * Rho_10
-            - Rho_12
-            - self._V_gas / self.V_liq * Rho_T_8
-        )
-
-        diff_S_ch4 = (
-            q_ad / self.V_liq * (state_in[8] - S_ch4)
-            + (1 - Y_ac) * Rho_11
-            + (1 - Y_h2) * Rho_12
-            - self._V_gas / self.V_liq * Rho_T_9
-        )
-
-        # CO2 balance with carbon stoichiometry
-        s_1 = -C_xc + f_sI_xc * C_sI + f_ch_xc * C_ch + f_pr_xc * C_pr + f_li_xc * C_li + f_xI_xc * C_xI
-        s_2 = -C_ch + C_su
-        s_3 = -C_pr + C_aa
-        s_4 = -C_li + (1 - f_fa_li) * C_su + f_fa_li * C_fa
-        s_5 = -C_su + (1 - Y_su) * (f_bu_su * C_bu + f_pro_su * C_pro + f_ac_su * C_ac) + Y_su * C_bac
-        s_6 = -C_aa + (1 - Y_aa) * (f_va_aa * C_va + f_bu_aa * C_bu + f_pro_aa * C_pro + f_ac_aa * C_ac) + Y_aa * C_bac
-        s_7 = -C_fa + (1 - Y_fa) * 0.7 * C_ac + Y_fa * C_bac
-        s_8 = -C_va + (1 - Y_c4) * 0.54 * C_pro + (1 - Y_c4) * 0.31 * C_ac + Y_c4 * C_bac
-        s_9 = -C_bu + (1 - Y_c4) * 0.8 * C_ac + Y_c4 * C_bac
-        s_10 = -C_pro + (1 - Y_pro) * 0.57 * C_ac + Y_pro * C_bac
-        s_11 = -C_ac + (1 - Y_ac) * C_ch4 + Y_ac * C_bac
-        s_12 = (1 - Y_h2) * C_ch4 + Y_h2 * C_bac
-        s_13 = -C_bac + C_xc
+        s_fa = -C["C_fa"] + (1.0 - Y_fa) * 0.7 * C["C_ac"] + Y_fa * C["C_bac"]
+        s_c4_va = -C["C_va"] + (1.0 - Y_c4) * (0.54 * C["C_pro"] + 0.31 * C["C_ac"]) + Y_c4 * C["C_bac"]
+        s_c4_bu = -C["C_bu"] + (1.0 - Y_c4) * 0.8 * C["C_ac"] + Y_c4 * C["C_bac"]
+        s_pro = -C["C_pro"] + (1.0 - Y_pro) * 0.57 * C["C_ac"] + Y_pro * C["C_bac"]
+        s_ac = -C["C_ac"] + (1.0 - Y_ac) * C["C_ch4"] + Y_ac * C["C_bac"]
+        s_h2 = (1.0 - Y_h2) * C["C_ch4"] + Y_h2 * C["C_bac"]
+        s_dec = -C["C_bac"] + f_ch_bac * C["C_ch"] + f_pr_bac * C["C_pr"] + f_li_bac * C["C_li"] + f_p_bac * C["C_I_x"]
 
         Sigma = (
-            s_1 * Rho_1
-            + s_2 * Rho_2
-            + s_3 * Rho_3
-            + s_4 * Rho_4
-            + s_5 * Rho_5
-            + s_6 * Rho_6
-            + s_7 * Rho_7
-            + s_8 * Rho_8
-            + s_9 * Rho_9
-            + s_10 * Rho_10
-            + s_11 * Rho_11
-            + s_12 * Rho_12
-            + s_13 * (Rho_13 + Rho_14 + Rho_15 + Rho_16 + Rho_17 + Rho_18 + Rho_19)
+            s_hyd_ch * Rho_hyd_ch
+            + s_hyd_pr * Rho_hyd_pr
+            + s_hyd_li * Rho_hyd_li
+            + s_su * Rho_su
+            + s_aa * Rho_aa
+            + s_fa * Rho_fa
+            + s_c4_va * Rho_c4_va
+            + s_c4_bu * Rho_c4_bu
+            + s_pro * Rho_pro
+            + s_ac * Rho_ac
+            + s_h2 * Rho_h2
+            + s_dec * sum_decay
         )
 
-        diff_S_co2 = q_ad / self.V_liq * (state_in[9] - S_co2) - Sigma - self._V_gas / self.V_liq * Rho_T_10 + Rho_A_10
+        # ---- Differential equations -------------------------------------
+        D_in = q_ad / self.V_liq
 
-        # Nitrogen balance
-        diff_S_nh4_ion = (
-            q_ad / self.V_liq * (state_in[10] - S_nh4_ion)
-            - Y_su * N_bac * Rho_5
-            + (N_aa - Y_aa * N_bac) * Rho_6
-            - Y_fa * N_bac * Rho_7
-            - Y_c4 * N_bac * Rho_8
-            - Y_c4 * N_bac * Rho_9
-            - Y_pro * N_bac * Rho_10
-            - Y_ac * N_bac * Rho_11
-            - Y_h2 * N_bac * Rho_12
-            + (N_bac - N_xc) * (Rho_13 + Rho_14 + Rho_15 + Rho_16 + Rho_17 + Rho_18 + Rho_19)
-            + Rho_A_11
+        # Sludge volume loss (hydrolysis-rate volume balance, after Schlattmann 2011 §5.1)
+        _q_S_loss = self.V_liq * (
+            Rho_hyd_ch * (0.9375 / 1550.0) + Rho_hyd_pr * (0.6125 / 1370.0) + Rho_hyd_li * (0.3474 / 920.0)
+        )
+        _Q_out = max(q_ad - _q_S_loss, 0.0)
+        D_out = _Q_out / self.V_liq
+
+        # --- Dissolved (0–11) ---
+        diff_S_su = (
+            D_in * s_in[0] - D_out * S_su + (1.0 - fSI) * Rho_hyd_ch + (1.0 - fSI) * (1.0 - f_fa_li) * Rho_hyd_li - Rho_su
+        )
+        diff_S_aa = D_in * s_in[1] - D_out * S_aa + (1.0 - fSI) * Rho_hyd_pr - Rho_aa
+        diff_S_fa = D_in * s_in[2] - D_out * S_fa + (1.0 - fSI) * f_fa_li * Rho_hyd_li - Rho_fa
+        diff_S_va = D_in * s_in[3] - D_out * S_va + (1.0 - Y_aa) * fr["f_va_aa"] * Rho_aa - Rho_c4_va
+        diff_S_bu = (
+            D_in * s_in[4]
+            - D_out * S_bu
+            + (1.0 - Y_su) * fr["f_bu_su"] * Rho_su
+            + (1.0 - Y_aa) * fr["f_bu_aa"] * Rho_aa
+            - Rho_c4_bu
+        )
+        diff_S_pro = (
+            D_in * s_in[5]
+            - D_out * S_pro
+            + (1.0 - Y_su) * fr["f_pro_su"] * Rho_su
+            + (1.0 - Y_aa) * fr["f_pro_aa"] * Rho_aa
+            + (1.0 - Y_c4) * 0.54 * Rho_c4_va
+            - Rho_pro
+        )
+        diff_S_ac = (
+            D_in * s_in[6]
+            - D_out * S_ac
+            + (1.0 - Y_su) * fr["f_ac_su"] * Rho_su
+            + (1.0 - Y_aa) * fr["f_ac_aa"] * Rho_aa
+            + (1.0 - Y_fa) * 0.7 * Rho_fa
+            + (1.0 - Y_c4) * 0.31 * Rho_c4_va
+            + (1.0 - Y_c4) * 0.8 * Rho_c4_bu
+            + (1.0 - Y_pro) * 0.57 * Rho_pro
+            - Rho_ac
+        )
+        diff_S_h2 = (
+            D_in * s_in[7]
+            - D_out * S_h2
+            + (1.0 - Y_su) * fr["f_h2_su"] * Rho_su
+            + (1.0 - Y_aa) * fr["f_h2_aa"] * Rho_aa
+            + (1.0 - Y_fa) * 0.3 * Rho_fa
+            + (1.0 - Y_c4) * 0.15 * Rho_c4_va
+            + (1.0 - Y_c4) * 0.2 * Rho_c4_bu
+            + (1.0 - Y_pro) * 0.43 * Rho_pro
+            - Rho_h2
+            - self._V_gas / self.V_liq * Rho_T_h2
+        )
+        diff_S_ch4 = (
+            D_in * s_in[8]
+            - D_out * S_ch4
+            + (1.0 - Y_ac) * Rho_ac
+            + (1.0 - Y_h2) * Rho_h2
+            - self._V_gas / self.V_liq * Rho_T_ch4
+        )
+        diff_S_co2 = D_in * s_in[9] - D_out * S_co2 - Sigma - self._V_gas / self.V_liq * Rho_T_co2 + Rho_A_co2
+
+        N_bac = st["N_bac"]
+        N_aa = st["N_aa"]
+        N_I = st["N_I"]
+        diff_S_nh4 = (
+            D_in * s_in[10]
+            - D_out * S_nh4
+            - Y_su * N_bac * Rho_su
+            + (N_aa - Y_aa * N_bac) * Rho_aa
+            - Y_fa * N_bac * Rho_fa
+            - Y_c4 * N_bac * Rho_c4_va
+            - Y_c4 * N_bac * Rho_c4_bu
+            - Y_pro * N_bac * Rho_pro
+            - Y_ac * N_bac * Rho_ac
+            - Y_h2 * N_bac * Rho_h2
+            + (N_bac - f_pr_bac * N_aa - f_p_bac * N_I) * sum_decay
+            + Rho_A_IN
+        )
+        diff_S_I = D_in * s_in[11] - D_out * S_I + fSI * (Rho_hyd_ch + Rho_hyd_pr + Rho_hyd_li)
+
+        # --- Particulate sub-fractions (12–21) ---
+        diff_X_PS_ch = D_in * s_in[12] - D_out * X_PS_ch - Rho_dis_PS_ch
+        diff_X_PS_pr = D_in * s_in[13] - D_out * X_PS_pr - Rho_dis_PS_pr
+        diff_X_PS_li = D_in * s_in[14] - D_out * X_PS_li - Rho_dis_PS_li
+        diff_X_PF_ch = D_in * s_in[15] - D_out * X_PF_ch - Rho_dis_PF_ch
+        diff_X_PF_pr = D_in * s_in[16] - D_out * X_PF_pr - Rho_dis_PF_pr
+        diff_X_PF_li = D_in * s_in[17] - D_out * X_PF_li - Rho_dis_PF_li
+        diff_X_S_ch = (
+            D_in * s_in[18]
+            - D_out * X_S_ch
+            + (1.0 - fXI_PS) * Rho_dis_PS_ch
+            + (1.0 - fXI_PF) * Rho_dis_PF_ch
+            + f_ch_bac * sum_decay
+            - Rho_hyd_ch
+        )
+        diff_X_S_pr = (
+            D_in * s_in[19]
+            - D_out * X_S_pr
+            + (1.0 - fXI_PS) * Rho_dis_PS_pr
+            + (1.0 - fXI_PF) * Rho_dis_PF_pr
+            + f_pr_bac * sum_decay
+            - Rho_hyd_pr
+        )
+        diff_X_S_li = (
+            D_in * s_in[20]
+            - D_out * X_S_li
+            + (1.0 - fXI_PS) * Rho_dis_PS_li
+            + (1.0 - fXI_PF) * Rho_dis_PF_li
+            + f_li_bac * sum_decay
+            - Rho_hyd_li
+        )
+        diff_X_I = (
+            D_in * s_in[21]
+            - D_out * X_I
+            + fXI_PS * (Rho_dis_PS_ch + Rho_dis_PS_pr + Rho_dis_PS_li)
+            + fXI_PF * (Rho_dis_PF_ch + Rho_dis_PF_pr + Rho_dis_PF_li)
+            + f_p_bac * sum_decay
         )
 
-        diff_S_I = q_ad / self.V_liq * (state_in[11] - S_I) + f_sI_xc * Rho_1
+        # --- Biomass (22–28) ---
+        diff_X_su = D_in * s_in[22] - D_out * X_su + Y_su * Rho_su - Rho_dec_su
+        diff_X_aa = D_in * s_in[23] - D_out * X_aa + Y_aa * Rho_aa - Rho_dec_aa
+        diff_X_fa = D_in * s_in[24] - D_out * X_fa + Y_fa * Rho_fa - Rho_dec_fa
+        diff_X_c4 = D_in * s_in[25] - D_out * X_c4 + Y_c4 * Rho_c4_va + Y_c4 * Rho_c4_bu - Rho_dec_c4
+        diff_X_pro = D_in * s_in[26] - D_out * X_pro + Y_pro * Rho_pro - Rho_dec_pro
+        diff_X_ac = D_in * s_in[27] - D_out * X_ac + Y_ac * Rho_ac - Rho_dec_ac
+        diff_X_h2 = D_in * s_in[28] - D_out * X_h2 + Y_h2 * Rho_h2 - Rho_dec_h2
 
-        # Differential equations for particulate components (13-24)
-        diff_X_xc = q_ad / self.V_liq * (state_in[12] - X_xc) - Rho_1
+        # --- Charge balance (29–36) ---
+        diff_S_cation = D_in * s_in[29] - D_out * S_cation
+        diff_S_anion = D_in * s_in[30] - D_out * S_anion
+        diff_S_va_ion = D_in * s_in[31] - D_out * S_va_ion - Rho_A_va
+        diff_S_bu_ion = D_in * s_in[32] - D_out * S_bu_ion - Rho_A_bu
+        diff_S_pro_ion = D_in * s_in[33] - D_out * S_pro_ion - Rho_A_pro
+        diff_S_ac_ion = D_in * s_in[34] - D_out * S_ac_ion - Rho_A_ac
+        diff_S_hco3 = D_in * s_in[35] - D_out * S_hco3 - Rho_A_co2
+        diff_S_nh3 = D_in * s_in[36] - D_out * S_nh3 - Rho_A_IN
 
-        diff_X_ch = (
-            q_ad / self.V_liq * (state_in[13] - X_ch)
-            + f_ch_xc * Rho_1
-            - Rho_2
-            + f_ch_xb * (Rho_13 + Rho_14 + Rho_15 + Rho_16 + Rho_17 + Rho_18 + Rho_19)
-        )
-
-        diff_X_pr = (
-            q_ad / self.V_liq * (state_in[14] - X_pr)
-            + f_pr_xc * Rho_1
-            - Rho_3
-            + f_pr_xb * (Rho_13 + Rho_14 + Rho_15 + Rho_16 + Rho_17 + Rho_18 + Rho_19)
-        )
-
-        diff_X_li = (
-            q_ad / self.V_liq * (state_in[15] - X_li)
-            + f_li_xc * Rho_1
-            - Rho_4
-            + f_li_xb * (Rho_13 + Rho_14 + Rho_15 + Rho_16 + Rho_17 + Rho_18 + Rho_19)
-        )
-
-        diff_X_su = q_ad / self.V_liq * (state_in[16] - X_su) + Y_su * Rho_5 - Rho_13
-        diff_X_aa = q_ad / self.V_liq * (state_in[17] - X_aa) + Y_aa * Rho_6 - Rho_14
-        diff_X_fa = q_ad / self.V_liq * (state_in[18] - X_fa) + Y_fa * Rho_7 - Rho_15
-        diff_X_c4 = q_ad / self.V_liq * (state_in[19] - X_c4) + Y_c4 * Rho_8 + Y_c4 * Rho_9 - Rho_16
-        diff_X_pro = q_ad / self.V_liq * (state_in[20] - X_pro) + Y_pro * Rho_10 - Rho_17
-        diff_X_ac = q_ad / self.V_liq * (state_in[21] - X_ac) + Y_ac * Rho_11 - Rho_18
-        diff_X_h2 = q_ad / self.V_liq * (state_in[22] - X_h2) + Y_h2 * Rho_12 - Rho_19
-        diff_X_I = q_ad / self.V_liq * (state_in[23] - X_I) + f_xI_xc * Rho_1
-
-        diff_X_p = (
-            q_ad / self.V_liq * (state_in[24] - X_p)
-            - f_xp_xc * Rho_1
-            + f_p * (Rho_13 + Rho_14 + Rho_15 + Rho_16 + Rho_17 + Rho_18 + Rho_19)
-        )
-
-        # Differential equations for ions (25-32)
-        diff_S_cation = q_ad / self.V_liq * (state_in[25] - S_cation)
-        diff_S_anion = q_ad / self.V_liq * (state_in[26] - S_anion)
-        diff_S_va_ion = q_ad / self.V_liq * (state_in[27] - S_va_ion) - Rho_A_4
-        diff_S_bu_ion = q_ad / self.V_liq * (state_in[28] - S_bu_ion) - Rho_A_5
-        diff_S_pro_ion = q_ad / self.V_liq * (state_in[29] - S_pro_ion) - Rho_A_6
-        diff_S_ac_ion = q_ad / self.V_liq * (state_in[30] - S_ac_ion) - Rho_A_7
-        diff_S_hco3_ion = q_ad / self.V_liq * (state_in[31] - S_hco3_ion) - Rho_A_10
-        diff_S_nh3 = q_ad / self.V_liq * (state_in[32] - S_nh3) - Rho_A_11
-
-        # Differential equations for gas phase (33-36)
-        diff_p_gas_h2 = Rho_T_8 * self._RT / 16 - p_gas_h2 / pTOTAL * Rho_T_11
-        diff_p_gas_ch4 = Rho_T_9 * self._RT / 64 - p_gas_ch4 / pTOTAL * Rho_T_11
-        diff_p_gas_co2 = Rho_T_10 * self._RT - p_gas_co2 / pTOTAL * Rho_T_11
-        diff_pTOTAL = self._RT / 16 * Rho_T_8 + self._RT / 64 * Rho_T_9 + self._RT * Rho_T_10 - Rho_T_11
+        # --- Gas phase (37–40) ---
+        diff_p_h2 = Rho_T_h2 * self._RT / 16.0 - p_gas_h2 / pTOTAL * Rho_T_11
+        diff_p_ch4 = Rho_T_ch4 * self._RT / 64.0 - p_gas_ch4 / pTOTAL * Rho_T_11
+        diff_p_co2 = Rho_T_co2 * self._RT - p_gas_co2 / pTOTAL * Rho_T_11
+        diff_pTOT = self._RT / 16.0 * Rho_T_h2 + self._RT / 64.0 * Rho_T_ch4 + self._RT * Rho_T_co2 - Rho_T_11
 
         return (
             diff_S_su,
@@ -616,12 +861,18 @@ class ADM1(ADMBase):
             diff_S_h2,
             diff_S_ch4,
             diff_S_co2,
-            diff_S_nh4_ion,
+            diff_S_nh4,
             diff_S_I,
-            diff_X_xc,
-            diff_X_ch,
-            diff_X_pr,
-            diff_X_li,
+            diff_X_PS_ch,
+            diff_X_PS_pr,
+            diff_X_PS_li,
+            diff_X_PF_ch,
+            diff_X_PF_pr,
+            diff_X_PF_li,
+            diff_X_S_ch,
+            diff_X_S_pr,
+            diff_X_S_li,
+            diff_X_I,
             diff_X_su,
             diff_X_aa,
             diff_X_fa,
@@ -629,191 +880,109 @@ class ADM1(ADMBase):
             diff_X_pro,
             diff_X_ac,
             diff_X_h2,
-            diff_X_I,
-            diff_X_p,
             diff_S_cation,
             diff_S_anion,
             diff_S_va_ion,
             diff_S_bu_ion,
             diff_S_pro_ion,
             diff_S_ac_ion,
-            diff_S_hco3_ion,
+            diff_S_hco3,
             diff_S_nh3,
-            diff_p_gas_h2,
-            diff_p_gas_ch4,
-            diff_p_gas_co2,
-            diff_pTOTAL,
+            diff_p_h2,
+            diff_p_ch4,
+            diff_p_co2,
+            diff_pTOT,
         )
 
-    # Satisfies the ADMBase abstract interface; existing code can still call ADM1_ODE.
-    ADM_ODE = ADM1_ODE
+    # ------------------------------------------------------------------
+    # Result-tracking helper
+    # ------------------------------------------------------------------
 
-    def _set_influent(self, influent_state: pd.DataFrame, i: int) -> None:
-        """
-        Set influent values from dataframe.
+    def print_params_at_current_state(self, state: List[float]) -> None:
+        """Compute and store process indicators (pH, gas) from the current state."""
+        ip = self._inhib_params
+        S_H = self._calc_ph(
+            state[_IDX_S_NH4],
+            state[_IDX_S_NH3],
+            state[_IDX_S_HCO3],
+            state[_IDX_S_AC_ION],
+            state[_IDX_S_PRO_ION],
+            state[_IDX_S_BU_ION],
+            state[_IDX_S_VA_ION],
+            state[_IDX_S_CATION],
+            state[_IDX_S_ANION],
+            ip["K_w"],
+        )
+        pH = -np.log10(max(S_H, 1.0e-14))
+        self._track_pH(round(pH, 1))
 
-        Internal method to extract influent state at time index i and store
-        it for use in ODE calculations.
+        q_gas, q_ch4, q_co2, q_h2o, p_gas = self.calc_gas(
+            state[_IDX_P_H2],
+            state[_IDX_P_CH4],
+            state[_IDX_P_CO2],
+            state[_IDX_P_TOTAL],
+        )
+        self._track_gas(q_gas, q_ch4, q_co2, q_h2o, p_gas)
 
-        Args:
-            influent_state: DataFrame with ADM1 input variables over time
-            i: Time step index (uses last row if i exceeds available data)
-        """
-        # Handle index out of bounds by using last row (steady-state assumption)
-        max_index = len(influent_state) - 1
-        if i > max_index:
-            i = max_index
+    def resume_from_broken_simulation(self, Q_CH4: List[float]) -> None:
+        """Re-populate the methane tracking list after a simulation restart."""
+        for q in Q_CH4:
+            self._Q_CH4.append(q)
 
-        # Extract all state variables at time index i
-        self._state_input = [
-            influent_state["S_su"].iloc[i],  # kg COD.m^-3
-            influent_state["S_aa"].iloc[i],  # kg COD.m^-3
-            influent_state["S_fa"].iloc[i],  # kg COD.m^-3
-            influent_state["S_va"].iloc[i],  # kg COD.m^-3
-            influent_state["S_bu"].iloc[i],  # kg COD.m^-3
-            influent_state["S_pro"].iloc[i],  # kg COD.m^-3
-            influent_state["S_ac"].iloc[i],  # kg COD.m^-3
-            influent_state["S_h2"].iloc[i],  # kg COD.m^-3
-            influent_state["S_ch4"].iloc[i],  # kg COD.m^-3
-            influent_state["S_co2"].iloc[i],  # kmole C.m^-3 (S_IC_in)
-            influent_state["S_nh4"].iloc[i],  # kmole N.m^-3 (S_IN_in)
-            influent_state["S_I"].iloc[i],  # kg COD.m^-3
-            influent_state["X_xc"].iloc[i],  # kg COD.m^-3
-            influent_state["X_ch"].iloc[i],  # kg COD.m^-3
-            influent_state["X_pr"].iloc[i],  # kg COD.m^-3
-            influent_state["X_li"].iloc[i],  # kg COD.m^-3
-            influent_state["X_su"].iloc[i],  # kg COD.m^-3
-            influent_state["X_aa"].iloc[i],  # kg COD.m^-3
-            influent_state["X_fa"].iloc[i],  # kg COD.m^-3
-            influent_state["X_c4"].iloc[i],  # kg COD.m^-3
-            influent_state["X_pro"].iloc[i],  # kg COD.m^-3
-            influent_state["X_ac"].iloc[i],  # kg COD.m^-3
-            influent_state["X_h2"].iloc[i],  # kg COD.m^-3
-            influent_state["X_I"].iloc[i],  # kg COD.m^-3
-            influent_state["X_p"].iloc[i],  # kg COD.m^-3
-            influent_state["S_cation"].iloc[i],  # kmole.m^-3
-            influent_state["S_anion"].iloc[i],  # kmole.m^-3
-            influent_state["S_va_ion"].iloc[i],  # kg COD.m^-3
-            influent_state["S_bu_ion"].iloc[i],  # kg COD.m^-3
-            influent_state["S_pro_ion"].iloc[i],  # kg COD.m^-3
-            influent_state["S_ac_ion"].iloc[i],  # kg COD.m^-3
-            influent_state["S_hco3_ion"].iloc[i],  # kg COD.m^-3
-            influent_state["S_nh3"].iloc[i],  # kg COD.m^-3
-            influent_state["Q"].iloc[i],  # m^3/d (q_ad)
-        ]
+    def _track_pH(self, pH: float) -> None:
+        self._pH_l.append(pH)
+        if len(self._pH_l) < 2:
+            self._pH_l.append(self._pH_l[-1])
 
-    def _get_substrate_dependent_params(self) -> dict:
-        """
-        Get substrate-dependent parameters from C# DLL with calibration override support.
+    def _track_gas(self, q_gas, q_ch4, q_co2, q_h2o, p_gas) -> None:
+        self._Q_GAS.append(q_gas)
+        self._Q_CH4.append(q_ch4)
+        self._Q_CO2.append(q_co2)
+        self._Q_H2O.append(q_h2o)
+        self._P_GAS.append(p_gas)
+        if len(self._Q_GAS) < 2:
+            for _ in range(2):
+                self._Q_GAS.append(q_gas)
+                self._Q_CH4.append(q_ch4)
+                self._Q_CO2.append(q_co2)
+                self._Q_H2O.append(q_h2o)
+                self._P_GAS.append(p_gas)
 
-        Calculates ADM1 parameters that depend on substrate composition using weighted
-        averaging based on volumetric flow rates. If calibration parameters are set
-        (via _calibration_params attribute), those values override the calculated ones.
-        TODO: do I want this behaviour that during calibration the parameters are overriden?
+    # ------------------------------------------------------------------
+    # Private helpers
+    # ------------------------------------------------------------------
 
-        Returns:
-            dict: Substrate-dependent parameters with keys:
-                - f_ch_xc, f_pr_xc, f_li_xc: Composite fractions
-                - f_xI_xc, f_sI_xc, f_xp_xc: Inert and product fractions
-                - k_dis: Disintegration rate [1/d]
-                - k_hyd_ch, k_hyd_pr, k_hyd_li: Hydrolysis rates [1/d]
-                - k_m_c4, k_m_pro, k_m_ac, k_m_h2: Uptake rates [1/d]
+    @staticmethod
+    def _pH_inhib(S_H: float, K_pH: float, n: int = 1) -> float:
+        """Hill-type pH inhibition factor: I = K_pH^n / (K_pH^n + S_H^n)."""
+        Kn = K_pH**n
+        SHn = S_H**n
+        return Kn / (Kn + SHn)
 
-        Example:
-            >>> # Normal usage
-            >>> params = adm1._get_substrate_dependent_params()
-            >>>
-            >>> # With calibration override
-            >>> adm1._calibration_params = {'k_dis': 0.55, 'Y_su': 0.105}
-            >>> params = adm1._get_substrate_dependent_params()
-            >>> # k_dis will be 0.55 instead of calculated value
-        """
-        if self._Q is None:
-            # Return default values if Q not set
-            base_params = {
-                "f_ch_xc": 0.2,
-                "f_pr_xc": 0.2,
-                "f_li_xc": 0.3,
-                "f_xI_xc": 0.2,
-                "f_sI_xc": 0.1,
-                "f_xp_xc": 0.0,
-                "k_dis": 0.5,
-                "k_hyd_ch": 10.0,
-                "k_hyd_pr": 10.0,
-                "k_hyd_li": 10.0,
-                "k_m_c4": 20.0,
-                "k_m_pro": 13.0,
-                "k_m_ac": 8.0,
-                "k_m_h2": 35.0,
-            }
-        else:
+    @staticmethod
+    def _calc_ph(
+        S_nh4: float,
+        S_nh3: float,
+        S_hco3: float,
+        S_ac_ion: float,
+        S_pro_ion: float,
+        S_bu_ion: float,
+        S_va_ion: float,
+        S_cation: float,
+        S_anion: float,
+        K_w: float,
+        max_iter: int = 50,
+    ) -> float:
+        """Solve the charge balance for [H+] using Newton–Raphson iteration."""
+        vfa_anions = S_ac_ion / 64.0 + S_pro_ion / 112.0 + S_bu_ion / 160.0 + S_va_ion / 208.0
+        fixed = S_cation - S_anion + (S_nh4 - S_nh3) - S_hco3 - vfa_anions
 
-            def _calc_params_for_q(q_arg):
-                f_ch_xc, f_pr_xc, f_li_xc, f_xI_xc, f_sI_xc, f_xp_xc = self._feedstock.mySubstrates().calcfFactors(q_arg)
-                f_xp_xc = max(f_xp_xc, 0.0)
-
-                k_dis = self._feedstock.mySubstrates().calcDisintegrationParam(q_arg)
-                k_hyd_ch, k_hyd_pr, k_hyd_li = self._feedstock.mySubstrates().calcHydrolysisParams(q_arg)
-                k_m_c4, k_m_pro, k_m_ac, k_m_h2 = self._feedstock.mySubstrates().calcMaxUptakeRateParams(q_arg)
-
-                return {
-                    "f_ch_xc": f_ch_xc,
-                    "f_pr_xc": f_pr_xc,
-                    "f_li_xc": f_li_xc,
-                    "f_xI_xc": f_xI_xc,
-                    "f_sI_xc": f_sI_xc,
-                    "f_xp_xc": f_xp_xc,
-                    "k_dis": k_dis,
-                    "k_hyd_ch": k_hyd_ch,
-                    "k_hyd_pr": k_hyd_pr,
-                    "k_hyd_li": k_hyd_li,
-                    "k_m_c4": k_m_c4,
-                    "k_m_pro": k_m_pro,
-                    "k_m_ac": k_m_ac,
-                    "k_m_h2": k_m_h2,
-                }
-
-            errors = []
-
-            # Preferred path for pythonnet 3.x on Linux/Mono: pass explicit System.Double[,]
-            try:
-                from System import Array, Double
-
-                q_values = [float(q) for q in self._Q]
-                q_2d = Array.CreateInstance(Double, 1, len(q_values))
-                for idx, value in enumerate(q_values):
-                    q_2d[0, idx] = value
-
-                base_params = _calc_params_for_q(q_2d)
-            except Exception as exc:
-                errors.append(f"System.Double[,] path failed: {exc}")
-
-                # Fallback path: numpy 2D array works on some local runtimes
-                try:
-                    q_2d_np = np.atleast_2d(np.asarray(self._Q, dtype=float))
-                    base_params = _calc_params_for_q(q_2d_np)
-                except Exception as exc_np:
-                    errors.append(f"numpy 2D path failed: {exc_np}")
-
-                    # Final fallback for legacy runtimes that still accept 1D arrays
-                    try:
-                        q_1d = [float(q) for q in self._Q]
-                        base_params = _calc_params_for_q(q_1d)
-                    except Exception as exc_1d:
-                        errors.append(f"1D path failed: {exc_1d}")
-                        raise TypeError("Failed to evaluate substrate-dependent parameters. " + " | ".join(errors))
-
-        # Apply calibration parameter overrides if they exist
-        if self._calibration_params:
-            for param_name, param_value in self._calibration_params.items():
-                if param_name in base_params:
-                    old_value = base_params[param_name]
-                    base_params[param_name] = param_value
-                    logger.warning(
-                        "Calibration override: %s = %g (was %g, substrate-derived)",
-                        param_name,
-                        param_value,
-                        old_value,
-                    )
-
-        return base_params
+        S_H = 1.0e-7
+        for _ in range(max_iter):
+            f = fixed + S_H - K_w / (S_H + 1.0e-30)
+            df = 1.0 + K_w / (S_H + 1.0e-30) ** 2
+            delta = -f / df
+            S_H = max(1.0e-14, S_H + delta)
+            if abs(delta) < 1.0e-15:
+                break
+        return S_H

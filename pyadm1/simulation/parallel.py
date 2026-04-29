@@ -1,72 +1,41 @@
 # pyadm1/simulation/parallel.py
 """
-Parallel Simulation Engine for Parameter Sweeps and Monte Carlo Analysis
+Parallel simulation engine for parameter sweeps and Monte Carlo analysis.
 
-This module provides the ParallelSimulator class for concurrent execution of
-multiple ADM1 simulation scenarios with different parameter sets, substrate
-mixtures, or operating conditions.
+Run multiple :class:`pyadm1.core.adm1.ADM1` simulation scenarios concurrently,
+each with its own parameter set or substrate feed.  Designed for parameter
+sweeps, sensitivity analysis, and Monte Carlo uncertainty quantification.
 
-Features:
-- Multiprocessing for CPU-bound parallel execution
-- Parameter sweep support (single and multi-parameter)
-- Monte Carlo simulation with uncertainty quantification
-- Automatic workload distribution and progress tracking
-- Result aggregation and statistical analysis
-- Error handling per scenario with graceful degradation
-
-Example:
-    >>> from pyadm1.simulation import ParallelSimulator
-    >>> from pyadm1.core import ADM1
-    >>> from pyadm1.substrates import Feedstock
-    >>>
-    >>> # Setup base model
-    >>> feedstock = Feedstock(feeding_freq=48)
-    >>> adm1 = ADM1(feedstock)
-    >>>
-    >>> # Define scenarios
-    >>> scenarios = [
-    ...     {"k_dis": 0.4, "Y_su": 0.09, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
-    ...     {"k_dis": 0.5, "Y_su": 0.10, "Q": [20, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
-    ...     {"k_dis": 0.6, "Y_su": 0.11, "Q": [15, 15, 0, 0, 0, 0, 0, 0, 0, 0]},
-    ... ]
-    >>>
-    >>> # Run parallel simulations
-    >>> parallel = ParallelSimulator(adm1, n_workers=4)
-    >>> results = parallel.run_scenarios(
-    ...     scenarios=scenarios,
-    ...     duration=30,
-    ...     initial_state=state_zero
-    ... )
-    >>>
-    >>> # Analyze results
-    >>> summary = parallel.summarize_results(results)
+Each scenario is a dictionary that may contain:
+  - ``Q`` (list of float): substrate feed rates [m³/d].
+  - any subset of the calibration parameter keys (see
+    :data:`_CALIBRATION_PARAM_KEYS`).
 """
 
 import multiprocessing as mp
 import os
 import sys
-from typing import List, Dict, Any, Optional, Tuple, TYPE_CHECKING
+import time
+import traceback
 from dataclasses import dataclass, field
+from functools import partial
+from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
+
+import numpy as np
 
 if TYPE_CHECKING:
     from pyadm1.core.adm1 import ADM1
-import numpy as np
-import time
-from functools import partial
-import traceback
 
 _CALIBRATION_PARAM_KEYS = frozenset(
     (
-        "f_ch_xc",
-        "f_pr_xc",
-        "f_li_xc",
-        "f_xI_xc",
-        "f_sI_xc",
-        "f_xp_xc",
-        "k_dis",
+        "k_dis_PS",
+        "k_dis_PF",
         "k_hyd_ch",
         "k_hyd_pr",
         "k_hyd_li",
+        "k_m_su",
+        "k_m_aa",
+        "k_m_fa",
         "k_m_c4",
         "k_m_pro",
         "k_m_ac",
@@ -82,20 +51,7 @@ _CALIBRATION_PARAM_KEYS = frozenset(
 
 @dataclass
 class ScenarioResult:
-    """
-    Result from a single simulation scenario.
-
-    Attributes:
-        scenario_id: Unique identifier for this scenario
-        parameters: Parameter values used in this scenario
-        success: Whether simulation completed successfully
-        duration: Simulation duration [days]
-        final_state: Final ADM1 state vector
-        time_series: Optional time series data
-        metrics: Computed performance metrics
-        error: Error message if simulation failed
-        execution_time: Wall clock time for execution [seconds]
-    """
+    """Result from a single simulation scenario."""
 
     scenario_id: int
     parameters: Dict[str, Any]
@@ -110,14 +66,7 @@ class ScenarioResult:
 
 @dataclass
 class ParameterSweepConfig:
-    """
-    Configuration for parameter sweep.
-
-    Attributes:
-        parameter_name: Name of parameter to sweep
-        values: List of values to test
-        other_params: Fixed parameters for all scenarios
-    """
+    """Configuration for a single-parameter sweep."""
 
     parameter_name: str
     values: List[float]
@@ -126,15 +75,7 @@ class ParameterSweepConfig:
 
 @dataclass
 class MonteCarloConfig:
-    """
-    Configuration for Monte Carlo simulation.
-
-    Attributes:
-        n_samples: Number of Monte Carlo samples
-        parameter_distributions: Dict mapping parameter names to (mean, std) tuples
-        fixed_params: Parameters to keep fixed
-        seed: Random seed for reproducibility
-    """
+    """Configuration for Monte Carlo simulation."""
 
     n_samples: int
     parameter_distributions: Dict[str, Tuple[float, float]]
@@ -146,11 +87,7 @@ def _get_mp_context() -> mp.context.BaseContext:
     """
     Choose a safe multiprocessing start method.
 
-    On Linux, the default 'fork' can deadlock in CI when the parent process has
-    already initialized native runtimes (e.g. Mono/.NET/pythonnet, OpenMP, etc.).
-    'forkserver' (Linux) and 'spawn' (portable) avoid that class of issues.
-
-    You can override the method via PYADM1_MP_START_METHOD (e.g. 'spawn').
+    Override via ``PYADM1_MP_START_METHOD`` (e.g. ``spawn``).
     """
     method = os.getenv("PYADM1_MP_START_METHOD")
     if method:
@@ -165,28 +102,19 @@ def _get_mp_context() -> mp.context.BaseContext:
 class ParallelSimulator:
     """
     Parallel simulator for running multiple ADM1 scenarios concurrently.
-
-    Uses multiprocessing to distribute scenarios across CPU cores for efficient
-    parameter sweeps, sensitivity analysis, and Monte Carlo simulations.
-
-    Attributes:
-        adm1: Base ADM1 model instance (will be copied for each worker)
-        n_workers: Number of parallel worker processes
-        verbose: Enable progress reporting
-
-    Example:
-        >>> parallel = ParallelSimulator(adm1, n_workers=4, verbose=True)
-        >>> results = parallel.run_scenarios(scenarios, duration=30)
     """
 
     def __init__(self, adm1: "ADM1", n_workers: Optional[int] = None, verbose: bool = True):
         """
-        Initialize parallel simulator.
-
-        Args:
-            adm1: ADM1 model instance
-            n_workers: Number of worker processes (default: CPU count - 1)
-            verbose: Enable progress output
+        Parameters
+        ----------
+        adm1 : ADM1
+            Base model instance — its V_liq, V_gas, T_ad and feedstock
+            substrate IDs are copied to each worker.
+        n_workers : int, optional
+            Worker process count (default = ``cpu_count() - 1``).
+        verbose : bool
+            Whether to print progress.
         """
         self.adm1 = adm1
         self.n_workers = n_workers or max(1, mp.cpu_count() - 1)
@@ -201,38 +129,13 @@ class ParallelSimulator:
         compute_metrics: bool = True,
         save_time_series: bool = False,
     ) -> List[ScenarioResult]:
-        """
-        Run multiple simulation scenarios in parallel.
-
-        Each scenario is a dictionary containing parameter values and substrate
-        feed rates. The simulator will run all scenarios concurrently and
-        collect results.
-
-        Args:
-            scenarios: List of scenario dictionaries with parameters
-            duration: Simulation duration [days]
-            initial_state: Initial ADM1 state vector
-            dt: Time step [days]
-            compute_metrics: Calculate performance metrics
-            save_time_series: Save full time series data
-
-        Returns:
-            List of ScenarioResult objects
-
-        Example:
-            >>> scenarios = [
-            ...     {"k_dis": 0.5, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
-            ...     {"k_dis": 0.6, "Q": [20, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
-            ... ]
-            >>> results = parallel.run_scenarios(scenarios, duration=30, initial_state=state)
-        """
+        """Run multiple scenarios in parallel."""
         if self.verbose:
             print(f"Starting parallel simulation with {len(scenarios)} scenarios")
             print(f"Using {self.n_workers} worker processes")
 
         start_time = time.time()
 
-        # Create worker function with fixed parameters
         worker_func = partial(
             _run_single_scenario,
             adm1_config=self._serialize_adm1(),
@@ -244,11 +147,8 @@ class ParallelSimulator:
             verbose=self.verbose,
         )
 
-        # Add scenario IDs
         scenarios_with_ids = [(i, scenario) for i, scenario in enumerate(scenarios)]
 
-        # Avoid spawning a process pool for trivial workloads. This also prevents
-        # pythonnet/.NET deadlocks seen in some CI environments with forked workers.
         use_sequential = self.n_workers <= 1 or len(scenarios_with_ids) <= 1
 
         if use_sequential:
@@ -259,12 +159,8 @@ class ParallelSimulator:
                     print(f"  Completed {i + 1}/{len(scenarios)} scenarios")
         else:
             ctx = _get_mp_context()
-            # Run scenarios in parallel
-            # Keep workers alive across multiple scenarios to avoid repeated
-            # python startup / pythonnet initialization overhead.
             with ctx.Pool(processes=self.n_workers) as pool:
                 if self.verbose:
-                    # Use imap for progress tracking
                     results = []
                     for i, result in enumerate(pool.imap(worker_func, scenarios_with_ids)):
                         results.append(result)
@@ -293,29 +189,7 @@ class ParallelSimulator:
         initial_state: List[float],
         **kwargs: Any,
     ) -> List[ScenarioResult]:
-        """
-        Run parameter sweep for a single parameter.
-
-        Tests multiple values of one parameter while keeping others fixed.
-
-        Args:
-            config: ParameterSweepConfig with parameter and values
-            duration: Simulation duration [days]
-            initial_state: Initial ADM1 state vector
-            **kwargs: Additional arguments for run_scenarios
-
-        Returns:
-            List of ScenarioResult objects
-
-        Example:
-            >>> config = ParameterSweepConfig(
-            ...     parameter_name="k_dis",
-            ...     values=[0.3, 0.4, 0.5, 0.6, 0.7],
-            ...     other_params={"Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]}
-            ... )
-            >>> results = parallel.parameter_sweep(config, duration=30, initial_state=state)
-        """
-        # Generate scenarios
+        """Run a single-parameter sweep."""
         scenarios = []
         for value in config.values:
             scenario = config.other_params.copy()
@@ -336,36 +210,9 @@ class ParallelSimulator:
         fixed_params: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
     ) -> List[ScenarioResult]:
-        """
-        Run multi-parameter sweep (full factorial design).
-
-        Tests all combinations of provided parameter values.
-
-        Args:
-            parameter_configs: Dict mapping parameter names to value lists
-            duration: Simulation duration [days]
-            initial_state: Initial ADM1 state vector
-            fixed_params: Parameters to keep fixed
-            **kwargs: Additional arguments for run_scenarios
-
-        Returns:
-            List of ScenarioResult objects
-
-        Example:
-            >>> parameter_configs = {
-            ...     "k_dis": [0.4, 0.5, 0.6],
-            ...     "Y_su": [0.09, 0.10, 0.11]
-            ... }
-            >>> results = parallel.multi_parameter_sweep(
-            ...     parameter_configs,
-            ...     duration=30,
-            ...     initial_state=state,
-            ...     fixed_params={"Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]}
-            ... )
-        """
+        """Run a multi-parameter sweep (full factorial design)."""
         fixed_params = fixed_params or {}
 
-        # Generate all combinations using recursive approach
         param_names = list(parameter_configs.keys())
         param_values = [parameter_configs[name] for name in param_names]
 
@@ -391,47 +238,16 @@ class ParallelSimulator:
         initial_state: List[float],
         **kwargs: Any,
     ) -> List[ScenarioResult]:
-        """
-        Run Monte Carlo simulation with parameter uncertainty.
-
-        Samples parameters from normal distributions and runs multiple scenarios
-        to quantify uncertainty in predictions.
-
-        Args:
-            config: MonteCarloConfig with distributions and sample count
-            duration: Simulation duration [days]
-            initial_state: Initial ADM1 state vector
-            **kwargs: Additional arguments for run_scenarios
-
-        Returns:
-            List of ScenarioResult objects
-
-        Example:
-            >>> config = MonteCarloConfig(
-            ...     n_samples=100,
-            ...     parameter_distributions={
-            ...         "k_dis": (0.5, 0.05),  # mean=0.5, std=0.05
-            ...         "Y_su": (0.10, 0.01)
-            ...     },
-            ...     fixed_params={"Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
-            ...     seed=42
-            ... )
-            >>> results = parallel.monte_carlo(config, duration=30, initial_state=state)
-        """
-        # Set random seed for reproducibility
+        """Run Monte Carlo simulation with parameter uncertainty."""
         if config.seed is not None:
             np.random.seed(config.seed)
 
-        # Generate scenarios
         scenarios = []
-        for i in range(config.n_samples):
+        for _ in range(config.n_samples):
             scenario = config.fixed_params.copy()
-
-            # Sample each parameter from its distribution
             for param_name, (mean, std) in config.parameter_distributions.items():
                 value = np.random.normal(mean, std)
                 scenario[param_name] = value
-
             scenarios.append(scenario)
 
         if self.verbose:
@@ -444,25 +260,7 @@ class ParallelSimulator:
         return self.run_scenarios(scenarios, duration, initial_state, **kwargs)
 
     def summarize_results(self, results: List[ScenarioResult], metrics: Optional[List[str]] = None) -> Dict[str, Any]:
-        """
-        Summarize results from multiple scenarios.
-
-        Computes summary statistics for each metric across all successful scenarios.
-
-        Args:
-            results: List of ScenarioResult objects
-            metrics: List of metric names to summarize (default: all)
-
-        Returns:
-            Dictionary with summary statistics
-
-        Example:
-            ```python
-            summary = parallel.summarize_results(results)
-            ch4_stats = summary['metrics']['Q_ch4']
-            print(f"Mean CH4: {ch4_stats['avg']:.1f} m³/d")
-            ```
-        """
+        """Compute summary statistics across multiple scenarios."""
         successful = [r for r in results if r.success]
         n_scenarios = len(results)
         n_successful = len(successful)
@@ -482,12 +280,9 @@ class ParallelSimulator:
                 summary["error"] = "No scenarios to summarize"
             return summary
 
-        # Determine which metrics to summarize
         if metrics is None:
-            # Use all metrics from first result
             metrics = list(successful[0].metrics.keys())
 
-        # Compute statistics for each metric
         for metric_name in metrics:
             values = [r.metrics.get(metric_name, np.nan) for r in successful]
             values = [v for v in values if not np.isnan(v)]
@@ -506,32 +301,25 @@ class ParallelSimulator:
         return summary
 
     def _serialize_adm1(self) -> Dict[str, Any]:
-        """
-        Serialize ADM1 model for passing to worker processes.
+        """Serialize ADM1 model configuration for the worker pool."""
+        feedstock = self.adm1.feedstock
+        substrate_ids: List[str] = []
+        feeding_freq = 24
+        if feedstock is not None:
+            substrate_ids = list(getattr(feedstock, "substrate_ids", []))
+            feeding_freq = int(getattr(feedstock, "feeding_freq", 24))
 
-        Returns:
-            Dictionary with ADM1 configuration
-        """
         return {
             "V_liq": self.adm1.V_liq,
             "V_gas": self.adm1._V_gas,
             "T_ad": self.adm1._T_ad,
-            "feedstock_config": {
-                "feeding_freq": 48,  # Default from feedstock
-            },
+            "feedstock_substrates": substrate_ids,
+            "feeding_freq": feeding_freq,
         }
 
     @staticmethod
     def _generate_combinations(value_lists: List[List[Any]]) -> List[Tuple]:
-        """
-        Generate all combinations from lists of values (Cartesian product).
-
-        Args:
-            value_lists: List of lists containing values
-
-        Returns:
-            List of tuples with all combinations
-        """
+        """Cartesian product of a list of value lists."""
         if not value_lists:
             return [()]
 
@@ -553,71 +341,57 @@ def _run_single_scenario(
     save_time_series: bool,
     verbose: bool,
 ) -> ScenarioResult:
-    """
-    Worker function to run a single scenario.
-
-    This function is called by each worker process. It creates a new ADM1
-    instance, applies the scenario parameters, runs the simulation, and
-    returns results.
-
-    Args:
-        scenario_data: Tuple of (scenario_id, parameters)
-        adm1_config: Serialized ADM1 configuration
-        duration: Simulation duration [days]
-        initial_state: Initial state vector
-        dt: Time step [days]
-        compute_metrics: Whether to compute metrics
-        save_time_series: Whether to save time series
-
-    Returns:
-        ScenarioResult object
-    """
+    """Worker function: run a single scenario in its own process."""
     scenario_id, parameters = scenario_data
     start_time = time.time()
 
     try:
-        # Import here to avoid issues with multiprocessing
-        from pyadm1.core.adm1 import ADM1
+        from pyadm1.core.adm1 import ADM1, STATE_SIZE
         from pyadm1.substrates.feedstock import Feedstock
         from pyadm1.simulation.simulator import Simulator
 
-        # Create fresh ADM1 instance
-        feedstock = Feedstock(feeding_freq=adm1_config["feedstock_config"]["feeding_freq"])
+        substrate_ids = adm1_config.get("feedstock_substrates") or []
+        feeding_freq = adm1_config.get("feeding_freq", 24)
+        if substrate_ids:
+            feedstock = Feedstock(substrate_ids, feeding_freq=feeding_freq, total_simtime=int(duration) + 1)
+        else:
+            feedstock = None
+
         adm1 = ADM1(
             feedstock=feedstock,
             V_liq=adm1_config["V_liq"],
             V_gas=adm1_config["V_gas"],
             T_ad=adm1_config["T_ad"],
         )
+
         if not verbose:
-            # Prevent expensive per-scenario stdout noise in performance runs.
             adm1.print_params_at_current_state = lambda _state: None
 
-        Q = parameters.get("Q", [0] * 10)
+        Q = parameters.get("Q", [0.0] * 10)
         calibration_params = {key: value for key, value in parameters.items() if key in _CALIBRATION_PARAM_KEYS}
         if calibration_params:
             adm1.set_calibration_parameters(calibration_params)
 
-        # Create influent
+        if feedstock is not None:
+            adm1.set_influent_dataframe(feedstock.get_influent_dataframe(Q=Q))
         adm1.create_influent(Q, 0)
 
-        # Run simulation
-        simulator = Simulator(adm1)
-        final_state = simulator.simulate_AD_plant([0, duration], initial_state)
+        if len(initial_state) != STATE_SIZE:
+            raise ValueError(f"initial_state must have {STATE_SIZE} elements; got {len(initial_state)}")
 
-        # Compute metrics if requested
+        simulator = Simulator(adm1)
+        final_state = simulator.simulate_AD_plant([0.0, duration], list(initial_state))
+
         metrics = {}
         if compute_metrics:
             metrics = _compute_scenario_metrics(adm1, final_state, Q)
 
-        # Save time series if requested
         time_series = None
         if save_time_series:
             time_series = {
                 "Q_gas": adm1.Q_GAS[-10:] if adm1.Q_GAS else [],
                 "Q_ch4": adm1.Q_CH4[-10:] if adm1.Q_CH4 else [],
                 "pH": adm1.pH_l[-10:] if adm1.pH_l else [],
-                "VFA": adm1.VFA[-10:] if adm1.VFA else [],
             }
 
         execution_time = time.time() - start_time
@@ -647,22 +421,11 @@ def _run_single_scenario(
 
 
 def _compute_scenario_metrics(adm1: "ADM1", final_state: List[float], Q: List[float]) -> Dict[str, float]:
-    """
-    Compute performance metrics from simulation results.
-
-    Args:
-        adm1: ADM1 instance
-        final_state: Final state vector
-        Q: Substrate flow rates
-
-    Returns:
-        Dictionary of metrics
-    """
+    """Compute performance metrics from simulation results."""
     metrics = {}
 
     try:
-        # Calculate gas production
-        pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL = final_state[33:37]
+        pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL = final_state[37:41]
         q_gas, q_ch4, q_co2, _, p_gas = adm1.calc_gas(pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL)
 
         metrics["Q_gas"] = float(q_gas)
@@ -670,43 +433,32 @@ def _compute_scenario_metrics(adm1: "ADM1", final_state: List[float], Q: List[fl
         metrics["Q_co2"] = float(q_co2)
         metrics["p_gas"] = float(p_gas)
 
-        # Methane content
         if q_gas > 0:
             metrics["CH4_content"] = float(q_ch4 / q_gas)
 
-        # Calculate process indicators using DLL if available.
-        # In subprocess workers this can deadlock on some Linux CI setups when
-        # pythonnet initializes the runtime after forking.
-        if mp.current_process().name == "MainProcess":
-            try:
-                from biogas import ADMstate
+        # pH from the same charge-balance solver used by ADM1.
+        ip = adm1._inhib_params
+        S_H = adm1._calc_ph(
+            float(final_state[10]),  # S_nh4
+            float(final_state[36]),  # S_nh3
+            float(final_state[35]),  # S_hco3
+            float(final_state[34]),  # S_ac_ion
+            float(final_state[33]),  # S_pro_ion
+            float(final_state[32]),  # S_bu_ion
+            float(final_state[31]),  # S_va_ion
+            float(final_state[29]),  # S_cation
+            float(final_state[30]),  # S_anion
+            ip["K_w"],
+        )
+        ph = float(-np.log10(max(S_H, 1.0e-14)))
+        if 0.0 < ph < 14.0:
+            metrics["pH"] = ph
 
-                ph = float(ADMstate.calcPHOfADMstate(final_state))
-                if 0.0 < ph < 14.0:
-                    metrics["pH"] = ph
-
-                vfa = float(ADMstate.calcVFAOfADMstate(final_state, "gHAceq/l").Value)
-                if np.isfinite(vfa) and vfa >= 0.0:
-                    metrics["VFA"] = vfa
-
-                tac = float(ADMstate.calcTACOfADMstate(final_state, "gCaCO3eq/l").Value)
-                if np.isfinite(tac) and tac > 0.0:
-                    metrics["TAC"] = tac
-
-                if "VFA" in metrics and "TAC" in metrics:
-                    metrics["FOS_TAC"] = float(metrics["VFA"] / metrics["TAC"])
-            except Exception:
-                pass
-
-        # Substrate-related metrics
-        Q_total = sum(Q)
+        Q_total = float(np.sum(Q))
         if Q_total > 0:
-            metrics["Q_total"] = float(Q_total)
-            metrics["specific_gas_production"] = float(q_gas / Q_total)  # m³/m³
-            metrics["specific_ch4_production"] = float(q_ch4 / Q_total)  # m³/m³
-
-        # HRT
-        if Q_total > 0:
+            metrics["Q_total"] = Q_total
+            metrics["specific_gas_production"] = float(q_gas / Q_total)
+            metrics["specific_ch4_production"] = float(q_ch4 / Q_total)
             metrics["HRT"] = float(adm1.V_liq / Q_total)
 
     except Exception as e:

@@ -1,132 +1,75 @@
 """
 pytest configuration and shared fixtures for PyADM1ODE tests.
 
-This module provides common fixtures and configuration used across
-all test modules.
-
-Configuration file for pytest that checks if .NET runtime is available.
-If not available (e.g., in GitHub Actions), tests requiring .NET will be skipped.
+PyADM1 is now pure Python (no .NET / DLL dependency), so this file no longer
+needs to mock CLR or skip DLL-bound tests.
 """
 
-import pytest
-import numpy as np
 from pathlib import Path
 from typing import List
 
-
-import sys
-from unittest.mock import MagicMock
-
-# Try to import clr and check if .NET runtime is available
-try:
-    import clr
-
-    # Try to actually use it to ensure it's working
-    clr.AddReference("System")
-    DOTNET_AVAILABLE = True
-except (ImportError, RuntimeError):
-    DOTNET_AVAILABLE = False
-    # Mock clr and biogas for environments without .NET
-    sys.modules["clr"] = MagicMock()
-    biogas_mock = MagicMock()
-    sys.modules["biogas"] = biogas_mock
-
-    # Configure mock for substrates and ADMstate to avoid common errors
-    biogas_mock.substrates.return_value.getNumSubstrates.return_value = 10
-    biogas_mock.ADMstate.calcADMstream.return_value = [0.0] * 34
-    biogas_mock.ADMstate.mixADMstreams.return_value = [0.0] * 34
-    biogas_mock.ADMstate.calcPHOfADMstate.return_value = 7.0
-    biogas_mock.ADMstate.calcVFAOfADMstate.return_value.Value = 0.5
-    biogas_mock.ADMstate.calcTACOfADMstate.return_value.Value = 2.0
-    biogas_mock.substrates.return_value.calcfFactors.return_value = [0.1] * 6
-
-
-def pytest_collection_modifyitems(config, items):
-    """
-    Modify test items to skip tests that require .NET runtime if it's not available.
-    """
-    if DOTNET_AVAILABLE:
-        # .NET is available, run all tests
-        return
-
-    skip_dotnet = pytest.mark.skip(reason="Requires .NET/Mono runtime (not available in this environment)")
-
-    # List of test modules that require .NET
-    dotnet_modules = [
-        "test_adm_params",
-        "test_pyadm1",
-        "test_simulator",
-        "test_feedstock",
-        "test_parallel_simulation",
-    ]
-
-    for item in items:
-        # Check if test is in a module that requires .NET
-        module_name = item.module.__name__
-        if any(dm in module_name for dm in dotnet_modules):
-            item.add_marker(skip_dotnet)
+import numpy as np
+import pytest
 
 
 @pytest.fixture
 def sample_state_vector() -> List[float]:
     """
-    Provide a sample ADM1 state vector for testing.
-
-    Returns:
-        List of 37 float values representing a typical ADM1 state.
+    Provide a representative ADM1 state vector (41 elements) for testing.
     """
     return [
-        0.0055,  # S_su
-        0.0025,  # S_aa
-        0.0398,  # S_fa
-        0.0052,  # S_va
-        0.0101,  # S_bu
-        0.0281,  # S_pro
-        0.9686,  # S_ac
-        1.075e-7,  # S_h2
-        0.0556,  # S_ch4
-        0.0117,  # S_co2
-        0.2438,  # S_nh4
-        10.738,  # S_I
-        18.015,  # X_xc
-        0.2544,  # X_ch
-        0.0554,  # X_pr
-        0.0184,  # X_li
-        7.8300,  # X_su
-        1.3649,  # X_aa
-        0.3288,  # X_fa
-        1.0153,  # X_c4
-        0.8791,  # X_pro
-        3.1754,  # X_ac
-        1.6683,  # X_h2
-        38.294,  # X_I
-        2.0409,  # X_p
-        0.0,  # S_cation
-        0.0,  # S_anion
-        0.0052,  # S_va_ion
-        0.0101,  # S_bu_ion
-        0.0281,  # S_pro_ion
-        0.9672,  # S_ac_ion
-        0.2284,  # S_hco3_ion
-        0.0128,  # S_nh3
-        5.935e-6,  # pi_Sh2
-        0.5592,  # pi_Sch4
-        0.4253,  # pi_Sco2
-        0.9845,  # pTOTAL
+        # Dissolved (0–11)
+        0.005,
+        0.0025,
+        0.04,
+        0.005,
+        0.01,
+        0.028,
+        0.7,
+        1.0e-7,
+        0.05,
+        0.18,
+        0.04,
+        0.5,
+        # Particulate sub-fractions (12–21)
+        2.0,
+        1.0,
+        0.3,
+        0.5,
+        0.2,
+        0.1,
+        0.5,
+        0.2,
+        0.1,
+        5.0,
+        # Biomass (22–28)
+        0.5,
+        0.5,
+        0.3,
+        0.4,
+        0.3,
+        1.2,
+        0.3,
+        # Charge balance (29–36)
+        0.04,
+        0.04,
+        0.005,
+        0.01,
+        0.028,
+        0.69,
+        0.16,
+        0.005,
+        # Gas phase (37–40)
+        1.02e-5,
+        0.65,
+        0.33,
+        0.98,
     ]
 
 
 @pytest.fixture
 def test_data_dir(tmp_path: Path) -> Path:
-    """
-    Create a temporary directory for test data files.
-
-    Args:
-        tmp_path: pytest fixture providing temporary directory.
-
-    Returns:
-        Path to test data directory.
-    """
+    """Provide a temporary directory for test data files."""
     data_dir = tmp_path / "test_data"
     data_dir.mkdir()
     return data_dir
@@ -134,35 +77,17 @@ def test_data_dir(tmp_path: Path) -> Path:
 
 @pytest.fixture
 def sample_flow_rates() -> List[float]:
-    """
-    Provide sample volumetric flow rates for testing.
-
-    Returns:
-        List of 10 float values representing substrate flow rates in m³/d.
-    """
-    return [15.0, 10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    """Per-substrate flow rates [m³/d], shape (10,)."""
+    return [11.4, 6.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 
 @pytest.fixture
 def random_seed() -> None:
-    """
-    Set random seed for reproducible tests.
-
-    This fixture ensures that tests involving random number generation
-    are deterministic and reproducible.
-    """
+    """Set a deterministic random seed for tests using np.random."""
     np.random.seed(42)
 
 
-# Configure pytest markers
 def pytest_configure(config):
-    """
-    Configure custom pytest markers.
-
-    Args:
-        config: pytest configuration object.
-    """
+    """Register custom pytest markers."""
     config.addinivalue_line("markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')")
     config.addinivalue_line("markers", "integration: marks tests as integration tests")
-    config.addinivalue_line("markers", "requires_dlls: marks tests that require C# DLLs")
-    config.addinivalue_line("markers", "requires_dotnet: mark test as requiring .NET/Mono runtime")

@@ -13,14 +13,14 @@ from pyadm1.components.registry import ComponentRegistry
 class DummyComponent(Component):
     """Minimal concrete component for registry tests."""
 
-    def __init__(self, component_id: str, foo=None, name=None):  # noqa: ANN001
+    def __init__(self, component_id: str, foo=None, name=None):
         super().__init__(component_id, ComponentType.MIXER, name)
         self.foo = foo
 
-    def step(self, t, dt, inputs):  # noqa: ANN001
+    def step(self, t, dt, inputs):
         return {}
 
-    def initialize(self, initial_state=None):  # noqa: ANN001
+    def initialize(self, initial_state=None):
         self.state = {}
 
     def to_dict(self):
@@ -37,7 +37,7 @@ class TestComponentRegistryInitialization:
     def test_init_creates_registry_and_calls_auto_register(self, monkeypatch: pytest.MonkeyPatch) -> None:
         calls = []
 
-        def fake_auto_register(self):  # noqa: ANN001
+        def fake_auto_register(self):
             calls.append(self)
 
         monkeypatch.setattr(ComponentRegistry, "_auto_register_components", fake_auto_register)
@@ -50,13 +50,9 @@ class TestComponentRegistryInitialization:
         import builtins
 
         target_imports = {
-            "pyadm1.components.biological.adm1_digester": (
-                "ADM1Digester",
-                type("ADM1Digester", (), {}),
-            ),
-            "pyadm1.components.biological.hydrolysis": (
-                "Hydrolysis",
-                type("Hydrolysis", (), {}),
+            "pyadm1.components.biological.digester": (
+                "Digester",
+                type("Digester", (), {}),
             ),
             "pyadm1.components.biological.separator": (
                 "Separator",
@@ -88,7 +84,7 @@ class TestComponentRegistryInitialization:
         }
         real_import = builtins.__import__
 
-        def fake_import(name, globals=None, locals=None, fromlist=(), level=0):  # noqa: ANN001, A002
+        def fake_import(name, globals=None, locals=None, fromlist=(), level=0):
             if name in target_imports:
                 attr_name, cls_obj = target_imports[name]
                 module = ModuleType(name)
@@ -104,7 +100,6 @@ class TestComponentRegistryInitialization:
 
         assert set(registry._registry.keys()) == {
             "Digester",
-            "Hydrolysis",
             "Separator",
             "CHP",
             "HeatingSystem",
@@ -120,8 +115,7 @@ class TestComponentRegistryInitialization:
         import builtins
 
         prefixes = (
-            "pyadm1.components.biological.adm1_digester",
-            "pyadm1.components.biological.hydrolysis",
+            "pyadm1.components.biological.digester",
             "pyadm1.components.biological.separator",
             "pyadm1.components.energy.chp",
             "pyadm1.components.energy.heating",
@@ -134,7 +128,7 @@ class TestComponentRegistryInitialization:
         )
         real_import = builtins.__import__
 
-        def fake_import(name, globals=None, locals=None, fromlist=(), level=0):  # noqa: ANN001, A002
+        def fake_import(name, globals=None, locals=None, fromlist=(), level=0):
             if name in prefixes:
                 raise ImportError(f"blocked import: {name}")
             return real_import(name, globals, locals, fromlist, level)
@@ -149,7 +143,7 @@ class TestComponentRegistryInitialization:
 
 
 class TestComponentRegistryOperations:
-    """Register/create/query/unregister methods."""
+    """Register / create / query / unregister methods."""
 
     @staticmethod
     def _empty_registry() -> ComponentRegistry:
@@ -226,7 +220,7 @@ class TestGlobalRegistryHelpers:
         calls = []
 
         class FakeRegistry:
-            def register(self, name, component_class):  # noqa: ANN001
+            def register(self, name, component_class):
                 calls.append((name, component_class))
 
         monkeypatch.setattr(registry_module, "get_registry", lambda: FakeRegistry())
