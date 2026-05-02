@@ -84,7 +84,7 @@ import pandas as pd
 
 # Erstelle benutzerdefinierten Zustand
 initial = pd.DataFrame({
-    'S_su': [0.01], 'S_aa': [0.001], # ... alle 37 Zustandsvariablen
+    'S_su': [0.01], 'S_aa': [0.001], # ... alle 41 Zustandsvariablen
 })
 initial.to_csv('custom_state.csv', index=False)
 
@@ -118,23 +118,6 @@ print(params)
 # Parameter löschen (zurück zu Standardwerten)
 digester.clear_calibration_parameters()
 ```
-
-## Hydrolysis
-
-Vorbehandlungstank für hydrolysedominierte Prozesse (Stub für zukünftige Implementierung).
-
-```python
-from pyadm1.components.biological import Hydrolysis
-
-hydrolysis = Hydrolysis(
-    component_id="hydro1",
-    feedstock=feedstock,
-    V_liq=500.0,
-    T_ad=318.15  # Höhere Temperatur für schnellere Hydrolyse
-)
-```
-
-**Anwendung**: Nützlich für Substrate mit hohem lignozellulosem Gehalt, kann bei anderen Temperaturen und Verweilzeiten als der Hauptfermenter betrieben werden.
 
 ## Separator
 

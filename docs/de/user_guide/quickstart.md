@@ -10,16 +10,16 @@ Lassen Sie uns einen einfachen einstufigen Biogasfermenter mit Maissilage und G�
 from pathlib import Path
 from pyadm1.configurator.plant_builder import BiogasPlant
 from pyadm1.substrates.feedstock import Feedstock
-from pyadm1.core.adm1 import get_state_zero_from_initial_state
+from pyadm1.core.adm1 import get_state_zero_from_csv
 from pyadm1.configurator.plant_configurator import PlantConfigurator
 
 # 1. Feedstock-Manager erstellen
 feedstock = Feedstock(feeding_freq=48)
 
-# 2. Anfangszustand laden (Steady-State-Werte)
+# 2. Anfangszustand laden (Steady-State-Werte, 41-Zustands-ADM1da-Vektor)
 data_path = Path("data/initial_states")
 initial_state_file = data_path / "digester_initial8.csv"
-adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
+adm1_state = get_state_zero_from_csv(str(initial_state_file))
 
 # 3. Substrat-Fütterungsraten definieren [m³/Tag]
 Q_substrates = [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]

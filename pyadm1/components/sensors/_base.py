@@ -74,14 +74,20 @@ class AbstractSensor(Component):
     # ------------------------------------------------------------------
 
     @abstractmethod
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]: ...
+    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+        """Advance the sensor by one timestep and return its output dictionary."""
+        ...
 
     @abstractmethod
-    def to_dict(self) -> Dict[str, Any]: ...
+    def to_dict(self) -> Dict[str, Any]:
+        """Serialize the sensor to a configuration dictionary."""
+        ...
 
     @classmethod
     @abstractmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "AbstractSensor": ...
+    def from_dict(cls, config: Dict[str, Any]) -> "AbstractSensor":
+        """Reconstruct a sensor instance from a configuration dictionary."""
+        ...
 
     # ------------------------------------------------------------------
     # Shared initialize — template-method pattern

@@ -321,42 +321,52 @@ class ADM1:
 
     @property
     def Q_GAS(self) -> List[float]:
+        """History of total biogas flow rate [m^3/d]."""
         return self._Q_GAS
 
     @property
     def Q_CH4(self) -> List[float]:
+        """History of methane flow rate [m^3/d]."""
         return self._Q_CH4
 
     @property
     def Q_CO2(self) -> List[float]:
+        """History of carbon dioxide flow rate [m^3/d]."""
         return self._Q_CO2
 
     @property
     def Q_H2O(self) -> List[float]:
+        """History of water-vapour flow rate [m^3/d]."""
         return self._Q_H2O
 
     @property
     def P_GAS(self) -> List[float]:
+        """History of total headspace pressure [bar]."""
         return self._P_GAS
 
     @property
     def pH_l(self) -> List[float]:
+        """History of liquid-phase pH."""
         return self._pH_l
 
     @property
     def VFA_TA(self) -> List[float]:
+        """History of the VFA/TA (FOS/TAC) ratio."""
         return self._FOSTAC
 
     @property
     def AcvsPro(self) -> List[float]:
+        """History of the acetate-to-propionate ratio."""
         return self._AcvsPro
 
     @property
     def VFA(self) -> List[float]:
+        """History of total volatile fatty acid concentration [kg HAc-eq/m^3]."""
         return self._VFA
 
     @property
     def TAC(self) -> List[float]:
+        """History of total alkalinity (TAC)."""
         return self._TAC
 
     def get_state_size(self) -> int:
@@ -930,11 +940,13 @@ class ADM1:
             self._Q_CH4.append(q)
 
     def _track_pH(self, pH: float) -> None:
+        """Append pH to the history; pad on the very first call to keep length >= 2."""
         self._pH_l.append(pH)
         if len(self._pH_l) < 2:
             self._pH_l.append(self._pH_l[-1])
 
     def _track_gas(self, q_gas, q_ch4, q_co2, q_h2o, p_gas) -> None:
+        """Append gas flows and headspace pressure to their history lists; pad on the first call."""
         self._Q_GAS.append(q_gas)
         self._Q_CH4.append(q_ch4)
         self._Q_CO2.append(q_co2)

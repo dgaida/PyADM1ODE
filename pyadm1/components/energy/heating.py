@@ -11,7 +11,12 @@ of the influent:
     Q_dot_demand = Q_dot_loss + Q_dot_feed
     Q_dot_loss   = UA * (T_dig - T_amb)                      # heat losses to ambient
     Q_dot_feed   = Σ (m_dot_i * c_p,i * (T_dig - T_in,i))    # sensible heat to warm feed
-                 # (implemented via calcHeatPower(...) / substrate stream properties)
+
+The sensible-heat term is evaluated in pure Python from the substrate
+fresh-matter density (already provided by :class:`Feedstock`) and a
+component-weighted specific heat capacity (Choi–Okos 1986 coefficients
+for carbohydrate / protein / lipid / ash / water and acetic acid for the
+VFA pool).
 
 Available CHP waste heat is used first, remaining demand is covered by
 an auxiliary heater:
@@ -23,111 +28,77 @@ an auxiliary heater:
 Units: UA in kW/K, heat flows in kW, auxiliary energy in kWh.
 """
 
-import os
-import platform
-from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional, Sequence
 
 from ..base import Component, ComponentType
 
-_PHYSVALUE = None
-_BIOGAS = None
-_SUBSTRATES_FACTORY = None
-_SUBSTRATES_INSTANCE = None
-_DLL_INIT_DONE = False
-_HEAT_CALC_MODE = None
+# Component specific heat capacities [kJ/(kg·K)] — Choi & Okos 1986
+# (standard reference values for biomass / food thermodynamics).
+_CP_CH = 1.5488  # carbohydrate
+_CP_PR = 2.0082  # protein
+_CP_LI = 1.9842  # lipid
+_CP_MI = 1.0926  # mineral / ash
+_CP_AC = 2.0430  # organic acid (acetic acid)
+_CP_H2O = 4.1813  # water
 
 
-def _init_heating_dll() -> None:
-    """Initialize DLLs for heating calculations."""
-    global _PHYSVALUE, _BIOGAS, _SUBSTRATES_FACTORY, _DLL_INIT_DONE
-    if _DLL_INIT_DONE:
-        return
-    _DLL_INIT_DONE = True
+def _substrate_cp(s) -> float:
+    """
+    Effective specific heat capacity of one substrate [kJ/(kg·K)].
 
-    if platform.system() == "Darwin":
-        return
+    Mass fractions are derived from the same Weender breakdown that
+    :meth:`Feedstock._calc_density` uses, so the (ρ, c_p) pair is
+    self-consistent.
+    """
+    fTS = s.TS / 1000.0
+    f_fiber = fTS * s.fRF
+    f_protein = fTS * s.fRP
+    f_lipid = fTS * s.fRFe
+    f_ash = fTS * s.fRA
+    f_NFE = fTS - f_fiber - f_protein - f_lipid - f_ash
+    f_CH = f_fiber + f_NFE
+    f_AC = s.FFS / 1000.0
+    f_H2O = max(0.0, 1.0 - fTS - f_AC)
 
-    try:
-        import clr  # type: ignore
-
-        dll_path = os.path.join(os.path.dirname(__file__), "..", "..", "dlls")
-        clr.AddReference(os.path.join(dll_path, "biogas"))
-        clr.AddReference(os.path.join(dll_path, "substrates"))
-        clr.AddReference(os.path.join(dll_path, "physchem"))
-    except Exception:
-        return
-
-    try:
-        import biogas as _biogas  # type: ignore
-        from physchem import physValue as _phys_value  # type: ignore
-    except Exception:
-        try:
-            import biogas as _biogas  # type: ignore
-            from physchem import PhysValue as _phys_value  # type: ignore
-        except Exception:
-            return
-
-    _BIOGAS = _biogas
-    _SUBSTRATES_FACTORY = getattr(_biogas, "substrates", None)
-    _PHYSVALUE = _phys_value
+    return f_CH * _CP_CH + f_protein * _CP_PR + f_lipid * _CP_LI + f_ash * _CP_MI + f_AC * _CP_AC + f_H2O * _CP_H2O
 
 
-def _get_substrates_instance():
-    """Get the substrate instance from factory."""
-    global _SUBSTRATES_INSTANCE
-    if _SUBSTRATES_INSTANCE is not None:
-        return _SUBSTRATES_INSTANCE
+def _calc_process_heat_kw(
+    q_substrates: Optional[Sequence[float]],
+    feedstock,
+    target_temperature: float,
+    t_inlet: float,
+) -> float:
+    """
+    Sensible heat required to warm the substrate feed from ``t_inlet``
+    to ``target_temperature`` [kW].
 
-    _init_heating_dll()
-    if _SUBSTRATES_FACTORY is None:
-        return None
-
-    try:
-        xml_path = Path(__file__).resolve().parents[3] / "data" / "substrates" / "substrate_gummersbach.xml"
-        _SUBSTRATES_INSTANCE = _SUBSTRATES_FACTORY(str(xml_path))
-    except Exception:
-        _SUBSTRATES_INSTANCE = None
-
-    return _SUBSTRATES_INSTANCE
-
-
-def _calc_process_heat_kw(q_substrates, target_temperature: float) -> float:
-    """Calculate process heat demand in kW."""
-    global _HEAT_CALC_MODE
-
-    if not q_substrates:
+    Returns 0 when no feed, no feedstock, or non-positive temperature
+    rise is provided.
+    """
+    if not q_substrates or feedstock is None:
         return 0.0
 
-    substrates = _get_substrates_instance()
-    if substrates is None or _PHYSVALUE is None:
+    delta_t = float(target_temperature) - float(t_inlet)
+    if delta_t <= 0.0:
         return 0.0
 
-    t_target = _PHYSVALUE(float(target_temperature), "K")
-
-    if _HEAT_CALC_MODE is None:
-        if hasattr(substrates, "calcHeatPower"):
-            _HEAT_CALC_MODE = "substrates_calcHeatPower"
-        elif _BIOGAS is not None and hasattr(_BIOGAS, "ADMstate") and hasattr(_BIOGAS.ADMstate, "calcHeatPower"):
-            _HEAT_CALC_MODE = "admstate_calcHeatPower"
-        elif hasattr(substrates, "calcSumQuantityOfHeatPerDay"):
-            _HEAT_CALC_MODE = "substrates_calcSumQuantityOfHeatPerDay"
-        else:
-            _HEAT_CALC_MODE = "none"
-
-    try:
-        if _HEAT_CALC_MODE == "substrates_calcHeatPower":
-            res = substrates.calcHeatPower(q_substrates, t_target)
-            return float(getattr(res, "Value", res))
-        if _HEAT_CALC_MODE == "admstate_calcHeatPower":
-            res = _BIOGAS.ADMstate.calcHeatPower(substrates, q_substrates, t_target)
-            return float(getattr(res, "Value", res))
-        if _HEAT_CALC_MODE == "substrates_calcSumQuantityOfHeatPerDay":
-            return float(substrates.calcSumQuantityOfHeatPerDay(q_substrates, t_target).Value) / 24.0
-    except Exception:
+    densities = getattr(feedstock, "_densities", None)
+    substrates = getattr(feedstock, "_subs", None)
+    if not densities or not substrates:
         return 0.0
 
-    return 0.0
+    n = min(len(q_substrates), len(densities), len(substrates))
+    energy_per_day_kJ = 0.0
+    for i in range(n):
+        q = float(q_substrates[i])
+        if q <= 0.0:
+            continue
+        m_dot = q * densities[i]  # kg/d
+        cp = _substrate_cp(substrates[i])  # kJ/(kg·K)
+        energy_per_day_kJ += m_dot * cp * delta_t  # kJ/d
+
+    return energy_per_day_kJ / 86400.0  # kJ/s = kW
 
 
 class HeatingSystem(Component):
@@ -140,6 +111,9 @@ class HeatingSystem(Component):
     Attributes:
         target_temperature: Target digester temperature in K.
         heat_loss_coefficient: Heat loss coefficient in kW/K.
+        feedstock: Feedstock used to derive per-substrate density and c_p
+            for the sensible-heat term. Optional — when omitted, only
+            the UAΔT loss term contributes to demand.
 
     Example:
         >>> heating = HeatingSystem("heat1", target_temperature=308.15, heat_loss_coefficient=0.5)
@@ -153,6 +127,7 @@ class HeatingSystem(Component):
         target_temperature: float = 308.15,
         heat_loss_coefficient: float = 0.5,
         name: Optional[str] = None,
+        feedstock=None,
     ):
         """
         Initialize heating system.
@@ -162,11 +137,13 @@ class HeatingSystem(Component):
             target_temperature: Target digester temperature in K. Defaults to 308.15 (35°C).
             heat_loss_coefficient: Heat loss coefficient in kW/K. Defaults to 0.5.
             name: Human-readable name. Defaults to component_id.
+            feedstock: Optional :class:`Feedstock` for sensible-heat calculation.
         """
         super().__init__(component_id, ComponentType.HEATING, name)
 
         self.target_temperature = target_temperature
         self.heat_loss_coefficient = heat_loss_coefficient
+        self.feedstock = feedstock
 
         # Auto-initialize with default state
         self.initialize()
@@ -203,6 +180,7 @@ class HeatingSystem(Component):
                 - 'T_ambient': Ambient temperature [K]
                 - 'V_liq': Liquid volume [m³]
                 - 'P_th_available': Available thermal power from CHP [kW]
+                - 'Q_substrates': Substrate feed rates [m³/d]
 
         Returns:
             Output data with keys:
@@ -218,7 +196,7 @@ class HeatingSystem(Component):
         # Heat loss to environment
         T_diff = T_digester - T_ambient
         Q_loss = self.heat_loss_coefficient * T_diff
-        Q_process = _calc_process_heat_kw(q_substrates, self.target_temperature)
+        Q_process = _calc_process_heat_kw(q_substrates, self.feedstock, self.target_temperature, T_ambient)
 
         # Heat demand to maintain temperature
         Q_demand = Q_loss + Q_process

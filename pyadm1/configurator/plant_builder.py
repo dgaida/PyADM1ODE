@@ -309,6 +309,7 @@ class BiogasPlant:
         order = []
 
         def visit(comp_id: str) -> None:
+            """Recursive DFS helper: visit dependencies first, then append this component."""
             if comp_id in visited:
                 return
             visited.add(comp_id)

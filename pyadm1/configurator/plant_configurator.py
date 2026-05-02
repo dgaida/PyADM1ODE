@@ -165,6 +165,7 @@ class PlantConfigurator:
             target_temperature=target_temperature,
             heat_loss_coefficient=heat_loss_coefficient,
             name=name or heating_id,
+            feedstock=self.feedstock,
         )
 
         self.plant.add_component(heating)

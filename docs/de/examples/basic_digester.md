@@ -64,7 +64,7 @@ Die Anlage besteht aus:
 ```python
 from pyadm1.configurator.plant_builder import BiogasPlant
 from pyadm1.substrates.feedstock import Feedstock
-from pyadm1.core.adm1 import get_state_zero_from_initial_state
+from pyadm1.core.adm1 import get_state_zero_from_csv
 from pyadm1.configurator.plant_configurator import PlantConfigurator
 ```
 
@@ -72,7 +72,7 @@ Die wichtigsten Imports sind:
 - `BiogasPlant`: Container für alle Anlagenkomponenten  
 - `Feedstock`: Verwaltet Substrateigenschaften und Mischungen  
 - `PlantConfigurator`: High-Level-Helper zum Hinzufügen von Komponenten (verwaltet automatisch Gasspeicher)  
-- `get_state_zero_from_initial_state`: Lädt den Initialzustand aus einer CSV-Datei  
+- `get_state_zero_from_csv`: Lädt den 41-Variablen ADM1da-Initialzustand aus einer CSV-Datei  
 
 ### 2. Feedstock erstellen
 
@@ -92,16 +92,17 @@ Das Feedstock-Objekt lädt Substratparameter aus [`substrate_gummersbach.xml`](h
 
 ```python
 initial_state_file = data_path / "digester_initial8.csv"
-adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
+adm1_state = get_state_zero_from_csv(str(initial_state_file))
 ```
 
-Die CSV-Datei für den Initialzustand enthält 37 ADM1-Zustandsvariablen, die einen stabilen Zustand (Steady State) repräsentieren. Dies vermeidet lange Einschwingzeiten, in denen das Modell von unrealistischen Startwerten übergeht.
+Die CSV-Datei für den Initialzustand enthält die 41 ADM1da-Zustandsvariablen, die einen stabilen Zustand (Steady State) repräsentieren. Dies vermeidet lange Einschwingzeiten, in denen das Modell von unrealistischen Startwerten übergeht.
 
-**ADM1-Zustandsvektor** (37 Variablen):  
+**ADM1da-Zustandsvektor** (41 Variablen):  
 - Gelöste Stoffe (0-11): S_su, S_aa, S_fa, S_va, S_bu, S_pro, S_ac, S_h2, S_ch4, S_co2, S_nh4, S_I  
-- Partikuläre Stoffe (12-24): X_xc, X_ch, X_pr, X_li, X_su, X_aa, X_fa, X_c4, X_pro, X_ac, X_h2, X_I, X_p  
-- Ionen (25-32): S_cation, S_anion, S_va_ion, S_bu_ion, S_pro_ion, S_ac_ion, S_hco3_ion, S_nh3  
-- Gasphase (33-36): pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL  
+- Partikuläre Sub-Fraktionen – langsam / schnell / gelöslich (12-20): X_ps_ch, X_ps_pr, X_ps_li, X_pf_ch, X_pf_pr, X_pf_li, X_s_ch, X_s_pr, X_s_li  
+- Inert + Biomasse (21-28): X_I, X_su, X_aa, X_fa, X_c4, X_pro, X_ac, X_h2  
+- Ionen (29-36): S_cation, S_anion, S_va_ion, S_bu_ion, S_pro_ion, S_ac_ion, S_hco3, S_nh3  
+- Gasphase (37-40): p_h2, p_ch4, p_co2, pTOTAL  
 
 ### 4. Substratzulauf definieren
 

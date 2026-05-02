@@ -1,10 +1,6 @@
 # Biologische Komponenten API
 
-::: pyadm1.components.biological.adm1_digester.Digester
-    options:
-      show_root_heading: true
-
-::: pyadm1.components.biological.hydrolysis.Hydrolysis
+::: pyadm1.components.biological.digester.Digester
     options:
       show_root_heading: true
 

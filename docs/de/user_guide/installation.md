@@ -10,10 +10,7 @@ Diese Anleitung behandelt die Installation von PyADM1ODE auf verschiedenen Betri
 - **Arbeitsspeicher**: Mindestens 2 GB RAM (4 GB empfohlen)  
 - **Festplattenspeicher**: 10 MB für die Installation  
 
-### Laufzeitanforderungen
-PyADM1ODE verwendet C#-DLLs für die Substratcharakterisierung, was Folgendes erfordert:  
-- **Linux/macOS**: Mono-Laufzeitumgebung  
-- **Windows**: .NET Framework (normalerweise vorinstalliert)  
+PyADM1ODE ist reines Python ohne native Laufzeitabhängigkeiten — die Installation des Python-Pakets genügt.
 
 ## Installationsmethoden
 
@@ -66,10 +63,7 @@ pip install -e .
    git clone https://github.com/dgaida/PyADM1ODE.git
    cd PyADM1ODE
    pip install -e .
-   pip install -r requirements-windows.txt
    ```
-
-3. **.NET Framework** sollte unter Windows 10/11 vorinstalliert sein.  
 
 ### Linux-Installation (Ubuntu/Debian)
 
@@ -79,13 +73,7 @@ pip install -e .
    sudo apt-get install python3 python3-pip
    ```
 
-2. **Mono-Laufzeitumgebung installieren** (erforderlich für C#-DLLs):  
-   ```bash
-   sudo apt-get install mono-complete
-   mono --version
-   ```
-
-3. **PyADM1ODE installieren**:  
+2. **PyADM1ODE installieren**:  
    ```bash
    git clone https://github.com/dgaida/PyADM1ODE.git
    cd PyADM1ODE
@@ -104,13 +92,7 @@ pip install -e .
    brew install python@3.11
    ```
 
-3. **Mono-Laufzeitumgebung installieren**:  
-   ```bash
-   brew install mono
-   mono --version
-   ```
-
-4. **PyADM1ODE installieren**:  
+3. **PyADM1ODE installieren**:  
    ```bash
    git clone https://github.com/dgaida/PyADM1ODE.git
    cd PyADM1ODE
@@ -132,8 +114,8 @@ print("Core-Module erfolgreich geladen.")
 
 ### Häufige Probleme
 
-#### 1. C#-DLLs nicht gefunden
-Stellen Sie sicher, dass die DLL-Dateien im Verzeichnis `pyadm1/dlls/` vorhanden sind.
+#### 1. `ModuleNotFoundError: No module named 'pyadm1'`
+Das Paket ist in der aktiven Umgebung nicht installiert. Prüfen mit `pip show pyadm1ode` und ggf. neu installieren (`pip install -e .` aus dem Projekt-Root).
 
-#### 2. pythonnet Importfehler
-Dies deutet oft auf eine fehlende Mono-Installation (unter Linux/macOS) oder ein Problem mit dem .NET Framework (unter Windows) hin.
+#### 2. Substrat-XML-Datei nicht gefunden
+`Feedstock([...])` schlägt fehl, weil eine Substrat-ID unbekannt ist. Die gültigen IDs sind die Dateinamen-Stämme unter `data/substrates/adm1da/` (ohne `.xml`).

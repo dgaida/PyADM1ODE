@@ -290,6 +290,7 @@ class Digester(Component):
     # ------------------------------------------------------------------
 
     def _has_valid_state_input(self) -> bool:
+        """Return True if the ADM1 model has both a state input and a non-empty Q array."""
         state_input = getattr(self.adm1, "_state_input", None)
         q_array = getattr(self.adm1, "_Q", None)
         return state_input is not None and q_array is not None and len(q_array) > 0
@@ -477,6 +478,7 @@ class Digester(Component):
     # ------------------------------------------------------------------
 
     def to_dict(self) -> Dict[str, Any]:
+        """Serialize the digester to a configuration dictionary."""
         return {
             "component_id": self.component_id,
             "component_type": self.component_type.value,
@@ -491,6 +493,7 @@ class Digester(Component):
 
     @classmethod
     def from_dict(cls, config: Dict[str, Any], feedstock=None) -> "Digester":
+        """Reconstruct a Digester from a configuration dictionary."""
         digester = cls(
             component_id=config["component_id"],
             feedstock=feedstock,

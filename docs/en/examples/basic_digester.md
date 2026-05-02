@@ -64,7 +64,7 @@ The plant consists of:
 ```python
 from pyadm1.configurator.plant_builder import BiogasPlant
 from pyadm1.substrates.feedstock import Feedstock
-from pyadm1.core.adm1 import get_state_zero_from_initial_state
+from pyadm1.core.adm1 import get_state_zero_from_csv
 from pyadm1.configurator.plant_configurator import PlantConfigurator
 ```
 
@@ -72,7 +72,7 @@ The key imports are:
 - `BiogasPlant`: Container for all plant components  
 - `Feedstock`: Manages substrate properties and mixing  
 - `PlantConfigurator`: High-level helper for adding components (automatically handles gas storage)  
-- `get_state_zero_from_initial_state`: Loads initial state from CSV  
+- `get_state_zero_from_csv`: Loads the 41-state ADM1da initial state from CSV  
 
 ### 2. Create Feedstock
 
@@ -92,16 +92,17 @@ The feedstock object loads substrate parameters from [`substrate_gummersbach.xml
 
 ```python
 initial_state_file = data_path / "digester_initial8.csv"
-adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
+adm1_state = get_state_zero_from_csv(str(initial_state_file))
 ```
 
-The initial state CSV contains 37 ADM1 state variables representing a steady-state condition. This avoids long initialization periods where the model transitions from unrealistic starting values.
+The initial state CSV contains the 41 ADM1da state variables representing a steady-state condition. This avoids long initialization periods where the model transitions from unrealistic starting values.
 
-**ADM1 State Vector** (37 variables):  
+**ADM1da State Vector** (41 variables):  
 - Soluble components (0-11): S_su, S_aa, S_fa, S_va, S_bu, S_pro, S_ac, S_h2, S_ch4, S_co2, S_nh4, S_I  
-- Particulate components (12-24): X_xc, X_ch, X_pr, X_li, X_su, X_aa, X_fa, X_c4, X_pro, X_ac, X_h2, X_I, X_p  
-- Ions (25-32): S_cation, S_anion, S_va_ion, S_bu_ion, S_pro_ion, S_ac_ion, S_hco3_ion, S_nh3  
-- Gas phase (33-36): pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL  
+- Particulate sub-fractions — slow / fast / soluble pools (12-20): X_ps_ch, X_ps_pr, X_ps_li, X_pf_ch, X_pf_pr, X_pf_li, X_s_ch, X_s_pr, X_s_li  
+- Inert + biomass (21-28): X_I, X_su, X_aa, X_fa, X_c4, X_pro, X_ac, X_h2  
+- Ions (29-36): S_cation, S_anion, S_va_ion, S_bu_ion, S_pro_ion, S_ac_ion, S_hco3, S_nh3  
+- Gas phase (37-40): p_h2, p_ch4, p_co2, pTOTAL  
 
 ### 4. Define Substrate Feed
 

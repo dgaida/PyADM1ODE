@@ -8,10 +8,6 @@
     options:
       show_root_heading: true
 
-::: pyadm1.core.adm_equations.BiochemicalProcesses
-    options:
-      show_root_heading: true
-
 ::: pyadm1.core.solver.ODESolver
     options:
       show_root_heading: true

@@ -502,6 +502,7 @@ class Feedstock:
         raise FileNotFoundError(f"Substrate '{item}' not found as a path or as an ID in {_DEFAULT_XML_DIR}")
 
     def _require_single(self, prop: str, hint: str) -> None:
+        """Raise ValueError if the single-substrate accessor *prop* is called on a multi-substrate feedstock."""
         if len(self._subs) != 1:
             raise ValueError(
                 f"'{prop}' is a single-substrate accessor; this feedstock has " f"{len(self._subs)} substrates. {hint}."
@@ -530,6 +531,7 @@ class Feedstock:
         return Q_arr * factors
 
     def _blended_concentrations(self, Q_arr: np.ndarray) -> dict:
+        """Return flow-weighted blended influent concentrations from per-substrate flows *Q_arr*."""
         q_tot = float(np.sum(Q_arr))
         keys = INFLUENT_COLUMNS[:-1]  # exclude "Q"
         if q_tot <= 0.0:

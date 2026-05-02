@@ -10,10 +10,7 @@ This guide covers the installation of PyADM1ODE on different operating systems.
 - **Memory**: 2 GB RAM minimum (4 GB recommended)  
 - **Disk Space**: 10 MB for installation  
 
-### Runtime Requirements
-PyADM1ODE uses C# DLLs for substrate characterization, which requires:  
-- **Linux/macOS**: Mono runtime  
-- **Windows**: .NET Framework (usually pre-installed)  
+PyADM1ODE is pure Python with no native runtime dependencies — installing the Python package is enough.
 
 ## Installation Methods
 
@@ -68,15 +65,9 @@ pip install -e .
    git clone https://github.com/dgaida/PyADM1ODE.git
    cd PyADM1ODE
    pip install -e .
-
-   # Windows-specific dependencies
-   pip install -r requirements-windows.txt
    ```
 
-3. **.NET Framework** should be pre-installed on Windows 10/11. If needed:  
-   - Download from [Microsoft .NET Framework](https://dotnet.microsoft.com/download/dotnet-framework)  
-
-4. **Verify Installation**:  
+3. **Verify Installation**:  
    ```cmd
    python -c "import pyadm1; print(pyadm1.__version__)"
    ```
@@ -89,13 +80,7 @@ pip install -e .
    sudo apt-get install python3 python3-pip
    ```
 
-2. **Install Mono runtime** (required for C# DLLs):  
-   ```bash
-   sudo apt-get install mono-complete
-   mono --version
-   ```
-
-3. **Install PyADM1ODE**:  
+2. **Install PyADM1ODE**:  
    ```bash
    pip install pyadm1ode
    # or from source:
@@ -104,7 +89,7 @@ pip install -e .
    pip install -e .
    ```
 
-4. **Verify Installation**:  
+3. **Verify Installation**:  
    ```bash
    python3 -c "import pyadm1; print(pyadm1.__version__)"
    ```
@@ -121,13 +106,7 @@ pip install -e .
    brew install python@3.11
    ```
 
-3. **Install Mono runtime**:  
-   ```bash
-   brew install mono
-   mono --version
-   ```
-
-4. **Install PyADM1ODE**:  
+3. **Install PyADM1ODE**:  
    ```bash
    pip3 install pyadm1ode
    # or from source:
@@ -136,7 +115,7 @@ pip install -e .
    pip3 install -e .
    ```
 
-5. **Verify Installation**:  
+4. **Verify Installation**:  
    ```bash
    python3 -c "import pyadm1; print(pyadm1.__version__)"
    ```
@@ -146,7 +125,6 @@ pip install -e .
 PyADM1 automatically installs these core dependencies:
 
 ```
-pythonnet>=3.0.0      # .NET interop for C# DLLs
 numpy>=1.20.0         # Numerical computing
 pandas>=1.3.0         # Data manipulation
 scipy>=1.7.0          # Scientific computing
@@ -191,31 +169,22 @@ def verify_installation():
         print(f"✗ Failed to import core modules: {e}")
         return False
 
-    # 3. Check .NET/Mono runtime
+    # 3. Load a feedstock from the bundled XML substrate library
     try:
-        import clr
-        print("✓ pythonnet (CLR) available")
-    except ImportError:
-        print("✗ pythonnet not available")
-        return False
-
-    # 4. Check C# DLLs
-    try:
-        feedstock = Feedstock(feeding_freq=48)
-        substrates = feedstock.mySubstrates()
-        n_substrates = substrates.getNumSubstrates()
-        print(f"✓ C# DLLs working ({n_substrates} substrates loaded)")
+        feedstock = Feedstock(["maize_silage_milk_ripeness", "swine_manure"],
+                              feeding_freq=24)
+        print("✓ Feedstock loaded from data/substrates/adm1da/")
     except Exception as e:
-        print(f"✗ C# DLL access failed: {e}")
+        print(f"✗ Feedstock load failed: {e}")
         return False
 
-    # 5. Quick simulation test
+    # 4. Quick simulation test
     try:
-        from pyadm1.core.adm1 import ADM1
+        from pyadm1.core.adm1 import ADM1, STATE_SIZE
         adm1 = ADM1(feedstock, V_liq=2000, T_ad=308.15)
-        initial_state = [0.01] * 37
-        adm1.create_influent([15, 10, 0, 0, 0, 0, 0, 0, 0, 0], 0)
-        print("✓ Basic simulation setup works")
+        initial_state = [0.01] * STATE_SIZE  # 41-state ADM1da vector
+        adm1.create_influent([15, 10], 0)
+        print(f"✓ Basic simulation setup works ({STATE_SIZE} states)")
     except Exception as e:
         print(f"✗ Simulation test failed: {e}")
         return False
@@ -236,67 +205,28 @@ python verify_install.py
 
 ### Common Issues
 
-#### 1. "Cannot find C# DLLs"
+#### 1. "ModuleNotFoundError: No module named 'pyadm1'"
 
-**Problem**: Python can't locate the C# DLL files.
+**Problem**: Python can't locate the package.
 
-**Solution**:
+**Solution**: Make sure the package is installed in the active environment:
 ```bash
-# Verify DLL files exist
-ls pyadm1/dlls/
-
-# Should show: plant.dll, substrates.dll, biogas.dll, physchem.dll
-```
-
-If missing, reinstall from source:
-```bash
+pip show pyadm1ode
+# If empty, install from source:
 git clone https://github.com/dgaida/PyADM1ODE.git
 cd PyADM1ODE
 pip install -e .
 ```
 
-#### 2. "pythonnet import error"
+#### 2. Substrate XML file not found
 
-**Problem**: pythonnet fails to import or find .NET runtime.
+**Problem**: `Feedstock([...])` fails because a substrate ID is unknown.
 
-**Linux/macOS Solution**:
+**Solution**: Substrate IDs are XML file stems under `data/substrates/adm1da/`. List them:
 ```bash
-# Install Mono
-sudo apt-get install mono-complete  # Ubuntu/Debian
-brew install mono                    # macOS
-
-# Verify Mono
-mono --version
+ls data/substrates/adm1da/
 ```
-
-**Windows Solution**:
-```cmd
-# Install .NET Framework
-# Download from: https://dotnet.microsoft.com/download/dotnet-framework
-```
-
-#### 3. "Module 'biogas' has no attribute..."
-
-**Problem**: C# DLL methods not accessible.
-
-**Solution**: This usually indicates Mono/CLR issues.
-```bash
-# Reinstall pythonnet
-pip uninstall pythonnet
-pip install pythonnet>=3.0.0
-
-# Restart Python interpreter
-```
-
-#### 4. Import errors on first run
-
-**Problem**: First import takes long or fails.
-
-**Solution**: pythonnet needs to compile CLR bindings on first run:
-```python
-import clr  # First import may take 10-30 seconds
-# Subsequent imports will be fast
-```
+Use those filenames (without `.xml`) as substrate IDs.
 
 ### Getting Help
 
@@ -386,7 +316,7 @@ pip uninstall pyadm1ode
 
 To also remove dependencies:
 ```bash
-pip uninstall pyadm1ode pythonnet numpy pandas scipy matplotlib
+pip uninstall pyadm1ode numpy pandas scipy matplotlib
 ```
 
 To remove optional packages (not yet supported):

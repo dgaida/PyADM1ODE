@@ -6,7 +6,7 @@ Diese Seite bietet eine Übersicht über häufige Probleme und deren Lösungen i
 
 PyADM1ODE ist ein komplexes System mit biologischen, energetischen und mechanischen Komponenten. Probleme können in verschiedenen Bereichen auftreten:
 
-- **[Installation und Setup](#installation-und-setup)**: Python-Umgebung, Abhängigkeiten, C# DLLs  
+- **[Installation und Setup](#installation-und-setup)**: Python-Umgebung, Abhängigkeiten  
 - **[Biologische Prozesse](#biologische-prozesse)**: Fermenter-Instabilität, pH-Probleme, VFA-Akkumulation  
 - **[Energiesystem](#energiesystem)**: BHKW, Heizung, Gasspeicher  
 - **[Mechanische Komponenten](#mechanische-komponenten)**: Pumpen, Rührwerke  

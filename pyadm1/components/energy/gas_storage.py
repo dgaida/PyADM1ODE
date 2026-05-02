@@ -25,6 +25,8 @@ from ..base import Component, ComponentType
 
 @dataclass
 class GasStorageConfig:
+    """Configuration parameters for a GasStorage component (type, capacity, pressure limits, initial fill)."""
+
     storage_type: str = "membrane"  # 'membrane' | 'dome' | 'compressed'
     capacity_m3: float = 1000.0  # usable volume at STP [m^3]
     p_atm_bar: float = 1.01325  # atmospheric pressure [bar]

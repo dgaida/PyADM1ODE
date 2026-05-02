@@ -44,8 +44,7 @@ PyADM1 bietet verschiedene Komponentenkategorien:
 
 Komponenten für biologische Umwandlungsprozesse:
 
-- **Digester**: Hauptfermenter mit ADM1-Modell für anaerobe Vergärung  
-- **Hydrolysis**: Vorbehandlungstank für Hydrolyseprozesse  
+- **Digester**: Hauptfermenter mit ADM1-Modell für anaerobe Vergärung. Ein Hydrolyse-Vorbehälter ist einfach ein `Digester` mit höherer Temperatur und kürzerer HRT — eine separate Klasse gibt es nicht.  
 - **Separator**: Fest-Flüssig-Trennung für Gärrestaufbereitung  
 
 ### [Energiekomponenten](energy.md)

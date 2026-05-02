@@ -168,4 +168,4 @@ The whole model is pure Python:
 | `pyadm1.substrates.feedstock`                   | XML parser, sub-fractioning routing, blending                 |
 | `pyadm1.components.biological.digester`         | Component wrapper incl. gas storage and HRT logic             |
 
-The simulation therefore runs in any Python environment — without a .NET / Mono runtime — and works equally well in containers, web notebooks (Colab), and CI pipelines.
+The simulation runs in any standard Python environment and works equally well in containers, web notebooks (Colab), and CI pipelines.

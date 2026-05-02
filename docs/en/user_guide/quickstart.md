@@ -22,16 +22,16 @@ Let's simulate a simple single-stage biogas digester with corn silage and manure
 from pathlib import Path
 from pyadm1.configurator.plant_builder import BiogasPlant
 from pyadm1.substrates.feedstock import Feedstock
-from pyadm1.core.adm1 import get_state_zero_from_initial_state
+from pyadm1.core.adm1 import get_state_zero_from_csv
 from pyadm1.configurator.plant_configurator import PlantConfigurator
 
 # 1. Create feedstock manager
 feedstock = Feedstock(feeding_freq=48)  # Can change feed every 48 hours
 
-# 2. Load initial state (steady-state values)
+# 2. Load initial state (steady-state values, 41-state ADM1da vector)
 data_path = Path("data/initial_states")
 initial_state_file = data_path / "digester_initial8.csv"
-adm1_state = get_state_zero_from_initial_state(str(initial_state_file))
+adm1_state = get_state_zero_from_csv(str(initial_state_file))
 
 # 3. Define substrate feed rates [m³/day]
 # [corn_silage, manure, rye, grass, wheat, gps, ccm, feed_lime, cow_manure, onions]

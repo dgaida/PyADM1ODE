@@ -44,10 +44,6 @@ The `step()` method returns a dictionary containing:
 - `VFA`: Volatile fatty acids [g/L]  
 - `TAC`: Total alkalinity [g CaCO3/L]  
 
-## Hydrolysis
-
-Pre-treatment tank for hydrolysis-dominated processes (Stub for future implementation).
-
 ## Separator
 
 Solid-liquid separation for digestate processing (Stub for future implementation).

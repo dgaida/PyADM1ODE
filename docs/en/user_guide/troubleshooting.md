@@ -6,7 +6,7 @@ This page provides an overview of common issues and their solutions in PyADM1ODE
 
 PyADM1ODE is a complex system with biological, energy, and mechanical components. Problems can occur in various areas:
 
-- **[Installation and Setup](#installation-and-setup)**: Python environment, dependencies, C# DLLs  
+- **[Installation and Setup](#installation-and-setup)**: Python environment, dependencies  
 - **[Biological Processes](#biological-processes)**: Digester instability, pH issues, VFA accumulation  
 - **[Energy System](#energy-system)**: CHP, heating, gas storage  
 - **[Mechanical Components](#mechanical-components)**: Pumps, mixers  
@@ -20,11 +20,8 @@ For installation issues, see:
 **[→ Installation Guide - Troubleshooting Section](installation.md#troubleshooting)**
 
 Common topics:  
-- C# DLL files not found  
-- pythonnet import errors  
-- Mono/.NET Framework issues  
-- First import delays  
-- Module attribute errors  
+- Package not found in active environment  
+- Substrate XML files not found  
 
 ## Biological Processes
 

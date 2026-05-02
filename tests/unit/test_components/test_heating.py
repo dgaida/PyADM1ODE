@@ -1,23 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Unit tests for the HeatingSystem component and heating DLL helper functions.
+Unit tests for the HeatingSystem component and the pure-Python sensible-heat
+helper :func:`_calc_process_heat_kw`.
 """
 
 import math
-import sys
 from types import SimpleNamespace
 
 import pyadm1.components.energy.heating as heating_module
 from pyadm1.components.energy.heating import HeatingSystem
-
-
-def _reset_heating_globals() -> None:
-    heating_module._PHYSVALUE = None
-    heating_module._BIOGAS = None
-    heating_module._SUBSTRATES_FACTORY = None
-    heating_module._SUBSTRATES_INSTANCE = None
-    heating_module._DLL_INIT_DONE = False
-    heating_module._HEAT_CALC_MODE = None
 
 
 class TestHeatingInitialization:
@@ -181,223 +172,108 @@ class TestHeatingSerialization:
         assert heating.state["Q_heat_demand"] == 0.0
 
 
-class TestHeatingDllHelpers:
-    """Test suite for DLL helper functions with mocked interop."""
+def _stub_substrate(
+    *,
+    TS: float = 100.0,
+    fRF: float = 0.20,
+    fRP: float = 0.15,
+    fRFe: float = 0.05,
+    fRA: float = 0.10,
+    FFS: float = 10.0,
+):
+    """SubstrateParams-shaped stub with just the fields _substrate_cp reads."""
+    return SimpleNamespace(TS=TS, fRF=fRF, fRP=fRP, fRFe=fRFe, fRA=fRA, FFS=FFS)
 
-    def test_init_heating_dll_skips_on_darwin(self, monkeypatch) -> None:
-        _reset_heating_globals()
-        monkeypatch.setattr(heating_module.platform, "system", lambda: "Darwin")
-        heating_module._init_heating_dll()
-        assert heating_module._DLL_INIT_DONE is True
-        assert heating_module._PHYSVALUE is None
 
-    def test_init_heating_dll_returns_if_clr_fails(self, monkeypatch) -> None:
-        _reset_heating_globals()
-        monkeypatch.setattr(heating_module.platform, "system", lambda: "Windows")
+def _stub_feedstock(densities, substrates):
+    """Feedstock-shaped stub exposing _densities and _subs."""
+    return SimpleNamespace(_densities=list(densities), _subs=list(substrates))
 
-        import builtins
 
-        real_import = builtins.__import__
+class TestSubstrateCp:
+    """Component-weighted specific heat capacity helper."""
 
-        def fake_import(name, *args, **kwargs):  # noqa: ANN001
-            if name == "clr":
-                raise ImportError("no clr")
-            return real_import(name, *args, **kwargs)
+    def test_pure_water_substrate_returns_water_cp(self) -> None:
+        s = _stub_substrate(TS=0.0, fRF=0.0, fRP=0.0, fRFe=0.0, fRA=0.0, FFS=0.0)
+        assert math.isclose(heating_module._substrate_cp(s), heating_module._CP_H2O, rel_tol=1e-9)
 
-        monkeypatch.setattr(builtins, "__import__", fake_import)
-        heating_module._init_heating_dll()
-        assert heating_module._DLL_INIT_DONE is True
-        assert heating_module._SUBSTRATES_FACTORY is None
-
-    def test_init_heating_dll_loads_references_and_sets_globals_with_physvalue(self, monkeypatch) -> None:
-        _reset_heating_globals()
-        monkeypatch.setattr(heating_module.platform, "system", lambda: "Windows")
-
-        addref_calls = []
-        fake_clr = SimpleNamespace(AddReference=lambda path: addref_calls.append(path))
-        fake_biogas = SimpleNamespace(substrates=lambda _: "factory_result")
-        fake_physchem = SimpleNamespace(physValue=lambda value, unit: ("pv", value, unit))
-
-        monkeypatch.setitem(sys.modules, "clr", fake_clr)
-        monkeypatch.setitem(sys.modules, "biogas", fake_biogas)
-        monkeypatch.setitem(sys.modules, "physchem", fake_physchem)
-
-        heating_module._init_heating_dll()
-
-        assert heating_module._BIOGAS is fake_biogas
-        assert heating_module._SUBSTRATES_FACTORY is fake_biogas.substrates
-        assert heating_module._PHYSVALUE is fake_physchem.physValue
-        assert len(addref_calls) == 3
-        assert any(path.endswith("biogas") for path in addref_calls)
-        assert any(path.endswith("substrates") for path in addref_calls)
-        assert any(path.endswith("physchem") for path in addref_calls)
-
-    def test_init_heating_dll_falls_back_to_physvalue_capitalized_name(self, monkeypatch) -> None:
-        _reset_heating_globals()
-        monkeypatch.setattr(heating_module.platform, "system", lambda: "Windows")
-
-        import builtins
-
-        real_import = builtins.__import__
-        fake_clr = SimpleNamespace(AddReference=lambda *_: None)
-        fake_biogas = SimpleNamespace(substrates=lambda _: "factory_result")
-        fake_physchem = SimpleNamespace(PhysValue=lambda value, unit: ("PhysValue", value, unit))
-
-        monkeypatch.setitem(sys.modules, "clr", fake_clr)
-
-        def fake_import(name, globals=None, locals=None, fromlist=(), level=0):  # noqa: ANN001, A002
-            if name == "biogas":
-                return fake_biogas
-            if name == "physchem":
-                if "physValue" in fromlist:
-                    raise ImportError("physValue missing")
-                return fake_physchem
-            return real_import(name, globals, locals, fromlist, level)
-
-        monkeypatch.setattr(builtins, "__import__", fake_import)
-        heating_module._init_heating_dll()
-
-        assert heating_module._BIOGAS is fake_biogas
-        assert heating_module._SUBSTRATES_FACTORY is fake_biogas.substrates
-        assert heating_module._PHYSVALUE is fake_physchem.PhysValue
-
-    def test_init_heating_dll_returns_when_physchem_imports_both_fail(self, monkeypatch) -> None:
-        _reset_heating_globals()
-        monkeypatch.setattr(heating_module.platform, "system", lambda: "Windows")
-
-        import builtins
-
-        real_import = builtins.__import__
-        fake_clr = SimpleNamespace(AddReference=lambda *_: None)
-        fake_biogas = SimpleNamespace(substrates=lambda _: "factory_result")
-
-        monkeypatch.setitem(sys.modules, "clr", fake_clr)
-
-        def fake_import(name, globals=None, locals=None, fromlist=(), level=0):  # noqa: ANN001, A002
-            if name == "biogas":
-                return fake_biogas
-            if name == "physchem":
-                raise ImportError("physchem import failed")
-            return real_import(name, globals, locals, fromlist, level)
-
-        monkeypatch.setattr(builtins, "__import__", fake_import)
-        heating_module._init_heating_dll()
-
-        assert heating_module._BIOGAS is None
-        assert heating_module._SUBSTRATES_FACTORY is None
-        assert heating_module._PHYSVALUE is None
-
-    def test_get_substrates_instance_caches_factory_result(self, monkeypatch) -> None:
-        _reset_heating_globals()
-        calls = []
-
-        def factory(path):  # noqa: ANN001
-            calls.append(path)
-            return {"path": path}
-
-        heating_module._SUBSTRATES_FACTORY = factory
-        heating_module._DLL_INIT_DONE = True
-        one = heating_module._get_substrates_instance()
-        two = heating_module._get_substrates_instance()
-
-        assert one == two
-        assert len(calls) == 1
-        assert "substrate_gummersbach.xml" in calls[0]
-
-    def test_get_substrates_instance_handles_factory_failure(self) -> None:
-        _reset_heating_globals()
-
-        def factory(_):  # noqa: ANN001
-            raise RuntimeError("fail")
-
-        heating_module._SUBSTRATES_FACTORY = factory
-        heating_module._DLL_INIT_DONE = True
-        assert heating_module._get_substrates_instance() is None
-
-    def test_get_substrates_instance_returns_none_when_factory_unavailable_after_init(self, monkeypatch) -> None:
-        _reset_heating_globals()
-        monkeypatch.setattr(heating_module, "_init_heating_dll", lambda: None)
-
-        assert heating_module._get_substrates_instance() is None
-
-    def test_calc_process_heat_kw_returns_zero_for_empty_q(self) -> None:
-        _reset_heating_globals()
-        assert heating_module._calc_process_heat_kw([], 308.15) == 0.0
-
-    def test_calc_process_heat_kw_returns_zero_when_substrates_missing(self, monkeypatch) -> None:
-        _reset_heating_globals()
-        monkeypatch.setattr(heating_module, "_get_substrates_instance", lambda: None)
-        assert heating_module._calc_process_heat_kw([1.0], 308.15) == 0.0
-
-    def test_calc_process_heat_kw_uses_substrates_calc_heat_power(self, monkeypatch) -> None:
-        _reset_heating_globals()
-        heating_module._PHYSVALUE = lambda value, unit: ("PV", value, unit)
-
-        class Sub:
-            @staticmethod
-            def calcHeatPower(q, t):  # noqa: ANN001
-                assert q == [1.0]
-                assert t == ("PV", 308.15, "K")
-                return SimpleNamespace(Value=12.3)
-
-        monkeypatch.setattr(heating_module, "_get_substrates_instance", lambda: Sub())
-        out = heating_module._calc_process_heat_kw([1.0], 308.15)
-        assert math.isclose(out, 12.3, rel_tol=1e-9)
-        assert heating_module._HEAT_CALC_MODE == "substrates_calcHeatPower"
-
-    def test_calc_process_heat_kw_uses_admstate_calc_heat_power(self, monkeypatch) -> None:
-        _reset_heating_globals()
-        heating_module._PHYSVALUE = lambda value, unit: ("PV", value, unit)
-
-        class Sub:
-            pass
-
-        heating_module._BIOGAS = SimpleNamespace(
-            ADMstate=SimpleNamespace(
-                calcHeatPower=lambda substrates, q, t: SimpleNamespace(Value=9.1),
-            )
+    def test_known_composition_matches_choi_okos_sum(self) -> None:
+        s = _stub_substrate()
+        # f_TS=0.10, f_fiber=0.02, f_protein=0.015, f_lipid=0.005, f_ash=0.01,
+        # f_NFE=0.05, f_CH=0.07, f_AC=0.01, f_H2O=0.89
+        expected = (
+            0.07 * heating_module._CP_CH
+            + 0.015 * heating_module._CP_PR
+            + 0.005 * heating_module._CP_LI
+            + 0.01 * heating_module._CP_MI
+            + 0.01 * heating_module._CP_AC
+            + 0.89 * heating_module._CP_H2O
         )
-        monkeypatch.setattr(heating_module, "_get_substrates_instance", lambda: Sub())
-        out = heating_module._calc_process_heat_kw([2.0], 308.15)
-        assert math.isclose(out, 9.1, rel_tol=1e-9)
-        assert heating_module._HEAT_CALC_MODE == "admstate_calcHeatPower"
+        assert math.isclose(heating_module._substrate_cp(s), expected, rel_tol=1e-9)
 
-    def test_calc_process_heat_kw_uses_daily_heat_fallback(self, monkeypatch) -> None:
-        _reset_heating_globals()
-        heating_module._PHYSVALUE = lambda value, unit: ("PV", value, unit)
 
-        class Sub:
-            @staticmethod
-            def calcSumQuantityOfHeatPerDay(q, t):  # noqa: ANN001
-                return SimpleNamespace(Value=240.0)
+class TestCalcProcessHeatKw:
+    """Pure-Python sensible-heat calculation."""
 
-        monkeypatch.setattr(heating_module, "_get_substrates_instance", lambda: Sub())
-        out = heating_module._calc_process_heat_kw([2.0], 308.15)
-        assert math.isclose(out, 10.0, rel_tol=1e-9)
-        assert heating_module._HEAT_CALC_MODE == "substrates_calcSumQuantityOfHeatPerDay"
+    def test_returns_zero_for_empty_q(self) -> None:
+        fs = _stub_feedstock([1000.0], [_stub_substrate()])
+        assert heating_module._calc_process_heat_kw([], fs, 308.15, 288.15) == 0.0
 
-    def test_calc_process_heat_kw_handles_exception(self, monkeypatch) -> None:
-        _reset_heating_globals()
-        heating_module._PHYSVALUE = lambda value, unit: ("PV", value, unit)
+    def test_returns_zero_when_feedstock_missing(self) -> None:
+        assert heating_module._calc_process_heat_kw([10.0], None, 308.15, 288.15) == 0.0
 
-        class Sub:
-            @staticmethod
-            def calcHeatPower(q, t):  # noqa: ANN001
-                raise RuntimeError("boom")
+    def test_returns_zero_when_delta_t_non_positive(self) -> None:
+        fs = _stub_feedstock([1000.0], [_stub_substrate()])
+        assert heating_module._calc_process_heat_kw([10.0], fs, 288.15, 308.15) == 0.0
+        assert heating_module._calc_process_heat_kw([10.0], fs, 288.15, 288.15) == 0.0
 
-        monkeypatch.setattr(heating_module, "_get_substrates_instance", lambda: Sub())
-        out = heating_module._calc_process_heat_kw([1.0], 308.15)
-        assert out == 0.0
+    def test_returns_zero_when_feedstock_has_no_densities(self) -> None:
+        fs = SimpleNamespace(_densities=[], _subs=[])
+        assert heating_module._calc_process_heat_kw([10.0], fs, 308.15, 288.15) == 0.0
 
-    def test_calc_process_heat_kw_returns_zero_when_no_supported_heat_methods(self, monkeypatch) -> None:
-        _reset_heating_globals()
-        heating_module._PHYSVALUE = lambda value, unit: ("PV", value, unit)
-        heating_module._BIOGAS = SimpleNamespace(ADMstate=SimpleNamespace())
+    def test_skips_substrates_with_zero_flow(self) -> None:
+        fs = _stub_feedstock([1000.0, 1000.0], [_stub_substrate(), _stub_substrate()])
+        only_first = heating_module._calc_process_heat_kw([5.0, 0.0], fs, 308.15, 288.15)
+        both = heating_module._calc_process_heat_kw([5.0, 5.0], fs, 308.15, 288.15)
+        assert only_first > 0.0
+        assert math.isclose(both, 2.0 * only_first, rel_tol=1e-9)
 
-        class Sub:
-            pass
+    def test_computes_expected_sensible_heat_for_known_input(self) -> None:
+        # Single substrate, ρ=1000 kg/m³, Q=10 m³/d, ΔT=20 K, c_p from stub composition.
+        s = _stub_substrate()
+        cp = heating_module._substrate_cp(s)  # ≈ 3.901 kJ/(kg·K)
+        fs = _stub_feedstock([1000.0], [s])
 
-        monkeypatch.setattr(heating_module, "_get_substrates_instance", lambda: Sub())
-        out = heating_module._calc_process_heat_kw([1.0], 308.15)
-        assert out == 0.0
-        assert heating_module._HEAT_CALC_MODE == "none"
+        out = heating_module._calc_process_heat_kw([10.0], fs, 308.15, 288.15)
+        expected = 10.0 * 1000.0 * cp * 20.0 / 86400.0
+        assert math.isclose(out, expected, rel_tol=1e-9)
+
+    def test_truncates_to_min_length_of_inputs(self) -> None:
+        # Q has 3 entries, feedstock has 2 — only the first two should contribute.
+        fs = _stub_feedstock([1000.0, 1000.0], [_stub_substrate(), _stub_substrate()])
+        truncated = heating_module._calc_process_heat_kw([5.0, 5.0, 5.0], fs, 308.15, 288.15)
+        full = heating_module._calc_process_heat_kw([5.0, 5.0], fs, 308.15, 288.15)
+        assert math.isclose(truncated, full, rel_tol=1e-9)
+
+    def test_step_invokes_calc_with_feedstock_and_t_ambient(self) -> None:
+        s = _stub_substrate()
+        fs = _stub_feedstock([1000.0], [s])
+        heating = HeatingSystem(
+            "heat_1",
+            target_temperature=308.15,
+            heat_loss_coefficient=0.0,  # isolate the process-heat term
+            feedstock=fs,
+        )
+        result = heating.step(
+            t=0.0,
+            dt=1.0 / 24.0,
+            inputs={
+                "T_digester": 308.15,
+                "T_ambient": 288.15,
+                "P_th_available": 0.0,
+                "Q_substrates": [10.0],
+            },
+        )
+        cp = heating_module._substrate_cp(s)
+        expected = 10.0 * 1000.0 * cp * 20.0 / 86400.0
+        assert math.isclose(result["P_aux_heat"], expected, rel_tol=1e-9)
