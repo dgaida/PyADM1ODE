@@ -1883,8 +1883,7 @@
 <p>PyADM1 provides several categories of components:</p>
 <h3 id="biological-components"><a href="biological/">Biological Components</a><a class="headerlink" href="#biological-components" title="Permanent link">&para;</a></h3>
 <p>Components for biological conversion processes:<br />
-- <strong>Digester</strong>: Main fermenter implementing the ADM1 model for anaerobic digestion.<br />
-- <strong>Hydrolysis</strong>: Pre-treatment tank for hydrolysis processes.<br />
+- <strong>Digester</strong>: Main fermenter implementing the ADM1 model for anaerobic digestion. A hydrolysis pre-tank is just a <code>Digester</code> configured with higher temperature and shorter HRT — there is no separate class.<br />
 - <strong>Separator</strong>: Solid-liquid separation for digestate processing.  </p>
 <h3 id="energy-components"><a href="energy/">Energy Components</a><a class="headerlink" href="#energy-components" title="Permanent link">&para;</a></h3>
 <p>Components for energy generation and storage:<br />

@@ -591,17 +591,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#laufzeitanforderungen" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Laufzeitanforderungen
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -743,10 +732,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-c-dlls-nicht-gefunden" class="md-nav__link">
+  <a href="#1-modulenotfounderror-no-module-named-pyadm1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. C#-DLLs nicht gefunden
+        1. ModuleNotFoundError: No module named 'pyadm1'
       
     </span>
   </a>
@@ -754,10 +743,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-pythonnet-importfehler" class="md-nav__link">
+  <a href="#2-substrat-xml-datei-nicht-gefunden" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. pythonnet Importfehler
+        2. Substrat-XML-Datei nicht gefunden
       
     </span>
   </a>
@@ -1842,17 +1831,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#laufzeitanforderungen" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Laufzeitanforderungen
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -1994,10 +1972,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-c-dlls-nicht-gefunden" class="md-nav__link">
+  <a href="#1-modulenotfounderror-no-module-named-pyadm1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. C#-DLLs nicht gefunden
+        1. ModuleNotFoundError: No module named 'pyadm1'
       
     </span>
   </a>
@@ -2005,10 +1983,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-pythonnet-importfehler" class="md-nav__link">
+  <a href="#2-substrat-xml-datei-nicht-gefunden" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. pythonnet Importfehler
+        2. Substrat-XML-Datei nicht gefunden
       
     </span>
   </a>
@@ -2055,10 +2033,7 @@
 <li><strong>Arbeitsspeicher</strong>: Mindestens 2 GB RAM (4 GB empfohlen)  </li>
 <li><strong>Festplattenspeicher</strong>: 10 MB für die Installation  </li>
 </ul>
-<h3 id="laufzeitanforderungen">Laufzeitanforderungen<a class="headerlink" href="#laufzeitanforderungen" title="Permanent link">&para;</a></h3>
-<p>PyADM1ODE verwendet C#-DLLs für die Substratcharakterisierung, was Folgendes erfordert:<br />
-- <strong>Linux/macOS</strong>: Mono-Laufzeitumgebung<br />
-- <strong>Windows</strong>: .NET Framework (normalerweise vorinstalliert)  </p>
+<p>PyADM1ODE ist reines Python ohne native Laufzeitabhängigkeiten — die Installation des Python-Pakets genügt.</p>
 <h2 id="installationsmethoden">Installationsmethoden<a class="headerlink" href="#installationsmethoden" title="Permanent link">&para;</a></h2>
 <h3 id="methode-1-installation-uber-pypi-empfohlen-aber-noch-nicht-unterstutzt">Methode 1: Installation über PyPI (Empfohlen, aber noch nicht unterstützt)<a class="headerlink" href="#methode-1-installation-uber-pypi-empfohlen-aber-noch-nicht-unterstutzt" title="Permanent link">&para;</a></h3>
 <p>Sobald veröffentlicht, installieren Sie über pip:</p>
@@ -2097,11 +2072,7 @@
    <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git clone https://github.com/dgaida/PyADM1ODE.git
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>cd PyADM1ODE
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>pip install -e .
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>pip install -r requirements-windows.txt
 </code></pre></div></p>
-</li>
-<li>
-<p><strong>.NET Framework</strong> sollte unter Windows 10/11 vorinstalliert sein.  </p>
 </li>
 </ol>
 <h3 id="linux-installation-ubuntudebian">Linux-Installation (Ubuntu/Debian)<a class="headerlink" href="#linux-installation-ubuntudebian" title="Permanent link">&para;</a></h3>
@@ -2113,16 +2084,10 @@
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Mono-Laufzeitumgebung installieren</strong> (erforderlich für C#-DLLs):<br />
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>mono-complete
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>mono<span class="w"> </span>--version
-</code></pre></div></p>
-</li>
-<li>
 <p><strong>PyADM1ODE installieren</strong>:<br />
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/dgaida/PyADM1ODE.git
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">cd</span><span class="w"> </span>PyADM1ODE
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/dgaida/PyADM1ODE.git
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">cd</span><span class="w"> </span>PyADM1ODE
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </code></pre></div></p>
 </li>
 </ol>
@@ -2130,41 +2095,35 @@
 <ol>
 <li>
 <p><strong>Homebrew installieren</strong> (falls noch nicht geschehen):<br />
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="k">)</span><span class="s2">&quot;</span>
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="k">)</span><span class="s2">&quot;</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Python installieren</strong>:<br />
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>brew<span class="w"> </span>install<span class="w"> </span>python@3.11
-</code></pre></div></p>
-</li>
-<li>
-<p><strong>Mono-Laufzeitumgebung installieren</strong>:<br />
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>brew<span class="w"> </span>install<span class="w"> </span>mono
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>mono<span class="w"> </span>--version
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>brew<span class="w"> </span>install<span class="w"> </span>python@3.11
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>PyADM1ODE installieren</strong>:<br />
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/dgaida/PyADM1ODE.git
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nb">cd</span><span class="w"> </span>PyADM1ODE
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>pip3<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/dgaida/PyADM1ODE.git
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">cd</span><span class="w"> </span>PyADM1ODE
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>pip3<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </code></pre></div></p>
 </li>
 </ol>
 <h2 id="verifizierung-der-installation">Verifizierung der Installation<a class="headerlink" href="#verifizierung-der-installation" title="Permanent link">&para;</a></h2>
 <p>Führen Sie folgendes Skript aus, um die Installation zu prüfen:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pyadm1</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PyADM1 Version: </span><span class="si">{</span><span class="n">pyadm1</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">ADM1</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Core-Module erfolgreich geladen.&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pyadm1</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PyADM1 Version: </span><span class="si">{</span><span class="n">pyadm1</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">ADM1</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Core-Module erfolgreich geladen.&quot;</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="fehlerbehebung">Fehlerbehebung<a class="headerlink" href="#fehlerbehebung" title="Permanent link">&para;</a></h2>
 <h3 id="haufige-probleme">Häufige Probleme<a class="headerlink" href="#haufige-probleme" title="Permanent link">&para;</a></h3>
-<h4 id="1-c-dlls-nicht-gefunden">1. C#-DLLs nicht gefunden<a class="headerlink" href="#1-c-dlls-nicht-gefunden" title="Permanent link">&para;</a></h4>
-<p>Stellen Sie sicher, dass die DLL-Dateien im Verzeichnis <code>pyadm1/dlls/</code> vorhanden sind.</p>
-<h4 id="2-pythonnet-importfehler">2. pythonnet Importfehler<a class="headerlink" href="#2-pythonnet-importfehler" title="Permanent link">&para;</a></h4>
-<p>Dies deutet oft auf eine fehlende Mono-Installation (unter Linux/macOS) oder ein Problem mit dem .NET Framework (unter Windows) hin.</p>
+<h4 id="1-modulenotfounderror-no-module-named-pyadm1">1. <code>ModuleNotFoundError: No module named 'pyadm1'</code><a class="headerlink" href="#1-modulenotfounderror-no-module-named-pyadm1" title="Permanent link">&para;</a></h4>
+<p>Das Paket ist in der aktiven Umgebung nicht installiert. Prüfen mit <code>pip show pyadm1ode</code> und ggf. neu installieren (<code>pip install -e .</code> aus dem Projekt-Root).</p>
+<h4 id="2-substrat-xml-datei-nicht-gefunden">2. Substrat-XML-Datei nicht gefunden<a class="headerlink" href="#2-substrat-xml-datei-nicht-gefunden" title="Permanent link">&para;</a></h4>
+<p><code>Feedstock([...])</code> schlägt fehl, weil eine Substrat-ID unbekannt ist. Die gültigen IDs sind die Dateinamen-Stämme unter <code>data/substrates/adm1da/</code> (ohne <code>.xml</code>).</p>
 
 
 

@@ -1266,14 +1266,14 @@
 <h3 id="1-setup-and-imports">1. Setup and Imports<a class="headerlink" href="#1-setup-and-imports" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.configurator.plant_builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">BiogasPlant</span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.substrates.feedstock</span><span class="w"> </span><span class="kn">import</span> <span class="n">Feedstock</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.core.adm1</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_state_zero_from_initial_state</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.core.adm1</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_state_zero_from_csv</span>
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.configurator.plant_configurator</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlantConfigurator</span>
 </code></pre></div>
 <p>The key imports are:<br/>
 - <code>BiogasPlant</code>: Container for all plant components<br/>
 - <code>Feedstock</code>: Manages substrate properties and mixing<br/>
 - <code>PlantConfigurator</code>: High-level helper for adding components (automatically handles gas storage)<br/>
-- <code>get_state_zero_from_initial_state</code>: Loads initial state from CSV  </p>
+- <code>get_state_zero_from_csv</code>: Loads the 41-state ADM1da initial state from CSV  </p>
 <h3 id="2-create-feedstock">2. Create Feedstock<a class="headerlink" href="#2-create-feedstock" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">feeding_freq</span> <span class="o">=</span> <span class="mi">48</span>  <span class="c1"># Can change substrate every 48 hours</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">(</span><span class="n">feeding_freq</span><span class="o">=</span><span class="n">feeding_freq</span><span class="p">)</span>
@@ -1285,14 +1285,15 @@
 <p><strong>Feeding Frequency</strong>: The <code>feeding_freq</code> parameter (48 hours) defines how often the controller can adjust substrate feeds. This is important for optimization and control applications.</p>
 <h3 id="3-load-initial-state">3. Load Initial State<a class="headerlink" href="#3-load-initial-state" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">initial_state_file</span> <span class="o">=</span> <span class="n">data_path</span> <span class="o">/</span> <span class="s2">"digester_initial8.csv"</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="n">adm1_state</span> <span class="o">=</span> <span class="n">get_state_zero_from_initial_state</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">initial_state_file</span><span class="p">))</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="n">adm1_state</span> <span class="o">=</span> <span class="n">get_state_zero_from_csv</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">initial_state_file</span><span class="p">))</span>
 </code></pre></div>
-<p>The initial state CSV contains 37 ADM1 state variables representing a steady-state condition. This avoids long initialization periods where the model transitions from unrealistic starting values.</p>
-<p><strong>ADM1 State Vector</strong> (37 variables):<br/>
+<p>The initial state CSV contains the 41 ADM1da state variables representing a steady-state condition. This avoids long initialization periods where the model transitions from unrealistic starting values.</p>
+<p><strong>ADM1da State Vector</strong> (41 variables):<br/>
 - Soluble components (0-11): S_su, S_aa, S_fa, S_va, S_bu, S_pro, S_ac, S_h2, S_ch4, S_co2, S_nh4, S_I<br/>
-- Particulate components (12-24): X_xc, X_ch, X_pr, X_li, X_su, X_aa, X_fa, X_c4, X_pro, X_ac, X_h2, X_I, X_p<br/>
-- Ions (25-32): S_cation, S_anion, S_va_ion, S_bu_ion, S_pro_ion, S_ac_ion, S_hco3_ion, S_nh3<br/>
-- Gas phase (33-36): pi_Sh2, pi_Sch4, pi_Sco2, pTOTAL  </p>
+- Particulate sub-fractions — slow / fast / soluble pools (12-20): X_ps_ch, X_ps_pr, X_ps_li, X_pf_ch, X_pf_pr, X_pf_li, X_s_ch, X_s_pr, X_s_li<br/>
+- Inert + biomass (21-28): X_I, X_su, X_aa, X_fa, X_c4, X_pro, X_ac, X_h2<br/>
+- Ions (29-36): S_cation, S_anion, S_va_ion, S_bu_ion, S_pro_ion, S_ac_ion, S_hco3, S_nh3<br/>
+- Gas phase (37-40): p_h2, p_ch4, p_co2, pTOTAL  </p>
 <h3 id="4-define-substrate-feed">4. Define Substrate Feed<a class="headerlink" href="#4-define-substrate-feed" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Corn silage and manure</span>
 </code></pre></div>
