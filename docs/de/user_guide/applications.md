@@ -70,3 +70,13 @@ configurator.connect("hydrolyse", "hauptfermenter", "liquid")
 
 # Verbesserte Hydrolyse in Stufe 1, stabile Methanogenese in Stufe 2
 ```
+
+## Forschungsanwendungen
+
+Dieses Framework unterstützt die Forschung in den folgenden Bereichen:
+
+- **Prozessoptimierung**: Substratfütterungsstrategien, Verweilzeit.
+- **Regelungssysteme**: Modellprädiktive Regelung, Feedback-Regler.
+- **Anlagendesign**: Komponentendimensionierung, Layoutoptimierung.
+- **Energiemanagement**: BHKW-Einsatzplanung, Wärmeintegration.
+- **Substratbewertung**: Bewertung des Biogaspotenzials.

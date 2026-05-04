@@ -24,4 +24,4 @@ Current coverage: **98.1%** (Target: 95%)
 
 ## Maintenance
 
-Please see the [main README](../../README.md) for the latest version and maintenance status.
+Please see the [main README](../index.md) for the latest version and maintenance status.

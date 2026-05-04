@@ -26,3 +26,13 @@ Alle Substrate sind charakterisiert durch:
 - pH-Wert und Alkalinität  
 
 Weitere Details zur Abbildung auf ADM1 finden Sie auf der Seite [ADM1-Implementierung](adm1_implementation.md).
+
+## Substratmanagement
+
+Substrate werden charakterisiert durch:
+- **Weender-Analyse**: Rohfaser (RF), Rohprotein (RP), Rohfett (RL).
+- **Van-Soest-Fraktionen**: NDF, ADF, ADL.
+- **Physikalische Eigenschaften**: pH-Wert, TS, oTS, COD.
+- **Kinetische Parameter**: Desintegrations- und Hydrolyseraten.
+
+Diese Parameter ermöglichen eine dynamische Berechnung der ADM1-Zulaufwerte (wie $X_c$ und Stöchiometrie) und der kinetischen Parameter ($k_{dis}$, $k_{hyd}$) basierend auf den spezifischen Substrateigenschaften.

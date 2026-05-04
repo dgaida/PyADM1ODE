@@ -70,3 +70,13 @@ configurator.connect("hydrolysis", "main", "liquid")
 
 # Enhanced hydrolysis in stage 1, stable methanogenesis in stage 2
 ```
+
+## Research Applications
+
+This framework supports research in:
+
+- **Process optimization**: Substrate feed strategies, retention time.
+- **Control systems**: Model predictive control, feedback controllers.
+- **Plant design**: Component sizing, layout optimization.
+- **Energy management**: CHP scheduling, heat integration.
+- **Substrate evaluation**: Biogas potential assessment.
