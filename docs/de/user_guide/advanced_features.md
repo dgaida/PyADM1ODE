@@ -36,3 +36,11 @@ plant = BiogasPlant.from_json("zweistufige_anlage.json", feedstock)
 plant.initialize()
 results = plant.simulate(duration=30, dt=1/24)
 ```
+
+## PyADM1ODE Ökosystem
+
+PyADM1ODE ist Teil eines größeren Ökosystems von Werkzeugen zur Optimierung und Steuerung von Biogasanlagen:
+
+- **[PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration)**: Werkzeuge zur automatisierten Kalibrierung von ADM1-Parametern basierend auf Messdaten.
+- **[PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp)**: Model Context Protocol (MCP) Server, der es ermöglicht, PyADM1ODE mit LLMs (wie Claude oder ChatGPT) zu steuern.
+- **[PyADM1ODE_estimate](https://github.com/dgaida/PyADM1ODE_estimate)**: Werkzeuge zur Schätzung von Zustandsvariablen und Parametern in Echtzeit.

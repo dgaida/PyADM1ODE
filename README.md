@@ -6,6 +6,25 @@
 
 PyADM1ODE ist ein Python-Framework zur Modellierung, Simulation und Optimierung von landwirtschaftlichen Biogasanlagen basierend auf dem Anaerobic Digestion Model No. 1 (ADM1).
 
+## Projektstruktur
+
+```text
+PyADM1ODE/
+├── data/                    # Datenbanken (Substrate, Anfangszustände)
+├── docs/                    # Dokumentationsquellen (DE/EN)
+├── examples/                # Anwendungsbeispiele & Jupyter Notebooks
+├── pyadm1/                  # Quellcode des Frameworks
+│   ├── components/          # Anlagenkomponenten (Fermenter, BHKW, etc.)
+│   ├── configurator/        # Anlagenbau und Konfiguration
+│   ├── core/                # ADM1-Kern (Gleichungen, Solver, Parameter)
+│   ├── dlls/                # Integrierte C#-DLLs für Physico-Chemicals
+│   ├── simulation/          # Simulations-Engine und Parallelisierung
+│   └── substrates/          # Substratmanagement und Feedstock-Berechnung
+├── tests/                   # Unit- und Integrationstests
+├── mkdocs.yml               # Konfiguration der Dokumentation
+└── pyproject.toml           # Projekt-Metadaten und Abhängigkeiten
+```
+
 ## Hauptmerkmale
 
 - **Modulare Architektur**: Komponentenbasierter Aufbau von Biogasanlagen (Fermenter, BHKW, Pumpen, Rührwerke, etc.).
