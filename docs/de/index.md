@@ -17,21 +17,21 @@ Willkommen bei PyADM1ODE - Einem Python-Framework zur Modellierung, Simulation u
 
     [:octicons-arrow-right-24: Schnellstart-Anleitung](user_guide/quickstart.md)
 
--   :material-download:{ .lg .middle } __Installation__  
+-   :material-book-open-variant:{ .lg .middle } __Handbuch__
 
     ---
 
-    Installieren Sie PyADM1ODE auf Windows, Linux oder macOS
+    Erfahren Sie mehr über die Komponenten, Substrate und Anwendungen
 
-    [:octicons-arrow-right-24: Installations-Anleitung](user_guide/installation.md)
+    [:octicons-arrow-right-24: Handbuch](user_guide/components/index.md)
 
--   :material-book-open-variant:{ .lg .middle } __Handbuch__  
+-   :material-chart-bell-curve-cumulative:{ .lg .middle } __Modell & Theorie__
 
     ---
 
-    Erfahren Sie mehr über das Framework, Komponenten und Substrate
+    Details zur ADM1-Implementierung, Architektur und Validierung
 
-    [:octicons-arrow-right-24: Handbuch](user_guide/adm1_implementation.md)
+    [:octicons-arrow-right-24: Modell & Theorie](user_guide/adm1_implementation.md)
 
 -   :material-code-braces:{ .lg .middle } __Beispiele__  
 
