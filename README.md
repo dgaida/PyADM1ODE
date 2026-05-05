@@ -3,6 +3,15 @@
 [![PyPI version](https://badge.fury.io/py/PyADM1ODE.svg)](https://badge.fury.io/py/PyADM1ODE)
 [![Documentation Status](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://dgaida.github.io/PyADM1ODE/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![codecov](https://codecov.io/gh/dgaida/PyADM1ODE/branch/master/graph/badge.svg)](https://codecov.io/gh/dgaida/PyADM1ODE)
+[![Code Quality](https://github.com/dgaida/PyADM1ODE/actions/workflows/lint.yml/badge.svg)](https://github.com/dgaida/PyADM1ODE/actions/workflows/lint.yml)
+[![Tests](https://github.com/dgaida/PyADM1ODE/actions/workflows/tests.yml/badge.svg)](https://github.com/dgaida/PyADM1ODE/actions/workflows/tests.yml)
+[![CodeQL](https://github.com/dgaida/PyADM1ODE/actions/workflows/codeql.yml/badge.svg)](https://github.com/dgaida/PyADM1ODE/actions/workflows/codeql.yml)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Version](https://img.shields.io/github/v/tag/dgaida/PyADM1ODE?label=version)](https://github.com/dgaida/PyADM1ODE/tags)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/dgaida/PyADM1ODE/graphs/commit-activity)
+![Last commit](https://img.shields.io/github/last-commit/dgaida/PyADM1ODE)
 
 PyADM1ODE ist ein Python-Framework zur Modellierung, Simulation und Optimierung von landwirtschaftlichen Biogasanlagen basierend auf dem Anaerobic Digestion Model No. 1 (ADM1).
 
