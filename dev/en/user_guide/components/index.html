@@ -822,6 +822,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-base-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Base Class
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic-component-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic Component Creation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1022,6 +1061,62 @@
     
   
     Anwendungen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validierung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referenzen
   
 
     
@@ -1837,6 +1932,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-base-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Base Class
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic-component-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic Component Creation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1912,6 +2046,17 @@
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Automatic heat routing: CHP → Heating</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_chp_to_heating</span><span class="p">(</span><span class="s2">&quot;chp1&quot;</span><span class="p">,</span> <span class="s2">&quot;heat1&quot;</span><span class="p">)</span>
 </code></pre></div>
+<h2 id="core-concepts">Core Concepts<a class="headerlink" href="#core-concepts" title="Permanent link">&para;</a></h2>
+<h3 id="component-base-class">Component Base Class<a class="headerlink" href="#component-base-class" title="Permanent link">&para;</a></h3>
+<p>All plant components inherit from the <code>Component</code> base class and provide:
+- <code>step(t, dt, inputs)</code>: Perform one simulation time step.
+- <code>initialize(state)</code>: Initialize component state.
+- <code>to_dict()</code> / <code>from_dict()</code>: Serialization for JSON export/import.</p>
+<h3 id="automatic-component-creation">Automatic Component Creation<a class="headerlink" href="#automatic-component-creation" title="Permanent link">&para;</a></h3>
+<p>The <code>PlantConfigurator</code> automatically creates and connects:
+- <strong>Gas Storage</strong>: One per digester (membrane type, sized to gas volume).
+- <strong>Flare</strong>: One per CHP unit (safety combustion of excess gas).</p>
+<p>This reduces configuration complexity while ensuring realistic plant behavior.</p>
 
 
 

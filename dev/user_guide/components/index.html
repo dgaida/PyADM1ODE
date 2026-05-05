@@ -1031,6 +1031,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#kernkonzepte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kernkonzepte
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kernkonzepte">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#komponenten-basisklasse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Komponenten-Basisklasse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatische-komponentenerstellung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatische Komponentenerstellung
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1231,6 +1270,62 @@
     
   
     Anwendungen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validierung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referenzen
   
 
     
@@ -2257,6 +2352,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#kernkonzepte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kernkonzepte
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kernkonzepte">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#komponenten-basisklasse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Komponenten-Basisklasse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatische-komponentenerstellung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatische Komponentenerstellung
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2651,6 +2785,17 @@
 <li><a href="feeding/">Fütterungskomponenten</a>  </li>
 <li><a href="sensors/">Sensoren</a>  </li>
 </ul>
+<h2 id="kernkonzepte">Kernkonzepte<a class="headerlink" href="#kernkonzepte" title="Permanent link">&para;</a></h2>
+<h3 id="komponenten-basisklasse">Komponenten-Basisklasse<a class="headerlink" href="#komponenten-basisklasse" title="Permanent link">&para;</a></h3>
+<p>Alle Anlagenkomponenten erben von der <code>Component</code>-Basisklasse und bieten:
+- <code>step(t, dt, inputs)</code>: Führt einen Simulationszeitschritt aus.
+- <code>initialize(state)</code>: Initialisiert den Komponentenzustand.
+- <code>to_dict()</code> / <code>from_dict()</code>: Serialisierung für JSON-Export/-Import.</p>
+<h3 id="automatische-komponentenerstellung">Automatische Komponentenerstellung<a class="headerlink" href="#automatische-komponentenerstellung" title="Permanent link">&para;</a></h3>
+<p>Der <code>PlantConfigurator</code> erstellt und verbindet automatisch:
+- <strong>Gasspeicher</strong>: Einer pro Fermenter (Membrantyp, dimensioniert auf das Gasvolumen).
+- <strong>Fackel</strong>: Eine pro BHKW-Einheit (Sicherheitsverbrennung von überschüssigem Gas).</p>
+<p>Dies reduziert die Konfigurationskomplexität und stellt gleichzeitig ein realistisches Anlagenverhalten sicher.</p>
 
 
 

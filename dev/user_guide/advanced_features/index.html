@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://dgaida.github.io/PyADM1ODE/dev/user_guide/advanced_features/">
       
       
-        <link rel="prev" href="../applications/">
+        <link rel="prev" href="../references/">
       
       
         <link rel="next" href="../../architecture/">
@@ -879,6 +879,62 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validierung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referenzen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -957,6 +1013,17 @@
     <span class="md-ellipsis">
       
         Konfigurationsmanagement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyadm1ode-okosystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PyADM1ODE Ökosystem
       
     </span>
   </a>
@@ -1657,6 +1724,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#pyadm1ode-okosystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PyADM1ODE Ökosystem
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1705,6 +1783,13 @@
 <a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">plant</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
 <a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">results</span> <span class="o">=</span> <span class="n">plant</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">24</span><span class="p">)</span>
 </code></pre></div>
+<h2 id="pyadm1ode-okosystem">PyADM1ODE Ökosystem<a class="headerlink" href="#pyadm1ode-okosystem" title="Permanent link">&para;</a></h2>
+<p>PyADM1ODE ist Teil eines größeren Ökosystems von Werkzeugen zur Optimierung und Steuerung von Biogasanlagen:</p>
+<ul>
+<li><strong><a href="https://github.com/dgaida/PyADM1ODE_calibration">PyADM1ODE_calibration</a></strong>: Werkzeuge zur automatisierten Kalibrierung von ADM1-Parametern basierend auf Messdaten.</li>
+<li><strong><a href="https://github.com/dgaida/PyADM1ODE_mcp">PyADM1ODE_mcp</a></strong>: Model Context Protocol (MCP) Server, der es ermöglicht, PyADM1ODE mit LLMs (wie Claude oder ChatGPT) zu steuern.</li>
+<li><strong><a href="https://github.com/dgaida/PyADM1ODE_estimate">PyADM1ODE_estimate</a></strong>: Werkzeuge zur Schätzung von Zustandsvariablen und Parametern in Echtzeit.</li>
+</ul>
 
 
 
