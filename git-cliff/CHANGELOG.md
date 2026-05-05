@@ -6,9 +6,20 @@ All notable changes to this project will be documented in this file.
 
 ### Documentation
 
+- Restructure navigation menu for better accessibility  
+- Restructure navigation and add AGENTS.md guidelines  
+
+## [0.2.5] - 2026-05-05
+
+### Documentation
+
 - Update documentation and fix automated changelog sync  
 - Update documentation, fix changelog sync, and ecosystem info  
 - Update documentation, fix changelog sync, and add ecosystem info  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.2.4] - 2026-05-02
 

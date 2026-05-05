@@ -17,7 +17,7 @@ Welcome to PyADM1ODE - A Python framework for modeling, simulating, and optimizi
 
     [:octicons-arrow-right-24: Quickstart Guide](user_guide/quickstart.md)
 
--   :material-book-open-variant:{ .lg .middle } __User Guide__
+-   :material-book-open-variant:{ .lg .middle } __User Guide__  
 
     ---
 
@@ -25,7 +25,7 @@ Welcome to PyADM1ODE - A Python framework for modeling, simulating, and optimizi
 
     [:octicons-arrow-right-24: User Guide](user_guide/components/index.md)
 
--   :material-chart-bell-curve-cumulative:{ .lg .middle } __Model & Theory__
+-   :material-chart-bell-curve-cumulative:{ .lg .middle } __Model & Theory__  
 
     ---
 
