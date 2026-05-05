@@ -75,8 +75,8 @@ configurator.connect("hydrolyse", "hauptfermenter", "liquid")
 
 Dieses Framework unterstützt die Forschung in den folgenden Bereichen:
 
-- **Prozessoptimierung**: Substratfütterungsstrategien, Verweilzeit.
-- **Regelungssysteme**: Modellprädiktive Regelung, Feedback-Regler.
-- **Anlagendesign**: Komponentendimensionierung, Layoutoptimierung.
-- **Energiemanagement**: BHKW-Einsatzplanung, Wärmeintegration.
-- **Substratbewertung**: Bewertung des Biogaspotenzials.
+- **Prozessoptimierung**: Substratfütterungsstrategien, Verweilzeit.  
+- **Regelungssysteme**: Modellprädiktive Regelung, Feedback-Regler.  
+- **Anlagendesign**: Komponentendimensionierung, Layoutoptimierung.  
+- **Energiemanagement**: BHKW-Einsatzplanung, Wärmeintegration.  
+- **Substratbewertung**: Bewertung des Biogaspotenzials.  

@@ -77,15 +77,15 @@ configurator.auto_connect_chp_to_heating("chp1", "heat1")
 
 ### Component Base Class
 
-All plant components inherit from the `Component` base class and provide:
-- `step(t, dt, inputs)`: Perform one simulation time step.
-- `initialize(state)`: Initialize component state.
-- `to_dict()` / `from_dict()`: Serialization for JSON export/import.
+All plant components inherit from the `Component` base class and provide:  
+- `step(t, dt, inputs)`: Perform one simulation time step.  
+- `initialize(state)`: Initialize component state.  
+- `to_dict()` / `from_dict()`: Serialization for JSON export/import.  
 
 ### Automatic Component Creation
 
-The `PlantConfigurator` automatically creates and connects:
-- **Gas Storage**: One per digester (membrane type, sized to gas volume).
-- **Flare**: One per CHP unit (safety combustion of excess gas).
+The `PlantConfigurator` automatically creates and connects:  
+- **Gas Storage**: One per digester (membrane type, sized to gas volume).  
+- **Flare**: One per CHP unit (safety combustion of excess gas).  
 
 This reduces configuration complexity while ensuring realistic plant behavior.

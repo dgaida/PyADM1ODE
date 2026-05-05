@@ -12,6 +12,8 @@
 [![Version](https://img.shields.io/github/v/tag/dgaida/PyADM1ODE?label=version)](https://github.com/dgaida/PyADM1ODE/tags)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/dgaida/PyADM1ODE/graphs/commit-activity)
 ![Last commit](https://img.shields.io/github/last-commit/dgaida/PyADM1ODE)
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://dgaida.github.io/PyADM1ODE/)
 
 PyADM1ODE ist ein Python-Framework zur Modellierung, Simulation und Optimierung von landwirtschaftlichen Biogasanlagen basierend auf dem Anaerobic Digestion Model No. 1 (ADM1).
 
@@ -36,21 +38,21 @@ PyADM1ODE/
 
 ## Hauptmerkmale
 
-- **Modulare Architektur**: Komponentenbasierter Aufbau von Biogasanlagen (Fermenter, BHKW, Pumpen, Rührwerke, etc.).
-- **Wissenschaftlich fundiert**: Implementierung des ADM1da-Modells für realistische Simulationen landwirtschaftlicher Anlagen.
-- **Einfache Konfiguration**: Programmatische Konfiguration oder über JSON-Dateien.
-- **Drei-Pass-Simulation**: Realistische Modellierung von Gasflüssen und Pufferspeichern.
-- **Bilingualität**: Vollständige Dokumentation in Deutsch und Englisch.
+- **Modulare Architektur**: Komponentenbasierter Aufbau von Biogasanlagen (Fermenter, BHKW, Pumpen, Rührwerke, etc.).  
+- **Wissenschaftlich fundiert**: Implementierung des ADM1da-Modells für realistische Simulationen landwirtschaftlicher Anlagen.  
+- **Einfache Konfiguration**: Programmatische Konfiguration oder über JSON-Dateien.  
+- **Drei-Pass-Simulation**: Realistische Modellierung von Gasflüssen und Pufferspeichern.  
+- **Bilingualität**: Vollständige Dokumentation in Deutsch und Englisch.  
 
 ## Dokumentation
 
 Die vollständige Dokumentation finden Sie unter [dgaida.github.io/PyADM1ODE](https://dgaida.github.io/PyADM1ODE/).
 
-- [Installation](https://dgaida.github.io/PyADM1ODE/latest/user_guide/installation/)
-- [Schnellstart](https://dgaida.github.io/PyADM1ODE/latest/user_guide/quickstart/)
-- [ADM1-Implementierung](https://dgaida.github.io/PyADM1ODE/latest/user_guide/adm1_implementation/)
-- [Komponenten](https://dgaida.github.io/PyADM1ODE/latest/user_guide/components/)
-- [Validierung](https://dgaida.github.io/PyADM1ODE/latest/user_guide/validation/)
+- [Installation](https://dgaida.github.io/PyADM1ODE/latest/user_guide/installation/)  
+- [Schnellstart](https://dgaida.github.io/PyADM1ODE/latest/user_guide/quickstart/)  
+- [ADM1-Implementierung](https://dgaida.github.io/PyADM1ODE/latest/user_guide/adm1_implementation/)  
+- [Komponenten](https://dgaida.github.io/PyADM1ODE/latest/user_guide/components/)  
+- [Validierung](https://dgaida.github.io/PyADM1ODE/latest/user_guide/validation/)  
 
 ## Schnellstart
 
@@ -58,8 +60,8 @@ Die vollständige Dokumentation finden Sie unter [dgaida.github.io/PyADM1ODE](ht
 
 Probieren Sie PyADM1ODE direkt im Browser aus:
 
-- **Basis-Fermenter**: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_01_basic_digester.ipynb)
-- **Zweistufige Anlage**: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_02_complex_plant.ipynb)
+- **Basis-Fermenter**: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_01_basic_digester.ipynb)  
+- **Zweistufige Anlage**: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_02_complex_plant.ipynb)  
 
 ### Minimalbeispiel
 
@@ -89,7 +91,7 @@ Dieses Projekt ist unter der MIT-Lizenz lizenziert - siehe [LICENSE](LICENSE) f�
 
 ## Kontakt
 
-**Daniel Gaida**
-- E-Mail: daniel.gaida@th-koeln.de
-- GitHub: [@dgaida](https://github.com/dgaida)
-- Institution: TH Köln - University of Applied Sciences
+**Daniel Gaida**  
+- E-Mail: daniel.gaida@th-koeln.de  
+- GitHub: [@dgaida](https://github.com/dgaida)  
+- Institution: TH Köln - University of Applied Sciences  

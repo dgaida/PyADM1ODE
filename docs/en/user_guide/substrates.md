@@ -29,10 +29,10 @@ For more details on how these are mapped to ADM1, see the [ADM1 Implementation](
 
 ## Substrate Management
 
-Substrates are characterized by:
-- **Weender analysis**: Crude fiber (RF), crude protein (RP), crude fat (RL).
-- **Van Soest fractions**: NDF, ADF, ADL.
-- **Physical properties**: pH, TS, VS, COD.
-- **Kinetic parameters**: Disintegration and hydrolysis rates.
+Substrates are characterized by:  
+- **Weender analysis**: Crude fiber (RF), crude protein (RP), crude fat (RL).  
+- **Van Soest fractions**: NDF, ADF, ADL.  
+- **Physical properties**: pH, TS, VS, COD.  
+- **Kinetic parameters**: Disintegration and hydrolysis rates.  
 
 These parameters allow for a dynamic calculation of ADM1 inputs (like $X_c$ and stoichiometry) and kinetic parameters ($k_{dis}$, $k_{hyd}$) based on the substrate characteristics.

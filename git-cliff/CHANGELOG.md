@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Documentation
+
+- Update documentation and fix automated changelog sync  
+- Update documentation, fix changelog sync, and ecosystem info  
+- Update documentation, fix changelog sync, and add ecosystem info  
+
+## [0.2.4] - 2026-05-02
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
 ## [0.2.3] - 2026-04-29
 
 ### Miscellaneous Tasks

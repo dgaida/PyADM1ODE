@@ -2,9 +2,9 @@
 
 Das Framework wurde gegen verschiedene Referenzmodelle und Realdaten validiert:
 
-- **SIMBA#**: Kommerzielle Biogas-Simulationssoftware (ifak e.V.).
-- **[ADM1F](https://github.com/lanl/ADM1F)**: ADM1-Implementierung in Fortran des LANL.
-- **Realdaten**: Daten von mehreren landwirtschaftlichen Biogasanlagen.
+- **SIMBA#**: Kommerzielle Biogas-Simulationssoftware (ifak e.V.).  
+- **[ADM1F](https://github.com/lanl/ADM1F)**: ADM1-Implementierung in Fortran des LANL.  
+- **Realdaten**: Daten von mehreren landwirtschaftlichen Biogasanlagen.  
 
 ## Vergleich mit SIMBA#
 Die Implementierung des ADM1da-Modells wurde intensiv mit SIMBA# abgeglichen, um die Korrektheit der Stöchiometrie, Kinetik und der pH-Wert-Berechnung sicherzustellen.

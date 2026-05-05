@@ -415,15 +415,15 @@ storage_good = SubstrateStorage(
 
 ### Komponenten-Basisklasse
 
-Alle Anlagenkomponenten erben von der `Component`-Basisklasse und bieten:
-- `step(t, dt, inputs)`: Führt einen Simulationszeitschritt aus.
-- `initialize(state)`: Initialisiert den Komponentenzustand.
-- `to_dict()` / `from_dict()`: Serialisierung für JSON-Export/-Import.
+Alle Anlagenkomponenten erben von der `Component`-Basisklasse und bieten:  
+- `step(t, dt, inputs)`: Führt einen Simulationszeitschritt aus.  
+- `initialize(state)`: Initialisiert den Komponentenzustand.  
+- `to_dict()` / `from_dict()`: Serialisierung für JSON-Export/-Import.  
 
 ### Automatische Komponentenerstellung
 
-Der `PlantConfigurator` erstellt und verbindet automatisch:
-- **Gasspeicher**: Einer pro Fermenter (Membrantyp, dimensioniert auf das Gasvolumen).
-- **Fackel**: Eine pro BHKW-Einheit (Sicherheitsverbrennung von überschüssigem Gas).
+Der `PlantConfigurator` erstellt und verbindet automatisch:  
+- **Gasspeicher**: Einer pro Fermenter (Membrantyp, dimensioniert auf das Gasvolumen).  
+- **Fackel**: Eine pro BHKW-Einheit (Sicherheitsverbrennung von überschüssigem Gas).  
 
 Dies reduziert die Konfigurationskomplexität und stellt gleichzeitig ein realistisches Anlagenverhalten sicher.

@@ -41,6 +41,6 @@ results = plant.simulate(duration=30, dt=1/24)
 
 PyADM1ODE is part of a larger ecosystem of tools for biogas plant optimization and control:
 
-- **[PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration)**: Tools for automated calibration of ADM1 parameters based on measurement data.
-- **[PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp)**: Model Context Protocol (MCP) server that enables controlling PyADM1ODE with LLMs (like Claude or ChatGPT).
-- **[PyADM1ODE_estimate](https://github.com/dgaida/PyADM1ODE_estimate)**: Tools for real-time estimation of state variables and parameters.
+- **[PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration)**: Tools for automated calibration of ADM1 parameters based on measurement data.  
+- **[PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp)**: Model Context Protocol (MCP) server that enables controlling PyADM1ODE with LLMs (like Claude or ChatGPT).  
+- **[PyADM1ODE_estimate](https://github.com/dgaida/PyADM1ODE_estimate)**: Tools for real-time estimation of state variables and parameters.  
