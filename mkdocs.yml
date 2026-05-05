@@ -48,6 +48,38 @@ plugins:
           default: true
         - locale: en
           name: English
+          nav_translations:
+            Erste Schritte: Getting Started
+            Handbuch: User Guide
+            Modell & Theorie: Model & Theory
+            Beispiele: Examples
+            Entwicklung: Development
+            API-Referenz: API Reference
+            Changelog: Changelog
+            Installation: Installation
+            Schnellstart: Quickstart
+            Komponenten: Components
+            Übersicht: Overview
+            Biologisch: Biological
+            Energie: Energy
+            Fütterung: Feeding
+            Mechanisch: Mechanical
+            Sensoren: Sensors
+            Substrate: Substrates
+            Anwendungen: Applications
+            Fortgeschrittene Funktionen: Advanced Features
+            Fehlerbehebung: Troubleshooting
+            ADM1-Implementierung: ADM1 Implementation
+            Architektur: Architecture
+            Validierung: Validation
+            Referenzen: References
+            Basis-Fermenter: Basic Digester
+            Zweistufige Anlage: Two-Stage Plant
+            Parallele Simulation: Parallel Simulation
+            Styleguide: Style Guide
+            Metriken: Metrics
+            Konfigurator: Configurator
+            Simulation: Simulation
   - mkdocstrings:
       handlers:
         python:
@@ -88,10 +120,10 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Handbuch:
+  - Erste Schritte:
       - Installation: user_guide/installation.md
       - Schnellstart: user_guide/quickstart.md
-      - ADM1-Implementierung: user_guide/adm1_implementation.md
+  - Handbuch:
       - Komponenten:
           - Übersicht: user_guide/components/index.md
           - Biologisch: user_guide/components/biological.md
@@ -101,11 +133,13 @@ nav:
           - Sensoren: user_guide/components/sensors.md
       - Substrate: user_guide/substrates.md
       - Anwendungen: user_guide/applications.md
+      - Fortgeschrittene Funktionen: user_guide/advanced_features.md
+      - Fehlerbehebung: user_guide/troubleshooting.md
+  - Modell & Theorie:
+      - ADM1-Implementierung: user_guide/adm1_implementation.md
+      - Architektur: architecture/index.md
       - Validierung: user_guide/validation.md
       - Referenzen: user_guide/references.md
-      - Fortgeschrittene Funktionen: user_guide/advanced_features.md
-      - Architektur: architecture/index.md
-      - Fehlerbehebung: user_guide/troubleshooting.md
   - Beispiele:
       - Basis-Fermenter: examples/basic_digester.md
       - Zweistufige Anlage: examples/two_stage_plant.md
