@@ -24,4 +24,4 @@ Aktuelle Abdeckung: **98.1%** (Ziel: 95%)
 
 ## Wartung
 
-Bitte beachten Sie die [Haupt-README](../../README.md) für die aktuelle Version und den Wartungsstatus.
+Bitte beachten Sie die [Haupt-README](../index.md) für die aktuelle Version und den Wartungsstatus.

@@ -101,6 +101,8 @@ nav:
           - Sensoren: user_guide/components/sensors.md
       - Substrate: user_guide/substrates.md
       - Anwendungen: user_guide/applications.md
+      - Validierung: user_guide/validation.md
+      - Referenzen: user_guide/references.md
       - Fortgeschrittene Funktionen: user_guide/advanced_features.md
       - Architektur: architecture/index.md
       - Fehlerbehebung: user_guide/troubleshooting.md

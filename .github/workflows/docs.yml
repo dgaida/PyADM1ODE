@@ -46,6 +46,11 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |
           git-cliff --output CHANGELOG.md
+          for lang in en de; do
+            if [ -d "docs/$lang" ]; then
+              cp CHANGELOG.md "docs/$lang/CHANGELOG.md"
+            fi
+          done
 
       - name: Configure Git
         run: |
