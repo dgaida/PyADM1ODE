@@ -1197,10 +1197,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#comparison-with-simba" class="md-nav__link">
+  <a href="#reference-simulator" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Comparison with SIMBA
+        Reference simulator
       
     </span>
   </a>
@@ -1208,10 +1208,60 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#comparison-with-adm1f" class="md-nav__link">
+  <a href="#validation-scenarios" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Comparison with ADM1F
+        Validation scenarios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation scenarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#30-day-single-substrate-run-swine-manure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30-day single-substrate run (swine manure)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#150-day-co-digestion-run-maize-silage-swine-manure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        150-day co-digestion run (maize silage + swine manure)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#600-day-co-digestion-run-with-substrate-switch-maize-silage-cattle-manure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        600-day co-digestion run with substrate switch (maize silage + cattle manure)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#headline-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Headline results
       
     </span>
   </a>
@@ -1219,10 +1269,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#validation-with-real-data" class="md-nav__link">
+  <a href="#conclusion" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Validation with Real Data
+        Conclusion
       
     </span>
   </a>
@@ -1874,10 +1924,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#comparison-with-simba" class="md-nav__link">
+  <a href="#reference-simulator" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Comparison with SIMBA
+        Reference simulator
       
     </span>
   </a>
@@ -1885,10 +1935,60 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#comparison-with-adm1f" class="md-nav__link">
+  <a href="#validation-scenarios" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Comparison with ADM1F
+        Validation scenarios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation scenarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#30-day-single-substrate-run-swine-manure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30-day single-substrate run (swine manure)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#150-day-co-digestion-run-maize-silage-swine-manure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        150-day co-digestion run (maize silage + swine manure)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#600-day-co-digestion-run-with-substrate-switch-maize-silage-cattle-manure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        600-day co-digestion run with substrate switch (maize silage + cattle manure)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#headline-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Headline results
       
     </span>
   </a>
@@ -1896,10 +1996,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#validation-with-real-data" class="md-nav__link">
+  <a href="#conclusion" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Validation with Real Data
+        Conclusion
       
     </span>
   </a>
@@ -1927,18 +2027,116 @@
 
 
 <h1 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h1>
-<p>The framework has been validated against several reference models and real-world data:</p>
+<p>PyADM1ODE has been validated against the reference simulator <strong>SIMBA# biogas 4.2</strong>
+(ifak e.V. Magdeburg) and against measurement data from real agricultural biogas
+plants. This page summarises the validation strategy and the headline results.</p>
+<h2 id="reference-simulator">Reference simulator<a class="headerlink" href="#reference-simulator" title="Permanent link">&para;</a></h2>
+<p>SIMBA# biogas 4.2 is the de-facto industry reference for the ADM1da agricultural
+extension. The validation runs use SIMBA#'s ADM1da implementation (the kinetic
+acid-base variant, <em>not</em> ADM1daph) with identical reactor geometry, temperature,
+<span class="arithmatex">\(k_L a\)</span> value, substrate composition, and initial state. SIMBA# CSV exports
+provide the reference state trajectories.</p>
+<h2 id="validation-scenarios">Validation scenarios<a class="headerlink" href="#validation-scenarios" title="Permanent link">&para;</a></h2>
+<h3 id="30-day-single-substrate-run-swine-manure">30-day single-substrate run (swine manure)<a class="headerlink" href="#30-day-single-substrate-run-swine-manure" title="Permanent link">&para;</a></h3>
+<p>20 m³/d swine manure, <span class="arithmatex">\(V_{liq} = 1050\,\text{m}^3\)</span>, <span class="arithmatex">\(V_{gas} = 150\,\text{m}^3\)</span>,
+<span class="arithmatex">\(T = 42\,°\text{C}\)</span>. Used to verify the basic process kinetics and the
+initial-state extraction logic.</p>
+<h3 id="150-day-co-digestion-run-maize-silage-swine-manure">150-day co-digestion run (maize silage + swine manure)<a class="headerlink" href="#150-day-co-digestion-run-maize-silage-swine-manure" title="Permanent link">&para;</a></h3>
+<p>11.4 m³/d maize silage + 6.1 m³/d swine manure, same reactor geometry.
+Validates the multi-substrate blending logic and the <code>simba_q_convention</code>
+volumetric correction.</p>
+<h3 id="600-day-co-digestion-run-with-substrate-switch-maize-silage-cattle-manure">600-day co-digestion run with substrate switch (maize silage + cattle manure)<a class="headerlink" href="#600-day-co-digestion-run-with-substrate-switch-maize-silage-cattle-manure" title="Permanent link">&para;</a></h3>
+<p>The most comprehensive scenario:</p>
 <ul>
-<li><strong>SIMBA#</strong>: Commercial biogas simulation software (ifak e.V.).  </li>
-<li><strong><a href="https://github.com/lanl/ADM1F">ADM1F</a></strong>: LANL's Fortran ADM1 implementation.  </li>
-<li><strong>Real plant data</strong>: Multiple agricultural biogas plants.  </li>
+<li><strong>Phase 1</strong> (0–300 d): 11.4 m³/d maize silage + 6.1 m³/d cattle manure.</li>
+<li><strong>Phase 2</strong> (300–600 d): 10.0 m³/d maize silage + 8.0 m³/d cattle manure.</li>
 </ul>
-<h2 id="comparison-with-simba">Comparison with SIMBA<a class="headerlink" href="#comparison-with-simba" title="Permanent link">&para;</a></h2>
-<p>The implementation of the ADM1da model has been extensively compared with SIMBA# to ensure the correctness of stoichiometry, kinetics, and pH calculation.</p>
-<h2 id="comparison-with-adm1f">Comparison with ADM1F<a class="headerlink" href="#comparison-with-adm1f" title="Permanent link">&para;</a></h2>
-<p>The core ADM1 code was validated against the ADM1F implementation to confirm the mathematical consistency of the ODE solvers and process rates.</p>
-<h2 id="validation-with-real-data">Validation with Real Data<a class="headerlink" href="#validation-with-real-data" title="Permanent link">&para;</a></h2>
-<p>PyADM1ODE is continuously validated with data from real plant operations, particularly regarding gas production and substrate degradation rates under practical conditions.</p>
+<p>The dynamic sludge volume is enabled (<code>dynamic_volume=True</code>,
+<code>outflow_time_constant=0.05 d</code>) so that <span class="arithmatex">\(V_{liq}\)</span> tracks SIMBA#'s essentially-
+instantaneous overflow weir within ~1 m³ of the setpoint.</p>
+<h2 id="headline-results">Headline results<a class="headerlink" href="#headline-results" title="Permanent link">&para;</a></h2>
+<p>At the end of each phase (t = 300 d and t = 600 d snapshots):</p>
+<table>
+<thead>
+<tr>
+<th>Quantity</th>
+<th>Tolerance</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(Q_{gas},\,Q_{CH_4},\,Q_{CO_2}\)</span></td>
+<td>1–3 %</td>
+<td>✓ matches</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(pH\)</span></td>
+<td>within 0.01 units</td>
+<td>✓ matches</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(HRT\)</span></td>
+<td>within 0.2 % (via dynamic sludge-volume balance)</td>
+<td>✓ matches</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(OLR\)</span></td>
+<td>within 3 %</td>
+<td>✓ matches</td>
+</tr>
+<tr>
+<td>All seven biomass populations <span class="arithmatex">\(X_*\)</span></td>
+<td>1–4 %</td>
+<td>✓ matches</td>
+</tr>
+<tr>
+<td>All particulate substrate pools (<span class="arithmatex">\(X_{PS}, X_{PF}, X_S\)</span>)</td>
+<td>1–4 %</td>
+<td>✓ matches</td>
+</tr>
+<tr>
+<td>Soluble substrates <span class="arithmatex">\(S_{su},\,S_{aa},\,S_{fa}\)</span></td>
+<td>within 1 %</td>
+<td>✓ matches</td>
+</tr>
+<tr>
+<td>VFA species <span class="arithmatex">\(S_{va},\,S_{bu},\,S_{pro}\)</span> (and ions)</td>
+<td>within 1 %</td>
+<td>✓ matches</td>
+</tr>
+<tr>
+<td>Substrate-switch transient at <span class="arithmatex">\(t = 300\,\text{d}\)</span></td>
+<td>same characteristic timescale</td>
+<td>✓ matches</td>
+</tr>
+</tbody>
+</table>
+<p>Two residual offsets persist at the validation operating point:</p>
+<ul>
+<li><strong><span class="arithmatex">\(S_{ac}\)</span> (and aggregate VFA) is +19–21 % higher</strong> than SIMBA#. This is a
+  saturation-amplification artefact: at <span class="arithmatex">\(S_{ac} \gg K_{S,ac} = 0.15\)</span> the
+  acetoclastic Monod kinetics are saturated and the acetate concentration is
+  set by the slow dilution channel rather than by Monod feedback. A small
+  upstream input-side discrepancy (~1.1 % in the effective <span class="arithmatex">\(Q\)</span>, traced to a
+  density-convention difference for maize silage) is amplified by a factor of
+  ~20 into the observed S_ac offset. Under non-saturated operating conditions
+  the amplifier disappears.</li>
+<li><strong>TAC is −6 %</strong>, traceable to the same biomass excess: 2–3 % more biomass
+  sequesters ~0.013 kmol C/m³ of inorganic carbon inside the biomass
+  particulates, reducing the dissolved <span class="arithmatex">\(S_{HCO_3^-}\)</span> pool that dominates the TAC
+  formula.</li>
+</ul>
+<p>Both offsets are stable across the substrate switch at t = 300 d, confirming
+they are steady-state characteristics rather than divergent integration errors.</p>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
+<p>PyADM1ODE is considered validated as a drop-in replacement for SIMBA# biogas 4.2
+in gas-yield forecasting, OLR and HRT analysis, and pH-based monitoring. The
+two residuals on the acetate pool and TAC are documented and traceable to the
+known density-convention difference between the two simulators.</p>
+<p>A full report of the 600-day cattle-manure comparison, including all themed
+time-series plots and the snapshot tables, is available in the
+<code>Report/</code> directory of the repository.</p>
 
 
 
@@ -2031,6 +2229,12 @@
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../assets/mathjax-config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>
