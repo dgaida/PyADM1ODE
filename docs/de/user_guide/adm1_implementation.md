@@ -9,9 +9,11 @@ Adaption des ursprünglichen ADM1 (Batstone et al. 2002, IWA Task Group). Im
 Vergleich zur klassischen Formulierung enthält dieses Modell eine
 **Sub-Fraktionierung der Desintegration**, **temperaturabhängige Kinetiken**
 sowie **modifizierte Inhibitionskinetiken** für agrarische Co-Vergärung. Die
-Umsetzung folgt der Referenz `adm1da.asm` von SIMBA# biogas 4.2 bitgenau;
-Abweichungen vom SIMBA#-Tutorial (PDF), wenn das PDF und die `.asm`-Datei
-unterschiedliche Werte angeben, werden auf dieser Seite explizit gekennzeichnet.
+Umsetzung reproduziert das Referenzverhalten des SIMBA#-Biogas-Reaktormoduls
+quantitativ (siehe die Validierungs-Seite). Wo die veröffentlichte
+ADM1da-Literatur bei einer konkreten stöchiometrischen oder kinetischen Wahl
+mehrdeutig ist, wird die in PyADM1ODE getroffene Konvention auf dieser Seite
+explizit angegeben.
 
 ## ADM1 als reines ODE-System
 
@@ -68,7 +70,7 @@ $X_c$:
 ```text
                     Substratzulauf
                          │
-       ┌─────────────────┼─────────────────┐
+       ┌───────────────────┼─────────────────┐
        │                 │                 │
    X_PS_ch/pr/li     X_PF_ch/pr/li      X_I (inert)
    (slow pool)       (fast pool)
@@ -101,9 +103,10 @@ langsamen Pool fällt — ohne Modellumbau.
 
 Wenn eine Biomasse-Population $X_i$ zerfällt, wird die zugehörige COD in den
 **hydrolisierbaren** Pool $X_S$ und in den **inerten** Pool $X_I$ umgeleitet —
-**nicht** in den langsamen Desintegrationspool $X_{PS}$. Das deckt sich mit
-den asm-Prozessen p13–p19 in `adm1da.asm`. Die COD-basierten Routing-Anteile
-lauten
+**nicht** in den langsamen Desintegrationspool $X_{PS}$. Dies folgt der
+Biomasse-Zerfallsstöchiometrie von ADM1da (Schlattmann 2011), bei der alle
+sieben Biomasse-Populationen in dieselbe Kombination aus hydrolisierbarem
+und inertem Pool zerfallen. Die COD-basierten Routing-Anteile lauten
 
 $$
 f_{CH\_XB} = \frac{f_{BM,CH} \cdot M_{Xch}}{M_{XB}}
@@ -150,27 +153,29 @@ Raten angewandt (`ADMParams.apply_temperature_corrections`) und im internen
 ## Modifizierte Inhibitionskinetiken
 
 Gegenüber dem Standard-ADM1 weist das ADM1da-Modell folgende Anpassungen auf —
-alle in `ADM1.ADM_ODE` umgesetzt und aus den asm-Prozessen p5–p12 abgeleitet:
+alle in `ADM1.ADM_ODE` umgesetzt und folgen den ADM1da-Aufnahme-Prozessraten
+(Schlattmann 2011), wobei die NH₃-Inhibitionsformen aus Siegrist et al. (2002)
+übernommen sind:
 
 | Inhibition | Standard-ADM1 | ADM1da (diese Implementierung) |
 | --- | --- | --- |
 | pH-Inhibition $X_{fa}/X_{c4}/X_{pro}$ | Hill, $n=1$ | Hill, $n=2$ (steilerer Cut-Off) |
 | pH-Inhibition $X_{ac}$ | Hill, $n=1$ | Hill, $n=3$ |
-| pH-Inhibition $X_{h2}$ | Hill, $n=1$ | Hill, $n=3$ (asm-Prozess p12) |
+| pH-Inhibition $X_{h2}$ | Hill, $n=1$ | Hill, $n=3$ |
 | N-Limitation | $S_{NH4}$ allein | $S_{IN} = S_{NH4} + S_{NH3}$ |
 | $\text{NH}_3$-Inhibition $X_{ac}$ | linear in $S_{NH3}$ | quadratischer Hill: $K_I^2/(K_I^2 + S_{NH3}^2)$, T-korrigiert mit $\theta=0{,}086$ |
 | $\text{NH}_3$-Inhibition $X_{pro}$ | nicht enthalten | quadratischer Hill mit eigenem $K_{I,nh3,pro}$, T-korrigiert mit $\theta=0{,}061$ |
-| Undissoziiertes Propionat $X_{pro}$ | nicht enthalten | $K_{IH,pro}/(K_{IH,pro} + S_{pro} - S_{pro^-})$ |
-| Undissoziiertes Acetat $X_{ac}$ | nicht enthalten | $K_{IH,ac}/(K_{IH,ac} + S_{ac} - S_{ac^-})$ |
-| $\text{CO}_2$-Limitation $X_{h2}$ | nicht enthalten | quadratische Hill-Sättigung: $S_{CO2}^2/(K_S^2 + S_{CO2}^2)$ (asm p12) |
+| Undissoziiertes Propionat $X_{pro}$ | nicht enthalten | $K_{IH,pro}/(K_{IH,pro} + S_{pro} - S_{pro^-})$ (Fukuzaki et al. 1990) |
+| Undissoziiertes Acetat $X_{ac}$ | nicht enthalten | $K_{IH,ac}/(K_{IH,ac} + S_{ac} - S_{ac^-})$ (Xiao et al. 2013) |
+| $\text{CO}_2$-Limitation $X_{h2}$ | nicht enthalten | quadratische Hill-Sättigung: $S_{CO2}^2/(K_S^2 + S_{CO2}^2)$ |
 
-!!! note "Tutorial vs. Implementierung"
-    Das SIMBA#-Tutorial (PDF, §7.1–§7.3) listet zusätzlich eine Inhibition
-    durch undissoziierte Säuren auf $X_{fa}$ und $X_{c4}$ auf. Die
-    tatsächlichen asm-Prozesse p7/p8/p9 wenden diese Inhibition **nicht** an —
-    nur pH-, N-Limitation und H₂-Inhibition. PyADM1ODE folgt der `.asm`-Datei,
-    nicht dem PDF, da die `.asm`-Datei das ist, was SIMBA# tatsächlich
-    ausführt.
+!!! note "Anwendungsbereich der Inhibition"
+    In manchen Beschreibungen der ADM1da-Kinetik wird zusätzlich eine
+    Inhibition durch Acetat bzw. undissoziierte Säuren auf $X_{fa}$ und
+    $X_{c4}$ aufgeführt. Die Referenzimplementierung und PyADM1ODE wenden
+    diese Terme nur auf $X_{pro}$ und $X_{ac}$ an, wo sie experimentell
+    gut belegt sind (Fukuzaki et al. 1990, Xiao et al. 2013); $X_{fa}$ und
+    $X_{c4}$ werden nur durch pH, N-Limitation und gelöstes H₂ inhibiert.
 
 Diese Erweiterungen reproduzieren das in landwirtschaftlichen Anlagen typische
 Verhalten: schärferer pH-Abfall bei Säureakkumulation, ausgeprägtere
@@ -211,8 +216,8 @@ r_{F,gas} = k_L a_F \cdot \left( S_F - \frac{p_F}{K_H(T)\,R\,T} \right)
 \cdot \frac{V_{liq}}{V_{gas}}
 $$
 
-mit einer temperaturabhängigen Henry-Konstante gemäß SIMBA#-Tutorial §9 /
-asm-Parametern transferiert:
+mit einer van't Hoff-Temperaturkorrektur der Henry-Konstante
+(Schlattmann 2011 / Batstone et al. 2002 Enthalpien) transferiert:
 
 $$
 H_F(T) = H_F(T_{ref}) \cdot
@@ -235,7 +240,8 @@ gelöst.
 
 Da ein erheblicher Anteil der Substrat-COD den Reaktor als Gas verlässt, ist
 das Schlammvolumen nicht erhalten. Die dynamische Schlammvolumenbilanz folgt
-dem SIMBA#-Tutorial §1.3–§1.4 (Ansatz 2):
+der biochemisch-ratenbasierten Variante ("Ansatz 2") des ADM1da-Reaktormodells
+(Schlattmann 2011):
 
 $$
 \frac{dV_S}{dt} = \dot{q}_{S,in} - \dot{q}_{S,out} - \dot{q}_{S,loss},
@@ -244,7 +250,7 @@ $$
 $$
 
 Die hydraulische Verweilzeit folgt einer Verzögerung erster Ordnung
-(Tutorial §8.11):
+(Schlattmann 2011):
 
 $$
 \frac{dHRT}{dt} + HRT \cdot \frac{\dot{q}_{S,in}}{V_S} = 1,
@@ -304,9 +310,9 @@ Zulaufstrom (37 flüssige Zustandsspalten + Q):
 4. **Dissoziation** beim Substrat-pH: ionisierte VFA, $\text{HCO}_3^-$,
    $\text{NH}_3$.
 5. **Ladungsbilanz** für die Ionen. Konventionsgemäß wird $S_{cation}$ für
-   jeden Substrattyp auf null gesetzt (gemäß SIMBA#-Tutorial §5.7.3–§5.7.5),
-   und $S_{anion}$ ergibt sich aus der Ladungsbilanz — wobei es für netto-
-   kationische Substrate auch negativ werden darf.
+   jeden Substrattyp auf null gesetzt (gemäß der ADM1da-Substrat­charakterisierung,
+   Schlattmann 2011), und $S_{anion}$ ergibt sich aus der Ladungsbilanz —
+   wobei es für nettokationische Substrate auch negativ werden darf.
 
 ### Volumetrische ADM1da-Konvention für Q
 
@@ -333,8 +339,8 @@ akzeptiert eine beliebig lange Liste von XML-IDs.
 
 ## Messgrößen
 
-PyADM1ODE liefert die gleichen Messgrößen wie SIMBA# (Tutorial §5.3.7) zur
-Anlagenüberwachung.
+PyADM1ODE liefert die standardmäßigen ADM1da-Messgrößen (Schlattmann 2011)
+für die Anlagenüberwachung.
 
 ### Flüchtige Fettsäuren (VFA)
 
@@ -364,25 +370,42 @@ $$
 $$
 
 !!! note "Vorfaktor 50 vs 100"
-    Das SIMBA#-Tutorial (PDF) dokumentiert den Vorfaktor als
-    $f_{M,MOL,CaCO_3} = 100\,\text{kg/kmol}$ (die Molmasse), aber die
-    tatsächliche `adm1da.asm`-Umsetzung verwendet **50 kg/keq** (das
-    Äquivalent­gewicht, da 1 mol CaCO₃ zwei H⁺-Äquivalente trägt). PyADM1ODE
-    folgt der `.asm`-Datei (Vorfaktor 50), was mit dem numerischen Output
-    von SIMBA# übereinstimmt.
+    In manchen Darstellungen der TAC-Formel wird der Vorfaktor als Molmasse
+    von CaCO₃ (100 kg/kmol) angegeben. Der physikalisch korrekte Wert ist
+    das **Äquivalentgewicht 50 kg/keq**, da ein Mol CaCO₃ zwei
+    H⁺-Äquivalente säureneutralisierende Kapazität trägt — die übliche
+    Alkalinitätskonvention. PyADM1ODE verwendet den Äquivalentgewichts­
+    vorfaktor, was mit dem Referenz-Output des SIMBA#-Reaktormoduls
+    übereinstimmt.
 
 ## Mathematische Grundlage
 
 Die Implementierung basiert auf:
 
-- **Schlattmann, M. (2011)**: ADM1da — Beschreibung im *SIMBA#-biogas-Tutorial
-  4.2*, ifak e.V. Magdeburg.
+- **Schlattmann, M. (2011)**: *Weiterentwicklung des Anaerobic Digestion
+  Model No. 1 (ADM1) zur Anwendung auf landwirtschaftliche Substrate.*
+  Dissertation, TU München. (Quelle der ADM1da-Sub-Fraktionierung, des
+  Biomasse-Zerfalls-Routings, der Schlammvolumenbilanz und der Weender-
+  basierten Substratcharakterisierung.)
 - **Batstone, D. J. et al. (2002)**: *Anaerobic Digestion Model No. 1 (ADM1)*.
-  IWA Scientific and Technical Report No. 13.
+  IWA Scientific and Technical Report No. 13. (Stöchiometrie, Kinetik und
+  Säure-Base- / Henry-Konstanten der Basisform.)
 - **Siegrist, H., Vogt, D., Garcia-Heras, J. L., Gujer, W. (2002)**:
   Mathematical model for meso- and thermophilic anaerobic sewage sludge
   digestion. *Environmental Science & Technology* **36**, 1113–1123.
-  (Quelle der ADM1da-NH₃-Inhibitions-Formulierungen.)
+  (Quelle der ADM1da-NH₃-Inhibitionsformen und der temperaturabhängigen
+  Korrekturexponenten.)
+- **Fukuzaki, S., Nishio, N., Shobayashi, M., Nagai, S. (1990)**: Inhibition
+  of the fermentation of propionate to methane by hydrogen, acetate, and
+  propionate. *Applied and Environmental Microbiology* **56(3)**, 719–723.
+  (Inhibitionskonstante für undissoziiertes Propionat auf $X_{pro}$.)
+- **Xiao, K. et al. (2013)**: Acetic acid inhibition on methanogens in a
+  two-phase anaerobic process. *Biochemical Engineering Journal* **75**,
+  1–7. (Inhibitionskonstante für undissoziiertes Acetat auf $X_{ac}$.)
+- **Wett, B., Eladawy, A., Ogurek, M. (2006)**: Description of nitrogen
+  incorporation and release in anaerobic digestion modelling. *Water
+  Science & Technology* **54(4)**, 67–76. (Fraktionsbasierte
+  Biomasse-Zerfallsprodukte.)
 - **Gaida, D. (2014)**: *Dynamic real-time substrate feed optimization of
   anaerobic co-digestion plants*. PhD thesis, Leiden University. (Vorbild
   für die volumetrische Mischungslogik.)

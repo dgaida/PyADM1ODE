@@ -34,7 +34,8 @@ theme:
     - search.highlight
     - content.code.copy
     - content.code.annotate
-    - navigation.instant
+    # navigation.instant disabled — incompatible with mkdocs-static-i18n's
+    # language-switcher contextual link (warning during build).
     - navigation.tracking
     - content.tabs.link
 

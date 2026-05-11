@@ -13,6 +13,12 @@ on:
 permissions:
   contents: write
 
+# Serialise docs deployments so two pushes to master in quick succession
+# don't both try to update gh-pages and race each other.
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   docs:
     runs-on: ubuntu-latest
@@ -60,13 +66,32 @@ jobs:
       - name: Deploy Versioned Documentation
         if: github.event_name == 'push'
         run: |
+          set -euo pipefail
+
+          # Retry wrapper: `mike` pushes to gh-pages, which can race with other
+          # workflows that also touch gh-pages.  If the push is rejected
+          # (remote ahead), fetch the latest gh-pages, rebase mike's local
+          # commit on top, and try again — up to 5 attempts.
+          retry_mike () {
+            local attempt
+            for attempt in 1 2 3 4 5; do
+              if "$@"; then
+                return 0
+              fi
+              echo "mike attempt $attempt failed; refreshing gh-pages and retrying ..."
+              git fetch origin gh-pages || true
+              sleep $((5 * attempt))
+            done
+            return 1
+          }
+
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/}
-            mike deploy --push --update-aliases $VERSION latest
+            retry_mike mike deploy --push --update-aliases "$VERSION" latest
           elif [[ $GITHUB_REF == refs/heads/master ]]; then
-            mike deploy --push --update-aliases dev latest
+            retry_mike mike deploy --push --update-aliases dev latest
           fi
-          mike set-default latest --push
+          retry_mike mike set-default latest --push
 
       - name: Build Documentation (PR check)
         if: github.event_name == 'pull_request'

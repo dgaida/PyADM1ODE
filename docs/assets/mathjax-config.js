@@ -15,9 +15,14 @@ window.MathJax = {
   },
 };
 
-// Re-typeset math on every Material-for-MkDocs instant-navigation page load.
-document$.subscribe(() => {
-  if (typeof MathJax !== "undefined" && MathJax.typesetPromise) {
-    MathJax.typesetPromise();
-  }
-});
+// Re-typeset math on every Material-for-MkDocs page load.  With
+// navigation.instant disabled, MathJax auto-typesets on first load anyway,
+// but this hook keeps things consistent if instant navigation is re-enabled
+// in the future.  Guard against `document$` not being exposed.
+if (typeof document$ !== "undefined" && document$.subscribe) {
+  document$.subscribe(() => {
+    if (typeof MathJax !== "undefined" && MathJax.typesetPromise) {
+      MathJax.typesetPromise();
+    }
+  });
+}
