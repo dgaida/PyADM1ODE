@@ -2299,9 +2299,11 @@ Adaption des ursprünglichen ADM1 (Batstone et al. 2002, IWA Task Group). Im
 Vergleich zur klassischen Formulierung enthält dieses Modell eine
 <strong>Sub-Fraktionierung der Desintegration</strong>, <strong>temperaturabhängige Kinetiken</strong>
 sowie <strong>modifizierte Inhibitionskinetiken</strong> für agrarische Co-Vergärung. Die
-Umsetzung folgt der Referenz <code>adm1da.asm</code> von SIMBA# biogas 4.2 bitgenau;
-Abweichungen vom SIMBA#-Tutorial (PDF), wenn das PDF und die <code>.asm</code>-Datei
-unterschiedliche Werte angeben, werden auf dieser Seite explizit gekennzeichnet.</p>
+Umsetzung reproduziert das Referenzverhalten des SIMBA#-Biogas-Reaktormoduls
+quantitativ (siehe die Validierungs-Seite). Wo die veröffentlichte
+ADM1da-Literatur bei einer konkreten stöchiometrischen oder kinetischen Wahl
+mehrdeutig ist, wird die in PyADM1ODE getroffene Konvention auf dieser Seite
+explizit angegeben.</p>
 <h2 id="adm1-als-reines-ode-system">ADM1 als reines ODE-System<a class="headerlink" href="#adm1-als-reines-ode-system" title="Permanent link">&para;</a></h2>
 <p>Im Gegensatz zum Standard-ADM1, das oft als System differentiell-algebraischer
 Gleichungen (DAE) formuliert wird, ist diese Implementierung ein <strong>reines
@@ -2382,7 +2384,7 @@ thermodynamischen Säure-Base-Konstanten bleibt.</p>
 <span class="arithmatex">\(X_c\)</span>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                    Substratzulauf
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                         │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>       ┌─────────────────┼─────────────────┐
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>       ┌───────────────────┼─────────────────┐
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>       │                 │                 │
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>   X_PS_ch/pr/li     X_PF_ch/pr/li      X_I (inert)
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>   (slow pool)       (fast pool)
@@ -2433,9 +2435,10 @@ langsamen Pool fällt — ohne Modellumbau.</p>
 <h2 id="routing-der-biomasse-zerfallsprodukte">Routing der Biomasse-Zerfallsprodukte<a class="headerlink" href="#routing-der-biomasse-zerfallsprodukte" title="Permanent link">&para;</a></h2>
 <p>Wenn eine Biomasse-Population <span class="arithmatex">\(X_i\)</span> zerfällt, wird die zugehörige COD in den
 <strong>hydrolisierbaren</strong> Pool <span class="arithmatex">\(X_S\)</span> und in den <strong>inerten</strong> Pool <span class="arithmatex">\(X_I\)</span> umgeleitet —
-<strong>nicht</strong> in den langsamen Desintegrationspool <span class="arithmatex">\(X_{PS}\)</span>. Das deckt sich mit
-den asm-Prozessen p13–p19 in <code>adm1da.asm</code>. Die COD-basierten Routing-Anteile
-lauten</p>
+<strong>nicht</strong> in den langsamen Desintegrationspool <span class="arithmatex">\(X_{PS}\)</span>. Dies folgt der
+Biomasse-Zerfallsstöchiometrie von ADM1da (Schlattmann 2011), bei der alle
+sieben Biomasse-Populationen in dieselbe Kombination aus hydrolisierbarem
+und inertem Pool zerfallen. Die COD-basierten Routing-Anteile lauten</p>
 <div class="arithmatex">\[
 f_{CH\_XB} = \frac{f_{BM,CH} \cdot M_{Xch}}{M_{XB}}
 \approx 0{,}246, \quad
@@ -2498,7 +2501,9 @@ Raten angewandt (<code>ADMParams.apply_temperature_corrections</code>) und im in
 <code>_kinetic</code>-Dict zwischengespeichert.</p>
 <h2 id="modifizierte-inhibitionskinetiken">Modifizierte Inhibitionskinetiken<a class="headerlink" href="#modifizierte-inhibitionskinetiken" title="Permanent link">&para;</a></h2>
 <p>Gegenüber dem Standard-ADM1 weist das ADM1da-Modell folgende Anpassungen auf —
-alle in <code>ADM1.ADM_ODE</code> umgesetzt und aus den asm-Prozessen p5–p12 abgeleitet:</p>
+alle in <code>ADM1.ADM_ODE</code> umgesetzt und folgen den ADM1da-Aufnahme-Prozessraten
+(Schlattmann 2011), wobei die NH₃-Inhibitionsformen aus Siegrist et al. (2002)
+übernommen sind:</p>
 <table>
 <thead>
 <tr>
@@ -2521,7 +2526,7 @@ alle in <code>ADM1.ADM_ODE</code> umgesetzt und aus den asm-Prozessen p5–p12 a
 <tr>
 <td>pH-Inhibition <span class="arithmatex">\(X_{h2}\)</span></td>
 <td>Hill, <span class="arithmatex">\(n=1\)</span></td>
-<td>Hill, <span class="arithmatex">\(n=3\)</span> (asm-Prozess p12)</td>
+<td>Hill, <span class="arithmatex">\(n=3\)</span></td>
 </tr>
 <tr>
 <td>N-Limitation</td>
@@ -2541,28 +2546,28 @@ alle in <code>ADM1.ADM_ODE</code> umgesetzt und aus den asm-Prozessen p5–p12 a
 <tr>
 <td>Undissoziiertes Propionat <span class="arithmatex">\(X_{pro}\)</span></td>
 <td>nicht enthalten</td>
-<td><span class="arithmatex">\(K_{IH,pro}/(K_{IH,pro} + S_{pro} - S_{pro^-})\)</span></td>
+<td><span class="arithmatex">\(K_{IH,pro}/(K_{IH,pro} + S_{pro} - S_{pro^-})\)</span> (Fukuzaki et al. 1990)</td>
 </tr>
 <tr>
 <td>Undissoziiertes Acetat <span class="arithmatex">\(X_{ac}\)</span></td>
 <td>nicht enthalten</td>
-<td><span class="arithmatex">\(K_{IH,ac}/(K_{IH,ac} + S_{ac} - S_{ac^-})\)</span></td>
+<td><span class="arithmatex">\(K_{IH,ac}/(K_{IH,ac} + S_{ac} - S_{ac^-})\)</span> (Xiao et al. 2013)</td>
 </tr>
 <tr>
 <td><span class="arithmatex">\(\text{CO}_2\)</span>-Limitation <span class="arithmatex">\(X_{h2}\)</span></td>
 <td>nicht enthalten</td>
-<td>quadratische Hill-Sättigung: <span class="arithmatex">\(S_{CO2}^2/(K_S^2 + S_{CO2}^2)\)</span> (asm p12)</td>
+<td>quadratische Hill-Sättigung: <span class="arithmatex">\(S_{CO2}^2/(K_S^2 + S_{CO2}^2)\)</span></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
-<p class="admonition-title">Tutorial vs. Implementierung</p>
-<p>Das SIMBA#-Tutorial (PDF, §7.1–§7.3) listet zusätzlich eine Inhibition
-durch undissoziierte Säuren auf <span class="arithmatex">\(X_{fa}\)</span> und <span class="arithmatex">\(X_{c4}\)</span> auf. Die
-tatsächlichen asm-Prozesse p7/p8/p9 wenden diese Inhibition <strong>nicht</strong> an —
-nur pH-, N-Limitation und H₂-Inhibition. PyADM1ODE folgt der <code>.asm</code>-Datei,
-nicht dem PDF, da die <code>.asm</code>-Datei das ist, was SIMBA# tatsächlich
-ausführt.</p>
+<p class="admonition-title">Anwendungsbereich der Inhibition</p>
+<p>In manchen Beschreibungen der ADM1da-Kinetik wird zusätzlich eine
+Inhibition durch Acetat bzw. undissoziierte Säuren auf <span class="arithmatex">\(X_{fa}\)</span> und
+<span class="arithmatex">\(X_{c4}\)</span> aufgeführt. Die Referenzimplementierung und PyADM1ODE wenden
+diese Terme nur auf <span class="arithmatex">\(X_{pro}\)</span> und <span class="arithmatex">\(X_{ac}\)</span> an, wo sie experimentell
+gut belegt sind (Fukuzaki et al. 1990, Xiao et al. 2013); <span class="arithmatex">\(X_{fa}\)</span> und
+<span class="arithmatex">\(X_{c4}\)</span> werden nur durch pH, N-Limitation und gelöstes H₂ inhibiert.</p>
 </div>
 <p>Diese Erweiterungen reproduzieren das in landwirtschaftlichen Anlagen typische
 Verhalten: schärferer pH-Abfall bei Säureakkumulation, ausgeprägtere
@@ -2594,8 +2599,8 @@ K_a(T) = K_a(298\,\text{K}) \cdot
 r_{F,gas} = k_L a_F \cdot \left( S_F - \frac{p_F}{K_H(T)\,R\,T} \right)
 \cdot \frac{V_{liq}}{V_{gas}}
 \]</div>
-<p>mit einer temperaturabhängigen Henry-Konstante gemäß SIMBA#-Tutorial §9 /
-asm-Parametern transferiert:</p>
+<p>mit einer van't Hoff-Temperaturkorrektur der Henry-Konstante
+(Schlattmann 2011 / Batstone et al. 2002 Enthalpien) transferiert:</p>
 <div class="arithmatex">\[
 H_F(T) = H_F(T_{ref}) \cdot
 \exp\left(-\frac{\Delta H^\circ_F}{R} \cdot
@@ -2643,14 +2648,15 @@ gelöst.</p>
 <h2 id="schlammvolumenbilanz-und-hrt">Schlammvolumenbilanz und HRT<a class="headerlink" href="#schlammvolumenbilanz-und-hrt" title="Permanent link">&para;</a></h2>
 <p>Da ein erheblicher Anteil der Substrat-COD den Reaktor als Gas verlässt, ist
 das Schlammvolumen nicht erhalten. Die dynamische Schlammvolumenbilanz folgt
-dem SIMBA#-Tutorial §1.3–§1.4 (Ansatz 2):</p>
+der biochemisch-ratenbasierten Variante ("Ansatz 2") des ADM1da-Reaktormodells
+(Schlattmann 2011):</p>
 <div class="arithmatex">\[
 \frac{dV_S}{dt} = \dot{q}_{S,in} - \dot{q}_{S,out} - \dot{q}_{S,loss},
 \quad
 \dot{q}_{S,loss} = V_S \cdot \sum_i r_{hyd,i} \cdot \frac{iM_i}{\rho_i}
 \]</div>
 <p>Die hydraulische Verweilzeit folgt einer Verzögerung erster Ordnung
-(Tutorial §8.11):</p>
+(Schlattmann 2011):</p>
 <div class="arithmatex">\[
 \frac{dHRT}{dt} + HRT \cdot \frac{\dot{q}_{S,in}}{V_S} = 1,
 \quad HRT_{ss} = \frac{V_S}{\dot{q}_{S,in}}
@@ -2700,9 +2706,9 @@ Zulaufstrom (37 flüssige Zustandsspalten + Q):</p>
 <li><strong>Dissoziation</strong> beim Substrat-pH: ionisierte VFA, <span class="arithmatex">\(\text{HCO}_3^-\)</span>,
    <span class="arithmatex">\(\text{NH}_3\)</span>.</li>
 <li><strong>Ladungsbilanz</strong> für die Ionen. Konventionsgemäß wird <span class="arithmatex">\(S_{cation}\)</span> für
-   jeden Substrattyp auf null gesetzt (gemäß SIMBA#-Tutorial §5.7.3–§5.7.5),
-   und <span class="arithmatex">\(S_{anion}\)</span> ergibt sich aus der Ladungsbilanz — wobei es für netto-
-   kationische Substrate auch negativ werden darf.</li>
+   jeden Substrattyp auf null gesetzt (gemäß der ADM1da-Substrat­charakterisierung,
+   Schlattmann 2011), und <span class="arithmatex">\(S_{anion}\)</span> ergibt sich aus der Ladungsbilanz —
+   wobei es für nettokationische Substrate auch negativ werden darf.</li>
 </ol>
 <h3 id="volumetrische-adm1da-konvention-fur-q">Volumetrische ADM1da-Konvention für Q<a class="headerlink" href="#volumetrische-adm1da-konvention-fur-q" title="Permanent link">&para;</a></h3>
 <p>Die Substrat-Volumenströme <span class="arithmatex">\(Q_i\)</span> werden standardmäßig als <strong>massenäquivalente
@@ -2722,8 +2728,8 @@ flussgewichtet gemischt (<code>Feedstock._blended_concentrations</code>). Die An
 gleichzeitig beschickter Substrate ist nicht begrenzt — <code>Feedstock</code>
 akzeptiert eine beliebig lange Liste von XML-IDs.</p>
 <h2 id="messgroen">Messgrößen<a class="headerlink" href="#messgroen" title="Permanent link">&para;</a></h2>
-<p>PyADM1ODE liefert die gleichen Messgrößen wie SIMBA# (Tutorial §5.3.7) zur
-Anlagenüberwachung.</p>
+<p>PyADM1ODE liefert die standardmäßigen ADM1da-Messgrößen (Schlattmann 2011)
+für die Anlagenüberwachung.</p>
 <h3 id="fluchtige-fettsauren-vfa">Flüchtige Fettsäuren (VFA)<a class="headerlink" href="#fluchtige-fettsauren-vfa" title="Permanent link">&para;</a></h3>
 <p>Der aggregierte VFA-Wert in g HAc/L ist das COD-gewichtete Essigsäure-Äquivalent
 der vier VFA-Spezies:</p>
@@ -2746,24 +2752,41 @@ pro VFA (va = 208, bu = 160, pro = 112, ac = 64 g COD/mol).</p>
 \]</div>
 <div class="admonition note">
 <p class="admonition-title">Vorfaktor 50 vs 100</p>
-<p>Das SIMBA#-Tutorial (PDF) dokumentiert den Vorfaktor als
-<span class="arithmatex">\(f_{M,MOL,CaCO_3} = 100\,\text{kg/kmol}\)</span> (die Molmasse), aber die
-tatsächliche <code>adm1da.asm</code>-Umsetzung verwendet <strong>50 kg/keq</strong> (das
-Äquivalent­gewicht, da 1 mol CaCO₃ zwei H⁺-Äquivalente trägt). PyADM1ODE
-folgt der <code>.asm</code>-Datei (Vorfaktor 50), was mit dem numerischen Output
-von SIMBA# übereinstimmt.</p>
+<p>In manchen Darstellungen der TAC-Formel wird der Vorfaktor als Molmasse
+von CaCO₃ (100 kg/kmol) angegeben. Der physikalisch korrekte Wert ist
+das <strong>Äquivalentgewicht 50 kg/keq</strong>, da ein Mol CaCO₃ zwei
+H⁺-Äquivalente säureneutralisierende Kapazität trägt — die übliche
+Alkalinitätskonvention. PyADM1ODE verwendet den Äquivalentgewichts­
+vorfaktor, was mit dem Referenz-Output des SIMBA#-Reaktormoduls
+übereinstimmt.</p>
 </div>
 <h2 id="mathematische-grundlage">Mathematische Grundlage<a class="headerlink" href="#mathematische-grundlage" title="Permanent link">&para;</a></h2>
 <p>Die Implementierung basiert auf:</p>
 <ul>
-<li><strong>Schlattmann, M. (2011)</strong>: ADM1da — Beschreibung im <em>SIMBA#-biogas-Tutorial
-  4.2</em>, ifak e.V. Magdeburg.</li>
+<li><strong>Schlattmann, M. (2011)</strong>: <em>Weiterentwicklung des Anaerobic Digestion
+  Model No. 1 (ADM1) zur Anwendung auf landwirtschaftliche Substrate.</em>
+  Dissertation, TU München. (Quelle der ADM1da-Sub-Fraktionierung, des
+  Biomasse-Zerfalls-Routings, der Schlammvolumenbilanz und der Weender-
+  basierten Substratcharakterisierung.)</li>
 <li><strong>Batstone, D. J. et al. (2002)</strong>: <em>Anaerobic Digestion Model No. 1 (ADM1)</em>.
-  IWA Scientific and Technical Report No. 13.</li>
+  IWA Scientific and Technical Report No. 13. (Stöchiometrie, Kinetik und
+  Säure-Base- / Henry-Konstanten der Basisform.)</li>
 <li><strong>Siegrist, H., Vogt, D., Garcia-Heras, J. L., Gujer, W. (2002)</strong>:
   Mathematical model for meso- and thermophilic anaerobic sewage sludge
   digestion. <em>Environmental Science &amp; Technology</em> <strong>36</strong>, 1113–1123.
-  (Quelle der ADM1da-NH₃-Inhibitions-Formulierungen.)</li>
+  (Quelle der ADM1da-NH₃-Inhibitionsformen und der temperaturabhängigen
+  Korrekturexponenten.)</li>
+<li><strong>Fukuzaki, S., Nishio, N., Shobayashi, M., Nagai, S. (1990)</strong>: Inhibition
+  of the fermentation of propionate to methane by hydrogen, acetate, and
+  propionate. <em>Applied and Environmental Microbiology</em> <strong>56(3)</strong>, 719–723.
+  (Inhibitionskonstante für undissoziiertes Propionat auf <span class="arithmatex">\(X_{pro}\)</span>.)</li>
+<li><strong>Xiao, K. et al. (2013)</strong>: Acetic acid inhibition on methanogens in a
+  two-phase anaerobic process. <em>Biochemical Engineering Journal</em> <strong>75</strong>,
+  1–7. (Inhibitionskonstante für undissoziiertes Acetat auf <span class="arithmatex">\(X_{ac}\)</span>.)</li>
+<li><strong>Wett, B., Eladawy, A., Ogurek, M. (2006)</strong>: Description of nitrogen
+  incorporation and release in anaerobic digestion modelling. <em>Water
+  Science &amp; Technology</em> <strong>54(4)</strong>, 67–76. (Fraktionsbasierte
+  Biomasse-Zerfallsprodukte.)</li>
 <li><strong>Gaida, D. (2014)</strong>: <em>Dynamic real-time substrate feed optimization of
   anaerobic co-digestion plants</em>. PhD thesis, Leiden University. (Vorbild
   für die volumetrische Mischungslogik.)</li>
@@ -2893,7 +2916,7 @@ Containern, Web-Notebooks (Colab) und CI-Pipelines problemlos.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "navigation.instant", "navigation.tracking", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "navigation.tracking", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
