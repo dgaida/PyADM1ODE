@@ -20,16 +20,16 @@ differential equations (ODE)**.
 
 ### Key Features
 
-1. **Kinetic acid-base equilibrium**: the ionised species (acetate, propionate,
+1. **Kinetic acid-base equilibrium**: the ionised species (acetate, propionate,  
    butyrate, valerate ions, $\text{HCO}_3^-$, $\text{NH}_3$) are carried as
    dynamic state variables with a very high reaction rate
    $k_{A,B} = 10^8\,\text{m}^3\,\text{kmol}^{-1}\,\text{d}^{-1}$. They therefore
    track the thermodynamic equilibrium essentially in real time, without an
-   algebraic solver having to be invoked inside the ODE step.
-2. **Kinetic gas-liquid transfer**: $\text{H}_2$, $\text{CH}_4$, $\text{CO}_2$
+   algebraic solver having to be invoked inside the ODE step.  
+2. **Kinetic gas-liquid transfer**: $\text{H}_2$, $\text{CH}_4$, $\text{CO}_2$  
    and $\text{NH}_3$ are transferred to the gas phase via $k_L a$ rates — no
-   algebraic Henry equilibrium constraint.
-3. **41 state variables**: the model carries 41 variables in five blocks:
+   algebraic Henry equilibrium constraint.  
+3. **41 state variables**: the model carries 41 variables in five blocks:  
 
    | Block | Indices | Count | Contents |
    | --- | --- | --- | --- |
@@ -45,9 +45,9 @@ The pH is determined at every evaluation step from the **charge balance** using
 a Newton–Raphson iteration:
 
 $$
-S_{cat} - S_{an} + (S_{NH4} - S_{NH3}) - S_{HCO_3^-} - \frac{S_{ac^-}}{64}
-- \frac{S_{pro^-}}{112} - \frac{S_{bu^-}}{160} - \frac{S_{va^-}}{208}
-+ S_{H^+} - \frac{K_w}{S_{H^+}} = 0
+S_{cat} - S_{an} + (S_{NH4} - S_{NH3}) - S_{HCO_3^-} - \frac{S_{ac^-}}{64}  
+- \frac{S_{pro^-}}{112} - \frac{S_{bu^-}}{160} - \frac{S_{va^-}}{208}  
++ S_{H^+} - \frac{K_w}{S_{H^+}} = 0  
 $$
 
 Since every contribution on the left-hand side is a state variable, this charge
@@ -286,16 +286,16 @@ Substrates are defined via common laboratory parameters and stored as
 class derives from it the full 38-column ADM1 inflow stream (37 liquid state
 columns + Q):
 
-1. **Fresh-matter density** $\rho_{FM}$ from the component densities
-   (specific-volume mixing rule).
-2. **Organic COD concentrations** $X_{ch}, X_{pr}, X_{li}$ in
+1. **Fresh-matter density** $\rho_{FM}$ from the component densities  
+   (specific-volume mixing rule).  
+2. **Organic COD concentrations** $X_{ch}, X_{pr}, X_{li}$ in  
    $\text{kg COD/m}^3$ via the COD conversion factors $M_{Xch}, M_{Xpr},
-   M_{Xli}$.
-3. **Routing into the sub-fractions** $X_{PS}/X_{PF}$ via $f_{sOTS}, f_{fOTS}$,
-   and $f_{OTSrf}$ (see the table above).
-4. **Dissociation** at the substrate pH: ionised VFAs, $\text{HCO}_3^-$,
-   $\text{NH}_3$.
-5. **Charge balance** for the ions. By convention $S_{cation}$ is set to zero
+   M_{Xli}$.  
+3. **Routing into the sub-fractions** $X_{PS}/X_{PF}$ via $f_{sOTS}, f_{fOTS}$,  
+   and $f_{OTSrf}$ (see the table above).  
+4. **Dissociation** at the substrate pH: ionised VFAs, $\text{HCO}_3^-$,  
+   $\text{NH}_3$.  
+5. **Charge balance** for the ions. By convention $S_{cation}$ is set to zero  
    for every substrate type (per SIMBA# tutorial §5.7.3–§5.7.5), and $S_{anion}$
    is computed from the charge balance — and is allowed to be negative for
    net-cationic substrates.
@@ -348,11 +348,11 @@ The pH 5 titration capacity (TAC, in g CaCO₃/L) is
 $$
 \text{TAC} = 50 \cdot \Bigl[
 \left(F_{NH_3} - K_{A,NH_4} \cdot
-\frac{F_{NH_4} + F_{NH_3}}{10^{-pH_5} + K_{A,NH_4}}\right)
-+ \left(F_{HCO_3} - K_{A,CO_2} \cdot
-\frac{F_{CO_2} + F_{HCO_3}}{10^{-pH_5} + K_{A,CO_2}}\right)
-+ \sum_{i = \text{va},\text{bu},\text{pro},\text{ac}} (\cdots)
-+ F_{AN} - F_{CAT} \Bigr]
+\frac{F_{NH_4} + F_{NH_3}}{10^{-pH_5} + K_{A,NH_4}}\right)  
++ \left(F_{HCO_3} - K_{A,CO_2} \cdot  
+\frac{F_{CO_2} + F_{HCO_3}}{10^{-pH_5} + K_{A,CO_2}}\right)  
++ \sum_{i = \text{va},\text{bu},\text{pro},\text{ac}} (\cdots)  
++ F_{AN} - F_{CAT} \Bigr]  
 $$
 
 !!! note "Prefactor 50 vs 100"
@@ -366,18 +366,18 @@ $$
 
 The implementation builds on:
 
-- **Schlattmann, M. (2011)**: ADM1da — described in *SIMBA# biogas Tutorial
-  4.2*, ifak e.V. Magdeburg.
-- **Batstone, D. J. et al. (2002)**: *Anaerobic Digestion Model No. 1 (ADM1)*.
-  IWA Scientific and Technical Report No. 13.
-- **Siegrist, H., Vogt, D., Garcia-Heras, J. L., Gujer, W. (2002)**: Mathematical
+- **Schlattmann, M. (2011)**: ADM1da — described in *SIMBA# biogas Tutorial  
+  4.2*, ifak e.V. Magdeburg.  
+- **Batstone, D. J. et al. (2002)**: *Anaerobic Digestion Model No. 1 (ADM1)*.  
+  IWA Scientific and Technical Report No. 13.  
+- **Siegrist, H., Vogt, D., Garcia-Heras, J. L., Gujer, W. (2002)**: Mathematical  
   model for meso- and thermophilic anaerobic sewage sludge digestion.
   *Environmental Science & Technology* **36**, 1113–1123. (Source of the
-  ADM1da NH₃ inhibition formulations.)
-- **Gaida, D. (2014)**: *Dynamic real-time substrate feed optimization of
+  ADM1da NH₃ inhibition formulations.)  
+- **Gaida, D. (2014)**: *Dynamic real-time substrate feed optimization of  
   anaerobic co-digestion plants*. PhD thesis, Leiden University.
-  (Template for the volumetric blending logic.)
-- **Koch, K. et al. (2010)**: *Biogas from grass silage – measurements and
+  (Template for the volumetric blending logic.)  
+- **Koch, K. et al. (2010)**: *Biogas from grass silage – measurements and  
   modeling with ADM1*. Bioresource Technology. (Calibration values for
   high-strength energy crops.)
 

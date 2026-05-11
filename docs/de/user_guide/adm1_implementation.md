@@ -21,17 +21,17 @@ System gewöhnlicher Differentialgleichungen (ODE)**.
 
 ### Hauptmerkmale
 
-1. **Kinetisches Säure-Base-Gleichgewicht**: Die ionisierten Spezies (Acetat-,
+1. **Kinetisches Säure-Base-Gleichgewicht**: Die ionisierten Spezies (Acetat-,  
    Propionat-, Butyrat-, Valerat-Ion, $\text{HCO}_3^-$, $\text{NH}_3$) werden
    als dynamische Zustandsvariablen mit einer sehr hohen Reaktionsrate
    $k_{A,B} = 10^8\,\text{m}^3\,\text{kmol}^{-1}\,\text{d}^{-1}$ geführt.
    Dadurch verfolgen sie das thermodynamische Gleichgewicht praktisch direkt,
    ohne dass innerhalb des ODE-Schritts ein algebraischer Solver aufgerufen
-   werden muss.
-2. **Kinetischer Gas-Flüssig-Transfer**: $\text{H}_2$, $\text{CH}_4$,
+   werden muss.  
+2. **Kinetischer Gas-Flüssig-Transfer**: $\text{H}_2$, $\text{CH}_4$,  
    $\text{CO}_2$ und $\text{NH}_3$ werden über $k_L a$-Raten in die Gasphase
-   überführt — keine algebraische Henry-Gleichgewichtsbedingung.
-3. **41 Zustandsvariablen**: Das Modell führt 41 Variablen in fünf Blöcken:
+   überführt — keine algebraische Henry-Gleichgewichtsbedingung.  
+3. **41 Zustandsvariablen**: Das Modell führt 41 Variablen in fünf Blöcken:  
 
    | Block | Indizes | Anzahl | Inhalt |
    | --- | --- | --- | --- |
@@ -47,9 +47,9 @@ Der pH-Wert wird in jedem Auswertungsschritt über die **Ladungsbilanz** und
 ein Newton–Raphson-Verfahren bestimmt:
 
 $$
-S_{cat} - S_{an} + (S_{NH4} - S_{NH3}) - S_{HCO_3^-} - \frac{S_{ac^-}}{64}
-- \frac{S_{pro^-}}{112} - \frac{S_{bu^-}}{160} - \frac{S_{va^-}}{208}
-+ S_{H^+} - \frac{K_w}{S_{H^+}} = 0
+S_{cat} - S_{an} + (S_{NH4} - S_{NH3}) - S_{HCO_3^-} - \frac{S_{ac^-}}{64}  
+- \frac{S_{pro^-}}{112} - \frac{S_{bu^-}}{160} - \frac{S_{va^-}}{208}  
++ S_{H^+} - \frac{K_w}{S_{H^+}} = 0  
 $$
 
 Da alle Beiträge zur linken Seite Zustandsvariablen sind, ist diese
@@ -294,16 +294,16 @@ Substrate werden über praxisübliche Laborparameter definiert und als
 `Feedstock`-Klasse berechnet daraus den vollständigen 38-spaltigen ADM1-
 Zulaufstrom (37 flüssige Zustandsspalten + Q):
 
-1. **Frischmasse-Dichte** $\rho_{FM}$ aus den Komponentendichten
-   (Mischungsregel auf spezifischem Volumen).
-2. **Organische COD-Konzentrationen** $X_{ch}, X_{pr}, X_{li}$ in
+1. **Frischmasse-Dichte** $\rho_{FM}$ aus den Komponentendichten  
+   (Mischungsregel auf spezifischem Volumen).  
+2. **Organische COD-Konzentrationen** $X_{ch}, X_{pr}, X_{li}$ in  
    $\text{kg COD/m}^3$ über die COD-Umrechnungsfaktoren $M_{Xch}, M_{Xpr},
-   M_{Xli}$.
-3. **Routing in die Sub-Fraktionen** $X_{PS}/X_{PF}$ via $f_{sOTS}, f_{fOTS}$
-   und $f_{OTSrf}$ (siehe Tabelle oben).
-4. **Dissoziation** beim Substrat-pH: ionisierte VFA, $\text{HCO}_3^-$,
-   $\text{NH}_3$.
-5. **Ladungsbilanz** für die Ionen. Konventionsgemäß wird $S_{cation}$ für
+   M_{Xli}$.  
+3. **Routing in die Sub-Fraktionen** $X_{PS}/X_{PF}$ via $f_{sOTS}, f_{fOTS}$  
+   und $f_{OTSrf}$ (siehe Tabelle oben).  
+4. **Dissoziation** beim Substrat-pH: ionisierte VFA, $\text{HCO}_3^-$,  
+   $\text{NH}_3$.  
+5. **Ladungsbilanz** für die Ionen. Konventionsgemäß wird $S_{cation}$ für  
    jeden Substrattyp auf null gesetzt (gemäß SIMBA#-Tutorial §5.7.3–§5.7.5),
    und $S_{anion}$ ergibt sich aus der Ladungsbilanz — wobei es für netto-
    kationische Substrate auch negativ werden darf.
@@ -356,11 +356,11 @@ Die pH-5-Titrationskapazität (TAC, in g CaCO₃/L) ist
 $$
 \text{TAC} = 50 \cdot \Bigl[
 \left(F_{NH_3} - K_{A,NH_4} \cdot
-\frac{F_{NH_4} + F_{NH_3}}{10^{-pH_5} + K_{A,NH_4}}\right)
-+ \left(F_{HCO_3} - K_{A,CO_2} \cdot
-\frac{F_{CO_2} + F_{HCO_3}}{10^{-pH_5} + K_{A,CO_2}}\right)
-+ \sum_{i = \text{va},\text{bu},\text{pro},\text{ac}} (\cdots)
-+ F_{AN} - F_{CAT} \Bigr]
+\frac{F_{NH_4} + F_{NH_3}}{10^{-pH_5} + K_{A,NH_4}}\right)  
++ \left(F_{HCO_3} - K_{A,CO_2} \cdot  
+\frac{F_{CO_2} + F_{HCO_3}}{10^{-pH_5} + K_{A,CO_2}}\right)  
++ \sum_{i = \text{va},\text{bu},\text{pro},\text{ac}} (\cdots)  
++ F_{AN} - F_{CAT} \Bigr]  
 $$
 
 !!! note "Vorfaktor 50 vs 100"
@@ -375,18 +375,18 @@ $$
 
 Die Implementierung basiert auf:
 
-- **Schlattmann, M. (2011)**: ADM1da — Beschreibung im *SIMBA#-biogas-Tutorial
-  4.2*, ifak e.V. Magdeburg.
-- **Batstone, D. J. et al. (2002)**: *Anaerobic Digestion Model No. 1 (ADM1)*.
-  IWA Scientific and Technical Report No. 13.
-- **Siegrist, H., Vogt, D., Garcia-Heras, J. L., Gujer, W. (2002)**:
+- **Schlattmann, M. (2011)**: ADM1da — Beschreibung im *SIMBA#-biogas-Tutorial  
+  4.2*, ifak e.V. Magdeburg.  
+- **Batstone, D. J. et al. (2002)**: *Anaerobic Digestion Model No. 1 (ADM1)*.  
+  IWA Scientific and Technical Report No. 13.  
+- **Siegrist, H., Vogt, D., Garcia-Heras, J. L., Gujer, W. (2002)**:  
   Mathematical model for meso- and thermophilic anaerobic sewage sludge
   digestion. *Environmental Science & Technology* **36**, 1113–1123.
-  (Quelle der ADM1da-NH₃-Inhibitions-Formulierungen.)
-- **Gaida, D. (2014)**: *Dynamic real-time substrate feed optimization of
+  (Quelle der ADM1da-NH₃-Inhibitions-Formulierungen.)  
+- **Gaida, D. (2014)**: *Dynamic real-time substrate feed optimization of  
   anaerobic co-digestion plants*. PhD thesis, Leiden University. (Vorbild
-  für die volumetrische Mischungslogik.)
-- **Koch, K. et al. (2010)**: *Biogas from grass silage – measurements and
+  für die volumetrische Mischungslogik.)  
+- **Koch, K. et al. (2010)**: *Biogas from grass silage – measurements and  
   modeling with ADM1*. Bioresource Technology. (Kalibrierwerte für
   hochfeste Energiepflanzen.)
 
