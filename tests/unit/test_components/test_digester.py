@@ -90,7 +90,11 @@ class TestDigesterStep:
 
         # Warm-up
         for day in range(3):
-            d.step(t=float(day), dt=1.0, inputs={"Q_substrates": [11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0]})
+            d.step(
+                t=float(day),
+                dt=1.0,
+                inputs={"Q_substrates": [11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0]},
+            )
 
         out = d.step(t=3.0, dt=1.0, inputs={"Q_substrates": [11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0]})
 

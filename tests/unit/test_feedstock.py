@@ -46,11 +46,19 @@ class TestFeedstockSingleSubstrate:
 
 class TestFeedstockMultiSubstrate:
     def test_construction_with_substrate_id_list(self) -> None:
-        fs = Feedstock(["maize_silage_milk_ripeness", "swine_manure"], feeding_freq=24, total_simtime=5)
+        fs = Feedstock(
+            ["maize_silage_milk_ripeness", "swine_manure"],
+            feeding_freq=24,
+            total_simtime=5,
+        )
         assert len(fs.substrates) == 2
 
     def test_blended_density_is_weighted_average(self) -> None:
-        fs = Feedstock(["maize_silage_milk_ripeness", "swine_manure"], feeding_freq=24, total_simtime=5)
+        fs = Feedstock(
+            ["maize_silage_milk_ripeness", "swine_manure"],
+            feeding_freq=24,
+            total_simtime=5,
+        )
 
         # Pure manure → close to 1000 kg/m³
         rho_pure_manure = fs.blended_density([0.0, 5.0, 0, 0, 0, 0, 0, 0, 0, 0])
@@ -61,7 +69,11 @@ class TestFeedstockMultiSubstrate:
         assert rho_pure_maize > 1000.0
 
     def test_get_influent_dataframe_with_padded_q(self) -> None:
-        fs = Feedstock(["maize_silage_milk_ripeness", "swine_manure"], feeding_freq=24, total_simtime=5)
+        fs = Feedstock(
+            ["maize_silage_milk_ripeness", "swine_manure"],
+            feeding_freq=24,
+            total_simtime=5,
+        )
         Q = [11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0]
         df = fs.get_influent_dataframe(Q=Q)
 

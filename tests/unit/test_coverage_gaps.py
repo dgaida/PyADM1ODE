@@ -170,7 +170,11 @@ class TestPlantBuilderJsonRoundTrip:
                     "components": [
                         # ``mixer`` is a valid ComponentType but plant_builder.from_json
                         # only knows DIGESTER / CHP / HEATING — it should reject anything else.
-                        {"component_type": "mixer", "component_id": "mx1", "name": "Mixer"}
+                        {
+                            "component_type": "mixer",
+                            "component_id": "mx1",
+                            "name": "Mixer",
+                        }
                     ],
                     "connections": [],
                 }

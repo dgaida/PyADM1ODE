@@ -353,7 +353,11 @@ def _run_single_scenario(
         substrate_ids = adm1_config.get("feedstock_substrates") or []
         feeding_freq = adm1_config.get("feeding_freq", 24)
         if substrate_ids:
-            feedstock = Feedstock(substrate_ids, feeding_freq=feeding_freq, total_simtime=int(duration) + 1)
+            feedstock = Feedstock(
+                substrate_ids,
+                feeding_freq=feeding_freq,
+                total_simtime=int(duration) + 1,
+            )
         else:
             feedstock = None
 

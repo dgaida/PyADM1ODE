@@ -226,29 +226,61 @@ def main() -> None:
     fig, axes = plt.subplots(5, 1, figsize=(11, 15), sharex=True)
 
     axes[0].plot(history["time_days"], history["level_true"], label="Real level", linewidth=2.0)
-    axes[0].plot(history["time_days"], history["level_measured"], label="Measured level", linewidth=1.5, alpha=0.85)
+    axes[0].plot(
+        history["time_days"],
+        history["level_measured"],
+        label="Measured level",
+        linewidth=1.5,
+        alpha=0.85,
+    )
     axes[0].set_ylabel(f"Level [{level_sensor.unit}]")
     axes[0].set_title("Gas Storage Level Sensor")
     axes[0].grid(True, alpha=0.3)
     axes[0].legend()
 
     axes[1].plot(history["time_days"], history["flow_true"], label="Real flow", linewidth=2.0)
-    axes[1].plot(history["time_days"], history["flow_measured"], label="Measured flow", linewidth=1.5, alpha=0.85)
+    axes[1].plot(
+        history["time_days"],
+        history["flow_measured"],
+        label="Measured flow",
+        linewidth=1.5,
+        alpha=0.85,
+    )
     axes[1].set_ylabel(f"Flow [{flow_sensor.unit}]")
     axes[1].set_title("Digester Effluent Flow Sensor")
     axes[1].grid(True, alpha=0.3)
     axes[1].legend()
 
-    axes[2].plot(history["time_days"], history["pressure_true"], label="Real pressure", linewidth=2.0)
-    axes[2].plot(history["time_days"], history["pressure_measured"], label="Measured pressure", linewidth=1.5, alpha=0.85)
+    axes[2].plot(
+        history["time_days"],
+        history["pressure_true"],
+        label="Real pressure",
+        linewidth=2.0,
+    )
+    axes[2].plot(
+        history["time_days"],
+        history["pressure_measured"],
+        label="Measured pressure",
+        linewidth=1.5,
+        alpha=0.85,
+    )
     axes[2].set_ylabel(f"Pressure [{pressure_sensor.unit}]")
     axes[2].set_title("Gas Pressure Sensor")
     axes[2].grid(True, alpha=0.3)
     axes[2].legend()
 
-    axes[3].plot(history["time_days"], history["temperature_true"], label="Real temperature", linewidth=2.0)
     axes[3].plot(
-        history["time_days"], history["temperature_measured"], label="Measured temperature", linewidth=1.5, alpha=0.85
+        history["time_days"],
+        history["temperature_true"],
+        label="Real temperature",
+        linewidth=2.0,
+    )
+    axes[3].plot(
+        history["time_days"],
+        history["temperature_measured"],
+        label="Measured temperature",
+        linewidth=1.5,
+        alpha=0.85,
     )
     axes[3].set_ylabel(f"Temperature [{temperature_sensor.unit}]")
     axes[3].set_title("Digester Temperature Sensor")
@@ -256,7 +288,13 @@ def main() -> None:
     axes[3].legend()
 
     axes[4].plot(history["time_days"], history["ph_true"], label="Real pH", linewidth=2.0)
-    axes[4].plot(history["time_days"], history["ph_measured"], label="Measured pH", linewidth=1.5, alpha=0.85)
+    axes[4].plot(
+        history["time_days"],
+        history["ph_measured"],
+        label="Measured pH",
+        linewidth=1.5,
+        alpha=0.85,
+    )
     axes[4].set_xlabel("Time [days]")
     axes[4].set_ylabel(f"pH [{ph_sensor.unit}]")
     axes[4].set_title("Digester pH Sensor")

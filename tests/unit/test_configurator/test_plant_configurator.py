@@ -99,7 +99,12 @@ class TestAutoConnections:
 class TestSingleStagePlant:
     def test_creates_digester_chp_heating(self, cfg: PlantConfigurator) -> None:
         components = cfg.create_single_stage_plant(
-            digester_config={"digester_id": "main", "V_liq": 1200.0, "V_gas": 216.0, "T_ad": 315.15},
+            digester_config={
+                "digester_id": "main",
+                "V_liq": 1200.0,
+                "V_gas": 216.0,
+                "T_ad": 315.15,
+            },
             chp_config={"chp_id": "chp1", "P_el_nom": 500.0},
             heating_config={"heating_id": "heat1", "target_temperature": 315.15},
         )

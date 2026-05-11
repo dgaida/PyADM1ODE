@@ -47,7 +47,13 @@ class TestGasSensorStep:
         assert result["is_detected"] is False
 
     def test_response_time_applies_first_order_lag(self) -> None:
-        sensor = GasSensor("co2_1", sensor_type="CO2", response_time=1.0, measurement_noise=0.0, accuracy=0.0)
+        sensor = GasSensor(
+            "co2_1",
+            sensor_type="CO2",
+            response_time=1.0,
+            measurement_noise=0.0,
+            accuracy=0.0,
+        )
 
         first = sensor.step(t=0.0, dt=0.5, inputs={"CO2": 35.0})
         second = sensor.step(t=0.5, dt=0.5, inputs={"CO2": 45.0})
@@ -56,7 +62,13 @@ class TestGasSensorStep:
         assert math.isclose(second["measurement"], 40.0, rel_tol=0.0, abs_tol=1e-9)
 
     def test_sample_interval_holds_last_measurement_between_updates(self) -> None:
-        sensor = GasSensor("o2_1", sensor_type="O2", sample_interval=1.0, measurement_noise=0.0, accuracy=0.0)
+        sensor = GasSensor(
+            "o2_1",
+            sensor_type="O2",
+            sample_interval=1.0,
+            measurement_noise=0.0,
+            accuracy=0.0,
+        )
 
         first = sensor.step(t=0.0, dt=0.25, inputs={"O2": 0.4})
         second = sensor.step(t=0.25, dt=0.25, inputs={"O2": 0.8})

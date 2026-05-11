@@ -370,7 +370,10 @@ class Feedstock:
     @property
     def concentrations(self) -> dict:
         """Influent concentrations (single-substrate mode)."""
-        self._require_single("concentrations", hint="use .concentrations_list[i] or .blended_concentrations(Q)")
+        self._require_single(
+            "concentrations",
+            hint="use .concentrations_list[i] or .blended_concentrations(Q)",
+        )
         return dict(self._conc_list[0])
 
     # ---- Multi-substrate accessors ------------------------------------

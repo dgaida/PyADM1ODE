@@ -300,6 +300,14 @@ class ADM1:
         self._rho_in: float = 1000.0
         self._rho_sludge: float = 1000.0
 
+        # When ``_Q_out_override`` is not None, ADM_ODE uses it for the sludge
+        # outflow instead of the default ``q_in - q_S_loss`` formula. The
+        # caller is then responsible for advancing V_liq between ODE steps.
+        # ``_q_S_loss_last`` caches the most recent q_S_loss so the caller
+        # can integrate the volume balance externally.
+        self._Q_out_override: Optional[float] = None
+        self._q_S_loss_last: float = 0.0
+
     # ------------------------------------------------------------------
     # Public read-only properties
     # ------------------------------------------------------------------
@@ -572,7 +580,18 @@ class ADM1:
         Y_h2 = k["Y_h2"]
 
         # ---- pH (Newton–Raphson charge balance) --------------------------
-        S_H = self._calc_ph(S_nh4, S_nh3, S_hco3, S_ac_ion, S_pro_ion, S_bu_ion, S_va_ion, S_cation, S_anion, ip["K_w"])
+        S_H = self._calc_ph(
+            S_nh4,
+            S_nh3,
+            S_hco3,
+            S_ac_ion,
+            S_pro_ion,
+            S_bu_ion,
+            S_va_ion,
+            S_cation,
+            S_anion,
+            ip["K_w"],
+        )
         S_H = max(S_H, 1.0e-14)
 
         # ---- Inhibition factors ------------------------------------------
@@ -671,7 +690,10 @@ class ADM1:
         k_p = self._k_p
         if self._calibration_params.get("k_p") is not None:
             k_p = float(self._calibration_params["k_p"])
-        Rho_T_11 = max(k_p * (pTOTAL + self._p_gas_h2o - self._p_ext) * (self.V_liq / self._V_gas), 0.0)
+        Rho_T_11 = max(
+            k_p * (pTOTAL + self._p_gas_h2o - self._p_ext) * (self.V_liq / self._V_gas),
+            0.0,
+        )
 
         # ---- Carbon stoichiometry coefficients for S_co2 balance --------
         C = st
@@ -716,11 +738,19 @@ class ADM1:
         # ---- Differential equations -------------------------------------
         D_in = q_ad / self.V_liq
 
-        # Sludge volume loss (hydrolysis-rate volume balance, after Schlattmann 2011 §5.1)
+        # Sludge volume loss (hydrolysis-rate volume balance, after Schlattmann 2011).
         _q_S_loss = self.V_liq * (
             Rho_hyd_ch * (0.9375 / 1550.0) + Rho_hyd_pr * (0.6125 / 1370.0) + Rho_hyd_li * (0.3474 / 920.0)
         )
-        _Q_out = max(q_ad - _q_S_loss, 0.0)
+        self._q_S_loss_last = float(_q_S_loss)
+
+        # If the caller has supplied an outflow (e.g. via a level controller
+        # that owns the volume balance), use it. Otherwise enforce volume
+        # conservation by setting Q_out = Q_in - q_S_loss.
+        if self._Q_out_override is not None:
+            _Q_out = max(float(self._Q_out_override), 0.0)
+        else:
+            _Q_out = max(q_ad - _q_S_loss, 0.0)
         D_out = _Q_out / self.V_liq
 
         # --- Dissolved (0–11) ---

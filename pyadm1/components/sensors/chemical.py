@@ -88,7 +88,14 @@ _DEFAULT_SENSOR_CONFIG: Dict[ChemicalSensorType, Dict[str, Any]] = {
     },
     ChemicalSensorType.NUTRIENTS: {
         "signal_key": "nutrients",
-        "candidate_keys": ("nutrients", "nitrogen", "phosphorus", "phosphate", "NH4_N", "PO4_P"),
+        "candidate_keys": (
+            "nutrients",
+            "nitrogen",
+            "phosphorus",
+            "phosphate",
+            "NH4_N",
+            "PO4_P",
+        ),
         "measurement_range": (0.0, 10000.0),
         "unit": "mg/L",
         "analyzer_method": ChemicalAnalyzerMethod.COLORIMETRIC.value,

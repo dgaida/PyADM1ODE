@@ -169,9 +169,15 @@ class Feeder(Component):
     _INCOMPATIBLE: Dict[FeederType, set] = {
         FeederType.SCREW: {SubstrateCategory.LIQUID},
         FeederType.TWIN_SCREW: {SubstrateCategory.LIQUID},
-        FeederType.CENTRIFUGAL_PUMP: {SubstrateCategory.SOLID, SubstrateCategory.FIBROUS},
+        FeederType.CENTRIFUGAL_PUMP: {
+            SubstrateCategory.SOLID,
+            SubstrateCategory.FIBROUS,
+        },
         FeederType.PISTON: {SubstrateCategory.LIQUID},
-        FeederType.PROGRESSIVE_CAVITY: {SubstrateCategory.SOLID, SubstrateCategory.FIBROUS},
+        FeederType.PROGRESSIVE_CAVITY: {
+            SubstrateCategory.SOLID,
+            SubstrateCategory.FIBROUS,
+        },
         FeederType.MIXER_WAGON: set(),  # handles all substrate types
     }
 
@@ -423,32 +429,28 @@ class Feeder(Component):
         """
         # Specific power requirements [kW per m³/h]
         specific_powers = {
-            FeederType.SCREW: 0.8,  # Increased from 0.5
-            FeederType.TWIN_SCREW: 1.0,  # Increased from 0.7
-            FeederType.PROGRESSIVE_CAVITY: 1.2,  # Increased from 0.8
-            FeederType.PISTON: 1.5,  # Increased from 1.0
-            FeederType.CENTRIFUGAL_PUMP: 0.5,  # Increased from 0.3
-            FeederType.MIXER_WAGON: 2.0,  # Increased from 1.5
+            FeederType.SCREW: 0.8,
+            FeederType.TWIN_SCREW: 1.0,
+            FeederType.PROGRESSIVE_CAVITY: 1.2,
+            FeederType.PISTON: 1.5,
+            FeederType.CENTRIFUGAL_PUMP: 0.5,
+            FeederType.MIXER_WAGON: 2.0,
         }
 
         specific_power = specific_powers.get(self.feeder_type, 0.8)
 
-        # Convert Q_max from m³/d to m³/h
         Q_max_per_hour = self.Q_max / 24.0
-
-        # Base power calculation
         power = specific_power * Q_max_per_hour
 
-        # Substrate type modifier
+        # Substrate type modifier: fibrous materials need more power, liquids less.
         if self.substrate_type == SubstrateCategory.FIBROUS:
-            power *= 1.8  # Increased from 1.5 - Fibrous materials need more power
+            power *= 1.8
         elif self.substrate_type == SubstrateCategory.SOLID:
-            power *= 1.4  # Increased from 1.2
+            power *= 1.4
         elif self.substrate_type == SubstrateCategory.LIQUID:
-            power *= 0.7  # Decreased from 0.8 - Liquids easier to pump
+            power *= 0.7
 
-        # Add safety margin
-        power *= 1.3  # Increased from 1.2
+        power *= 1.3  # safety margin
 
         return max(1.0, power)
 

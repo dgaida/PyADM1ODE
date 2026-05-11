@@ -50,6 +50,9 @@ class PlantConfigurator:
         Q_substrates: Optional[list] = None,
         k_L_a: Optional[float] = None,
         adm1_state: Optional[list] = None,
+        dynamic_volume: bool = False,
+        initial_fill_fraction: float = 1.0,
+        outflow_time_constant: float = 1.0,
     ) -> "tuple[Digester, str]":
         """
         Add an ADM1da digester to the plant.
@@ -77,6 +80,18 @@ class PlantConfigurator:
         adm1_state : list of float, optional
             41-element initial state vector.  When supplied, replaces the
             auto-built steady-state vector.
+        dynamic_volume : bool, default False
+            Enable a dynamic sludge-volume balance
+            ``dV/dt = Q_in − Q_out − q_S,loss``, with ``Q_out`` from an
+            overflow weir at ``V_liq``. When False, sludge volume stays
+            constant.
+        initial_fill_fraction : float, default 1.0
+            Starting sludge fill as a fraction of ``V_liq``. Only used when
+            ``dynamic_volume=True``. Set below 1.0 to simulate a partially-
+            filled startup transient.
+        outflow_time_constant : float, default 1.0
+            Overflow-weir time constant ``τ_out`` [d]. Only used when
+            ``dynamic_volume=True``.
 
         Returns
         -------
@@ -91,6 +106,9 @@ class PlantConfigurator:
             V_gas=V_gas,
             T_ad=T_ad,
             name=name or digester_id,
+            dynamic_volume=dynamic_volume,
+            initial_fill_fraction=initial_fill_fraction,
+            outflow_time_constant=outflow_time_constant,
         )
 
         if k_L_a is not None:

@@ -71,8 +71,25 @@ class Digester(Component):
         to drive the digester exclusively via ``set_influent_dataframe`` on
         the underlying :class:`ADM1` instance.
     V_liq, V_gas, T_ad : float
-        Reactor liquid volume [m³], gas headspace [m³], temperature [K].
+        Reactor liquid volume [m³], gas headspace [m³], temperature [K]. When
+        ``dynamic_volume=True``, ``V_liq`` is interpreted as the geometric
+        maximum (the overflow-weir setpoint) and the actual sludge volume
+        evolves with the mass balance.
     name : str, optional
+    dynamic_volume : bool, default False
+        Enable a dynamic sludge-volume balance
+        ``dV/dt = Q_in − Q_out − q_S,loss``, with ``Q_out`` from an overflow
+        weir at ``V_liq``. When False, sludge volume stays constant and
+        ``Q_out = Q_in − q_S,loss`` enforces volume conservation.
+    initial_fill_fraction : float, default 1.0
+        Starting sludge fill as a fraction of the geometric maximum. Only
+        used when ``dynamic_volume=True``. Set below 1.0 to simulate a
+        partially-filled startup transient.
+    outflow_time_constant : float, default 1.0
+        Overflow-weir time constant ``τ_out`` [d]: ``Q_out = max(0, (V −
+        V_max) / τ_out)``. Only used when ``dynamic_volume=True``. Steady-
+        state sludge volume sits slightly above ``V_max`` at
+        ``V_max + (Q_in − q_S,loss)·τ_out``.
     """
 
     def __init__(
@@ -83,6 +100,9 @@ class Digester(Component):
         V_gas: float = 304.0,
         T_ad: float = 308.15,
         name: Optional[str] = None,
+        dynamic_volume: bool = False,
+        initial_fill_fraction: float = 1.0,
+        outflow_time_constant: float = 1.0,
     ):
         super().__init__(component_id, ComponentType.DIGESTER, name)
 
@@ -90,6 +110,12 @@ class Digester(Component):
         self.V_liq = V_liq
         self.V_gas = V_gas
         self.T_ad = T_ad
+
+        # Dynamic sludge volume with overflow-weir effluent.
+        self._dynamic_volume = bool(dynamic_volume)
+        self._V_liq_max = float(V_liq)
+        self._initial_fill_fraction = float(initial_fill_fraction)
+        self._tau_out = float(outflow_time_constant)
 
         self.gas_storage: GasStorage = GasStorage(
             component_id=f"{self.component_id}_storage",
@@ -152,6 +178,13 @@ class Digester(Component):
         else:
             self.adm1_state = [0.01] * _ADM1_STATE_SIZE
 
+        # When dynamic volume is enabled, initialise V_liq below the
+        # geometric maximum so the digester fills up over the first transient.
+        if self._dynamic_volume:
+            V_liq_init = max(1.0e-6, self._V_liq_max * self._initial_fill_fraction)
+            self.V_liq = V_liq_init
+            self.adm1.V_liq = V_liq_init
+
         self.state = {
             "adm1_state": self.adm1_state,
             "Q_substrates": self.Q_substrates,
@@ -161,6 +194,13 @@ class Digester(Component):
             "pH": 7.0,
             "VFA": 0.0,
             "TAC": 0.0,
+            # Filtered hydraulic retention time tracked via the first-order
+            # lag dHRT/dt + HRT*(Q_in/V_S) = 1, so the reported value rises
+            # from start-up toward V_S/Q_in with time constant HRT_ss itself.
+            "HRT": 0.0,
+            # Current sludge volume [m³]. Equals self.V_liq; kept in
+            # self.state so it round-trips through to_dict / from_dict.
+            "V_liq": self.V_liq,
         }
 
         gs_state = initial_state.get("gas_storage")
@@ -296,7 +336,7 @@ class Digester(Component):
         return state_input is not None and q_array is not None and len(q_array) > 0
 
     def _compute_indicators(self) -> Dict[str, float]:
-        """Compute pH, VFA, and TAC from the current state (Schlattmann 2011 §5.3.7)."""
+        """Compute pH, VFA, and TAC from the current state (Schlattmann 2011)."""
         st = self.adm1_state
         inhib = ADMParams.get_inhibition_params(self.adm1._R, self.adm1._T_base, self.adm1._T_ad)
         try:
@@ -397,6 +437,18 @@ class Digester(Component):
         else:
             self.adm1.create_influent(self.Q_substrates, int(t / dt))
 
+        # When dynamic volume is enabled, drive Q_out from an overflow weir
+        # at V_max instead of letting the ODE enforce volume conservation.
+        # V_liq is treated as constant within one ODE step and advanced
+        # explicitly afterwards using the cached q_S_loss.
+        if self._dynamic_volume:
+            V_prev = float(self.adm1.V_liq)
+            Q_out_weir = max(0.0, (V_prev - self._V_liq_max) / self._tau_out)
+            self.adm1._Q_out_override = Q_out_weir
+        else:
+            Q_out_weir = None
+            self.adm1._Q_out_override = None
+
         result = solve_ivp(
             fun=self.adm1.ADM_ODE,
             t_span=(t, t + dt),
@@ -409,6 +461,17 @@ class Digester(Component):
         if not result.success:
             raise RuntimeError(f"ADM1 integration failed in '{self.component_id}': {result.message}")
         self.adm1_state = list(result.y[:, -1])
+
+        # Advance the sludge-volume mass balance now that the ODE has
+        # settled and q_S_loss has been cached on the model.
+        if self._dynamic_volume:
+            Q_in_for_V = float(np.sum(self.adm1._Q)) if self.adm1._Q is not None else 0.0
+            q_loss = float(self.adm1._q_S_loss_last)
+            V_prev = float(self.adm1.V_liq)
+            V_new = max(1.0e-6, V_prev + (Q_in_for_V - Q_out_weir - q_loss) * dt)
+            self.adm1.V_liq = V_new
+            self.V_liq = V_new
+            self.state["V_liq"] = V_new
 
         q_gas, q_ch4, q_co2, _, _ = self.adm1.calc_gas(
             self.adm1_state[_IDX_P_H2],
@@ -424,7 +487,24 @@ class Digester(Component):
         self.state["Q_co2"] = q_co2
         self.state.update(indicators)
 
-        Q_out = float(np.sum(self.adm1._Q)) if self._has_valid_state_input() else float(np.sum(self.Q_substrates))
+        if self._dynamic_volume:
+            # Effluent leaving the reactor over this step (overflow weir).
+            Q_out = float(Q_out_weir)
+        else:
+            # Legacy: Q_out tracks Q_in (volume-conservation enforced by the ODE).
+            Q_out = float(np.sum(self.adm1._Q)) if self._has_valid_state_input() else float(np.sum(self.Q_substrates))
+
+        # First-order lag for the reported HRT: dHRT/dt + HRT*(Q_in/V_S) = 1.
+        # Exact discrete update over dt with piecewise-constant a = Q_in/V_S.
+        Q_in_total = float(np.sum(self.adm1._Q)) if self.adm1._Q is not None else 0.0
+        hrt_prev = float(self.state.get("HRT", 0.0))
+        if Q_in_total > 0.0 and self.V_liq > 0.0:
+            a = Q_in_total / self.V_liq
+            decay = float(np.exp(-a * dt))
+            hrt_new = hrt_prev * decay + (1.0 / a) * (1.0 - decay)
+        else:
+            hrt_new = hrt_prev + dt
+        self.state["HRT"] = hrt_new
 
         gs_outputs = self.gas_storage.step(
             t=t,
@@ -446,6 +526,8 @@ class Digester(Component):
             "pH": indicators["pH"],
             "VFA": indicators["VFA"],
             "TAC": indicators["TAC"],
+            "HRT": float(hrt_new),
+            "V_liq": float(self.V_liq),
             "Q_gas_to_storage_m3_per_day": float(q_gas),
             "gas_storage": {
                 "component_id": self.gas_storage.component_id,
@@ -483,9 +565,14 @@ class Digester(Component):
             "component_id": self.component_id,
             "component_type": self.component_type.value,
             "name": self.name,
-            "V_liq": self.V_liq,
+            # Persist the geometric maximum so a round-trip rebuild gets the
+            # same tank size. The current dynamic V lives in state["V_liq"].
+            "V_liq": self._V_liq_max,
             "V_gas": self.V_gas,
             "T_ad": self.T_ad,
+            "dynamic_volume": self._dynamic_volume,
+            "initial_fill_fraction": self._initial_fill_fraction,
+            "outflow_time_constant": self._tau_out,
             "inputs": self.inputs,
             "outputs": self.outputs,
             "state": self.state,
@@ -501,9 +588,19 @@ class Digester(Component):
             V_gas=config.get("V_gas", 304.0),
             T_ad=config.get("T_ad", 308.15),
             name=config.get("name"),
+            dynamic_volume=config.get("dynamic_volume", False),
+            initial_fill_fraction=config.get("initial_fill_fraction", 1.0),
+            outflow_time_constant=config.get("outflow_time_constant", 1.0),
         )
         digester.inputs = config.get("inputs", [])
         digester.outputs = config.get("outputs", [])
         if "state" in config:
             digester.initialize(config["state"])
+            # Restore the live sludge volume after initialize() applied the
+            # nominal initial_fill_fraction.
+            if digester._dynamic_volume and "V_liq" in config["state"]:
+                V_curr = float(config["state"]["V_liq"])
+                digester.V_liq = V_curr
+                digester.adm1.V_liq = V_curr
+                digester.state["V_liq"] = V_curr
         return digester

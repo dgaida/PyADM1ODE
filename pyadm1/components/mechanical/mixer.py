@@ -17,7 +17,7 @@ Power consumption is calculated based on:
 - Mixer geometry (impeller diameter, blade configuration)
 
 References:
-- VDI 2167 (2006): Gärtechnik in Biogasanlagen (TODO: Quelle stimmt nicht)
+- VDI 2167 (2006): Gärtechnik in Biogasanlagen (TODO: source needs verification)
 - Nienow, A.W. (1997): On impeller circulation and mixing effectiveness
 - Paul, E.L. et al. (2004): Handbook of Industrial Mixing: Science and Practice
 

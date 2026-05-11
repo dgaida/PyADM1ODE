@@ -354,15 +354,14 @@ class SubstrateStorage(Component):
         """
         # TODO: get a source confirming those values
         # Base rates for different storage types [1/d]
-        # Reduced to more realistic values
         base_rates = {
-            StorageType.VERTICAL_SILO: 0.0005,  # Reduced from 0.001 - Well sealed, very low losses
-            StorageType.HORIZONTAL_SILO: 0.0008,  # Reduced from 0.002 - Good sealing
-            StorageType.BUNKER_SILO: 0.001,  # Reduced from 0.003 - Moderate losses
-            StorageType.CLAMP: 0.0025,  # Reduced from 0.005 - Higher losses
-            StorageType.PILE: 0.004,  # Reduced from 0.008 - Highest losses
-            StorageType.ABOVE_GROUND_TANK: 0.0002,  # Reduced from 0.0005 - Very low for liquids
-            StorageType.BELOW_GROUND_TANK: 0.0001,  # Reduced from 0.0003 - Lowest losses
+            StorageType.VERTICAL_SILO: 0.0005,  # well sealed, very low losses
+            StorageType.HORIZONTAL_SILO: 0.0008,  # good sealing
+            StorageType.BUNKER_SILO: 0.001,  # moderate losses
+            StorageType.CLAMP: 0.0025,  # higher losses
+            StorageType.PILE: 0.004,  # highest losses
+            StorageType.ABOVE_GROUND_TANK: 0.0002,  # very low for liquids
+            StorageType.BELOW_GROUND_TANK: 0.0001,  # lowest losses
         }
 
         base_rate = base_rates.get(self.storage_type, 0.001)

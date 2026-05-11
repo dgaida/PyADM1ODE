@@ -111,7 +111,35 @@ def extract_chemical_signals(digester_out: Dict[str, Any]) -> Dict[str, float]:
     if not state:
         return {"VFA": 0.0, "NH3": 0.0, "COD": 0.0, "nitrogen": 0.0, "phosphate": 0.0}
 
-    cod_indices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30]
+    cod_indices = [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        27,
+        28,
+        29,
+        30,
+    ]
     cod_g_l = max(0.0, sum(float(state[idx]) for idx in cod_indices))
 
     free_ammonia_g_l = max(0.0, float(state[32]) * 14.0)

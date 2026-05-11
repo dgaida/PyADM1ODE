@@ -209,35 +209,75 @@ def main() -> None:
     fig, axes = plt.subplots(5, 1, figsize=(11, 15), sharex=True)
 
     axes[0].plot(history["time_days"], history["vfa_true"], label="Real VFA", linewidth=2.0)
-    axes[0].plot(history["time_days"], history["vfa_measured"], label="Measured VFA", linewidth=1.5, alpha=0.85)
+    axes[0].plot(
+        history["time_days"],
+        history["vfa_measured"],
+        label="Measured VFA",
+        linewidth=1.5,
+        alpha=0.85,
+    )
     axes[0].set_ylabel(f"VFA [{vfa_sensor.unit}]")
     axes[0].set_title("VFA Analyzer")
     axes[0].grid(True, alpha=0.3)
     axes[0].legend()
 
     axes[1].plot(history["time_days"], history["ammonia_true"], label="Real NH3", linewidth=2.0)
-    axes[1].plot(history["time_days"], history["ammonia_measured"], label="Measured NH3", linewidth=1.5, alpha=0.85)
+    axes[1].plot(
+        history["time_days"],
+        history["ammonia_measured"],
+        label="Measured NH3",
+        linewidth=1.5,
+        alpha=0.85,
+    )
     axes[1].set_ylabel(f"NH3 [{ammonia_sensor.unit}]")
     axes[1].set_title("Ammonia Analyzer")
     axes[1].grid(True, alpha=0.3)
     axes[1].legend()
 
     axes[2].plot(history["time_days"], history["cod_true"], label="Real COD", linewidth=2.0)
-    axes[2].plot(history["time_days"], history["cod_measured"], label="Measured COD", linewidth=1.5, alpha=0.85)
+    axes[2].plot(
+        history["time_days"],
+        history["cod_measured"],
+        label="Measured COD",
+        linewidth=1.5,
+        alpha=0.85,
+    )
     axes[2].set_ylabel(f"COD [{cod_sensor.unit}]")
     axes[2].set_title("COD Analyzer")
     axes[2].grid(True, alpha=0.3)
     axes[2].legend()
 
-    axes[3].plot(history["time_days"], history["nitrogen_true"], label="Real total N", linewidth=2.0)
-    axes[3].plot(history["time_days"], history["nitrogen_measured"], label="Measured total N", linewidth=1.5, alpha=0.85)
+    axes[3].plot(
+        history["time_days"],
+        history["nitrogen_true"],
+        label="Real total N",
+        linewidth=2.0,
+    )
+    axes[3].plot(
+        history["time_days"],
+        history["nitrogen_measured"],
+        label="Measured total N",
+        linewidth=1.5,
+        alpha=0.85,
+    )
     axes[3].set_ylabel(f"N [{nitrogen_sensor.unit}]")
     axes[3].set_title("Total Nitrogen Analyzer")
     axes[3].grid(True, alpha=0.3)
     axes[3].legend()
 
-    axes[4].plot(history["time_days"], history["phosphate_true"], label="Real phosphate", linewidth=2.0)
-    axes[4].plot(history["time_days"], history["phosphate_measured"], label="Measured phosphate", linewidth=1.5, alpha=0.85)
+    axes[4].plot(
+        history["time_days"],
+        history["phosphate_true"],
+        label="Real phosphate",
+        linewidth=2.0,
+    )
+    axes[4].plot(
+        history["time_days"],
+        history["phosphate_measured"],
+        label="Measured phosphate",
+        linewidth=1.5,
+        alpha=0.85,
+    )
     axes[4].set_xlabel("Time [days]")
     axes[4].set_ylabel(f"P [{phosphate_sensor.unit}]")
     axes[4].set_title("Phosphate Analyzer")

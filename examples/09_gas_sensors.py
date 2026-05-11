@@ -210,35 +210,70 @@ def main() -> None:
     fig, axes = plt.subplots(5, 1, figsize=(11, 15), sharex=True)
 
     axes[0].plot(history["time_days"], history["ch4_true"], label="Real CH4", linewidth=2.0)
-    axes[0].plot(history["time_days"], history["ch4_measured"], label="Measured CH4", linewidth=1.5, alpha=0.85)
+    axes[0].plot(
+        history["time_days"],
+        history["ch4_measured"],
+        label="Measured CH4",
+        linewidth=1.5,
+        alpha=0.85,
+    )
     axes[0].set_ylabel(f"CH4 [{ch4_sensor.unit}]")
     axes[0].set_title("Methane Analyzer")
     axes[0].grid(True, alpha=0.3)
     axes[0].legend()
 
     axes[1].plot(history["time_days"], history["co2_true"], label="Real CO2", linewidth=2.0)
-    axes[1].plot(history["time_days"], history["co2_measured"], label="Measured CO2", linewidth=1.5, alpha=0.85)
+    axes[1].plot(
+        history["time_days"],
+        history["co2_measured"],
+        label="Measured CO2",
+        linewidth=1.5,
+        alpha=0.85,
+    )
     axes[1].set_ylabel(f"CO2 [{co2_sensor.unit}]")
     axes[1].set_title("CO2 Analyzer")
     axes[1].grid(True, alpha=0.3)
     axes[1].legend()
 
     axes[2].plot(history["time_days"], history["h2s_true"], label="Real H2S", linewidth=2.0)
-    axes[2].plot(history["time_days"], history["h2s_measured"], label="Measured H2S", linewidth=1.5, alpha=0.85)
+    axes[2].plot(
+        history["time_days"],
+        history["h2s_measured"],
+        label="Measured H2S",
+        linewidth=1.5,
+        alpha=0.85,
+    )
     axes[2].set_ylabel(f"H2S [{h2s_sensor.unit}]")
     axes[2].set_title("H2S Analyzer")
     axes[2].grid(True, alpha=0.3)
     axes[2].legend()
 
     axes[3].plot(history["time_days"], history["o2_true"], label="Real O2", linewidth=2.0)
-    axes[3].plot(history["time_days"], history["o2_measured"], label="Measured O2", linewidth=1.5, alpha=0.85)
+    axes[3].plot(
+        history["time_days"],
+        history["o2_measured"],
+        label="Measured O2",
+        linewidth=1.5,
+        alpha=0.85,
+    )
     axes[3].set_ylabel(f"O2 [{o2_sensor.unit}]")
     axes[3].set_title("O2 Analyzer")
     axes[3].grid(True, alpha=0.3)
     axes[3].legend()
 
-    axes[4].plot(history["time_days"], history["trace_true"], label="Real trace gas", linewidth=2.0)
-    axes[4].plot(history["time_days"], history["trace_measured"], label="Measured trace gas", linewidth=1.5, alpha=0.85)
+    axes[4].plot(
+        history["time_days"],
+        history["trace_true"],
+        label="Real trace gas",
+        linewidth=2.0,
+    )
+    axes[4].plot(
+        history["time_days"],
+        history["trace_measured"],
+        label="Measured trace gas",
+        linewidth=1.5,
+        alpha=0.85,
+    )
     axes[4].set_xlabel("Time [days]")
     axes[4].set_ylabel(f"Trace [{trace_sensor.unit}]")
     axes[4].set_title("Trace Gas Analyzer")
