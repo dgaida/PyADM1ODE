@@ -2,12 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.2.6] - 2026-05-05
 
 ### Documentation
 
 - Restructure navigation menu for better accessibility  
 - Restructure navigation and add AGENTS.md guidelines  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.2.5] - 2026-05-05
 
