@@ -31,8 +31,8 @@ Validiert die Multi-Substrat-Mischlogik und die volumetrische Korrektur
 
 Das umfassendste Szenario:
 
-- **Phase 1** (0–300 d): 11,4 m³/d Maissilage + 6,1 m³/d Rindergülle.
-- **Phase 2** (300–600 d): 10,0 m³/d Maissilage + 8,0 m³/d Rindergülle.
+- **Phase 1** (0–300 d): 11,4 m³/d Maissilage + 6,1 m³/d Rindergülle.  
+- **Phase 2** (300–600 d): 10,0 m³/d Maissilage + 8,0 m³/d Rindergülle.  
 
 Die dynamische Schlammvolumenbilanz ist aktiviert (`dynamic_volume=True`,
 `outflow_time_constant=0.05 d`), sodass $V_{liq}$ dem nahezu instantanen
@@ -56,7 +56,7 @@ Am Ende jeder Phase (Snapshots bei $t = 300\,\text{d}$ und $t = 600\,\text{d}$):
 
 Zwei verbleibende Abweichungen am Validierungs-Betriebspunkt:
 
-- **$S_{ac}$ (und damit die aggregierte VFA) liegt +19–21 % höher** als
+- **$S_{ac}$ (und damit die aggregierte VFA) liegt +19–21 % höher** als  
   SIMBA#. Dies ist ein Sättigungs-Verstärkungs-Artefakt: bei $S_{ac} \gg
   K_{S,ac} = 0{,}15$ sind die acetoklastischen Monod-Kinetiken gesättigt, und
   die Acetatkonzentration wird über den langsamen Verdünnungskanal eingestellt
@@ -64,8 +64,8 @@ Zwei verbleibende Abweichungen am Validierungs-Betriebspunkt:
   Diskrepanz (~1,1 % im effektiven $Q$, zurückgeführt auf eine Dichte-
   Konvention für Maissilage) wird um den Faktor ~20 in den beobachteten
   S_ac-Offset verstärkt. Bei nicht-gesättigtem Betrieb verschwindet der
-  Verstärkungseffekt.
-- **TAC ist −6 %**, ebenfalls auf den Biomasse­überschuss zurückzuführen:
+  Verstärkungseffekt.  
+- **TAC ist −6 %**, ebenfalls auf den Biomasse­überschuss zurückzuführen:  
   2–3 % mehr Biomasse binden ~0,013 kmol C/m³ anorganischen Kohlenstoff in den
   Biomasse-Partikeln, was den gelösten $S_{HCO_3^-}$-Pool reduziert, der die
   TAC-Formel dominiert.

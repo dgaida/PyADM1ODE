@@ -30,8 +30,8 @@ volumetric correction.
 
 The most comprehensive scenario:
 
-- **Phase 1** (0–300 d): 11.4 m³/d maize silage + 6.1 m³/d cattle manure.
-- **Phase 2** (300–600 d): 10.0 m³/d maize silage + 8.0 m³/d cattle manure.
+- **Phase 1** (0–300 d): 11.4 m³/d maize silage + 6.1 m³/d cattle manure.  
+- **Phase 2** (300–600 d): 10.0 m³/d maize silage + 8.0 m³/d cattle manure.  
 
 The dynamic sludge volume is enabled (`dynamic_volume=True`,
 `outflow_time_constant=0.05 d`) so that $V_{liq}$ tracks SIMBA#'s essentially-
@@ -55,15 +55,15 @@ At the end of each phase (t = 300 d and t = 600 d snapshots):
 
 Two residual offsets persist at the validation operating point:
 
-- **$S_{ac}$ (and aggregate VFA) is +19–21 % higher** than SIMBA#. This is a
+- **$S_{ac}$ (and aggregate VFA) is +19–21 % higher** than SIMBA#. This is a  
   saturation-amplification artefact: at $S_{ac} \gg K_{S,ac} = 0.15$ the
   acetoclastic Monod kinetics are saturated and the acetate concentration is
   set by the slow dilution channel rather than by Monod feedback. A small
   upstream input-side discrepancy (~1.1 % in the effective $Q$, traced to a
   density-convention difference for maize silage) is amplified by a factor of
   ~20 into the observed S_ac offset. Under non-saturated operating conditions
-  the amplifier disappears.
-- **TAC is −6 %**, traceable to the same biomass excess: 2–3 % more biomass
+  the amplifier disappears.  
+- **TAC is −6 %**, traceable to the same biomass excess: 2–3 % more biomass  
   sequesters ~0.013 kmol C/m³ of inorganic carbon inside the biomass
   particulates, reducing the dissolved $S_{HCO_3^-}$ pool that dominates the TAC
   formula.
