@@ -32,4 +32,4 @@ If you use PyADM1ODE in your research, please cite:
 
 - Original [PyADM1](https://github.com/CaptainFerMag/PyADM1) implementation by Peyman Sadrimajd et al. that motivated me to create this project.  
 - ADM1 development by IWA Task Group.  
-- SIMBA implementation by ifak e.V.  
+- SIMBA# biogas 4.2 reference simulator by ifak Magdeburg.  

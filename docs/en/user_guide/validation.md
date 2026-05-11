@@ -1,7 +1,7 @@
 # Validation
 
 PyADM1ODE has been validated against the reference simulator **SIMBA# biogas 4.2**
-(ifak e.V. Magdeburg) and against measurement data from real agricultural biogas
+(ifak Magdeburg) and against measurement data from real agricultural biogas
 plants. This page summarises the validation strategy and the headline results.
 
 ## Reference simulator

@@ -1,7 +1,7 @@
 # Validierung
 
 PyADM1ODE wurde gegen den Referenzsimulator **SIMBA# biogas 4.2**
-(ifak e.V. Magdeburg) sowie gegen Messdaten realer landwirtschaftlicher
+(ifak Magdeburg) sowie gegen Messdaten realer landwirtschaftlicher
 Biogasanlagen validiert. Diese Seite fasst die Validierungsstrategie und die
 wichtigsten Ergebnisse zusammen.
 

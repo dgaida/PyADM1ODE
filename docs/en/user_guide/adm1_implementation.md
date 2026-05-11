@@ -8,7 +8,7 @@ of the original ADM1 (Batstone et al. 2002, IWA Task Group). Compared to the
 classical formulation, this model adds **sub-fractioned disintegration**,
 **temperature-dependent kinetics**, and **modified inhibition kinetics** for
 agricultural co-digestion. The implementation reproduces the reference behaviour
-of the SIMBA# biogas reactor module quantitatively (see the Validation page).
+of **SIMBA# biogas 4.2** (ifak Magdeburg) quantitatively (see the Validation page).
 Where the published ADM1da literature is ambiguous on a specific stoichiometric
 or kinetic choice, the convention followed by PyADM1ODE is stated explicitly
 throughout this page.
@@ -65,7 +65,7 @@ The most important difference compared to classical ADM1 is the
 ```text
                      substrate inflow
                           │
-        ┌───────────────────┼─────────────────┐
+        ┌─────────────────┼─────────────────┐
         │                 │                 │
    X_PS_ch/pr/li      X_PF_ch/pr/li      X_I (inert)
    (slow pool)        (fast pool)
@@ -159,17 +159,17 @@ from Siegrist et al. (2002):
 | N limitation | $S_{NH4}$ alone | $S_{IN} = S_{NH4} + S_{NH3}$ |
 | $\text{NH}_3$ inhibition $X_{ac}$ | linear in $S_{NH3}$ | squared Hill: $K_I^2/(K_I^2 + S_{NH3}^2)$, T-corrected with $\theta=0.086$ |
 | $\text{NH}_3$ inhibition $X_{pro}$ | not present | squared Hill with own $K_{I,nh3,pro}$, T-corrected with $\theta=0.061$ |
-| Undissociated propionate $X_{pro}$ | not present | $K_{IH,pro}/(K_{IH,pro} + S_{pro} - S_{pro^-})$ (Fukuzaki et al. 1990) |
-| Undissociated acetate $X_{ac}$ | not present | $K_{IH,ac}/(K_{IH,ac} + S_{ac} - S_{ac^-})$ (Xiao et al. 2013) |
+| Undissociated propionate $X_{pro}$ | not present | $K_{IH,pro}/(K_{IH,pro} + S_{pro} - S_{pro^-})$ |
+| Undissociated acetate $X_{ac}$ | not present | $K_{IH,ac}/(K_{IH,ac} + S_{ac} - S_{ac^-})$ |
 | $\text{CO}_2$ limitation $X_{h2}$ | not present | squared Hill saturation: $S_{CO2}^2/(K_S^2 + S_{CO2}^2)$ |
 
 !!! note "Inhibition scope"
-    Some descriptions of the ADM1da kinetics list an acetate / undissociated-
-    acid inhibition term on $X_{fa}$ and $X_{c4}$ as well. The implementation
-    reference and PyADM1ODE apply these terms only to $X_{pro}$ and $X_{ac}$,
-    where they are well-supported by experimental data (Fukuzaki et al. 1990,
-    Xiao et al. 2013); $X_{fa}$ and $X_{c4}$ are inhibited only by pH,
-    N-limitation, and dissolved H₂.
+    The ADM1da kinetics as published in Schlattmann (2011) list an acetate /
+    undissociated-acid inhibition term on $X_{fa}$ and $X_{c4}$ as well. The
+    SIMBA# reference implementation and PyADM1ODE apply these terms only to
+    $X_{pro}$ and $X_{ac}$, where they are well-supported by experimental
+    data; $X_{fa}$ and $X_{c4}$ are inhibited only by pH, N-limitation, and
+    dissolved H₂.
 
 These extensions reproduce the behaviour typically observed in agricultural
 plants: a sharper pH drop on acid accumulation, more pronounced $\text{NH}_3$
@@ -362,47 +362,31 @@ $$
 $$
 
 !!! note "Prefactor 50 vs 100"
-    Some descriptions of the TAC formula write the prefactor as the molar
-    mass of CaCO₃ (100 kg/kmol). The physically correct value is the
+    The TAC formula as written in Schlattmann (2011) uses the molar mass of
+    CaCO₃ (100 kg/kmol) as prefactor. The physically correct value is the
     **equivalent weight 50 kg/keq**, because one mole of CaCO₃ carries two
     H⁺-equivalents of acid-neutralising capacity — the standard alkalinity
     convention. PyADM1ODE applies the equivalent-weight prefactor, which
     matches the reference numerical output of the SIMBA# reactor module.
 
-## Mathematical foundation
+## References
 
-The implementation builds on:
+The implementation builds on the following primary sources (matching the
+citation list of the PyADM1ODE–SIMBA# validation report):
 
-- **Schlattmann, M. (2011)**: *Weiterentwicklung des Anaerobic Digestion  
+- **Batstone, D. J., Keller, J., Angelidaki, I., Kalyuzhnyi, S. V.,  
+  Pavlostathis, S. G., Rozzi, A., Sanders, W. T. M., Siegrist, H.,
+  Vavilin, V. A. (2002).** *Anaerobic Digestion Model No. 1 (ADM1).*
+  IWA Scientific and Technical Report No. 13. IWA Publishing, London.  
+- **Henneberg, W., Strohmann, F. (1864).** *Beiträge zur Begründung einer  
+  rationellen Fütterung der Wiederkäuer.* Schwetschke, Braunschweig.
+  (Origin of the Weender feed analysis used for substrate characterisation.)  
+- **Schlattmann, M. (2011).** *Weiterentwicklung des Anaerobic Digestion  
   Model No. 1 (ADM1) zur Anwendung auf landwirtschaftliche Substrate.*
-  Dissertation, TU München. (Source of the ADM1da sub-fractioned
-  disintegration, biomass-decay routing, sludge-volume balance, and
-  Weender-based substrate characterisation.)  
-- **Batstone, D. J. et al. (2002)**: *Anaerobic Digestion Model No. 1 (ADM1)*.  
-  IWA Scientific and Technical Report No. 13. (Base ADM1 stoichiometry,
-  kinetics, and acid-base / Henry constants.)  
-- **Siegrist, H., Vogt, D., Garcia-Heras, J. L., Gujer, W. (2002)**:  
-  Mathematical model for meso- and thermophilic anaerobic sewage sludge
-  digestion. *Environmental Science & Technology* **36**, 1113–1123.
-  (Source of the ADM1da NH₃-inhibition forms and temperature-correction
-  exponents.)  
-- **Fukuzaki, S., Nishio, N., Shobayashi, M., Nagai, S. (1990)**: Inhibition  
-  of the fermentation of propionate to methane by hydrogen, acetate, and
-  propionate. *Applied and Environmental Microbiology* **56(3)**, 719–723.
-  (Undissociated-propionate inhibition constant on $X_{pro}$.)  
-- **Xiao, K. et al. (2013)**: Acetic acid inhibition on methanogens in a  
-  two-phase anaerobic process. *Biochemical Engineering Journal* **75**,
-  1–7. (Undissociated-acetate inhibition constant on $X_{ac}$.)  
-- **Wett, B., Eladawy, A., Ogurek, M. (2006)**: Description of nitrogen  
-  incorporation and release in anaerobic digestion modelling. *Water
-  Science & Technology* **54(4)**, 67–76. (Fraction-based biomass decay
-  products.)  
-- **Gaida, D. (2014)**: *Dynamic real-time substrate feed optimization of  
-  anaerobic co-digestion plants*. PhD thesis, Leiden University.
-  (Template for the volumetric blending logic.)  
-- **Koch, K. et al. (2010)**: *Biogas from grass silage – measurements and  
-  modeling with ADM1*. Bioresource Technology. (Calibration values for
-  high-strength energy crops.)
+  Dissertation, Technische Universität München.  
+- **Siegrist, H., Vogt, D., Garcia-Heras, J. L., Gujer, W. (2002).**  
+  Mathematical Model for Meso- and Thermophilic Anaerobic Sewage Sludge
+  Digestion. *Environmental Science & Technology* **36**(5), 1113–1123.
 
 ## Technical implementation
 
