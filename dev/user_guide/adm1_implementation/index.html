@@ -1333,10 +1333,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mathematische-grundlage" class="md-nav__link">
+  <a href="#referenzen" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Mathematische Grundlage
+        Referenzen
       
     </span>
   </a>
@@ -2249,10 +2249,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mathematische-grundlage" class="md-nav__link">
+  <a href="#referenzen" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Mathematische Grundlage
+        Referenzen
       
     </span>
   </a>
@@ -2299,8 +2299,8 @@ Adaption des ursprünglichen ADM1 (Batstone et al. 2002, IWA Task Group). Im
 Vergleich zur klassischen Formulierung enthält dieses Modell eine
 <strong>Sub-Fraktionierung der Desintegration</strong>, <strong>temperaturabhängige Kinetiken</strong>
 sowie <strong>modifizierte Inhibitionskinetiken</strong> für agrarische Co-Vergärung. Die
-Umsetzung reproduziert das Referenzverhalten des SIMBA#-Biogas-Reaktormoduls
-quantitativ (siehe die Validierungs-Seite). Wo die veröffentlichte
+Umsetzung reproduziert das Referenzverhalten von <strong>SIMBA# biogas 4.2</strong>
+(ifak Magdeburg) quantitativ (siehe die Validierungs-Seite). Wo die veröffentlichte
 ADM1da-Literatur bei einer konkreten stöchiometrischen oder kinetischen Wahl
 mehrdeutig ist, wird die in PyADM1ODE getroffene Konvention auf dieser Seite
 explizit angegeben.</p>
@@ -2310,17 +2310,17 @@ Gleichungen (DAE) formuliert wird, ist diese Implementierung ein <strong>reines
 System gewöhnlicher Differentialgleichungen (ODE)</strong>.</p>
 <h3 id="hauptmerkmale">Hauptmerkmale<a class="headerlink" href="#hauptmerkmale" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong>Kinetisches Säure-Base-Gleichgewicht</strong>: Die ionisierten Spezies (Acetat-,
+<li><strong>Kinetisches Säure-Base-Gleichgewicht</strong>: Die ionisierten Spezies (Acetat-,<br />
    Propionat-, Butyrat-, Valerat-Ion, <span class="arithmatex">\(\text{HCO}_3^-\)</span>, <span class="arithmatex">\(\text{NH}_3\)</span>) werden
    als dynamische Zustandsvariablen mit einer sehr hohen Reaktionsrate
    <span class="arithmatex">\(k_{A,B} = 10^8\,\text{m}^3\,\text{kmol}^{-1}\,\text{d}^{-1}\)</span> geführt.
    Dadurch verfolgen sie das thermodynamische Gleichgewicht praktisch direkt,
    ohne dass innerhalb des ODE-Schritts ein algebraischer Solver aufgerufen
-   werden muss.</li>
-<li><strong>Kinetischer Gas-Flüssig-Transfer</strong>: <span class="arithmatex">\(\text{H}_2\)</span>, <span class="arithmatex">\(\text{CH}_4\)</span>,
-   <span class="arithmatex">\(\text{CO}_2\)</span> und <span class="arithmatex">\(\text{NH}_3\)</span> werden über <span class="arithmatex">\(k_L a\)</span>-Raten in die Gasphase
-   überführt — keine algebraische Henry-Gleichgewichtsbedingung.</li>
-<li><strong>41 Zustandsvariablen</strong>: Das Modell führt 41 Variablen in fünf Blöcken:</li>
+   werden muss.  </li>
+<li><strong>Kinetischer Gas-Flüssig-Transfer</strong>: <span class="arithmatex">\(\text{H}_2\)</span>, <span class="arithmatex">\(\text{CH}_4\)</span>,<br />
+<span class="arithmatex">\(\text{CO}_2\)</span> und <span class="arithmatex">\(\text{NH}_3\)</span> werden über <span class="arithmatex">\(k_L a\)</span>-Raten in die Gasphase
+   überführt — keine algebraische Henry-Gleichgewichtsbedingung.  </li>
+<li><strong>41 Zustandsvariablen</strong>: Das Modell führt 41 Variablen in fünf Blöcken:  </li>
 </ol>
 <table>
 <thead>
@@ -2368,9 +2368,9 @@ System gewöhnlicher Differentialgleichungen (ODE)</strong>.</p>
 <p>Der pH-Wert wird in jedem Auswertungsschritt über die <strong>Ladungsbilanz</strong> und
 ein Newton–Raphson-Verfahren bestimmt:</p>
 <div class="arithmatex">\[
-S_{cat} - S_{an} + (S_{NH4} - S_{NH3}) - S_{HCO_3^-} - \frac{S_{ac^-}}{64}
-- \frac{S_{pro^-}}{112} - \frac{S_{bu^-}}{160} - \frac{S_{va^-}}{208}
-+ S_{H^+} - \frac{K_w}{S_{H^+}} = 0
+S_{cat} - S_{an} + (S_{NH4} - S_{NH3}) - S_{HCO_3^-} - \frac{S_{ac^-}}{64}  
+- \frac{S_{pro^-}}{112} - \frac{S_{bu^-}}{160} - \frac{S_{va^-}}{208}  
++ S_{H^+} - \frac{K_w}{S_{H^+}} = 0  
 \]</div>
 <p>Da alle Beiträge zur linken Seite Zustandsvariablen sind, ist diese
 Ladungsbilanz innerhalb des ODE-Schritts eine <strong>rein punktweise Funktion des
@@ -2384,7 +2384,7 @@ thermodynamischen Säure-Base-Konstanten bleibt.</p>
 <span class="arithmatex">\(X_c\)</span>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                    Substratzulauf
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                         │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>       ┌───────────────────┼─────────────────┐
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>       ┌─────────────────┼─────────────────┐
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>       │                 │                 │
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>   X_PS_ch/pr/li     X_PF_ch/pr/li      X_I (inert)
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>   (slow pool)       (fast pool)
@@ -2546,12 +2546,12 @@ alle in <code>ADM1.ADM_ODE</code> umgesetzt und folgen den ADM1da-Aufnahme-Proze
 <tr>
 <td>Undissoziiertes Propionat <span class="arithmatex">\(X_{pro}\)</span></td>
 <td>nicht enthalten</td>
-<td><span class="arithmatex">\(K_{IH,pro}/(K_{IH,pro} + S_{pro} - S_{pro^-})\)</span> (Fukuzaki et al. 1990)</td>
+<td><span class="arithmatex">\(K_{IH,pro}/(K_{IH,pro} + S_{pro} - S_{pro^-})\)</span></td>
 </tr>
 <tr>
 <td>Undissoziiertes Acetat <span class="arithmatex">\(X_{ac}\)</span></td>
 <td>nicht enthalten</td>
-<td><span class="arithmatex">\(K_{IH,ac}/(K_{IH,ac} + S_{ac} - S_{ac^-})\)</span> (Xiao et al. 2013)</td>
+<td><span class="arithmatex">\(K_{IH,ac}/(K_{IH,ac} + S_{ac} - S_{ac^-})\)</span></td>
 </tr>
 <tr>
 <td><span class="arithmatex">\(\text{CO}_2\)</span>-Limitation <span class="arithmatex">\(X_{h2}\)</span></td>
@@ -2562,12 +2562,11 @@ alle in <code>ADM1.ADM_ODE</code> umgesetzt und folgen den ADM1da-Aufnahme-Proze
 </table>
 <div class="admonition note">
 <p class="admonition-title">Anwendungsbereich der Inhibition</p>
-<p>In manchen Beschreibungen der ADM1da-Kinetik wird zusätzlich eine
-Inhibition durch Acetat bzw. undissoziierte Säuren auf <span class="arithmatex">\(X_{fa}\)</span> und
-<span class="arithmatex">\(X_{c4}\)</span> aufgeführt. Die Referenzimplementierung und PyADM1ODE wenden
-diese Terme nur auf <span class="arithmatex">\(X_{pro}\)</span> und <span class="arithmatex">\(X_{ac}\)</span> an, wo sie experimentell
-gut belegt sind (Fukuzaki et al. 1990, Xiao et al. 2013); <span class="arithmatex">\(X_{fa}\)</span> und
-<span class="arithmatex">\(X_{c4}\)</span> werden nur durch pH, N-Limitation und gelöstes H₂ inhibiert.</p>
+<p>Die ADM1da-Kinetik in Schlattmann (2011) führt zusätzlich eine Inhibition
+durch Acetat bzw. undissoziierte Säuren auf <span class="arithmatex">\(X_{fa}\)</span> und <span class="arithmatex">\(X_{c4}\)</span> auf. Die
+SIMBA#-Referenzimplementierung und PyADM1ODE wenden diese Terme nur auf
+<span class="arithmatex">\(X_{pro}\)</span> und <span class="arithmatex">\(X_{ac}\)</span> an, wo sie experimentell gut belegt sind; <span class="arithmatex">\(X_{fa}\)</span>
+und <span class="arithmatex">\(X_{c4}\)</span> werden nur durch pH, N-Limitation und gelöstes H₂ inhibiert.</p>
 </div>
 <p>Diese Erweiterungen reproduzieren das in landwirtschaftlichen Anlagen typische
 Verhalten: schärferer pH-Abfall bei Säureakkumulation, ausgeprägtere
@@ -2696,16 +2695,16 @@ direkt aus dem Massenverlustterm berechnet.</p>
 <code>Feedstock</code>-Klasse berechnet daraus den vollständigen 38-spaltigen ADM1-
 Zulaufstrom (37 flüssige Zustandsspalten + Q):</p>
 <ol>
-<li><strong>Frischmasse-Dichte</strong> <span class="arithmatex">\(\rho_{FM}\)</span> aus den Komponentendichten
-   (Mischungsregel auf spezifischem Volumen).</li>
-<li><strong>Organische COD-Konzentrationen</strong> <span class="arithmatex">\(X_{ch}, X_{pr}, X_{li}\)</span> in
-   <span class="arithmatex">\(\text{kg COD/m}^3\)</span> über die COD-Umrechnungsfaktoren <span class="arithmatex">\(M_{Xch}, M_{Xpr},
-   M_{Xli}\)</span>.</li>
-<li><strong>Routing in die Sub-Fraktionen</strong> <span class="arithmatex">\(X_{PS}/X_{PF}\)</span> via <span class="arithmatex">\(f_{sOTS}, f_{fOTS}\)</span>
-   und <span class="arithmatex">\(f_{OTSrf}\)</span> (siehe Tabelle oben).</li>
-<li><strong>Dissoziation</strong> beim Substrat-pH: ionisierte VFA, <span class="arithmatex">\(\text{HCO}_3^-\)</span>,
-   <span class="arithmatex">\(\text{NH}_3\)</span>.</li>
-<li><strong>Ladungsbilanz</strong> für die Ionen. Konventionsgemäß wird <span class="arithmatex">\(S_{cation}\)</span> für
+<li><strong>Frischmasse-Dichte</strong> <span class="arithmatex">\(\rho_{FM}\)</span> aus den Komponentendichten<br />
+   (Mischungsregel auf spezifischem Volumen).  </li>
+<li><strong>Organische COD-Konzentrationen</strong> <span class="arithmatex">\(X_{ch}, X_{pr}, X_{li}\)</span> in<br />
+<span class="arithmatex">\(\text{kg COD/m}^3\)</span> über die COD-Umrechnungsfaktoren <span class="arithmatex">\(M_{Xch}, M_{Xpr},
+   M_{Xli}\)</span>.  </li>
+<li><strong>Routing in die Sub-Fraktionen</strong> <span class="arithmatex">\(X_{PS}/X_{PF}\)</span> via <span class="arithmatex">\(f_{sOTS}, f_{fOTS}\)</span><br />
+   und <span class="arithmatex">\(f_{OTSrf}\)</span> (siehe Tabelle oben).  </li>
+<li><strong>Dissoziation</strong> beim Substrat-pH: ionisierte VFA, <span class="arithmatex">\(\text{HCO}_3^-\)</span>,<br />
+<span class="arithmatex">\(\text{NH}_3\)</span>.  </li>
+<li><strong>Ladungsbilanz</strong> für die Ionen. Konventionsgemäß wird <span class="arithmatex">\(S_{cation}\)</span> für<br />
    jeden Substrattyp auf null gesetzt (gemäß der ADM1da-Substrat­charakterisierung,
    Schlattmann 2011), und <span class="arithmatex">\(S_{anion}\)</span> ergibt sich aus der Ladungsbilanz —
    wobei es für nettokationische Substrate auch negativ werden darf.</li>
@@ -2744,55 +2743,39 @@ pro VFA (va = 208, bu = 160, pro = 112, ac = 64 g COD/mol).</p>
 <div class="arithmatex">\[
 \text{TAC} = 50 \cdot \Bigl[
 \left(F_{NH_3} - K_{A,NH_4} \cdot
-\frac{F_{NH_4} + F_{NH_3}}{10^{-pH_5} + K_{A,NH_4}}\right)
-+ \left(F_{HCO_3} - K_{A,CO_2} \cdot
-\frac{F_{CO_2} + F_{HCO_3}}{10^{-pH_5} + K_{A,CO_2}}\right)
-+ \sum_{i = \text{va},\text{bu},\text{pro},\text{ac}} (\cdots)
-+ F_{AN} - F_{CAT} \Bigr]
+\frac{F_{NH_4} + F_{NH_3}}{10^{-pH_5} + K_{A,NH_4}}\right)  
++ \left(F_{HCO_3} - K_{A,CO_2} \cdot  
+\frac{F_{CO_2} + F_{HCO_3}}{10^{-pH_5} + K_{A,CO_2}}\right)  
++ \sum_{i = \text{va},\text{bu},\text{pro},\text{ac}} (\cdots)  
++ F_{AN} - F_{CAT} \Bigr]  
 \]</div>
 <div class="admonition note">
 <p class="admonition-title">Vorfaktor 50 vs 100</p>
-<p>In manchen Darstellungen der TAC-Formel wird der Vorfaktor als Molmasse
-von CaCO₃ (100 kg/kmol) angegeben. Der physikalisch korrekte Wert ist
-das <strong>Äquivalentgewicht 50 kg/keq</strong>, da ein Mol CaCO₃ zwei
-H⁺-Äquivalente säureneutralisierende Kapazität trägt — die übliche
-Alkalinitätskonvention. PyADM1ODE verwendet den Äquivalentgewichts­
-vorfaktor, was mit dem Referenz-Output des SIMBA#-Reaktormoduls
-übereinstimmt.</p>
+<p>Die TAC-Formel in Schlattmann (2011) verwendet die Molmasse von CaCO₃
+(100 kg/kmol) als Vorfaktor. Der physikalisch korrekte Wert ist das
+<strong>Äquivalentgewicht 50 kg/keq</strong>, da ein Mol CaCO₃ zwei H⁺-Äquivalente
+säureneutralisierende Kapazität trägt — die übliche Alkalinitäts­
+konvention. PyADM1ODE verwendet den Äquivalentgewichts­vorfaktor, was
+mit dem Referenz-Output des SIMBA#-Reaktormoduls übereinstimmt.</p>
 </div>
-<h2 id="mathematische-grundlage">Mathematische Grundlage<a class="headerlink" href="#mathematische-grundlage" title="Permanent link">&para;</a></h2>
-<p>Die Implementierung basiert auf:</p>
+<h2 id="referenzen">Referenzen<a class="headerlink" href="#referenzen" title="Permanent link">&para;</a></h2>
+<p>Die Implementierung basiert auf folgenden Primärquellen (übereinstimmend mit
+der Literaturliste des PyADM1ODE–SIMBA#-Validierungsberichts):</p>
 <ul>
-<li><strong>Schlattmann, M. (2011)</strong>: <em>Weiterentwicklung des Anaerobic Digestion
+<li><strong>Batstone, D. J., Keller, J., Angelidaki, I., Kalyuzhnyi, S. V.,<br />
+  Pavlostathis, S. G., Rozzi, A., Sanders, W. T. M., Siegrist, H.,
+  Vavilin, V. A. (2002).</strong> <em>Anaerobic Digestion Model No. 1 (ADM1).</em>
+  IWA Scientific and Technical Report No. 13. IWA Publishing, London.  </li>
+<li><strong>Henneberg, W., Strohmann, F. (1864).</strong> <em>Beiträge zur Begründung einer<br />
+  rationellen Fütterung der Wiederkäuer.</em> Schwetschke, Braunschweig.
+  (Ursprung der Weender Futtermittelanalyse, die der Substrat­charakterisierung
+  zugrunde liegt.)  </li>
+<li><strong>Schlattmann, M. (2011).</strong> <em>Weiterentwicklung des Anaerobic Digestion<br />
   Model No. 1 (ADM1) zur Anwendung auf landwirtschaftliche Substrate.</em>
-  Dissertation, TU München. (Quelle der ADM1da-Sub-Fraktionierung, des
-  Biomasse-Zerfalls-Routings, der Schlammvolumenbilanz und der Weender-
-  basierten Substratcharakterisierung.)</li>
-<li><strong>Batstone, D. J. et al. (2002)</strong>: <em>Anaerobic Digestion Model No. 1 (ADM1)</em>.
-  IWA Scientific and Technical Report No. 13. (Stöchiometrie, Kinetik und
-  Säure-Base- / Henry-Konstanten der Basisform.)</li>
-<li><strong>Siegrist, H., Vogt, D., Garcia-Heras, J. L., Gujer, W. (2002)</strong>:
-  Mathematical model for meso- and thermophilic anaerobic sewage sludge
-  digestion. <em>Environmental Science &amp; Technology</em> <strong>36</strong>, 1113–1123.
-  (Quelle der ADM1da-NH₃-Inhibitionsformen und der temperaturabhängigen
-  Korrekturexponenten.)</li>
-<li><strong>Fukuzaki, S., Nishio, N., Shobayashi, M., Nagai, S. (1990)</strong>: Inhibition
-  of the fermentation of propionate to methane by hydrogen, acetate, and
-  propionate. <em>Applied and Environmental Microbiology</em> <strong>56(3)</strong>, 719–723.
-  (Inhibitionskonstante für undissoziiertes Propionat auf <span class="arithmatex">\(X_{pro}\)</span>.)</li>
-<li><strong>Xiao, K. et al. (2013)</strong>: Acetic acid inhibition on methanogens in a
-  two-phase anaerobic process. <em>Biochemical Engineering Journal</em> <strong>75</strong>,
-  1–7. (Inhibitionskonstante für undissoziiertes Acetat auf <span class="arithmatex">\(X_{ac}\)</span>.)</li>
-<li><strong>Wett, B., Eladawy, A., Ogurek, M. (2006)</strong>: Description of nitrogen
-  incorporation and release in anaerobic digestion modelling. <em>Water
-  Science &amp; Technology</em> <strong>54(4)</strong>, 67–76. (Fraktionsbasierte
-  Biomasse-Zerfallsprodukte.)</li>
-<li><strong>Gaida, D. (2014)</strong>: <em>Dynamic real-time substrate feed optimization of
-  anaerobic co-digestion plants</em>. PhD thesis, Leiden University. (Vorbild
-  für die volumetrische Mischungslogik.)</li>
-<li><strong>Koch, K. et al. (2010)</strong>: <em>Biogas from grass silage – measurements and
-  modeling with ADM1</em>. Bioresource Technology. (Kalibrierwerte für
-  hochfeste Energiepflanzen.)</li>
+  Dissertation, Technische Universität München.  </li>
+<li><strong>Siegrist, H., Vogt, D., Garcia-Heras, J. L., Gujer, W. (2002).</strong><br />
+  Mathematical Model for Meso- and Thermophilic Anaerobic Sewage Sludge
+  Digestion. <em>Environmental Science &amp; Technology</em> <strong>36</strong>(5), 1113–1123.</li>
 </ul>
 <h2 id="technische-umsetzung">Technische Umsetzung<a class="headerlink" href="#technische-umsetzung" title="Permanent link">&para;</a></h2>
 <p>Das gesamte Modell ist pure Python:</p>
