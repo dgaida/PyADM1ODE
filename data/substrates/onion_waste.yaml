@@ -1,0 +1,47 @@
+# ADM1da substrate definition: Onion waste
+#
+# Converted from the legacy substrate_gummersbach.xml library.
+# Fields derived from the legacy schema:
+#   fRF, fRP, fRFe  <- RF, RP, RL  (% TS -> fraction)
+#   fRA             = 1 - VS/100
+#   fOTSrf          = 1 - ADL/RF                (lignin as non-degradable proxy)
+#   fsOTS, ffOTS    = crop-class defaults     (slow / fast disintegration pool split)
+#   aSi             = crop-class default
+#   aXI             = (1 - D_VS) - aSi
+#   BMP             = theoretical_Weender * D_VS = 300.2 Nm^3 CH4/t VS
+#   BGP             = BMP / 0.55                = 545.8 Nm^3 biogas/t VS
+#   NH4             = Snh4 * 14/18              (g NH4/L -> kg N/m^3)
+#   FFS             = Sac + Sbu + Spro + Sva
+#   KS43            = TAC (mmol/L = mol/m^3)
+#
+# Model-default constants (densities, COD-conversion factors, methane
+# potentials, acid-base equilibrium constants at 35 deg C) are inherited
+# from SubstrateParams; override them here only if substrate-specific
+# values are available.
+
+name: Onion waste
+
+# --- Proximate analysis / measured substrate properties -----------------
+TS:    192.5      # kg/m^3 FM
+NH4:    0.389     # kg N/m^3 FM
+BGP:   545.8      # Nm^3/t VS   biogas potential (theoretical * D_VS)
+BMP:   300.2      # Nm^3 CH4/t VS  biomethane potential
+
+# --- COD fractionation --------------------------------------------------
+aXI:    0.3000
+fOTSrf: 0.883
+fsOTS:  0.0
+ffOTS:  1.0
+aSi:    0.000
+
+# --- Weender analysis (fractions of TS) ---------------------------------
+fRF:    0.1831
+fRP:    0.0831
+fRFe:   0.0255
+fRA:    0.1000
+
+# --- Physical / chemical state ------------------------------------------
+Temp:   11.0    # degC
+pH:     5.00
+KS43:   0.01    # mol/m^3   acid capacity to pH 4.3
+FFS:    1.310     # kg HAc/m^3 VFAs as acetic-acid equivalent

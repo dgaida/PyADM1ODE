@@ -266,29 +266,38 @@ directly from the mass loss term.
 ## Substrate characterization via Weender analysis
 
 Substrates are defined via common laboratory parameters and stored as
-**XML files** under `data/substrates/adm1da/`. An example structure:
+**YAML files** under `data/substrates/`. An example structure:
 
-```xml
-<substrate name="Maize silage (milk ripeness)">
-  <param name="TS"     value="320.0"/>
-  <param name="NH4"    value="0.0"/>
-  <param name="pH"     value="3.9"/>
-  <param name="fRF"    value="0.220"/>   <!-- crude fibre -->
-  <param name="fRP"    value="0.080"/>   <!-- crude protein -->
-  <param name="fRFe"   value="0.030"/>   <!-- crude fat -->
-  <param name="fRA"    value="0.045"/>   <!-- ash -->
-  <param name="aXI"    value="0.10"/>    <!-- particulate inert COD share -->
-  <param name="aSi"    value="0.02"/>    <!-- soluble inert COD share -->
-  <param name="fOTSrf" value="0.40"/>    <!-- degradable share of crude fibre -->
-  <param name="fsOTS"  value="0.30"/>    <!-- NFE/PR/LI into the slow pool -->
-  <param name="ffOTS"  value="0.70"/>    <!-- NFE/PR/LI into the fast pool -->
-  <param name="FFS"    value="0.0"/>     <!-- VFAs as acetic-acid equivalent -->
-  <param name="KS43"   value="0.0"/>     <!-- acid capacity to pH 4.3 -->
-  <!-- ... -->
-</substrate>
+```yaml
+name: Maize silage (milk ripeness)
+
+TS:     330.0     # kg/m^3 FM   total solids
+NH4:      0.8     # kg N/m^3 FM ammonia nitrogen
+BGP:    670.0     # Nm^3/t VS   biogas potential
+BMP:    356.8     # Nm^3 CH4/t VS  biomethane potential
+
+aXI:      0.1029  # particulate inert fraction of degradable COD
+fOTSrf:   0.95    # biodegradable fraction of crude fibre
+fsOTS:    0.0     # share of degradable VS into slow pool (XPS)
+ffOTS:    1.0     # share of degradable VS into fast pool (XPF)
+aSi:      0.0     # dissolved inert fraction of degradable COD
+
+fRF:      0.235   # crude fibre   (fraction of TS)
+fRP:      0.09    # crude protein
+fRFe:     0.03    # crude lipid
+fRA:      0.10    # ash
+
+Temp:    20.0     # degC
+pH:       4.0
+KS43:     0.0     # mol/m^3   acid capacity to pH 4.3
+FFS:      5.0     # kg HAc/m^3 VFAs as acetic-acid equivalent
 ```
 
-`load_substrate_xml()` returns a `SubstrateParams` dataclass; the `Feedstock`
+The same file may instead be written as XML or TOML; the loader dispatches
+on the extension. See [`data/substrates/examples/`](https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates/examples)
+for parallel examples in all three formats.
+
+`load_substrate()` returns a `SubstrateParams` dataclass; the `Feedstock`
 class derives from it the full 38-column ADM1 inflow stream (37 liquid state
 columns + Q):
 

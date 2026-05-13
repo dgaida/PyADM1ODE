@@ -1,0 +1,47 @@
+# ADM1da substrate definition: Cereal whole-plant silage (GPS)
+#
+# Converted from the legacy substrate_gummersbach.xml library.
+# Fields derived from the legacy schema:
+#   fRF, fRP, fRFe  <- RF, RP, RL  (% TS -> fraction)
+#   fRA             = 1 - VS/100
+#   fOTSrf          = 1 - ADL/RF                (lignin as non-degradable proxy)
+#   fsOTS, ffOTS    = crop-class defaults     (slow / fast disintegration pool split)
+#   aSi             = crop-class default
+#   aXI             = (1 - D_VS) - aSi
+#   BMP             = theoretical_Weender * D_VS = 290.0 Nm^3 CH4/t VS
+#   BGP             = BMP / 0.55                = 527.2 Nm^3 biogas/t VS
+#   NH4             = Snh4 * 14/18              (g NH4/L -> kg N/m^3)
+#   FFS             = Sac + Sbu + Spro + Sva
+#   KS43            = TAC (mmol/L = mol/m^3)
+#
+# Model-default constants (densities, COD-conversion factors, methane
+# potentials, acid-base equilibrium constants at 35 deg C) are inherited
+# from SubstrateParams; override them here only if substrate-specific
+# values are available.
+
+name: Cereal whole-plant silage (GPS)
+
+# --- Proximate analysis / measured substrate properties -----------------
+TS:    312.3      # kg/m^3 FM
+NH4:    0.389     # kg N/m^3 FM
+BGP:   527.2      # Nm^3/t VS   biogas potential (theoretical * D_VS)
+BMP:   290.0      # Nm^3 CH4/t VS  biomethane potential
+
+# --- COD fractionation --------------------------------------------------
+aXI:    0.2500
+fOTSrf: 0.809
+fsOTS:  0.0
+ffOTS:  1.0
+aSi:    0.000
+
+# --- Weender analysis (fractions of TS) ---------------------------------
+fRF:    0.4400
+fRP:    0.0430
+fRFe:   0.0080
+fRA:    0.0564
+
+# --- Physical / chemical state ------------------------------------------
+Temp:   10.0    # degC
+pH:     4.30
+KS43:   0.01    # mol/m^3   acid capacity to pH 4.3
+FFS:    0.000     # kg HAc/m^3 VFAs as acetic-acid equivalent

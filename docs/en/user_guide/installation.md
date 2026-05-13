@@ -169,11 +169,11 @@ def verify_installation():
         print(f"✗ Failed to import core modules: {e}")
         return False
 
-    # 3. Load a feedstock from the bundled XML substrate library
+    # 3. Load a feedstock from the bundled substrate library
     try:
         feedstock = Feedstock(["maize_silage_milk_ripeness", "swine_manure"],
                               feeding_freq=24)
-        print("✓ Feedstock loaded from data/substrates/adm1da/")
+        print("✓ Feedstock loaded from data/substrates/")
     except Exception as e:
         print(f"✗ Feedstock load failed: {e}")
         return False
@@ -218,15 +218,15 @@ cd PyADM1ODE
 pip install -e .
 ```
 
-#### 2. Substrate XML file not found
+#### 2. Substrate file not found
 
 **Problem**: `Feedstock([...])` fails because a substrate ID is unknown.
 
-**Solution**: Substrate IDs are XML file stems under `data/substrates/adm1da/`. List them:
+**Solution**: Substrate IDs are file stems under `data/substrates/` (YAML, XML, or TOML — any supported format). List them:
 ```bash
-ls data/substrates/adm1da/
+ls data/substrates/
 ```
-Use those filenames (without `.xml`) as substrate IDs.
+Use those filenames (without the extension) as substrate IDs.
 
 ### Getting Help
 

@@ -273,29 +273,39 @@ direkt aus dem Massenverlustterm berechnet.
 ## Substratcharakterisierung via Weender-Analyse
 
 Substrate werden über praxisübliche Laborparameter definiert und als
-**XML-Dateien** unter `data/substrates/adm1da/` gespeichert. Eine Beispielstruktur:
+**YAML-Dateien** unter `data/substrates/` gespeichert. Eine Beispielstruktur:
 
-```xml
-<substrate name="Maissilage (Milchreife)">
-  <param name="TS"     value="320.0"/>
-  <param name="NH4"    value="0.0"/>
-  <param name="pH"     value="3.9"/>
-  <param name="fRF"    value="0.220"/>   <!-- Rohfaser -->
-  <param name="fRP"    value="0.080"/>   <!-- Rohprotein -->
-  <param name="fRFe"   value="0.030"/>   <!-- Rohfett -->
-  <param name="fRA"    value="0.045"/>   <!-- Rohasche -->
-  <param name="aXI"    value="0.10"/>    <!-- partikulär inerter COD-Anteil -->
-  <param name="aSi"    value="0.02"/>    <!-- löslich inerter COD-Anteil -->
-  <param name="fOTSrf" value="0.40"/>    <!-- abbaubarer Anteil der Rohfaser -->
-  <param name="fsOTS"  value="0.30"/>    <!-- NFE/PR/LI in den langsamen Pool -->
-  <param name="ffOTS"  value="0.70"/>    <!-- NFE/PR/LI in den schnellen Pool -->
-  <param name="FFS"    value="0.0"/>     <!-- VFA als Essigsäure-Äquivalent -->
-  <param name="KS43"   value="0.0"/>     <!-- Säurekapazität bis pH 4,3 -->
-  <!-- ... -->
-</substrate>
+```yaml
+name: Maissilage (Milchreife)
+
+TS:     330.0     # kg/m^3 FM   Trockensubstanz
+NH4:      0.8     # kg N/m^3 FM Ammoniumstickstoff
+BGP:    670.0     # Nm^3/t VS   Biogaspotenzial
+BMP:    356.8     # Nm^3 CH4/t VS  Biomethanpotenzial
+
+aXI:      0.1029  # partikulär inerter Anteil der abbaubaren COD
+fOTSrf:   0.95    # abbaubarer Anteil der Rohfaser
+fsOTS:    0.0     # Anteil abbaubarer VS in den langsamen Pool (XPS)
+ffOTS:    1.0     # Anteil abbaubarer VS in den schnellen Pool (XPF)
+aSi:      0.0     # gelöst-inerter Anteil der abbaubaren COD
+
+fRF:      0.235   # Rohfaser   (Anteil der TS)
+fRP:      0.09    # Rohprotein
+fRFe:     0.03    # Rohfett
+fRA:      0.10    # Rohasche
+
+Temp:    20.0     # degC
+pH:       4.0
+KS43:     0.0     # mol/m^3   Säurekapazität bis pH 4,3
+FFS:      5.0     # kg HAc/m^3 VFA als Essigsäure-Äquivalent
 ```
 
-`load_substrate_xml()` liefert eine `SubstrateParams`-Dataclass; die
+Dieselbe Datei kann alternativ als XML oder TOML geschrieben werden; der
+Loader wählt das Format anhand der Endung. Side-by-Side-Beispiele in allen
+drei Formaten finden sich in
+[`data/substrates/examples/`](https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates/examples).
+
+`load_substrate()` liefert eine `SubstrateParams`-Dataclass; die
 `Feedstock`-Klasse berechnet daraus den vollständigen 38-spaltigen ADM1-
 Zulaufstrom (37 flüssige Zustandsspalten + Q):
 

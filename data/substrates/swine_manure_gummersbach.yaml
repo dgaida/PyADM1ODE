@@ -1,0 +1,47 @@
+# ADM1da substrate definition: Swine manure (Gummersbach plant)
+#
+# Converted from the legacy substrate_gummersbach.xml library.
+# Fields derived from the legacy schema:
+#   fRF, fRP, fRFe  <- RF, RP, RL  (% TS -> fraction)
+#   fRA             = 1 - VS/100
+#   fOTSrf          = 1 - ADL/RF                (lignin as non-degradable proxy)
+#   fsOTS, ffOTS    = manure-class defaults     (slow / fast disintegration pool split)
+#   aSi             = manure-class default
+#   aXI             = (1 - D_VS) - aSi
+#   BMP             = theoretical_Weender * D_VS = 203.3 Nm^3 CH4/t VS
+#   BGP             = BMP / 0.55                = 369.6 Nm^3 biogas/t VS
+#   NH4             = Snh4 * 14/18              (g NH4/L -> kg N/m^3)
+#   FFS             = Sac + Sbu + Spro + Sva
+#   KS43            = TAC (mmol/L = mol/m^3)
+#
+# Model-default constants (densities, COD-conversion factors, methane
+# potentials, acid-base equilibrium constants at 35 deg C) are inherited
+# from SubstrateParams; override them here only if substrate-specific
+# values are available.
+
+name: Swine manure (Gummersbach plant)
+
+# --- Proximate analysis / measured substrate properties -----------------
+TS:    61.0      # kg/m^3 FM
+NH4:    3.111     # kg N/m^3 FM
+BGP:   369.6      # Nm^3/t VS   biogas potential (theoretical * D_VS)
+BMP:   203.3      # Nm^3 CH4/t VS  biomethane potential
+
+# --- COD fractionation --------------------------------------------------
+aXI:    0.5000
+fOTSrf: 0.722
+fsOTS:  1.0
+ffOTS:  0.0
+aSi:    0.050
+
+# --- Weender analysis (fractions of TS) ---------------------------------
+fRF:    0.1135
+fRP:    0.1631
+fRFe:   0.0455
+fRA:    0.2840
+
+# --- Physical / chemical state ------------------------------------------
+Temp:   16.4    # degC
+pH:     7.10
+KS43:   212.22    # mol/m^3   acid capacity to pH 4.3
+FFS:    13.230     # kg HAc/m^3 VFAs as acetic-acid equivalent

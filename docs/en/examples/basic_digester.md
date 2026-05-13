@@ -81,10 +81,14 @@ feeding_freq = 48  # Can change substrate every 48 hours
 feedstock = Feedstock(feeding_freq=feeding_freq)
 ```
 
-The feedstock object loads substrate parameters from [`substrate_gummersbach.xml`](https://github.com/dgaida/PyADM1ODE/blob/master/data/substrates/substrate_gummersbach.xml) and manages:  
-- Substrate composition (Weender analysis)  
-- ADM1 parameter calculation  
-- Influent stream generation  
+The feedstock object loads substrate parameters from the bundled library at
+[`data/substrates/`](https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates)
+(YAML, with XML and TOML also accepted — see the
+[Substrates](../user_guide/substrates.md) page for the full list) and manages:
+
+- Substrate composition (Weender analysis)
+- ADM1 parameter calculation
+- Influent stream generation
 
 **Feeding Frequency**: The `feeding_freq` parameter (48 hours) defines how often the controller can adjust substrate feeds. This is important for optimization and control applications.
 

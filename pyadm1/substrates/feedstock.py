@@ -2,10 +2,11 @@
 """
 Pure-Python substrate characterization for the ADM1da model.
 
-Substrate definitions are stored as XML files under
-``data/substrates/adm1da/``.  ``load_substrate_xml`` reads one file and returns
-an ``SubstrateParams`` dataclass.  ``SubstrateRegistry`` discovers and indexes
-all XML files in that directory.
+Substrate definitions are stored under ``data/substrates/`` and may be
+written as YAML (canonical), XML, or TOML.  ``load_substrate`` dispatches on
+the file extension; format-specific helpers (``load_substrate_yaml``,
+``load_substrate_xml``, ``load_substrate_toml``) are also exposed.
+``SubstrateRegistry`` discovers all supported files in the directory.
 
 ``Feedstock`` converts the characterization data into the 38-column influent
 DataFrame expected by ``ADM1.set_influent_dataframe()``.
@@ -25,8 +26,40 @@ import pandas as pd
 
 from pyadm1.core.adm1 import INFLUENT_COLUMNS
 
-# Default location of substrate XML files.
-_DEFAULT_XML_DIR = Path(__file__).parent.parent.parent / "data" / "substrates" / "adm1da"
+# Default location of substrate definition files.
+_DEFAULT_DATA_DIR = Path(__file__).parent.parent.parent / "data" / "substrates"
+_DEFAULT_XML_DIR = _DEFAULT_DATA_DIR  # backwards-compatible alias
+
+# Supported substrate file extensions, in registry-lookup priority order.
+_SUBSTRATE_EXTENSIONS = (".yaml", ".yml", ".xml", ".toml")
+
+# Canonical default ordering for the bundled substrate library. Used by
+# ``Feedstock(substrates=None)`` so the Q array indices are stable and
+# meaningful (most-frequently-used substrates first; legacy/variants at
+# the end). Substrate IDs not listed here are appended afterwards in
+# alphabetical order, so adding new files never silently drops them.
+_DEFAULT_SUBSTRATE_ORDER: tuple = (
+    "maize_silage_milk_ripeness",
+    "cattle_manure",
+    "swine_manure",
+    "corn_cob_mix",
+    "grass_silage",
+    "green_rye_silage",
+    "cereal_gps_silage",
+    "onion_waste",
+    "maize_silage_gummersbach",
+    "cattle_manure_solid",
+    "swine_manure_gummersbach",
+    "wheat_whole_plant_silage",
+)
+
+
+def _order_substrates(available: Sequence[str]) -> List[str]:
+    """Reorder substrate IDs by :data:`_DEFAULT_SUBSTRATE_ORDER`."""
+    available_set = set(available)
+    ordered = [sid for sid in _DEFAULT_SUBSTRATE_ORDER if sid in available_set]
+    extras = sorted(available_set - set(ordered))
+    return ordered + extras
 
 
 # ---------------------------------------------------------------------------
@@ -135,25 +168,37 @@ class SubstrateParams:
 
 
 # ---------------------------------------------------------------------------
-# XML loader
+# Substrate loaders (XML, YAML, TOML)
 # ---------------------------------------------------------------------------
+
+
+def _build_substrate_params(substrate_name: str, raw: Dict[str, object], source: Path) -> SubstrateParams:
+    """Common dict -> SubstrateParams construction used by all loaders."""
+    kwargs: dict = {"name": substrate_name}
+    for f in fields(SubstrateParams):
+        if f.name == "name":
+            continue
+        if f.name in raw:
+            kwargs[f.name] = float(raw[f.name])
+        elif f.default.__class__.__name__ != "_MISSING_TYPE":
+            kwargs[f.name] = f.default
+        else:
+            raise ValueError(f"Required parameter '{f.name}' not found in {source.name}")
+    return SubstrateParams(**kwargs)
 
 
 def load_substrate_xml(path: Union[str, Path]) -> SubstrateParams:
     """
     Load a substrate definition from an XML file.
 
-    The XML file must follow the schema used in
-    ``data/substrates/adm1da/*.xml``: a ``<substrate>`` root element with a
-    ``name`` attribute and ``<param name="..." value="..."/>`` children.
+    Schema: ``<substrate name="...">`` root with ``<param name="..."
+    value="..."/>`` children.
     """
     path = Path(path)
     if not path.exists():
         raise FileNotFoundError(f"Substrate XML not found: {path}")
 
-    tree = ET.parse(path)
-    root = tree.getroot()
-
+    root = ET.parse(path).getroot()
     substrate_name = root.get("name", path.stem)
 
     raw: Dict[str, str] = {}
@@ -163,20 +208,83 @@ def load_substrate_xml(path: Union[str, Path]) -> SubstrateParams:
         if pname is not None and pvalue is not None:
             raw[pname] = pvalue
 
-    all_fields = fields(SubstrateParams)
+    return _build_substrate_params(substrate_name, raw, path)
 
-    kwargs: dict = {"name": substrate_name}
-    for f in all_fields:
-        if f.name == "name":
-            continue
-        if f.name in raw:
-            kwargs[f.name] = float(raw[f.name])
-        elif f.default.__class__.__name__ != "_MISSING_TYPE":
-            kwargs[f.name] = f.default
-        else:
-            raise ValueError(f"Required parameter '{f.name}' not found in {path.name}")
 
-    return SubstrateParams(**kwargs)
+def load_substrate_yaml(path: Union[str, Path]) -> SubstrateParams:
+    """
+    Load a substrate definition from a YAML file.
+
+    Schema: a flat top-level mapping of parameter name -> value, with one
+    optional ``name`` key for the human-readable substrate label.
+    """
+    try:
+        import yaml  # type: ignore
+    except ImportError as exc:  # pragma: no cover
+        raise ImportError("Loading YAML substrate files requires PyYAML. " "Install it with `pip install PyYAML`.") from exc
+
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(f"Substrate YAML not found: {path}")
+
+    with path.open("r", encoding="utf-8") as fp:
+        data = yaml.safe_load(fp) or {}
+    if not isinstance(data, dict):
+        raise ValueError(f"Substrate YAML must be a mapping at the top level: {path}")
+
+    substrate_name = str(data.pop("name", path.stem))
+    return _build_substrate_params(substrate_name, data, path)
+
+
+def load_substrate_toml(path: Union[str, Path]) -> SubstrateParams:
+    """
+    Load a substrate definition from a TOML file.
+
+    Schema: top-level table with ``name = "..."`` plus one ``key = value``
+    per substrate parameter.
+    """
+    try:
+        import tomllib  # Python 3.11+
+    except ImportError:  # pragma: no cover
+        try:
+            import tomli as tomllib  # type: ignore
+        except ImportError as exc:
+            raise ImportError(
+                "Loading TOML substrate files on Python < 3.11 requires `tomli`. " "Install it with `pip install tomli`."
+            ) from exc
+
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(f"Substrate TOML not found: {path}")
+
+    with path.open("rb") as fp:
+        data = tomllib.load(fp)
+    if not isinstance(data, dict):
+        raise ValueError(f"Substrate TOML must be a table at the top level: {path}")
+
+    substrate_name = str(data.pop("name", path.stem))
+    return _build_substrate_params(substrate_name, data, path)
+
+
+def load_substrate(path: Union[str, Path]) -> SubstrateParams:
+    """
+    Load a substrate definition from any supported file format.
+
+    The format is selected by the file extension:
+
+    * ``.yaml`` / ``.yml`` -> :func:`load_substrate_yaml` (canonical)
+    * ``.xml``             -> :func:`load_substrate_xml`
+    * ``.toml``            -> :func:`load_substrate_toml`
+    """
+    path = Path(path)
+    suffix = path.suffix.lower()
+    if suffix in (".yaml", ".yml"):
+        return load_substrate_yaml(path)
+    if suffix == ".xml":
+        return load_substrate_xml(path)
+    if suffix == ".toml":
+        return load_substrate_toml(path)
+    raise ValueError(f"Unsupported substrate file extension '{suffix}' for {path}. " f"Supported: {_SUBSTRATE_EXTENSIONS}")
 
 
 # ---------------------------------------------------------------------------
@@ -186,7 +294,11 @@ def load_substrate_xml(path: Union[str, Path]) -> SubstrateParams:
 
 class SubstrateRegistry:
     """
-    Discovers and lazy-loads all substrate XML files from a directory.
+    Discovers and lazy-loads substrate files from a directory.
+
+    Supported file formats: YAML (canonical), XML, TOML. When the same
+    substrate ID is present in multiple formats, lookup priority is
+    ``.yaml > .yml > .xml > .toml``.
 
     Usage
     -----
@@ -196,28 +308,49 @@ class SubstrateRegistry:
     >>> sub = registry.get("swine_manure")
     """
 
-    def __init__(self, xml_dir: Union[str, Path, None] = None) -> None:
-        self._dir = Path(xml_dir) if xml_dir is not None else _DEFAULT_XML_DIR
+    def __init__(
+        self,
+        data_dir: Union[str, Path, None] = None,
+        xml_dir: Union[str, Path, None] = None,
+    ) -> None:
+        # ``xml_dir`` is the legacy keyword from when substrates were
+        # XML-only; kept as a back-compat alias so existing callers don't
+        # break. New code should use ``data_dir``.
+        if xml_dir is not None:
+            if data_dir is not None:
+                raise TypeError("SubstrateRegistry() accepts 'data_dir' or 'xml_dir', not both.")
+            data_dir = xml_dir
+        self._dir = Path(data_dir) if data_dir is not None else _DEFAULT_DATA_DIR
         self._cache: Dict[str, SubstrateParams] = {}
 
     def available(self) -> List[str]:
-        """Return substrate IDs (= XML file stems) in the directory."""
+        """Return substrate IDs (file stems) found in the directory."""
         if not self._dir.exists():
             return []
-        return sorted(p.stem for p in self._dir.glob("*.xml"))
+        seen: set = set()
+        for ext in _SUBSTRATE_EXTENSIONS:
+            for p in self._dir.glob(f"*{ext}"):
+                seen.add(p.stem)
+        return sorted(seen)
+
+    def _find_path(self, substrate_id: str) -> Union[Path, None]:
+        for ext in _SUBSTRATE_EXTENSIONS:
+            candidate = self._dir / f"{substrate_id}{ext}"
+            if candidate.exists():
+                return candidate
+        return None
 
     def get(self, substrate_id: str) -> SubstrateParams:
         """Return the substrate with the given ID, loading it on first access."""
         if substrate_id not in self._cache:
-            path = self._dir / f"{substrate_id}.xml"
-            if not path.exists():
-                available = self.available()
-                raise KeyError(f"Substrate '{substrate_id}' not found in {self._dir}. Available: {available}")
-            self._cache[substrate_id] = load_substrate_xml(path)
+            path = self._find_path(substrate_id)
+            if path is None:
+                raise KeyError(f"Substrate '{substrate_id}' not found in {self._dir}. " f"Available: {self.available()}")
+            self._cache[substrate_id] = load_substrate(path)
         return self._cache[substrate_id]
 
     def load_all(self) -> Dict[str, SubstrateParams]:
-        """Load all XML files and return id → params mapping."""
+        """Load every substrate file in the directory."""
         for sid in self.available():
             self.get(sid)
         return dict(self._cache)
@@ -268,10 +401,14 @@ class Feedstock:
         Parameters
         ----------
         substrates : SubstrateParams | str | Path | list of those, optional
-            A single substrate object/XML path/ID, or a list of substrates
-            to co-digest.  When ``None`` (the default), every XML file under
-            ``data/substrates/adm1da/`` is loaded — handy for demos and tests
-            where the exact mix doesn't matter.
+            A single substrate object/file path/ID, or a list of substrates
+            to co-digest.  When ``None`` (the default), every substrate file
+            under ``data/substrates/`` is loaded, ordered by the canonical
+            default in :data:`_DEFAULT_SUBSTRATE_ORDER` (frequently-used
+            substrates first, then variants; unknown IDs are appended in
+            alphabetical order). Handy for demos and tests where the exact
+            mix doesn't matter; pass an explicit list whenever the index
+            of ``Q`` must be stable across releases.
         feeding_freq : int
             Time between feeding events [hours].
         total_simtime : int
@@ -292,10 +429,10 @@ class Feedstock:
             available = SubstrateRegistry().available()
             if not available:
                 raise ValueError(
-                    f"No substrate XMLs found in {_DEFAULT_XML_DIR}; " "pass an explicit substrate list or add XML files."
+                    f"No substrate files found in {_DEFAULT_DATA_DIR}; " "pass an explicit substrate list or add files."
                 )
             self._multi = True
-            raw_subs: List[_SubstrateInput] = list(available)
+            raw_subs: List[_SubstrateInput] = list(_order_substrates(available))
         elif isinstance(substrates, (list, tuple)):
             if len(substrates) == 0:
                 raise ValueError("At least one substrate must be provided.")
@@ -492,17 +629,19 @@ class Feedstock:
     def _resolve_substrate(item: _SubstrateInput) -> SubstrateParams:
         """
         Accept a params object, a filesystem path, or a bare substrate ID
-        (XML stem in the default ``data/substrates/adm1da/`` directory).
+        (file stem in the default ``data/substrates/`` directory).
+        Any supported format (.yaml/.yml/.xml/.toml) is recognised.
         """
         if isinstance(item, SubstrateParams):
             return item
         p = Path(item)
         if p.exists():
-            return load_substrate_xml(p)
-        reg_path = _DEFAULT_XML_DIR / f"{p.stem}.xml"
-        if reg_path.exists():
-            return load_substrate_xml(reg_path)
-        raise FileNotFoundError(f"Substrate '{item}' not found as a path or as an ID in {_DEFAULT_XML_DIR}")
+            return load_substrate(p)
+        for ext in _SUBSTRATE_EXTENSIONS:
+            reg_path = _DEFAULT_DATA_DIR / f"{p.stem}{ext}"
+            if reg_path.exists():
+                return load_substrate(reg_path)
+        raise FileNotFoundError(f"Substrate '{item}' not found as a path or as an ID in {_DEFAULT_DATA_DIR}")
 
     def _require_single(self, prop: str, hint: str) -> None:
         """Raise ValueError if the single-substrate accessor *prop* is called on a multi-substrate feedstock."""

@@ -44,7 +44,7 @@ def main(feed: Optional[Mapping[str, float]] = None):
     ----------
     feed : mapping of {substrate_id: Q_m3_per_day}, optional
         Substrate mix to feed.  Each key is the XML file stem of a substrate
-        in ``data/substrates/adm1da/`` and the value is its volumetric flow
+        in ``data/substrates/`` and the value is its volumetric flow
         rate in m³/d.  Any number of substrates may be supplied.  Defaults
         to :data:`DEFAULT_FEED` (maize silage + swine + cattle manure).
     """

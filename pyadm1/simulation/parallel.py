@@ -8,6 +8,10 @@ sweeps, sensitivity analysis, and Monte Carlo uncertainty quantification.
 
 Each scenario is a dictionary that may contain:
   - ``Q`` (list of float): substrate feed rates [m³/d].
+  - ``T_ad`` (float, optional): reactor temperature [K]. Overrides the
+    base ADM1 instance's temperature for this scenario; useful for
+    temperature sweeps that previously required one ParallelSimulator
+    per temperature.
   - any subset of the calibration parameter keys (see
     :data:`_CALIBRATION_PARAM_KEYS`).
 """
@@ -361,11 +365,17 @@ def _run_single_scenario(
         else:
             feedstock = None
 
+        # Per-scenario T_ad override: the base ADM1 fixes T at construction,
+        # but a sweep over temperature would otherwise need one
+        # ParallelSimulator per T. Allowing the scenario to override T_ad
+        # lets temperature live alongside Q and the kinetic constants as a
+        # first-class parameter axis.
+        T_ad = float(parameters.get("T_ad", adm1_config["T_ad"]))
         adm1 = ADM1(
             feedstock=feedstock,
             V_liq=adm1_config["V_liq"],
             V_gas=adm1_config["V_gas"],
-            T_ad=adm1_config["T_ad"],
+            T_ad=T_ad,
         )
 
         if not verbose:

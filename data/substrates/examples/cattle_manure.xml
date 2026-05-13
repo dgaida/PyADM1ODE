@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ADM1da substrate definition: Cattle manure
+
+  TS and NH4 are given per m³ of fresh substrate (liquid manure). Since
+  density ≈ 1000 kg/m³ this is numerically equal to kg/t FM and the same
+  calculation path is used as for solid substrates.
+
+  Only the measured / substrate-specific parameters are listed below.
+  Model-default constants (densities, COD-conversion factors, methane
+  potentials, acid-base equilibrium constants) are inherited from
+  SubstrateParams; override them here only if a substrate-specific value
+  is available.
+-->
+<substrate id="cattle_manure" name="Cattle manure">
+
+  <!-- Proximate analysis / measured substrate properties -->
+  <param name="TS"     value="80.0"  unit="kg/m3_FM"      description="Total solids"/>
+  <param name="NH4"    value="2.0"   unit="kg_N/m3_FM"    description="Ammonia nitrogen"/>
+  <param name="BGP"    value="260.0" unit="Nm3/t_VS"      description="Biogas potential (reference)"/>
+  <param name="BMP"    value="136.7" unit="Nm3_CH4/t_VS"  description="Biomethane potential (reference)"/>
+
+  <!-- COD fractionation -->
+  <param name="aXI"    value="0.628" unit="kg_COD/kg_COD" description="Particulate inert fraction of degradable COD"/>
+  <param name="fOTSrf" value="0.7"   unit="-"             description="Biodegradable fraction of crude fibre (XF)"/>
+  <param name="fsOTS"  value="1.0"   unit="-"             description="Share of degradable VS entering slow pool (XPS)"/>
+  <param name="ffOTS"  value="0.0"   unit="-"             description="Share of degradable VS entering fast pool (XPF)"/>
+  <param name="aSi"    value="0.05"  unit="kg_COD/kg_COD" description="Dissolved inert fraction of degradable COD"/>
+
+  <!-- Weender analysis (fractions of TS) -->
+  <param name="fRF"    value="0.18"  unit="kg_TS/kg_TS"   description="Crude fibre fraction of TS"/>
+  <param name="fRP"    value="0.14"  unit="kg_TS/kg_TS"   description="Crude protein fraction of TS"/>
+  <param name="fRFe"   value="0.035" unit="kg_TS/kg_TS"   description="Crude lipid fraction of TS"/>
+  <param name="fRA"    value="0.10"  unit="kg_TS/kg_TS"   description="Ash fraction of TS"/>
+
+  <!-- Physical / chemical state -->
+  <param name="Temp"   value="20.0"  unit="degC"          description="Substrate temperature"/>
+  <param name="pH"     value="7.1"   unit="-"             description="pH value"/>
+  <param name="KS43"   value="80.0"  unit="mol/m3"        description="Acid capacity to pH 4.3"/>
+  <param name="FFS"    value="5.0"   unit="kg_HAc/m3"     description="VFAs as acetic-acid equivalent"/>
+
+  <!--
+       Optional model-default overrides
+       Uncomment any of the <param/> elements below to override a
+       SubstrateParams default. Values are illustrative, not measurements.
+
+  <param name="MP_LI"  value="0.65"   unit="-"          description="Methane potential of lipids (default 0.68)"/>
+  <param name="roh_CH" value="1500.0" unit="kg/m3"      description="Density of carbohydrates (default 1550)"/>
+  <param name="M_Xpr"  value="0.75"   unit="kg/kg_COD"  description="Mass-to-COD ratio of proteins (default 0.7736)"/>
+  -->
+
+</substrate>

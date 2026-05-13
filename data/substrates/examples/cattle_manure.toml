@@ -1,0 +1,45 @@
+# ADM1da substrate definition: Cattle manure (TOML example)
+#
+# This file is equivalent to cattle_manure.yaml / cattle_manure.xml in
+# the same directory. Loading any of the three via
+# `pyadm1.substrates.load_substrate` yields the same SubstrateParams.
+#
+# Model-default constants (densities, COD-conversion factors, methane
+# potentials, acid-base equilibrium constants) are inherited from
+# SubstrateParams; override them here only if substrate-specific values
+# are available.
+
+name = "Cattle manure"
+
+# --- Proximate analysis / measured substrate properties -----------------
+TS  = 80.0      # kg/m³ FM   total solids
+NH4 =  2.0      # kg N/m³ FM ammonia nitrogen
+BGP = 260.0     # Nm³/t VS   biogas potential (reference)
+BMP = 136.7     # Nm³ CH4/t VS biomethane potential (reference)
+
+# --- COD fractionation --------------------------------------------------
+aXI    = 0.628  # particulate inert fraction of degradable COD
+fOTSrf = 0.7    # biodegradable fraction of crude fibre (XF)
+fsOTS  = 1.0    # share of degradable VS entering slow pool (XPS)
+ffOTS  = 0.0    # share of degradable VS entering fast pool (XPF)
+aSi    = 0.05   # dissolved inert fraction of degradable COD
+
+# --- Weender analysis (fractions of TS) ---------------------------------
+fRF  = 0.18     # crude fibre
+fRP  = 0.14     # crude protein
+fRFe = 0.035    # crude lipid
+fRA  = 0.10     # ash
+
+# --- Physical / chemical state ------------------------------------------
+Temp = 20.0     # °C        substrate temperature
+pH   =  7.1
+KS43 = 80.0     # mol/m³    acid capacity to pH 4.3
+FFS  =  5.0     # kg HAc/m³ VFAs as acetic-acid equivalent
+
+# --- Optional model-default overrides -----------------------------------
+# Uncomment any of the lines below to override a SubstrateParams default
+# for this substrate.  Values shown are illustrative, not measurements.
+#
+# MP_LI  = 0.65       # methane potential of lipids               (default 0.68)
+# roh_CH = 1500.0     # density of carbohydrates [kg/m³]          (default 1550)
+# M_Xpr  = 0.75       # mass-to-COD ratio of proteins             (default 0.7736)

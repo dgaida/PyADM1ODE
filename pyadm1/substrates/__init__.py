@@ -15,12 +15,18 @@ from .feedstock import (
     Feedstock,
     SubstrateParams,
     SubstrateRegistry,
+    load_substrate,
     load_substrate_xml,
+    load_substrate_yaml,
+    load_substrate_toml,
 )
 
 __all__ = [
     "Feedstock",
     "SubstrateParams",
     "SubstrateRegistry",
+    "load_substrate",
     "load_substrate_xml",
+    "load_substrate_yaml",
+    "load_substrate_toml",
 ]

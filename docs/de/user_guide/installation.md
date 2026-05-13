@@ -115,7 +115,9 @@ print("Core-Module erfolgreich geladen.")
 ### Häufige Probleme
 
 #### 1. `ModuleNotFoundError: No module named 'pyadm1'`
+
 Das Paket ist in der aktiven Umgebung nicht installiert. Prüfen mit `pip show pyadm1ode` und ggf. neu installieren (`pip install -e .` aus dem Projekt-Root).
 
-#### 2. Substrat-XML-Datei nicht gefunden
-`Feedstock([...])` schlägt fehl, weil eine Substrat-ID unbekannt ist. Die gültigen IDs sind die Dateinamen-Stämme unter `data/substrates/adm1da/` (ohne `.xml`).
+#### 2. Substratdatei nicht gefunden
+
+`Feedstock([...])` schlägt fehl, weil eine Substrat-ID unbekannt ist. Die gültigen IDs sind die Dateinamen-Stämme unter `data/substrates/` (YAML, XML oder TOML — jedes unterstützte Format, ohne Endung).

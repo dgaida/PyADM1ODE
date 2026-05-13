@@ -81,10 +81,16 @@ feeding_freq = 48  # Substrat kann alle 48 Stunden geändert werden
 feedstock = Feedstock(feeding_freq=feeding_freq)
 ```
 
-Das Feedstock-Objekt lädt Substratparameter aus [`substrate_gummersbach.xml`](https://github.com/dgaida/PyADM1ODE/blob/master/data/substrates/substrate_gummersbach.xml) und verwaltet:  
-- Substratzusammensetzung (Weender-Analyse)  
-- ADM1-Parameterberechnung  
-- Generierung des Zulaufstroms  
+Das Feedstock-Objekt lädt Substratparameter aus der mitgelieferten
+Bibliothek unter
+[`data/substrates/`](https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates)
+(YAML, daneben werden auch XML und TOML akzeptiert — die vollständige
+Liste steht auf der Seite
+[Substrate](../user_guide/substrates.md)) und verwaltet:
+
+- Substratzusammensetzung (Weender-Analyse)
+- ADM1-Parameterberechnung
+- Generierung des Zulaufstroms
 
 **Fütterungsfrequenz**: Der Parameter `feeding_freq` (48 Stunden) definiert, wie oft die Steuerung den Substratzulauf anpassen kann. Dies ist wichtig für Optimierungs- und Regelungsanwendungen.
 

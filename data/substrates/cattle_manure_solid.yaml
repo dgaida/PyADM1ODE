@@ -1,0 +1,47 @@
+# ADM1da substrate definition: Cattle manure (solid)
+#
+# Converted from the legacy substrate_gummersbach.xml library.
+# Fields derived from the legacy schema:
+#   fRF, fRP, fRFe  <- RF, RP, RL  (% TS -> fraction)
+#   fRA             = 1 - VS/100
+#   fOTSrf          = 1 - ADL/RF                (lignin as non-degradable proxy)
+#   fsOTS, ffOTS    = manure-class defaults     (slow / fast disintegration pool split)
+#   aSi             = manure-class default
+#   aXI             = (1 - D_VS) - aSi
+#   BMP             = theoretical_Weender * D_VS = 281.5 Nm^3 CH4/t VS
+#   BGP             = BMP / 0.55                = 511.7 Nm^3 biogas/t VS
+#   NH4             = Snh4 * 14/18              (g NH4/L -> kg N/m^3)
+#   FFS             = Sac + Sbu + Spro + Sva
+#   KS43            = TAC (mmol/L = mol/m^3)
+#
+# Model-default constants (densities, COD-conversion factors, methane
+# potentials, acid-base equilibrium constants at 35 deg C) are inherited
+# from SubstrateParams; override them here only if substrate-specific
+# values are available.
+
+name: Cattle manure (solid)
+
+# --- Proximate analysis / measured substrate properties -----------------
+TS:    120.0      # kg/m^3 FM
+NH4:    1.556     # kg N/m^3 FM
+BGP:   511.7      # Nm^3/t VS   biogas potential (theoretical * D_VS)
+BMP:   281.5      # Nm^3 CH4/t VS  biomethane potential
+
+# --- COD fractionation --------------------------------------------------
+aXI:    0.2500
+fOTSrf: 0.391
+fsOTS:  1.0
+ffOTS:  0.0
+aSi:    0.050
+
+# --- Weender analysis (fractions of TS) ---------------------------------
+fRF:    0.1831
+fRP:    0.1831
+fRFe:   0.0355
+fRA:    0.1500
+
+# --- Physical / chemical state ------------------------------------------
+Temp:   12.0    # degC
+pH:     7.00
+KS43:   100.00    # mol/m^3   acid capacity to pH 4.3
+FFS:    0.000     # kg HAc/m^3 VFAs as acetic-acid equivalent

@@ -134,12 +134,31 @@ class BiogasPlant:
             if component.component_type.value == "storage":
                 continue
 
-            # Gather inputs from connected components
+            # Gather inputs from connected components. For "liquid"
+            # cascade connections (e.g. primary digester -> post-digester),
+            # the upstream component writes its effluent as Q_out /
+            # state_out but the downstream digester reads its inflow as
+            # Q_in / state_in -- remap on the fly so the cascade actually
+            # carries flow. Other connection types (gas, heat, ...) keep
+            # their keys verbatim.
             inputs = {}
             for input_id in component.inputs:
-                if input_id in self.components:
-                    input_comp = self.components[input_id]
-                    inputs.update(input_comp.outputs_data)
+                if input_id not in self.components:
+                    continue
+                input_comp = self.components[input_id]
+                out = input_comp.outputs_data
+                conn_type = None
+                for conn in self.connections:
+                    if conn.from_component == input_id and conn.to_component == component_id:
+                        conn_type = conn.connection_type
+                        break
+                if conn_type == "liquid":
+                    if "Q_out" in out:
+                        inputs["Q_in"] = out["Q_out"]
+                    if "state_out" in out:
+                        inputs["state_in"] = out["state_out"]
+                else:
+                    inputs.update(out)
 
             # Execute component
             output = component.step(self.simulation_time, dt, inputs)

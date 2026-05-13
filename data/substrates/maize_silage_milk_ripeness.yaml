@@ -1,0 +1,33 @@
+# ADM1da substrate definition: Maize silage (milk ripeness)
+#
+# Model-default constants (densities, COD-conversion factors, methane
+# potentials, acid-base equilibrium constants at 35 °C) are inherited
+# from SubstrateParams; override them here only if substrate-specific
+# values are available.
+
+name: Maize silage (milk ripeness)
+
+# --- Proximate analysis / measured substrate properties -----------------
+TS:   330.0     # kg/t FM    total solids
+NH4:    0.8     # kg N/t FM  ammonia nitrogen
+BGP:  670.0     # Nm³/t VS   biogas potential (reference)
+BMP:  356.8     # Nm³ CH4/t VS  biomethane potential (reference)
+
+# --- COD fractionation --------------------------------------------------
+aXI:     0.1029 # particulate inert fraction of degradable COD
+fOTSrf:  0.95   # biodegradable fraction of crude fibre (XF)
+fsOTS:   0.0    # share of degradable VS entering slow pool (XPS)
+ffOTS:   1.0    # share of degradable VS entering fast pool (XPF)
+aSi:     0.0    # dissolved inert fraction of degradable COD
+
+# --- Weender analysis (fractions of TS) ---------------------------------
+fRF:   0.235    # crude fibre
+fRP:   0.09     # crude protein
+fRFe:  0.03     # crude lipid
+fRA:   0.10     # ash
+
+# --- Physical / chemical state ------------------------------------------
+Temp: 20.0      # °C        substrate temperature
+pH:    4.0
+KS43:  0.0      # mol/m³    acid capacity to pH 4.3
+FFS:   5.0      # kg HAc/m³ VFAs as acetic-acid equivalent
