@@ -519,6 +519,7 @@ feeder_type, accuracy = optimize_dosing_accuracy(substrate_value=35,
 ### Problem: Schneller Qualitätsverlust
 
 **Diagnose:**
+
 ```python
 storage_result = storage.step(t, dt, inputs)
 
@@ -531,6 +532,7 @@ if storage_result['quality_factor'] < 0.95 and storage_result['storage_time'] < 
 ```
 
 **Lösungen:**
+
 ```python
 # Option 1: Verbessere Lagertyp
 storage_improved = SubstrateStorage(
@@ -550,6 +552,7 @@ increase_daily_usage = True
 ### Problem: Dosierer-Blockaden
 
 **Diagnose:**
+
 ```python
 if feeder.state['n_blockages'] > 5:
     print(f"Häufige Blockaden erkannt: {feeder.state['n_blockages']}")
@@ -567,6 +570,7 @@ if feeder.state['n_blockages'] > 5:
 ### Problem: Inkonsistente Dosierung
 
 **Diagnose:**
+
 ```python
 dosing_errors = [r['components']['feed1']['dosing_error']
                 for r in results]

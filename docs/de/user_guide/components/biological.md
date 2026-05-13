@@ -69,6 +69,7 @@ outputs = digester.step(t, dt, inputs)
 ### Erweiterte Verwendung
 
 **Mehrere Fermenter in Reihe:**
+
 ```python
 # Hydrolyse + Methanogenese
 configurator.add_digester("hydro", V_liq=500, T_ad=318.15,
@@ -79,6 +80,7 @@ configurator.connect("hydro", "main", "liquid")
 ```
 
 **Benutzerdefinierter Anfangszustand:**
+
 ```python
 import pandas as pd
 
@@ -247,6 +249,7 @@ monitor_digester_health(results)
 - Plötzliche Substratänderung  
 
 **Lösungen:**
+
 ```python
 # Reduziere organische Belastung
 Q = [10, 8, 0, 0, 0, 0, 0, 0, 0, 0]  # Reduziert von [15, 10, ...]
@@ -276,6 +279,7 @@ Q = [15, 10, 0, 0, 0, 0, 0, 1, 0, 0]  # 1 m³/d Kalk
 - Zu kurze Verweilzeit  
 
 **Diagnose:**
+
 ```python
 def diagnose_low_gas_production(digester_outputs):
     """Diagnostiziere Ursachen für niedrige Gasproduktion"""

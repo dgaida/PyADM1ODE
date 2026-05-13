@@ -40,6 +40,7 @@ Example:
 """
 
 from .plant_builder import BiogasPlant
+from .plant_configurator import PlantConfigurator
 from .connection_manager import (
     ConnectionManager,
     Connection,
@@ -53,6 +54,7 @@ from . import templates
 
 __all__ = [
     "BiogasPlant",
+    "PlantConfigurator",
     "ConnectionManager",
     "Connection",
     "ConnectionType",

@@ -106,7 +106,7 @@ print(f"Wirkungsgrad: {result['efficiency']:.1%}")
 
 Pumpen berechnen Leistung basierend auf hydraulischer Formel:
 
-```
+```text
 P_hydraulic = ρ × g × Q × H / 1000  [kW]
 P_shaft = P_hydraulic / η_pump
 P_electrical = P_shaft / η_motor
@@ -290,7 +290,8 @@ P_actual = min(P_electrical, power_installed)
 ```
 
 **Reynolds-Zahl für Mischen:**
-```
+
+```text
 Re = ρ * N * D² / μ
 
 wobei:
@@ -316,7 +317,7 @@ wobei:
 
 Basierend auf Nienow-Korrelation:
 
-```
+```text
 θ_mix = C * (D_T/D)^α * (H/D_T)^β / N
 
 wobei:
@@ -589,6 +590,7 @@ strategies = minimize_mechanical_energy({})
 ### Problem: Pumpe liefert unzureichenden Durchfluss
 
 **Diagnose:**
+
 ```python
 pump_result = pump.step(0, 1/24, {'Q_setpoint': 15, 'enable_pump': True})
 
@@ -611,6 +613,7 @@ if pump_result['Q_actual'] < 0.8 * pump_result.get('Q_setpoint', 15):
 ### Problem: Rührwerk verbraucht zu viel Energie
 
 **Diagnose:**
+
 ```python
 mixer_result = mixer.step(0, 1/24, {})
 
@@ -628,6 +631,7 @@ if specific_power > 6.0:  # Obergrenze für mittlere Intensität
 ```
 
 **Lösungen:**
+
 ```python
 # Implementiere intermittierenden Betrieb
 mixer_optimized = Mixer(
@@ -642,6 +646,7 @@ mixer_optimized = Mixer(
 ### Problem: Schlechte Mischqualität
 
 **Diagnose:**
+
 ```python
 if mixer_result['mixing_quality'] < 0.7:
     print(f"Niedrige Mischqualität: {mixer_result['mixing_quality']:.2f}")

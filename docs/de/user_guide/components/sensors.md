@@ -1,53 +1,52 @@
 # Sensoren
 
-Mess- und Überwachungskomponenten für Biogasanlagen (in Entwicklung).
+Mess- und Überwachungskomponenten für Biogasanlagen.
 
 ## Übersicht
 
-PyADM1 wird in Zukunft ein umfassendes Sensormodul für realistische Prozessüberwachung und -steuerung enthalten. Diese Komponenten werden realistische Messcharakteristiken modellieren, einschließlich Rauschen, Drift und Ansprechzeiten.
+PyADM1 bietet ein Sensormodul für realistische Prozessüberwachung und -steuerung. Diese Komponenten modellieren realistische Messcharakteristiken einschließlich Rauschen, Drift und Ansprechzeiten. Siehe [API-Referenz](../../api/sensors.md) für die Klassen-Dokumentation.
 
-## Geplante Sensorkategorien
+## Sensorkategorien
 
 ### Physikalische Sensoren
 
 Sensoren für physikalische Eigenschaften:
 
-- **pH-Elektroden**: Mit Kalibrierungsdrift und Temperaturkompensation  
-- **Temperatursensoren**: PT100, Thermoelemente mit Genauigkeitsspezifikationen  
-- **Drucksensoren**: Für Gas- und Flüssigkeitsdruck  
-- **Füllstandssensoren**: Ultraschall, Radar, hydrostatisch  
-- **Durchflussmesser**: Magnetisch-induktiv, Ultraschall, Coriolis  
+- **pH-Elektroden**: Mit Kalibrierungsdrift und Temperaturkompensation
+- **Temperatursensoren**: PT100, Thermoelemente mit Genauigkeitsspezifikationen
+- **Drucksensoren**: Für Gas- und Flüssigkeitsdruck
+- **Füllstandssensoren**: Ultraschall, Radar, hydrostatisch
+- **Durchflussmesser**: Magnetisch-induktiv, Ultraschall, Coriolis
 
 ### Chemische Sensoren
 
 Sensoren für Prozessflüssigkeitsanalyse:
 
-- **VFA-Analysatoren**: Online-Titration, GC-Analyse  
-- **Ammoniak-Sensoren**: Ionenselektive Elektroden  
-- **CSB-Analysatoren**: Online-Spektroskopie  
-- **Nährstoffanalysatoren**: N, P, K-Messung  
+- **VFA-Analysatoren**: Online-Titration, GC-Analyse
+- **Ammoniak-Sensoren**: Ionenselektive Elektroden
+- **CSB-Analysatoren**: Online-Spektroskopie
+- **Nährstoffanalysatoren**: N, P, K-Messung
 
 ### Gas-Analysatoren
 
 Sensoren für Biogaszusammensetzung:
 
-- **Methan-Sensoren**: Infrarot, kalorimetrisch  
-- **CO2-Sensoren**: NDIR-Technologie  
-- **H2S-Sensoren**: Elektrochemisch  
-- **Sauerstoff-Sensoren**: Für Leckageerkennung  
-- **Spurengas-Analysatoren**: Mit Nachweisgrenzen  
+- **Methan-Sensoren**: Infrarot, kalorimetrisch
+- **CO2-Sensoren**: NDIR-Technologie
+- **H2S-Sensoren**: Elektrochemisch
+- **Sauerstoff-Sensoren**: Für Leckageerkennung
+- **Spurengas-Analysatoren**: Mit Nachweisgrenzen
 
-## Beispiel-Konzept
+## Verwendungsbeispiel
 
 ```python
-# Zukünftige Implementierung (konzeptionell)
 from pyadm1.components.sensors import PhysicalSensor, ChemicalSensor, GasSensor
 
 # pH-Sensor mit realistischem Rauschen
 ph_sensor = PhysicalSensor(
     "ph1",
     sensor_type="pH",
-    measurement_noise=0.05,    # ±0.05 pH Einheiten
+    measurement_noise=0.05,    # ±0.05 pH-Einheiten
     drift_rate=0.01,           # Kalibrierungsdrift pro Tag
     response_time=30.0,        # Sekunden
     calibration_interval=7     # Tage zwischen Kalibrierungen
@@ -94,11 +93,11 @@ measured_value = (
 
 | Sensor | Messbereich | Genauigkeit | Drift |
 |--------|-------------|-------------|-------|
-| pH | 0-14 | ±0.05 pH | 0.01 pH/Tag |
-| Temperatur (PT100) | -50 bis 200°C | ±0.1°C | <0.01°C/Jahr |
-| Druck | 0-2 bar | ±0.5% FS | <0.1% FS/Jahr |
-| VFA | 0-20 g/L | ±5% | ±0.1 g/L/Woche |
-| CH4 | 0-100% | ±0.5% | ±0.1%/Woche |
+| pH | 0–14 | ±0.05 pH | 0.01 pH/Tag |
+| Temperatur (PT100) | −50 bis 200 °C | ±0.1 °C | <0.01 °C/Jahr |
+| Druck | 0–2 bar | ±0.5% FS | <0.1% FS/Jahr |
+| VFA | 0–20 g/L | ±5% | ±0.1 g/L/Woche |
+| CH4 | 0–100% | ±0.5% | ±0.1%/Woche |
 
 ### Ansprechzeit
 
@@ -114,11 +113,11 @@ sensor_value(t) = true_value * (1 - exp(-t/τ))
 **Typische Ansprechzeiten:**
 
 | Sensor | τ (Zeit bis 63% Response) | t95 (Zeit bis 95% Response) |
-|--------|---------------------------|----------------------------|
-| pH-Elektrode | 10-30 s | 30-90 s |
-| Thermoelement | 0.1-5 s | 0.3-15 s |
-| CH4-Sensor (IR) | 5-10 s | 15-30 s |
-| VFA-Analysator | 2-5 min | 6-15 min |
+|--------|---------------------------|-----------------------------|
+| pH-Elektrode | 10–30 s | 30–90 s |
+| Thermoelement | 0.1–5 s | 0.3–15 s |
+| CH4-Sensor (IR) | 5–10 s | 15–30 s |
+| VFA-Analysator | 2–5 min | 6–15 min |
 
 ### Kalibrierung und Wartung
 
@@ -184,9 +183,9 @@ Rohe Sensordaten benötigen oft Filterung:
 # Exponentielles Glätten
 def exponential_smoothing(measurements, alpha=0.3):
     """
-    Glätte Sensormessungen
+    Glätte Sensormessungen.
 
-    alpha: Glättungsfaktor (0-1)
+    alpha: Glättungsfaktor (0–1)
            0 = keine Glättung
            1 = nur aktueller Wert
     """
@@ -198,7 +197,7 @@ def exponential_smoothing(measurements, alpha=0.3):
 
 # Moving Average
 def moving_average(measurements, window=5):
-    """Gleitender Durchschnitt"""
+    """Gleitender Durchschnitt."""
     return [
         sum(measurements[max(0, i-window):i+1]) /
         min(window, i+1)
@@ -211,9 +210,9 @@ def moving_average(measurements, window=5):
 ```python
 def detect_outliers(measurements, threshold=3.0):
     """
-    Erkenne Ausreißer mit Z-Score
+    Erkenne Ausreißer mit Z-Score.
 
-    threshold: Standardabweichungen für Ausreißer
+    threshold: Standardabweichungen für Ausreißer-Klassifikation
     """
     mean = sum(measurements) / len(measurements)
     std = (sum((x - mean)**2 for x in measurements) / len(measurements))**0.5
@@ -232,10 +231,9 @@ def detect_outliers(measurements, threshold=3.0):
 ### pH-Regelung
 
 ```python
-# Zukünftiges Beispiel: pH-Steuerung
 def ph_control(ph_measurement, setpoint=7.2, tolerance=0.2):
     """
-    Einfache pH-Regelung
+    Einfache pH-Regelung.
 
     Returns: Kalk-Dosierungsrate [kg/d]
     """
@@ -260,7 +258,7 @@ def ph_control(ph_measurement, setpoint=7.2, tolerance=0.2):
 def adaptive_feeding_control(vfa_measurement, vfa_limit=4.0,
                              current_feed_rate=15.0):
     """
-    Passe Fütterungsrate basierend auf VFA an
+    Passe Fütterungsrate basierend auf VFA an.
 
     vfa_limit: VFA-Grenzwert [g/L]
     current_feed_rate: Aktuelle Rate [m³/d]
@@ -290,7 +288,7 @@ def adaptive_feeding_control(vfa_measurement, vfa_limit=4.0,
 
 ```python
 class SensorAlarm:
-    """Sensor-Alarmsystem"""
+    """Sensor-Alarmsystem."""
 
     def __init__(self, sensor_id, alarm_type, threshold, hysteresis=0.1):
         self.sensor_id = sensor_id
@@ -301,7 +299,7 @@ class SensorAlarm:
         self.last_value = None
 
     def check(self, current_value):
-        """Prüfe Alarmbedingung"""
+        """Prüfe Alarmbedingung."""
 
         if self.alarm_type == 'high':
             if not self.is_active and current_value > self.threshold:
@@ -334,7 +332,7 @@ alarms = {
     'pH_low': SensorAlarm('pH1', 'low', 6.8, hysteresis=0.1),
     'pH_high': SensorAlarm('pH1', 'high', 8.0, hysteresis=0.1),
     'VFA_high': SensorAlarm('VFA1', 'high', 4.0, hysteresis=0.5),
-    'temp_deviation': SensorAlarm('T1', 'rate_of_change', 2.0)  # 2°C/h
+    'temp_deviation': SensorAlarm('T1', 'rate_of_change', 2.0)  # 2 °C/h
 }
 
 # In Simulationsschleife
@@ -354,7 +352,7 @@ import csv
 from datetime import datetime
 
 class SensorDataLogger:
-    """Protokolliere Sensordaten"""
+    """Protokolliere Sensordaten."""
 
     def __init__(self, filename):
         self.filename = filename
@@ -362,20 +360,20 @@ class SensorDataLogger:
         self.writer = None
 
     def open(self, sensor_ids):
-        """Öffne Logdatei"""
+        """Öffne Logdatei."""
         self.file = open(self.filename, 'w', newline='')
         self.writer = csv.writer(self.file)
         # Header
         self.writer.writerow(['timestamp', 'time_days'] + sensor_ids)
 
     def log(self, time_days, sensor_values):
-        """Protokolliere einen Zeitpunkt"""
+        """Protokolliere einen Zeitpunkt."""
         timestamp = datetime.now().isoformat()
         row = [timestamp, time_days] + sensor_values
         self.writer.writerow(row)
 
     def close(self):
-        """Schließe Logdatei"""
+        """Schließe Logdatei."""
         if self.file:
             self.file.close()
 
@@ -398,9 +396,9 @@ for t in range(simulation_steps):
 logger.close()
 ```
 
-## Aktuelle Implementierung
+## Fermenter-Ausgaben als virtuelle Sensoren
 
-Während dedizierte Sensorkomponenten noch in Entwicklung sind, können Fermenter-Ausgaben bereits zur Prozessüberwachung verwendet werden:
+Die Fermenter-Komponente liefert bereits Prozessindikatoren, die direkt zur Überwachung verwendet werden können — mit oder ohne dedizierte Sensorkomponenten:
 
 ```python
 from pyadm1.components.biological import Digester
@@ -427,34 +425,34 @@ if monitoring_data['VFA'] / monitoring_data['TAC'] > 0.4:
     print("Warnung: Hohes VFA/TAC-Verhältnis")
 ```
 
-## Zukünftige Entwicklung
+## Roadmap
 
-Das Sensormodul wird erweitert um:
+Geplante Erweiterungen des Sensormoduls:
 
-1. **Realistische Sensor-Modelle**  
-   - Rauschen und Drift  
-   - Kalibrierungszyklen  
-   - Ausfallmodelle  
+1. **Reichere Sensor-Modelle**
+   - Rauschen und Drift
+   - Kalibrierungszyklen
+   - Ausfallmodelle
 
-2. **Erweiterte Prozesssteuerung**  
-   - PID-Regler  
-   - Modellprädiktive Regelung (MPC)  
-   - Adaptive Steuerung  
+2. **Erweiterte Prozesssteuerung**
+   - PID-Regler
+   - Modellprädiktive Regelung (MPC)
+   - Adaptive Steuerung
 
-3. **Datenanalyse-Tools**  
-   - Trendanalyse  
-   - Anomalie-Erkennung  
-   - Prädiktive Wartung  
+3. **Datenanalyse-Tools**
+   - Trendanalyse
+   - Anomalie-Erkennung
+   - Prädiktive Wartung
 
-4. **Visualisierung**  
-   - Echtzeit-Dashboards  
-   - Historische Trends  
-   - Alarm-Übersichten  
+4. **Visualisierung**
+   - Echtzeit-Dashboards
+   - Historische Trends
+   - Alarm-Übersichten
 
 ## Nächste Schritte
 
-- [Biologische Komponenten](biological.md): Fermenter und Prozesssteuerung  
-- [Energiekomponenten](energy.md): BHKW und Wärmesysteme  
-- [Mechanische Komponenten](mechanical.md): Pumpen und Rührwerke  
-- [Fütterungskomponenten](feeding.md): Lagerung und Dosierung  
-- API-Referenz (in Kürze): Detaillierte Klassendokumentation (wenn verfügbar)  
+- [Biologische Komponenten](biological.md): Fermenter und Prozesssteuerung
+- [Energiekomponenten](energy.md): BHKW und Wärmesysteme
+- [Mechanische Komponenten](mechanical.md): Pumpen und Rührwerke
+- [Fütterungskomponenten](feeding.md): Lagerung und Dosierung
+- [API-Referenz](../../api/sensors.md): Detaillierte Klassendokumentation

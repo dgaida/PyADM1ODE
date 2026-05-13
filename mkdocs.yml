@@ -161,6 +161,7 @@ nav:
       - Energie: api/energy.md
       - Mechanisch: api/mechanical.md
       - Fütterung: api/feeding.md
+      - Sensoren: api/sensors.md
       - Konfigurator: api/configurator.md
       - Simulation: api/simulation.md
       - Substrate: api/substrates.md

@@ -124,7 +124,7 @@ pip install -e .
 
 PyADM1 automatically installs these core dependencies:
 
-```
+```text
 numpy>=1.20.0         # Numerical computing
 pandas>=1.3.0         # Data manipulation
 scipy>=1.7.0          # Scientific computing
@@ -239,7 +239,7 @@ If you encounter issues:
    - Error messages and stack traces  
    - Output from `verify_install.py`  
 
-3. **Contact**: daniel.gaida@th-koeln.de  
+3. **Contact**: <daniel.gaida@th-koeln.de>  
 
 ## Next Steps
 

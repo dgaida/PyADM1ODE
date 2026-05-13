@@ -228,12 +228,14 @@ storage_compressed = GasStorage(
 Der Speicher schätzt den Druck basierend auf gespeichertem Volumen:
 
 **Niederdruck (membrane/dome):**
-```
+
+```text
 p = p_atm + frac * (p_max - p_atm)
 ```
 
 **Hochdruck (compressed):**
-```
+
+```text
 p = p_min + frac^α * (p_max - p_min)  # α > 1 für nichtlinearen Anstieg
 ```
 
@@ -492,6 +494,7 @@ print(f"Volllaststunden: {metrics['full_load_hours']:.0f} h")
 ### Problem: BHKW läuft nicht
 
 **Diagnose:**
+
 ```python
 chp_outputs = chp.step(t, dt, inputs)
 
@@ -507,6 +510,7 @@ if chp_outputs['P_el'] == 0:
 **Ursache:** Gasproduktion > BHKW-Verbrauch
 
 **Lösung:**
+
 ```python
 # Option 1: Erhöhe BHKW-Kapazität
 config.add_chp("chp1", P_el_nom=750)  # Von 500 auf 750 kW
@@ -521,6 +525,7 @@ storage = GasStorage("storage1", capacity_m3=1500)  # Von 1000 auf 1500
 ### Problem: Unzureichende Wärme
 
 **Diagnose:**
+
 ```python
 heat_outputs = heating.step(t, dt, inputs)
 

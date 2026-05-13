@@ -71,7 +71,8 @@ for result in results:
 ```
 
 **Expected Output:**
-```
+
+```text
 Day 1:
   Biogas:  1245.3 m³/d
   Methane: 748.2 m³/d
@@ -88,7 +89,7 @@ See the complete example in [`examples/01_basic_digester.py`](https://github.com
 
 The basic digester consists of:
 
-```
+```text
 [Substrate Feed] → [Digester] → [Gas Storage] → [Biogas Output]
    15 m³/d corn        2000 m³      300 m³         ~1250 m³/d
    10 m³/d manure      @ 35°C       membrane       60% CH₄
@@ -253,7 +254,8 @@ PlantConfigurator creates and connects:
 - **Flare**: One per CHP (safety combustion, 98% CH₄ destruction)  
 
 **Connection Chain:**
-```
+
+```text
 Digester → Gas Storage → CHP → Flare
                           ↓
                       Heating
@@ -265,7 +267,7 @@ See the complete example in [`examples/02_two_stage_plant.py`](https://github.co
 
 ### System Architecture
 
-```
+```text
 [Feed] → [Hydrolysis] → [Storage 1] ↘
          500 m³          304 m³       → [CHP] → [Flare]
          @ 45°C                      ↗  500 kW    98%
@@ -368,12 +370,14 @@ plant.add_component(mixer_2)
 The simulation uses a three-pass execution model for realistic gas management:
 
 **Pass 1 - Gas Production:**
+
 ```python
 Digester 1: Q_gas = 850 m³/d → Storage 1
 Digester 2: Q_gas = 400 m³/d → Storage 2
 ```
 
 **Pass 2 - Storage Update:**
+
 ```python
 Storage 1: receives 850 m³/d, updates pressure/volume
 Storage 2: receives 400 m³/d, updates pressure/volume
@@ -381,6 +385,7 @@ Storage 2: receives 400 m³/d, updates pressure/volume
 ```
 
 **Pass 3 - Gas Consumption:**
+
 ```python
 CHP demand: 1150 m³/d biogas
 Storage 1 supplies: ~675 m³/d
@@ -403,7 +408,7 @@ Excess to flare: (supply - consumption)
 
 **Energy Balance:**
 
-```
+```text
 Energy Production:
   Electrical (gross):       480.5 kW
   Thermal:                  540.6 kW
@@ -473,7 +478,8 @@ print(params)
 ```
 
 Output:
-```
+
+```text
 pH value: 3.93
 Dry matter: 31.97 %FM
 Volatile solids content: 96.25 %TS
@@ -694,9 +700,9 @@ Q_high = 40            # High loading [m³/d]
 - Reduce `save_interval` for less output  
 - Use parallel simulation for parameter sweeps  
 
-For more help, see the [Installation Guide](installation.md) or contact daniel.gaida@th-koeln.de.
+For more help, see the [Installation Guide](installation.md) or contact <daniel.gaida@th-koeln.de>.
 
 ## References
 
 - **ADM1 Model**: Batstone et al. (2002). *Anaerobic Digestion Model No. 1*. IWA Publishing.  
-- **Leitfaden Biogas**: FNR (2016). https://mediathek.fnr.de/leitfaden-biogas.html  
+- **Leitfaden Biogas**: FNR (2016). <https://mediathek.fnr.de/leitfaden-biogas.html>  

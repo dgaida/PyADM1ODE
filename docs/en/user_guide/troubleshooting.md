@@ -160,4 +160,4 @@ If you don't find a solution in this documentation:
 
 1. **Check GitHub Issues**: [Existing Issues](https://github.com/dgaida/PyADM1ODE/issues)  
 2. **Create a New Issue**  
-3. **Contact**: daniel.gaida@th-koeln.de  
+3. **Contact**: <daniel.gaida@th-koeln.de>  

@@ -29,7 +29,7 @@ class Component(ABC):
 
 ### Komponentenlebenszyklus
 
-```
+```text
 Erstellen → Initialisieren → Simulieren (step-Schleife) → Speichern/Exportieren
    ↓                            ↑
    └────────────────────────────┘
@@ -136,7 +136,8 @@ configurator.auto_connect_chp_to_heating("chp1", "heat1")
 ```
 
 **Topologie:**
-```
+
+```text
 [Fermenter] → [Gasspeicher] → [BHKW] → [Fackel]
                                  ↓
                              [Heizung]
@@ -169,7 +170,8 @@ configurator.auto_connect_chp_to_heating("chp1", "heat2")
 ```
 
 **Topologie:**
-```
+
+```text
 [Hydrolyse] → [Speicher] ↘
                           → [BHKW] → [Heizung 1]
 [Haupt] → [Speicher] ↗         ↓
@@ -323,6 +325,7 @@ print(f"Nettoproduktion: {analysis['net_energy']:.0f} kWh")
 **Problem**: Pumpe liefert keinen Durchfluss
 
 **Lösung**: Prüfe Druckhöhe und Drehzahleinstellungen
+
 ```python
 result = pump.step(0, 1/24, {
     'Q_setpoint': 15.0,
@@ -337,6 +340,7 @@ if result['Q_actual'] < 0.5 * result['Q_setpoint']:
 **Problem**: Rührwerk verbraucht zu viel Energie
 
 **Lösung**: Nutze intermittierenden Betrieb
+
 ```python
 # Anstelle von kontinuierlich (360 kWh/Tag):
 mixer_continuous = Mixer("mix1", intermittent=False)
@@ -352,6 +356,7 @@ mixer_optimal = Mixer(
 **Problem**: Dosierer-Genauigkeit zu niedrig
 
 **Lösung**: Nutze präziseren Dosierertyp oder deaktiviere Rauschen
+
 ```python
 # Weniger präzise: Schnecke (±5%)
 feeder_screw = Feeder("feed1", feeder_type="screw")
@@ -370,6 +375,7 @@ feeder_ideal = Feeder(
 **Problem**: Lagerqualität verschlechtert sich zu schnell
 
 **Lösung**: Prüfe Temperatur und Lagertyp
+
 ```python
 # Schlecht: Miete bei 20°C
 storage_poor = SubstrateStorage(
