@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Bug Fixes
+
+- Add PyYAML dependency to requirements  
+
+## [0.3.2] - 2026-05-13
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
 ## [0.3.1] - 2026-05-11
 
 ### Documentation
