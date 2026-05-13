@@ -86,9 +86,9 @@ The feedstock object loads substrate parameters from the bundled library at
 (YAML, with XML and TOML also accepted — see the
 [Substrates](../user_guide/substrates.md) page for the full list) and manages:
 
-- Substrate composition (Weender analysis)
-- ADM1 parameter calculation
-- Influent stream generation
+- Substrate composition (Weender analysis)  
+- ADM1 parameter calculation  
+- Influent stream generation  
 
 **Feeding Frequency**: The `feeding_freq` parameter (48 hours) defines how often the controller can adjust substrate feeds. This is important for optimization and control applications.
 

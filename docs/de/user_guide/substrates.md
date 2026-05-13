@@ -64,10 +64,10 @@ swine = load_substrate("data/substrates/swine_manure.yaml")
 
 Jedes Substrat trägt denselben Parametersatz:
 
-- **Rohzusammensetzung** — `TS`, `NH4`, Biogas- / Biomethanpotenzial `BGP`, `BMP`.
-- **Weender-Analyse** — Rohfaser-, Rohprotein-, Rohfett- und Asche-Anteile der TS (`fRF`, `fRP`, `fRFe`, `fRA`).
-- **COD-Fraktionierung** — partikulär- und löslich-inerter COD-Anteil (`aXI`, `aSi`), abbaubarer Anteil der Rohfaser (`fOTSrf`), Aufteilung in langsame/schnelle Desintegrationspools (`fsOTS`, `ffOTS`).
-- **Physikalisch-chemischer Zustand** — Substrattemperatur, `pH`, Säurekapazität bis pH 4,3 (`KS43`), VFA als Essigsäure-Äquivalent (`FFS`).
+- **Rohzusammensetzung** — `TS`, `NH4`, Biogas- / Biomethanpotenzial `BGP`, `BMP`.  
+- **Weender-Analyse** — Rohfaser-, Rohprotein-, Rohfett- und Asche-Anteile der TS (`fRF`, `fRP`, `fRFe`, `fRA`).  
+- **COD-Fraktionierung** — partikulär- und löslich-inerter COD-Anteil (`aXI`, `aSi`), abbaubarer Anteil der Rohfaser (`fOTSrf`), Aufteilung in langsame/schnelle Desintegrationspools (`fsOTS`, `ffOTS`).  
+- **Physikalisch-chemischer Zustand** — Substrattemperatur, `pH`, Säurekapazität bis pH 4,3 (`KS43`), VFA als Essigsäure-Äquivalent (`FFS`).  
 
 Komponentendichten, Masse-zu-COD-Umrechnungsfaktoren, Methanpotenziale und
 die Säure-Base-Gleichgewichtskonstanten sind als Modelldefaults in

@@ -2,11 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.3.1] - 2026-05-11
 
 ### Documentation
 
 - Add primary model references to References page  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.3.0] - 2026-05-11
 

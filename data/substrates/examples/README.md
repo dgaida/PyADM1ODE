@@ -26,10 +26,10 @@ returns an equivalent `SubstrateParams` instance.
 
 Only the **measured / substrate-specific** parameters are mandatory:
 
-* Proximate analysis: `TS`, `NH4`, `BGP`, `BMP`
-* COD fractionation: `aXI`, `fOTSrf`, `fsOTS`, `ffOTS`, `aSi`
-* Weender analysis: `fRF`, `fRP`, `fRFe`, `fRA`
-* Physical/chemical state: `Temp`, `pH`, `KS43`, `FFS`
+* Proximate analysis: `TS`, `NH4`, `BGP`, `BMP`  
+* COD fractionation: `aXI`, `fOTSrf`, `fsOTS`, `ffOTS`, `aSi`  
+* Weender analysis: `fRF`, `fRP`, `fRFe`, `fRA`  
+* Physical/chemical state: `Temp`, `pH`, `KS43`, `FFS`  
 
 The remaining ADM1da model-default constants (densities `roh_*`, COD-conversion
 factors `M_*`, methane potentials `MP_*`, acid-base equilibrium constants

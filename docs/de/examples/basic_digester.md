@@ -88,9 +88,9 @@ Bibliothek unter
 Liste steht auf der Seite
 [Substrate](../user_guide/substrates.md)) und verwaltet:
 
-- Substratzusammensetzung (Weender-Analyse)
-- ADM1-Parameterberechnung
-- Generierung des Zulaufstroms
+- Substratzusammensetzung (Weender-Analyse)  
+- ADM1-Parameterberechnung  
+- Generierung des Zulaufstroms  
 
 **Fütterungsfrequenz**: Der Parameter `feeding_freq` (48 Stunden) definiert, wie oft die Steuerung den Substratzulauf anpassen kann. Dies ist wichtig für Optimierungs- und Regelungsanwendungen.
 

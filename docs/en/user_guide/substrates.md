@@ -63,10 +63,10 @@ swine = load_substrate("data/substrates/swine_manure.yaml")
 
 Every substrate carries the same parameter set:
 
-- **Proximate analysis** — `TS`, `NH4`, biogas / biomethane potentials `BGP`, `BMP`.
-- **Weender analysis** — crude-fibre, crude-protein, crude-lipid, ash fractions of TS (`fRF`, `fRP`, `fRFe`, `fRA`).
-- **COD fractionation** — particulate-inert and dissolved-inert COD shares (`aXI`, `aSi`), biodegradable share of crude fibre (`fOTSrf`), slow / fast disintegration-pool split (`fsOTS`, `ffOTS`).
-- **Physical / chemical state** — substrate temperature, `pH`, acid capacity to pH 4.3 (`KS43`), VFAs as acetic-acid equivalent (`FFS`).
+- **Proximate analysis** — `TS`, `NH4`, biogas / biomethane potentials `BGP`, `BMP`.  
+- **Weender analysis** — crude-fibre, crude-protein, crude-lipid, ash fractions of TS (`fRF`, `fRP`, `fRFe`, `fRA`).  
+- **COD fractionation** — particulate-inert and dissolved-inert COD shares (`aXI`, `aSi`), biodegradable share of crude fibre (`fOTSrf`), slow / fast disintegration-pool split (`fsOTS`, `ffOTS`).  
+- **Physical / chemical state** — substrate temperature, `pH`, acid capacity to pH 4.3 (`KS43`), VFAs as acetic-acid equivalent (`FFS`).  
 
 Component densities, mass-to-COD conversion factors, methane potentials,
 and the acid-base equilibrium constants are inherited from the model
