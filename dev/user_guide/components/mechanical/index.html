@@ -2055,6 +2055,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../api/sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensoren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../api/configurator/" class="md-nav__link">
         
   
@@ -2964,7 +2992,7 @@
 <a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="c1"># Limitiere auf installierte Leistung</span>
 <a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="n">P_actual</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">P_electrical</span><span class="p">,</span> <span class="n">power_installed</span><span class="p">)</span>
 </code></pre></div>
-<p><strong>Reynolds-Zahl für Mischen:</strong>
+<p><strong>Reynolds-Zahl für Mischen:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Re = ρ * N * D² / μ
 <a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
 <a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>wobei:
@@ -2972,7 +3000,7 @@
 <a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>- N = Drehzahl [Hz]
 <a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>- D = Rührblattdurchmesser [m]
 <a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>- μ = Viskosität [Pa·s]
-</code></pre></div></p>
+</code></pre></div>
 <p><strong>Leistungszahl (abhängig von Rührwerkstyp und Reynolds-Zahl):</strong></p>
 <ul>
 <li><strong>Propeller:</strong>  </li>
@@ -3267,7 +3295,7 @@
 </code></pre></div>
 <h2 id="fehlerbehebung">Fehlerbehebung<a class="headerlink" href="#fehlerbehebung" title="Permanent link">&para;</a></h2>
 <h3 id="problem-pumpe-liefert-unzureichenden-durchfluss">Problem: Pumpe liefert unzureichenden Durchfluss<a class="headerlink" href="#problem-pumpe-liefert-unzureichenden-durchfluss" title="Permanent link">&para;</a></h3>
-<p><strong>Diagnose:</strong>
+<p><strong>Diagnose:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">pump_result</span> <span class="o">=</span> <span class="n">pump</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">24</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Q_setpoint&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="s1">&#39;enable_pump&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
 <a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>
 <a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="k">if</span> <span class="n">pump_result</span><span class="p">[</span><span class="s1">&#39;Q_actual&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.8</span> <span class="o">*</span> <span class="n">pump_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Q_setpoint&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">):</span>
@@ -3279,13 +3307,13 @@
 <a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>    <span class="c1"># Prüfe ob Überlast</span>
 <a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>    <span class="k">if</span> <span class="n">pump</span><span class="o">.</span><span class="n">speed_fraction</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
 <a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- WARNUNG: Pumpe überlastet!&quot;</span><span class="p">)</span>
-</code></pre></div></p>
+</code></pre></div>
 <p><strong>Lösungen:</strong><br />
 - Erhöhe Pumpengröße wenn konsistent überlastet<br />
 - Reduziere Reibungsverluste in Rohrleitungen<br />
 - Prüfe auf Blockaden oder Verschleiß  </p>
 <h3 id="problem-ruhrwerk-verbraucht-zu-viel-energie">Problem: Rührwerk verbraucht zu viel Energie<a class="headerlink" href="#problem-ruhrwerk-verbraucht-zu-viel-energie" title="Permanent link">&para;</a></h3>
-<p><strong>Diagnose:</strong>
+<p><strong>Diagnose:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">mixer_result</span> <span class="o">=</span> <span class="n">mixer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">24</span><span class="p">,</span> <span class="p">{})</span>
 <a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>
 <a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="n">specific_power</span> <span class="o">=</span> <span class="n">mixer_result</span><span class="p">[</span><span class="s1">&#39;P_consumed&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">mixer</span><span class="o">.</span><span class="n">tank_volume</span>  <span class="c1"># kW/m³</span>
@@ -3299,8 +3327,8 @@
 <a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>
 <a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>    <span class="k">if</span> <span class="n">mixer</span><span class="o">.</span><span class="n">mixing_intensity</span> <span class="o">==</span> <span class="s2">&quot;high&quot;</span><span class="p">:</span>
 <a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Reduziere auf mittlere Intensität wenn möglich&quot;</span><span class="p">)</span>
-</code></pre></div></p>
-<p><strong>Lösungen:</strong>
+</code></pre></div>
+<p><strong>Lösungen:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># Implementiere intermittierenden Betrieb</span>
 <a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">mixer_optimized</span> <span class="o">=</span> <span class="n">Mixer</span><span class="p">(</span>
 <a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>    <span class="s2">&quot;mix1&quot;</span><span class="p">,</span>
@@ -3309,9 +3337,9 @@
 <a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>    <span class="n">intermittent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>    <span class="n">on_time_fraction</span><span class="o">=</span><span class="mf">0.25</span>  <span class="c1"># 75% Energieeinsparung</span>
 <a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="p">)</span>
-</code></pre></div></p>
+</code></pre></div>
 <h3 id="problem-schlechte-mischqualitat">Problem: Schlechte Mischqualität<a class="headerlink" href="#problem-schlechte-mischqualitat" title="Permanent link">&para;</a></h3>
-<p><strong>Diagnose:</strong>
+<p><strong>Diagnose:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="k">if</span> <span class="n">mixer_result</span><span class="p">[</span><span class="s1">&#39;mixing_quality&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.7</span><span class="p">:</span>
 <a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Niedrige Mischqualität: </span><span class="si">{</span><span class="n">mixer_result</span><span class="p">[</span><span class="s1">&#39;mixing_quality&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mischzeit: </span><span class="si">{</span><span class="n">mixer_result</span><span class="p">[</span><span class="s1">&#39;mixing_time&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> min&quot;</span><span class="p">)</span>
@@ -3322,7 +3350,7 @@
 <a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>
 <a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>    <span class="k">if</span> <span class="n">mixer_result</span><span class="p">[</span><span class="s1">&#39;mixing_time&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
 <a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Lange Mischzeit - erhöhe Intensität oder Einschaltzeit&quot;</span><span class="p">)</span>
-</code></pre></div></p>
+</code></pre></div>
 <p><strong>Lösungen:</strong><br />
 - Erhöhe Mischintensität für schwierige Substrate<br />
 - Verlängere Einschaltzeit bei intermittierendem Betrieb<br />

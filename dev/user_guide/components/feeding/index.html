@@ -2044,6 +2044,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../api/sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensoren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../api/configurator/" class="md-nav__link">
         
   
@@ -3160,7 +3188,7 @@
 </code></pre></div>
 <h2 id="fehlerbehebung">Fehlerbehebung<a class="headerlink" href="#fehlerbehebung" title="Permanent link">&para;</a></h2>
 <h3 id="problem-schneller-qualitatsverlust">Problem: Schneller Qualitätsverlust<a class="headerlink" href="#problem-schneller-qualitatsverlust" title="Permanent link">&para;</a></h3>
-<p><strong>Diagnose:</strong>
+<p><strong>Diagnose:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">storage_result</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
 <a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
 <a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="k">if</span> <span class="n">storage_result</span><span class="p">[</span><span class="s1">&#39;quality_factor&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.95</span> <span class="ow">and</span> <span class="n">storage_result</span><span class="p">[</span><span class="s1">&#39;storage_time&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
@@ -3169,8 +3197,8 @@
 <a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- Lagerzeit: </span><span class="si">{</span><span class="n">storage_result</span><span class="p">[</span><span class="s1">&#39;storage_time&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> Tage&quot;</span><span class="p">)</span>
 <a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- Degradationsrate: </span><span class="si">{</span><span class="n">storage_result</span><span class="p">[</span><span class="s1">&#39;degradation_rate&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> 1/d&quot;</span><span class="p">)</span>
 <a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- Temperatur: </span><span class="si">{</span><span class="n">storage</span><span class="o">.</span><span class="n">temperature</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> K&quot;</span><span class="p">)</span>
-</code></pre></div></p>
-<p><strong>Lösungen:</strong>
+</code></pre></div>
+<p><strong>Lösungen:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># Option 1: Verbessere Lagertyp</span>
 <a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">storage_improved</span> <span class="o">=</span> <span class="n">SubstrateStorage</span><span class="p">(</span>
 <a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>    <span class="s2">&quot;silo1&quot;</span><span class="p">,</span>
@@ -3184,22 +3212,22 @@
 <a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>
 <a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="c1"># Option 3: Schnellere Verwendung (reduziere Lagerzeit)</span>
 <a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="n">increase_daily_usage</span> <span class="o">=</span> <span class="kc">True</span>
-</code></pre></div></p>
+</code></pre></div>
 <h3 id="problem-dosierer-blockaden">Problem: Dosierer-Blockaden<a class="headerlink" href="#problem-dosierer-blockaden" title="Permanent link">&para;</a></h3>
-<p><strong>Diagnose:</strong>
+<p><strong>Diagnose:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">if</span> <span class="n">feeder</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;n_blockages&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
 <a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Häufige Blockaden erkannt: </span><span class="si">{</span><span class="n">feeder</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;n_blockages&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mögliche Ursachen:&quot;</span><span class="p">)</span>
 <a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Faserreiches Substrat für Dosierertyp ungeeignet&quot;</span><span class="p">)</span>
 <a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Fremdkörper im Substrat&quot;</span><span class="p">)</span>
 <a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Verschleiß oder Wartung erforderlich&quot;</span><span class="p">)</span>
-</code></pre></div></p>
+</code></pre></div>
 <p><strong>Lösungen:</strong><br />
 - Wechsle zu robusterem Dosierertyp (Twin Screw)<br />
 - Verbessere Substratvorbereitung<br />
 - Implementiere Wartungsplan  </p>
 <h3 id="problem-inkonsistente-dosierung">Problem: Inkonsistente Dosierung<a class="headerlink" href="#problem-inkonsistente-dosierung" title="Permanent link">&para;</a></h3>
-<p><strong>Diagnose:</strong>
+<p><strong>Diagnose:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">dosing_errors</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;components&#39;</span><span class="p">][</span><span class="s1">&#39;feed1&#39;</span><span class="p">][</span><span class="s1">&#39;dosing_error&#39;</span><span class="p">]</span>
 <a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
 <a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="n">avg_error</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">dosing_errors</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">dosing_errors</span><span class="p">)</span>
@@ -3210,7 +3238,7 @@
 <a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Erwäge präziseren Dosierertyp&quot;</span><span class="p">)</span>
 <a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Prüfe Kalibrierung&quot;</span><span class="p">)</span>
 <a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Deaktiviere dosing_noise für idealisierte Simulation&quot;</span><span class="p">)</span>
-</code></pre></div></p>
+</code></pre></div>
 <h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
 <ol>
 <li><strong>Qualitätsüberwachung implementieren</strong>  </li>

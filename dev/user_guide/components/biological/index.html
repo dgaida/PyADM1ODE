@@ -1922,6 +1922,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../api/sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensoren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../api/configurator/" class="md-nav__link">
         
   
@@ -2378,15 +2406,15 @@
 <a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="p">}</span>
 </code></pre></div>
 <h3 id="erweiterte-verwendung">Erweiterte Verwendung<a class="headerlink" href="#erweiterte-verwendung" title="Permanent link">&para;</a></h3>
-<p><strong>Mehrere Fermenter in Reihe:</strong>
+<p><strong>Mehrere Fermenter in Reihe:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Hydrolyse + Methanogenese</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_digester</span><span class="p">(</span><span class="s2">&quot;hydro&quot;</span><span class="p">,</span> <span class="n">V_liq</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">T_ad</span><span class="o">=</span><span class="mf">318.15</span><span class="p">,</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>                         <span class="n">Q_substrates</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_digester</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">,</span> <span class="n">V_liq</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">T_ad</span><span class="o">=</span><span class="mf">308.15</span><span class="p">,</span>
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>                         <span class="n">Q_substrates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 <a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">configurator</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;hydro&quot;</span><span class="p">,</span> <span class="s2">&quot;main&quot;</span><span class="p">,</span> <span class="s2">&quot;liquid&quot;</span><span class="p">)</span>
-</code></pre></div></p>
-<p><strong>Benutzerdefinierter Anfangszustand:</strong>
+</code></pre></div>
+<p><strong>Benutzerdefinierter Anfangszustand:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># Erstelle benutzerdefinierten Zustand</span>
@@ -2400,7 +2428,7 @@
 <a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="s2">&quot;dig1&quot;</span><span class="p">,</span> <span class="n">V_liq</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span>
 <a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    <span class="n">initial_state_file</span><span class="o">=</span><span class="s1">&#39;custom_state.csv&#39;</span>
 <a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="p">)</span>
-</code></pre></div></p>
+</code></pre></div>
 <h3 id="kalibrierungsparameter">Kalibrierungsparameter<a class="headerlink" href="#kalibrierungsparameter" title="Permanent link">&para;</a></h3>
 <p>Der Fermenter unterstützt die Anwendung von Kalibrierungsparametern zur Modellanpassung:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.components.biological</span><span class="w"> </span><span class="kn">import</span> <span class="n">Digester</span>
@@ -2571,13 +2599,13 @@
 - Zu hohe organische Raumbelastung (OLR)<br />
 - Unzureichende Pufferkapazität<br />
 - Plötzliche Substratänderung  </p>
-<p><strong>Lösungen:</strong>
+<p><strong>Lösungen:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Reduziere organische Belastung</span>
 <a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">Q</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Reduziert von [15, 10, ...]</span>
 <a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
 <a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Oder füge Kalkpuffer hinzu</span>
 <a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">Q</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># 1 m³/d Kalk</span>
-</code></pre></div></p>
+</code></pre></div>
 <h3 id="schaumbildung">Schaumbildung<a class="headerlink" href="#schaumbildung" title="Permanent link">&para;</a></h3>
 <p><strong>Ursachen:</strong><br />
 - Zu hoher Proteingehalt im Substrat<br />
@@ -2593,7 +2621,7 @@
 - Substrat niedriger Qualität<br />
 - Inhibition (NH3, H2S, Schwermetalle)<br />
 - Zu kurze Verweilzeit  </p>
-<p><strong>Diagnose:</strong>
+<p><strong>Diagnose:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">diagnose_low_gas_production</span><span class="p">(</span><span class="n">digester_outputs</span><span class="p">):</span>
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Diagnostiziere Ursachen für niedrige Gasproduktion&quot;&quot;&quot;</span>
 <a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
@@ -2616,7 +2644,7 @@
 <a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Niedriger Methangehalt (</span><span class="si">{</span><span class="n">CH4_content</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">) - mögliche Lufteinträge oder CO2-Stripping&quot;</span><span class="p">)</span>
 <a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>
 <a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="n">diagnose_low_gas_production</span><span class="p">(</span><span class="n">digester</span><span class="o">.</span><span class="n">outputs_data</span><span class="p">)</span>
-</code></pre></div></p>
+</code></pre></div>
 <h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
 <ol>
 <li><strong>Starten Sie mit realistischen Betriebsparametern</strong>  </li>

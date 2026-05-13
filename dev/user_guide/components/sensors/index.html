@@ -946,15 +946,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#geplante-sensorkategorien" class="md-nav__link">
+  <a href="#sensorkategorien" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Geplante Sensorkategorien
+        Sensorkategorien
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Geplante Sensorkategorien">
+    <nav class="md-nav" aria-label="Sensorkategorien">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -996,10 +996,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#beispiel-konzept" class="md-nav__link">
+  <a href="#verwendungsbeispiel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Beispiel-Konzept
+        Verwendungsbeispiel
       
     </span>
   </a>
@@ -1219,10 +1219,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#aktuelle-implementierung" class="md-nav__link">
+  <a href="#fermenter-ausgaben-als-virtuelle-sensoren" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Aktuelle Implementierung
+        Fermenter-Ausgaben als virtuelle Sensoren
       
     </span>
   </a>
@@ -1230,10 +1230,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#zukunftige-entwicklung" class="md-nav__link">
+  <a href="#roadmap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Zukünftige Entwicklung
+        Roadmap
       
     </span>
   </a>
@@ -2023,6 +2023,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../api/sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensoren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../api/configurator/" class="md-nav__link">
         
   
@@ -2172,15 +2200,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#geplante-sensorkategorien" class="md-nav__link">
+  <a href="#sensorkategorien" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Geplante Sensorkategorien
+        Sensorkategorien
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Geplante Sensorkategorien">
+    <nav class="md-nav" aria-label="Sensorkategorien">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2222,10 +2250,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#beispiel-konzept" class="md-nav__link">
+  <a href="#verwendungsbeispiel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Beispiel-Konzept
+        Verwendungsbeispiel
       
     </span>
   </a>
@@ -2445,10 +2473,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#aktuelle-implementierung" class="md-nav__link">
+  <a href="#fermenter-ausgaben-als-virtuelle-sensoren" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Aktuelle Implementierung
+        Fermenter-Ausgaben als virtuelle Sensoren
       
     </span>
   </a>
@@ -2456,10 +2484,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#zukunftige-entwicklung" class="md-nav__link">
+  <a href="#roadmap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Zukünftige Entwicklung
+        Roadmap
       
     </span>
   </a>
@@ -2498,69 +2526,68 @@
 
 
 <h1 id="sensoren">Sensoren<a class="headerlink" href="#sensoren" title="Permanent link">&para;</a></h1>
-<p>Mess- und Überwachungskomponenten für Biogasanlagen (in Entwicklung).</p>
+<p>Mess- und Überwachungskomponenten für Biogasanlagen.</p>
 <h2 id="ubersicht">Übersicht<a class="headerlink" href="#ubersicht" title="Permanent link">&para;</a></h2>
-<p>PyADM1 wird in Zukunft ein umfassendes Sensormodul für realistische Prozessüberwachung und -steuerung enthalten. Diese Komponenten werden realistische Messcharakteristiken modellieren, einschließlich Rauschen, Drift und Ansprechzeiten.</p>
-<h2 id="geplante-sensorkategorien">Geplante Sensorkategorien<a class="headerlink" href="#geplante-sensorkategorien" title="Permanent link">&para;</a></h2>
+<p>PyADM1 bietet ein Sensormodul für realistische Prozessüberwachung und -steuerung. Diese Komponenten modellieren realistische Messcharakteristiken einschließlich Rauschen, Drift und Ansprechzeiten. Siehe <a href="../../../api/sensors/">API-Referenz</a> für die Klassen-Dokumentation.</p>
+<h2 id="sensorkategorien">Sensorkategorien<a class="headerlink" href="#sensorkategorien" title="Permanent link">&para;</a></h2>
 <h3 id="physikalische-sensoren">Physikalische Sensoren<a class="headerlink" href="#physikalische-sensoren" title="Permanent link">&para;</a></h3>
 <p>Sensoren für physikalische Eigenschaften:</p>
 <ul>
-<li><strong>pH-Elektroden</strong>: Mit Kalibrierungsdrift und Temperaturkompensation  </li>
-<li><strong>Temperatursensoren</strong>: PT100, Thermoelemente mit Genauigkeitsspezifikationen  </li>
-<li><strong>Drucksensoren</strong>: Für Gas- und Flüssigkeitsdruck  </li>
-<li><strong>Füllstandssensoren</strong>: Ultraschall, Radar, hydrostatisch  </li>
-<li><strong>Durchflussmesser</strong>: Magnetisch-induktiv, Ultraschall, Coriolis  </li>
+<li><strong>pH-Elektroden</strong>: Mit Kalibrierungsdrift und Temperaturkompensation</li>
+<li><strong>Temperatursensoren</strong>: PT100, Thermoelemente mit Genauigkeitsspezifikationen</li>
+<li><strong>Drucksensoren</strong>: Für Gas- und Flüssigkeitsdruck</li>
+<li><strong>Füllstandssensoren</strong>: Ultraschall, Radar, hydrostatisch</li>
+<li><strong>Durchflussmesser</strong>: Magnetisch-induktiv, Ultraschall, Coriolis</li>
 </ul>
 <h3 id="chemische-sensoren">Chemische Sensoren<a class="headerlink" href="#chemische-sensoren" title="Permanent link">&para;</a></h3>
 <p>Sensoren für Prozessflüssigkeitsanalyse:</p>
 <ul>
-<li><strong>VFA-Analysatoren</strong>: Online-Titration, GC-Analyse  </li>
-<li><strong>Ammoniak-Sensoren</strong>: Ionenselektive Elektroden  </li>
-<li><strong>CSB-Analysatoren</strong>: Online-Spektroskopie  </li>
-<li><strong>Nährstoffanalysatoren</strong>: N, P, K-Messung  </li>
+<li><strong>VFA-Analysatoren</strong>: Online-Titration, GC-Analyse</li>
+<li><strong>Ammoniak-Sensoren</strong>: Ionenselektive Elektroden</li>
+<li><strong>CSB-Analysatoren</strong>: Online-Spektroskopie</li>
+<li><strong>Nährstoffanalysatoren</strong>: N, P, K-Messung</li>
 </ul>
 <h3 id="gas-analysatoren">Gas-Analysatoren<a class="headerlink" href="#gas-analysatoren" title="Permanent link">&para;</a></h3>
 <p>Sensoren für Biogaszusammensetzung:</p>
 <ul>
-<li><strong>Methan-Sensoren</strong>: Infrarot, kalorimetrisch  </li>
-<li><strong>CO2-Sensoren</strong>: NDIR-Technologie  </li>
-<li><strong>H2S-Sensoren</strong>: Elektrochemisch  </li>
-<li><strong>Sauerstoff-Sensoren</strong>: Für Leckageerkennung  </li>
-<li><strong>Spurengas-Analysatoren</strong>: Mit Nachweisgrenzen  </li>
+<li><strong>Methan-Sensoren</strong>: Infrarot, kalorimetrisch</li>
+<li><strong>CO2-Sensoren</strong>: NDIR-Technologie</li>
+<li><strong>H2S-Sensoren</strong>: Elektrochemisch</li>
+<li><strong>Sauerstoff-Sensoren</strong>: Für Leckageerkennung</li>
+<li><strong>Spurengas-Analysatoren</strong>: Mit Nachweisgrenzen</li>
 </ul>
-<h2 id="beispiel-konzept">Beispiel-Konzept<a class="headerlink" href="#beispiel-konzept" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Zukünftige Implementierung (konzeptionell)</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.components.sensors</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhysicalSensor</span><span class="p">,</span> <span class="n">ChemicalSensor</span><span class="p">,</span> <span class="n">GasSensor</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># pH-Sensor mit realistischem Rauschen</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">ph_sensor</span> <span class="o">=</span> <span class="n">PhysicalSensor</span><span class="p">(</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="s2">&quot;ph1&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">sensor_type</span><span class="o">=</span><span class="s2">&quot;pH&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">measurement_noise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>    <span class="c1"># ±0.05 pH Einheiten</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">drift_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>           <span class="c1"># Kalibrierungsdrift pro Tag</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">response_time</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>        <span class="c1"># Sekunden</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">calibration_interval</span><span class="o">=</span><span class="mi">7</span>     <span class="c1"># Tage zwischen Kalibrierungen</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="p">)</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># VFA-Analysator mit Messungsverzögerung</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">vfa_sensor</span> <span class="o">=</span> <span class="n">ChemicalSensor</span><span class="p">(</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="s2">&quot;vfa1&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">sensor_type</span><span class="o">=</span><span class="s2">&quot;VFA&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">measurement_delay</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>       <span class="c1"># Minuten Verzögerung</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">accuracy</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>              <span class="c1"># ±10% Genauigkeit</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n">detection_limit</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>       <span class="c1"># g/L untere Grenze</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="n">sampling_interval</span><span class="o">=</span><span class="mi">60</span>       <span class="c1"># Minuten zwischen Proben</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="p">)</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="c1"># Methan-Analysator</span>
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="n">ch4_sensor</span> <span class="o">=</span> <span class="n">GasSensor</span><span class="p">(</span>
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="s2">&quot;ch4_1&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n">sensor_type</span><span class="o">=</span><span class="s2">&quot;CH4&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n">measurement_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>  <span class="c1"># % CH4</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="n">accuracy</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>                <span class="c1"># ±0.5%</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="n">drift</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>                   <span class="c1"># % pro Woche</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="n">cross_sensitivity</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;CO2&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">}</span>  <span class="c1"># Kreuzempfindlichkeit</span>
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="p">)</span>
+<h2 id="verwendungsbeispiel">Verwendungsbeispiel<a class="headerlink" href="#verwendungsbeispiel" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.components.sensors</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhysicalSensor</span><span class="p">,</span> <span class="n">ChemicalSensor</span><span class="p">,</span> <span class="n">GasSensor</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># pH-Sensor mit realistischem Rauschen</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">ph_sensor</span> <span class="o">=</span> <span class="n">PhysicalSensor</span><span class="p">(</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="s2">&quot;ph1&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">sensor_type</span><span class="o">=</span><span class="s2">&quot;pH&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">measurement_noise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>    <span class="c1"># ±0.05 pH-Einheiten</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">drift_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>           <span class="c1"># Kalibrierungsdrift pro Tag</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">response_time</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>        <span class="c1"># Sekunden</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">calibration_interval</span><span class="o">=</span><span class="mi">7</span>     <span class="c1"># Tage zwischen Kalibrierungen</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">)</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># VFA-Analysator mit Messungsverzögerung</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">vfa_sensor</span> <span class="o">=</span> <span class="n">ChemicalSensor</span><span class="p">(</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="s2">&quot;vfa1&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">sensor_type</span><span class="o">=</span><span class="s2">&quot;VFA&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">measurement_delay</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>       <span class="c1"># Minuten Verzögerung</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">accuracy</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>              <span class="c1"># ±10% Genauigkeit</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">detection_limit</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>       <span class="c1"># g/L untere Grenze</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n">sampling_interval</span><span class="o">=</span><span class="mi">60</span>       <span class="c1"># Minuten zwischen Proben</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">)</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="c1"># Methan-Analysator</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="n">ch4_sensor</span> <span class="o">=</span> <span class="n">GasSensor</span><span class="p">(</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="s2">&quot;ch4_1&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">sensor_type</span><span class="o">=</span><span class="s2">&quot;CH4&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n">measurement_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>  <span class="c1"># % CH4</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n">accuracy</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>                <span class="c1"># ±0.5%</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="n">drift</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>                   <span class="c1"># % pro Woche</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="n">cross_sensitivity</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;CO2&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">}</span>  <span class="c1"># Kreuzempfindlichkeit</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="sensor-charakteristiken">Sensor-Charakteristiken<a class="headerlink" href="#sensor-charakteristiken" title="Permanent link">&para;</a></h2>
 <h3 id="rauschen-und-genauigkeit">Rauschen und Genauigkeit<a class="headerlink" href="#rauschen-und-genauigkeit" title="Permanent link">&para;</a></h3>
@@ -2586,31 +2613,31 @@
 <tbody>
 <tr>
 <td>pH</td>
-<td>0-14</td>
+<td>0–14</td>
 <td>±0.05 pH</td>
 <td>0.01 pH/Tag</td>
 </tr>
 <tr>
 <td>Temperatur (PT100)</td>
-<td>-50 bis 200°C</td>
-<td>±0.1°C</td>
-<td>&lt;0.01°C/Jahr</td>
+<td>−50 bis 200 °C</td>
+<td>±0.1 °C</td>
+<td>&lt;0.01 °C/Jahr</td>
 </tr>
 <tr>
 <td>Druck</td>
-<td>0-2 bar</td>
+<td>0–2 bar</td>
 <td>±0.5% FS</td>
 <td>&lt;0.1% FS/Jahr</td>
 </tr>
 <tr>
 <td>VFA</td>
-<td>0-20 g/L</td>
+<td>0–20 g/L</td>
 <td>±5%</td>
 <td>±0.1 g/L/Woche</td>
 </tr>
 <tr>
 <td>CH4</td>
-<td>0-100%</td>
+<td>0–100%</td>
 <td>±0.5%</td>
 <td>±0.1%/Woche</td>
 </tr>
@@ -2635,23 +2662,23 @@
 <tbody>
 <tr>
 <td>pH-Elektrode</td>
-<td>10-30 s</td>
-<td>30-90 s</td>
+<td>10–30 s</td>
+<td>30–90 s</td>
 </tr>
 <tr>
 <td>Thermoelement</td>
-<td>0.1-5 s</td>
-<td>0.3-15 s</td>
+<td>0.1–5 s</td>
+<td>0.3–15 s</td>
 </tr>
 <tr>
 <td>CH4-Sensor (IR)</td>
-<td>5-10 s</td>
-<td>15-30 s</td>
+<td>5–10 s</td>
+<td>15–30 s</td>
 </tr>
 <tr>
 <td>VFA-Analysator</td>
-<td>2-5 min</td>
-<td>6-15 min</td>
+<td>2–5 min</td>
+<td>6–15 min</td>
 </tr>
 </tbody>
 </table>
@@ -2706,9 +2733,9 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Exponentielles Glätten</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">exponential_smoothing</span><span class="p">(</span><span class="n">measurements</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="sd">    Glätte Sensormessungen</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="sd">    Glätte Sensormessungen.</span>
 <a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="sd">    alpha: Glättungsfaktor (0-1)</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="sd">    alpha: Glättungsfaktor (0–1)</span>
 <a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="sd">           0 = keine Glättung</span>
 <a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="sd">           1 = nur aktueller Wert</span>
 <a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="sd">    &quot;&quot;&quot;</span>
@@ -2720,7 +2747,7 @@
 <a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>
 <a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="c1"># Moving Average</span>
 <a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="k">def</span><span class="w"> </span><span class="nf">moving_average</span><span class="p">(</span><span class="n">measurements</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Gleitender Durchschnitt&quot;&quot;&quot;</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Gleitender Durchschnitt.&quot;&quot;&quot;</span>
 <a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>    <span class="k">return</span> <span class="p">[</span>
 <a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>        <span class="nb">sum</span><span class="p">(</span><span class="n">measurements</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="n">window</span><span class="p">):</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span>
 <a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>        <span class="nb">min</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
@@ -2730,9 +2757,9 @@
 <h3 id="ausreier-erkennung">Ausreißer-Erkennung<a class="headerlink" href="#ausreier-erkennung" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">detect_outliers</span><span class="p">(</span><span class="n">measurements</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">):</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="sd">    Erkenne Ausreißer mit Z-Score</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="sd">    Erkenne Ausreißer mit Z-Score.</span>
 <a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="sd">    threshold: Standardabweichungen für Ausreißer</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="sd">    threshold: Standardabweichungen für Ausreißer-Klassifikation</span>
 <a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="sd">    &quot;&quot;&quot;</span>
 <a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">mean</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">measurements</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">measurements</span><span class="p">)</span>
 <a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">std</span> <span class="o">=</span> <span class="p">(</span><span class="nb">sum</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">measurements</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">measurements</span><span class="p">))</span><span class="o">**</span><span class="mf">0.5</span>
@@ -2747,32 +2774,31 @@
 </code></pre></div>
 <h2 id="prozesssteuerung-mit-sensoren">Prozesssteuerung mit Sensoren<a class="headerlink" href="#prozesssteuerung-mit-sensoren" title="Permanent link">&para;</a></h2>
 <h3 id="ph-regelung">pH-Regelung<a class="headerlink" href="#ph-regelung" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Zukünftiges Beispiel: pH-Steuerung</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">ph_control</span><span class="p">(</span><span class="n">ph_measurement</span><span class="p">,</span> <span class="n">setpoint</span><span class="o">=</span><span class="mf">7.2</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="sd">    Einfache pH-Regelung</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="sd">    Returns: Kalk-Dosierungsrate [kg/d]</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">error</span> <span class="o">=</span> <span class="n">setpoint</span> <span class="o">-</span> <span class="n">ph_measurement</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="k">if</span> <span class="n">error</span> <span class="o">&gt;</span> <span class="n">tolerance</span><span class="p">:</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>        <span class="c1"># pH zu niedrig, füge Kalk hinzu</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>        <span class="n">dosing_rate</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">error</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>  <span class="c1"># Proportionale Regelung</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>    <span class="k">elif</span> <span class="n">error</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">tolerance</span><span class="p">:</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>        <span class="c1"># pH zu hoch, reduziere Kalk</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>        <span class="n">dosing_rate</span> <span class="o">=</span> <span class="mi">0</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>    <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>        <span class="c1"># Innerhalb Toleranz</span>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>        <span class="n">dosing_rate</span> <span class="o">=</span> <span class="mi">0</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>    <span class="k">return</span> <span class="n">dosing_rate</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">ph_control</span><span class="p">(</span><span class="n">ph_measurement</span><span class="p">,</span> <span class="n">setpoint</span><span class="o">=</span><span class="mf">7.2</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="sd">    Einfache pH-Regelung.</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="sd">    Returns: Kalk-Dosierungsrate [kg/d]</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">error</span> <span class="o">=</span> <span class="n">setpoint</span> <span class="o">-</span> <span class="n">ph_measurement</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="k">if</span> <span class="n">error</span> <span class="o">&gt;</span> <span class="n">tolerance</span><span class="p">:</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>        <span class="c1"># pH zu niedrig, füge Kalk hinzu</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>        <span class="n">dosing_rate</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">error</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>  <span class="c1"># Proportionale Regelung</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>    <span class="k">elif</span> <span class="n">error</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">tolerance</span><span class="p">:</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>        <span class="c1"># pH zu hoch, reduziere Kalk</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>        <span class="n">dosing_rate</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>        <span class="c1"># Innerhalb Toleranz</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>        <span class="n">dosing_rate</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>    <span class="k">return</span> <span class="n">dosing_rate</span>
 </code></pre></div>
 <h3 id="futterungssteuerung-basierend-auf-vfa">Fütterungssteuerung basierend auf VFA<a class="headerlink" href="#futterungssteuerung-basierend-auf-vfa" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">adaptive_feeding_control</span><span class="p">(</span><span class="n">vfa_measurement</span><span class="p">,</span> <span class="n">vfa_limit</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>                             <span class="n">current_feed_rate</span><span class="o">=</span><span class="mf">15.0</span><span class="p">):</span>
 <a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="sd">    Passe Fütterungsrate basierend auf VFA an</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="sd">    Passe Fütterungsrate basierend auf VFA an.</span>
 <a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
 <a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="sd">    vfa_limit: VFA-Grenzwert [g/L]</span>
 <a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="sd">    current_feed_rate: Aktuelle Rate [m³/d]</span>
@@ -2798,7 +2824,7 @@
 <h2 id="alarme-und-benachrichtigungen">Alarme und Benachrichtigungen<a class="headerlink" href="#alarme-und-benachrichtigungen" title="Permanent link">&para;</a></h2>
 <h3 id="alarm-system">Alarm-System<a class="headerlink" href="#alarm-system" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">SensorAlarm</span><span class="p">:</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Sensor-Alarmsystem&quot;&quot;&quot;</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Sensor-Alarmsystem.&quot;&quot;&quot;</span>
 <a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
 <a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor_id</span><span class="p">,</span> <span class="n">alarm_type</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">hysteresis</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
 <a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">sensor_id</span> <span class="o">=</span> <span class="n">sensor_id</span>
@@ -2809,7 +2835,7 @@
 <a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">last_value</span> <span class="o">=</span> <span class="kc">None</span>
 <a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>
 <a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_value</span><span class="p">):</span>
-<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Prüfe Alarmbedingung&quot;&quot;&quot;</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Prüfe Alarmbedingung.&quot;&quot;&quot;</span>
 <a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>
 <a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alarm_type</span> <span class="o">==</span> <span class="s1">&#39;high&#39;</span><span class="p">:</span>
 <a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span> <span class="ow">and</span> <span class="n">current_value</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span>
@@ -2842,7 +2868,7 @@
 <a id="__codelineno-9-43" name="__codelineno-9-43" href="#__codelineno-9-43"></a>    <span class="s1">&#39;pH_low&#39;</span><span class="p">:</span> <span class="n">SensorAlarm</span><span class="p">(</span><span class="s1">&#39;pH1&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="mf">6.8</span><span class="p">,</span> <span class="n">hysteresis</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span>
 <a id="__codelineno-9-44" name="__codelineno-9-44" href="#__codelineno-9-44"></a>    <span class="s1">&#39;pH_high&#39;</span><span class="p">:</span> <span class="n">SensorAlarm</span><span class="p">(</span><span class="s1">&#39;pH1&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">,</span> <span class="n">hysteresis</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span>
 <a id="__codelineno-9-45" name="__codelineno-9-45" href="#__codelineno-9-45"></a>    <span class="s1">&#39;VFA_high&#39;</span><span class="p">:</span> <span class="n">SensorAlarm</span><span class="p">(</span><span class="s1">&#39;VFA1&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="n">hysteresis</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
-<a id="__codelineno-9-46" name="__codelineno-9-46" href="#__codelineno-9-46"></a>    <span class="s1">&#39;temp_deviation&#39;</span><span class="p">:</span> <span class="n">SensorAlarm</span><span class="p">(</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span> <span class="s1">&#39;rate_of_change&#39;</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>  <span class="c1"># 2°C/h</span>
+<a id="__codelineno-9-46" name="__codelineno-9-46" href="#__codelineno-9-46"></a>    <span class="s1">&#39;temp_deviation&#39;</span><span class="p">:</span> <span class="n">SensorAlarm</span><span class="p">(</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span> <span class="s1">&#39;rate_of_change&#39;</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>  <span class="c1"># 2 °C/h</span>
 <a id="__codelineno-9-47" name="__codelineno-9-47" href="#__codelineno-9-47"></a><span class="p">}</span>
 <a id="__codelineno-9-48" name="__codelineno-9-48" href="#__codelineno-9-48"></a>
 <a id="__codelineno-9-49" name="__codelineno-9-49" href="#__codelineno-9-49"></a><span class="c1"># In Simulationsschleife</span>
@@ -2858,7 +2884,7 @@
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
 <a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">SensorDataLogger</span><span class="p">:</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Protokolliere Sensordaten&quot;&quot;&quot;</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Protokolliere Sensordaten.&quot;&quot;&quot;</span>
 <a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
 <a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
@@ -2866,20 +2892,20 @@
 <a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="o">=</span> <span class="kc">None</span>
 <a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
 <a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor_ids</span><span class="p">):</span>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Öffne Logdatei&quot;&quot;&quot;</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Öffne Logdatei.&quot;&quot;&quot;</span>
 <a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 <a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
 <a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>        <span class="c1"># Header</span>
 <a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="s1">&#39;time_days&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">sensor_ids</span><span class="p">)</span>
 <a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>
 <a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_days</span><span class="p">,</span> <span class="n">sensor_values</span><span class="p">):</span>
-<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Protokolliere einen Zeitpunkt&quot;&quot;&quot;</span>
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Protokolliere einen Zeitpunkt.&quot;&quot;&quot;</span>
 <a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
 <a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>        <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">time_days</span><span class="p">]</span> <span class="o">+</span> <span class="n">sensor_values</span>
 <a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
 <a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a>
 <a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Schließe Logdatei&quot;&quot;&quot;</span>
+<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Schließe Logdatei.&quot;&quot;&quot;</span>
 <a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">:</span>
 <a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 <a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a>
@@ -2901,8 +2927,8 @@
 <a id="__codelineno-10-45" name="__codelineno-10-45" href="#__codelineno-10-45"></a>
 <a id="__codelineno-10-46" name="__codelineno-10-46" href="#__codelineno-10-46"></a><span class="n">logger</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </code></pre></div>
-<h2 id="aktuelle-implementierung">Aktuelle Implementierung<a class="headerlink" href="#aktuelle-implementierung" title="Permanent link">&para;</a></h2>
-<p>Während dedizierte Sensorkomponenten noch in Entwicklung sind, können Fermenter-Ausgaben bereits zur Prozessüberwachung verwendet werden:</p>
+<h2 id="fermenter-ausgaben-als-virtuelle-sensoren">Fermenter-Ausgaben als virtuelle Sensoren<a class="headerlink" href="#fermenter-ausgaben-als-virtuelle-sensoren" title="Permanent link">&para;</a></h2>
+<p>Die Fermenter-Komponente liefert bereits Prozessindikatoren, die direkt zur Überwachung verwendet werden können — mit oder ohne dedizierte Sensorkomponenten:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.components.biological</span><span class="w"> </span><span class="kn">import</span> <span class="n">Digester</span>
 <a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
 <a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1"># Fermenter liefert bereits Prozessindikatoren</span>
@@ -2926,45 +2952,45 @@
 <a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="k">if</span> <span class="n">monitoring_data</span><span class="p">[</span><span class="s1">&#39;VFA&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">monitoring_data</span><span class="p">[</span><span class="s1">&#39;TAC&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.4</span><span class="p">:</span>
 <a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warnung: Hohes VFA/TAC-Verhältnis&quot;</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="zukunftige-entwicklung">Zukünftige Entwicklung<a class="headerlink" href="#zukunftige-entwicklung" title="Permanent link">&para;</a></h2>
-<p>Das Sensormodul wird erweitert um:</p>
+<h2 id="roadmap">Roadmap<a class="headerlink" href="#roadmap" title="Permanent link">&para;</a></h2>
+<p>Geplante Erweiterungen des Sensormoduls:</p>
 <ol>
-<li><strong>Realistische Sensor-Modelle</strong>  </li>
-<li>Rauschen und Drift  </li>
-<li>Kalibrierungszyklen  </li>
+<li><strong>Reichere Sensor-Modelle</strong></li>
+<li>Rauschen und Drift</li>
+<li>Kalibrierungszyklen</li>
 <li>
-<p>Ausfallmodelle  </p>
+<p>Ausfallmodelle</p>
 </li>
 <li>
-<p><strong>Erweiterte Prozesssteuerung</strong>  </p>
+<p><strong>Erweiterte Prozesssteuerung</strong></p>
 </li>
-<li>PID-Regler  </li>
-<li>Modellprädiktive Regelung (MPC)  </li>
+<li>PID-Regler</li>
+<li>Modellprädiktive Regelung (MPC)</li>
 <li>
-<p>Adaptive Steuerung  </p>
-</li>
-<li>
-<p><strong>Datenanalyse-Tools</strong>  </p>
-</li>
-<li>Trendanalyse  </li>
-<li>Anomalie-Erkennung  </li>
-<li>
-<p>Prädiktive Wartung  </p>
+<p>Adaptive Steuerung</p>
 </li>
 <li>
-<p><strong>Visualisierung</strong>  </p>
+<p><strong>Datenanalyse-Tools</strong></p>
 </li>
-<li>Echtzeit-Dashboards  </li>
-<li>Historische Trends  </li>
-<li>Alarm-Übersichten  </li>
+<li>Trendanalyse</li>
+<li>Anomalie-Erkennung</li>
+<li>
+<p>Prädiktive Wartung</p>
+</li>
+<li>
+<p><strong>Visualisierung</strong></p>
+</li>
+<li>Echtzeit-Dashboards</li>
+<li>Historische Trends</li>
+<li>Alarm-Übersichten</li>
 </ol>
 <h2 id="nachste-schritte">Nächste Schritte<a class="headerlink" href="#nachste-schritte" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="../biological/">Biologische Komponenten</a>: Fermenter und Prozesssteuerung  </li>
-<li><a href="../energy/">Energiekomponenten</a>: BHKW und Wärmesysteme  </li>
-<li><a href="../mechanical/">Mechanische Komponenten</a>: Pumpen und Rührwerke  </li>
-<li><a href="../feeding/">Fütterungskomponenten</a>: Lagerung und Dosierung  </li>
-<li>API-Referenz (in Kürze): Detaillierte Klassendokumentation (wenn verfügbar)  </li>
+<li><a href="../biological/">Biologische Komponenten</a>: Fermenter und Prozesssteuerung</li>
+<li><a href="../energy/">Energiekomponenten</a>: BHKW und Wärmesysteme</li>
+<li><a href="../mechanical/">Mechanische Komponenten</a>: Pumpen und Rührwerke</li>
+<li><a href="../feeding/">Fütterungskomponenten</a>: Lagerung und Dosierung</li>
+<li><a href="../../../api/sensors/">API-Referenz</a>: Detaillierte Klassendokumentation</li>
 </ul>
 
 

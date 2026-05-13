@@ -64,6 +64,13 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/api/mechanical/"/>
     </url>
     <url>
+        <loc>https://dgaida.github.io/PyADM1ODE/dev/api/sensors/</loc>
+        <lastmod>2026-05-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/api/sensors/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/api/sensors/"/>
+    </url>
+    <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/api/simulation/</loc>
         <lastmod>2026-05-13</lastmod>
         <changefreq>daily</changefreq>
@@ -279,6 +286,13 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/api/mechanical/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devapi/mechanical/"/>
+    </url>
+    <url>
+        <loc>https://dgaida.github.io/PyADM1ODE/dev/en/api/sensors/</loc>
+        <lastmod>2026-05-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/api/sensors/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devapi/sensors/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/api/simulation/</loc>

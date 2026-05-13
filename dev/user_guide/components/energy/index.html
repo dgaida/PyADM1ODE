@@ -2128,6 +2128,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../api/sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensoren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../api/configurator/" class="md-nav__link">
         
   
@@ -2938,12 +2966,12 @@
 </code></pre></div>
 <h3 id="druckmodell">Druckmodell<a class="headerlink" href="#druckmodell" title="Permanent link">&para;</a></h3>
 <p>Der Speicher schätzt den Druck basierend auf gespeichertem Volumen:</p>
-<p><strong>Niederdruck (membrane/dome):</strong>
+<p><strong>Niederdruck (membrane/dome):</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>p = p_atm + frac * (p_max - p_atm)
-</code></pre></div></p>
-<p><strong>Hochdruck (compressed):</strong>
+</code></pre></div>
+<p><strong>Hochdruck (compressed):</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>p = p_min + frac^α * (p_max - p_min)  # α &gt; 1 für nichtlinearen Anstieg
-</code></pre></div></p>
+</code></pre></div>
 <h3 id="sicherheitsventing">Sicherheitsventing<a class="headerlink" href="#sicherheitsventing" title="Permanent link">&para;</a></h3>
 <p>Bei Überdruck wird Gas automatisch zur Fackel geleitet:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Speicher überwacht Druck</span>
@@ -3163,7 +3191,7 @@
 </code></pre></div>
 <h2 id="fehlerbehebung">Fehlerbehebung<a class="headerlink" href="#fehlerbehebung" title="Permanent link">&para;</a></h2>
 <h3 id="problem-bhkw-lauft-nicht">Problem: BHKW läuft nicht<a class="headerlink" href="#problem-bhkw-lauft-nicht" title="Permanent link">&para;</a></h3>
-<p><strong>Diagnose:</strong>
+<p><strong>Diagnose:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">chp_outputs</span> <span class="o">=</span> <span class="n">chp</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
 <a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>
 <a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="k">if</span> <span class="n">chp_outputs</span><span class="p">[</span><span class="s1">&#39;P_el&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -3171,10 +3199,10 @@
 <a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- Verfügbares Gas: </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Q_gas_supplied_m3_per_day&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m³/d&quot;</span><span class="p">)</span>
 <a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- Mindestgasbedarf: </span><span class="si">{</span><span class="n">P_el_nom</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">eta_el</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">10</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m³/d&quot;</span><span class="p">)</span>
 <a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- Speicherdruck: </span><span class="si">{</span><span class="n">storage</span><span class="o">.</span><span class="n">outputs_data</span><span class="p">[</span><span class="s1">&#39;pressure_bar&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> bar&quot;</span><span class="p">)</span>
-</code></pre></div></p>
+</code></pre></div>
 <h3 id="problem-ubermaiges-venting">Problem: Übermäßiges Venting<a class="headerlink" href="#problem-ubermaiges-venting" title="Permanent link">&para;</a></h3>
 <p><strong>Ursache:</strong> Gasproduktion &gt; BHKW-Verbrauch</p>
-<p><strong>Lösung:</strong>
+<p><strong>Lösung:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1"># Option 1: Erhöhe BHKW-Kapazität</span>
 <a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="n">config</span><span class="o">.</span><span class="n">add_chp</span><span class="p">(</span><span class="s2">&quot;chp1&quot;</span><span class="p">,</span> <span class="n">P_el_nom</span><span class="o">=</span><span class="mi">750</span><span class="p">)</span>  <span class="c1"># Von 500 auf 750 kW</span>
 <a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>
@@ -3183,9 +3211,9 @@
 <a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>
 <a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="c1"># Option 3: Vergrößere Gasspeicher</span>
 <a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="n">storage</span> <span class="o">=</span> <span class="n">GasStorage</span><span class="p">(</span><span class="s2">&quot;storage1&quot;</span><span class="p">,</span> <span class="n">capacity_m3</span><span class="o">=</span><span class="mi">1500</span><span class="p">)</span>  <span class="c1"># Von 1000 auf 1500</span>
-</code></pre></div></p>
+</code></pre></div>
 <h3 id="problem-unzureichende-warme">Problem: Unzureichende Wärme<a class="headerlink" href="#problem-unzureichende-warme" title="Permanent link">&para;</a></h3>
-<p><strong>Diagnose:</strong>
+<p><strong>Diagnose:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="n">heat_outputs</span> <span class="o">=</span> <span class="n">heating</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
 <a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>
 <a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="k">if</span> <span class="n">heat_outputs</span><span class="p">[</span><span class="s1">&#39;P_aux_heat&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>  <span class="c1"># kW Zusatzheizung</span>
@@ -3196,7 +3224,7 @@
 <a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Verbessere Isolierung (reduziere k)&quot;</span><span class="p">)</span>
 <a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Vergrößere BHKW&quot;</span><span class="p">)</span>
 <a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Reduziere Fermentertemperatur&quot;</span><span class="p">)</span>
-</code></pre></div></p>
+</code></pre></div>
 <h2 id="nachste-schritte">Nächste Schritte<a class="headerlink" href="#nachste-schritte" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../biological/">Biologische Komponenten</a>: Fermenter und Prozesssteuerung  </li>
