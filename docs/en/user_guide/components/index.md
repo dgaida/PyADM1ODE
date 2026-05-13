@@ -44,31 +44,31 @@ PyADM1 provides several categories of components:
 
 Components for biological conversion processes:
 
-- **Digester**: Main fermenter with the ADM1 model for anaerobic digestion. A hydrolysis pre-tank is simply a `Digester` with higher temperature and shorter HRT — there is no separate class.
-- **Separator**: Solid–liquid separation for digestate processing.
+- **Digester**: Main fermenter with the ADM1 model for anaerobic digestion. A hydrolysis pre-tank is simply a `Digester` with higher temperature and shorter HRT — there is no separate class.  
+- **Separator**: Solid–liquid separation for digestate processing.  
 
 ### [Energy Components](energy.md)
 
 Components for energy generation and storage:
 
-- **CHP**: Combined heat and power unit for electricity and heat generation.
-- **Heating**: Heating system for temperature control.
-- **GasStorage**: Biogas storage with pressure management.
-- **Flare**: Safety flare for excess gas.
+- **CHP**: Combined heat and power unit for electricity and heat generation.  
+- **Heating**: Heating system for temperature control.  
+- **GasStorage**: Biogas storage with pressure management.  
+- **Flare**: Safety flare for excess gas.  
 
 ### [Mechanical Components](mechanical.md)
 
 Mechanical plant components:
 
-- **Pump**: Pumps for substrate transport and recirculation.
-- **Mixer**: Agitators for homogenization in the fermenter.
+- **Pump**: Pumps for substrate transport and recirculation.  
+- **Mixer**: Agitators for homogenization in the fermenter.  
 
 ### [Feeding Components](feeding.md)
 
 Substrate handling and dosing:
 
-- **SubstrateStorage**: Substrate storage tanks with quality tracking.
-- **Feeder**: Automated dosing systems.
+- **SubstrateStorage**: Substrate storage tanks with quality tracking.  
+- **Feeder**: Automated dosing systems.  
 
 ### [Sensors](sensors.md)
 
@@ -84,9 +84,9 @@ Transfer digestate between digesters:
 configurator.connect("digester_1", "digester_2", "liquid")
 ```
 
-**Data transferred:**
-- `Q_out`: Liquid flow rate [m³/d]
-- `state_out`: Complete ADM1 state vector
+**Data transferred:**  
+- `Q_out`: Liquid flow rate [m³/d]  
+- `state_out`: Complete ADM1 state vector  
 
 ### Gas Connections
 
@@ -96,9 +96,9 @@ Transfer biogas from storage to CHP:
 configurator.connect("digester_1_storage", "chp_1", "gas")
 ```
 
-**Data transferred:**
-- `Q_gas_supplied_m3_per_day`: Available gas [m³/d]
-- Gas composition (CH4%, CO2%)
+**Data transferred:**  
+- `Q_gas_supplied_m3_per_day`: Available gas [m³/d]  
+- Gas composition (CH4%, CO2%)  
 
 ### Heat Connections
 
@@ -108,9 +108,9 @@ Transfer waste heat from CHP to heating system:
 configurator.connect("chp_1", "heating_1", "heat")
 ```
 
-**Data transferred:**
-- `P_th`: Available thermal power [kW]
-- Temperature levels
+**Data transferred:**  
+- `P_th`: Available thermal power [kW]  
+- Temperature levels  
 
 ### Auto-Connection Helpers
 
@@ -405,31 +405,31 @@ storage_good = SubstrateStorage(
 
 ## Next Steps
 
-- **Examples**: See the detailed component guides for full implementations
-- **Optimization**: Use parameter studies to optimize component sizing
-- **[API Reference](../../api/biological.md)**: Detailed class documentation for advanced features
+- **Examples**: See the detailed component guides for full implementations  
+- **Optimization**: Use parameter studies to optimize component sizing  
+- **[API Reference](../../api/biological.md)**: Detailed class documentation for advanced features  
 
 ## Related Documentation
 
-- [Biological Components](biological.md)
-- [Energy Components](energy.md)
-- [Mechanical Components](mechanical.md)
-- [Feeding Components](feeding.md)
-- [Sensors](sensors.md)
+- [Biological Components](biological.md)  
+- [Energy Components](energy.md)  
+- [Mechanical Components](mechanical.md)  
+- [Feeding Components](feeding.md)  
+- [Sensors](sensors.md)  
 
 ## Core Concepts
 
 ### Component Base Class
 
-All plant components inherit from the `Component` base class and provide:
-- `step(t, dt, inputs)`: Execute one simulation time step.
-- `initialize(state)`: Initialize the component state.
-- `to_dict()` / `from_dict()`: Serialization for JSON export/import.
+All plant components inherit from the `Component` base class and provide:  
+- `step(t, dt, inputs)`: Execute one simulation time step.  
+- `initialize(state)`: Initialize the component state.  
+- `to_dict()` / `from_dict()`: Serialization for JSON export/import.  
 
 ### Automatic Component Creation
 
-The `PlantConfigurator` automatically creates and connects:
-- **Gas storage**: One per digester (membrane type, sized to gas volume).
-- **Flare**: One per CHP unit (safety combustion of excess gas).
+The `PlantConfigurator` automatically creates and connects:  
+- **Gas storage**: One per digester (membrane type, sized to gas volume).  
+- **Flare**: One per CHP unit (safety combustion of excess gas).  
 
 This reduces configuration complexity while ensuring realistic plant behavior.

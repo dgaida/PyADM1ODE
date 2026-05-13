@@ -242,10 +242,10 @@ monitor_digester_health(results)
 
 ### Low pH Value
 
-**Causes:**
-- Organic loading rate (OLR) too high
-- Insufficient buffer capacity
-- Sudden substrate change
+**Causes:**  
+- Organic loading rate (OLR) too high  
+- Insufficient buffer capacity  
+- Sudden substrate change  
 
 **Solutions:**
 
@@ -259,23 +259,23 @@ Q = [15, 10, 0, 0, 0, 0, 0, 1, 0, 0]  # 1 m³/d lime
 
 ### Foaming
 
-**Causes:**
-- High protein content in substrate
-- Sudden pH changes
-- High VFA concentrations
+**Causes:**  
+- High protein content in substrate  
+- Sudden pH changes  
+- High VFA concentrations  
 
-**Solutions:**
-- Reduce protein-rich substrates
-- Stabilize pH via buffering
-- Implement anti-foam measures
+**Solutions:**  
+- Reduce protein-rich substrates  
+- Stabilize pH via buffering  
+- Implement anti-foam measures  
 
 ### Low Gas Production
 
-**Causes:**
-- Low organic loading
-- Poor substrate quality
-- Inhibition (NH3, H2S, heavy metals)
-- Hydraulic retention time too short
+**Causes:**  
+- Low organic loading  
+- Poor substrate quality  
+- Inhibition (NH3, H2S, heavy metals)  
+- Hydraulic retention time too short  
 
 **Diagnosis:**
 
@@ -306,30 +306,30 @@ diagnose_low_gas_production(digester.outputs_data)
 
 ## Best Practices
 
-1. **Start with realistic operating parameters**
-   - Use typical HRT values (30–40 days)
-   - Start with moderate OLR (2–4 kg VS/m³/d)
+1. **Start with realistic operating parameters**  
+   - Use typical HRT values (30–40 days)  
+   - Start with moderate OLR (2–4 kg VS/m³/d)  
 
-2. **Monitor critical parameters**
-   - pH should be stable (±0.2)
-   - VFA/TAC ratio < 0.4
-   - Methane content > 55%
+2. **Monitor critical parameters**  
+   - pH should be stable (±0.2)  
+   - VFA/TAC ratio < 0.4  
+   - Methane content > 55%  
 
-3. **Implement buffering systems**
-   - Add lime or other buffers at low pH
-   - Maintain TAC > 4 g CaCO3/L
+3. **Implement buffering systems**  
+   - Add lime or other buffers at low pH  
+   - Maintain TAC > 4 g CaCO3/L  
 
-4. **Use two-stage systems for difficult substrates**
-   - Thermophilic hydrolysis for fiber-rich substrates
-   - Mesophilic methanogenesis for stable gas production
+4. **Use two-stage systems for difficult substrates**  
+   - Thermophilic hydrolysis for fiber-rich substrates  
+   - Mesophilic methanogenesis for stable gas production  
 
-5. **Calibrate the model with real data**
-   - Use calibration parameters for more accurate predictions
-   - Validate against operational data
+5. **Calibrate the model with real data**  
+   - Use calibration parameters for more accurate predictions  
+   - Validate against operational data  
 
 ## Next Steps
 
-- [Energy Components](energy.md): CHP and heating systems
-- [Mechanical Components](mechanical.md): Pumps and mixers
-- [Feeding Components](feeding.md): Storage and dosing
-- [API Reference](../../api/biological.md): Detailed class documentation
+- [Energy Components](energy.md): CHP and heating systems  
+- [Mechanical Components](mechanical.md): Pumps and mixers  
+- [Feeding Components](feeding.md): Storage and dosing  
+- [API Reference](../../api/biological.md): Detailed class documentation  

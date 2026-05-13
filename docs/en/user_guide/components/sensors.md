@@ -12,30 +12,30 @@ PyADM1 provides a sensor module for realistic process monitoring and control. Th
 
 Sensors for physical properties:
 
-- **pH electrodes**: With calibration drift and temperature compensation
-- **Temperature sensors**: PT100, thermocouples with accuracy specifications
-- **Pressure sensors**: For gas and liquid pressure
-- **Level sensors**: Ultrasonic, radar, hydrostatic
-- **Flow meters**: Magnetic-inductive, ultrasonic, Coriolis
+- **pH electrodes**: With calibration drift and temperature compensation  
+- **Temperature sensors**: PT100, thermocouples with accuracy specifications  
+- **Pressure sensors**: For gas and liquid pressure  
+- **Level sensors**: Ultrasonic, radar, hydrostatic  
+- **Flow meters**: Magnetic-inductive, ultrasonic, Coriolis  
 
 ### Chemical Sensors
 
 Sensors for process liquid analysis:
 
-- **VFA analyzers**: Online titration, GC analysis
-- **Ammonia sensors**: Ion-selective electrodes
-- **COD analyzers**: Online spectroscopy
-- **Nutrient analyzers**: N, P, K measurement
+- **VFA analyzers**: Online titration, GC analysis  
+- **Ammonia sensors**: Ion-selective electrodes  
+- **COD analyzers**: Online spectroscopy  
+- **Nutrient analyzers**: N, P, K measurement  
 
 ### Gas Analyzers
 
 Sensors for biogas composition:
 
-- **Methane sensors**: Infrared, calorimetric
-- **CO2 sensors**: NDIR technology
-- **H2S sensors**: Electrochemical
-- **Oxygen sensors**: For leak detection
-- **Trace-gas analyzers**: With detection limits
+- **Methane sensors**: Infrared, calorimetric  
+- **CO2 sensors**: NDIR technology  
+- **H2S sensors**: Electrochemical  
+- **Oxygen sensors**: For leak detection  
+- **Trace-gas analyzers**: With detection limits  
 
 ## Usage Example
 
@@ -429,30 +429,30 @@ if monitoring_data['VFA'] / monitoring_data['TAC'] > 0.4:
 
 Planned extensions to the sensor module:
 
-1. **Richer sensor models**
-   - Noise and drift
-   - Calibration cycles
-   - Failure models
+1. **Richer sensor models**  
+   - Noise and drift  
+   - Calibration cycles  
+   - Failure models  
 
-2. **Advanced process control**
-   - PID controllers
-   - Model predictive control (MPC)
-   - Adaptive control
+2. **Advanced process control**  
+   - PID controllers  
+   - Model predictive control (MPC)  
+   - Adaptive control  
 
-3. **Data analysis tools**
-   - Trend analysis
-   - Anomaly detection
-   - Predictive maintenance
+3. **Data analysis tools**  
+   - Trend analysis  
+   - Anomaly detection  
+   - Predictive maintenance  
 
-4. **Visualization**
-   - Real-time dashboards
-   - Historical trends
-   - Alarm overviews
+4. **Visualization**  
+   - Real-time dashboards  
+   - Historical trends  
+   - Alarm overviews  
 
 ## Next Steps
 
-- [Biological Components](biological.md): Digester and process control
-- [Energy Components](energy.md): CHP and heating systems
-- [Mechanical Components](mechanical.md): Pumps and mixers
-- [Feeding Components](feeding.md): Storage and dosing
-- [API Reference](../../api/sensors.md): Detailed class documentation
+- [Biological Components](biological.md): Digester and process control  
+- [Energy Components](energy.md): CHP and heating systems  
+- [Mechanical Components](mechanical.md): Pumps and mixers  
+- [Feeding Components](feeding.md): Storage and dosing  
+- [API Reference](../../api/sensors.md): Detailed class documentation  

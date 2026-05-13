@@ -562,10 +562,10 @@ if feeder.state['n_blockages'] > 5:
     print("- Wear or maintenance required")
 ```
 
-**Solutions:**
-- Switch to a more robust feeder type (twin screw)
-- Improve substrate preparation
-- Implement a maintenance schedule
+**Solutions:**  
+- Switch to a more robust feeder type (twin screw)  
+- Improve substrate preparation  
+- Implement a maintenance schedule  
 
 ### Problem: Inconsistent Dosing
 
@@ -586,34 +586,34 @@ if avg_error > 10:
 
 ## Best Practices
 
-1. **Implement quality monitoring**
-   - Track quality_factor over time
-   - Alert below 90% quality
-   - Plan FIFO rotation
+1. **Implement quality monitoring**  
+   - Track quality_factor over time  
+   - Alert below 90% quality  
+   - Plan FIFO rotation  
 
-2. **Maintain inventory safety**
-   - 7–14 days minimum safety stock
-   - Schedule refills in advance
-   - Account for seasonal availability
+2. **Maintain inventory safety**  
+   - 7–14 days minimum safety stock  
+   - Schedule refills in advance  
+   - Account for seasonal availability  
 
-3. **Optimize energy use**
-   - Use VFDs for variable dosing
-   - Minimize idle times
-   - Right-size feeders
+3. **Optimize energy use**  
+   - Use VFDs for variable dosing  
+   - Minimize idle times  
+   - Right-size feeders  
 
-4. **Optimize substrate mix**
-   - Balanced VS loading
-   - Cost optimization
-   - Nutrient balancing
+4. **Optimize substrate mix**  
+   - Balanced VS loading  
+   - Cost optimization  
+   - Nutrient balancing  
 
-5. **Schedule maintenance**
-   - Monitor wear parts
-   - Preventive maintenance for feeders
-   - Storage-tank inspections
+5. **Schedule maintenance**  
+   - Monitor wear parts  
+   - Preventive maintenance for feeders  
+   - Storage-tank inspections  
 
 ## Next Steps
 
-- [Biological Components](biological.md): Digester and process control
-- [Energy Components](energy.md): CHP and heating systems
-- [Mechanical Components](mechanical.md): Pumps and mixers
-- [API Reference](../../api/feeding.md): Detailed class documentation
+- [Biological Components](biological.md): Digester and process control  
+- [Energy Components](energy.md): CHP and heating systems  
+- [Mechanical Components](mechanical.md): Pumps and mixers  
+- [API Reference](../../api/feeding.md): Detailed class documentation  

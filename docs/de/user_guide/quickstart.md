@@ -4,15 +4,15 @@ Diese Anleitung bringt Sie in wenigen Minuten mit PyADM1ODE zum Laufen.
 
 ## Inhaltsverzeichnis
 
-1. [Ihre erste Simulation](#ihre-erste-simulation)
-2. [Einfacher Einzelfermenter](#einfacher-einzelfermenter)
-3. [Komplette Anlage mit BHKW und Heizung](#komplette-anlage-mit-bhkw-und-heizung)
-4. [Zweistufige Vergärung](#zweistufige-vergärung)
-5. [Arbeiten mit verschiedenen Substraten](#arbeiten-mit-verschiedenen-substraten)
-6. [Konfigurationen speichern und laden](#konfigurationen-speichern-und-laden)
-7. [Ergebnisse verstehen](#ergebnisse-verstehen)
-8. [Gängige Muster](#gängige-muster)
-9. [Nächste Schritte](#nächste-schritte)
+1. [Ihre erste Simulation](#ihre-erste-simulation)  
+2. [Einfacher Einzelfermenter](#einfacher-einzelfermenter)  
+3. [Komplette Anlage mit BHKW und Heizung](#komplette-anlage-mit-bhkw-und-heizung)  
+4. [Zweistufige Vergärung](#zweistufige-vergärung)  
+5. [Arbeiten mit verschiedenen Substraten](#arbeiten-mit-verschiedenen-substraten)  
+6. [Konfigurationen speichern und laden](#konfigurationen-speichern-und-laden)  
+7. [Ergebnisse verstehen](#ergebnisse-verstehen)  
+8. [Gängige Muster](#gängige-muster)  
+9. [Nächste Schritte](#nächste-schritte)  
 
 ## Ihre erste Simulation
 
@@ -97,10 +97,10 @@ Der einfache Fermenter besteht aus:
 
 ### Kernfunktionen
 
-- **Einstufiger CSTR**: Continuously stirred tank reactor
-- **Automatischer Gasspeicher**: Pro Fermenter erstellt (Niederdruckmembran)
-- **Substratmischung**: Maissilage + Rindergülle
-- **Temperaturregelung**: Mesophil (35 °C)
+- **Einstufiger CSTR**: Continuously stirred tank reactor  
+- **Automatischer Gasspeicher**: Pro Fermenter erstellt (Niederdruckmembran)  
+- **Substratmischung**: Maissilage + Rindergülle  
+- **Temperaturregelung**: Mesophil (35 °C)  
 
 ### Details zur Anlagenkonfiguration
 
@@ -138,10 +138,10 @@ configurator.add_digester(
 
 **Wenn der Speicher gefüllt wird:**
 
-- Druck steigt von 0.95 auf 1.05 bar
-- Bei 1.05 bar (voll) wird Überschussgas entlüftet
-- Das Entlüften verhindert Überdruck und Anlagenschäden
-- In realen Anlagen wird entlüftetes Gas zur Fackel geleitet
+- Druck steigt von 0.95 auf 1.05 bar  
+- Bei 1.05 bar (voll) wird Überschussgas entlüftet  
+- Das Entlüften verhindert Überdruck und Anlagenschäden  
+- In realen Anlagen wird entlüftetes Gas zur Fackel geleitet  
 
 ### Prozessstabilitäts-Indikatoren
 
@@ -252,8 +252,8 @@ print(f"  Zusatzwärme:           {heating['P_aux_heat']:.1f} kW")
 
 PlantConfigurator erstellt und verbindet automatisch:
 
-- **Gasspeicher**: Einer pro Fermenter (Membran, dimensioniert auf V_gas)
-- **Fackel**: Eine pro BHKW (Sicherheitsverbrennung, 98 % CH₄-Zerstörung)
+- **Gasspeicher**: Einer pro Fermenter (Membran, dimensioniert auf V_gas)  
+- **Fackel**: Eine pro BHKW (Sicherheitsverbrennung, 98 % CH₄-Zerstörung)  
 
 **Verbindungskette:**
 
@@ -281,11 +281,11 @@ Das vollständige Beispiel finden Sie in [`examples/02_two_stage_plant.py`](http
 
 ### Kernfunktionen
 
-- **Temperaturphasiert**: Thermophil (45 °C) + Mesophil (35 °C)
-- **Verstärkte Hydrolyse**: Höhere Temperatur in der ersten Stufe
-- **Stabile Methanogenese**: Optimierte Bedingungen in der zweiten Stufe
-- **Mechanische Komponenten**: Pumpen und Rührwerke für die Materialhandhabung
-- **Energieintegration**: Kraft-Wärme-Kopplung mit Abwärmenutzung
+- **Temperaturphasiert**: Thermophil (45 °C) + Mesophil (35 °C)  
+- **Verstärkte Hydrolyse**: Höhere Temperatur in der ersten Stufe  
+- **Stabile Methanogenese**: Optimierte Bedingungen in der zweiten Stufe  
+- **Mechanische Komponenten**: Pumpen und Rührwerke für die Materialhandhabung  
+- **Energieintegration**: Kraft-Wärme-Kopplung mit Abwärmenutzung  
 
 ### Konfiguration
 
@@ -440,16 +440,16 @@ Gasmanagement:
 
 PyADM1 enthält 10 vorkonfigurierte landwirtschaftliche Substrate:
 
-1. **Maissilage (maize)** – Energiepflanze, hohe Biogasausbeute
-2. **Schweinegülle (swinemanure)** – Hoher Stickstoffgehalt
-3. **Grünroggen (greenrye)** – Früherntliche Energiepflanze
-4. **Grassilage (grass)** – Grünlandbiomasse
-5. **Weizen (wheat)** – Getreidekultur
-6. **GPS (gps)** – Ganzpflanzensilage
-7. **CCM (ccm)** – Corn-Cob-Mix
-8. **Futterkalk (futterkalk)** – pH-Pufferzusatz
-9. **Rindergülle (cowmanure)** – Gülle aus Milchviehhaltung
-10. **Zwiebeln (onions)** – Gemüseabfall
+1. **Maissilage (maize)** – Energiepflanze, hohe Biogasausbeute  
+2. **Schweinegülle (swinemanure)** – Hoher Stickstoffgehalt  
+3. **Grünroggen (greenrye)** – Früherntliche Energiepflanze  
+4. **Grassilage (grass)** – Grünlandbiomasse  
+5. **Weizen (wheat)** – Getreidekultur  
+6. **GPS (gps)** – Ganzpflanzensilage  
+7. **CCM (ccm)** – Corn-Cob-Mix  
+8. **Futterkalk (futterkalk)** – pH-Pufferzusatz  
+9. **Rindergülle (cowmanure)** – Gülle aus Milchviehhaltung  
+10. **Zwiebeln (onions)** – Gemüseabfall  
 
 ### Beispiele für Substratfütterung
 
@@ -515,33 +515,33 @@ results = plant.simulate(duration=10.0, dt=1.0/24.0)
 
 #### Fermenter-Ausgaben
 
-- `Q_gas` – Gesamte Biogasproduktion [m³/d]
-- `Q_ch4` – Methanproduktion [m³/d]
-- `Q_co2` – CO2-Produktion [m³/d]
-- `pH` – pH-Wert [-]
-- `VFA` – Flüchtige Fettsäuren [g HAceq/L]
-- `TAC` – Gesamtalkalinität [g CaCO3/L]
+- `Q_gas` – Gesamte Biogasproduktion [m³/d]  
+- `Q_ch4` – Methanproduktion [m³/d]  
+- `Q_co2` – CO2-Produktion [m³/d]  
+- `pH` – pH-Wert [-]  
+- `VFA` – Flüchtige Fettsäuren [g HAceq/L]  
+- `TAC` – Gesamtalkalinität [g CaCO3/L]  
 
 #### BHKW-Ausgaben
 
-- `P_el` – Elektrische Leistung [kW]
-- `P_th` – Thermische Leistung [kW]
-- `Q_gas_consumed` – Gasverbrauch [m³/d]
-- `load_factor` – Betriebspunkt [0–1]
+- `P_el` – Elektrische Leistung [kW]  
+- `P_th` – Thermische Leistung [kW]  
+- `Q_gas_consumed` – Gasverbrauch [m³/d]  
+- `load_factor` – Betriebspunkt [0–1]  
 
 #### Heizungsausgaben
 
-- `Q_heat_supplied` – Gelieferte Wärme [kW]
-- `P_th_used` – Genutzte BHKW-Wärme [kW]
-- `P_aux_heat` – Benötigte Zusatzwärme [kW]
+- `Q_heat_supplied` – Gelieferte Wärme [kW]  
+- `P_th_used` – Genutzte BHKW-Wärme [kW]  
+- `P_aux_heat` – Benötigte Zusatzwärme [kW]  
 
 #### Gasspeicher-Ausgaben
 
-- `stored_volume_m3` – Aktuelles Volumen [m³ STP]
-- `pressure_bar` – Aktueller Druck [bar]
-- `utilization` – Füllstand [0–1]
-- `vented_volume_m3` – Entlüftetes Gas [m³]
-- `Q_gas_supplied_m3_per_day` – Verfügbares Gas [m³/d]
+- `stored_volume_m3` – Aktuelles Volumen [m³ STP]  
+- `pressure_bar` – Aktueller Druck [bar]  
+- `utilization` – Füllstand [0–1]  
+- `vented_volume_m3` – Entlüftetes Gas [m³]  
+- `Q_gas_supplied_m3_per_day` – Verfügbares Gas [m³/d]  
 
 ## Gängige Muster
 
@@ -610,15 +610,15 @@ plt.savefig('simulation_results.png')
 
 Nachdem Sie Ihre ersten Simulationen ausgeführt haben:
 
-1. **Komponenten kennenlernen**: [Komponenten-Leitfaden](components/index.md)
-2. **Fortgeschrittene Beispiele erkunden**:
-   - [`examples/01_basic_digester.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py)
-   - [`examples/02_two_stage_plant.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py)
-   - [`examples/parallel_two_stage_simulation.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py)
-3. **Parallele Simulationen ausprobieren**: Mehrere Szenarien gleichzeitig
-4. **MCP-Server erkunden**: [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp) für LLM-gesteuerte Anlagenauslegung
-5. **Modell kalibrieren**: [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration) für Parameteranpassung
-6. **API-Dokumentation lesen**: Vollständige Referenz für alle Klassen
+1. **Komponenten kennenlernen**: [Komponenten-Leitfaden](components/index.md)  
+2. **Fortgeschrittene Beispiele erkunden**:  
+   - [`examples/01_basic_digester.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py)  
+   - [`examples/02_two_stage_plant.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py)  
+   - [`examples/parallel_two_stage_simulation.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py)  
+3. **Parallele Simulationen ausprobieren**: Mehrere Szenarien gleichzeitig  
+4. **MCP-Server erkunden**: [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp) für LLM-gesteuerte Anlagenauslegung  
+5. **Modell kalibrieren**: [PyADM1ODE_calibration](https://github.com/dgaida/PyADM1ODE_calibration) für Parameteranpassung  
+6. **API-Dokumentation lesen**: Vollständige Referenz für alle Klassen  
 
 ## Schnellreferenz
 
@@ -687,31 +687,31 @@ Q_high = 40            # Hohe Belastung [m³/d]
 
 **Lösungen**:
 
-- Substratfütterungsrate reduzieren
-- Verweilzeit erhöhen (größeres V_liq)
-- Puffermaterial hinzufügen (Futterkalk)
-- Substratzusammensetzung prüfen
+- Substratfütterungsrate reduzieren  
+- Verweilzeit erhöhen (größeres V_liq)  
+- Puffermaterial hinzufügen (Futterkalk)  
+- Substratzusammensetzung prüfen  
 
 ### Problem: Geringe Gasproduktion
 
 **Lösungen**:
 
-- Substratfütterung erhöhen
-- Abbaubarkeit des Substrats prüfen
-- Optimale Temperatur sicherstellen
-- Ausreichende Durchmischung gewährleisten (im Modell implizit)
+- Substratfütterung erhöhen  
+- Abbaubarkeit des Substrats prüfen  
+- Optimale Temperatur sicherstellen  
+- Ausreichende Durchmischung gewährleisten (im Modell implizit)  
 
 ### Problem: Langsame Simulation
 
 **Lösungen**:
 
-- Zeitschritt `dt` erhöhen (aber < 0.1 Tage halten)
-- `save_interval` für weniger Ausgabe reduzieren
-- Parallele Simulation für Parameterstudien verwenden
+- Zeitschritt `dt` erhöhen (aber < 0.1 Tage halten)  
+- `save_interval` für weniger Ausgabe reduzieren  
+- Parallele Simulation für Parameterstudien verwenden  
 
 Weitere Hilfe finden Sie in der [Installationsanleitung](installation.md) oder kontaktieren Sie <daniel.gaida@th-koeln.de>.
 
 ## Referenzen
 
-- **ADM1-Modell**: Batstone et al. (2002). *Anaerobic Digestion Model No. 1*. IWA Publishing.
-- **Leitfaden Biogas**: FNR (2016). <https://mediathek.fnr.de/leitfaden-biogas.html>
+- **ADM1-Modell**: Batstone et al. (2002). *Anaerobic Digestion Model No. 1*. IWA Publishing.  
+- **Leitfaden Biogas**: FNR (2016). <https://mediathek.fnr.de/leitfaden-biogas.html>  

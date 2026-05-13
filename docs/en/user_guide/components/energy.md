@@ -278,10 +278,10 @@ flare = Flare(
 
 ### Flare Control
 
-The flare activates automatically when:
-- Gas storage reaches overpressure
-- The CHP consumes less gas than is being produced
-- Emergency shutdown is required
+The flare activates automatically when:  
+- Gas storage reaches overpressure  
+- The CHP consumes less gas than is being produced  
+- Emergency shutdown is required  
 
 ```python
 # Gas from storage to flare
@@ -541,7 +541,7 @@ if heat_outputs['P_aux_heat'] > 50:  # kW auxiliary heat
 
 ## Next Steps
 
-- [Biological Components](biological.md): Digester and process control
-- [Mechanical Components](mechanical.md): Pumps and mixers
-- [Feeding Components](feeding.md): Storage and dosing
-- [API Reference](../../api/energy.md): Detailed class documentation
+- [Biological Components](biological.md): Digester and process control  
+- [Mechanical Components](mechanical.md): Pumps and mixers  
+- [Feeding Components](feeding.md): Storage and dosing  
+- [API Reference](../../api/energy.md): Detailed class documentation  

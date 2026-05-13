@@ -112,12 +112,12 @@ P_shaft = P_hydraulic / η_pump
 P_electrical = P_shaft / η_motor
 ```
 
-Where:
-- ρ = fluid density [kg/m³]
-- g = 9.81 m/s²
-- Q = flow rate [m³/s]
-- H = pressure head [m]
-- η = efficiency
+Where:  
+- ρ = fluid density [kg/m³]  
+- g = 9.81 m/s²  
+- Q = flow rate [m³/s]  
+- H = pressure head [m]  
+- η = efficiency  
 
 **Typical power consumption:**
 
@@ -303,15 +303,15 @@ where:
 
 **Power number (depends on mixer type and Reynolds number):**
 
-- **Propeller:**
-  - Laminar (Re < 100): Np = 14.0 * Re^(-0.67)
-  - Transition (100 < Re < 10000): Np = 1.2 * Re^(-0.15)
-  - Turbulent (Re > 10000): Np = 0.32
+- **Propeller:**  
+  - Laminar (Re < 100): Np = 14.0 * Re^(-0.67)  
+  - Transition (100 < Re < 10000): Np = 1.2 * Re^(-0.15)  
+  - Turbulent (Re > 10000): Np = 0.32  
 
-- **Paddle:**
-  - Laminar (Re < 10): Np = 300.0 / Re
-  - Transition (10 < Re < 10000): Np = 8.0 * Re^(-0.25)
-  - Turbulent (Re > 10000): Np = 5.0
+- **Paddle:**  
+  - Laminar (Re < 10): Np = 300.0 / Re  
+  - Transition (10 < Re < 10000): Np = 8.0 * Re^(-0.25)  
+  - Turbulent (Re > 10000): Np = 5.0  
 
 ### Mixing-Time Estimation
 
@@ -605,10 +605,10 @@ if pump_result['Q_actual'] < 0.8 * pump_result.get('Q_setpoint', 15):
         print("- WARNING: pump overloaded!")
 ```
 
-**Solutions:**
-- Increase pump size if consistently overloaded
-- Reduce friction losses in piping
-- Check for blockages or wear
+**Solutions:**  
+- Increase pump size if consistently overloaded  
+- Reduce friction losses in piping  
+- Check for blockages or wear  
 
 ### Problem: Mixer Consumes Too Much Energy
 
@@ -660,36 +660,36 @@ if mixer_result['mixing_quality'] < 0.7:
         print("- Long mixing time - increase intensity or on-time")
 ```
 
-**Solutions:**
-- Increase mixing intensity for difficult substrates
-- Extend on-time for intermittent operation
-- Consider larger impeller or higher speed
+**Solutions:**  
+- Increase mixing intensity for difficult substrates  
+- Extend on-time for intermittent operation  
+- Consider larger impeller or higher speed  
 
 ## Best Practices
 
-1. **Size pumps for optimal efficiency**
-   - Operate at 80–90% of nominal load
-   - Use VFDs for variable load demands
+1. **Size pumps for optimal efficiency**  
+   - Operate at 80–90% of nominal load  
+   - Use VFDs for variable load demands  
 
-2. **Implement intermittent mixing**
-   - 25% on-time for most applications
-   - Adjust to substrate type
+2. **Implement intermittent mixing**  
+   - 25% on-time for most applications  
+   - Adjust to substrate type  
 
-3. **Regular maintenance**
-   - Monitor pump efficiency over time
-   - Check mixer wear
+3. **Regular maintenance**  
+   - Monitor pump efficiency over time  
+   - Check mixer wear  
 
-4. **Optimize system design**
-   - Minimize piping losses
-   - Correct pump placement
+4. **Optimize system design**  
+   - Minimize piping losses  
+   - Correct pump placement  
 
-5. **Monitor energy consumption**
-   - Track parasitic load
-   - Target: <10% of CHP production
+5. **Monitor energy consumption**  
+   - Track parasitic load  
+   - Target: <10% of CHP production  
 
 ## Next Steps
 
-- [Biological Components](biological.md): Digester and process control
-- [Energy Components](energy.md): CHP and heating systems
-- [Feeding Components](feeding.md): Storage and dosing
-- [API Reference](../../api/mechanical.md): Detailed class documentation
+- [Biological Components](biological.md): Digester and process control  
+- [Energy Components](energy.md): CHP and heating systems  
+- [Feeding Components](feeding.md): Storage and dosing  
+- [API Reference](../../api/mechanical.md): Detailed class documentation  
