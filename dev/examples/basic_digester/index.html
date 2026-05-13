@@ -1371,10 +1371,17 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">feeding_freq</span> <span class="o">=</span> <span class="mi">48</span>  <span class="c1"># Substrat kann alle 48 Stunden geändert werden</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">(</span><span class="n">feeding_freq</span><span class="o">=</span><span class="n">feeding_freq</span><span class="p">)</span>
 </code></pre></div>
-<p>Das Feedstock-Objekt lädt Substratparameter aus <a href="https://github.com/dgaida/PyADM1ODE/blob/master/data/substrates/substrate_gummersbach.xml"><code>substrate_gummersbach.xml</code></a> und verwaltet:<br/>
-- Substratzusammensetzung (Weender-Analyse)<br/>
-- ADM1-Parameterberechnung<br/>
-- Generierung des Zulaufstroms  </p>
+<p>Das Feedstock-Objekt lädt Substratparameter aus der mitgelieferten
+Bibliothek unter
+<a href="https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates"><code>data/substrates/</code></a>
+(YAML, daneben werden auch XML und TOML akzeptiert — die vollständige
+Liste steht auf der Seite
+<a href="../../user_guide/substrates/">Substrate</a>) und verwaltet:</p>
+<ul>
+<li>Substratzusammensetzung (Weender-Analyse)</li>
+<li>ADM1-Parameterberechnung</li>
+<li>Generierung des Zulaufstroms</li>
+</ul>
 <p><strong>Fütterungsfrequenz</strong>: Der Parameter <code>feeding_freq</code> (48 Stunden) definiert, wie oft die Steuerung den Substratzulauf anpassen kann. Dies ist wichtig für Optimierungs- und Regelungsanwendungen.</p>
 <h3 id="3-initialzustand-laden">3. Initialzustand laden<a class="headerlink" href="#3-initialzustand-laden" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">initial_state_file</span> <span class="o">=</span> <span class="n">data_path</span> <span class="o">/</span> <span class="s2">"digester_initial8.csv"</span>

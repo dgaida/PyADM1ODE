@@ -982,10 +982,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#substratcharakterisierung" class="md-nav__link">
+  <a href="#dateiformate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Substratcharakterisierung
+        Dateiformate
       
     </span>
   </a>
@@ -993,10 +993,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#substratmanagement" class="md-nav__link">
+  <a href="#substratcharakterisierung" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Substratmanagement
+        Substratcharakterisierung
       
     </span>
   </a>
@@ -1888,10 +1888,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#substratcharakterisierung" class="md-nav__link">
+  <a href="#dateiformate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Substratcharakterisierung
+        Dateiformate
       
     </span>
   </a>
@@ -1899,10 +1899,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#substratmanagement" class="md-nav__link">
+  <a href="#substratcharakterisierung" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Substratmanagement
+        Substratcharakterisierung
       
     </span>
   </a>
@@ -1930,94 +1930,168 @@
 
 
 <h1 id="vorkonfigurierte-substrate">Vorkonfigurierte Substrate<a class="headerlink" href="#vorkonfigurierte-substrate" title="Permanent link">&para;</a></h1>
-<p>PyADM1ODE enthält 10 landwirtschaftliche Substrate mit in der Literatur validierten Parametern.</p>
+<p>PyADM1ODE bringt 12 Beispiel-Substratcharakterisierungen für ADM1da unter
+<a href="https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates"><code>data/substrates/</code></a>
+mit. Jede Datei ist eine YAML-Abbildung der in
+<a href="../adm1_implementation/"><code>SubstrateParams</code></a> aufgeführten Parameter und wird
+über das <code>SubstrateRegistry</code> per Dateinamen-Stamm geladen.</p>
+<div class="admonition note">
+<p class="admonition-title">Nur Beispiele — für reale Anlagen eigene Substrate definieren</p>
+<p>Die mitgelieferten Substrate sind <strong>Beispiele</strong> aus der Literatur und
+einer älteren Anlagen-Bibliothek. Sie eignen sich für schnelle Demos,
+Smoke-Tests und das Reproduzieren der Validierungsläufe, <strong>ersetzen
+aber keine gemessenen Daten</strong>. Um eine reale Anlage zu modellieren,
+sollten Sie das eigene Substrat charakterisieren (Weender-Analyse,
+TS / oTS, BMP aus einem Batch-Test) und eine neue Datei unter
+<code>data/substrates/</code> in einem der unterstützten Formate anlegen.</p>
+</div>
 <h2 id="verfugbare-substrate">Verfügbare Substrate<a class="headerlink" href="#verfugbare-substrate" title="Permanent link">&para;</a></h2>
+<p>Sortiert in der kanonischen Standardreihenfolge — beim Aufruf von
+<code>Feedstock()</code> ohne Argumente landen die Substrate genau in dieser
+Reihenfolge im <code>Q</code>-Array (<code>Q[0]</code> ist die erste Zeile).</p>
 <table>
 <thead>
 <tr>
-<th>Substrat</th>
+<th>Q-Index</th>
+<th>Substrat-ID</th>
+<th>Anzeigename</th>
 <th>Typ</th>
-<th>Typische Verwendung</th>
-<th>Biogaspotenzial</th>
+<th>TS [kg/m³ FM]</th>
+<th>BMP [Nm³ CH₄/t VS]</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Maissilage</strong></td>
+<td>0</td>
+<td><code>maize_silage_milk_ripeness</code></td>
+<td>Maissilage (Milchreife)</td>
 <td>Energiepflanze</td>
-<td>Hauptsubstrat</td>
-<td>Hoch (600-700 L/kg VS)</td>
+<td>330</td>
+<td>357</td>
 </tr>
 <tr>
-<td><strong>Gülle</strong></td>
+<td>1</td>
+<td><code>cattle_manure</code></td>
+<td>Rindergülle</td>
 <td>Tierische Abfälle</td>
-<td>Co-Substrat</td>
-<td>Mittel (200-400 L/kg VS)</td>
+<td>80</td>
+<td>137</td>
 </tr>
 <tr>
-<td><strong>Grünroggen</strong></td>
-<td>Energiepflanze</td>
-<td>Frühernte</td>
-<td>Mittel-Hoch</td>
-</tr>
-<tr>
-<td><strong>Grassilage</strong></td>
-<td>Grünland</td>
-<td>Erneuerbar</td>
-<td>Mittel (400-550 L/kg VS)</td>
-</tr>
-<tr>
-<td><strong>Weizen</strong></td>
-<td>Getreide</td>
-<td>Energiepflanze</td>
-<td>Hoch</td>
-</tr>
-<tr>
-<td><strong>GPS</strong></td>
-<td>Ganzpflanzensilage</td>
-<td>Ganze Pflanze</td>
-<td>Hoch</td>
-</tr>
-<tr>
-<td><strong>CCM</strong></td>
-<td>Corn-Cob-Mix</td>
-<td>Energiepflanze</td>
-<td>Hoch</td>
-</tr>
-<tr>
-<td><strong>Futterkalk</strong></td>
-<td>Zusatzstoff</td>
-<td>pH-Puffer</td>
-<td>N/V</td>
-</tr>
-<tr>
-<td><strong>Rindergülle</strong></td>
+<td>2</td>
+<td><code>swine_manure</code></td>
+<td>Schweinegülle</td>
 <td>Tierische Abfälle</td>
-<td>Co-Substrat</td>
-<td>Mittel (200-350 L/kg VS)</td>
+<td>80</td>
+<td>149</td>
 </tr>
 <tr>
-<td><strong>Zwiebeln</strong></td>
-<td>Abfall</td>
-<td>Gemüseabfälle</td>
-<td>Mittel-Hoch</td>
+<td>3</td>
+<td><code>corn_cob_mix</code></td>
+<td>Corn-Cob-Mix (CCM)</td>
+<td>Energiepflanze</td>
+<td>676</td>
+<td>426</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>grass_silage</code></td>
+<td>Grassilage</td>
+<td>Energiepflanze</td>
+<td>341</td>
+<td>338</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>green_rye_silage</code></td>
+<td>Grünroggensilage</td>
+<td>Energiepflanze</td>
+<td>193</td>
+<td>322</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>cereal_gps_silage</code></td>
+<td>Getreide-Ganzpflanzensilage (GPS)</td>
+<td>Energiepflanze</td>
+<td>312</td>
+<td>290</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>onion_waste</code></td>
+<td>Zwiebelabfälle</td>
+<td>Gemüseabfall</td>
+<td>193</td>
+<td>300</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>maize_silage_gummersbach</code></td>
+<td>Maissilage (Anlage Gummersbach)</td>
+<td>Energiepflanze</td>
+<td>320</td>
+<td>348</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>cattle_manure_solid</code></td>
+<td>Rinderfestmist</td>
+<td>Tierische Abfälle</td>
+<td>120</td>
+<td>282</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>swine_manure_gummersbach</code></td>
+<td>Schweinegülle (Anlage Gummersbach)</td>
+<td>Tierische Abfälle</td>
+<td>61</td>
+<td>203</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>wheat_whole_plant_silage</code></td>
+<td>Weizen-Ganzpflanzensilage</td>
+<td>Energiepflanze</td>
+<td>302</td>
+<td>298</td>
 </tr>
 </tbody>
 </table>
+<p>Die Einträge <code>*_gummersbach</code> und <code>cattle_manure_solid</code> wurden aus der
+älteren <a href="https://github.com/dgaida/PyADM1ODE/blob/master/data/substrates/legacy/substrate_gummersbach.xml"><code>substrate_gummersbach.xml</code></a>-Bibliothek
+über eine Buswell-basierte Weender-zu-BMP-Zuordnung konvertiert. Die
+übrigen stammen aus der Substratbibliothek von ifak Magdeburg.</p>
+<h2 id="dateiformate">Dateiformate<a class="headerlink" href="#dateiformate" title="Permanent link">&para;</a></h2>
+<p>Jedes Substrat kann als YAML (kanonisch), XML oder TOML definiert werden.
+Der Loader wählt anhand der Dateiendung das passende Format aus und liefert
+in jedem Fall dasselbe <code>SubstrateParams</code>-Objekt; in
+<a href="https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates/examples"><code>data/substrates/examples/</code></a>
+liegen Side-by-Side-Beispiele desselben Substrats in allen drei Formaten.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.substrates</span><span class="w"> </span><span class="kn">import</span> <span class="n">SubstrateRegistry</span><span class="p">,</span> <span class="n">load_substrate</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Per ID — erkennt jedes unterstützte Format in data/substrates/</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">reg</span> <span class="o">=</span> <span class="n">SubstrateRegistry</span><span class="p">()</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">maize</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;maize_silage_milk_ripeness&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Per expliziten Pfad — die Endung bestimmt den Loader</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">swine</span> <span class="o">=</span> <span class="n">load_substrate</span><span class="p">(</span><span class="s2">&quot;data/substrates/swine_manure.yaml&quot;</span><span class="p">)</span>
+</code></pre></div>
 <h2 id="substratcharakterisierung">Substratcharakterisierung<a class="headerlink" href="#substratcharakterisierung" title="Permanent link">&para;</a></h2>
-<p>Alle Substrate sind charakterisiert durch:<br />
-- Trockensubstanz (TS) und organische Trockensubstanz (oTS)<br />
-- ADM1-Fraktionierung (Kohlenhydrate, Proteine, Lipide)<br />
-- Biochemisches Methanpotenzial (BMP)<br />
-- pH-Wert und Alkalinität  </p>
-<p>Weitere Details zur Abbildung auf ADM1 finden Sie auf der Seite <a href="../adm1_implementation/">ADM1-Implementierung</a>.</p>
-<h2 id="substratmanagement">Substratmanagement<a class="headerlink" href="#substratmanagement" title="Permanent link">&para;</a></h2>
-<p>Substrate werden charakterisiert durch:<br />
-- <strong>Weender-Analyse</strong>: Rohfaser (RF), Rohprotein (RP), Rohfett (RL).<br />
-- <strong>Van-Soest-Fraktionen</strong>: NDF, ADF, ADL.<br />
-- <strong>Physikalische Eigenschaften</strong>: pH-Wert, TS, oTS, COD.<br />
-- <strong>Kinetische Parameter</strong>: Desintegrations- und Hydrolyseraten.  </p>
-<p>Diese Parameter ermöglichen eine dynamische Berechnung der ADM1-Zulaufwerte (wie <span class="arithmatex">\(X_c\)</span> und Stöchiometrie) und der kinetischen Parameter (<span class="arithmatex">\(k_{dis}\)</span>, <span class="arithmatex">\(k_{hyd}\)</span>) basierend auf den spezifischen Substrateigenschaften.</p>
+<p>Jedes Substrat trägt denselben Parametersatz:</p>
+<ul>
+<li><strong>Rohzusammensetzung</strong> — <code>TS</code>, <code>NH4</code>, Biogas- / Biomethanpotenzial <code>BGP</code>, <code>BMP</code>.</li>
+<li><strong>Weender-Analyse</strong> — Rohfaser-, Rohprotein-, Rohfett- und Asche-Anteile der TS (<code>fRF</code>, <code>fRP</code>, <code>fRFe</code>, <code>fRA</code>).</li>
+<li><strong>COD-Fraktionierung</strong> — partikulär- und löslich-inerter COD-Anteil (<code>aXI</code>, <code>aSi</code>), abbaubarer Anteil der Rohfaser (<code>fOTSrf</code>), Aufteilung in langsame/schnelle Desintegrationspools (<code>fsOTS</code>, <code>ffOTS</code>).</li>
+<li><strong>Physikalisch-chemischer Zustand</strong> — Substrattemperatur, <code>pH</code>, Säurekapazität bis pH 4,3 (<code>KS43</code>), VFA als Essigsäure-Äquivalent (<code>FFS</code>).</li>
+</ul>
+<p>Komponentendichten, Masse-zu-COD-Umrechnungsfaktoren, Methanpotenziale und
+die Säure-Base-Gleichgewichtskonstanten sind als Modelldefaults in
+<code>SubstrateParams</code> hinterlegt und müssen pro Substrat nur dann angegeben
+werden, wenn eine Messung das Überschreiben rechtfertigt.</p>
+<p>Die Seite <a href="../adm1_implementation/">ADM1-Implementierung</a> beschreibt, wie aus
+der Charakterisierung der 38-spaltige ADM1-Zulaufstrom erzeugt wird.</p>
 
 
 

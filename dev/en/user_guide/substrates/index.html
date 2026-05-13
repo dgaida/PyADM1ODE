@@ -976,7 +976,7 @@
   <a href="#available-substrates" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Available Substrates
+        Available substrates
       
     </span>
   </a>
@@ -984,10 +984,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#substrate-characterization" class="md-nav__link">
+  <a href="#file-formats" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Substrate Characterization
+        File formats
       
     </span>
   </a>
@@ -995,10 +995,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#substrate-management" class="md-nav__link">
+  <a href="#substrate-characterisation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Substrate Management
+        Substrate characterisation
       
     </span>
   </a>
@@ -1882,7 +1882,7 @@
   <a href="#available-substrates" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Available Substrates
+        Available substrates
       
     </span>
   </a>
@@ -1890,10 +1890,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#substrate-characterization" class="md-nav__link">
+  <a href="#file-formats" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Substrate Characterization
+        File formats
       
     </span>
   </a>
@@ -1901,10 +1901,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#substrate-management" class="md-nav__link">
+  <a href="#substrate-characterisation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Substrate Management
+        Substrate characterisation
       
     </span>
   </a>
@@ -1932,94 +1932,167 @@
 
 
 <h1 id="pre-configured-substrates">Pre-configured Substrates<a class="headerlink" href="#pre-configured-substrates" title="Permanent link">&para;</a></h1>
-<p>PyADM1ODE includes 10 agricultural substrates with literature-validated parameters.</p>
-<h2 id="available-substrates">Available Substrates<a class="headerlink" href="#available-substrates" title="Permanent link">&para;</a></h2>
+<p>PyADM1ODE ships with 12 example ADM1da substrate characterisations under
+<a href="https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates"><code>data/substrates/</code></a>.
+Each file is a YAML mapping of the parameters listed in
+<a href="../adm1_implementation/"><code>SubstrateParams</code></a> and is loaded via the
+<code>SubstrateRegistry</code> by its file stem.</p>
+<div class="admonition note">
+<p class="admonition-title">Examples only — define your own for real plants</p>
+<p>The bundled substrates are <strong>examples</strong> drawn from the literature and a
+legacy plant library. They are useful for quick demos, smoke tests, and
+reproducing the validation runs, but they are <strong>not a substitute for
+measured data</strong>. To model a real plant, characterise your own feedstock
+(Weender analysis, TS / VS, BMP from a batch test) and add a new file
+under <code>data/substrates/</code> in any supported format.</p>
+</div>
+<h2 id="available-substrates">Available substrates<a class="headerlink" href="#available-substrates" title="Permanent link">&para;</a></h2>
+<p>Listed in the canonical default order — when you call <code>Feedstock()</code> with
+no arguments, this is the order in which substrates land in the <code>Q</code>
+array (<code>Q[0]</code> is the first row).</p>
 <table>
 <thead>
 <tr>
-<th>Substrate</th>
+<th>Q idx</th>
+<th>Substrate ID</th>
+<th>Display name</th>
 <th>Type</th>
-<th>Typical Use</th>
-<th>Biogas Potential</th>
+<th>TS [kg/m³ FM]</th>
+<th>BMP [Nm³ CH₄/t VS]</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Corn silage</strong></td>
+<td>0</td>
+<td><code>maize_silage_milk_ripeness</code></td>
+<td>Maize silage (milk ripeness)</td>
 <td>Energy crop</td>
-<td>Main feedstock</td>
-<td>High (600-700 L/kg VS)</td>
+<td>330</td>
+<td>357</td>
 </tr>
 <tr>
-<td><strong>Liquid manure</strong></td>
+<td>1</td>
+<td><code>cattle_manure</code></td>
+<td>Cattle manure</td>
 <td>Animal waste</td>
-<td>Co-substrate</td>
-<td>Medium (200-400 L/kg VS)</td>
+<td>80</td>
+<td>137</td>
 </tr>
 <tr>
-<td><strong>Green rye</strong></td>
-<td>Energy crop</td>
-<td>Early harvest</td>
-<td>Medium-High</td>
-</tr>
-<tr>
-<td><strong>Grass silage</strong></td>
-<td>Grassland</td>
-<td>Renewable</td>
-<td>Medium (400-550 L/kg VS)</td>
-</tr>
-<tr>
-<td><strong>Wheat</strong></td>
-<td>Cereal</td>
-<td>Energy crop</td>
-<td>High</td>
-</tr>
-<tr>
-<td><strong>GPS</strong></td>
-<td>Grain silage</td>
-<td>Whole-crop</td>
-<td>High</td>
-</tr>
-<tr>
-<td><strong>CCM</strong></td>
-<td>Corn-cob-mix</td>
-<td>Energy crop</td>
-<td>High</td>
-</tr>
-<tr>
-<td><strong>Feed lime</strong></td>
-<td>Additive</td>
-<td>pH buffer</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td><strong>Cow manure</strong></td>
+<td>2</td>
+<td><code>swine_manure</code></td>
+<td>Swine manure</td>
 <td>Animal waste</td>
-<td>Co-substrate</td>
-<td>Medium (200-350 L/kg VS)</td>
+<td>80</td>
+<td>149</td>
 </tr>
 <tr>
-<td><strong>Onions</strong></td>
-<td>Waste</td>
+<td>3</td>
+<td><code>corn_cob_mix</code></td>
+<td>Corn-cob mix (CCM)</td>
+<td>Energy crop</td>
+<td>676</td>
+<td>426</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>grass_silage</code></td>
+<td>Grass silage</td>
+<td>Energy crop</td>
+<td>341</td>
+<td>338</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>green_rye_silage</code></td>
+<td>Green rye silage</td>
+<td>Energy crop</td>
+<td>193</td>
+<td>322</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>cereal_gps_silage</code></td>
+<td>Cereal whole-plant silage (GPS)</td>
+<td>Energy crop</td>
+<td>312</td>
+<td>290</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>onion_waste</code></td>
+<td>Onion waste</td>
 <td>Vegetable waste</td>
-<td>Medium-High</td>
+<td>193</td>
+<td>300</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>maize_silage_gummersbach</code></td>
+<td>Maize silage (Gummersbach plant)</td>
+<td>Energy crop</td>
+<td>320</td>
+<td>348</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>cattle_manure_solid</code></td>
+<td>Cattle manure (solid)</td>
+<td>Animal waste</td>
+<td>120</td>
+<td>282</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>swine_manure_gummersbach</code></td>
+<td>Swine manure (Gummersbach plant)</td>
+<td>Animal waste</td>
+<td>61</td>
+<td>203</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>wheat_whole_plant_silage</code></td>
+<td>Wheat whole-plant silage</td>
+<td>Energy crop</td>
+<td>302</td>
+<td>298</td>
 </tr>
 </tbody>
 </table>
-<h2 id="substrate-characterization">Substrate Characterization<a class="headerlink" href="#substrate-characterization" title="Permanent link">&para;</a></h2>
-<p>All substrates are characterized with:<br />
-- Dry matter (DM) and volatile solids (VS) content<br />
-- ADM1 fractionation (carbohydrates, proteins, lipids)<br />
-- Biochemical methane potential (BMP)<br />
-- pH and alkalinity  </p>
-<p>For more details on how these are mapped to ADM1, see the <a href="../adm1_implementation/">ADM1 Implementation</a> page.</p>
-<h2 id="substrate-management">Substrate Management<a class="headerlink" href="#substrate-management" title="Permanent link">&para;</a></h2>
-<p>Substrates are characterized by:<br />
-- <strong>Weender analysis</strong>: Crude fiber (RF), crude protein (RP), crude fat (RL).<br />
-- <strong>Van Soest fractions</strong>: NDF, ADF, ADL.<br />
-- <strong>Physical properties</strong>: pH, TS, VS, COD.<br />
-- <strong>Kinetic parameters</strong>: Disintegration and hydrolysis rates.  </p>
-<p>These parameters allow for a dynamic calculation of ADM1 inputs (like <span class="arithmatex">\(X_c\)</span> and stoichiometry) and kinetic parameters (<span class="arithmatex">\(k_{dis}\)</span>, <span class="arithmatex">\(k_{hyd}\)</span>) based on the substrate characteristics.</p>
+<p>The <code>*_gummersbach</code> and <code>cattle_manure_solid</code> entries were converted from
+the legacy <a href="https://github.com/dgaida/PyADM1ODE/blob/master/data/substrates/legacy/substrate_gummersbach.xml"><code>substrate_gummersbach.xml</code></a>
+library via a Buswell-based Weender → BMP mapping. The others were taken
+from the ifak Magdeburg substrate library.</p>
+<h2 id="file-formats">File formats<a class="headerlink" href="#file-formats" title="Permanent link">&para;</a></h2>
+<p>Each substrate can be defined as YAML (canonical), XML, or TOML. The loader
+dispatches on the file extension and produces the same <code>SubstrateParams</code>
+object in every case; see
+<a href="https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates/examples"><code>data/substrates/examples/</code></a>
+for side-by-side examples of the same substrate in all three formats.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.substrates</span><span class="w"> </span><span class="kn">import</span> <span class="n">SubstrateRegistry</span><span class="p">,</span> <span class="n">load_substrate</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># By ID — discovers any supported format in data/substrates/</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">reg</span> <span class="o">=</span> <span class="n">SubstrateRegistry</span><span class="p">()</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">maize</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;maize_silage_milk_ripeness&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># By explicit path — extension picks the loader</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">swine</span> <span class="o">=</span> <span class="n">load_substrate</span><span class="p">(</span><span class="s2">&quot;data/substrates/swine_manure.yaml&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="substrate-characterisation">Substrate characterisation<a class="headerlink" href="#substrate-characterisation" title="Permanent link">&para;</a></h2>
+<p>Every substrate carries the same parameter set:</p>
+<ul>
+<li><strong>Proximate analysis</strong> — <code>TS</code>, <code>NH4</code>, biogas / biomethane potentials <code>BGP</code>, <code>BMP</code>.</li>
+<li><strong>Weender analysis</strong> — crude-fibre, crude-protein, crude-lipid, ash fractions of TS (<code>fRF</code>, <code>fRP</code>, <code>fRFe</code>, <code>fRA</code>).</li>
+<li><strong>COD fractionation</strong> — particulate-inert and dissolved-inert COD shares (<code>aXI</code>, <code>aSi</code>), biodegradable share of crude fibre (<code>fOTSrf</code>), slow / fast disintegration-pool split (<code>fsOTS</code>, <code>ffOTS</code>).</li>
+<li><strong>Physical / chemical state</strong> — substrate temperature, <code>pH</code>, acid capacity to pH 4.3 (<code>KS43</code>), VFAs as acetic-acid equivalent (<code>FFS</code>).</li>
+</ul>
+<p>Component densities, mass-to-COD conversion factors, methane potentials,
+and the acid-base equilibrium constants are inherited from the model
+defaults in <code>SubstrateParams</code> and need only be specified per substrate
+when a measurement justifies overriding them.</p>
+<p>See the <a href="../adm1_implementation/">ADM1 Implementation</a> page for how the
+characterisation is turned into the 38-column ADM1 inflow stream.</p>
 
 
 

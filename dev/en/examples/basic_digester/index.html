@@ -1372,10 +1372,15 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">feeding_freq</span> <span class="o">=</span> <span class="mi">48</span>  <span class="c1"># Can change substrate every 48 hours</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">(</span><span class="n">feeding_freq</span><span class="o">=</span><span class="n">feeding_freq</span><span class="p">)</span>
 </code></pre></div>
-<p>The feedstock object loads substrate parameters from <a href="https://github.com/dgaida/PyADM1ODE/blob/master/data/substrates/substrate_gummersbach.xml"><code>substrate_gummersbach.xml</code></a> and manages:<br/>
-- Substrate composition (Weender analysis)<br/>
-- ADM1 parameter calculation<br/>
-- Influent stream generation  </p>
+<p>The feedstock object loads substrate parameters from the bundled library at
+<a href="https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates"><code>data/substrates/</code></a>
+(YAML, with XML and TOML also accepted — see the
+<a href="../../user_guide/substrates/">Substrates</a> page for the full list) and manages:</p>
+<ul>
+<li>Substrate composition (Weender analysis)</li>
+<li>ADM1 parameter calculation</li>
+<li>Influent stream generation</li>
+</ul>
 <p><strong>Feeding Frequency</strong>: The <code>feeding_freq</code> parameter (48 hours) defines how often the controller can adjust substrate feeds. This is important for optimization and control applications.</p>
 <h3 id="3-load-initial-state">3. Load Initial State<a class="headerlink" href="#3-load-initial-state" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">initial_state_file</span> <span class="o">=</span> <span class="n">data_path</span> <span class="o">/</span> <span class="s2">"digester_initial8.csv"</span>

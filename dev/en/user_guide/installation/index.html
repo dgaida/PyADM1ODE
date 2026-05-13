@@ -851,10 +851,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-substrate-xml-file-not-found" class="md-nav__link">
+  <a href="#2-substrate-file-not-found" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Substrate XML file not found
+        2. Substrate file not found
       
     </span>
   </a>
@@ -2433,10 +2433,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-substrate-xml-file-not-found" class="md-nav__link">
+  <a href="#2-substrate-file-not-found" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Substrate XML file not found
+        2. Substrate file not found
       
     </span>
   </a>
@@ -2731,11 +2731,11 @@
 <a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Failed to import core modules: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <a id="__codelineno-14-23" name="__codelineno-14-23" href="#__codelineno-14-23"></a>        <span class="k">return</span> <span class="kc">False</span>
 <a id="__codelineno-14-24" name="__codelineno-14-24" href="#__codelineno-14-24"></a>
-<a id="__codelineno-14-25" name="__codelineno-14-25" href="#__codelineno-14-25"></a>    <span class="c1"># 3. Load a feedstock from the bundled XML substrate library</span>
+<a id="__codelineno-14-25" name="__codelineno-14-25" href="#__codelineno-14-25"></a>    <span class="c1"># 3. Load a feedstock from the bundled substrate library</span>
 <a id="__codelineno-14-26" name="__codelineno-14-26" href="#__codelineno-14-26"></a>    <span class="k">try</span><span class="p">:</span>
 <a id="__codelineno-14-27" name="__codelineno-14-27" href="#__codelineno-14-27"></a>        <span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">([</span><span class="s2">&quot;maize_silage_milk_ripeness&quot;</span><span class="p">,</span> <span class="s2">&quot;swine_manure&quot;</span><span class="p">],</span>
 <a id="__codelineno-14-28" name="__codelineno-14-28" href="#__codelineno-14-28"></a>                              <span class="n">feeding_freq</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
-<a id="__codelineno-14-29" name="__codelineno-14-29" href="#__codelineno-14-29"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Feedstock loaded from data/substrates/adm1da/&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-29" name="__codelineno-14-29" href="#__codelineno-14-29"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Feedstock loaded from data/substrates/&quot;</span><span class="p">)</span>
 <a id="__codelineno-14-30" name="__codelineno-14-30" href="#__codelineno-14-30"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
 <a id="__codelineno-14-31" name="__codelineno-14-31" href="#__codelineno-14-31"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Feedstock load failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <a id="__codelineno-14-32" name="__codelineno-14-32" href="#__codelineno-14-32"></a>        <span class="k">return</span> <span class="kc">False</span>
@@ -2771,12 +2771,12 @@
 <a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="nb">cd</span><span class="w"> </span>PyADM1ODE
 <a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </code></pre></div></p>
-<h4 id="2-substrate-xml-file-not-found">2. Substrate XML file not found<a class="headerlink" href="#2-substrate-xml-file-not-found" title="Permanent link">&para;</a></h4>
+<h4 id="2-substrate-file-not-found">2. Substrate file not found<a class="headerlink" href="#2-substrate-file-not-found" title="Permanent link">&para;</a></h4>
 <p><strong>Problem</strong>: <code>Feedstock([...])</code> fails because a substrate ID is unknown.</p>
-<p><strong>Solution</strong>: Substrate IDs are XML file stems under <code>data/substrates/adm1da/</code>. List them:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>ls<span class="w"> </span>data/substrates/adm1da/
+<p><strong>Solution</strong>: Substrate IDs are file stems under <code>data/substrates/</code> (YAML, XML, or TOML — any supported format). List them:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>ls<span class="w"> </span>data/substrates/
 </code></pre></div>
-Use those filenames (without <code>.xml</code>) as substrate IDs.</p>
+Use those filenames (without the extension) as substrate IDs.</p>
 <h3 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h3>
 <p>If you encounter issues:</p>
 <ol>
