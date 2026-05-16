@@ -4,11 +4,11 @@ This page provides a structured reference of the methods and classes required to
 
 ## Core Workflow
 
-To create a simulation, follow this sequence:
-1. Create a `Feedstock` object.
-2. Create a `BiogasPlant` object.
-3. Use the `PlantConfigurator` to add and connect components.
-4. Initialize the plant and start the simulation.
+To create a simulation, follow this sequence:  
+1. Create a `Feedstock` object.  
+2. Create a `BiogasPlant` object.  
+3. Use the `PlantConfigurator` to add and connect components.  
+4. Initialize the plant and start the simulation.  
 
 ## 1. Substrate Configuration (Feedstock)
 
@@ -122,9 +122,9 @@ results = plant.simulate(
 
 ## Summary for LLM Prompts
 
-Use these classes for construction:
-- **Biological Stage**: `configurator.add_digester()`
-- **Energy**: `configurator.add_chp()`, `configurator.add_heating()`
-- **Mechanics**: `Pump`, `Mixer`
-- **Logistics**: `SubstrateStorage`, `Feeder`
-- **Infrastructure**: `PlantConfigurator.connect()`
+Use these classes for construction:  
+- **Biological Stage**: `configurator.add_digester()`  
+- **Energy**: `configurator.add_chp()`, `configurator.add_heating()`  
+- **Mechanics**: `Pump`, `Mixer`  
+- **Logistics**: `SubstrateStorage`, `Feeder`  
+- **Infrastructure**: `PlantConfigurator.connect()`  

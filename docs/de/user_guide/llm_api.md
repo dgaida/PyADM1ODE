@@ -4,11 +4,11 @@ Diese Seite bietet eine strukturierte Referenz der Methoden und Klassen, die ben
 
 ## Kern-Workflow
 
-Um eine Simulation zu erstellen, folgen Sie diesem Ablauf:
-1. Erstellen Sie ein `Feedstock`-Objekt.
-2. Erstellen Sie ein `BiogasPlant`-Objekt.
-3. Verwenden Sie den `PlantConfigurator`, um Komponenten hinzuzufügen und zu verbinden.
-4. Initialisieren Sie die Anlage und starten Sie die Simulation.
+Um eine Simulation zu erstellen, folgen Sie diesem Ablauf:  
+1. Erstellen Sie ein `Feedstock`-Objekt.  
+2. Erstellen Sie ein `BiogasPlant`-Objekt.  
+3. Verwenden Sie den `PlantConfigurator`, um Komponenten hinzuzufügen und zu verbinden.  
+4. Initialisieren Sie die Anlage und starten Sie die Simulation.  
 
 ## 1. Substrat-Konfiguration (Feedstock)
 
@@ -122,9 +122,9 @@ results = plant.simulate(
 
 ## Zusammenfassung für LLM-Prompts
 
-Verwenden Sie diese Klassen für den Aufbau:
-- **Biologische Stufe**: `configurator.add_digester()`
-- **Energie**: `configurator.add_chp()`, `configurator.add_heating()`
-- **Mechanik**: `Pump`, `Mixer`
-- **Logistik**: `SubstrateStorage`, `Feeder`
-- **Infrastruktur**: `PlantConfigurator.connect()`
+Verwenden Sie diese Klassen für den Aufbau:  
+- **Biologische Stufe**: `configurator.add_digester()`  
+- **Energie**: `configurator.add_chp()`, `configurator.add_heating()`  
+- **Mechanik**: `Pump`, `Mixer`  
+- **Logistik**: `SubstrateStorage`, `Feeder`  
+- **Infrastruktur**: `PlantConfigurator.connect()`  

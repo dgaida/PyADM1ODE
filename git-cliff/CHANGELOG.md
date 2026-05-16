@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Documentation
+
+- Update landing pages and example notebook  
+- Update landing pages, example notebook and add LLM API guide  
+
+## [0.3.4] - 2026-05-13
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
 ## [0.3.3] - 2026-05-13
 
 ### Bug Fixes
