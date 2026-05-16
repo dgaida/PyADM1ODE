@@ -9,3 +9,6 @@
 - **Cleanup**: Temporary files (e.g., build artifacts like `site/`, log files, `changes.diff`) must be deleted before creating a Pull Request or submitting.  
 - **Documentation**: If the navigation structure in `mkdocs.yml` is changed, ensure that `nav_translations` in the `i18n` plugin are updated and landing pages (`index.md`) are synchronized.  
 - **Testing**: Run relevant unit tests to ensure no regressions are introduced.  
+
+## Skills
+- **MkDocs Documentation Ecosystem**: [SKILL_docs.md](https://github.com/dgaida/auto-version-action/blob/main/skills/SKILL_docs.md)
