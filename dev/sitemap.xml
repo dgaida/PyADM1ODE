@@ -120,6 +120,13 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/examples/two_stage_plant/"/>
     </url>
     <url>
+        <loc>https://dgaida.github.io/PyADM1ODE/dev/user_guide/Skill/</loc>
+        <lastmod>2026-05-16</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/dev/user_guide/Skill/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/deven/user_guide/Skill/"/>
+    </url>
+    <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/user_guide/adm1_implementation/</loc>
         <lastmod>2026-05-16</lastmod>
         <changefreq>daily</changefreq>
@@ -349,6 +356,13 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/examples/two_stage_plant/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devexamples/two_stage_plant/"/>
+    </url>
+    <url>
+        <loc>https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/Skill/</loc>
+        <lastmod>2026-05-16</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/Skill/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devuser_guide/Skill/"/>
     </url>
     <url>
         <loc>https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/adm1_implementation/</loc>

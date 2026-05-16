@@ -2153,12 +2153,16 @@
 
 <h1 id="api-fur-llm">API für LLM<a class="headerlink" href="#api-fur-llm" title="Permanent link">&para;</a></h1>
 <p>Diese Seite bietet eine strukturierte Referenz der Methoden und Klassen, die benötigt werden, um ein PyADM1ODE-Simulationsmodell automatisch zu erstellen. Diese Dokumentation ist darauf optimiert, von Large Language Models (LLMs) gelesen zu werden, um Biogasanlagenkonfigurationen zu generieren.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Skill für LLMs</p>
+<p>Sie können die vollständige API-Dokumentation für LLMs als "Skill"-Datei hier herunterladen: <a href="../Skill/">Skill.md</a></p>
+</div>
 <h2 id="kern-workflow">Kern-Workflow<a class="headerlink" href="#kern-workflow" title="Permanent link">&para;</a></h2>
-<p>Um eine Simulation zu erstellen, folgen Sie diesem Ablauf:
-1. Erstellen Sie ein <code>Feedstock</code>-Objekt.
-2. Erstellen Sie ein <code>BiogasPlant</code>-Objekt.
-3. Verwenden Sie den <code>PlantConfigurator</code>, um Komponenten hinzuzufügen und zu verbinden.
-4. Initialisieren Sie die Anlage und starten Sie die Simulation.</p>
+<p>Um eine Simulation zu erstellen, folgen Sie diesem Ablauf:<br />
+1. Erstellen Sie ein <code>Feedstock</code>-Objekt.<br />
+2. Erstellen Sie ein <code>BiogasPlant</code>-Objekt.<br />
+3. Verwenden Sie den <code>PlantConfigurator</code>, um Komponenten hinzuzufügen und zu verbinden.<br />
+4. Initialisieren Sie die Anlage und starten Sie die Simulation.  </p>
 <h2 id="1-substrat-konfiguration-feedstock">1. Substrat-Konfiguration (Feedstock)<a class="headerlink" href="#1-substrat-konfiguration-feedstock" title="Permanent link">&para;</a></h2>
 <p>Das <code>Feedstock</code>-Objekt definiert, welche Substrate in der Anlage verwendet werden.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.substrates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Feedstock</span>
@@ -2243,12 +2247,12 @@
 <a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="zusammenfassung-fur-llm-prompts">Zusammenfassung für LLM-Prompts<a class="headerlink" href="#zusammenfassung-fur-llm-prompts" title="Permanent link">&para;</a></h2>
-<p>Verwenden Sie diese Klassen für den Aufbau:
-- <strong>Biologische Stufe</strong>: <code>configurator.add_digester()</code>
-- <strong>Energie</strong>: <code>configurator.add_chp()</code>, <code>configurator.add_heating()</code>
-- <strong>Mechanik</strong>: <code>Pump</code>, <code>Mixer</code>
-- <strong>Logistik</strong>: <code>SubstrateStorage</code>, <code>Feeder</code>
-- <strong>Infrastruktur</strong>: <code>PlantConfigurator.connect()</code></p>
+<p>Verwenden Sie diese Klassen für den Aufbau:<br />
+- <strong>Biologische Stufe</strong>: <code>configurator.add_digester()</code><br />
+- <strong>Energie</strong>: <code>configurator.add_chp()</code>, <code>configurator.add_heating()</code><br />
+- <strong>Mechanik</strong>: <code>Pump</code>, <code>Mixer</code><br />
+- <strong>Logistik</strong>: <code>SubstrateStorage</code>, <code>Feeder</code><br />
+- <strong>Infrastruktur</strong>: <code>PlantConfigurator.connect()</code>  </p>
 
 
 
