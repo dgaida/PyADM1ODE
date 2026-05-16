@@ -1281,6 +1281,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../llm_api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API for LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2596,10 +2624,10 @@
 </table>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <h3 id="low-ph-value">Low pH Value<a class="headerlink" href="#low-ph-value" title="Permanent link">&para;</a></h3>
-<p><strong>Causes:</strong>
-- Organic loading rate (OLR) too high
-- Insufficient buffer capacity
-- Sudden substrate change</p>
+<p><strong>Causes:</strong><br />
+- Organic loading rate (OLR) too high<br />
+- Insufficient buffer capacity<br />
+- Sudden substrate change  </p>
 <p><strong>Solutions:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Reduce organic loading</span>
 <a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">Q</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># reduced from [15, 10, ...]</span>
@@ -2608,20 +2636,20 @@
 <a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">Q</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># 1 m³/d lime</span>
 </code></pre></div>
 <h3 id="foaming">Foaming<a class="headerlink" href="#foaming" title="Permanent link">&para;</a></h3>
-<p><strong>Causes:</strong>
-- High protein content in substrate
-- Sudden pH changes
-- High VFA concentrations</p>
-<p><strong>Solutions:</strong>
-- Reduce protein-rich substrates
-- Stabilize pH via buffering
-- Implement anti-foam measures</p>
+<p><strong>Causes:</strong><br />
+- High protein content in substrate<br />
+- Sudden pH changes<br />
+- High VFA concentrations  </p>
+<p><strong>Solutions:</strong><br />
+- Reduce protein-rich substrates<br />
+- Stabilize pH via buffering<br />
+- Implement anti-foam measures  </p>
 <h3 id="low-gas-production">Low Gas Production<a class="headerlink" href="#low-gas-production" title="Permanent link">&para;</a></h3>
-<p><strong>Causes:</strong>
-- Low organic loading
-- Poor substrate quality
-- Inhibition (NH3, H2S, heavy metals)
-- Hydraulic retention time too short</p>
+<p><strong>Causes:</strong><br />
+- Low organic loading<br />
+- Poor substrate quality<br />
+- Inhibition (NH3, H2S, heavy metals)<br />
+- Hydraulic retention time too short  </p>
 <p><strong>Diagnosis:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">diagnose_low_gas_production</span><span class="p">(</span><span class="n">digester_outputs</span><span class="p">):</span>
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Diagnose causes of low gas production.&quot;&quot;&quot;</span>
@@ -2648,45 +2676,45 @@
 </code></pre></div>
 <h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Start with realistic operating parameters</strong></li>
-<li>Use typical HRT values (30–40 days)</li>
+<li><strong>Start with realistic operating parameters</strong>  </li>
+<li>Use typical HRT values (30–40 days)  </li>
 <li>
-<p>Start with moderate OLR (2–4 kg VS/m³/d)</p>
+<p>Start with moderate OLR (2–4 kg VS/m³/d)  </p>
 </li>
 <li>
-<p><strong>Monitor critical parameters</strong></p>
+<p><strong>Monitor critical parameters</strong>  </p>
 </li>
-<li>pH should be stable (±0.2)</li>
-<li>VFA/TAC ratio &lt; 0.4</li>
+<li>pH should be stable (±0.2)  </li>
+<li>VFA/TAC ratio &lt; 0.4  </li>
 <li>
-<p>Methane content &gt; 55%</p>
-</li>
-<li>
-<p><strong>Implement buffering systems</strong></p>
-</li>
-<li>Add lime or other buffers at low pH</li>
-<li>
-<p>Maintain TAC &gt; 4 g CaCO3/L</p>
+<p>Methane content &gt; 55%  </p>
 </li>
 <li>
-<p><strong>Use two-stage systems for difficult substrates</strong></p>
+<p><strong>Implement buffering systems</strong>  </p>
 </li>
-<li>Thermophilic hydrolysis for fiber-rich substrates</li>
+<li>Add lime or other buffers at low pH  </li>
 <li>
-<p>Mesophilic methanogenesis for stable gas production</p>
+<p>Maintain TAC &gt; 4 g CaCO3/L  </p>
 </li>
 <li>
-<p><strong>Calibrate the model with real data</strong></p>
+<p><strong>Use two-stage systems for difficult substrates</strong>  </p>
 </li>
-<li>Use calibration parameters for more accurate predictions</li>
-<li>Validate against operational data</li>
+<li>Thermophilic hydrolysis for fiber-rich substrates  </li>
+<li>
+<p>Mesophilic methanogenesis for stable gas production  </p>
+</li>
+<li>
+<p><strong>Calibrate the model with real data</strong>  </p>
+</li>
+<li>Use calibration parameters for more accurate predictions  </li>
+<li>Validate against operational data  </li>
 </ol>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="../energy/">Energy Components</a>: CHP and heating systems</li>
-<li><a href="../mechanical/">Mechanical Components</a>: Pumps and mixers</li>
-<li><a href="../feeding/">Feeding Components</a>: Storage and dosing</li>
-<li><a href="../../../api/biological/">API Reference</a>: Detailed class documentation</li>
+<li><a href="../energy/">Energy Components</a>: CHP and heating systems  </li>
+<li><a href="../mechanical/">Mechanical Components</a>: Pumps and mixers  </li>
+<li><a href="../feeding/">Feeding Components</a>: Storage and dosing  </li>
+<li><a href="../../../api/biological/">API Reference</a>: Detailed class documentation  </li>
 </ul>
 
 

@@ -1546,6 +1546,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llm_api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API für LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2866,15 +2894,15 @@
 <p>Diese Anleitung bringt Sie in wenigen Minuten mit PyADM1ODE zum Laufen.</p>
 <h2 id="inhaltsverzeichnis">Inhaltsverzeichnis<a class="headerlink" href="#inhaltsverzeichnis" title="Permanent link">&para;</a></h2>
 <ol>
-<li><a href="#ihre-erste-simulation">Ihre erste Simulation</a></li>
-<li><a href="#einfacher-einzelfermenter">Einfacher Einzelfermenter</a></li>
-<li><a href="#komplette-anlage-mit-bhkw-und-heizung">Komplette Anlage mit BHKW und Heizung</a></li>
-<li><a href="#zweistufige-vergärung">Zweistufige Vergärung</a></li>
-<li><a href="#arbeiten-mit-verschiedenen-substraten">Arbeiten mit verschiedenen Substraten</a></li>
-<li><a href="#konfigurationen-speichern-und-laden">Konfigurationen speichern und laden</a></li>
-<li><a href="#ergebnisse-verstehen">Ergebnisse verstehen</a></li>
-<li><a href="#gängige-muster">Gängige Muster</a></li>
-<li><a href="#nächste-schritte">Nächste Schritte</a></li>
+<li><a href="#ihre-erste-simulation">Ihre erste Simulation</a>  </li>
+<li><a href="#einfacher-einzelfermenter">Einfacher Einzelfermenter</a>  </li>
+<li><a href="#komplette-anlage-mit-bhkw-und-heizung">Komplette Anlage mit BHKW und Heizung</a>  </li>
+<li><a href="#zweistufige-vergärung">Zweistufige Vergärung</a>  </li>
+<li><a href="#arbeiten-mit-verschiedenen-substraten">Arbeiten mit verschiedenen Substraten</a>  </li>
+<li><a href="#konfigurationen-speichern-und-laden">Konfigurationen speichern und laden</a>  </li>
+<li><a href="#ergebnisse-verstehen">Ergebnisse verstehen</a>  </li>
+<li><a href="#gängige-muster">Gängige Muster</a>  </li>
+<li><a href="#nächste-schritte">Nächste Schritte</a>  </li>
 </ol>
 <h2 id="ihre-erste-simulation">Ihre erste Simulation<a class="headerlink" href="#ihre-erste-simulation" title="Permanent link">&para;</a></h2>
 <p>Simulieren wir einen einfachen einstufigen Biogasfermenter mit Maissilage und Gülle.</p>
@@ -2946,10 +2974,10 @@
 </code></pre></div>
 <h3 id="kernfunktionen">Kernfunktionen<a class="headerlink" href="#kernfunktionen" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Einstufiger CSTR</strong>: Continuously stirred tank reactor</li>
-<li><strong>Automatischer Gasspeicher</strong>: Pro Fermenter erstellt (Niederdruckmembran)</li>
-<li><strong>Substratmischung</strong>: Maissilage + Rindergülle</li>
-<li><strong>Temperaturregelung</strong>: Mesophil (35 °C)</li>
+<li><strong>Einstufiger CSTR</strong>: Continuously stirred tank reactor  </li>
+<li><strong>Automatischer Gasspeicher</strong>: Pro Fermenter erstellt (Niederdruckmembran)  </li>
+<li><strong>Substratmischung</strong>: Maissilage + Rindergülle  </li>
+<li><strong>Temperaturregelung</strong>: Mesophil (35 °C)  </li>
 </ul>
 <h3 id="details-zur-anlagenkonfiguration">Details zur Anlagenkonfiguration<a class="headerlink" href="#details-zur-anlagenkonfiguration" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Die Methode add_digester erzeugt automatisch:</span>
@@ -2980,10 +3008,10 @@
 </code></pre></div>
 <p><strong>Wenn der Speicher gefüllt wird:</strong></p>
 <ul>
-<li>Druck steigt von 0.95 auf 1.05 bar</li>
-<li>Bei 1.05 bar (voll) wird Überschussgas entlüftet</li>
-<li>Das Entlüften verhindert Überdruck und Anlagenschäden</li>
-<li>In realen Anlagen wird entlüftetes Gas zur Fackel geleitet</li>
+<li>Druck steigt von 0.95 auf 1.05 bar  </li>
+<li>Bei 1.05 bar (voll) wird Überschussgas entlüftet  </li>
+<li>Das Entlüften verhindert Überdruck und Anlagenschäden  </li>
+<li>In realen Anlagen wird entlüftetes Gas zur Fackel geleitet  </li>
 </ul>
 <h3 id="prozessstabilitats-indikatoren">Prozessstabilitäts-Indikatoren<a class="headerlink" href="#prozessstabilitats-indikatoren" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Prozessstabilität prüfen</span>
@@ -3121,8 +3149,8 @@
 <p><strong>Automatische Komponentenerstellung:</strong></p>
 <p>PlantConfigurator erstellt und verbindet automatisch:</p>
 <ul>
-<li><strong>Gasspeicher</strong>: Einer pro Fermenter (Membran, dimensioniert auf V_gas)</li>
-<li><strong>Fackel</strong>: Eine pro BHKW (Sicherheitsverbrennung, 98 % CH₄-Zerstörung)</li>
+<li><strong>Gasspeicher</strong>: Einer pro Fermenter (Membran, dimensioniert auf V_gas)  </li>
+<li><strong>Fackel</strong>: Eine pro BHKW (Sicherheitsverbrennung, 98 % CH₄-Zerstörung)  </li>
 </ul>
 <p><strong>Verbindungskette:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Fermenter → Gasspeicher → BHKW → Fackel
@@ -3142,11 +3170,11 @@
 </code></pre></div>
 <h3 id="kernfunktionen_1">Kernfunktionen<a class="headerlink" href="#kernfunktionen_1" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Temperaturphasiert</strong>: Thermophil (45 °C) + Mesophil (35 °C)</li>
-<li><strong>Verstärkte Hydrolyse</strong>: Höhere Temperatur in der ersten Stufe</li>
-<li><strong>Stabile Methanogenese</strong>: Optimierte Bedingungen in der zweiten Stufe</li>
-<li><strong>Mechanische Komponenten</strong>: Pumpen und Rührwerke für die Materialhandhabung</li>
-<li><strong>Energieintegration</strong>: Kraft-Wärme-Kopplung mit Abwärmenutzung</li>
+<li><strong>Temperaturphasiert</strong>: Thermophil (45 °C) + Mesophil (35 °C)  </li>
+<li><strong>Verstärkte Hydrolyse</strong>: Höhere Temperatur in der ersten Stufe  </li>
+<li><strong>Stabile Methanogenese</strong>: Optimierte Bedingungen in der zweiten Stufe  </li>
+<li><strong>Mechanische Komponenten</strong>: Pumpen und Rührwerke für die Materialhandhabung  </li>
+<li><strong>Energieintegration</strong>: Kraft-Wärme-Kopplung mit Abwärmenutzung  </li>
 </ul>
 <h3 id="konfiguration">Konfiguration<a class="headerlink" href="#konfiguration" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Stufe 1: Hydrolyse (thermophil, 45 °C)</span>
@@ -3314,16 +3342,16 @@
 <h3 id="verfugbare-substrate">Verfügbare Substrate<a class="headerlink" href="#verfugbare-substrate" title="Permanent link">&para;</a></h3>
 <p>PyADM1 enthält 10 vorkonfigurierte landwirtschaftliche Substrate:</p>
 <ol>
-<li><strong>Maissilage (maize)</strong> – Energiepflanze, hohe Biogasausbeute</li>
-<li><strong>Schweinegülle (swinemanure)</strong> – Hoher Stickstoffgehalt</li>
-<li><strong>Grünroggen (greenrye)</strong> – Früherntliche Energiepflanze</li>
-<li><strong>Grassilage (grass)</strong> – Grünlandbiomasse</li>
-<li><strong>Weizen (wheat)</strong> – Getreidekultur</li>
-<li><strong>GPS (gps)</strong> – Ganzpflanzensilage</li>
-<li><strong>CCM (ccm)</strong> – Corn-Cob-Mix</li>
-<li><strong>Futterkalk (futterkalk)</strong> – pH-Pufferzusatz</li>
-<li><strong>Rindergülle (cowmanure)</strong> – Gülle aus Milchviehhaltung</li>
-<li><strong>Zwiebeln (onions)</strong> – Gemüseabfall</li>
+<li><strong>Maissilage (maize)</strong> – Energiepflanze, hohe Biogasausbeute  </li>
+<li><strong>Schweinegülle (swinemanure)</strong> – Hoher Stickstoffgehalt  </li>
+<li><strong>Grünroggen (greenrye)</strong> – Früherntliche Energiepflanze  </li>
+<li><strong>Grassilage (grass)</strong> – Grünlandbiomasse  </li>
+<li><strong>Weizen (wheat)</strong> – Getreidekultur  </li>
+<li><strong>GPS (gps)</strong> – Ganzpflanzensilage  </li>
+<li><strong>CCM (ccm)</strong> – Corn-Cob-Mix  </li>
+<li><strong>Futterkalk (futterkalk)</strong> – pH-Pufferzusatz  </li>
+<li><strong>Rindergülle (cowmanure)</strong> – Gülle aus Milchviehhaltung  </li>
+<li><strong>Zwiebeln (onions)</strong> – Gemüseabfall  </li>
 </ol>
 <h3 id="beispiele-fur-substratfutterung">Beispiele für Substratfütterung<a class="headerlink" href="#beispiele-fur-substratfutterung" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Energiereiche Mischung (Mais + Gülle)</span>
@@ -3373,33 +3401,33 @@
 <h3 id="wichtige-ausgabevariablen">Wichtige Ausgabevariablen<a class="headerlink" href="#wichtige-ausgabevariablen" title="Permanent link">&para;</a></h3>
 <h4 id="fermenter-ausgaben">Fermenter-Ausgaben<a class="headerlink" href="#fermenter-ausgaben" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>Q_gas</code> – Gesamte Biogasproduktion [m³/d]</li>
-<li><code>Q_ch4</code> – Methanproduktion [m³/d]</li>
-<li><code>Q_co2</code> – CO2-Produktion [m³/d]</li>
-<li><code>pH</code> – pH-Wert [-]</li>
-<li><code>VFA</code> – Flüchtige Fettsäuren [g HAceq/L]</li>
-<li><code>TAC</code> – Gesamtalkalinität [g CaCO3/L]</li>
+<li><code>Q_gas</code> – Gesamte Biogasproduktion [m³/d]  </li>
+<li><code>Q_ch4</code> – Methanproduktion [m³/d]  </li>
+<li><code>Q_co2</code> – CO2-Produktion [m³/d]  </li>
+<li><code>pH</code> – pH-Wert [-]  </li>
+<li><code>VFA</code> – Flüchtige Fettsäuren [g HAceq/L]  </li>
+<li><code>TAC</code> – Gesamtalkalinität [g CaCO3/L]  </li>
 </ul>
 <h4 id="bhkw-ausgaben">BHKW-Ausgaben<a class="headerlink" href="#bhkw-ausgaben" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>P_el</code> – Elektrische Leistung [kW]</li>
-<li><code>P_th</code> – Thermische Leistung [kW]</li>
-<li><code>Q_gas_consumed</code> – Gasverbrauch [m³/d]</li>
-<li><code>load_factor</code> – Betriebspunkt [0–1]</li>
+<li><code>P_el</code> – Elektrische Leistung [kW]  </li>
+<li><code>P_th</code> – Thermische Leistung [kW]  </li>
+<li><code>Q_gas_consumed</code> – Gasverbrauch [m³/d]  </li>
+<li><code>load_factor</code> – Betriebspunkt [0–1]  </li>
 </ul>
 <h4 id="heizungsausgaben">Heizungsausgaben<a class="headerlink" href="#heizungsausgaben" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>Q_heat_supplied</code> – Gelieferte Wärme [kW]</li>
-<li><code>P_th_used</code> – Genutzte BHKW-Wärme [kW]</li>
-<li><code>P_aux_heat</code> – Benötigte Zusatzwärme [kW]</li>
+<li><code>Q_heat_supplied</code> – Gelieferte Wärme [kW]  </li>
+<li><code>P_th_used</code> – Genutzte BHKW-Wärme [kW]  </li>
+<li><code>P_aux_heat</code> – Benötigte Zusatzwärme [kW]  </li>
 </ul>
 <h4 id="gasspeicher-ausgaben">Gasspeicher-Ausgaben<a class="headerlink" href="#gasspeicher-ausgaben" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>stored_volume_m3</code> – Aktuelles Volumen [m³ STP]</li>
-<li><code>pressure_bar</code> – Aktueller Druck [bar]</li>
-<li><code>utilization</code> – Füllstand [0–1]</li>
-<li><code>vented_volume_m3</code> – Entlüftetes Gas [m³]</li>
-<li><code>Q_gas_supplied_m3_per_day</code> – Verfügbares Gas [m³/d]</li>
+<li><code>stored_volume_m3</code> – Aktuelles Volumen [m³ STP]  </li>
+<li><code>pressure_bar</code> – Aktueller Druck [bar]  </li>
+<li><code>utilization</code> – Füllstand [0–1]  </li>
+<li><code>vented_volume_m3</code> – Entlüftetes Gas [m³]  </li>
+<li><code>Q_gas_supplied_m3_per_day</code> – Verfügbares Gas [m³/d]  </li>
 </ul>
 <h2 id="gangige-muster">Gängige Muster<a class="headerlink" href="#gangige-muster" title="Permanent link">&para;</a></h2>
 <h3 id="muster-1-parameterstudie">Muster 1: Parameterstudie<a class="headerlink" href="#muster-1-parameterstudie" title="Permanent link">&para;</a></h3>
@@ -3458,15 +3486,15 @@
 <h2 id="nachste-schritte">Nächste Schritte<a class="headerlink" href="#nachste-schritte" title="Permanent link">&para;</a></h2>
 <p>Nachdem Sie Ihre ersten Simulationen ausgeführt haben:</p>
 <ol>
-<li><strong>Komponenten kennenlernen</strong>: <a href="../components/">Komponenten-Leitfaden</a></li>
-<li><strong>Fortgeschrittene Beispiele erkunden</strong>:</li>
-<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py"><code>examples/01_basic_digester.py</code></a></li>
-<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py"><code>examples/02_two_stage_plant.py</code></a></li>
-<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py"><code>examples/parallel_two_stage_simulation.py</code></a></li>
-<li><strong>Parallele Simulationen ausprobieren</strong>: Mehrere Szenarien gleichzeitig</li>
-<li><strong>MCP-Server erkunden</strong>: <a href="https://github.com/dgaida/PyADM1ODE_mcp">PyADM1ODE_mcp</a> für LLM-gesteuerte Anlagenauslegung</li>
-<li><strong>Modell kalibrieren</strong>: <a href="https://github.com/dgaida/PyADM1ODE_calibration">PyADM1ODE_calibration</a> für Parameteranpassung</li>
-<li><strong>API-Dokumentation lesen</strong>: Vollständige Referenz für alle Klassen</li>
+<li><strong>Komponenten kennenlernen</strong>: <a href="../components/">Komponenten-Leitfaden</a>  </li>
+<li><strong>Fortgeschrittene Beispiele erkunden</strong>:  </li>
+<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py"><code>examples/01_basic_digester.py</code></a>  </li>
+<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py"><code>examples/02_two_stage_plant.py</code></a>  </li>
+<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py"><code>examples/parallel_two_stage_simulation.py</code></a>  </li>
+<li><strong>Parallele Simulationen ausprobieren</strong>: Mehrere Szenarien gleichzeitig  </li>
+<li><strong>MCP-Server erkunden</strong>: <a href="https://github.com/dgaida/PyADM1ODE_mcp">PyADM1ODE_mcp</a> für LLM-gesteuerte Anlagenauslegung  </li>
+<li><strong>Modell kalibrieren</strong>: <a href="https://github.com/dgaida/PyADM1ODE_calibration">PyADM1ODE_calibration</a> für Parameteranpassung  </li>
+<li><strong>API-Dokumentation lesen</strong>: Vollständige Referenz für alle Klassen  </li>
 </ol>
 <h2 id="schnellreferenz">Schnellreferenz<a class="headerlink" href="#schnellreferenz" title="Permanent link">&para;</a></h2>
 <h3 id="haufige-befehle">Häufige Befehle<a class="headerlink" href="#haufige-befehle" title="Permanent link">&para;</a></h3>
@@ -3522,31 +3550,31 @@
 <p><strong>Symptome</strong>: pH fällt, VFA steigt, Methanproduktion sinkt</p>
 <p><strong>Lösungen</strong>:</p>
 <ul>
-<li>Substratfütterungsrate reduzieren</li>
-<li>Verweilzeit erhöhen (größeres V_liq)</li>
-<li>Puffermaterial hinzufügen (Futterkalk)</li>
-<li>Substratzusammensetzung prüfen</li>
+<li>Substratfütterungsrate reduzieren  </li>
+<li>Verweilzeit erhöhen (größeres V_liq)  </li>
+<li>Puffermaterial hinzufügen (Futterkalk)  </li>
+<li>Substratzusammensetzung prüfen  </li>
 </ul>
 <h3 id="problem-geringe-gasproduktion">Problem: Geringe Gasproduktion<a class="headerlink" href="#problem-geringe-gasproduktion" title="Permanent link">&para;</a></h3>
 <p><strong>Lösungen</strong>:</p>
 <ul>
-<li>Substratfütterung erhöhen</li>
-<li>Abbaubarkeit des Substrats prüfen</li>
-<li>Optimale Temperatur sicherstellen</li>
-<li>Ausreichende Durchmischung gewährleisten (im Modell implizit)</li>
+<li>Substratfütterung erhöhen  </li>
+<li>Abbaubarkeit des Substrats prüfen  </li>
+<li>Optimale Temperatur sicherstellen  </li>
+<li>Ausreichende Durchmischung gewährleisten (im Modell implizit)  </li>
 </ul>
 <h3 id="problem-langsame-simulation">Problem: Langsame Simulation<a class="headerlink" href="#problem-langsame-simulation" title="Permanent link">&para;</a></h3>
 <p><strong>Lösungen</strong>:</p>
 <ul>
-<li>Zeitschritt <code>dt</code> erhöhen (aber &lt; 0.1 Tage halten)</li>
-<li><code>save_interval</code> für weniger Ausgabe reduzieren</li>
-<li>Parallele Simulation für Parameterstudien verwenden</li>
+<li>Zeitschritt <code>dt</code> erhöhen (aber &lt; 0.1 Tage halten)  </li>
+<li><code>save_interval</code> für weniger Ausgabe reduzieren  </li>
+<li>Parallele Simulation für Parameterstudien verwenden  </li>
 </ul>
 <p>Weitere Hilfe finden Sie in der <a href="../installation/">Installationsanleitung</a> oder kontaktieren Sie <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#97;&#110;&#105;&#101;&#108;&#46;&#103;&#97;&#105;&#100;&#97;&#64;&#116;&#104;&#45;&#107;&#111;&#101;&#108;&#110;&#46;&#100;&#101;">&#100;&#97;&#110;&#105;&#101;&#108;&#46;&#103;&#97;&#105;&#100;&#97;&#64;&#116;&#104;&#45;&#107;&#111;&#101;&#108;&#110;&#46;&#100;&#101;</a>.</p>
 <h2 id="referenzen">Referenzen<a class="headerlink" href="#referenzen" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>ADM1-Modell</strong>: Batstone et al. (2002). <em>Anaerobic Digestion Model No. 1</em>. IWA Publishing.</li>
-<li><strong>Leitfaden Biogas</strong>: FNR (2016). <a href="https://mediathek.fnr.de/leitfaden-biogas.html">https://mediathek.fnr.de/leitfaden-biogas.html</a></li>
+<li><strong>ADM1-Modell</strong>: Batstone et al. (2002). <em>Anaerobic Digestion Model No. 1</em>. IWA Publishing.  </li>
+<li><strong>Leitfaden Biogas</strong>: FNR (2016). <a href="https://mediathek.fnr.de/leitfaden-biogas.html">https://mediathek.fnr.de/leitfaden-biogas.html</a>  </li>
 </ul>
 
 

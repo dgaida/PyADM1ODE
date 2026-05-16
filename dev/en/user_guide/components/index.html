@@ -1426,6 +1426,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llm_api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API for LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2648,28 +2676,28 @@
 <h3 id="biological-components"><a href="biological/">Biological Components</a><a class="headerlink" href="#biological-components" title="Permanent link">&para;</a></h3>
 <p>Components for biological conversion processes:</p>
 <ul>
-<li><strong>Digester</strong>: Main fermenter with the ADM1 model for anaerobic digestion. A hydrolysis pre-tank is simply a <code>Digester</code> with higher temperature and shorter HRT — there is no separate class.</li>
-<li><strong>Separator</strong>: Solid–liquid separation for digestate processing.</li>
+<li><strong>Digester</strong>: Main fermenter with the ADM1 model for anaerobic digestion. A hydrolysis pre-tank is simply a <code>Digester</code> with higher temperature and shorter HRT — there is no separate class.  </li>
+<li><strong>Separator</strong>: Solid–liquid separation for digestate processing.  </li>
 </ul>
 <h3 id="energy-components"><a href="energy/">Energy Components</a><a class="headerlink" href="#energy-components" title="Permanent link">&para;</a></h3>
 <p>Components for energy generation and storage:</p>
 <ul>
-<li><strong>CHP</strong>: Combined heat and power unit for electricity and heat generation.</li>
-<li><strong>Heating</strong>: Heating system for temperature control.</li>
-<li><strong>GasStorage</strong>: Biogas storage with pressure management.</li>
-<li><strong>Flare</strong>: Safety flare for excess gas.</li>
+<li><strong>CHP</strong>: Combined heat and power unit for electricity and heat generation.  </li>
+<li><strong>Heating</strong>: Heating system for temperature control.  </li>
+<li><strong>GasStorage</strong>: Biogas storage with pressure management.  </li>
+<li><strong>Flare</strong>: Safety flare for excess gas.  </li>
 </ul>
 <h3 id="mechanical-components"><a href="mechanical/">Mechanical Components</a><a class="headerlink" href="#mechanical-components" title="Permanent link">&para;</a></h3>
 <p>Mechanical plant components:</p>
 <ul>
-<li><strong>Pump</strong>: Pumps for substrate transport and recirculation.</li>
-<li><strong>Mixer</strong>: Agitators for homogenization in the fermenter.</li>
+<li><strong>Pump</strong>: Pumps for substrate transport and recirculation.  </li>
+<li><strong>Mixer</strong>: Agitators for homogenization in the fermenter.  </li>
 </ul>
 <h3 id="feeding-components"><a href="feeding/">Feeding Components</a><a class="headerlink" href="#feeding-components" title="Permanent link">&para;</a></h3>
 <p>Substrate handling and dosing:</p>
 <ul>
-<li><strong>SubstrateStorage</strong>: Substrate storage tanks with quality tracking.</li>
-<li><strong>Feeder</strong>: Automated dosing systems.</li>
+<li><strong>SubstrateStorage</strong>: Substrate storage tanks with quality tracking.  </li>
+<li><strong>Feeder</strong>: Automated dosing systems.  </li>
 </ul>
 <h3 id="sensors"><a href="sensors/">Sensors</a><a class="headerlink" href="#sensors" title="Permanent link">&para;</a></h3>
 <p>Measurement and monitoring components.</p>
@@ -2678,23 +2706,23 @@
 <p>Transfer digestate between digesters:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">configurator</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;digester_1&quot;</span><span class="p">,</span> <span class="s2">&quot;digester_2&quot;</span><span class="p">,</span> <span class="s2">&quot;liquid&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p><strong>Data transferred:</strong>
-- <code>Q_out</code>: Liquid flow rate [m³/d]
-- <code>state_out</code>: Complete ADM1 state vector</p>
+<p><strong>Data transferred:</strong><br />
+- <code>Q_out</code>: Liquid flow rate [m³/d]<br />
+- <code>state_out</code>: Complete ADM1 state vector  </p>
 <h3 id="gas-connections">Gas Connections<a class="headerlink" href="#gas-connections" title="Permanent link">&para;</a></h3>
 <p>Transfer biogas from storage to CHP:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">configurator</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;digester_1_storage&quot;</span><span class="p">,</span> <span class="s2">&quot;chp_1&quot;</span><span class="p">,</span> <span class="s2">&quot;gas&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p><strong>Data transferred:</strong>
-- <code>Q_gas_supplied_m3_per_day</code>: Available gas [m³/d]
-- Gas composition (CH4%, CO2%)</p>
+<p><strong>Data transferred:</strong><br />
+- <code>Q_gas_supplied_m3_per_day</code>: Available gas [m³/d]<br />
+- Gas composition (CH4%, CO2%)  </p>
 <h3 id="heat-connections">Heat Connections<a class="headerlink" href="#heat-connections" title="Permanent link">&para;</a></h3>
 <p>Transfer waste heat from CHP to heating system:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">configurator</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;chp_1&quot;</span><span class="p">,</span> <span class="s2">&quot;heating_1&quot;</span><span class="p">,</span> <span class="s2">&quot;heat&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p><strong>Data transferred:</strong>
-- <code>P_th</code>: Available thermal power [kW]
-- Temperature levels</p>
+<p><strong>Data transferred:</strong><br />
+- <code>P_th</code>: Available thermal power [kW]<br />
+- Temperature levels  </p>
 <h3 id="auto-connection-helpers">Auto-Connection Helpers<a class="headerlink" href="#auto-connection-helpers" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Automatic gas routing: Digester → Storage → CHP → Flare</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_digester_to_chp</span><span class="p">(</span><span class="s2">&quot;dig1&quot;</span><span class="p">,</span> <span class="s2">&quot;chp1&quot;</span><span class="p">)</span>
@@ -2977,28 +3005,28 @@
 </table>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Examples</strong>: See the detailed component guides for full implementations</li>
-<li><strong>Optimization</strong>: Use parameter studies to optimize component sizing</li>
-<li><strong><a href="../../api/biological/">API Reference</a></strong>: Detailed class documentation for advanced features</li>
+<li><strong>Examples</strong>: See the detailed component guides for full implementations  </li>
+<li><strong>Optimization</strong>: Use parameter studies to optimize component sizing  </li>
+<li><strong><a href="../../api/biological/">API Reference</a></strong>: Detailed class documentation for advanced features  </li>
 </ul>
 <h2 id="related-documentation">Related Documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="biological/">Biological Components</a></li>
-<li><a href="energy/">Energy Components</a></li>
-<li><a href="mechanical/">Mechanical Components</a></li>
-<li><a href="feeding/">Feeding Components</a></li>
-<li><a href="sensors/">Sensors</a></li>
+<li><a href="biological/">Biological Components</a>  </li>
+<li><a href="energy/">Energy Components</a>  </li>
+<li><a href="mechanical/">Mechanical Components</a>  </li>
+<li><a href="feeding/">Feeding Components</a>  </li>
+<li><a href="sensors/">Sensors</a>  </li>
 </ul>
 <h2 id="core-concepts">Core Concepts<a class="headerlink" href="#core-concepts" title="Permanent link">&para;</a></h2>
 <h3 id="component-base-class">Component Base Class<a class="headerlink" href="#component-base-class" title="Permanent link">&para;</a></h3>
-<p>All plant components inherit from the <code>Component</code> base class and provide:
-- <code>step(t, dt, inputs)</code>: Execute one simulation time step.
-- <code>initialize(state)</code>: Initialize the component state.
-- <code>to_dict()</code> / <code>from_dict()</code>: Serialization for JSON export/import.</p>
+<p>All plant components inherit from the <code>Component</code> base class and provide:<br />
+- <code>step(t, dt, inputs)</code>: Execute one simulation time step.<br />
+- <code>initialize(state)</code>: Initialize the component state.<br />
+- <code>to_dict()</code> / <code>from_dict()</code>: Serialization for JSON export/import.  </p>
 <h3 id="automatic-component-creation">Automatic Component Creation<a class="headerlink" href="#automatic-component-creation" title="Permanent link">&para;</a></h3>
-<p>The <code>PlantConfigurator</code> automatically creates and connects:
-- <strong>Gas storage</strong>: One per digester (membrane type, sized to gas volume).
-- <strong>Flare</strong>: One per CHP unit (safety combustion of excess gas).</p>
+<p>The <code>PlantConfigurator</code> automatically creates and connects:<br />
+- <strong>Gas storage</strong>: One per digester (membrane type, sized to gas volume).<br />
+- <strong>Flare</strong>: One per CHP unit (safety combustion of excess gas).  </p>
 <p>This reduces configuration complexity while ensuring realistic plant behavior.</p>
 
 

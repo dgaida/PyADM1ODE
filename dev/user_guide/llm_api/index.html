@@ -12,19 +12,19 @@
         <meta name="author" content="Daniel Gaida">
       
       
-        <link rel="canonical" href="https://dgaida.github.io/PyADM1ODE/dev/user_guide/advanced_features/">
+        <link rel="canonical" href="https://dgaida.github.io/PyADM1ODE/dev/user_guide/llm_api/">
       
       
-        <link rel="prev" href="../applications/">
+        <link rel="prev" href="../troubleshooting/">
       
       
-        <link rel="next" href="../troubleshooting/">
+        <link rel="next" href="../adm1_implementation/">
       
       
         
           <link rel="alternate" href="./" hreflang="de">
         
-          <link rel="alternate" href="../../en/user_guide/advanced_features/" hreflang="en">
+          <link rel="alternate" href="../../en/user_guide/llm_api/" hreflang="en">
         
       
       
@@ -33,7 +33,7 @@
     
     
       
-        <title>Fortgeschrittene Funktionen - PyADM1ODE</title>
+        <title>API für LLM - PyADM1ODE</title>
       
     
     
@@ -86,7 +86,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#fortgeschrittene-funktionen" class="md-skip">
+        <a href="#api-fur-llm" class="md-skip">
           Zum Inhalt
         </a>
       
@@ -120,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Fortgeschrittene Funktionen
+              API für LLM
             
           </span>
         </div>
@@ -173,7 +173,7 @@
           </li>
         
           <li class="md-select__item">
-            <a href="../../en/user_guide/advanced_features/" hreflang="en" class="md-select__link">
+            <a href="../../en/user_guide/llm_api/" hreflang="en" class="md-select__link">
               English
             </a>
           </li>
@@ -964,37 +964,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Fortgeschrittene Funktionen
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../advanced_features/" class="md-nav__link">
         
   
   
@@ -1010,59 +983,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Inhaltsverzeichnis
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#parallele-simulation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parallele Simulation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#konfigurationsmanagement" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Konfigurationsmanagement
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pyadm1ode-okosystem" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PyADM1ODE Ökosystem
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1100,10 +1020,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../llm_api/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API für LLM
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1119,6 +1066,142 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#kern-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kern-Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-substrat-konfiguration-feedstock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Substrat-Konfiguration (Feedstock)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-anlagen-basis-biogasplant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Anlagen-Basis (BiogasPlant)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-anlagen-konfigurator-plantconfigurator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Anlagen-Konfigurator (PlantConfigurator)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Anlagen-Konfigurator (PlantConfigurator)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fermenter-hinzufugen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fermenter hinzufügen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#energie-komponenten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Energie-Komponenten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mechanische-komponenten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mechanische Komponenten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verbindungen-herstellen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verbindungen herstellen
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-simulation-ausfuhren" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Simulation ausführen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zusammenfassung-fur-llm-prompts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zusammenfassung für LLM-Prompts
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1933,10 +2016,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#parallele-simulation" class="md-nav__link">
+  <a href="#kern-workflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Parallele Simulation
+        Kern-Workflow
       
     </span>
   </a>
@@ -1944,10 +2027,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#konfigurationsmanagement" class="md-nav__link">
+  <a href="#1-substrat-konfiguration-feedstock" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Konfigurationsmanagement
+        1. Substrat-Konfiguration (Feedstock)
       
     </span>
   </a>
@@ -1955,10 +2038,93 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pyadm1ode-okosystem" class="md-nav__link">
+  <a href="#2-anlagen-basis-biogasplant" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PyADM1ODE Ökosystem
+        2. Anlagen-Basis (BiogasPlant)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-anlagen-konfigurator-plantconfigurator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Anlagen-Konfigurator (PlantConfigurator)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Anlagen-Konfigurator (PlantConfigurator)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fermenter-hinzufugen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fermenter hinzufügen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#energie-komponenten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Energie-Komponenten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mechanische-komponenten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mechanische Komponenten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verbindungen-herstellen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verbindungen herstellen
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-simulation-ausfuhren" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Simulation ausführen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zusammenfassung-fur-llm-prompts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zusammenfassung für LLM-Prompts
       
     </span>
   </a>
@@ -1985,41 +2151,104 @@
   
 
 
-<h1 id="fortgeschrittene-funktionen">Fortgeschrittene Funktionen<a class="headerlink" href="#fortgeschrittene-funktionen" title="Permanent link">&para;</a></h1>
-<p>PyADM1ODE bietet fortgeschrittene Funktionen für umfangreiche Studien und das Konfigurationsmanagement.</p>
-<h2 id="parallele-simulation">Parallele Simulation<a class="headerlink" href="#parallele-simulation" title="Permanent link">&para;</a></h2>
-<p>Führen Sie mehrere Szenarien gleichzeitig aus, um Parameterstudien oder Monte-Carlo-Simulationen zu beschleunigen.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParallelSimulator</span>
+<h1 id="api-fur-llm">API für LLM<a class="headerlink" href="#api-fur-llm" title="Permanent link">&para;</a></h1>
+<p>Diese Seite bietet eine strukturierte Referenz der Methoden und Klassen, die benötigt werden, um ein PyADM1ODE-Simulationsmodell automatisch zu erstellen. Diese Dokumentation ist darauf optimiert, von Large Language Models (LLMs) gelesen zu werden, um Biogasanlagenkonfigurationen zu generieren.</p>
+<h2 id="kern-workflow">Kern-Workflow<a class="headerlink" href="#kern-workflow" title="Permanent link">&para;</a></h2>
+<p>Um eine Simulation zu erstellen, folgen Sie diesem Ablauf:
+1. Erstellen Sie ein <code>Feedstock</code>-Objekt.
+2. Erstellen Sie ein <code>BiogasPlant</code>-Objekt.
+3. Verwenden Sie den <code>PlantConfigurator</code>, um Komponenten hinzuzufügen und zu verbinden.
+4. Initialisieren Sie die Anlage und starten Sie die Simulation.</p>
+<h2 id="1-substrat-konfiguration-feedstock">1. Substrat-Konfiguration (Feedstock)<a class="headerlink" href="#1-substrat-konfiguration-feedstock" title="Permanent link">&para;</a></h2>
+<p>Das <code>Feedstock</code>-Objekt definiert, welche Substrate in der Anlage verwendet werden.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.substrates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Feedstock</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Parameterstudie</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">parallel</span> <span class="o">=</span> <span class="n">ParallelSimulator</span><span class="p">(</span><span class="n">adm1</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">scenarios</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="p">{</span><span class="s2">&quot;k_dis&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="p">{</span><span class="s2">&quot;k_dis&quot;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="p">{</span><span class="s2">&quot;k_dis&quot;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]}</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">]</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span><span class="n">scenarios</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">initial_state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Erstellt ein Feedstock mit Maissilage und Schweinegülle</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">(</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">substrates</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;maize_silage_milk_ripeness&quot;</span><span class="p">,</span> <span class="s2">&quot;swine_manure&quot;</span><span class="p">],</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">feeding_freq</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span>   <span class="c1"># Fütterungsfrequenz pro Tag</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">total_simtime</span><span class="o">=</span><span class="mi">30</span>   <span class="c1"># Gesamte Simulationsdauer in Tagen</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">)</span>
 </code></pre></div>
-<p>Weitere Details finden Sie im <a href="../../examples/parallel_simulation/">Beispiel für parallele Simulation</a>.</p>
-<h2 id="konfigurationsmanagement">Konfigurationsmanagement<a class="headerlink" href="#konfigurationsmanagement" title="Permanent link">&para;</a></h2>
-<p>Speichern und verwenden Sie Anlagendesigns mithilfe der JSON-Serialisierung wieder.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Konfiguration speichern</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">plant</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="s2">&quot;zweistufige_anlage.json&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Später laden</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.configurator</span><span class="w"> </span><span class="kn">import</span> <span class="n">BiogasPlant</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">plant</span> <span class="o">=</span> <span class="n">BiogasPlant</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="s2">&quot;zweistufige_anlage.json&quot;</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">)</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">plant</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">results</span> <span class="o">=</span> <span class="n">plant</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">24</span><span class="p">)</span>
+<h2 id="2-anlagen-basis-biogasplant">2. Anlagen-Basis (BiogasPlant)<a class="headerlink" href="#2-anlagen-basis-biogasplant" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.configurator</span><span class="w"> </span><span class="kn">import</span> <span class="n">BiogasPlant</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">plant</span> <span class="o">=</span> <span class="n">BiogasPlant</span><span class="p">(</span><span class="s2">&quot;Name der Anlage&quot;</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="pyadm1ode-okosystem">PyADM1ODE Ökosystem<a class="headerlink" href="#pyadm1ode-okosystem" title="Permanent link">&para;</a></h2>
-<p>PyADM1ODE ist Teil eines größeren Ökosystems von Werkzeugen zur Optimierung und Steuerung von Biogasanlagen:</p>
-<ul>
-<li><strong><a href="https://github.com/dgaida/PyADM1ODE_calibration">PyADM1ODE_calibration</a></strong>: Werkzeuge zur automatisierten Kalibrierung von ADM1-Parametern basierend auf Messdaten.  </li>
-<li><strong><a href="https://github.com/dgaida/PyADM1ODE_mcp">PyADM1ODE_mcp</a></strong>: Model Context Protocol (MCP) Server, der es ermöglicht, PyADM1ODE mit LLMs (wie Claude oder ChatGPT) zu steuern.  </li>
-<li><strong><a href="https://github.com/dgaida/PyADM1ODE_estimate">PyADM1ODE_estimate</a></strong>: Werkzeuge zur Schätzung von Zustandsvariablen und Parametern in Echtzeit.  </li>
-</ul>
+<h2 id="3-anlagen-konfigurator-plantconfigurator">3. Anlagen-Konfigurator (PlantConfigurator)<a class="headerlink" href="#3-anlagen-konfigurator-plantconfigurator" title="Permanent link">&para;</a></h2>
+<p>Der <code>PlantConfigurator</code> ist das Hauptwerkzeug zum Aufbau der Topologie.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.configurator</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlantConfigurator</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">configurator</span> <span class="o">=</span> <span class="n">PlantConfigurator</span><span class="p">(</span><span class="n">plant</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="fermenter-hinzufugen">Fermenter hinzufügen<a class="headerlink" href="#fermenter-hinzufugen" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Fügt einen Fermenter hinzu. Erstellt automatisch einen Gasspeicher.</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1"># Q_substrates gibt die Menge der im Feedstock definierten Substrate in [m³/d] an.</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">digester</span><span class="p">,</span> <span class="n">state_info</span> <span class="o">=</span> <span class="n">configurator</span><span class="o">.</span><span class="n">add_digester</span><span class="p">(</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">digester_id</span><span class="o">=</span><span class="s2">&quot;main_digester&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">V_liq</span><span class="o">=</span><span class="mf">2000.0</span><span class="p">,</span>              <span class="c1"># Flüssigkeitsvolumen [m³]</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">V_gas</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span>               <span class="c1"># Gasraum [m³]</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">T_ad</span><span class="o">=</span><span class="mf">308.15</span><span class="p">,</span>               <span class="c1"># Temperatur [K] (35°C = 308.15K)</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">Q_substrates</span><span class="o">=</span><span class="p">[</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">]</span>  <span class="c1"># Mengen korrespondierend zur Feedstock-Liste</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">)</span>
+</code></pre></div>
+<h3 id="energie-komponenten">Energie-Komponenten<a class="headerlink" href="#energie-komponenten" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Blockheizkraftwerk (BHKW) hinzufügen</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_chp</span><span class="p">(</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">chp_id</span><span class="o">=</span><span class="s2">&quot;chp_1&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">P_el_nom</span><span class="o">=</span><span class="mf">500.0</span>  <span class="c1"># Nominale elektrische Leistung [kW]</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">)</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Heizung hinzufügen</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_heating</span><span class="p">(</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="n">heating_id</span><span class="o">=</span><span class="s2">&quot;heating_1&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="n">target_temperature</span><span class="o">=</span><span class="mf">308.15</span>  <span class="c1"># Zieltemperatur [K]</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="p">)</span>
+</code></pre></div>
+<h3 id="mechanische-komponenten">Mechanische Komponenten<a class="headerlink" href="#mechanische-komponenten" title="Permanent link">&para;</a></h3>
+<p>Mechanische Komponenten müssen direkt zur <code>plant</code> hinzugefügt werden:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.components.mechanical</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pump</span><span class="p">,</span> <span class="n">Mixer</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.components.feeding</span><span class="w"> </span><span class="kn">import</span> <span class="n">SubstrateStorage</span><span class="p">,</span> <span class="n">Feeder</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Pumpe</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">pump</span> <span class="o">=</span> <span class="n">Pump</span><span class="p">(</span><span class="s2">&quot;pump1&quot;</span><span class="p">,</span> <span class="n">pump_type</span><span class="o">=</span><span class="s2">&quot;progressive_cavity&quot;</span><span class="p">,</span> <span class="n">Q_nom</span><span class="o">=</span><span class="mf">15.0</span><span class="p">)</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">plant</span><span class="o">.</span><span class="n">add_component</span><span class="p">(</span><span class="n">pump</span><span class="p">)</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="c1"># Rührwerk</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="n">mixer</span> <span class="o">=</span> <span class="n">Mixer</span><span class="p">(</span><span class="s2">&quot;mix1&quot;</span><span class="p">,</span> <span class="n">tank_volume</span><span class="o">=</span><span class="mf">2000.0</span><span class="p">,</span> <span class="n">intermittent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_time_fraction</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="n">plant</span><span class="o">.</span><span class="n">add_component</span><span class="p">(</span><span class="n">mixer</span><span class="p">)</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="c1"># Substratlager</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="n">storage</span> <span class="o">=</span> <span class="n">SubstrateStorage</span><span class="p">(</span><span class="s2">&quot;silo1&quot;</span><span class="p">,</span> <span class="n">storage_type</span><span class="o">=</span><span class="s2">&quot;vertical_silo&quot;</span><span class="p">,</span> <span class="n">capacity</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">)</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="n">plant</span><span class="o">.</span><span class="n">add_component</span><span class="p">(</span><span class="n">storage</span><span class="p">)</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="c1"># Dosierer</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="n">feeder</span> <span class="o">=</span> <span class="n">Feeder</span><span class="p">(</span><span class="s2">&quot;feed1&quot;</span><span class="p">,</span> <span class="n">feeder_type</span><span class="o">=</span><span class="s2">&quot;screw&quot;</span><span class="p">,</span> <span class="n">Q_max</span><span class="o">=</span><span class="mf">20.0</span><span class="p">)</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="n">plant</span><span class="o">.</span><span class="n">add_component</span><span class="p">(</span><span class="n">feeder</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="verbindungen-herstellen">Verbindungen herstellen<a class="headerlink" href="#verbindungen-herstellen" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Manuelle Verbindung</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">configurator</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;source_id&quot;</span><span class="p">,</span> <span class="s2">&quot;target_id&quot;</span><span class="p">,</span> <span class="n">connection_type</span><span class="o">=</span><span class="s2">&quot;liquid&quot;</span><span class="p">)</span> <span class="c1"># oder &quot;gas&quot;, &quot;heat&quot;, &quot;default&quot;</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Automatische Verbindungs-Helfer (empfohlen)</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_digester_to_chp</span><span class="p">(</span><span class="s2">&quot;main_digester&quot;</span><span class="p">,</span> <span class="s2">&quot;chp_1&quot;</span><span class="p">)</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_chp_to_heating</span><span class="p">(</span><span class="s2">&quot;chp_1&quot;</span><span class="p">,</span> <span class="s2">&quot;heating_1&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="4-simulation-ausfuhren">4. Simulation ausführen<a class="headerlink" href="#4-simulation-ausfuhren" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">plant</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">results</span> <span class="o">=</span> <span class="n">plant</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">duration</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>      <span class="c1"># Dauer in Tagen</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">24</span><span class="p">,</span>          <span class="c1"># Zeitschritt (z.B. stündlich)</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">save_interval</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># Intervall für Ergebnis-Snapshots</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="p">)</span>
+</code></pre></div>
+<h2 id="zusammenfassung-fur-llm-prompts">Zusammenfassung für LLM-Prompts<a class="headerlink" href="#zusammenfassung-fur-llm-prompts" title="Permanent link">&para;</a></h2>
+<p>Verwenden Sie diese Klassen für den Aufbau:
+- <strong>Biologische Stufe</strong>: <code>configurator.add_digester()</code>
+- <strong>Energie</strong>: <code>configurator.add_chp()</code>, <code>configurator.add_heating()</code>
+- <strong>Mechanik</strong>: <code>Pump</code>, <code>Mixer</code>
+- <strong>Logistik</strong>: <code>SubstrateStorage</code>, <code>Feeder</code>
+- <strong>Infrastruktur</strong>: <code>PlantConfigurator.connect()</code></p>
 
 
 

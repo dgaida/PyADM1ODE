@@ -18,7 +18,7 @@
         <link rel="prev" href="../advanced_features/">
       
       
-        <link rel="next" href="../adm1_implementation/">
+        <link rel="next" href="../llm_api/">
       
       
         
@@ -1492,6 +1492,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llm_api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API für LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2754,20 +2782,20 @@
 <h2 id="ubersicht">Übersicht<a class="headerlink" href="#ubersicht" title="Permanent link">&para;</a></h2>
 <p>PyADM1ODE ist ein komplexes System mit biologischen, energetischen und mechanischen Komponenten. Probleme können in verschiedenen Bereichen auftreten:</p>
 <ul>
-<li><strong><a href="#installation-und-setup">Installation und Setup</a></strong>: Python-Umgebung, Abhängigkeiten</li>
-<li><strong><a href="#biologische-prozesse">Biologische Prozesse</a></strong>: Fermenter-Instabilität, pH-Probleme, VFA-Akkumulation</li>
-<li><strong><a href="#energiesystem">Energiesystem</a></strong>: BHKW, Heizung, Gasspeicher</li>
-<li><strong><a href="#mechanische-komponenten">Mechanische Komponenten</a></strong>: Pumpen, Rührwerke</li>
-<li><strong><a href="#fütterungssystem">Fütterungssystem</a></strong>: Substratqualität, Dosiergenauigkeit</li>
-<li><strong><a href="#simulation-und-performance">Simulation und Performance</a></strong>: Laufzeit, Konvergenz, Numerik</li>
+<li><strong><a href="#installation-und-setup">Installation und Setup</a></strong>: Python-Umgebung, Abhängigkeiten  </li>
+<li><strong><a href="#biologische-prozesse">Biologische Prozesse</a></strong>: Fermenter-Instabilität, pH-Probleme, VFA-Akkumulation  </li>
+<li><strong><a href="#energiesystem">Energiesystem</a></strong>: BHKW, Heizung, Gasspeicher  </li>
+<li><strong><a href="#mechanische-komponenten">Mechanische Komponenten</a></strong>: Pumpen, Rührwerke  </li>
+<li><strong><a href="#fütterungssystem">Fütterungssystem</a></strong>: Substratqualität, Dosiergenauigkeit  </li>
+<li><strong><a href="#simulation-und-performance">Simulation und Performance</a></strong>: Laufzeit, Konvergenz, Numerik  </li>
 </ul>
 <h2 id="installation-und-setup">Installation und Setup<a class="headerlink" href="#installation-und-setup" title="Permanent link">&para;</a></h2>
 <p>Für Installationsprobleme siehe:</p>
 <p><strong><a href="../installation/#fehlerbehebung">→ Installation Guide – Troubleshooting</a></strong></p>
 <p>Häufige Themen:</p>
 <ul>
-<li>Paket nicht in der aktiven Umgebung gefunden</li>
-<li>Substrat-Dateien nicht gefunden</li>
+<li>Paket nicht in der aktiven Umgebung gefunden  </li>
+<li>Substrat-Dateien nicht gefunden  </li>
 </ul>
 <h2 id="biologische-prozesse">Biologische Prozesse<a class="headerlink" href="#biologische-prozesse" title="Permanent link">&para;</a></h2>
 <h3 id="fermenter-probleme">Fermenter-Probleme<a class="headerlink" href="#fermenter-probleme" title="Permanent link">&para;</a></h3>
@@ -2776,29 +2804,29 @@
 <p>Behandelte Themen:</p>
 <h4 id="niedriger-ph-wert">Niedriger pH-Wert<a class="headerlink" href="#niedriger-ph-wert" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Ursachen</strong>: Hohe organische Raumbelastung (OLR), unzureichende Pufferkapazität</li>
-<li><strong>Diagnose</strong>: pH &lt; 6.8, steigende VFA</li>
-<li><strong>Lösungen</strong>: OLR reduzieren, Kalkpuffer hinzufügen, Substratmischung anpassen</li>
+<li><strong>Ursachen</strong>: Hohe organische Raumbelastung (OLR), unzureichende Pufferkapazität  </li>
+<li><strong>Diagnose</strong>: pH &lt; 6.8, steigende VFA  </li>
+<li><strong>Lösungen</strong>: OLR reduzieren, Kalkpuffer hinzufügen, Substratmischung anpassen  </li>
 </ul>
 <h4 id="schaumbildung">Schaumbildung<a class="headerlink" href="#schaumbildung" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Ursachen</strong>: Hoher Proteingehalt, pH-Änderungen, hohe VFA</li>
-<li><strong>Lösungen</strong>: Proteinreiche Substrate reduzieren, pH stabilisieren</li>
+<li><strong>Ursachen</strong>: Hoher Proteingehalt, pH-Änderungen, hohe VFA  </li>
+<li><strong>Lösungen</strong>: Proteinreiche Substrate reduzieren, pH stabilisieren  </li>
 </ul>
 <h4 id="geringe-gasproduktion">Geringe Gasproduktion<a class="headerlink" href="#geringe-gasproduktion" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Ursachen</strong>: Niedrige OLR, schlechte Substratqualität, Inhibition, kurze HRT</li>
-<li><strong>Diagnose-Tools</strong>: Spezifische Gasproduktion, Methangehalt prüfen</li>
-<li><strong>Lösungen</strong>: Substratqualität verbessern, Inhibitoren identifizieren</li>
+<li><strong>Ursachen</strong>: Niedrige OLR, schlechte Substratqualität, Inhibition, kurze HRT  </li>
+<li><strong>Diagnose-Tools</strong>: Spezifische Gasproduktion, Methangehalt prüfen  </li>
+<li><strong>Lösungen</strong>: Substratqualität verbessern, Inhibitoren identifizieren  </li>
 </ul>
 <h3 id="prozessuberwachung">Prozessüberwachung<a class="headerlink" href="#prozessuberwachung" title="Permanent link">&para;</a></h3>
 <p><strong><a href="../components/biological/#prozessuberwachung">→ Biologische Komponenten – Prozessüberwachung</a></strong></p>
 <p>Wichtige Prozessindikatoren:</p>
 <ul>
-<li>pH-Wert: 6.8–7.5 optimal</li>
-<li>VFA/TAC-Verhältnis: &lt; 0.4</li>
-<li>Methangehalt: &gt; 55 %</li>
-<li>Temperaturstabilität</li>
+<li>pH-Wert: 6.8–7.5 optimal  </li>
+<li>VFA/TAC-Verhältnis: &lt; 0.4  </li>
+<li>Methangehalt: &gt; 55 %  </li>
+<li>Temperaturstabilität  </li>
 </ul>
 <h2 id="energiesystem">Energiesystem<a class="headerlink" href="#energiesystem" title="Permanent link">&para;</a></h2>
 <h3 id="bhkw-und-warmesysteme">BHKW und Wärmesysteme<a class="headerlink" href="#bhkw-und-warmesysteme" title="Permanent link">&para;</a></h3>
@@ -2807,21 +2835,21 @@
 <p>Behandelte Themen:</p>
 <h4 id="bhkw-lauft-nicht">BHKW läuft nicht<a class="headerlink" href="#bhkw-lauft-nicht" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Diagnose</strong>: Gasverfügbarkeit, minimaler Gasbedarf, Speicherdruck prüfen</li>
-<li><strong>Lösungen</strong>: Gasversorgung sicherstellen, Speicherdruck anpassen</li>
+<li><strong>Diagnose</strong>: Gasverfügbarkeit, minimaler Gasbedarf, Speicherdruck prüfen  </li>
+<li><strong>Lösungen</strong>: Gasversorgung sicherstellen, Speicherdruck anpassen  </li>
 </ul>
 <h4 id="ubermaiges-venting">Übermäßiges Venting<a class="headerlink" href="#ubermaiges-venting" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Ursache</strong>: Gasproduktion &gt; BHKW-Verbrauch</li>
-<li><strong>Lösungen</strong>:</li>
-<li>BHKW-Kapazität erhöhen</li>
-<li>Zweites BHKW hinzufügen</li>
-<li>Gasspeicher vergrößern</li>
+<li><strong>Ursache</strong>: Gasproduktion &gt; BHKW-Verbrauch  </li>
+<li><strong>Lösungen</strong>:  </li>
+<li>BHKW-Kapazität erhöhen  </li>
+<li>Zweites BHKW hinzufügen  </li>
+<li>Gasspeicher vergrößern  </li>
 </ul>
 <h4 id="unzureichende-warme">Unzureichende Wärme<a class="headerlink" href="#unzureichende-warme" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Diagnose</strong>: Hoher Zusatzheizungsbedarf</li>
-<li><strong>Lösungen</strong>: Isolierung verbessern, BHKW vergrößern, Fermentertemperatur reduzieren</li>
+<li><strong>Diagnose</strong>: Hoher Zusatzheizungsbedarf  </li>
+<li><strong>Lösungen</strong>: Isolierung verbessern, BHKW vergrößern, Fermentertemperatur reduzieren  </li>
 </ul>
 <h3 id="optimierungsstrategien">Optimierungsstrategien<a class="headerlink" href="#optimierungsstrategien" title="Permanent link">&para;</a></h3>
 <p><strong><a href="../components/energy/#optimierungsstrategien">→ Energiekomponenten – Optimierungsstrategien</a></strong></p>
@@ -2832,18 +2860,18 @@
 <p>Behandelte Themen:</p>
 <h4 id="pumpe-liefert-unzureichenden-durchfluss">Pumpe liefert unzureichenden Durchfluss<a class="headerlink" href="#pumpe-liefert-unzureichenden-durchfluss" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Diagnose</strong>: Wirkungsgrad, Druckhöhe, Dimensionierung prüfen</li>
-<li><strong>Lösungen</strong>: Pumpengröße erhöhen, Reibungsverluste reduzieren, auf Blockaden prüfen</li>
+<li><strong>Diagnose</strong>: Wirkungsgrad, Druckhöhe, Dimensionierung prüfen  </li>
+<li><strong>Lösungen</strong>: Pumpengröße erhöhen, Reibungsverluste reduzieren, auf Blockaden prüfen  </li>
 </ul>
 <h4 id="ruhrwerk-verbraucht-zu-viel-energie">Rührwerk verbraucht zu viel Energie<a class="headerlink" href="#ruhrwerk-verbraucht-zu-viel-energie" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Diagnose</strong>: Spezifische Leistung &gt; 6.0 W/m³</li>
-<li><strong>Lösungen</strong>: Intermittierenden Betrieb aktivieren, Intensität reduzieren</li>
+<li><strong>Diagnose</strong>: Spezifische Leistung &gt; 6.0 W/m³  </li>
+<li><strong>Lösungen</strong>: Intermittierenden Betrieb aktivieren, Intensität reduzieren  </li>
 </ul>
 <h4 id="schlechte-mischqualitat">Schlechte Mischqualität<a class="headerlink" href="#schlechte-mischqualitat" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Diagnose</strong>: Mischqualität &lt; 0.7, lange Mischzeit</li>
-<li><strong>Lösungen</strong>: Intensität erhöhen, Einschaltzeit verlängern, größeres Rührblatt</li>
+<li><strong>Diagnose</strong>: Mischqualität &lt; 0.7, lange Mischzeit  </li>
+<li><strong>Lösungen</strong>: Intensität erhöhen, Einschaltzeit verlängern, größeres Rührblatt  </li>
 </ul>
 <h2 id="futterungssystem">Fütterungssystem<a class="headerlink" href="#futterungssystem" title="Permanent link">&para;</a></h2>
 <h3 id="lager-und-dosierprobleme">Lager- und Dosierprobleme<a class="headerlink" href="#lager-und-dosierprobleme" title="Permanent link">&para;</a></h3>
@@ -2852,18 +2880,18 @@
 <p>Behandelte Themen:</p>
 <h4 id="schneller-qualitatsverlust">Schneller Qualitätsverlust<a class="headerlink" href="#schneller-qualitatsverlust" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Diagnose</strong>: Qualitätsfaktor &lt; 0.95 bei kurzer Lagerzeit</li>
-<li><strong>Lösungen</strong>: Lagertyp verbessern, Temperatur reduzieren, schnellere Verwendung</li>
+<li><strong>Diagnose</strong>: Qualitätsfaktor &lt; 0.95 bei kurzer Lagerzeit  </li>
+<li><strong>Lösungen</strong>: Lagertyp verbessern, Temperatur reduzieren, schnellere Verwendung  </li>
 </ul>
 <h4 id="dosierer-blockaden">Dosierer-Blockaden<a class="headerlink" href="#dosierer-blockaden" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Diagnose</strong>: Häufige Blockaden (&gt; 5)</li>
-<li><strong>Lösungen</strong>: Robusteren Dosierertyp wählen, Substratvorbereitung verbessern</li>
+<li><strong>Diagnose</strong>: Häufige Blockaden (&gt; 5)  </li>
+<li><strong>Lösungen</strong>: Robusteren Dosierertyp wählen, Substratvorbereitung verbessern  </li>
 </ul>
 <h4 id="inkonsistente-dosierung">Inkonsistente Dosierung<a class="headerlink" href="#inkonsistente-dosierung" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Diagnose</strong>: Durchschnittlicher Dosierfehler &gt; 10 %</li>
-<li><strong>Lösungen</strong>: Präziseren Dosierertyp wählen, Kalibrierung prüfen</li>
+<li><strong>Diagnose</strong>: Durchschnittlicher Dosierfehler &gt; 10 %  </li>
+<li><strong>Lösungen</strong>: Präziseren Dosierertyp wählen, Kalibrierung prüfen  </li>
 </ul>
 <h2 id="simulation-und-performance">Simulation und Performance<a class="headerlink" href="#simulation-und-performance" title="Permanent link">&para;</a></h2>
 <h3 id="simulationsprobleme">Simulationsprobleme<a class="headerlink" href="#simulationsprobleme" title="Permanent link">&para;</a></h3>
@@ -2872,16 +2900,16 @@
 <p>Behandelte Themen:</p>
 <h4 id="simulation-instabil">Simulation instabil<a class="headerlink" href="#simulation-instabil" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Symptome</strong>: pH fällt, VFA steigt, Methanproduktion sinkt</li>
-<li><strong>Lösungen</strong>: Substratfütterungsrate reduzieren, Verweilzeit erhöhen, Puffermaterial hinzufügen</li>
+<li><strong>Symptome</strong>: pH fällt, VFA steigt, Methanproduktion sinkt  </li>
+<li><strong>Lösungen</strong>: Substratfütterungsrate reduzieren, Verweilzeit erhöhen, Puffermaterial hinzufügen  </li>
 </ul>
 <h4 id="geringe-gasproduktion_1">Geringe Gasproduktion<a class="headerlink" href="#geringe-gasproduktion_1" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Lösungen</strong>: Substratfütterung erhöhen, Abbaubarkeit prüfen, Temperatur optimieren</li>
+<li><strong>Lösungen</strong>: Substratfütterung erhöhen, Abbaubarkeit prüfen, Temperatur optimieren  </li>
 </ul>
 <h4 id="langsame-simulation">Langsame Simulation<a class="headerlink" href="#langsame-simulation" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Lösungen</strong>: Zeitschritt (dt) erhöhen, save_interval reduzieren, parallele Simulation verwenden</li>
+<li><strong>Lösungen</strong>: Zeitschritt (dt) erhöhen, save_interval reduzieren, parallele Simulation verwenden  </li>
 </ul>
 <h2 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">&para;</a></h2>
 <h3 id="warum-ist-mein-ph-wert-niedrig">Warum ist mein pH-Wert niedrig?<a class="headerlink" href="#warum-ist-mein-ph-wert-niedrig" title="Permanent link">&para;</a></h3>
@@ -2891,9 +2919,9 @@
 <h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">&para;</a></h2>
 <p>Wenn Sie in dieser Dokumentation keine Lösung finden:</p>
 <ol>
-<li><strong>GitHub Issues prüfen</strong>: <a href="https://github.com/dgaida/PyADM1ODE/issues">Existing Issues</a></li>
-<li><strong>Neues Issue erstellen</strong></li>
-<li><strong>Kontakt</strong>: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#97;&#110;&#105;&#101;&#108;&#46;&#103;&#97;&#105;&#100;&#97;&#64;&#116;&#104;&#45;&#107;&#111;&#101;&#108;&#110;&#46;&#100;&#101;">&#100;&#97;&#110;&#105;&#101;&#108;&#46;&#103;&#97;&#105;&#100;&#97;&#64;&#116;&#104;&#45;&#107;&#111;&#101;&#108;&#110;&#46;&#100;&#101;</a></li>
+<li><strong>GitHub Issues prüfen</strong>: <a href="https://github.com/dgaida/PyADM1ODE/issues">Existing Issues</a>  </li>
+<li><strong>Neues Issue erstellen</strong>  </li>
+<li><strong>Kontakt</strong>: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#97;&#110;&#105;&#101;&#108;&#46;&#103;&#97;&#105;&#100;&#97;&#64;&#116;&#104;&#45;&#107;&#111;&#101;&#108;&#110;&#46;&#100;&#101;">&#100;&#97;&#110;&#105;&#101;&#108;&#46;&#103;&#97;&#105;&#100;&#97;&#64;&#116;&#104;&#45;&#107;&#111;&#101;&#108;&#110;&#46;&#100;&#101;</a>  </li>
 </ol>
 
 

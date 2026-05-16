@@ -1420,6 +1420,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llm_api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API für LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2615,10 +2643,10 @@
 <h2 id="systemanforderungen">Systemanforderungen<a class="headerlink" href="#systemanforderungen" title="Permanent link">&para;</a></h2>
 <h3 id="mindestanforderungen">Mindestanforderungen<a class="headerlink" href="#mindestanforderungen" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Python</strong>: 3.8 oder höher (3.10+ empfohlen, benötigt vom <a href="https://github.com/jlowin/fastmcp">fastmcp</a>-Paket, das im optionalen Paket <a href="https://github.com/dgaida/PyADM1ODE_mcp">PyADM1ODE_mcp</a> verwendet wird)</li>
-<li><strong>Betriebssystem</strong>: Windows, Linux oder macOS</li>
-<li><strong>Arbeitsspeicher</strong>: Mindestens 2 GB RAM (4 GB empfohlen)</li>
-<li><strong>Festplattenspeicher</strong>: 10 MB für die Installation</li>
+<li><strong>Python</strong>: 3.8 oder höher (3.10+ empfohlen, benötigt vom <a href="https://github.com/jlowin/fastmcp">fastmcp</a>-Paket, das im optionalen Paket <a href="https://github.com/dgaida/PyADM1ODE_mcp">PyADM1ODE_mcp</a> verwendet wird)  </li>
+<li><strong>Betriebssystem</strong>: Windows, Linux oder macOS  </li>
+<li><strong>Arbeitsspeicher</strong>: Mindestens 2 GB RAM (4 GB empfohlen)  </li>
+<li><strong>Festplattenspeicher</strong>: 10 MB für die Installation  </li>
 </ul>
 <p>PyADM1ODE ist reines Python ohne native Laufzeitabhängigkeiten — die Installation des Python-Pakets genügt.</p>
 <h2 id="installationsmethoden">Installationsmethoden<a class="headerlink" href="#installationsmethoden" title="Permanent link">&para;</a></h2>
@@ -2649,13 +2677,13 @@
 <h2 id="plattformspezifische-einrichtung">Plattformspezifische Einrichtung<a class="headerlink" href="#plattformspezifische-einrichtung" title="Permanent link">&para;</a></h2>
 <h3 id="windows-installation">Windows-Installation<a class="headerlink" href="#windows-installation" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong>Python installieren</strong> (falls noch nicht geschehen):</li>
-<li>Von <a href="https://www.python.org/downloads/">python.org</a> herunterladen.</li>
+<li><strong>Python installieren</strong> (falls noch nicht geschehen):  </li>
+<li>Von <a href="https://www.python.org/downloads/">python.org</a> herunterladen.  </li>
 <li>
-<p>Stellen Sie sicher, dass "Add Python to PATH" während der Installation aktiviert ist.</p>
+<p>Stellen Sie sicher, dass "Add Python to PATH" während der Installation aktiviert ist.  </p>
 </li>
 <li>
-<p><strong>PyADM1 installieren</strong>:</p>
+<p><strong>PyADM1 installieren</strong>:  </p>
 </li>
 </ol>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pip install pyadm1ode  # pip noch nicht unterstützt
@@ -2665,19 +2693,19 @@
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>pip install -e .
 </code></pre></div>
 <ol>
-<li><strong>Installation überprüfen</strong>:</li>
+<li><strong>Installation überprüfen</strong>:  </li>
 </ol>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python -c &quot;import pyadm1; print(pyadm1.__version__)&quot;
 </code></pre></div>
 <h3 id="linux-installation-ubuntudebian">Linux-Installation (Ubuntu/Debian)<a class="headerlink" href="#linux-installation-ubuntudebian" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong>Python und Abhängigkeiten installieren</strong>:</li>
+<li><strong>Python und Abhängigkeiten installieren</strong>:  </li>
 </ol>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>python3<span class="w"> </span>python3-pip
 </code></pre></div>
 <ol>
-<li><strong>PyADM1ODE installieren</strong>:</li>
+<li><strong>PyADM1ODE installieren</strong>:  </li>
 </ol>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>pip<span class="w"> </span>install<span class="w"> </span>pyadm1ode
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1"># oder aus dem Quellcode:</span>
@@ -2686,23 +2714,23 @@
 <a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </code></pre></div>
 <ol>
-<li><strong>Installation überprüfen</strong>:</li>
+<li><strong>Installation überprüfen</strong>:  </li>
 </ol>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import pyadm1; print(pyadm1.__version__)&quot;</span>
 </code></pre></div>
 <h3 id="macos-installation">macOS-Installation<a class="headerlink" href="#macos-installation" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong>Homebrew installieren</strong> (falls noch nicht geschehen):</li>
+<li><strong>Homebrew installieren</strong> (falls noch nicht geschehen):  </li>
 </ol>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="k">)</span><span class="s2">&quot;</span>
 </code></pre></div>
 <ol>
-<li><strong>Python installieren</strong>:</li>
+<li><strong>Python installieren</strong>:  </li>
 </ol>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>brew<span class="w"> </span>install<span class="w"> </span>python@3.11
 </code></pre></div>
 <ol>
-<li><strong>PyADM1ODE installieren</strong>:</li>
+<li><strong>PyADM1ODE installieren</strong>:  </li>
 </ol>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>pip3<span class="w"> </span>install<span class="w"> </span>pyadm1ode
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="c1"># oder aus dem Quellcode:</span>
@@ -2711,7 +2739,7 @@
 <a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>pip3<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </code></pre></div>
 <ol>
-<li><strong>Installation überprüfen</strong>:</li>
+<li><strong>Installation überprüfen</strong>:  </li>
 </ol>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import pyadm1; print(pyadm1.__version__)&quot;</span>
 </code></pre></div>
@@ -2802,24 +2830,24 @@
 <h3 id="hilfe-erhalten">Hilfe erhalten<a class="headerlink" href="#hilfe-erhalten" title="Permanent link">&para;</a></h3>
 <p>Falls Sie auf Probleme stoßen:</p>
 <ol>
-<li><strong>GitHub Issues prüfen</strong>: <a href="https://github.com/dgaida/PyADM1ODE/issues">PyADM1ODE Issues</a></li>
-<li><strong>Neues Issue erstellen</strong>: Folgende Informationen angeben:</li>
-<li>Betriebssystem und Version</li>
-<li>Python-Version (<code>python --version</code>)</li>
-<li>Fehlermeldungen und Stack Traces</li>
+<li><strong>GitHub Issues prüfen</strong>: <a href="https://github.com/dgaida/PyADM1ODE/issues">PyADM1ODE Issues</a>  </li>
+<li><strong>Neues Issue erstellen</strong>: Folgende Informationen angeben:  </li>
+<li>Betriebssystem und Version  </li>
+<li>Python-Version (<code>python --version</code>)  </li>
+<li>Fehlermeldungen und Stack Traces  </li>
 <li>
-<p>Ausgabe von <code>verify_install.py</code></p>
+<p>Ausgabe von <code>verify_install.py</code>  </p>
 </li>
 <li>
-<p><strong>Kontakt</strong>: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#97;&#110;&#105;&#101;&#108;&#46;&#103;&#97;&#105;&#100;&#97;&#64;&#116;&#104;&#45;&#107;&#111;&#101;&#108;&#110;&#46;&#100;&#101;">&#100;&#97;&#110;&#105;&#101;&#108;&#46;&#103;&#97;&#105;&#100;&#97;&#64;&#116;&#104;&#45;&#107;&#111;&#101;&#108;&#110;&#46;&#100;&#101;</a></p>
+<p><strong>Kontakt</strong>: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#97;&#110;&#105;&#101;&#108;&#46;&#103;&#97;&#105;&#100;&#97;&#64;&#116;&#104;&#45;&#107;&#111;&#101;&#108;&#110;&#46;&#100;&#101;">&#100;&#97;&#110;&#105;&#101;&#108;&#46;&#103;&#97;&#105;&#100;&#97;&#64;&#116;&#104;&#45;&#107;&#111;&#101;&#108;&#110;&#46;&#100;&#101;</a>  </p>
 </li>
 </ol>
 <h2 id="nachste-schritte">Nächste Schritte<a class="headerlink" href="#nachste-schritte" title="Permanent link">&para;</a></h2>
 <p>Nach erfolgreicher Installation:</p>
 <ol>
-<li><strong>Schnellstart ausprobieren</strong>: Siehe <a href="../quickstart/">Schnellstart-Anleitung</a></li>
-<li><strong>Beispiele erkunden</strong>: Siehe <a href="../../examples/basic_digester/">Beispiel: Basis-Fermenter</a></li>
-<li><strong>Komponenten-Dokumentation lesen</strong>: <a href="../components/">Komponenten-Leitfaden</a></li>
+<li><strong>Schnellstart ausprobieren</strong>: Siehe <a href="../quickstart/">Schnellstart-Anleitung</a>  </li>
+<li><strong>Beispiele erkunden</strong>: Siehe <a href="../../examples/basic_digester/">Beispiel: Basis-Fermenter</a>  </li>
+<li><strong>Komponenten-Dokumentation lesen</strong>: <a href="../components/">Komponenten-Leitfaden</a>  </li>
 </ol>
 <h2 id="pyadm1ode-aktualisieren">PyADM1ODE aktualisieren<a class="headerlink" href="#pyadm1ode-aktualisieren" title="Permanent link">&para;</a></h2>
 <h3 id="update-uber-pypi-noch-nicht-unterstutzt">Update über PyPI (noch nicht unterstützt)<a class="headerlink" href="#update-uber-pypi-noch-nicht-unterstutzt" title="Permanent link">&para;</a></h3>
@@ -2840,9 +2868,9 @@
 </code></pre></div>
 <p><strong>Funktionen:</strong></p>
 <ul>
-<li>Natürlichsprachige Anlagenauslegung über LLM (z. B. Claude)</li>
-<li>MCP-Server für LLM-Integration</li>
-<li>Interaktive Anlagenkonfiguration</li>
+<li>Natürlichsprachige Anlagenauslegung über LLM (z. B. Claude)  </li>
+<li>MCP-Server für LLM-Integration  </li>
+<li>Interaktive Anlagenkonfiguration  </li>
 </ul>
 <p><strong>Anwendungsfälle:</strong> Anlagenauslegung für Nicht-Experten, schnelles Prototyping, Lehrwerkzeuge</p>
 <p>Siehe <a href="https://github.com/dgaida/PyADM1ODE_mcp">PyADM1ODE_mcp-Dokumentation</a> für Details.</p>
@@ -2855,11 +2883,11 @@
 </code></pre></div>
 <p><strong>Funktionen:</strong></p>
 <ul>
-<li>Erstkalibrierung aus historischen Daten</li>
-<li>Online-Rekalibrierung während des Betriebs</li>
-<li>Mehrere Optimierungsalgorithmen (DE, PSO, Nelder-Mead)</li>
-<li>Umfassende Validierungsmetriken</li>
-<li>Datenbankanbindung für Messdaten</li>
+<li>Erstkalibrierung aus historischen Daten  </li>
+<li>Online-Rekalibrierung während des Betriebs  </li>
+<li>Mehrere Optimierungsalgorithmen (DE, PSO, Nelder-Mead)  </li>
+<li>Umfassende Validierungsmetriken  </li>
+<li>Datenbankanbindung für Messdaten  </li>
 </ul>
 <p><strong>Anwendungsfälle:</strong> Modellparametrisierung, Anpassung an reale Anlagen, Unsicherheitsquantifizierung</p>
 <p>Siehe <a href="https://github.com/dgaida/PyADM1ODE_calibration">PyADM1ODE_calibration-Dokumentation</a> für Details.</p>
