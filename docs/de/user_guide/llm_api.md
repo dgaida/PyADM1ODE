@@ -2,6 +2,9 @@
 
 Diese Seite bietet eine strukturierte Referenz der Methoden und Klassen, die benötigt werden, um ein PyADM1ODE-Simulationsmodell automatisch zu erstellen. Diese Dokumentation ist darauf optimiert, von Large Language Models (LLMs) gelesen zu werden, um Biogasanlagenkonfigurationen zu generieren.
 
+!!! abstract "Skill für LLMs"
+    Sie können die vollständige API-Dokumentation für LLMs als "Skill"-Datei hier herunterladen: [Skill.md](Skill.md)
+
 ## Kern-Workflow
 
 Um eine Simulation zu erstellen, folgen Sie diesem Ablauf:  
