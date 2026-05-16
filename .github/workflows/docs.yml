@@ -47,6 +47,13 @@ jobs:
       - name: Check API Doc Coverage
         run: |
           interrogate pyadm1
+      - name: Fix Markdown List Line Endings
+        run: |
+          python pyadm1/utils/fix_markdown_lists.py docs
+      - name: Generate Skill.md for LLMs
+        run: |
+          export PYTHONPATH=$PYTHONPATH:.
+          python pyadm1/utils/generate_skill_md.py
 
       - name: Generate Changelog
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
