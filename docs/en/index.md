@@ -4,7 +4,7 @@ Welcome to PyADM1ODE - A Python framework for modeling, simulating, and optimizi
 
 ## 🎯 Quick Links
 <div align="center">
-  <a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_01_basic_digester.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
+  <a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_01_basic_digester.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab: Basic Digester"></a> <a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_02_complex_plant.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab: Complex Plant"></a>
 </div>
 
 <div class="grid cards" markdown>
