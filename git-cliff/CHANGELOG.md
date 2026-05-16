@@ -6,8 +6,22 @@ All notable changes to this project will be documented in this file.
 
 ### Documentation
 
+- Automate markdown list fix and generate LLM Skill.md  
+
+### Styling
+
+- Fix linting issues in doc utility scripts  
+
+## [0.3.5] - 2026-05-16
+
+### Documentation
+
 - Update landing pages and example notebook  
 - Update landing pages, example notebook and add LLM API guide  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.3.4] - 2026-05-13
 
