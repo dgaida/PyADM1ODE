@@ -26,7 +26,7 @@ import numpy as np
 
 def main():
     from pyadm1 import Feedstock
-    from pyadm1.core.adm1 import ADM1, STATE_SIZE
+    from pyadm1.core.adm1 import ADM1, get_state_zero_from_csv
     from pyadm1.simulation.parallel import (
         MonteCarloConfig,
         ParallelSimulator,
@@ -42,19 +42,20 @@ def main():
     # ------------------------------------------------------------------
     print("\n1. Building base ADM1 model...")
 
+    duration = 30.0  # days
+
     feedstock = Feedstock(
         ["maize_silage_milk_ripeness", "swine_manure"],
         feeding_freq=24,
-        total_simtime=15,
+        total_simtime=int(duration) + 1,
     )
-    base_feed = [11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0]
+    base_feed = [11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0]  # m^3/d: maize, swine
 
     adm1 = ADM1(feedstock, V_liq=1200.0, V_gas=216.0, T_ad=315.15)
     adm1.set_influent_dataframe(feedstock.get_influent_dataframe(Q=base_feed))
     adm1.create_influent(base_feed, 0)
 
-    initial_state = [0.01] * STATE_SIZE
-    initial_state[37:41] = [1.02e-5, 0.65, 0.33, 0.65 + 0.33 + 1.02e-5]
+    initial_state = get_state_zero_from_csv(str(REPO_ROOT / "data" / "initial_states" / "digester_initial8.csv"))
 
     parallel = ParallelSimulator(adm1, n_workers=4, verbose=True)
 
@@ -74,7 +75,7 @@ def main():
     start = time.time()
     results = parallel.run_scenarios(
         scenarios=scenarios,
-        duration=10.0,
+        duration=duration,
         initial_state=initial_state,
         dt=1.0,
         compute_metrics=True,
@@ -101,13 +102,13 @@ def main():
 
     sweep_config = ParameterSweepConfig(
         parameter_name="k_m_ac",
-        values=[5.0, 7.0, 8.0, 10.0, 13.0],
+        values=[2.0, 3.0, 3.5, 5.0, 8.0],
         other_params={"Q": base_feed},
     )
 
     sweep_results = parallel.parameter_sweep(
         config=sweep_config,
-        duration=10.0,
+        duration=duration,
         initial_state=initial_state,
     )
 
@@ -139,7 +140,7 @@ def main():
 
     mc_results = parallel.monte_carlo(
         config=mc_config,
-        duration=10.0,
+        duration=duration,
         initial_state=initial_state,
     )
     summary = parallel.summarize_results(mc_results)

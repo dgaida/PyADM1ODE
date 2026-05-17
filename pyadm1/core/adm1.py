@@ -270,6 +270,9 @@ class ADM1:
         base_kinetic = ADMParams.get_kinetic_params()
         theta = ADMParams.get_temperature_factors()
         self._kinetic = ADMParams.apply_temperature_corrections(base_kinetic, theta, T_ad)
+        # Snapshot of the temperature-corrected defaults so calibration
+        # overrides can be reverted cleanly by clear_calibration_parameters().
+        self._kinetic_default = dict(self._kinetic)
 
         # --- Stoichiometric / fraction / inhibition parameters ---
         self._stoich = ADMParams.get_stoichiometric_params()
@@ -284,6 +287,9 @@ class ADM1:
         self._K_H_co2 = K_H_co2
         self._K_H_ch4 = K_H_ch4
         self._K_H_h2 = K_H_h2
+        self._K_H_co2_default = K_H_co2
+        self._K_H_ch4_default = K_H_ch4
+        self._K_H_h2_default = K_H_h2
 
         # Gas volume reference conditions (theta = 20 °C, 1 atm) — ADM1da convention
         self._T_gas_norm = 293.15
@@ -386,12 +392,33 @@ class ADM1:
     # ------------------------------------------------------------------
 
     def set_calibration_parameters(self, parameters: dict) -> None:
-        """Set calibration overrides for kinetic / gas parameters."""
+        """Set calibration overrides for kinetic / gas parameters.
+
+        Kinetic-rate keys (``k_m_*``, ``k_hyd_*``, ``k_dis_*``, ``Y_*``,
+        ``K_S_*``, ``k_dec_*``) are applied directly into the live kinetic
+        dict consumed by the ODE. Henry-constant keys (``K_H_co2``,
+        ``K_H_ch4``, ``K_H_h2``) overwrite the corresponding attributes.
+        ``k_p`` and ``k_L_a`` continue to be looked up from
+        ``self._calibration_params`` at their respective call sites.
+        """
         self._calibration_params.update(parameters)
+        for key, value in parameters.items():
+            if key in self._kinetic_default:
+                self._kinetic[key] = float(value)
+            elif key == "K_H_co2":
+                self._K_H_co2 = float(value)
+            elif key == "K_H_ch4":
+                self._K_H_ch4 = float(value)
+            elif key == "K_H_h2":
+                self._K_H_h2 = float(value)
 
     def clear_calibration_parameters(self) -> None:
-        """Clear all calibration parameters."""
+        """Clear all calibration parameters and restore defaults."""
         self._calibration_params = {}
+        self._kinetic = dict(self._kinetic_default)
+        self._K_H_co2 = self._K_H_co2_default
+        self._K_H_ch4 = self._K_H_ch4_default
+        self._K_H_h2 = self._K_H_h2_default
 
     def get_calibration_parameters(self) -> dict:
         """Return a copy of the current calibration parameters."""
