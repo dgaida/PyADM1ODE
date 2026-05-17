@@ -2,11 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.3.6] - 2026-05-16
 
 ### Documentation
 
 - Automate markdown list fix and generate LLM Skill.md  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ### Styling
 
