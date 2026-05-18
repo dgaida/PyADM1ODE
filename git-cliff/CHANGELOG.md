@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.7] - 2026-05-17
+
+### Bug Fixes
+
+- Ensure CHP thermal output is delivered to heaters on first step  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
 ## [0.3.6] - 2026-05-16
 
 ### Documentation
