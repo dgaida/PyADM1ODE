@@ -125,13 +125,22 @@ class BiogasPlant:
         execution_order = self._get_execution_order()
 
         # ========================================================================
-        # PASS 1: Execute all non-storage components
+        # PASS 1: Execute all non-storage, non-heating components
         # ========================================================================
+        # Heaters are also deferred (until after Pass 3) because their CHP
+        # input ``P_th_available`` is only meaningful once the CHP has run
+        # in Pass 3 with the actual gas supply. Stepping a heater here would
+        # see a stale/zero ``P_th`` and (a) charge the auxiliary boiler for
+        # heat the CHP would otherwise have supplied and (b) double-count the
+        # heater's ``energy_consumed`` if we then re-stepped it in Pass 3.
         for component_id in execution_order:
             component = self.components[component_id]
 
             # Skip storages in first pass
             if component.component_type.value == "storage":
+                continue
+            # Skip heaters in first pass (see comment above)
+            if component.component_type.value == "heating":
                 continue
 
             # Gather inputs from connected components. For "liquid"
@@ -228,26 +237,42 @@ class BiogasPlant:
 
             total_supplied = 0.0
 
-            # Re-execute storages with gas demand
+            # Re-execute storages with gas demand.
+            #
+            # IMPORTANT: do not pass ``Q_gas_in_m3_per_day`` again here.
+            # The digester's production for this step was already routed
+            # into the storage in Pass 2 and is now sitting in
+            # ``storage.stored_volume_m3``. The storage's ``step()`` adds
+            # ``Q_in * dt`` to ``stored_volume_m3`` on every call, so
+            # re-passing the production would double-count it -- inflating
+            # both inventory growth and (when the storage is saturated)
+            # vented gas, producing the "vented > produced" symptom in
+            # whole-run mass balances.
+            #
+            # We also need to preserve any vent that happened in Pass 2,
+            # because the storage resets ``vented_volume_m3`` to 0 at the
+            # start of every ``step()`` call. After this Pass-3 call, the
+            # output dict's ``vented_volume_m3`` would otherwise only
+            # contain Pass 3's vent (typically 0; Pass 2 carries the
+            # overflow vents). Carry the Pass-2 value through manually.
             for storage_id in connected_storages:
                 storage = self.components[storage_id]
 
-                # Get gas input from pass 2
-                gas_input = 0.0
-                for conn in self.connections:
-                    if conn.to_component == storage_id and conn.connection_type == "gas":
-                        source_comp = self.components.get(conn.from_component)
-                        if source_comp and source_comp.component_type.value == "digester":
-                            gas_input += source_comp.outputs_data.get("Q_gas", 0.0)
+                pass2_vented = float(results.get(storage_id, {}).get("vented_volume_m3", 0.0))
 
-                # Re-execute with demand
                 storage_inputs = {
-                    "Q_gas_in_m3_per_day": gas_input,
+                    "Q_gas_in_m3_per_day": 0.0,
                     "Q_gas_out_m3_per_day": demand_per_storage,
                     "vent_to_flare": True,
                 }
 
                 storage_output = storage.step(self.simulation_time, dt, storage_inputs)
+
+                # Merge Pass-2 vent volume into the final per-step report.
+                # ``cumulative_vented_m3`` already tracks all vents across
+                # both passes inside the storage component itself, so we
+                # only need to repair the per-step field here.
+                storage_output["vented_volume_m3"] = float(storage_output.get("vented_volume_m3", 0.0)) + pass2_vented
                 results[storage_id] = storage_output
 
                 # Accumulate supplied gas
@@ -262,6 +287,63 @@ class BiogasPlant:
 
             chp_output = component.step(self.simulation_time, dt, chp_inputs)
             results[component_id] = chp_output
+
+            # ============================================================
+            # PASS 3b: Re-execute heaters connected to this CHP with the
+            # CHP's now-current thermal output. Without this, heaters
+            # always see ``P_th_available = 0`` from the CHP's
+            # initialised/stale outputs and charge all heat demand to the
+            # auxiliary boiler -- even when the CHP has plenty of free
+            # thermal power.
+            #
+            # When multiple heaters share one CHP, split the available
+            # thermal power equally. This is a defensible-but-simple
+            # allocation that preserves energy conservation
+            # (``sum(P_th_used) <= chp.P_th``). A demand-proportional split
+            # would require a separate iteration.
+            # ============================================================
+            connected_heaters = [
+                conn.to_component
+                for conn in self.connections
+                if conn.from_component == component_id
+                and conn.connection_type == "heat"
+                and conn.to_component in self.components
+                and self.components[conn.to_component].component_type.value == "heating"
+            ]
+
+            if connected_heaters:
+                P_th_per_heater = chp_output.get("P_th", 0.0) / len(connected_heaters)
+                for h_id in connected_heaters:
+                    heater = self.components[h_id]
+                    heater_inputs: Dict[str, Any] = {"P_th_available": P_th_per_heater}
+                    # Forward any non-heat upstream inputs the heater may
+                    # need (e.g. T_digester from a connected digester).
+                    for conn in self.connections:
+                        if conn.to_component == h_id and conn.connection_type != "heat":
+                            source = self.components.get(conn.from_component)
+                            if source is not None:
+                                heater_inputs.update(source.outputs_data)
+                    results[h_id] = heater.step(self.simulation_time, dt, heater_inputs)
+
+        # ============================================================
+        # Catch any heaters NOT connected to a CHP. They were skipped in
+        # Pass 1 to avoid the stale-CHP-output problem, so they need to
+        # run here with their full upstream inputs but no CHP heat.
+        # ============================================================
+        stepped_heaters = {cid for cid in results if cid in self.components}
+        for component_id in execution_order:
+            component = self.components[component_id]
+            if component.component_type.value != "heating":
+                continue
+            if component_id in stepped_heaters:
+                continue
+            heater_inputs = {"P_th_available": 0.0}
+            for conn in self.connections:
+                if conn.to_component == component_id:
+                    source = self.components.get(conn.from_component)
+                    if source is not None:
+                        heater_inputs.update(source.outputs_data)
+            results[component_id] = component.step(self.simulation_time, dt, heater_inputs)
 
         self.simulation_time += dt
 
