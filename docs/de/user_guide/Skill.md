@@ -57,13 +57,13 @@ total_simtime : int
 simba_q_convention : bool, default True
     How to interpret ``Q`` in ``get_influent_dataframe(Q=...)``.
 
-    * ``True`` (default, ADM1da convention): each ``Q_i``
+    * ``True`` (default, ADM1da convention): each ``Q_i``  
       [m³/d] is interpreted as a mass-equivalent flow.  Internally
       ``Q_actual_i = Q_input_i · 1000 / ρ_FM_i``.  For liquid
       substrates (TS < 200) this is a no-op (ρ_FM = 1000 by
       convention).  For solid substrates (e.g. maize silage) this
-      produces a slightly smaller actual liquid volume.
-    * ``False``: ``Q`` is taken literally as the actual liquid
+      produces a slightly smaller actual liquid volume.  
+    * ``False``: ``Q`` is taken literally as the actual liquid  
       volume added to the reactor [m³/d].
 
 #### actual_Q
@@ -293,10 +293,10 @@ step(self, dt: float) -> Dict[str, Dict[str, Any]]
 
 Perform one simulation time step for all components.
 
-This uses a three-pass execution model:
-1. Execute digesters to produce gas → storages
-2. Execute CHPs to determine gas demand → storages
-3. Execute storages to supply gas → CHPs (re-execute with actual supply)
+This uses a three-pass execution model:  
+1. Execute digesters to produce gas → storages  
+2. Execute CHPs to determine gas demand → storages  
+3. Execute storages to supply gas → CHPs (re-execute with actual supply)  
 
 Args:
     dt (float): Time step in days.
@@ -555,12 +555,12 @@ initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None
 Initialize pump state.
 
 Args:
-    initial_state: Optional initial state dictionary with keys:
-        - 'is_running': Initial pump state
-        - 'current_flow': Initial flow rate [m³/d]
-        - 'operating_hours': Cumulative operating hours
-        - 'energy_consumed': Cumulative energy [kWh]
-        - 'total_volume_pumped': Cumulative volume [m³]
+    initial_state: Optional initial state dictionary with keys:  
+        - 'is_running': Initial pump state  
+        - 'current_flow': Initial flow rate [m³/d]  
+        - 'operating_hours': Cumulative operating hours  
+        - 'energy_consumed': Cumulative energy [kWh]  
+        - 'total_volume_pumped': Cumulative volume [m³]  
 
 #### set_state
 
@@ -581,26 +581,26 @@ Perform one simulation time step.
 Args:
     t: Current time [days]
     dt: Time step [days]
-    inputs: Input data with optional keys:
-        - 'Q_setpoint': Desired flow rate [m³/d]
-        - 'Q_actual': Actual flow from connected upstream component [m³/d].
+    inputs: Input data with optional keys:  
+        - 'Q_setpoint': Desired flow rate [m³/d]  
+        - 'Q_actual': Actual flow from connected upstream component [m³/d].  
           If provided, overrides setpoint-based calculation and is used
-          directly for power consumption.
-        - 'Q_out': Actual effluent flow from an upstream digester [m³/d].
-          Used when the pump is connected between digesters.
-        - 'enable_pump': Enable/disable pump
-        - 'fluid_density': Fluid density [kg/m³]
-        - 'fluid_viscosity': Fluid viscosity [Pa·s]
-        - 'pressure_head': Required pressure head [m]
+          directly for power consumption.  
+        - 'Q_out': Actual effluent flow from an upstream digester [m³/d].  
+          Used when the pump is connected between digesters.  
+        - 'enable_pump': Enable/disable pump  
+        - 'fluid_density': Fluid density [kg/m³]  
+        - 'fluid_viscosity': Fluid viscosity [Pa·s]  
+        - 'pressure_head': Required pressure head [m]  
 
 Returns:
-    Dict with keys:
-        - 'P_consumed': Power consumption [kW]
-        - 'Q_actual': Actual flow rate [m³/d]
-        - 'is_running': Current running state
-        - 'efficiency': Current operating efficiency
-        - 'pressure_actual': Actual pressure head [m]
-        - 'speed_fraction': Speed as fraction of nominal
+    Dict with keys:  
+        - 'P_consumed': Power consumption [kW]  
+        - 'Q_actual': Actual flow rate [m³/d]  
+        - 'is_running': Current running state  
+        - 'efficiency': Current operating efficiency  
+        - 'pressure_actual': Actual pressure head [m]  
+        - 'speed_fraction': Speed as fraction of nominal  
 
 #### to_dict
 
@@ -717,11 +717,11 @@ initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None
 Initialize mixer state.
 
 Args:
-    initial_state: Optional initial state dictionary with keys:
-        - 'is_running': Mixer running state
-        - 'current_speed_fraction': Speed fraction (0-1)
-        - 'operating_hours': Cumulative operating hours
-        - 'energy_consumed': Cumulative energy [kWh]
+    initial_state: Optional initial state dictionary with keys:  
+        - 'is_running': Mixer running state  
+        - 'current_speed_fraction': Speed fraction (0-1)  
+        - 'operating_hours': Cumulative operating hours  
+        - 'energy_consumed': Cumulative energy [kWh]  
 
 #### set_state
 
@@ -742,22 +742,22 @@ Perform one simulation time step.
 Args:
     t: Current time [days]
     dt: Time step [days]
-    inputs: Input data with optional keys:
-        - 'speed_setpoint': Desired speed fraction (0-1)
-        - 'enable_mixing': Enable/disable mixer
-        - 'fluid_viscosity': Fluid viscosity [Pa·s]
-        - 'temperature': Fluid temperature [K]
+    inputs: Input data with optional keys:  
+        - 'speed_setpoint': Desired speed fraction (0-1)  
+        - 'enable_mixing': Enable/disable mixer  
+        - 'fluid_viscosity': Fluid viscosity [Pa·s]  
+        - 'temperature': Fluid temperature [K]  
 
 Returns:
-    Dict with keys:
-        - 'P_consumed': Power consumption [kW]
-        - 'P_average': Time-averaged power [kW]
-        - 'is_running': Current running state
-        - 'mixing_quality': Mixing quality index (0-1)
-        - 'reynolds_number': Reynolds number
-        - 'power_number': Power number
-        - 'mixing_time': Mixing time [min]
-        - 'shear_rate': Average shear rate [1/s]
+    Dict with keys:  
+        - 'P_consumed': Power consumption [kW]  
+        - 'P_average': Time-averaged power [kW]  
+        - 'is_running': Current running state  
+        - 'mixing_quality': Mixing quality index (0-1)  
+        - 'reynolds_number': Reynolds number  
+        - 'power_number': Power number  
+        - 'mixing_time': Mixing time [min]  
+        - 'shear_rate': Average shear rate [1/s]  
 
 #### to_dict
 
@@ -865,11 +865,11 @@ initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None
 Initialize storage state.
 
 Args:
-    initial_state: Optional initial state with keys:
-        - 'current_level': Inventory level [t or m³]
-        - 'quality_factor': Quality factor (0-1)
-        - 'storage_time': Time stored [days]
-        - 'cumulative_losses': Total losses [t or m³]
+    initial_state: Optional initial state with keys:  
+        - 'current_level': Inventory level [t or m³]  
+        - 'quality_factor': Quality factor (0-1)  
+        - 'storage_time': Time stored [days]  
+        - 'cumulative_losses': Total losses [t or m³]  
 
 #### set_state
 
@@ -890,23 +890,23 @@ Perform one simulation time step.
 Args:
     t: Current time [days]
     dt: Time step [days]
-    inputs: Input data with optional keys:
-        - 'withdrawal_rate': Withdrawal rate [t/d or m³/d]
-        - 'refill_amount': Amount to add [t or m³]
-        - 'refill_quality': Quality of refill (0-1)
-        - 'temperature': Ambient/storage temperature [K]
+    inputs: Input data with optional keys:  
+        - 'withdrawal_rate': Withdrawal rate [t/d or m³/d]  
+        - 'refill_amount': Amount to add [t or m³]  
+        - 'refill_quality': Quality of refill (0-1)  
+        - 'temperature': Ambient/storage temperature [K]  
 
 Returns:
-    Dict with keys:
-        - 'current_level': Current inventory [t or m³]
-        - 'utilization': Fill level (0-1)
-        - 'quality_factor': Current quality (0-1)
-        - 'available_mass': Usable inventory [t or m³]
-        - 'degradation_rate': Current degradation rate [1/d]
-        - 'losses_this_step': Mass lost this timestep [t or m³]
-        - 'withdrawn_this_step': Mass withdrawn [t or m³]
-        - 'is_empty': Storage empty flag
-        - 'is_full': Storage full flag
+    Dict with keys:  
+        - 'current_level': Current inventory [t or m³]  
+        - 'utilization': Fill level (0-1)  
+        - 'quality_factor': Current quality (0-1)  
+        - 'available_mass': Usable inventory [t or m³]  
+        - 'degradation_rate': Current degradation rate [1/d]  
+        - 'losses_this_step': Mass lost this timestep [t or m³]  
+        - 'withdrawn_this_step': Mass withdrawn [t or m³]  
+        - 'is_empty': Storage empty flag  
+        - 'is_full': Storage full flag  
 
 #### to_dict
 
@@ -1008,12 +1008,12 @@ initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None
 Initialize feeder state.
 
 Args:
-    initial_state: Optional initial state with keys:
-        - 'is_running': Initial operating state
-        - 'current_flow': Initial flow rate [m³/d or t/d]
-        - 'operating_hours': Cumulative operating hours
-        - 'energy_consumed': Cumulative energy [kWh]
-        - 'total_mass_fed': Cumulative mass [t or m³]
+    initial_state: Optional initial state with keys:  
+        - 'is_running': Initial operating state  
+        - 'current_flow': Initial flow rate [m³/d or t/d]  
+        - 'operating_hours': Cumulative operating hours  
+        - 'energy_consumed': Cumulative energy [kWh]  
+        - 'total_mass_fed': Cumulative mass [t or m³]  
 
 #### set_state
 
@@ -1034,21 +1034,21 @@ Perform one simulation time step.
 Args:
     t: Current time [days]
     dt: Time step [days]
-    inputs: Input data with optional keys:
-        - 'Q_setpoint': Desired flow rate [m³/d or t/d]
-        - 'enable_feeding': Enable/disable feeder
-        - 'substrate_available': Amount available in storage [t or m³]
-        - 'speed_setpoint': Desired speed fraction (0-1)
+    inputs: Input data with optional keys:  
+        - 'Q_setpoint': Desired flow rate [m³/d or t/d]  
+        - 'enable_feeding': Enable/disable feeder  
+        - 'substrate_available': Amount available in storage [t or m³]  
+        - 'speed_setpoint': Desired speed fraction (0-1)  
 
 Returns:
-    Dict with keys:
-        - 'Q_actual': Actual flow rate [m³/d or t/d]
-        - 'is_running': Current operating state
-        - 'load_factor': Operating load (0-1)
-        - 'P_consumed': Power consumption [kW]
-        - 'blockage_detected': Blockage alarm
-        - 'dosing_error': Deviation from setpoint [%]
-        - 'speed_fraction': Current speed fraction
+    Dict with keys:  
+        - 'Q_actual': Actual flow rate [m³/d or t/d]  
+        - 'is_running': Current operating state  
+        - 'load_factor': Operating load (0-1)  
+        - 'P_consumed': Power consumption [kW]  
+        - 'blockage_detected': Blockage alarm  
+        - 'dosing_error': Deviation from setpoint [%]  
+        - 'speed_fraction': Current speed fraction  
 
 #### to_dict
 

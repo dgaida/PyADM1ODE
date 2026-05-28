@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Documentation
+
+- Clarify Skill.md generation process in LLM API guide  
+- Clarify Skill.md generation process in LLM API guide  
+- Add Skill.md files to repository for LLM integration  
+
+## [0.3.9] - 2026-05-27
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
 ## [0.3.8] - 2026-05-18
 
 ### Miscellaneous Tasks
