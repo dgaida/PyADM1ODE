@@ -49,6 +49,7 @@ _DEFAULT_SUBSTRATE_ORDER: tuple = (
     "onion_waste",
     "maize_silage_gummersbach",
     "cattle_manure_solid",
+    "chicken_manure_dry",
     "swine_manure_gummersbach",
     "wheat_whole_plant_silage",
 )

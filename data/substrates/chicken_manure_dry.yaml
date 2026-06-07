@@ -1,0 +1,31 @@
+# Calibrated to the BiomasseV standard methane yield of 82 Nm³ CH4/t FM.
+# The realized model yield follows
+#   CH4 [Nm³/t FM] = (TS/1000) * (1 - fRA) * BMP
+#                  = 0.450 * 0.75 * 243 ≈ 82 Nm³ CH4/t FM.
+
+name: Chicken manure dry (HTK)
+
+# --- Proximate analysis / measured substrate properties -----------------
+TS:    450.0     # kg/t FM   (~45 % TS per feed log)
+NH4:    4.0      # kg N/m³ FM
+BGP:   442.0     # Nm³/t VS   biogas potential (BMP / 0.55)
+BMP:   243.0     # Nm³ CH4/t VS  biomethane potential -> 82 Nm³/t FM
+
+# --- COD fractionation --------------------------------------------------
+aXI:    0.2500
+fOTSrf: 0.391
+fsOTS:  1.0
+ffOTS:  0.0
+aSi:    0.050
+
+# --- Weender analysis (fractions of TS) ---------------------------------
+fRF:    0.1200
+fRP:    0.2500
+fRFe:   0.0300
+fRA:    0.2500
+
+# --- Physical / chemical state ------------------------------------------
+Temp:   12.0    # degC
+pH:     7.20
+KS43:   100.00    # mol/m^3   acid capacity to pH 4.3
+FFS:    0.000     # kg HAc/m^3 VFAs as acetic-acid equivalent
