@@ -4,11 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- Add chicken manure dry substrate definition and update default substrate order  
+
+## [0.4.0] - 2026-05-28
+
 ### Documentation
 
 - Clarify Skill.md generation process in LLM API guide  
 - Clarify Skill.md generation process in LLM API guide  
 - Add Skill.md files to repository for LLM integration  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.3.9] - 2026-05-27
 

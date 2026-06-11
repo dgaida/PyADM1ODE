@@ -22,10 +22,13 @@
 name: Cattle manure (solid)
 
 # --- Proximate analysis / measured substrate properties -----------------
-TS:    120.0      # kg/m^3 FM
+# Stackable farmyard manure (Rinderfestmist) at ~25 % TS, calibrated to
+# the BiomasseV standard methane yield of 53 Nm^3 CH4/t FM. Realized
+# model yield = (TS/1000)*(1-fRA)*BMP = 0.250 * 0.82 * 258.5 ≈ 53.
+TS:    250.0      # kg/t FM   (~25 % TS, stackable farmyard manure)
 NH4:    1.556     # kg N/m^3 FM
-BGP:   511.7      # Nm^3/t VS   biogas potential (theoretical * D_VS)
-BMP:   281.5      # Nm^3 CH4/t VS  biomethane potential
+BGP:   470.0      # Nm^3/t VS   biogas potential (BMP / 0.55)
+BMP:   258.5      # Nm^3 CH4/t VS  biomethane potential -> 53 Nm^3/t FM
 
 # --- COD fractionation --------------------------------------------------
 aXI:    0.2500
@@ -38,7 +41,7 @@ aSi:    0.050
 fRF:    0.1831
 fRP:    0.1831
 fRFe:   0.0355
-fRA:    0.1500
+fRA:    0.1800
 
 # --- Physical / chemical state ------------------------------------------
 Temp:   12.0    # degC
