@@ -24,9 +24,9 @@ benchmark/
 
 ## Drei Scores (siehe docs/dataset_structure_detail.svg)
 
-1. **Struktur** — Bauteile (nach Typ zugeordnet, nicht nach Namen) + Verbindungen als typisierter Graph.
-2. **Masse** — simulierte Parameter (V_liq, V_gas, T_ad, …) im Akzeptanzband.
-3. **Fehlende Werte** — `missing_ask`: nachgefragt ODER plausibel gefuellt — statt still erfunden.
+1. **Struktur** — Bauteile (nach Typ zugeordnet, nicht nach Namen) + Verbindungen als typisierter Graph.  
+2. **Masse** — simulierte Parameter (V_liq, V_gas, T_ad, …) im Akzeptanzband.  
+3. **Fehlende Werte** — `missing_ask`: nachgefragt ODER plausibel gefuellt — statt still erfunden.  
 
 Nur Groessen, die PyADM1ODE **wirklich simuliert**, fliessen ein. Auto-Knoten
 (GasStorage je Digester, Flare je CHP) werden ueber die Topologie ausgerichtet.
@@ -75,7 +75,7 @@ Graph stehen und nur der Input wechselt.
 
 Zwei Modi (Badge oben rechts):
 
-- **● Live aus dataset/** — empfohlen. Ueber localhost servieren, dann laedt der
+- **● Live aus dataset/** — empfohlen. Ueber localhost servieren, dann laedt der  
   Viewer die Datenpunkte direkt aus den Dateien (Edits nach Reload sichtbar):
 
   ```bash
@@ -84,7 +84,7 @@ Zwei Modi (Badge oben rechts):
   # Browser: http://localhost:8000/benchmark/viewer/
   ```
 
-- **● eingebettet (Fallback)** — beim Doppelklick (`file://`) kann der Browser keine
+- **● eingebettet (Fallback)** — beim Doppelklick (`file://`) kann der Browser keine  
   lokalen Dateien lesen; dann zeigt der Viewer eine eingebettete BGA1-Kopie. Per
   **Dateien laden…** lassen sich beliebige Datenpunkt-JSONs manuell oeffnen.
 

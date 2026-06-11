@@ -2,11 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.4.1] - 2026-06-07
 
 ### Features
 
 - Add chicken manure dry substrate definition and update default substrate order  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.4.0] - 2026-05-28
 
