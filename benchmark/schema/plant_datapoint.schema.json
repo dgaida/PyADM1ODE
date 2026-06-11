@@ -1,0 +1,275 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ivba-biogas/benchmark/plant_datapoint.schema.json",
+  "title": "PyADM1ODE LMM-Benchmark — Plant Datapoint",
+  "description": "Ein Datenpunkt = (multimodaler Input) + (kanonische, regelbasiert vervollstaendigte PyADM1ODE-Anlage als typisierter, parametrisierter Graph) + (Lueckenbehandlung: obligation/accept/oracle). Bewertet wird, ob der vom LMM erzeugte Code denselben Graphen baut und mit fehlenden Werten korrekt umgeht (nachfragen statt erfinden). Nur Groessen, die PyADM1ODE wirklich simuliert, sind Teil der Referenz.",
+  "type": "object",
+  "required": ["id", "input", "regime", "reference"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "description": "Eindeutige ID, z.B. <plant>_<modality>_<lang>_<variant>." },
+    "provenance": {
+      "type": "string",
+      "enum": ["real_manufacturer_description", "real_plant", "synthetic", "templated"],
+      "description": "Herkunft. Echte Anlagen bevorzugt als Held-out-Testset."
+    },
+    "input": { "$ref": "#/$defs/input" },
+    "regime": {
+      "type": "string",
+      "enum": ["fully_specified", "underspecified"],
+      "description": "fully_specified = alle simulierten Werte im Input; underspecified = Werte fehlen und muessen erfragt/defaultet werden."
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Bewertungsumfang. Nur PyADM1ODE-simulierte Groessen zaehlen.",
+      "properties": {
+        "only_pyadm1_simulated": { "type": "boolean", "default": true },
+        "substrates_scored": { "type": "boolean", "default": false },
+        "feed_topology_note": { "type": "string" }
+      }
+    },
+    "reference": { "$ref": "#/$defs/reference" },
+    "dropped": {
+      "type": "array",
+      "description": "Bewusst entfernte Skizzen-Elemente (nicht simuliert / out of scope), je mit Begruendung.",
+      "items": {
+        "type": "object",
+        "required": ["items", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "items": { "type": "array", "items": { "type": "string" } },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "expected_open_questions": {
+      "type": "array",
+      "description": "Felder/Topologie, nach denen das System idealerweise zurueckfragt (Sollverhalten bei missing_ask).",
+      "items": { "$ref": "#/$defs/openQuestion" }
+    },
+    "must_not_invent": {
+      "type": "array",
+      "description": "Dinge, die das Modell NICHT still erfinden darf (Halluzinations-Fallen).",
+      "items": { "type": "string" }
+    },
+    "oracle": {
+      "type": "object",
+      "description": "Kanonische Antworten fuer den Multi-Turn-Modus: Schluessel = '<component>.<field>' oder freie Topologie-Schluessel, Wert = kanonischer Wert, den ein simuliertes Nutzer-Orakel auf eine Rueckfrage gibt.",
+      "additionalProperties": true
+    },
+    "metadata": { "$ref": "#/$defs/metadata" }
+  },
+
+  "$defs": {
+
+    "obligation": {
+      "type": "string",
+      "description": "Verpflichtung eines Feldes/Knotens/Kante. Steuert, wie streng bewertet wird.",
+      "enum": [
+        "given",
+        "derivable",
+        "derivable_with_assumption",
+        "missing_default_ok",
+        "missing_ask",
+        "inferred",
+        "auto"
+      ],
+      "$comment": "given=im Input genannt; derivable=aus Gegebenem berechenbar; derivable_with_assumption=berechenbar mit benannter Annahme (z.B. fill_fraction); missing_default_ok=unbekannt, Standard-Default akzeptabel (Akzeptanzband); missing_ask=unbekannt, kein sicherer Default -> nachfragen; inferred=realistisch ergaenzt (mit confidence); auto=vom PyADM1ODE-Package erzeugt/verdrahtet, nicht vom Nutzer anzugeben."
+    },
+
+    "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+
+    "acceptSpec": {
+      "description": "Akzeptanzbereich statt Punktwert. Bei numerischen Feldern absolut {min,max} oder relativ {min_rel,max_rel,ref}; bei kategorialen Feldern eine Liste erlaubter Werte.",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "absolute range",
+          "required": ["min", "max"],
+          "additionalProperties": false,
+          "properties": {
+            "min": { "type": "number" },
+            "max": { "type": "number" }
+          }
+        },
+        {
+          "type": "object",
+          "title": "relative range",
+          "required": ["ref"],
+          "additionalProperties": false,
+          "properties": {
+            "min_rel": { "type": "number" },
+            "max_rel": { "type": "number" },
+            "ref": { "type": "string", "description": "Bezugsfeld, relativ zu dem das Band gilt, z.B. 'V_liq'." }
+          }
+        },
+        {
+          "type": "array",
+          "title": "categorical set",
+          "items": { "type": "string" }
+        }
+      ]
+    },
+
+    "paramField": {
+      "type": "object",
+      "description": "Der wiederverwendbare Atom-Baustein: EIN simulierter Parameter mit Wert, obligation und (bei Luecken) Akzeptanzband/Default.",
+      "additionalProperties": false,
+      "required": ["obligation"],
+      "properties": {
+        "value": {
+          "type": ["number", "string", "boolean", "null"],
+          "description": "Kanonischer Referenzwert (null = bewusst nicht gesetzt)."
+        },
+        "obligation": { "$ref": "#/$defs/obligation" },
+        "accept": { "$ref": "#/$defs/acceptSpec" },
+        "default": {
+          "type": ["number", "string", "boolean"],
+          "description": "Realistischer Vorschlagswert, falls das Modell fuellt statt zu fragen."
+        },
+        "ask_preferred": {
+          "type": "boolean",
+          "description": "true = Rueckfrage ist das bevorzugte Verhalten; ein gefuellter Wert wird nur akzeptiert, wenn als Annahme markiert und im accept-Band."
+        },
+        "from": { "type": "string", "description": "Herkunft bei derivable, z.B. '6x28m' oder 'F1.T_ad'." },
+        "formula": { "type": "string", "description": "Ableitungsformel bei derivable_with_assumption." },
+        "rationale": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+
+    "paramMap": {
+      "type": "object",
+      "description": "Sammlung von ParamFields. '_same_as' ist ein Authoring-Makro: kopiert params eines anderen Knotens (vor dem Matching expandiert).",
+      "properties": {
+        "_same_as": { "type": "string", "description": "ID des Knotens, dessen params uebernommen werden." }
+      },
+      "additionalProperties": { "$ref": "#/$defs/paramField" }
+    },
+
+    "component": {
+      "type": "object",
+      "description": "Ein simulierter Knoten des Anlagengraphen.",
+      "required": ["id", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": {
+          "type": "string",
+          "description": "PyADM1ODE-Komponententyp.",
+          "enum": ["Digester", "GasStorage", "Separator", "CHP", "Flare", "HeatingSystem", "Boiler", "Mixer"]
+        },
+        "label": { "type": "string", "description": "Klartext-Name aus der Skizze, z.B. 'Fermenter 1'." },
+        "obligation": {
+          "$ref": "#/$defs/obligation",
+          "description": "Knoten-Ebene: given/inferred/missing_ask (Existenz unklar -> erfragen) oder auto (vom Package erzeugt)."
+        },
+        "auto_created": {
+          "type": "boolean",
+          "description": "true = von einem Helper erzeugt (z.B. add_digester -> GasStorage; add_chp -> Flare). Nicht vom Nutzer anzugeben."
+        },
+        "match": {
+          "type": "string",
+          "enum": ["exact", "canonicalize"],
+          "description": "exact = Knoten muss im Kandidaten existieren; canonicalize = beide Seiten durch dieselbe Builder-Pipeline normalisieren (fuer auto-Knoten)."
+        },
+        "geometry": {
+          "$ref": "#/$defs/paramMap",
+          "description": "Rohgeometrie (D, H_wall, ...) als ParamFields; daraus werden V_liq/V_gas abgeleitet."
+        },
+        "params": {
+          "$ref": "#/$defs/paramMap",
+          "description": "Simulierte Parameter (z.B. Digester: V_liq, V_gas, T_ad; Separator: separator_type; CHP: P_el_nom, eta_el, eta_th; HeatingSystem: target_temperature)."
+        },
+        "requires_inflow": {
+          "type": "object",
+          "description": "Pflicht-Zulauf, ohne den der Knoten nichts simuliert (z.B. Separator braucht eine eingehende liquid-Kante von einem Digester).",
+          "additionalProperties": false,
+          "properties": {
+            "type": { "type": "string", "enum": ["liquid", "gas", "heat"] },
+            "from_type": { "type": "string" },
+            "note": { "type": "string" }
+          }
+        },
+        "note": { "type": "string" }
+      }
+    },
+
+    "connection": {
+      "type": "object",
+      "description": "Eine typisierte, gerichtete Kante. Nur Kanten, die PyADM1ODE wirklich routet, zaehlen (liquid-Kaskade, Digester->GasStorage, GasStorage->CHP, CHP->Heizung/Flare, Digester->Separator).",
+      "required": ["from", "to", "type", "obligation"],
+      "additionalProperties": false,
+      "properties": {
+        "from": { "type": "string" },
+        "to": { "type": "string" },
+        "type": { "type": "string", "enum": ["liquid", "gas", "heat"] },
+        "obligation": { "$ref": "#/$defs/obligation" },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "alternatives": {
+          "type": "array",
+          "description": "Gleichwertige Alternativ-Kanten (z.B. Separator-Quelle N1 ODER G1).",
+          "items": {
+            "type": "object",
+            "required": ["from", "to", "type"],
+            "additionalProperties": false,
+            "properties": {
+              "from": { "type": "string" },
+              "to": { "type": "string" },
+              "type": { "type": "string", "enum": ["liquid", "gas", "heat"] }
+            }
+          }
+        },
+        "rationale": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+
+    "reference": {
+      "type": "object",
+      "description": "Die kanonische Anlage als typisierter, parametrisierter Graph.",
+      "required": ["components", "connections"],
+      "additionalProperties": false,
+      "properties": {
+        "components": { "type": "array", "items": { "$ref": "#/$defs/component" }, "minItems": 1 },
+        "connections": { "type": "array", "items": { "$ref": "#/$defs/connection" } }
+      }
+    },
+
+    "input": {
+      "type": "object",
+      "required": ["modality"],
+      "additionalProperties": false,
+      "properties": {
+        "modality": { "type": "string", "enum": ["text", "image", "pid", "photo", "hybrid"] },
+        "language": { "type": "string", "enum": ["de", "en"] },
+        "content": { "type": "string", "description": "Textbeschreibung (bei text/hybrid)." },
+        "image_path": { "type": "string", "description": "Pfad zur Skizze/Foto/P&ID (bei image/pid/photo/hybrid)." }
+      }
+    },
+
+    "openQuestion": {
+      "type": "object",
+      "required": ["field"],
+      "additionalProperties": false,
+      "properties": {
+        "field": { "type": "string", "description": "'<component>.<param>' oder Topologie-Beschreibung." },
+        "priority": { "type": "string", "enum": ["high", "medium", "low"] }
+      }
+    },
+
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "topology": { "type": "string" },
+        "n_digesters": { "type": "integer" },
+        "has_chp": { "type": ["boolean", "string"] },
+        "difficulty": { "type": "string", "enum": ["easy", "medium", "hard"] },
+        "split": { "type": "string", "enum": ["train", "dev", "test"] },
+        "known_gaps": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "id": "BGA1_reduced_simulated_final",
+  "provenance": "real_manufacturer_description",
+  "input": {
+    "modality": "text",
+    "language": "de",
+    "content": "Die Biogasanlage BGA1 verarbeitet überwiegend Gülle und wird über drei Wege beschickt. Ein Feststoffdosierer bringt ein flüssiges Mischsubstrat mit rund 80 Tonnen pro Tag ein und beschickt damit die beiden Fermenter F1 und F2. Daneben gibt es eine Vorgrube mit den Maßen 5 mal 10 Meter, in der etwa 20 Kubikmeter Gülle pro Tag gesammelt und über eine Pumpe ebenfalls in F1 und F2 gefördert werden. Drei baugleiche Vorlagebehälter mit jeweils 11 mal 3,5 Meter sind über eine gemeinsame Pumpe an die beiden Fermenter angeschlossen.\n\nDie zwei Hauptfermenter F1 und F2 haben jeweils einen Durchmesser von 28 Metern und eine Höhe von 6 Metern und sind mit je drei Paddelrührwerken ausgestattet. Beide tragen ein Kuppeldach, das zugleich als Gasspeicher dient. Der Gärrest fließt anschließend in den Nachgärer N1, der ebenfalls 28 Meter Durchmesser und 6 Meter Höhe misst und mit einem Paddelrührwerk sowie einem Langachsrührwerk arbeitet. Auch N1 besitzt ein Kuppeldach. Aus dem Nachgärer gelangt das Material in das Gärrestlager G1 mit 30 Metern Durchmesser und 6 Metern Höhe, das mit zwei Tauchmotorrührwerken ausgerüstet ist.\n\nDas in den Behältern entstehende Biogas wird gesammelt und einer Biogasaufbereitungsanlage mit einer Kapazität von 500 Kubikmetern pro Stunde zugeführt. Für den Störfall steht eine Notfackel bereit, die überschüssiges Gas sicher verbrennt. Zur Behandlung des Gärrests ist ein Separator vorhanden, der das Digestat in eine feste und eine flüssige Phase trennt. Ein Kondensatschacht ist mit dem Fermenter F1 verbunden, und ein Sickerwasserspeicher ist mit den Fermentern F1 und F2 verbunden."
+  },
+  "regime": "underspecified",
+  "scope": {
+    "only_pyadm1_simulated": true,
+    "substrates_scored": false,
+    "feed_topology_note": "Zulauf via Feedstock/Q_substrates, keine Kante -> nicht bewertbar"
+  },
+  "reference": {
+    "components": [
+      {
+        "id": "F1", "type": "Digester", "label": "Fermenter 1", "obligation": "given",
+        "geometry": {
+          "D": { "value": 28, "obligation": "given" },
+          "H_wall": { "value": 6, "obligation": "given" }
+        },
+        "params": {
+          "fill_fraction": { "value": 0.90, "obligation": "missing_default_ok", "accept": { "min": 0.80, "max": 0.95 } },
+          "V_liq": { "value": 3325, "obligation": "derivable_with_assumption", "formula": "pi/4*28^2 * fill_fraction*6", "accept": { "min": 2956, "max": 3510 } },
+          "V_gas": { "value": 500, "obligation": "missing_default_ok", "accept": { "min_rel": 0.10, "max_rel": 0.30, "ref": "V_liq" }, "note": "zugleich max. Gasspeicher: capacity = max(50, V_gas)" },
+          "T_ad": { "value": 313.15, "obligation": "missing_default_ok", "accept": { "min": 311.15, "max": 316.15 }, "ask_preferred": true, "rationale": "guellebasiert -> mesophil 40 C" }
+        }
+      },
+      { "id": "F2", "type": "Digester", "label": "Fermenter 2", "obligation": "given",
+        "geometry": { "D": { "value": 28, "obligation": "given" }, "H_wall": { "value": 6, "obligation": "given" } },
+        "params": { "_same_as": "F1" } },
+      { "id": "N1", "type": "Digester", "label": "Nachgaerer", "obligation": "given",
+        "geometry": { "D": { "value": 28, "obligation": "given" }, "H_wall": { "value": 6, "obligation": "given" } },
+        "params": { "_same_as": "F1" } },
+      {
+        "id": "G1", "type": "Digester", "label": "Gaerrestlager", "obligation": "given",
+        "geometry": {
+          "D": { "value": 30, "obligation": "given" },
+          "H_wall": { "value": 6, "obligation": "given" }
+        },
+        "params": {
+          "fill_fraction": { "value": 0.90, "obligation": "missing_default_ok", "accept": { "min": 0.80, "max": 0.95 } },
+          "V_liq": { "value": 3817, "obligation": "derivable_with_assumption", "formula": "pi/4*30^2 * fill_fraction*6", "accept": { "min": 3393, "max": 4030 } },
+          "V_gas": { "value": 570, "obligation": "missing_default_ok", "accept": { "min_rel": 0.10, "max_rel": 0.30, "ref": "V_liq" } },
+          "T_ad": { "value": 293.15, "obligation": "missing_default_ok", "accept": { "min": 283.15, "max": 313.15 }, "note": "unbeheiztes Lager ~ Umgebung; 'kein Dach' in ADM1 nicht abbildbar -> erzeugt Restgas" }
+        }
+      },
+      { "id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "F2_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "N1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      {
+        "id": "sep", "type": "Separator", "label": "Separator", "obligation": "given",
+        "params": {
+          "separator_type": { "value": "screw_press", "obligation": "missing_default_ok", "accept": ["screw_press", "decanter", "belt_press", "vibrating_screen"], "ask_preferred": false, "note": "Skizze nennt nur 'Sep'; screw_press = Default UND in Agrar-BGA ueblich" }
+        },
+        "requires_inflow": { "type": "liquid", "from_type": "Digester", "note": "ohne eingehende liquid-Kante ist Q_in=0 -> simuliert nichts" }
+      },
+      {
+        "id": "chp", "type": "CHP", "label": "BHKW 500 kW", "obligation": "missing_ask",
+        "params": {
+          "P_el_nom": { "value": 500.0, "obligation": "missing_ask", "default": 500.0, "accept": { "min": 250, "max": 1000 }, "ask_preferred": true, "note": "Skizze zeigt BGAA statt BHKW -> Existenz/Groesse erfragen; 500 kW realistisch" },
+          "eta_el": { "value": 0.40, "obligation": "missing_default_ok", "accept": { "min": 0.35, "max": 0.45 } },
+          "eta_th": { "value": 0.45, "obligation": "missing_default_ok", "accept": { "min": 0.40, "max": 0.50 } }
+        },
+        "note": "add_chp erzeugt automatisch chp_flare (= Fackel der Skizze)"
+      },
+      { "id": "chp_flare", "type": "Flare", "label": "Fackel", "obligation": "auto", "auto_created": true, "match": "canonicalize", "note": "von add_chp erzeugt; entspricht der Fackel, jetzt funktional gespeist" },
+      { "id": "heating_F1", "type": "HeatingSystem", "label": "Heizung F1", "obligation": "missing_ask",
+        "params": { "target_temperature": { "value": 313.15, "obligation": "derivable", "from": "F1.T_ad" } } },
+      { "id": "heating_F2", "type": "HeatingSystem", "label": "Heizung F2", "obligation": "missing_ask",
+        "params": { "target_temperature": { "value": 313.15, "obligation": "derivable", "from": "F2.T_ad" } } },
+      { "id": "heating_N1", "type": "HeatingSystem", "label": "Heizung N1", "obligation": "missing_ask",
+        "params": { "target_temperature": { "value": 313.15, "obligation": "derivable", "from": "N1.T_ad" } } }
+    ],
+    "connections": [
+      { "from": "F1", "to": "N1", "type": "liquid", "obligation": "inferred", "confidence": "high" },
+      { "from": "F2", "to": "N1", "type": "liquid", "obligation": "inferred", "confidence": "high" },
+      { "from": "N1", "to": "G1", "type": "liquid", "obligation": "inferred", "confidence": "high" },
+      { "from": "N1", "to": "sep", "type": "liquid", "obligation": "missing_ask", "confidence": "low",
+        "alternatives": [ { "from": "G1", "to": "sep", "type": "liquid" } ] },
+      { "from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "F2", "to": "F2_storage", "type": "gas", "obligation": "auto" },
+      { "from": "N1", "to": "N1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "F1_storage", "to": "chp", "type": "gas", "obligation": "missing_ask", "confidence": "medium" },
+      { "from": "F2_storage", "to": "chp", "type": "gas", "obligation": "missing_ask", "confidence": "medium" },
+      { "from": "N1_storage", "to": "chp", "type": "gas", "obligation": "missing_ask", "confidence": "medium" },
+      { "from": "G1_storage", "to": "chp", "type": "gas", "obligation": "missing_ask", "confidence": "medium", "note": "Restgas des Lagers bei Bedarf zum BHKW weiterleiten" },
+      { "from": "chp", "to": "chp_flare", "type": "gas", "obligation": "auto" },
+      { "from": "chp", "to": "heating_F1", "type": "heat", "obligation": "missing_ask", "confidence": "medium" },
+      { "from": "chp", "to": "heating_F2", "type": "heat", "obligation": "missing_ask", "confidence": "medium" },
+      { "from": "chp", "to": "heating_N1", "type": "heat", "obligation": "missing_ask", "confidence": "medium" }
+    ]
+  },
+  "dropped": [
+    { "items": ["dos", "vorgrube", "tank1", "tank2", "tank3", "kds", "sws"], "reason": "Substratseite - Zulauf via Feedstock/Q_substrates, keine simulierte Kante; nicht bewertet" },
+    { "items": ["bgaa"], "reason": "Biogasaufbereitung - kein PyADM1ODE-Bauteil (known gap)" },
+    { "items": ["agitators 3xPRW/2xTMR/1xLAR", "Kuppeldach"], "reason": "nicht simuliert (in V_liq/V_gas aufgeloest)" }
+  ],
+  "expected_open_questions": [
+    { "field": "chp (Existenz + P_el_nom)", "priority": "high" },
+    { "field": "heating connections (welche Stufen, Quelle BHKW)", "priority": "high" },
+    { "field": "F1.V_gas | gas_storage_capacity", "priority": "high" },
+    { "field": "F1.T_ad", "priority": "medium" },
+    { "field": "sep.source (N1 vs G1)", "priority": "medium" }
+  ],
+  "must_not_invent": ["zusaetzliche Digester ausser F1/F2/N1/G1", "ADM1-Reaktoren auf der Substratseite"],
+  "oracle": {
+    "chp.exists": true, "chp.P_el_nom": 500.0, "chp.eta_el": 0.40, "chp.eta_th": 0.45,
+    "heating.stages": ["F1", "F2", "N1"], "heating.source": "chp",
+    "F1.V_gas": 500, "F2.V_gas": 500, "N1.V_gas": 500, "G1.V_gas": 570,
+    "F1.T_ad": 313.15, "F2.T_ad": 313.15, "N1.T_ad": 313.15, "G1.T_ad": 293.15,
+    "F1.fill_fraction": 0.90, "sep.source": "N1", "sep.separator_type": "screw_press"
+  },
+  "metadata": {
+    "topology": "2 parallel primaries -> secondary -> storage; separator on digestate; CHP + heating",
+    "n_digesters": 4, "has_chp": "ask->yes(500kW)", "difficulty": "hard", "split": "test",
+    "known_gaps": ["BGAA (Aufbereitung) nicht modellierbar"]
+  }
+}

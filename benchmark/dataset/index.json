@@ -1,0 +1,25 @@
+{
+  "datapoints": [
+    {
+      "id": "BGA1_reduced_simulated_final",
+      "path": "BGA1/BGA1.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA1_en",
+      "path": "BGA1/BGA1_en.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA1_terse",
+      "path": "BGA1/BGA1_terse.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    }
+  ]
+}

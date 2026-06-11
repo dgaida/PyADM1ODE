@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PyADM1ODE Benchmark — Datenpunkt-Viewer</title>
+<style>
+  :root{
+    --bg:#f1f5f9; --panel:#ffffff; --ink:#0f172a; --muted:#64748b; --line:#cbd5e1;
+    --liquid:#2563eb; --gas:#6b7280; --heat:#dc2626;
+    --ob-given:#16a34a; --ob-deriv:#0891b2; --ob-derivA:#2563eb;
+    --ob-defok:#d97706; --ob-ask:#dc2626; --ob-infer:#7c3aed; --ob-auto:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+  header{background:#0f172a;color:#fff;padding:8px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  header h1{font-size:16px;margin:0;font-weight:700}
+  header .accent{width:6px;height:24px;background:#38bdf8;border-radius:3px}
+  header .meta{font-size:12px;color:#94a3b8}
+  header .meta b{color:#e2e8f0}
+  header .spacer{flex:1}
+  header button,header label.btn,header select{background:#1e293b;color:#fff;border:1px solid #334155;
+    border-radius:7px;padding:6px 11px;font-size:13px;cursor:pointer}
+  header button:hover,header label.btn:hover{background:#334155}
+  header select{max-width:280px}
+  .modebadge{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:7px;border:1px solid;cursor:default}
+  .nav{display:flex;align-items:center;gap:8px;background:#111827;border:1px solid #334155;border-radius:9px;padding:3px 6px}
+  .nav button{padding:4px 10px;font-size:15px;line-height:1}
+  .nav #counter{font-size:12.5px;color:#cbd5e1;min-width:46px;text-align:center}
+  #app{display:flex;height:calc(100vh - 46px)}
+  aside{width:320px;min-width:320px;background:var(--panel);border-right:1px solid var(--line);overflow:auto;padding:14px}
+  aside h2{font-size:11.5px;letter-spacing:.6px;color:var(--muted);margin:16px 0 7px;text-transform:uppercase}
+  aside h2:first-child{margin-top:0}
+  .vid{font-size:13px;font-weight:700;color:#0f172a;background:#eef2ff;border:1px solid #c7d2fe;border-radius:7px;
+    padding:6px 9px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .vid .lang{font-size:11px;font-weight:700;color:#3730a3;background:#fff;border:1px solid #c7d2fe;border-radius:5px;padding:1px 7px}
+  .quote{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 11px;font-size:13px;font-style:italic;color:#334155;line-height:1.5;margin-top:7px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:12px;padding:3px 9px;border-radius:6px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+  .chip.warn{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+  .li{font-size:12.5px;color:#334155;padding:3px 0;border-bottom:1px solid #f1f5f9}
+  .li small{color:#94a3b8}
+  main{flex:1;position:relative;overflow:hidden}
+  svg{width:100%;height:100%;display:block;cursor:grab}
+  svg.grabbing{cursor:grabbing}
+  .toolbar{position:absolute;top:12px;right:12px;display:flex;gap:6px}
+  .toolbar button{width:32px;height:32px;border-radius:7px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:16px}
+  .toolbar button:hover{background:#f1f5f9}
+  .legend{position:absolute;left:12px;bottom:12px;background:rgba(255,255,255,.94);border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;font-size:11.5px;max-width:340px}
+  .legend b{font-size:11px;color:var(--muted);letter-spacing:.4px}
+  .legend .row{display:flex;flex-wrap:wrap;gap:10px;margin:5px 0}
+  .legend .k{display:flex;align-items:center;gap:5px}
+  .sw{width:13px;height:13px;border-radius:3px;display:inline-block}
+  .ln{width:20px;height:0;border-top-width:3px;border-top-style:solid;display:inline-block}
+  .hint{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(15,23,42,.82);color:#e2e8f0;
+    font-size:12px;padding:5px 12px;border-radius:20px;pointer-events:none}
+  #detail{position:absolute;top:12px;left:12px;width:330px;max-height:calc(100% - 24px);overflow:auto;
+    background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 30px rgba(15,23,42,.15);
+    padding:14px;display:none}
+  #detail h3{margin:0 0 2px;font-size:15px}
+  #detail .sub{color:var(--muted);font-size:12px;margin-bottom:10px}
+  #detail .close{position:absolute;top:10px;right:12px;cursor:pointer;color:#94a3b8;font-size:18px}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  td{padding:4px 4px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+  td.p{color:var(--muted);white-space:nowrap}
+  td.v{font-weight:600}
+  .badge{font-size:10px;padding:1px 6px;border-radius:5px;color:#fff;white-space:nowrap}
+  .accept{color:#64748b;font-size:11px}
+  .node{cursor:pointer}
+  .node text{pointer-events:none}
+  .nlabel{font-size:12.5px;font-weight:700}
+  .ntype{font-size:10.5px;fill:#64748b}
+  .nparam{font-size:10px;fill:#475569}
+  .nbadge{font-size:9px;font-weight:700}
+</style>
+</head>
+<body>
+<header>
+  <div class="accent"></div>
+  <h1>Benchmark-Datenpunkt-Viewer</h1>
+  <div class="nav">
+    <button id="prev" title="Zurück (←)">◀</button>
+    <select id="picker"></select>
+    <button id="next" title="Weiter (→)">▶</button>
+    <span id="counter"></span>
+  </div>
+  <div class="meta" id="hmeta"></div>
+  <div class="spacer"></div>
+  <span id="mode" class="modebadge"></span>
+  <label class="btn">Dateien laden…<input id="file" type="file" accept=".json" multiple hidden></label>
+</header>
+
+<div id="app">
+  <aside id="side"></aside>
+  <main>
+    <svg id="svg"><g id="vp"></g></svg>
+    <div class="hint" id="hint">← / → zum Durchskippen</div>
+    <div class="toolbar">
+      <button id="zin" title="Zoom +">+</button>
+      <button id="zout" title="Zoom −">−</button>
+      <button id="zfit" title="Einpassen">⤢</button>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div id="detail"><span class="close" id="dclose">×</span><div id="dbody"></div></div>
+  </main>
+</div>
+
+<script>
+// ====================== EMBEDDED DATAPOINTS (3 BGA1-Varianten, gleiche Referenz) ==
+const EMBEDDED_REF = {"components":[
+{"id":"F1","type":"Digester","label":"Fermenter 1","obligation":"given","geometry":{"D":{"value":28,"obligation":"given"},"H_wall":{"value":6,"obligation":"given"}},"params":{"fill_fraction":{"value":0.90,"obligation":"missing_default_ok","accept":{"min":0.80,"max":0.95}},"V_liq":{"value":3325,"obligation":"derivable_with_assumption","accept":{"min":2956,"max":3510}},"V_gas":{"value":500,"obligation":"missing_default_ok","accept":{"min_rel":0.10,"max_rel":0.30,"ref":"V_liq"}},"T_ad":{"value":313.15,"obligation":"missing_default_ok","accept":{"min":311.15,"max":316.15},"ask_preferred":true}}},
+{"id":"F2","type":"Digester","label":"Fermenter 2","obligation":"given","params":{"_same_as":"F1"}},
+{"id":"N1","type":"Digester","label":"Nachgärer","obligation":"given","params":{"_same_as":"F1"}},
+{"id":"G1","type":"Digester","label":"Gärrestlager","obligation":"given","params":{"fill_fraction":{"value":0.90,"obligation":"missing_default_ok","accept":{"min":0.80,"max":0.95}},"V_liq":{"value":3817,"obligation":"derivable_with_assumption","accept":{"min":3393,"max":4030}},"V_gas":{"value":570,"obligation":"missing_default_ok","accept":{"min_rel":0.10,"max_rel":0.30,"ref":"V_liq"}},"T_ad":{"value":293.15,"obligation":"missing_default_ok","accept":{"min":283.15,"max":313.15}}}},
+{"id":"F1_storage","type":"GasStorage","obligation":"auto","auto_created":true},
+{"id":"F2_storage","type":"GasStorage","obligation":"auto","auto_created":true},
+{"id":"N1_storage","type":"GasStorage","obligation":"auto","auto_created":true},
+{"id":"G1_storage","type":"GasStorage","obligation":"auto","auto_created":true},
+{"id":"sep","type":"Separator","label":"Separator","obligation":"given","params":{"separator_type":{"value":"screw_press","obligation":"missing_default_ok","accept":["screw_press","decanter","belt_press","vibrating_screen"]}}},
+{"id":"chp","type":"CHP","label":"BHKW 500 kW","obligation":"missing_ask","params":{"P_el_nom":{"value":500,"obligation":"missing_ask","accept":{"min":250,"max":1000},"ask_preferred":true},"eta_el":{"value":0.40,"obligation":"missing_default_ok","accept":{"min":0.35,"max":0.45}},"eta_th":{"value":0.45,"obligation":"missing_default_ok","accept":{"min":0.40,"max":0.50}}}},
+{"id":"chp_flare","type":"Flare","label":"Fackel","obligation":"auto","auto_created":true},
+{"id":"heating_F1","type":"HeatingSystem","label":"Heizung F1","obligation":"missing_ask","params":{"target_temperature":{"value":313.15,"obligation":"derivable"}}},
+{"id":"heating_F2","type":"HeatingSystem","label":"Heizung F2","obligation":"missing_ask","params":{"target_temperature":{"value":313.15,"obligation":"derivable"}}},
+{"id":"heating_N1","type":"HeatingSystem","label":"Heizung N1","obligation":"missing_ask","params":{"target_temperature":{"value":313.15,"obligation":"derivable"}}}
+],"connections":[
+{"from":"F1","to":"N1","type":"liquid","obligation":"inferred","confidence":"high"},
+{"from":"F2","to":"N1","type":"liquid","obligation":"inferred","confidence":"high"},
+{"from":"N1","to":"G1","type":"liquid","obligation":"inferred","confidence":"high"},
+{"from":"N1","to":"sep","type":"liquid","obligation":"missing_ask","confidence":"low"},
+{"from":"F1","to":"F1_storage","type":"gas","obligation":"auto"},
+{"from":"F2","to":"F2_storage","type":"gas","obligation":"auto"},
+{"from":"N1","to":"N1_storage","type":"gas","obligation":"auto"},
+{"from":"G1","to":"G1_storage","type":"gas","obligation":"auto"},
+{"from":"F1_storage","to":"chp","type":"gas","obligation":"missing_ask","confidence":"medium"},
+{"from":"F2_storage","to":"chp","type":"gas","obligation":"missing_ask","confidence":"medium"},
+{"from":"N1_storage","to":"chp","type":"gas","obligation":"missing_ask","confidence":"medium"},
+{"from":"G1_storage","to":"chp","type":"gas","obligation":"missing_ask","confidence":"medium"},
+{"from":"chp","to":"chp_flare","type":"gas","obligation":"auto"},
+{"from":"chp","to":"heating_F1","type":"heat","obligation":"missing_ask","confidence":"medium"},
+{"from":"chp","to":"heating_F2","type":"heat","obligation":"missing_ask","confidence":"medium"},
+{"from":"chp","to":"heating_N1","type":"heat","obligation":"missing_ask","confidence":"medium"}
+]};
+const SHARED = {
+  regime:"underspecified", reference:EMBEDDED_REF,
+  dropped:[{"items":["Dosierer","Vorgrube","Tank 1-3","Kondensatschacht","Sickerwasserspeicher"],"reason":"Substratseite, Zulauf via Feedstock, keine simulierte Kante"},{"items":["BGAA"],"reason":"Biogasaufbereitung, kein PyADM1ODE-Bauteil"},{"items":["Rührwerke (PRW/TMR/LAR)"],"reason":"nicht simuliert"}],
+  expected_open_questions:[{"field":"chp (Existenz + P_el_nom)","priority":"high"},{"field":"heating connections","priority":"high"},{"field":"F1.V_gas","priority":"high"},{"field":"sep.source (N1 vs G1)","priority":"medium"}],
+  must_not_invent:["zusätzliche Digester außer F1/F2/N1/G1"],
+  oracle:{"chp.exists":true,"chp.P_el_nom":500,"chp.eta_el":0.40,"chp.eta_th":0.45,"sep.source":"N1","F1.V_gas":500,"F1.T_ad":313.15},
+  metadata:{"topology":"2 parallel primaries -> secondary -> storage","n_digesters":4,"has_chp":"ask->yes(500kW)","difficulty":"hard","split":"test"}
+};
+const IN_DE = "Die Biogasanlage BGA1 verarbeitet überwiegend Gülle und wird über drei Wege beschickt. Ein Feststoffdosierer bringt ein flüssiges Mischsubstrat mit rund 80 Tonnen pro Tag ein und beschickt damit die beiden Fermenter F1 und F2. Daneben gibt es eine Vorgrube mit den Maßen 5 mal 10 Meter, in der etwa 20 Kubikmeter Gülle pro Tag gesammelt und über eine Pumpe ebenfalls in F1 und F2 gefördert werden. Drei baugleiche Vorlagebehälter mit jeweils 11 mal 3,5 Meter sind über eine gemeinsame Pumpe an die beiden Fermenter angeschlossen.\n\nDie zwei Hauptfermenter F1 und F2 haben jeweils einen Durchmesser von 28 Metern und eine Höhe von 6 Metern und sind mit je drei Paddelrührwerken ausgestattet. Beide tragen ein Kuppeldach, das zugleich als Gasspeicher dient. Der Gärrest fließt anschließend in den Nachgärer N1, der ebenfalls 28 Meter Durchmesser und 6 Meter Höhe misst und mit einem Paddelrührwerk sowie einem Langachsrührwerk arbeitet. Auch N1 besitzt ein Kuppeldach. Aus dem Nachgärer gelangt das Material in das Gärrestlager G1 mit 30 Metern Durchmesser und 6 Metern Höhe, das mit zwei Tauchmotorrührwerken ausgerüstet ist.\n\nDas in den Behältern entstehende Biogas wird gesammelt und einer Biogasaufbereitungsanlage mit einer Kapazität von 500 Kubikmetern pro Stunde zugeführt. Für den Störfall steht eine Notfackel bereit, die überschüssiges Gas sicher verbrennt. Zur Behandlung des Gärrests ist ein Separator vorhanden, der das Digestat in eine feste und eine flüssige Phase trennt. Ein Kondensatschacht ist mit dem Fermenter F1 verbunden, und ein Sickerwasserspeicher ist mit den Fermentern F1 und F2 verbunden.\n\nAngaben zu Betriebsmengen, Füllständen, Temperaturen oder zur Erzeugung von Strom und Wärme liegen in den Unterlagen nicht vor.";
+const IN_TERSE = "Güllebasierte Biogasanlage mit zwei Fermentern (je 6 mal 28 Meter), einem Nachgärer (6 mal 28 Meter) und einem Gärrestlager (6 mal 30 Meter). Außerdem vorhanden sind ein Separator, eine Notfackel und eine Biogasaufbereitung.";
+const IN_EN = "The biogas plant BGA1 mainly processes manure and is fed through three routes. A solids dosing unit feeds a liquid mixed substrate at around 80 tonnes per day into the two digesters F1 and F2. In addition there is a pre pit measuring 5 by 10 metres that collects about 20 cubic metres of manure per day and pumps it into F1 and F2 as well. Three identical feed tanks of 11 by 3.5 metres each are connected to both digesters through a shared pump.\n\nThe two main digesters F1 and F2 each have a diameter of 28 metres and a height of 6 metres and are equipped with three paddle agitators each. Both carry a dome roof that also serves as gas storage. The digestate then flows into the secondary digester N1, which also measures 28 metres in diameter and 6 metres in height and uses one paddle agitator and one long axis agitator. N1 also has a dome roof. From the secondary digester the material moves into the digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators.\n\nThe biogas produced in the tanks is collected and fed to a biogas upgrading unit with a capacity of 500 cubic metres per hour. A safety flare is available to burn off surplus gas in case of a fault. A separator splits the digestate into a solid and a liquid fraction. A condensate shaft is connected to digester F1 and a leachate store is connected to digesters F1 and F2.";
+const EMBEDDED = [
+  Object.assign({id:"BGA1 (de, ausführlich)", input:{modality:"text",language:"de",content:IN_DE}}, SHARED),
+  Object.assign({id:"BGA1_terse (de, knapp)", input:{modality:"text",language:"de",content:IN_TERSE}}, SHARED),
+  Object.assign({id:"BGA1_en (en, ausführlich)", input:{modality:"text",language:"en",content:IN_EN}}, SHARED),
+];
+
+// ====================== CONSTANTS ======================
+const TYPE_FILL={Digester:"#dbeafe",GasStorage:"#f3f4f6",Separator:"#d1fae5",CHP:"#fef9c3",
+  Flare:"#f3f4f6",HeatingSystem:"#fee2e2",Boiler:"#fde68a",Mixer:"#e2e8f0"};
+const TYPE_ABBR={Digester:"Digester",GasStorage:"GasStorage",Separator:"Separator",CHP:"CHP",
+  Flare:"Flare",HeatingSystem:"Heizung",Boiler:"Boiler",Mixer:"Mixer"};
+const OB_COLOR={given:"#16a34a",derivable:"#0891b2",derivable_with_assumption:"#2563eb",
+  missing_default_ok:"#d97706",missing_ask:"#dc2626",inferred:"#7c3aed",auto:"#6b7280"};
+const OB_LABEL={given:"gegeben",derivable:"ableitbar",derivable_with_assumption:"ableitbar*",
+  missing_default_ok:"Default ok",missing_ask:"nachfragen",inferred:"ergänzt",auto:"automatisch"};
+const EDGE_RAW={liquid:"#2563eb",gas:"#6b7280",heat:"#dc2626"};
+const KEY_PARAMS={Digester:["V_liq","V_gas","T_ad"],CHP:["P_el_nom"],HeatingSystem:["target_temperature"],
+  Separator:["separator_type"],GasStorage:[],Flare:[]};
+const NW=158, NH=56;
+
+let ENTRIES=[], IDX=0, lastRefStr=null, MODE="embedded";
+function embeddedEntries(){ return EMBEDDED.map(dp=>({id:dp.id, path:null, dp})); }
+
+// ====================== HELPERS ======================
+function resolveParams(comp, byId){
+  let p = Object.assign({}, comp.params||{});
+  const sa = p._same_as; delete p._same_as;
+  if(sa && byId[sa]) p = Object.assign({}, resolveParams(byId[sa], byId), p);
+  return p;
+}
+function fmtAccept(a){
+  if(!a) return "";
+  if(Array.isArray(a)) return "∈ {"+a.join(", ")+"}";
+  if("ref" in a) return `[${a.min_rel??0}·${a.ref} … ${a.max_rel??"∞"}·${a.ref}]`;
+  return `[${a.min??"−∞"} … ${a.max??"∞"}]`;
+}
+
+// ====================== LAYOUT ======================
+function layout(nodes, edges){
+  const id2=Object.fromEntries(nodes.map(n=>[n.id,n]));
+  const layer={}; nodes.forEach(n=>layer[n.id]=0);
+  for(let it=0;it<nodes.length+2;it++){
+    let ch=false;
+    edges.forEach(e=>{ if(id2[e.from]&&id2[e.to]){ if(layer[e.to]<layer[e.from]+1){layer[e.to]=layer[e.from]+1;ch=true;} }});
+    if(!ch) break;
+  }
+  const byL={};
+  nodes.forEach(n=>{(byL[layer[n.id]] ||= []).push(n);});
+  const typeOrder=["GasStorage","Digester","Separator","CHP","Flare","HeatingSystem","Boiler","Mixer"];
+  const xgap=NW+90, ygap=NH+34, x0=40, y0=40;
+  let maxRows=0;
+  Object.values(byL).forEach(a=>maxRows=Math.max(maxRows,a.length));
+  const pos={};
+  Object.keys(byL).map(Number).sort((a,b)=>a-b).forEach(L=>{
+    const arr=byL[L].sort((a,b)=> (typeOrder.indexOf(a.type)-typeOrder.indexOf(b.type)) || a.id.localeCompare(b.id));
+    const totH=arr.length*ygap, offset=(maxRows*ygap-totH)/2;
+    arr.forEach((n,i)=>{ pos[n.id]={x:x0+L*xgap, y:y0+offset+i*ygap}; });
+  });
+  const W=x0+(Math.max(...Object.values(layer))+1)*xgap, H=y0+maxRows*ygap+20;
+  return {pos,W,H};
+}
+function clipToRect(cx,cy,fromx,fromy){
+  const hw=NW/2+4, hh=NH/2+4, dx=fromx-cx, dy=fromy-cy;
+  if(dx===0&&dy===0) return {x:cx,y:cy};
+  const s=Math.min(hw/Math.abs(dx||1e-6), hh/Math.abs(dy||1e-6));
+  return {x:cx+dx*s, y:cy+dy*s};
+}
+
+// ====================== GRAPH RENDER ======================
+function renderGraph(dp){
+  const ref=dp.reference;
+  const byId=Object.fromEntries(ref.components.map(c=>[c.id,c]));
+  const nodes=ref.components.map(c=>({id:c.id,type:c.type,label:c.label||c.id,
+    obligation:c.obligation||"given",auto:!!c.auto_created,params:resolveParams(c,byId)}));
+  const edges=ref.connections||[];
+  const {pos,W,H}=layout(nodes,edges);
+  const vp=document.getElementById("vp"); vp.innerHTML="";
+  let defs=`<defs>`;
+  for(const t of ["liquid","gas","heat"]) defs+=`<marker id="ar_${t}" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="${EDGE_RAW[t]}"/></marker>`;
+  defs+=`</defs>`; vp.insertAdjacentHTML("beforeend",defs);
+
+  edges.forEach(e=>{
+    const a=pos[e.from], b=pos[e.to]; if(!a||!b) return;
+    const ac=clipToRect(a.x,a.y,b.x,b.y), bc=clipToRect(b.x,b.y,a.x,a.y);
+    const ask=e.obligation==="missing_ask";
+    const dash = e.type==="gas" ? "6,4" : (ask?"3,4":"0");
+    const mx=(ac.x+bc.x)/2;
+    vp.insertAdjacentHTML("beforeend",
+      `<path d="M${ac.x},${ac.y} C ${mx},${ac.y} ${mx},${bc.y} ${bc.x},${bc.y}" fill="none"
+        stroke="${EDGE_RAW[e.type]}" stroke-width="2.2" stroke-dasharray="${dash}"
+        opacity="${ask?0.45:0.95}" marker-end="url(#ar_${e.type})"></path>`);
+  });
+
+  nodes.forEach(n=>{
+    const p=pos[n.id]; const x=p.x-NW/2, y=p.y-NH/2;
+    const fill=TYPE_FILL[n.type]||"#e2e8f0", ob=OB_COLOR[n.obligation]||"#64748b";
+    const ask=n.obligation==="missing_ask", auto=n.auto;
+    const sdash=ask?"5,4":(auto?"2,3":"0");
+    const kp=(KEY_PARAMS[n.type]||[]).map(k=>{const v=n.params[k]; return v&&("value" in v)?`${k}=${v.value}`:null;}).filter(Boolean).join("  ");
+    const g=document.createElementNS("http://www.w3.org/2000/svg","g"); g.setAttribute("class","node");
+    g.innerHTML=
+      `<rect x="${x}" y="${y}" width="${NW}" height="${NH}" rx="10" fill="${fill}" stroke="${ob}" stroke-width="2.4" stroke-dasharray="${sdash}"></rect>
+       <text class="nlabel" x="${p.x}" y="${y+22}" text-anchor="middle" fill="#0f172a">${n.label}</text>
+       <text class="ntype" x="${p.x}" y="${y+36}" text-anchor="middle">${TYPE_ABBR[n.type]||n.type}</text>
+       ${kp?`<text class="nparam" x="${p.x}" y="${y+50}" text-anchor="middle">${kp}</text>`:""}
+       ${ask?`<circle cx="${x+NW-12}" cy="${y+12}" r="9" fill="#dc2626"></circle><text class="nbadge" x="${x+NW-12}" y="${y+15.5}" text-anchor="middle" fill="#fff">?</text>`:""}
+       ${auto?`<text x="${x+8}" y="${y+13}" font-size="9" fill="#6b7280">auto</text>`:""}`;
+    g.addEventListener("click",ev=>{ev.stopPropagation();showDetail(n);});
+    vp.appendChild(g);
+  });
+
+  const svg=document.getElementById("svg"); svg.dataset.w=W; svg.dataset.h=H;
+  fitView(); buildLegend();
+}
+
+function showDetail(n){
+  const rows=Object.entries(n.params).map(([k,v])=>{
+    if(typeof v!=="object"||v===null) return "";
+    const ob=v.obligation||"given";
+    const badge=`<span class="badge" style="background:${OB_COLOR[ob]||'#64748b'}">${OB_LABEL[ob]||ob}</span>`;
+    const acc=v.accept?`<div class="accept">${fmtAccept(v.accept)}</div>`:"";
+    const val=("value" in v)?v.value:"—";
+    return `<tr><td class="p">${k}</td><td class="v">${val} ${badge}${v.ask_preferred?' <span class="badge" style="background:#dc2626">fragen</span>':''}${acc}</td></tr>`;
+  }).join("");
+  document.getElementById("dbody").innerHTML=
+    `<h3>${n.label}</h3>
+     <div class="sub">${TYPE_ABBR[n.type]||n.type} · Knoten: <span class="badge" style="background:${OB_COLOR[n.obligation]||'#64748b'}">${OB_LABEL[n.obligation]||n.obligation}</span>${n.auto?' <span class="badge" style="background:#6b7280">auto</span>':''}</div>
+     <table>${rows||'<tr><td class="p">keine simulierten Parameter</td></tr>'}</table>`;
+  document.getElementById("detail").style.display="block";
+}
+
+// ====================== SIDEBAR ======================
+function buildSidebar(dp){
+  const s=document.getElementById("side"); let h="";
+  h+=`<div class="vid"><span>${dp.id}</span><span class="lang">${(dp.input&&dp.input.language)||""}</span></div>`;
+  if(dp.input){
+    h+=`<h2>Input (variiert je Datenpunkt)</h2>`;
+    h+=`<div class="chips"><span class="chip">${dp.input.modality||"text"}</span><span class="chip ${dp.regime==='underspecified'?'warn':''}">${dp.regime||""}</span></div>`;
+    if(dp.input.content) h+=`<div class="quote">${dp.input.content.replace(/\n/g,"<br>")}</div>`;
+  }
+  if(dp.expected_open_questions&&dp.expected_open_questions.length){
+    h+=`<h2>Erwartete Rückfragen</h2>`;
+    dp.expected_open_questions.forEach(q=>h+=`<div class="li">${q.field} <small>${q.priority||""}</small></div>`);
+  }
+  if(dp.oracle&&Object.keys(dp.oracle).length){
+    h+=`<h2>Oracle (Multi-Turn-Antworten)</h2>`;
+    Object.entries(dp.oracle).forEach(([k,v])=>h+=`<div class="li">${k} <small>= ${JSON.stringify(v)}</small></div>`);
+  }
+  if(dp.must_not_invent&&dp.must_not_invent.length){
+    h+=`<h2>Nicht erfinden</h2>`;
+    dp.must_not_invent.forEach(x=>h+=`<div class="li">⛔ ${x}</div>`);
+  }
+  if(dp.dropped&&dp.dropped.length){
+    h+=`<h2>Verworfen (nicht simuliert)</h2>`;
+    dp.dropped.forEach(d=>h+=`<div class="li">${(d.items||[]).join(", ")} <small>${d.reason||""}</small></div>`);
+  }
+  if(dp.metadata){
+    h+=`<h2>Metadata</h2>`;
+    Object.entries(dp.metadata).forEach(([k,v])=>h+=`<div class="li">${k} <small>${Array.isArray(v)?v.join("; "):v}</small></div>`);
+  }
+  s.innerHTML=h;
+}
+
+function buildLegend(){
+  const nt=Object.keys(TYPE_FILL).map(t=>`<span class="k"><span class="sw" style="background:${TYPE_FILL[t]};border:1px solid #94a3b8"></span>${TYPE_ABBR[t]}</span>`).join("");
+  const et=Object.entries(EDGE_RAW).map(([t,c])=>`<span class="k"><span class="ln" style="border-top-color:${c}"></span>${t==='liquid'?'Flüssig':t==='gas'?'Gas':'Wärme'}</span>`).join("");
+  const ob=Object.keys(OB_COLOR).map(o=>`<span class="k"><span class="sw" style="background:#fff;border:2px solid ${OB_COLOR[o]}"></span>${OB_LABEL[o]}</span>`).join("");
+  document.getElementById("legend").innerHTML=
+    `<b>BAUTEILE</b><div class="row">${nt}</div><b>KANTEN</b><div class="row">${et}</div><b>OBLIGATION (Knotenrand)</b><div class="row">${ob}</div>`;
+}
+
+// ====================== NAVIGATION ======================
+function rebuildPicker(){
+  const sel=document.getElementById("picker");
+  sel.innerHTML=ENTRIES.map((e,i)=>`<option value="${i}">${e.id||('Datenpunkt '+(i+1))}</option>`).join("");
+}
+async function loadEntry(i){
+  const e=ENTRIES[i];
+  if(!e.dp && e.path){                                  // Live: Datenpunkt lazy aus Datei holen
+    const res=await fetch(e.path,{cache:"no-store"});   // no-store -> Edits erscheinen nach Reload
+    if(!res.ok) throw new Error(res.status+" "+e.path);
+    e.dp=await res.json();
+    if(!e.id) e.id=e.dp.id;
+  }
+  return e.dp;
+}
+async function show(idx){
+  if(!ENTRIES.length) return;
+  IDX=(idx+ENTRIES.length)%ENTRIES.length;
+  let dp;
+  try{ dp=await loadEntry(IDX); }
+  catch(err){ alert("Laden fehlgeschlagen: "+err.message); return; }
+  const refStr=JSON.stringify(dp.reference);
+  if(refStr!==lastRefStr){ renderGraph(dp); lastRefStr=refStr; }   // Graph nur bei neuer Struktur neu aufbauen
+  buildSidebar(dp);
+  document.getElementById("detail").style.display="none";
+  document.getElementById("picker").value=IDX;
+  document.getElementById("counter").textContent=`${IDX+1} / ${ENTRIES.length}`;
+  const md=dp.metadata||{};
+  document.getElementById("hmeta").innerHTML=`<b>${dp.regime||""}</b> · ${(dp.input&&dp.input.language)||""} · ${md.difficulty||""} · ${md.split||""}`;
+}
+
+// ====================== ZOOM / PAN ======================
+let vt={x:0,y:0,k:1};
+function applyVT(){ document.getElementById("vp").setAttribute("transform",`translate(${vt.x},${vt.y}) scale(${vt.k})`); }
+function fitView(){
+  const svg=document.getElementById("svg"); const r=svg.getBoundingClientRect();
+  const W=+svg.dataset.w||1000, H=+svg.dataset.h||700;
+  const k=Math.min(r.width/(W+40), r.height/(H+40), 1.4);
+  vt.k=k; vt.x=(r.width-W*k)/2; vt.y=(r.height-H*k)/2; applyVT();
+}
+(function(){
+  const svg=document.getElementById("svg");
+  svg.addEventListener("wheel",e=>{e.preventDefault();
+    const r=svg.getBoundingClientRect(), mx=e.clientX-r.left, my=e.clientY-r.top;
+    const f=e.deltaY<0?1.12:1/1.12, nk=Math.max(.2,Math.min(3,vt.k*f));
+    vt.x=mx-(mx-vt.x)*(nk/vt.k); vt.y=my-(my-vt.y)*(nk/vt.k); vt.k=nk; applyVT();
+  },{passive:false});
+  let drag=null;
+  svg.addEventListener("mousedown",e=>{drag={x:e.clientX-vt.x,y:e.clientY-vt.y};svg.classList.add("grabbing");});
+  window.addEventListener("mousemove",e=>{if(drag){vt.x=e.clientX-drag.x;vt.y=e.clientY-drag.y;applyVT();}});
+  window.addEventListener("mouseup",()=>{drag=null;svg.classList.remove("grabbing");});
+  document.getElementById("zin").onclick=()=>{vt.k=Math.min(3,vt.k*1.2);applyVT();};
+  document.getElementById("zout").onclick=()=>{vt.k=Math.max(.2,vt.k/1.2);applyVT();};
+  document.getElementById("zfit").onclick=fitView;
+  document.getElementById("dclose").onclick=()=>document.getElementById("detail").style.display="none";
+  svg.addEventListener("click",()=>document.getElementById("detail").style.display="none");
+  window.addEventListener("resize",fitView);
+
+  // navigation
+  document.getElementById("prev").onclick=()=>show(IDX-1);
+  document.getElementById("next").onclick=()=>show(IDX+1);
+  document.getElementById("picker").onchange=e=>show(+e.target.value);
+  window.addEventListener("keydown",e=>{
+    if(e.target.tagName==="SELECT") return;
+    if(e.key==="ArrowRight"||e.key==="ArrowDown"){show(IDX+1);}
+    else if(e.key==="ArrowLeft"||e.key==="ArrowUp"){show(IDX-1);}
+  });
+})();
+
+// ====================== FILE LOAD (mehrere Dateien) ======================
+document.getElementById("file").addEventListener("change",ev=>{
+  const files=[...ev.target.files]; if(!files.length) return;
+  Promise.all(files.map(f=>f.text())).then(texts=>{
+    try{
+      ENTRIES=texts.map(t=>{const dp=JSON.parse(t); return {id:dp.id, path:null, dp};});
+      MODE="files"; setModeBadge(); lastRefStr=null; IDX=0; rebuildPicker(); show(0);
+    }catch(err){ alert("JSON-Fehler: "+err.message); }
+  });
+});
+
+// ====================== INIT (Live-Manifest, sonst eingebettet) ======================
+function setModeBadge(){
+  const el=document.getElementById("mode");
+  const cfg={live:["● Live aus dataset/","#166534","#dcfce7"],
+             files:["● geladene Dateien","#1e40af","#dbeafe"],
+             embedded:["● eingebettet (Fallback)","#9a3412","#ffedd5"]}[MODE];
+  el.textContent=cfg[0]; el.style.color=cfg[1]; el.style.background=cfg[2]; el.style.borderColor=cfg[1];
+  el.title = MODE==="embedded"
+    ? "Per Doppelklick geöffnet — der Browser kann lokale Dateien nicht lesen. Über localhost servieren für Live-Daten aus dataset/."
+    : (MODE==="live" ? "Datenpunkte werden direkt aus dataset/ geladen (Edits nach Reload sichtbar)." : "");
+}
+async function tryLiveManifest(){
+  try{
+    const res=await fetch("../dataset/index.json",{cache:"no-store"});
+    if(!res.ok) return false;
+    const idx=await res.json();
+    const entries=(idx.datapoints||[]).map(d=>({id:d.id||d.path, path:"../dataset/"+d.path, dp:null}));
+    if(!entries.length) return false;
+    ENTRIES=entries; MODE="live"; return true;
+  }catch(_){ return false; }
+}
+(async function init(){
+  if(!(await tryLiveManifest())){ ENTRIES=embeddedEntries(); MODE="embedded"; }
+  setModeBadge(); rebuildPicker(); show(0);
+})();
+</script>
+</body>
+</html>
