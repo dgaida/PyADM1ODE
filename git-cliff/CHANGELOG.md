@@ -6,7 +6,17 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+- Enhance benchmark harness with substrate fallback and update gas consumer types  
+
+## [0.4.3] - 2026-06-15
+
+### Features
+
 - Add BiogasUpgrading component for biogas to biomethane conversion  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.4.2] - 2026-06-11
 
