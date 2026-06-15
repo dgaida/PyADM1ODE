@@ -20,9 +20,49 @@ import sys
 import traceback
 
 
+def _install_substrate_fallback() -> None:
+    """Make substrate inputs non-fatal for the structure benchmark.
+
+    The benchmark scores plant STRUCTURE only — substrates are deliberately not
+    part of the task (``substrates_scored: false`` in every datapoint). Any
+    substrate ID the candidate writes (valid, misspelled, or invented) must
+    therefore never crash the build. We replace ``Feedstock``'s per-item
+    resolver so unknown IDs fall back to a guaranteed-valid default substrate
+    instead of raising ``FileNotFoundError``. This patch lives only inside the
+    benchmark harness and does not affect production behaviour.
+    """
+    try:
+        from pyadm1.substrates import feedstock as fs
+    except Exception:
+        return  # PyADM1ODE not importable here — nothing to patch
+
+    # Guaranteed-valid fallback: prefer cattle_manure, else first available file.
+    fallback_path = fs._DEFAULT_DATA_DIR / "cattle_manure.yaml"
+    if not fallback_path.exists():
+        fallback_path = None
+        for ext in fs._SUBSTRATE_EXTENSIONS:
+            hits = sorted(fs._DEFAULT_DATA_DIR.glob(f"*{ext}"))
+            if hits:
+                fallback_path = hits[0]
+                break
+    if fallback_path is None:
+        return  # no substrate files to fall back to — leave original behaviour
+
+    original = fs.Feedstock._resolve_substrate  # already a plain function via the class
+
+    def safe_resolve(item):
+        try:
+            return original(item)
+        except Exception:
+            return fs.load_substrate(fallback_path)
+
+    fs.Feedstock._resolve_substrate = staticmethod(safe_resolve)
+
+
 def main() -> None:
     repo_root, code_path = sys.argv[1], sys.argv[2]
     sys.path.insert(0, repo_root)
+    _install_substrate_fallback()
 
     try:
         with open(code_path, encoding="utf-8") as fh:

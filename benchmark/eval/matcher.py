@@ -44,6 +44,7 @@ TYPE_MAP: Dict[str, str] = {
     "Flare": "flare",
     "HeatingSystem": "heating",
     "Boiler": "boiler",
+    "BiogasUpgrading": "upgrading",
     "Mixer": "mixer",
 }
 
@@ -55,13 +56,14 @@ SERIALIZED_PARAMS: Dict[str, set] = {
     "storage": {"capacity_m3", "storage_type"},
     "separator": {"separator_type", "separation_efficiency", "ts_solid_target", "n_to_solid", "p_to_solid"},
     "flare": {"destruction_efficiency"},
+    "upgrading": {"capacity_m3h", "ch4_recovery", "ch4_content_in", "ch4_content_out"},
     "boiler": set(),
     "mixer": set(),
 }
 
 AUTO_TYPES = {"storage", "flare"}
 # Typen, die Gas abnehmen/versenken (gueltige Endpunkte eines Gaspfads).
-GAS_CONSUMER_TYPES = {"chp", "flare", "boiler"}
+GAS_CONSUMER_TYPES = {"chp", "flare", "boiler", "upgrading"}
 
 # Obligationen, die eine Existenz/Verbindung strukturell ERFORDERN.
 REQUIRED_NODE_OBLIGATIONS = {"given", "derivable", "derivable_with_assumption", "auto"}
@@ -143,7 +145,7 @@ def lint_gas_paths(g: Graph) -> List[str]:
     """Strukturwarnungen fuer 'tote' Gaspfade.
 
     PyADM1ODE leitet Biogas nur bedarfsgesteuert weiter, wenn jede GasStorage
-    einen Abnehmer (CHP/Flare/Boiler) hat. Knoten ohne Abnahme bedeuten, dass
+    einen Abnehmer (CHP/Flare/Boiler/BGAA) hat. Knoten ohne Abnahme bedeuten, dass
     erzeugtes Gas im Modell nicht genutzt wird.
     """
     warns: List[str] = []
@@ -152,7 +154,8 @@ def lint_gas_paths(g: Graph) -> List[str]:
             outs = g.out_edges(nd.id, "gas")
             if not any(g.nodes.get(e.dst) and g.nodes[e.dst].ctype in GAS_CONSUMER_TYPES for e in outs):
                 warns.append(
-                    f"GasStorage '{nd.id}' hat keinen Gas-Abnehmer " f"(CHP/Flare/Boiler) -> Gas wird nicht weitergeleitet."
+                    f"GasStorage '{nd.id}' hat keinen Gas-Abnehmer "
+                    f"(CHP/Flare/Boiler/BGAA) -> Gas wird nicht weitergeleitet."
                 )
         elif nd.ctype == "digester":
             if not g.out_edges(nd.id, "gas"):

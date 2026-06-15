@@ -26,6 +26,8 @@ Deine Aufgabe: Schreibe lauffähigen Python-Code, der die beschriebene Biogasanl
 from pyadm1 import BiogasPlant, Feedstock
 from pyadm1.configurator.plant_configurator import PlantConfigurator
 
+# Substrate werden NICHT bewertet — uebernimm diese Zeile UNVERAENDERT,
+# egal welche Substrate in der Beschreibung genannt werden:
 feedstock = Feedstock(["cattle_manure"], feeding_freq=24, total_simtime=30)
 plant = BiogasPlant("ANLAGE")          # Variable MUSS "plant" heissen
 cfg = PlantConfigurator(plant, feedstock)
@@ -65,6 +67,11 @@ plant.initialize()
 ## Ausgaberegeln
 - Code ausschließlich in einem ```python … ``` Block
 - Variable muss `plant` heißen
+- Bewertet wird ausschließlich die **Anlagenstruktur** (Bauteile, Verbindungen,
+  Maße). Substrate/Feedstock zählen nicht — nutze die Feedstock-Zeile oben
+  unverändert und ignoriere in der Beschreibung genannte Substrate.
+- Maßangaben wie „6 × 23 m" meinen Höhe × Durchmesser (H × D), sofern nicht
+  ausdrücklich anders bezeichnet.
 - Keine Erklärungen außerhalb des Code-Blocks
 """
 
