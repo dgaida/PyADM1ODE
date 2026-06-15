@@ -1,0 +1,100 @@
+{
+  "id": "BGA3_sketch_full",
+  "provenance": "real_plant",
+  "input": {
+    "modality": "hybrid",
+    "language": "de",
+    "image_path": "BGA_sketch.png",
+    "content": "Ergänzende Informationen zur Anlagenskizze: Fermenter F1 und F2 sowie Nachgärer N1 werden mesophil bei 40 °C betrieben. Maximaler Füllgrad je 90 %. das Kuppeldach dient als Gasspeicher mit je 400 m³. Das Gärrestlager G1 ist unbeheizt (ca. 20 °C), maximaler Füllgrad 90 %, Gasspeichervolumen 430 m³. Digestatstrom: F1 → N1, F2 → N1, N1 → G1. Das Biogas aller Behälter wird dem BHKW zugeführt. Das BHKW hat einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %."
+  },
+  "regime": "fully_specified",
+  "scope": {
+    "only_pyadm1_simulated": true,
+    "substrates_scored": false,
+    "feed_topology_note": "Zulauf via Feedstock/Q_substrates, keine Kante -> nicht bewertbar"
+  },
+  "reference": {
+    "components": [
+      {
+        "id": "F1", "type": "Digester", "label": "Fermenter 1", "obligation": "given",
+        "geometry": {
+          "D": { "value": 26, "obligation": "given" },
+          "H_wall": { "value": 6, "obligation": "given" }
+        },
+        "params": {
+          "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
+          "V_liq": { "value": 2867, "obligation": "derivable", "formula": "pi/4*26^2 * fill_fraction*6", "accept": { "min": 2548, "max": 3028 } },
+          "V_gas": { "value": 400, "obligation": "given", "accept": { "min": 350, "max": 450 } },
+          "T_ad": { "value": 313.15, "obligation": "given", "accept": { "min": 311.15, "max": 316.15 } }
+        }
+      },
+      { "id": "F2", "type": "Digester", "label": "Fermenter 2", "obligation": "given",
+        "geometry": { "D": { "value": 26, "obligation": "given" }, "H_wall": { "value": 6, "obligation": "given" } },
+        "params": { "_same_as": "F1" } },
+      { "id": "N1", "type": "Digester", "label": "Nachgärer", "obligation": "given",
+        "geometry": { "D": { "value": 26, "obligation": "given" }, "H_wall": { "value": 6, "obligation": "given" } },
+        "params": { "_same_as": "F1" } },
+      {
+        "id": "G1", "type": "Digester", "label": "Gärrestlager", "obligation": "given",
+        "geometry": {
+          "D": { "value": 28, "obligation": "given" },
+          "H_wall": { "value": 6, "obligation": "given" }
+        },
+        "params": {
+          "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
+          "V_liq": { "value": 3325, "obligation": "derivable", "formula": "pi/4*28^2 * fill_fraction*6", "accept": { "min": 2956, "max": 3508 } },
+          "V_gas": { "value": 430, "obligation": "given", "accept": { "min": 380, "max": 480 } },
+          "T_ad": { "value": 293.15, "obligation": "given", "accept": { "min": 283.15, "max": 303.15 } }
+        }
+      },
+      { "id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "F2_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "N1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      {
+        "id": "bhkw", "type": "CHP", "label": "BHKW 500 kW", "obligation": "given",
+        "params": {
+          "P_el_nom": { "value": 500.0, "obligation": "given", "accept": { "min": 450, "max": 550 } },
+          "eta_el": { "value": 0.40, "obligation": "given", "accept": { "min": 0.33, "max": 0.45 } },
+          "eta_th": { "value": 0.45, "obligation": "given", "accept": { "min": 0.38, "max": 0.52 } }
+        }
+      },
+      { "id": "bhkw_flare", "type": "Flare", "label": "Notfackel", "obligation": "auto", "auto_created": true, "match": "canonicalize",
+        "note": "von add_chp erzeugt; entspricht 'Fackel' in der Skizze" }
+    ],
+    "connections": [
+      { "from": "F1", "to": "N1", "type": "liquid", "obligation": "given" },
+      { "from": "F2", "to": "N1", "type": "liquid", "obligation": "given" },
+      { "from": "N1", "to": "G1", "type": "liquid", "obligation": "given" },
+      { "from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "F2", "to": "F2_storage", "type": "gas", "obligation": "auto" },
+      { "from": "N1", "to": "N1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "F1_storage", "to": "bhkw", "type": "gas", "obligation": "given" },
+      { "from": "F2_storage", "to": "bhkw", "type": "gas", "obligation": "given" },
+      { "from": "N1_storage", "to": "bhkw", "type": "gas", "obligation": "given" },
+      { "from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "given" },
+      { "from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto" }
+    ]
+  },
+  "dropped": [
+    { "items": ["dos1", "dos2", "vorgrube1", "vorgrube2", "kds"], "reason": "Substratseite / Nebeneinrichtungen — Zulauf via Feedstock/Q_substrates; nicht simuliert" },
+    { "items": ["agitators 3xPRW/1xPRW+1xLAR/2xTMR", "Kuppeldach"], "reason": "nicht simuliert (in V_liq/V_gas aufgeloest)" }
+  ],
+  "expected_open_questions": [],
+  "must_not_invent": ["Separator (Anlage hat keinen)", "BGAA (Anlage hat keine)"],
+  "oracle": {
+    "bgaa.exists": false,
+    "chp.exists": true,
+    "bhkw.P_el_nom": 500.0, "bhkw.eta_el": 0.40, "bhkw.eta_th": 0.45,
+    "F1.V_gas": 400, "F2.V_gas": 400, "N1.V_gas": 400, "G1.V_gas": 430,
+    "F1.T_ad": 313.15, "F2.T_ad": 313.15, "N1.T_ad": 313.15, "G1.T_ad": 293.15,
+    "F1.fill_fraction": 0.90, "G1.fill_fraction": 0.90,
+    "digestate_cascade": "F1->N1, F2->N1, N1->G1"
+  },
+  "metadata": {
+    "topology": "2 parallel primaries -> secondary -> storage; CHP power generation; emergency flare",
+    "n_digesters": 4, "has_chp": true, "has_bgaa": false, "difficulty": "easy", "split": "test",
+    "known_gaps": []
+  }
+}

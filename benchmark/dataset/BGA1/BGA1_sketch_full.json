@@ -1,0 +1,107 @@
+{
+  "id": "BGA1_sketch_full",
+  "provenance": "real_plant",
+  "input": {
+    "modality": "hybrid",
+    "language": "de",
+    "image_path": "BGA1_sketch.png",
+    "content": "Die Fermenter F1 und F2 sowie der Nachgärer N1 werden mesophil bei 40 °C betrieben. Der maximale Füllgrad aller Behälter beträgt 90 %. Das Kuppeldach dient als Gasspeicher mit einem Volumen von je 500 m³. Das Gärrestlager G1 ist unbeheizt (ca. 20 °C) und hat einen maximalen Füllgrad von 90 % und ein Gasspeichervolumen von 570 m³. Der Digestatstrom verläuft von F1 und F2 in den Nachgärer N1 und von dort in das Gärrestlager G1. Das Biogas aller Behälter wird der Biogasaufbereitung zugeführt. Der Separator ist eine Schneckenpresse und erhält Gärrest aus dem Nachgärer N1. Die Biogasaufbereitung erreicht eine Methanausbeute von 98 % bei einem Methangehalt von 97 % im eingespeisten Biomethan."
+  },
+  "regime": "fully_specified",
+  "scope": {
+    "only_pyadm1_simulated": true,
+    "substrates_scored": false,
+    "feed_topology_note": "Zulauf via Feedstock/Q_substrates, keine Kante -> nicht bewertbar"
+  },
+  "reference": {
+    "components": [
+      {
+        "id": "F1", "type": "Digester", "label": "Fermenter 1", "obligation": "given",
+        "geometry": {
+          "D": { "value": 28, "obligation": "given" },
+          "H_wall": { "value": 6, "obligation": "given" }
+        },
+        "params": {
+          "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
+          "V_liq": { "value": 3325, "obligation": "derivable", "formula": "pi/4*28^2 * fill_fraction*6", "accept": { "min": 2956, "max": 3510 } },
+          "V_gas": { "value": 500, "obligation": "given", "accept": { "min": 450, "max": 550 } },
+          "T_ad": { "value": 313.15, "obligation": "given", "accept": { "min": 311.15, "max": 316.15 } }
+        }
+      },
+      { "id": "F2", "type": "Digester", "label": "Fermenter 2", "obligation": "given",
+        "geometry": { "D": { "value": 28, "obligation": "given" }, "H_wall": { "value": 6, "obligation": "given" } },
+        "params": { "_same_as": "F1" } },
+      { "id": "N1", "type": "Digester", "label": "Nachgärer", "obligation": "given",
+        "geometry": { "D": { "value": 28, "obligation": "given" }, "H_wall": { "value": 6, "obligation": "given" } },
+        "params": { "_same_as": "F1" } },
+      {
+        "id": "G1", "type": "Digester", "label": "Gärrestlager", "obligation": "given",
+        "geometry": {
+          "D": { "value": 30, "obligation": "given" },
+          "H_wall": { "value": 6, "obligation": "given" }
+        },
+        "params": {
+          "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
+          "V_liq": { "value": 3817, "obligation": "derivable", "formula": "pi/4*30^2 * fill_fraction*6", "accept": { "min": 3393, "max": 4030 } },
+          "V_gas": { "value": 570, "obligation": "given", "accept": { "min": 520, "max": 620 } },
+          "T_ad": { "value": 293.15, "obligation": "given", "accept": { "min": 283.15, "max": 303.15 } }
+        }
+      },
+      { "id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "F2_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "N1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      {
+        "id": "sep", "type": "Separator", "label": "Separator", "obligation": "given",
+        "params": {
+          "separator_type": { "value": "screw_press", "obligation": "given" }
+        },
+        "requires_inflow": { "type": "liquid", "from_type": "Digester", "note": "ohne eingehende liquid-Kante ist Q_in=0 -> simuliert nichts" }
+      },
+      {
+        "id": "bgaa", "type": "BiogasUpgrading", "label": "Biogasaufbereitung", "obligation": "given",
+        "params": {
+          "capacity_m3h": { "value": 500.0, "obligation": "given", "accept": { "min": 450, "max": 550 } },
+          "ch4_recovery": { "value": 0.98, "obligation": "given", "accept": { "min": 0.95, "max": 1.0 } },
+          "ch4_content_out": { "value": 0.97, "obligation": "given", "accept": { "min": 0.95, "max": 0.985 } }
+        }
+      },
+      { "id": "bgaa_flare", "type": "Flare", "label": "Notfackel", "obligation": "auto", "auto_created": true, "match": "canonicalize" }
+    ],
+    "connections": [
+      { "from": "F1", "to": "N1", "type": "liquid", "obligation": "given" },
+      { "from": "F2", "to": "N1", "type": "liquid", "obligation": "given" },
+      { "from": "N1", "to": "G1", "type": "liquid", "obligation": "given" },
+      { "from": "N1", "to": "sep", "type": "liquid", "obligation": "given" },
+      { "from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "F2", "to": "F2_storage", "type": "gas", "obligation": "auto" },
+      { "from": "N1", "to": "N1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "F1_storage", "to": "bgaa", "type": "gas", "obligation": "given" },
+      { "from": "F2_storage", "to": "bgaa", "type": "gas", "obligation": "given" },
+      { "from": "N1_storage", "to": "bgaa", "type": "gas", "obligation": "given" },
+      { "from": "G1_storage", "to": "bgaa", "type": "gas", "obligation": "given" },
+      { "from": "bgaa", "to": "bgaa_flare", "type": "gas", "obligation": "auto" }
+    ]
+  },
+  "dropped": [
+    { "items": ["dos", "vorgrube", "tank1", "tank2", "tank3", "kds", "sws"], "reason": "Substratseite / Nebeneinrichtungen — Zulauf via Feedstock/Q_substrates; nicht simuliert" },
+    { "items": ["agitators 3xPRW/2xTMR/1xLAR", "Kuppeldach"], "reason": "nicht simuliert (in V_liq/V_gas aufgeloest)" }
+  ],
+  "expected_open_questions": [],
+  "must_not_invent": ["zusaetzliche Digester ausser F1/F2/N1/G1", "ADM1-Reaktoren auf der Substratseite", "BHKW/CHP (Anlage hat keins)"],
+  "oracle": {
+    "chp.exists": false,
+    "bgaa.exists": true, "bgaa.capacity_m3h": 500.0, "bgaa.ch4_recovery": 0.98, "bgaa.ch4_content_out": 0.97,
+    "F1.V_gas": 500, "F2.V_gas": 500, "N1.V_gas": 500, "G1.V_gas": 570,
+    "F1.T_ad": 313.15, "F2.T_ad": 313.15, "N1.T_ad": 313.15, "G1.T_ad": 293.15,
+    "F1.fill_fraction": 0.90, "G1.fill_fraction": 0.90,
+    "sep.source": "N1", "sep.separator_type": "screw_press",
+    "digestate_cascade": "F1->N1, F2->N1, N1->G1"
+  },
+  "metadata": {
+    "topology": "2 parallel primaries -> secondary -> storage; separator on digestate; BGAA grid injection; emergency flare",
+    "n_digesters": 4, "has_chp": false, "has_bgaa": true, "difficulty": "easy", "split": "test",
+    "known_gaps": []
+  }
+}

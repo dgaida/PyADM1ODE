@@ -69,6 +69,10 @@ class TestComponentRegistryInitialization:
                 type("GasStorage", (), {}),
             ),
             "pyadm1.components.energy.flare": ("Flare", type("Flare", (), {})),
+            "pyadm1.components.energy.biogas_upgrading": (
+                "BiogasUpgrading",
+                type("BiogasUpgrading", (), {}),
+            ),
             "pyadm1.components.sensors.physical": (
                 "PhysicalSensor",
                 type("PhysicalSensor", (), {}),
@@ -106,6 +110,7 @@ class TestComponentRegistryInitialization:
             "Boiler",
             "GasStorage",
             "Flare",
+            "BiogasUpgrading",
             "PhysicalSensor",
             "ChemicalSensor",
             "GasSensor",
@@ -122,6 +127,7 @@ class TestComponentRegistryInitialization:
             "pyadm1.components.energy.boiler",
             "pyadm1.components.energy.gas_storage",
             "pyadm1.components.energy.flare",
+            "pyadm1.components.energy.biogas_upgrading",
             "pyadm1.components.sensors.physical",
             "pyadm1.components.sensors.chemical",
             "pyadm1.components.sensors.gas",

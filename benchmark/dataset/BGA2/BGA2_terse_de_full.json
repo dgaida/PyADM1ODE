@@ -1,0 +1,90 @@
+{
+  "id": "BGA2_terse_de_full",
+  "provenance": "real_plant",
+  "input": {
+    "modality": "text",
+    "language": "de",
+    "content": "Güllebasierte Biogasanlage mit einem Fermenter F1 (6×23 m, Füllgrad 90 %, Gasspeicher 300 m³, mesophil 40 °C), einem Nachgärer N1 (6×23 m, gleiche Parameter) und einem unbeheizten Gärrestlager G1 (6×30 m, Füllgrad 90 %, Gasspeicher 500 m³, ca. 20 °C). Digestatstrom: F1 in N1, N1 in G1. Außerdem vorhanden: ein BHKW 250 kW (eta_el = 40 %, eta_th = 45 %) und eine Notfackel."
+  },
+  "regime": "fully_specified",
+  "scope": {
+    "only_pyadm1_simulated": true,
+    "substrates_scored": false,
+    "feed_topology_note": "Zulauf via Feedstock/Q_substrates, keine Kante -> nicht bewertbar"
+  },
+  "reference": {
+    "components": [
+      {
+        "id": "F1", "type": "Digester", "label": "Fermenter 1", "obligation": "given",
+        "geometry": {
+          "D": { "value": 23, "obligation": "given" },
+          "H_wall": { "value": 6, "obligation": "given" }
+        },
+        "params": {
+          "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
+          "V_liq": { "value": 2244, "obligation": "derivable", "formula": "pi/4*23^2 * fill_fraction*6", "accept": { "min": 1994, "max": 2369 } },
+          "V_gas": { "value": 300, "obligation": "given", "accept": { "min": 250, "max": 350 } },
+          "T_ad": { "value": 313.15, "obligation": "given", "accept": { "min": 311.15, "max": 316.15 } }
+        }
+      },
+      { "id": "N1", "type": "Digester", "label": "Nachgärer", "obligation": "given",
+        "geometry": { "D": { "value": 23, "obligation": "given" }, "H_wall": { "value": 6, "obligation": "given" } },
+        "params": { "_same_as": "F1" } },
+      {
+        "id": "G1", "type": "Digester", "label": "Gärrestlager", "obligation": "given",
+        "geometry": {
+          "D": { "value": 30, "obligation": "given" },
+          "H_wall": { "value": 6, "obligation": "given" }
+        },
+        "params": {
+          "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
+          "V_liq": { "value": 3817, "obligation": "derivable", "formula": "pi/4*30^2 * fill_fraction*6", "accept": { "min": 3393, "max": 4030 } },
+          "V_gas": { "value": 500, "obligation": "given", "accept": { "min": 450, "max": 550 } },
+          "T_ad": { "value": 293.15, "obligation": "given", "accept": { "min": 283.15, "max": 303.15 } }
+        }
+      },
+      { "id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "N1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      {
+        "id": "bhkw", "type": "CHP", "label": "BHKW 250 kW", "obligation": "given",
+        "params": {
+          "P_el_nom": { "value": 250.0, "obligation": "given", "accept": { "min": 220, "max": 280 } },
+          "eta_el": { "value": 0.40, "obligation": "given", "accept": { "min": 0.33, "max": 0.45 } },
+          "eta_th": { "value": 0.45, "obligation": "given", "accept": { "min": 0.38, "max": 0.52 } }
+        }
+      },
+      { "id": "bhkw_flare", "type": "Flare", "label": "Notfackel", "obligation": "auto", "auto_created": true, "match": "canonicalize" }
+    ],
+    "connections": [
+      { "from": "F1", "to": "N1", "type": "liquid", "obligation": "given" },
+      { "from": "N1", "to": "G1", "type": "liquid", "obligation": "given" },
+      { "from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "N1", "to": "N1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "F1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred", "confidence": "high" },
+      { "from": "N1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred", "confidence": "high" },
+      { "from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred", "confidence": "high" },
+      { "from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto" }
+    ]
+  },
+  "dropped": [
+    { "items": ["Rührwerke", "Kuppeldach"], "reason": "nicht simuliert (in V_liq/V_gas aufgeloest)" }
+  ],
+  "expected_open_questions": [],
+  "must_not_invent": ["zweiten Fermenter F2 (Anlage hat nur F1)", "Separator (Anlage hat keinen)", "BGAA (Anlage hat keine)"],
+  "oracle": {
+    "bgaa.exists": false,
+    "chp.exists": true,
+    "bhkw.P_el_nom": 250.0, "bhkw.eta_el": 0.40, "bhkw.eta_th": 0.45,
+    "F1.V_gas": 300, "N1.V_gas": 300, "G1.V_gas": 500,
+    "F1.T_ad": 313.15, "N1.T_ad": 313.15, "G1.T_ad": 293.15,
+    "F1.fill_fraction": 0.90, "G1.fill_fraction": 0.90,
+    "digestate_cascade": "F1->N1, N1->G1"
+  },
+  "metadata": {
+    "topology": "primary -> secondary -> storage; CHP power generation; emergency flare",
+    "n_digesters": 3, "has_chp": true, "has_bgaa": false, "difficulty": "easy", "split": "test",
+    "known_gaps": []
+  }
+}

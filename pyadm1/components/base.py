@@ -22,6 +22,7 @@ class ComponentType(Enum):
     BOILER = "boiler"
     SENSOR = "sensor"
     FLARE = "flare"
+    UPGRADING = "upgrading"
 
 
 class Component(ABC):

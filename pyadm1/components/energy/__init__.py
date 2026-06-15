@@ -39,10 +39,12 @@ from .chp import CHP
 from .boiler import Boiler
 from .gas_storage import GasStorage
 from .flare import Flare
+from .biogas_upgrading import BiogasUpgrading
 
 __all__ = [
     "CHP",
     "Boiler",
     "GasStorage",
     "Flare",
+    "BiogasUpgrading",
 ]

@@ -1,25 +1,172 @@
 {
   "datapoints": [
     {
-      "id": "BGA1_reduced_simulated_final",
-      "path": "BGA1/BGA1.json",
+      "id": "BGA1_sketch",
+      "path": "BGA1/BGA1_sketch.json",
+      "language": "de",
+      "modality": "image",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA1_sketch_full",
+      "path": "BGA1/BGA1_sketch_full.json",
+      "language": "de",
+      "modality": "hybrid",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA1_terse_de",
+      "path": "BGA1/BGA1_terse_de.json",
       "language": "de",
       "modality": "text",
       "regime": "underspecified"
     },
     {
-      "id": "BGA1_en",
-      "path": "BGA1/BGA1_en.json",
+      "id": "BGA1_terse_de_full",
+      "path": "BGA1/BGA1_terse_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA1_text_de",
+      "path": "BGA1/BGA1_text_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA1_text_de_full",
+      "path": "BGA1/BGA1_text_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA1_text_en",
+      "path": "BGA1/BGA1_text_en.json",
       "language": "en",
       "modality": "text",
       "regime": "underspecified"
     },
     {
-      "id": "BGA1_terse",
-      "path": "BGA1/BGA1_terse.json",
+      "id": "BGA1_text_en_full",
+      "path": "BGA1/BGA1_text_en_full.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA2_sketch",
+      "path": "BGA2/BGA2_sketch.json",
+      "language": "de",
+      "modality": "image",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA2_sketch_full",
+      "path": "BGA2/BGA2_sketch_full.json",
+      "language": "de",
+      "modality": "hybrid",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA2_terse_de",
+      "path": "BGA2/BGA2_terse_de.json",
       "language": "de",
       "modality": "text",
       "regime": "underspecified"
+    },
+    {
+      "id": "BGA2_terse_de_full",
+      "path": "BGA2/BGA2_terse_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA2_text_de",
+      "path": "BGA2/BGA2_text_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA2_text_de_full",
+      "path": "BGA2/BGA2_text_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA2_text_en",
+      "path": "BGA2/BGA2_text_en.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA2_text_en_full",
+      "path": "BGA2/BGA2_text_en_full.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA3_sketch",
+      "path": "BGA3/BGA3_sketch.json",
+      "language": "de",
+      "modality": "image",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA3_sketch_full",
+      "path": "BGA3/BGA3_sketch_full.json",
+      "language": "de",
+      "modality": "hybrid",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA3_terse_de",
+      "path": "BGA3/BGA3_terse_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA3_terse_de_full",
+      "path": "BGA3/BGA3_terse_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA3_text_de",
+      "path": "BGA3/BGA3_text_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA3_text_de_full",
+      "path": "BGA3/BGA3_text_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA3_text_en",
+      "path": "BGA3/BGA3_text_en.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA3_text_en_full",
+      "path": "BGA3/BGA3_text_en_full.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "fully_specified"
     }
   ]
 }

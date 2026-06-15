@@ -1,0 +1,96 @@
+{
+  "id": "BGA2_text_en",
+  "provenance": "real_plant",
+  "input": {
+    "modality": "text",
+    "language": "en",
+    "content": "Biogas plant BGA2 mainly processes slurry. A direct dosing unit feeds 50 tonnes of mixed substrate per day into fermenter F1. A slurry pre-pit measuring 4 by 8 metres holds 10 cubic metres and pumps the slurry daily into F1 as well.\n\nFermenter F1 has a diameter of 23 metres and a wall height of 6 metres, equipped with three paddle agitators. It carries a dome roof that also serves as gas storage. Digestate flows from F1 into secondary digester N1, which also measures 23 metres in diameter and 6 metres in height and is fitted with one paddle agitator and one long-axis agitator. N1 also has a dome roof. From the secondary digester the digestate moves into digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators.\n\nThe biogas produced is fed to a combined heat and power unit (CHP) with a rated electrical output of 250 kW, generating electricity and heat simultaneously. An emergency flare is available for fault conditions. Both a condensate shaft and a leachate shaft are connected to fermenter F1."
+  },
+  "regime": "underspecified",
+  "scope": {
+    "only_pyadm1_simulated": true,
+    "substrates_scored": false,
+    "feed_topology_note": "Feed via Feedstock/Q_substrates, no simulated edge; not scored"
+  },
+  "reference": {
+    "components": [
+      {
+        "id": "F1", "type": "Digester", "label": "Digester 1", "obligation": "given",
+        "geometry": {
+          "D": { "value": 23, "obligation": "given" },
+          "H_wall": { "value": 6, "obligation": "given" }
+        },
+        "params": {
+          "fill_fraction": { "value": 0.90, "obligation": "missing_default_ok", "accept": { "min": 0.80, "max": 0.95 } },
+          "V_liq": { "value": 2244, "obligation": "derivable_with_assumption", "formula": "pi/4*23^2 * fill_fraction*6", "accept": { "min": 1994, "max": 2369 } },
+          "V_gas": { "value": 300, "obligation": "missing_default_ok", "accept": { "min_rel": 0.10, "max_rel": 0.30, "ref": "V_liq" }, "note": "dome roof serves as gas storage; volume not stated in text" },
+          "T_ad": { "value": 313.15, "obligation": "missing_default_ok", "accept": { "min": 311.15, "max": 316.15 }, "ask_preferred": true, "rationale": "slurry-based -> mesophilic 40 C" }
+        }
+      },
+      { "id": "N1", "type": "Digester", "label": "Secondary Digester", "obligation": "given",
+        "geometry": { "D": { "value": 23, "obligation": "given" }, "H_wall": { "value": 6, "obligation": "given" } },
+        "params": { "_same_as": "F1" } },
+      {
+        "id": "G1", "type": "Digester", "label": "Digestate Store", "obligation": "given",
+        "geometry": {
+          "D": { "value": 30, "obligation": "given" },
+          "H_wall": { "value": 6, "obligation": "given" }
+        },
+        "params": {
+          "fill_fraction": { "value": 0.90, "obligation": "missing_default_ok", "accept": { "min": 0.80, "max": 0.95 } },
+          "V_liq": { "value": 3817, "obligation": "derivable_with_assumption", "formula": "pi/4*30^2 * fill_fraction*6", "accept": { "min": 3393, "max": 4030 } },
+          "V_gas": { "value": 500, "obligation": "missing_default_ok", "accept": { "min_rel": 0.10, "max_rel": 0.30, "ref": "V_liq" } },
+          "T_ad": { "value": 293.15, "obligation": "missing_default_ok", "accept": { "min": 283.15, "max": 313.15 }, "note": "unheated store ~ ambient temperature" }
+        }
+      },
+      { "id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "N1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      {
+        "id": "bhkw", "type": "CHP", "label": "CHP 250 kW", "obligation": "given",
+        "params": {
+          "P_el_nom": { "value": 250.0, "obligation": "given", "accept": { "min": 220, "max": 280 } },
+          "eta_el": { "value": 0.40, "obligation": "missing_default_ok", "accept": { "min": 0.33, "max": 0.45 } },
+          "eta_th": { "value": 0.45, "obligation": "missing_default_ok", "accept": { "min": 0.38, "max": 0.52 } }
+        },
+        "note": "add_chp auto-creates bhkw_flare (= the safety flare mentioned in the text)"
+      },
+      { "id": "bhkw_flare", "type": "Flare", "label": "Safety Flare", "obligation": "auto", "auto_created": true, "match": "canonicalize" }
+    ],
+    "connections": [
+      { "from": "F1", "to": "N1", "type": "liquid", "obligation": "given" },
+      { "from": "N1", "to": "G1", "type": "liquid", "obligation": "given" },
+      { "from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "N1", "to": "N1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "F1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred", "confidence": "high" },
+      { "from": "N1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred", "confidence": "high" },
+      { "from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred", "confidence": "high" },
+      { "from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto" }
+    ]
+  },
+  "dropped": [
+    { "items": ["dos", "prepit", "condensate_shaft", "leachate_shaft"], "reason": "Feed side / ancillaries — input via Feedstock/Q_substrates; not simulated" },
+    { "items": ["agitators 3xPRW/1xLAR/2xTMR", "dome roof"], "reason": "not simulated (resolved into V_liq/V_gas)" }
+  ],
+  "expected_open_questions": [
+    { "field": "F1.V_gas | gas_storage_capacity", "priority": "high" },
+    { "field": "F1.T_ad", "priority": "medium" },
+    { "field": "bhkw.eta_el", "priority": "low" }
+  ],
+  "must_not_invent": ["second fermenter F2 (plant has only F1)", "separator (plant has none)", "BGAA (plant has none)"],
+  "oracle": {
+    "bgaa.exists": false,
+    "chp.exists": true,
+    "bhkw.P_el_nom": 250.0, "bhkw.eta_el": 0.40, "bhkw.eta_th": 0.45,
+    "F1.V_gas": 300, "N1.V_gas": 300, "G1.V_gas": 500,
+    "F1.T_ad": 313.15, "N1.T_ad": 313.15, "G1.T_ad": 293.15,
+    "F1.fill_fraction": 0.90, "G1.fill_fraction": 0.90,
+    "digestate_cascade": "F1->N1, N1->G1"
+  },
+  "metadata": {
+    "topology": "primary -> secondary -> storage; CHP power generation; emergency flare",
+    "n_digesters": 3, "has_chp": true, "has_bgaa": false, "difficulty": "medium", "split": "test",
+    "known_gaps": []
+  }
+}

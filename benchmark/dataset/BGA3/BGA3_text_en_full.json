@@ -1,0 +1,98 @@
+{
+  "id": "BGA3_text_en_full",
+  "provenance": "real_plant",
+  "input": {
+    "modality": "text",
+    "language": "en",
+    "content": "Biogas plant BGA3 processes mainly slurry and solid substrate. Two solid dosing units (Dos 1 and Dos 2) each feed 50 tonnes of substrate per day directly into fermenters F1 and F2 respectively. Two slurry pre-pits (each 5×8 metres) pump 20 cubic metres of slurry per day into fermenters F1 and F2.\n\nFermenters F1 and F2 each have a diameter of 26 metres and a wall height of 6 metres, each equipped with three paddle agitators. Each fermenter carries a dome roof that also serves as an integrated gas storage with a volume of 400 cubic metres. The fermenters operate mesophilically at 40 degrees Celsius (313.15 K) with a fill level of 90 percent. Digestate from F1 and F2 flows into secondary digester N1, which also measures 26 metres in diameter and 6 metres in height and is fitted with one paddle agitator and one long-axis agitator. N1 also has a dome roof with a gas storage volume of 400 cubic metres and operates at 40 degrees Celsius with a fill level of 90 percent. From the secondary digester the digestate moves into digestate store G1 with a diameter of 28 metres and a height of 6 metres, equipped with two submersible agitators. The digestate store is unheated (approx. 20 degrees Celsius / 293.15 K), has a fill level of 90 percent and a gas storage volume of 430 cubic metres.\n\nThe biogas produced is fed to a combined heat and power unit (CHP) with a rated electrical output of 500 kW. The CHP achieves an electrical efficiency of 40 percent and a thermal efficiency of 45 percent. An emergency flare is available for fault conditions. A condensate shaft is connected to fermenter F1."
+  },
+  "regime": "fully_specified",
+  "scope": {
+    "only_pyadm1_simulated": true,
+    "substrates_scored": false,
+    "feed_topology_note": "Feed via Feedstock/Q_substrates, no simulated edge; not scored"
+  },
+  "reference": {
+    "components": [
+      {
+        "id": "F1", "type": "Digester", "label": "Digester 1", "obligation": "given",
+        "geometry": {
+          "D": { "value": 26, "obligation": "given" },
+          "H_wall": { "value": 6, "obligation": "given" }
+        },
+        "params": {
+          "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
+          "V_liq": { "value": 2867, "obligation": "derivable", "formula": "pi/4*26^2 * fill_fraction*6", "accept": { "min": 2548, "max": 3028 } },
+          "V_gas": { "value": 400, "obligation": "given", "accept": { "min": 350, "max": 450 } },
+          "T_ad": { "value": 313.15, "obligation": "given", "accept": { "min": 311.15, "max": 316.15 } }
+        }
+      },
+      { "id": "F2", "type": "Digester", "label": "Digester 2", "obligation": "given",
+        "geometry": { "D": { "value": 26, "obligation": "given" }, "H_wall": { "value": 6, "obligation": "given" } },
+        "params": { "_same_as": "F1" } },
+      { "id": "N1", "type": "Digester", "label": "Secondary Digester", "obligation": "given",
+        "geometry": { "D": { "value": 26, "obligation": "given" }, "H_wall": { "value": 6, "obligation": "given" } },
+        "params": { "_same_as": "F1" } },
+      {
+        "id": "G1", "type": "Digester", "label": "Digestate Store", "obligation": "given",
+        "geometry": {
+          "D": { "value": 28, "obligation": "given" },
+          "H_wall": { "value": 6, "obligation": "given" }
+        },
+        "params": {
+          "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
+          "V_liq": { "value": 3325, "obligation": "derivable", "formula": "pi/4*28^2 * fill_fraction*6", "accept": { "min": 2956, "max": 3508 } },
+          "V_gas": { "value": 430, "obligation": "given", "accept": { "min": 380, "max": 480 } },
+          "T_ad": { "value": 293.15, "obligation": "given", "accept": { "min": 283.15, "max": 303.15 } }
+        }
+      },
+      { "id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "F2_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "N1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      {
+        "id": "bhkw", "type": "CHP", "label": "CHP 500 kW", "obligation": "given",
+        "params": {
+          "P_el_nom": { "value": 500.0, "obligation": "given", "accept": { "min": 450, "max": 550 } },
+          "eta_el": { "value": 0.40, "obligation": "given", "accept": { "min": 0.33, "max": 0.45 } },
+          "eta_th": { "value": 0.45, "obligation": "given", "accept": { "min": 0.38, "max": 0.52 } }
+        }
+      },
+      { "id": "bhkw_flare", "type": "Flare", "label": "Safety Flare", "obligation": "auto", "auto_created": true, "match": "canonicalize" }
+    ],
+    "connections": [
+      { "from": "F1", "to": "N1", "type": "liquid", "obligation": "given" },
+      { "from": "F2", "to": "N1", "type": "liquid", "obligation": "given" },
+      { "from": "N1", "to": "G1", "type": "liquid", "obligation": "given" },
+      { "from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "F2", "to": "F2_storage", "type": "gas", "obligation": "auto" },
+      { "from": "N1", "to": "N1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "F1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred", "confidence": "high" },
+      { "from": "F2_storage", "to": "bhkw", "type": "gas", "obligation": "inferred", "confidence": "high" },
+      { "from": "N1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred", "confidence": "high" },
+      { "from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred", "confidence": "high" },
+      { "from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto" }
+    ]
+  },
+  "dropped": [
+    { "items": ["dos1", "dos2", "prepit1", "prepit2", "condensate_shaft"], "reason": "Feed side / ancillaries — input via Feedstock/Q_substrates; not simulated" },
+    { "items": ["agitators 3xPRW/1xPRW+1xLAR/2xTMR", "dome roof"], "reason": "not simulated (resolved into V_liq/V_gas)" }
+  ],
+  "expected_open_questions": [],
+  "must_not_invent": ["separator (plant has none)", "BGAA (plant has none)"],
+  "oracle": {
+    "bgaa.exists": false,
+    "chp.exists": true,
+    "bhkw.P_el_nom": 500.0, "bhkw.eta_el": 0.40, "bhkw.eta_th": 0.45,
+    "F1.V_gas": 400, "F2.V_gas": 400, "N1.V_gas": 400, "G1.V_gas": 430,
+    "F1.T_ad": 313.15, "F2.T_ad": 313.15, "N1.T_ad": 313.15, "G1.T_ad": 293.15,
+    "F1.fill_fraction": 0.90, "G1.fill_fraction": 0.90,
+    "digestate_cascade": "F1->N1, F2->N1, N1->G1"
+  },
+  "metadata": {
+    "topology": "2 parallel primaries -> secondary -> storage; CHP power generation; emergency flare",
+    "n_digesters": 4, "has_chp": true, "has_bgaa": false, "difficulty": "easy", "split": "test",
+    "known_gaps": []
+  }
+}

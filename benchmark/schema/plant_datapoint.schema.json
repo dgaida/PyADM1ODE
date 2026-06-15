@@ -158,7 +158,7 @@
         "type": {
           "type": "string",
           "description": "PyADM1ODE-Komponententyp.",
-          "enum": ["Digester", "GasStorage", "Separator", "CHP", "Flare", "HeatingSystem", "Boiler", "Mixer"]
+          "enum": ["Digester", "GasStorage", "Separator", "CHP", "Flare", "HeatingSystem", "Boiler", "Mixer", "BiogasUpgrading"]
         },
         "label": { "type": "string", "description": "Klartext-Name aus der Skizze, z.B. 'Fermenter 1'." },
         "obligation": {

@@ -93,6 +93,13 @@ class ComponentRegistry:
             pass
 
         try:
+            from pyadm1.components.energy.biogas_upgrading import BiogasUpgrading
+
+            self._registry["BiogasUpgrading"] = BiogasUpgrading
+        except ImportError:
+            pass
+
+        try:
             from pyadm1.components.sensors.physical import PhysicalSensor
 
             self._registry["PhysicalSensor"] = PhysicalSensor

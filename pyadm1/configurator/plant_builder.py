@@ -108,10 +108,12 @@ class BiogasPlant:
         """
         Perform one simulation time step for all components.
 
-        This uses a three-pass execution model:
+        This uses a multi-pass execution model:
         1. Execute digesters to produce gas → storages
         2. Execute CHPs to determine gas demand → storages
         3. Execute storages to supply gas → CHPs (re-execute with actual supply)
+        4. Execute BiogasUpgrading units: re-execute storages with BGAA demand,
+           then re-execute BGAA with actual supply, then re-execute its flare.
 
         Args:
             dt (float): Time step in days.
@@ -345,6 +347,67 @@ class BiogasPlant:
                         heater_inputs.update(source.outputs_data)
             results[component_id] = component.step(self.simulation_time, dt, heater_inputs)
 
+        # ========================================================================
+        # PASS 4: Handle gas demand from BiogasUpgrading units
+        #
+        # Mirror of the CHP pass: re-execute connected storages with BGAA's
+        # capacity as demand, then re-execute the BGAA with the actually supplied
+        # volume, then update the downstream flare with the capacity overflow.
+        # Without this pass, storages never supply gas to BGAA and fill until the
+        # storage's internal overflow vent fires — causing the flare to activate
+        # spuriously at every timestep once the storage is full.
+        # ========================================================================
+        for component_id, component in self.components.items():
+            if component.component_type.value != "upgrading":
+                continue
+
+            # BGAA requests its full nominal capacity; supply is capped by storage level
+            Q_gas_demand = component.capacity_m3_per_day
+
+            connected_storages = [
+                conn.from_component
+                for conn in self.connections
+                if conn.to_component == component_id
+                and conn.connection_type == "gas"
+                and conn.from_component in self.components
+                and self.components[conn.from_component].component_type.value == "storage"
+            ]
+
+            if not connected_storages:
+                continue
+
+            demand_per_storage = Q_gas_demand / len(connected_storages)
+            total_supplied = 0.0
+
+            for storage_id in connected_storages:
+                storage = self.components[storage_id]
+
+                # Preserve the per-step vent logged in Pass 2 (same reason as CHP pass)
+                pass2_vented = float(results.get(storage_id, {}).get("vented_volume_m3", 0.0))
+
+                storage_inputs = {
+                    "Q_gas_in_m3_per_day": 0.0,  # already added in Pass 2; avoid double-count
+                    "Q_gas_out_m3_per_day": demand_per_storage,
+                    "vent_to_flare": True,
+                }
+                storage_output = storage.step(self.simulation_time, dt, storage_inputs)
+                storage_output["vented_volume_m3"] = float(storage_output.get("vented_volume_m3", 0.0)) + pass2_vented
+                results[storage_id] = storage_output
+                total_supplied += storage_output.get("Q_gas_supplied_m3_per_day", 0.0)
+
+            # Re-execute BGAA with actual gas supply
+            bgaa_output = component.step(self.simulation_time, dt, {"Q_gas_in_m3_per_day": total_supplied})
+            results[component_id] = bgaa_output
+
+            # Re-execute downstream flare with BGAA's capacity overflow
+            for conn in self.connections:
+                if conn.from_component != component_id or conn.connection_type != "gas":
+                    continue
+                flare_id = conn.to_component
+                if flare_id in self.components and self.components[flare_id].component_type.value == "flare":
+                    flare_inputs = {"Q_gas_in_m3_per_day": bgaa_output.get("Q_gas_out_m3_per_day", 0.0)}
+                    results[flare_id] = self.components[flare_id].step(self.simulation_time, dt, flare_inputs)
+
         self.simulation_time += dt
 
         return results
@@ -483,6 +546,7 @@ class BiogasPlant:
             ComponentType.FLARE: "Flare",
             ComponentType.BOILER: "Boiler",
             ComponentType.SEPARATOR: "Separator",
+            ComponentType.UPGRADING: "BiogasUpgrading",
         }
 
         for comp_config in config.get("components", []):

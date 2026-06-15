@@ -1,4 +1,0 @@
-id,datapoint,candidate,build_success,structure,measures,gaps,overall,n_warnings,n_violations
-BGA1_reduced_simulated_final,benchmark\dataset\BGA1\BGA1.json,benchmark\dataset\BGA1\gold.py,True,1.0,1.0,1.0,1.0,0,1
-BGA1_en,benchmark\dataset\BGA1\BGA1_en.json,benchmark\dataset\BGA1\gold.py,True,1.0,1.0,1.0,1.0,0,1
-BGA1_terse,benchmark\dataset\BGA1\BGA1_terse.json,benchmark\dataset\BGA1\gold.py,True,1.0,1.0,1.0,1.0,0,1

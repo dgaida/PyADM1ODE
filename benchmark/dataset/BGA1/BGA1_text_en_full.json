@@ -1,0 +1,106 @@
+{
+  "id": "BGA1_text_en_full",
+  "provenance": "real_manufacturer_description",
+  "input": {
+    "modality": "text",
+    "language": "en",
+    "content": "The biogas plant BGA1 mainly processes manure and is fed through three routes. A solids dosing unit feeds a liquid mixed substrate at around 80 tonnes per day into the two digesters F1 and F2. In addition there is a pre pit measuring 5 by 10 metres that collects about 20 cubic metres of manure per day and pumps it into F1 and F2 as well. Three identical feed tanks of 11 by 3.5 metres each are connected to both digesters through a shared pump.\n\nThe two main digesters F1 and F2 each have a diameter of 28 metres and a height of 6 metres and are equipped with three paddle agitators each. Both carry a dome roof that also serves as gas storage with a volume of 500 cubic metres each. The fill level of the digesters is 90 percent. The plant operates mesophilically at 40 degrees Celsius. The digestate flows from F1 and F2 into the secondary digester N1, which also measures 28 metres in diameter and 6 metres in height and uses one paddle agitator and one long axis agitator. N1 also has a dome roof with a gas storage volume of 500 cubic metres and operates at 40 degrees Celsius. From the secondary digester the material moves into the digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators. The digestate store is unheated at approximately 20 degrees Celsius and has a gas storage volume of 570 cubic metres.\n\nThe biogas produced in the tanks is collected and fed to a biogas upgrading unit with a capacity of 500 cubic metres per hour. The upgrading unit achieves a methane recovery of 98 percent and feeds biomethane with a methane content of 97 percent into the gas grid. A safety flare is available to burn off surplus gas in case of a fault. The digestate from secondary digester N1 is fed to a screw press separator that splits the digestate into a solid and a liquid fraction. A condensate shaft is connected to digester F1 and a leachate store is connected to digesters F1 and F2."
+  },
+  "regime": "fully_specified",
+  "scope": {
+    "only_pyadm1_simulated": true,
+    "substrates_scored": false,
+    "feed_topology_note": "Feed via Feedstock/Q_substrates, no simulated edge; not scored"
+  },
+  "reference": {
+    "components": [
+      {
+        "id": "F1", "type": "Digester", "label": "Digester 1", "obligation": "given",
+        "geometry": {
+          "D": { "value": 28, "obligation": "given" },
+          "H_wall": { "value": 6, "obligation": "given" }
+        },
+        "params": {
+          "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
+          "V_liq": { "value": 3325, "obligation": "derivable", "formula": "pi/4*28^2 * fill_fraction*6", "accept": { "min": 2956, "max": 3510 } },
+          "V_gas": { "value": 500, "obligation": "given", "accept": { "min": 450, "max": 550 } },
+          "T_ad": { "value": 313.15, "obligation": "given", "accept": { "min": 311.15, "max": 316.15 } }
+        }
+      },
+      { "id": "F2", "type": "Digester", "label": "Digester 2", "obligation": "given",
+        "geometry": { "D": { "value": 28, "obligation": "given" }, "H_wall": { "value": 6, "obligation": "given" } },
+        "params": { "_same_as": "F1" } },
+      { "id": "N1", "type": "Digester", "label": "Secondary Digester", "obligation": "given",
+        "geometry": { "D": { "value": 28, "obligation": "given" }, "H_wall": { "value": 6, "obligation": "given" } },
+        "params": { "_same_as": "F1" } },
+      {
+        "id": "G1", "type": "Digester", "label": "Digestate Store", "obligation": "given",
+        "geometry": {
+          "D": { "value": 30, "obligation": "given" },
+          "H_wall": { "value": 6, "obligation": "given" }
+        },
+        "params": {
+          "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
+          "V_liq": { "value": 3817, "obligation": "derivable", "formula": "pi/4*30^2 * fill_fraction*6", "accept": { "min": 3393, "max": 4030 } },
+          "V_gas": { "value": 570, "obligation": "given", "accept": { "min": 520, "max": 620 } },
+          "T_ad": { "value": 293.15, "obligation": "given", "accept": { "min": 283.15, "max": 303.15 } }
+        }
+      },
+      { "id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "F2_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "N1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      { "id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true, "match": "canonicalize" },
+      {
+        "id": "sep", "type": "Separator", "label": "Separator", "obligation": "given",
+        "params": {
+          "separator_type": { "value": "screw_press", "obligation": "given" }
+        },
+        "requires_inflow": { "type": "liquid", "from_type": "Digester", "note": "without incoming liquid edge Q_in=0 -> simulates nothing" }
+      },
+      {
+        "id": "bgaa", "type": "BiogasUpgrading", "label": "Biogas Upgrading", "obligation": "given",
+        "params": {
+          "capacity_m3h": { "value": 500.0, "obligation": "given", "accept": { "min": 450, "max": 550 } },
+          "ch4_recovery": { "value": 0.98, "obligation": "given", "accept": { "min": 0.95, "max": 1.0 } },
+          "ch4_content_out": { "value": 0.97, "obligation": "given", "accept": { "min": 0.95, "max": 0.985 } }
+        }
+      },
+      { "id": "bgaa_flare", "type": "Flare", "label": "Safety Flare", "obligation": "auto", "auto_created": true, "match": "canonicalize" }
+    ],
+    "connections": [
+      { "from": "F1", "to": "N1", "type": "liquid", "obligation": "given" },
+      { "from": "F2", "to": "N1", "type": "liquid", "obligation": "given" },
+      { "from": "N1", "to": "G1", "type": "liquid", "obligation": "given" },
+      { "from": "N1", "to": "sep", "type": "liquid", "obligation": "given" },
+      { "from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "F2", "to": "F2_storage", "type": "gas", "obligation": "auto" },
+      { "from": "N1", "to": "N1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto" },
+      { "from": "F1_storage", "to": "bgaa", "type": "gas", "obligation": "inferred", "confidence": "high" },
+      { "from": "F2_storage", "to": "bgaa", "type": "gas", "obligation": "inferred", "confidence": "high" },
+      { "from": "N1_storage", "to": "bgaa", "type": "gas", "obligation": "inferred", "confidence": "high" },
+      { "from": "G1_storage", "to": "bgaa", "type": "gas", "obligation": "inferred", "confidence": "high" },
+      { "from": "bgaa", "to": "bgaa_flare", "type": "gas", "obligation": "auto" }
+    ]
+  },
+  "dropped": [
+    { "items": ["dos", "prepit", "tank1", "tank2", "tank3", "condensate_shaft", "leachate_store"], "reason": "Feed side - input via Feedstock/Q_substrates, no simulated edge; not scored" },
+    { "items": ["agitators 3xpaddle/2xsubmersible/1xlong-axis", "dome roof"], "reason": "not simulated (resolved into V_liq/V_gas)" }
+  ],
+  "expected_open_questions": [],
+  "must_not_invent": ["additional digesters beyond F1/F2/N1/G1", "ADM1 reactors on the feed side", "CHP/BHKW (plant has none)"],
+  "oracle": {
+    "chp.exists": false,
+    "bgaa.exists": true, "bgaa.capacity_m3h": 500.0, "bgaa.ch4_recovery": 0.98, "bgaa.ch4_content_out": 0.97,
+    "F1.V_gas": 500, "F2.V_gas": 500, "N1.V_gas": 500, "G1.V_gas": 570,
+    "F1.T_ad": 313.15, "F2.T_ad": 313.15, "N1.T_ad": 313.15, "G1.T_ad": 293.15,
+    "F1.fill_fraction": 0.90, "G1.fill_fraction": 0.90,
+    "sep.source": "N1", "sep.separator_type": "screw_press",
+    "digestate_cascade": "F1->N1, F2->N1, N1->G1"
+  },
+  "metadata": {
+    "topology": "2 parallel primaries -> secondary -> storage; separator on digestate; BGAA grid injection; emergency flare",
+    "n_digesters": 4, "has_chp": false, "has_bgaa": true, "difficulty": "easy", "split": "test",
+    "known_gaps": []
+  }
+}

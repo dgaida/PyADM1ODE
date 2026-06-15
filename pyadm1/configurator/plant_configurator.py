@@ -7,7 +7,12 @@ defaults and validation.  Used both by direct API users and by the MCP server
 tools.
 """
 
-from typing import Optional, Dict, Any
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Optional
+
+if TYPE_CHECKING:
+    from pyadm1.components.energy.biogas_upgrading import BiogasUpgrading
 
 from pyadm1.configurator.plant_builder import BiogasPlant
 from pyadm1.components.biological.digester import Digester
@@ -211,6 +216,50 @@ class PlantConfigurator:
     def auto_connect_chp_to_heating(self, chp_id: str, heating_id: str) -> None:
         """Connect CHP → heating with heat flow."""
         self.connect(chp_id, heating_id, "heat")
+
+    def add_bgaa(
+        self,
+        bgaa_id: str,
+        capacity_m3h: float = 500.0,
+        ch4_recovery: float = 0.98,
+        ch4_content_in: float = 0.55,
+        ch4_content_out: float = 0.97,
+        name: Optional[str] = None,
+    ) -> "BiogasUpgrading":
+        """
+        Add a biogas upgrading unit (Biogasaufbereitungsanlage) to the plant.
+
+        Automatically creates and connects an emergency flare downstream of
+        the BGAA for capacity overflow (``{bgaa_id}_flare``).
+        """
+        from pyadm1.components.energy.biogas_upgrading import BiogasUpgrading
+
+        bgaa = BiogasUpgrading(
+            component_id=bgaa_id,
+            capacity_m3h=capacity_m3h,
+            ch4_recovery=ch4_recovery,
+            ch4_content_in=ch4_content_in,
+            ch4_content_out=ch4_content_out,
+            name=name or bgaa_id,
+        )
+        self.plant.add_component(bgaa)
+
+        flare_id = f"{bgaa_id}_flare"
+        flare = Flare(component_id=flare_id, name=f"{bgaa_id}_flare")
+        self.plant.add_component(flare)
+        self.connect(bgaa_id, flare_id, "gas")
+
+        return bgaa
+
+    def auto_connect_digester_to_bgaa(self, digester_id: str, bgaa_id: str) -> None:
+        """Connect digester gas storage → BGAA."""
+        storage_id = f"{digester_id}_storage"
+        if storage_id not in self.plant.components:
+            raise ValueError(
+                f"Gas storage '{storage_id}' not found for digester '{digester_id}'. "
+                f"Ensure the digester was added via PlantConfigurator.add_digester()."
+            )
+        self.connect(storage_id, bgaa_id, "gas")
 
     def create_single_stage_plant(
         self,
