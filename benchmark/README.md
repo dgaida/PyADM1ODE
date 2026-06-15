@@ -209,9 +209,9 @@ python benchmark/eval/selftest.py
 
 ## Drei Scores
 
-1. **Struktur** — Bauteile (nach Typ zugeordnet, nicht nach Namen) und Verbindungen als typisierter Graph.
-2. **Maße** — simulierte Parameter (V_liq, V_gas, T_ad, P_el_nom, …) im Akzeptanzband.
-3. **Fehlende Werte** — `missing_ask`-Felder: nachgefragt ODER plausibel gefüllt statt still erfunden.
+1. **Struktur** — Bauteile (nach Typ zugeordnet, nicht nach Namen) und Verbindungen als typisierter Graph.  
+2. **Maße** — simulierte Parameter (V_liq, V_gas, T_ad, P_el_nom, …) im Akzeptanzband.  
+3. **Fehlende Werte** — `missing_ask`-Felder: nachgefragt ODER plausibel gefüllt statt still erfunden.  
 
 Nur Größen, die PyADM1ODE **wirklich simuliert**, fliessen ein. Auto-Knoten
 (GasStorage je Digester, Flare je CHP/BGAA) werden über die Topologie ausgerichtet.

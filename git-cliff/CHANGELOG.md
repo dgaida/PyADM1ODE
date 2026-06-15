@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Features
+
+- Add BiogasUpgrading component for biogas to biomethane conversion  
+
+## [0.4.2] - 2026-06-11
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
 ## [0.4.1] - 2026-06-07
 
 ### Features
