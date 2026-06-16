@@ -4,9 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Benchmark
+
+- V_gas als Kuppeldach + 10% Kopfraum, explizite H/D in terse-Full  
+
+## [0.4.4] - 2026-06-15
+
 ### Features
 
 - Enhance benchmark harness with substrate fallback and update gas consumer types  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.4.3] - 2026-06-15
 
