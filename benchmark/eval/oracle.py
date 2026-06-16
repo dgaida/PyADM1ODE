@@ -14,28 +14,43 @@ from typing import Any, Dict, List
 
 # Kanonische Feldnamen, die das LLM typischerweise nennt, gemappt auf oracle-Keys
 _KEYWORD_MAP = {
+    # Betriebstemperatur (T_ad)
     "t_ad": "T_ad",
     "betriebstemperatur": "T_ad",
+    "prozesstemperatur": "T_ad",
     "temperatur": "T_ad",
     "temperature": "T_ad",
+    "warm": "T_ad",
+    "beheiz": "T_ad",
+    "mesophil": "T_ad",
+    "thermophil": "T_ad",
+    # Gasspeichervolumen (V_gas)
     "v_gas": "V_gas",
     "gasspeicher": "V_gas",
+    "gasraum": "V_gas",
     "gas_storage": "V_gas",
     "gas storage": "V_gas",
+    "headspace": "V_gas",
+    # Füllgrad (fill_fraction)
     "fill_fraction": "fill_fraction",
     "füllgrad": "fill_fraction",
+    "fuellgrad": "fill_fraction",
+    "füllstand": "fill_fraction",
+    "befüll": "fill_fraction",
     "fill level": "fill_fraction",
     "fillgrade": "fill_fraction",
+    # Elektrische Nennleistung (P_el_nom)
     "p_el_nom": "P_el_nom",
     "elektrische leistung": "P_el_nom",
+    "leistung": "P_el_nom",
     "nennleistung": "P_el_nom",
     "rated power": "P_el_nom",
+    # Wirkungsgrade (eta_el / eta_th) — "wirkungsgrad" liefert beide
     "eta_el": "eta_el",
-    "elektrischer wirkungsgrad": "eta_el",
-    "electrical efficiency": "eta_el",
     "eta_th": "eta_th",
-    "thermischer wirkungsgrad": "eta_th",
-    "thermal efficiency": "eta_th",
+    "wirkungsgrad": "eta",
+    "efficiency": "eta",
+    # Biogasaufbereitung (BGAA)
     "capacity_m3h": "capacity_m3h",
     "kapazität": "capacity_m3h",
     "ch4_recovery": "ch4_recovery",
@@ -43,17 +58,41 @@ _KEYWORD_MAP = {
     "methane recovery": "ch4_recovery",
     "ch4_content_out": "ch4_content_out",
     "methangehalt": "ch4_content_out",
+    # Digestat-/Gärrestkaskade (digestate_cascade)
     "digestate_cascade": "digestate_cascade",
     "kaskade": "digestate_cascade",
     "cascade": "digestate_cascade",
     "gärrestfluss": "digestate_cascade",
-    "separator_type": "separator_type",
-    "separator": "separator_type",
+    "gärrest": "digestate_cascade",
+    "gaerrest": "digestate_cascade",
+    "digestat": "digestate_cascade",
+    "reihenfolge": "digestate_cascade",
+    # Substratzufuhr (substrate_feed)
+    "substrate_feed": "substrate_feed",
+    "substrat": "substrate_feed",
+    "substrate": "substrate_feed",
+    "feedstock": "substrate_feed",
+    "zufuhr": "substrate_feed",
+    "fütter": "substrate_feed",
+    "fuetter": "substrate_feed",
+    "futter": "substrate_feed",
+    "feeding": "substrate_feed",
+    "beschickung": "substrate_feed",
+    "rohstoff": "substrate_feed",
+    "einsatzstoff": "substrate_feed",
+    "einsatzmaterial": "substrate_feed",
+    "inputmaterial": "substrate_feed",
+    "input material": "substrate_feed",
+    # Separator (Typ + Quelle) — "separator"/"sep" liefert beide sep.*-Felder
+    "separator": "sep",
+    "separator_type": "sep",
     "sep.source": "sep.source",
+    # Existenz von Komponenten
     "bgaa": "bgaa.exists",
     "biogasaufbereitung": "bgaa.exists",
     "chp": "chp.exists",
     "bhkw": "chp.exists",
+    "blockheizkraftwerk": "chp.exists",
 }
 
 

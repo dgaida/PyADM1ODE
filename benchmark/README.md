@@ -113,7 +113,7 @@ solve.py
   ├─[1]─ prompt.py → build_messages()
   │        Beschreibung + Bild (wenn vorhanden) + Aufgabe
   │
-  ├─[2]─ LLM Turn 1 (Anthropic API)
+  ├─[2]─ LLM Turn 1 (Groq API)
   │
   ├─[3a] Code in Turn 1? ──────────────────────────────────────────┐
   │                                                                │
@@ -139,7 +139,7 @@ solve.py
 
 ### LLM-Evaluation (solve.py)
 
-Benötigt: `pip install anthropic` und `ANTHROPIC_API_KEY` als Umgebungsvariable (Für eine andere API muss der Code in solve.py angepasst werden).
+Benötigt: `pip install groq` und `GROQ_API_KEY` als Umgebungsvariable (Für eine andere API muss nur die Client-Sektion in solve.py angepasst werden).
 
 ```bash
 # Nur fully_specified — kein Oracle nötig, einfachster Einstieg:
@@ -155,10 +155,10 @@ python benchmark/eval/solve.py --id BGA2_text_de_full
 python benchmark/eval/solve.py --id BGA2 --language de --verbose
 
 # Anderes Modell, ohne Oracle:
-python benchmark/eval/solve.py --model claude-opus-4-8 --no-oracle
+python benchmark/eval/solve.py --model openai/gpt-oss-120b --no-oracle
 
-# Nur Bild-Datenpunkte:
-python benchmark/eval/solve.py --modality image
+# Nur Bild-Datenpunkte (vision-fähiges Groq-Modell nötig):
+python benchmark/eval/solve.py --modality image --model meta-llama/llama-4-scout-17b-16e-instruct
 ```
 
 Ergebnisse landen in `benchmark/results/` als CSV + je Datenpunkt eine `.py`-Datei

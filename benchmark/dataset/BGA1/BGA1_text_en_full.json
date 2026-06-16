@@ -4,7 +4,7 @@
   "input": {
     "modality": "text",
     "language": "en",
-    "content": "The biogas plant BGA1 mainly processes manure and is fed through three routes. A solids dosing unit feeds a liquid mixed substrate at around 80 tonnes per day into the two digesters F1 and F2. In addition there is a pre pit measuring 5 by 10 metres that collects about 20 cubic metres of manure per day and pumps it into F1 and F2 as well. Three identical feed tanks of 11 by 3.5 metres each are connected to both digesters through a shared pump.\n\nThe two main digesters F1 and F2 each have a diameter of 28 metres and a height of 6 metres and are equipped with three paddle agitators each. Both carry a dome roof that also serves as gas storage with a volume of 500 cubic metres each. The fill level of the digesters is 90 percent. The plant operates mesophilically at 40 degrees Celsius. The digestate flows from F1 and F2 into the secondary digester N1, which also measures 28 metres in diameter and 6 metres in height and uses one paddle agitator and one long axis agitator. N1 also has a dome roof with a gas storage volume of 500 cubic metres and operates at 40 degrees Celsius. From the secondary digester the material moves into the digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators. The digestate store is unheated at approximately 20 degrees Celsius and has a gas storage volume of 570 cubic metres.\n\nThe biogas produced in the tanks is collected and fed to a biogas upgrading unit with a capacity of 500 cubic metres per hour. The upgrading unit achieves a methane recovery of 98 percent and feeds biomethane with a methane content of 97 percent into the gas grid. A safety flare is available to burn off surplus gas in case of a fault. The digestate from secondary digester N1 is fed to a screw press separator that splits the digestate into a solid and a liquid fraction. A condensate shaft is connected to digester F1 and a leachate store is connected to digesters F1 and F2."
+    "content": "The biogas plant BGA1 mainly processes manure and is fed through three routes. A solids dosing unit feeds a liquid mixed substrate at around 80 tonnes per day into the two digesters F1 and F2. In addition there is a pre pit measuring 5 by 10 metres that collects about 20 cubic metres of manure per day and pumps it into F1 and F2 as well. Three identical feed tanks of 11 by 3.5 metres each are connected to both digesters through a shared pump.\n\nThe two main digesters F1 and F2 each have a diameter of 28 metres and a height of 6 metres and are equipped with three paddle agitators each. Both carry a dome roof that also serves as gas storage; the total gas space (dome plus unfilled headspace) is 870 cubic metres each. The fill level of the digesters is 90 percent. The plant operates mesophilically at 40 degrees Celsius. The digestate flows from F1 and F2 into the secondary digester N1, which also measures 28 metres in diameter and 6 metres in height and uses one paddle agitator and one long axis agitator. N1 also has a dome roof with a total gas space of 870 cubic metres and operates at 40 degrees Celsius. From the secondary digester the material moves into the digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators. The digestate store is unheated at approximately 20 degrees Celsius and has a total gas space of 994 cubic metres.\n\nThe biogas produced in the tanks is collected and fed to a biogas upgrading unit with a capacity of 500 cubic metres per hour. The upgrading unit achieves a methane recovery of 98 percent and feeds biomethane with a methane content of 97 percent into the gas grid. A safety flare is available to burn off surplus gas in case of a fault. The digestate from secondary digester N1 is fed to a screw press separator that splits the digestate into a solid and a liquid fraction. A condensate shaft is connected to digester F1 and a leachate store is connected to digesters F1 and F2.\n\nSubstrate feed: approx. 80 t/d maize silage via the solid feeder (split across F1 and F2) and 20 m³/d cattle slurry from the pre-pit (into F1 and F2)."
   },
   "regime": "fully_specified",
   "scope": {
@@ -23,7 +23,7 @@
         "params": {
           "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
           "V_liq": { "value": 3325, "obligation": "derivable", "formula": "pi/4*28^2 * fill_fraction*6", "accept": { "min": 2956, "max": 3510 } },
-          "V_gas": { "value": 500, "obligation": "given", "accept": { "min": 450, "max": 550 } },
+          "V_gas": { "value": 870, "obligation": "given", "accept": { "min": 780, "max": 960 } },
           "T_ad": { "value": 313.15, "obligation": "given", "accept": { "min": 311.15, "max": 316.15 } }
         }
       },
@@ -42,7 +42,7 @@
         "params": {
           "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
           "V_liq": { "value": 3817, "obligation": "derivable", "formula": "pi/4*30^2 * fill_fraction*6", "accept": { "min": 3393, "max": 4030 } },
-          "V_gas": { "value": 570, "obligation": "given", "accept": { "min": 520, "max": 620 } },
+          "V_gas": { "value": 994, "obligation": "given", "accept": { "min": 890, "max": 1090 } },
           "T_ad": { "value": 293.15, "obligation": "given", "accept": { "min": 283.15, "max": 303.15 } }
         }
       },
@@ -90,9 +90,10 @@
   "expected_open_questions": [],
   "must_not_invent": ["additional digesters beyond F1/F2/N1/G1", "ADM1 reactors on the feed side", "CHP/BHKW (plant has none)"],
   "oracle": {
+    "substrate_feed": "approx. 80 t/d maize silage via the solid feeder (split across F1 and F2) and 20 m³/d cattle slurry from the pre-pit (into F1 and F2)",
     "chp.exists": false,
     "bgaa.exists": true, "bgaa.capacity_m3h": 500.0, "bgaa.ch4_recovery": 0.98, "bgaa.ch4_content_out": 0.97,
-    "F1.V_gas": 500, "F2.V_gas": 500, "N1.V_gas": 500, "G1.V_gas": 570,
+    "F1.V_gas": 870, "F2.V_gas": 870, "N1.V_gas": 870, "G1.V_gas": 994,
     "F1.T_ad": 313.15, "F2.T_ad": 313.15, "N1.T_ad": 313.15, "G1.T_ad": 293.15,
     "F1.fill_fraction": 0.90, "G1.fill_fraction": 0.90,
     "sep.source": "N1", "sep.separator_type": "screw_press",

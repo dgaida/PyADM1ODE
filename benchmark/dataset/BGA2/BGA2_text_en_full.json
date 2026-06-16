@@ -4,7 +4,7 @@
   "input": {
     "modality": "text",
     "language": "en",
-    "content": "Biogas plant BGA2 mainly processes slurry. A direct dosing unit feeds 50 tonnes of mixed substrate per day into fermenter F1. A slurry pre-pit measuring 4 by 8 metres holds 10 cubic metres and pumps the slurry daily into F1 as well.\n\nFermenter F1 has a diameter of 23 metres and a wall height of 6 metres, equipped with three paddle agitators. It carries a dome roof that also serves as gas storage with a volume of 300 cubic metres. The fermenter operates mesophilically at 40 degrees Celsius with a fill level of 90 percent. Digestate flows from F1 into secondary digester N1, which also measures 23 metres in diameter and 6 metres in height and is fitted with one paddle agitator and one long-axis agitator. N1 also has a dome roof with a gas storage volume of 300 cubic metres and operates at 40 degrees Celsius. From the secondary digester the digestate moves into digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators. The digestate store is unheated at approximately 20 degrees Celsius and has a gas storage volume of 500 cubic metres.\n\nThe biogas produced is fed to a combined heat and power unit (CHP) with a rated electrical output of 250 kW. The CHP achieves an electrical efficiency of 40 percent and a thermal efficiency of 45 percent. An emergency flare is available for fault conditions. Both a condensate shaft and a leachate shaft are connected to fermenter F1."
+    "content": "Biogas plant BGA2 mainly processes slurry. A direct dosing unit feeds 50 tonnes of mixed substrate per day into fermenter F1. A slurry pre-pit measuring 4 by 8 metres holds 10 cubic metres and pumps the slurry daily into F1 as well.\n\nFermenter F1 has a diameter of 23 metres and a wall height of 6 metres, equipped with three paddle agitators. It carries a dome roof that also serves as gas storage; the total gas space (dome plus unfilled headspace) is 549 cubic metres. The fermenter operates mesophilically at 40 degrees Celsius with a fill level of 90 percent. Digestate flows from F1 into secondary digester N1, which also measures 23 metres in diameter and 6 metres in height and is fitted with one paddle agitator and one long-axis agitator. N1 also has a dome roof with a total gas space of 549 cubic metres and operates at 40 degrees Celsius. From the secondary digester the digestate moves into digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators. The digestate store is unheated at approximately 20 degrees Celsius and has a total gas space of 924 cubic metres.\n\nThe biogas produced is fed to a combined heat and power unit (CHP) with a rated electrical output of 250 kW. The CHP achieves an electrical efficiency of 40 percent and a thermal efficiency of 45 percent. An emergency flare is available for fault conditions. Both a condensate shaft and a leachate shaft are connected to fermenter F1.\n\nSubstrate feed: 50 t/d maize silage via the solid feeder into F1 and 10 m³/d cattle slurry from the pre-pit into F1."
   },
   "regime": "fully_specified",
   "scope": {
@@ -23,7 +23,7 @@
         "params": {
           "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
           "V_liq": { "value": 2244, "obligation": "derivable", "formula": "pi/4*23^2 * fill_fraction*6", "accept": { "min": 1994, "max": 2369 } },
-          "V_gas": { "value": 300, "obligation": "given", "accept": { "min": 250, "max": 350 } },
+          "V_gas": { "value": 549, "obligation": "given", "accept": { "min": 490, "max": 610 } },
           "T_ad": { "value": 313.15, "obligation": "given", "accept": { "min": 311.15, "max": 316.15 } }
         }
       },
@@ -39,7 +39,7 @@
         "params": {
           "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
           "V_liq": { "value": 3817, "obligation": "derivable", "formula": "pi/4*30^2 * fill_fraction*6", "accept": { "min": 3393, "max": 4030 } },
-          "V_gas": { "value": 500, "obligation": "given", "accept": { "min": 450, "max": 550 } },
+          "V_gas": { "value": 924, "obligation": "given", "accept": { "min": 830, "max": 1020 } },
           "T_ad": { "value": 293.15, "obligation": "given", "accept": { "min": 283.15, "max": 303.15 } }
         }
       },
@@ -75,10 +75,11 @@
   "expected_open_questions": [],
   "must_not_invent": ["second fermenter F2 (plant has only F1)", "separator (plant has none)", "BGAA (plant has none)"],
   "oracle": {
+    "substrate_feed": "50 t/d maize silage via the solid feeder into F1 and 10 m³/d cattle slurry from the pre-pit into F1",
     "bgaa.exists": false,
     "chp.exists": true,
     "bhkw.P_el_nom": 250.0, "bhkw.eta_el": 0.40, "bhkw.eta_th": 0.45,
-    "F1.V_gas": 300, "N1.V_gas": 300, "G1.V_gas": 500,
+    "F1.V_gas": 549, "N1.V_gas": 549, "G1.V_gas": 924,
     "F1.T_ad": 313.15, "N1.T_ad": 313.15, "G1.T_ad": 293.15,
     "F1.fill_fraction": 0.90, "G1.fill_fraction": 0.90,
     "digestate_cascade": "F1->N1, N1->G1"

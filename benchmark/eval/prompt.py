@@ -2,8 +2,8 @@
 """
 Prompt-Builder für den PyADM1ODE-Benchmark.
 
-Baut die Anthropic-Messages-Liste auf, die an die API gesendet wird.
-Unterstützt Text-, Bild- und Hybrid-Datenpunkte.
+Baut die Messages-Liste im OpenAI/Groq-Chat-Format auf, die an die API
+gesendet wird. Unterstützt Text-, Bild- und Hybrid-Datenpunkte.
 """
 
 from __future__ import annotations
@@ -115,7 +115,7 @@ def build_messages(
     allow_questions: bool = True,
 ) -> List[Dict[str, Any]]:
     """
-    Baut die initiale Anthropic-Nachrichten-Liste (User-Turn) auf.
+    Baut die initiale Nachrichten-Liste (User-Turn) im OpenAI/Groq-Format auf.
 
     Parameters
     ----------
@@ -144,14 +144,11 @@ def build_messages(
             "gif": "image/gif",
             "webp": "image/webp",
         }.get(ext, "image/png")
+        b64 = base64.standard_b64encode(raw).decode()
         content_parts.append(
             {
-                "type": "image",
-                "source": {
-                    "type": "base64",
-                    "media_type": media_type,
-                    "data": base64.standard_b64encode(raw).decode(),
-                },
+                "type": "image_url",
+                "image_url": {"url": f"data:{media_type};base64,{b64}"},
             }
         )
 

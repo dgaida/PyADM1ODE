@@ -4,7 +4,7 @@
   "input": {
     "modality": "text",
     "language": "de",
-    "content": "Die Biogasanlage BGA1 verarbeitet überwiegend Gülle und wird über drei Wege beschickt. Ein Feststoffdosierer bringt ein flüssiges Mischsubstrat mit rund 80 Tonnen pro Tag ein und beschickt damit die beiden Fermenter F1 und F2. Daneben gibt es eine Vorgrube mit den Maßen 5 mal 10 Meter, in der etwa 20 Kubikmeter Gülle pro Tag gesammelt und über eine Pumpe ebenfalls in F1 und F2 gefördert werden. Drei baugleiche Vorlagebehälter mit jeweils 11 mal 3,5 Meter sind über eine gemeinsame Pumpe an die beiden Fermenter angeschlossen.\n\nDie zwei Hauptfermenter F1 und F2 haben jeweils einen Durchmesser von 28 Metern und eine Höhe von 6 Metern und sind mit je drei Paddelrührwerken ausgestattet. Beide tragen ein Kuppeldach, das zugleich als Gasspeicher mit einem Volumen von jeweils 500 m³ dient. Der Füllgrad der Fermenter beträgt 90 %. Die Anlage wird mesophil bei 40 °C betrieben. Der Gärrest fließt von F1 und F2 in den Nachgärer N1, der ebenfalls 28 Meter Durchmesser und 6 Meter Höhe misst und mit einem Paddelrührwerk sowie einem Langachsrührwerk arbeitet. N1 besitzt ebenfalls ein Kuppeldach mit einem Gasspeichervolumen von 500 m³ und wird bei 40 °C betrieben. Aus dem Nachgärer fließt das Material in das Gärrestlager G1 mit 30 Metern Durchmesser und 6 Metern Höhe, das mit zwei Tauchmotorrührwerken ausgerüstet ist. Das Gärrestlager ist nicht beheizt (ca. 20 °C) und verfügt über ein Gasspeichervolumen von 570 m³.\n\nDas in den Behältern entstehende Biogas wird gesammelt und einer Biogasaufbereitungsanlage mit einer Kapazität von 500 Kubikmetern pro Stunde zugeführt. Die Aufbereitung erreicht eine Methanausbeute von 98 % und speist Biomethan mit einem Methangehalt von 97 % ins Erdgasnetz ein. Für den Störfall steht eine Notfackel bereit, die überschüssiges Gas sicher verbrennt. Der Gärrest aus dem Nachgärer N1 wird einer Schneckenpresse (Separator) zugeführt, die das Digestat in eine feste und eine flüssige Phase trennt. Ein Kondensatschacht ist mit dem Fermenter F1 verbunden, und ein Sickerwasserspeicher ist mit den Fermentern F1 und F2 verbunden."
+    "content": "Die Biogasanlage BGA1 verarbeitet überwiegend Gülle und wird über drei Wege beschickt. Ein Feststoffdosierer bringt ein flüssiges Mischsubstrat mit rund 80 Tonnen pro Tag ein und beschickt damit die beiden Fermenter F1 und F2. Daneben gibt es eine Vorgrube mit den Maßen 5 mal 10 Meter, in der etwa 20 Kubikmeter Gülle pro Tag gesammelt und über eine Pumpe ebenfalls in F1 und F2 gefördert werden. Drei baugleiche Vorlagebehälter mit jeweils 11 mal 3,5 Meter sind über eine gemeinsame Pumpe an die beiden Fermenter angeschlossen.\n\nDie zwei Hauptfermenter F1 und F2 haben jeweils einen Durchmesser von 28 Metern und eine Höhe von 6 Metern und sind mit je drei Paddelrührwerken ausgestattet. Beide tragen ein Kuppeldach; der Gasraum (Kuppeldach plus nicht befüllter Kopfraum) beträgt jeweils 870 m³. Der Füllgrad der Fermenter beträgt 90 %. Die Anlage wird mesophil bei 40 °C betrieben. Der Gärrest fließt von F1 und F2 in den Nachgärer N1, der ebenfalls 28 Meter Durchmesser und 6 Meter Höhe misst und mit einem Paddelrührwerk sowie einem Langachsrührwerk arbeitet. N1 besitzt ebenfalls ein Kuppeldach mit einem Gasraum (inkl. Kopfraum) von 870 m³ und wird bei 40 °C betrieben. Aus dem Nachgärer fließt das Material in das Gärrestlager G1 mit 30 Metern Durchmesser und 6 Metern Höhe, das mit zwei Tauchmotorrührwerken ausgerüstet ist. Das Gärrestlager ist nicht beheizt (ca. 20 °C) und verfügt über einen Gasraum (inkl. Kopfraum) von 994 m³.\n\nDas in den Behältern entstehende Biogas wird gesammelt und einer Biogasaufbereitungsanlage mit einer Kapazität von 500 Kubikmetern pro Stunde zugeführt. Die Aufbereitung erreicht eine Methanausbeute von 98 % und speist Biomethan mit einem Methangehalt von 97 % ins Erdgasnetz ein. Für den Störfall steht eine Notfackel bereit, die überschüssiges Gas sicher verbrennt. Der Gärrest aus dem Nachgärer N1 wird einer Schneckenpresse (Separator) zugeführt, die das Digestat in eine feste und eine flüssige Phase trennt. Ein Kondensatschacht ist mit dem Fermenter F1 verbunden, und ein Sickerwasserspeicher ist mit den Fermentern F1 und F2 verbunden.\n\nSubstratzufuhr: ca. 80 t/d Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und 20 m³/d Rindergülle aus der Vorgrube (in F1 und F2)."
   },
   "regime": "fully_specified",
   "scope": {
@@ -23,7 +23,7 @@
         "params": {
           "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
           "V_liq": { "value": 3325, "obligation": "derivable", "formula": "pi/4*28^2 * fill_fraction*6", "accept": { "min": 2956, "max": 3510 } },
-          "V_gas": { "value": 500, "obligation": "given", "accept": { "min": 450, "max": 550 } },
+          "V_gas": { "value": 870, "obligation": "given", "accept": { "min": 780, "max": 960 } },
           "T_ad": { "value": 313.15, "obligation": "given", "accept": { "min": 311.15, "max": 316.15 } }
         }
       },
@@ -42,7 +42,7 @@
         "params": {
           "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
           "V_liq": { "value": 3817, "obligation": "derivable", "formula": "pi/4*30^2 * fill_fraction*6", "accept": { "min": 3393, "max": 4030 } },
-          "V_gas": { "value": 570, "obligation": "given", "accept": { "min": 520, "max": 620 } },
+          "V_gas": { "value": 994, "obligation": "given", "accept": { "min": 890, "max": 1090 } },
           "T_ad": { "value": 293.15, "obligation": "given", "accept": { "min": 283.15, "max": 303.15 } }
         }
       },
@@ -90,9 +90,10 @@
   "expected_open_questions": [],
   "must_not_invent": ["zusaetzliche Digester ausser F1/F2/N1/G1", "ADM1-Reaktoren auf der Substratseite", "BHKW/CHP (Anlage hat keins)"],
   "oracle": {
+    "substrate_feed": "ca. 80 t/d Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und 20 m³/d Rindergülle aus der Vorgrube (in F1 und F2)",
     "chp.exists": false,
     "bgaa.exists": true, "bgaa.capacity_m3h": 500.0, "bgaa.ch4_recovery": 0.98, "bgaa.ch4_content_out": 0.97,
-    "F1.V_gas": 500, "F2.V_gas": 500, "N1.V_gas": 500, "G1.V_gas": 570,
+    "F1.V_gas": 870, "F2.V_gas": 870, "N1.V_gas": 870, "G1.V_gas": 994,
     "F1.T_ad": 313.15, "F2.T_ad": 313.15, "N1.T_ad": 313.15, "G1.T_ad": 293.15,
     "F1.fill_fraction": 0.90, "G1.fill_fraction": 0.90,
     "sep.source": "N1", "sep.separator_type": "screw_press",

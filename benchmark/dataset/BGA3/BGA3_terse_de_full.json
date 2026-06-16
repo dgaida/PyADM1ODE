@@ -4,7 +4,7 @@
   "input": {
     "modality": "text",
     "language": "de",
-    "content": "Güllebasierte Biogasanlage mit zwei Fermentern F1 und F2 (je 6×26 m, Füllgrad 90 %, Gasspeicher 400 m³, mesophil 40 °C), einem Nachgärer N1 (6×26 m, gleiche Parameter) und einem unbeheizten Gärrestlager G1 (6×28 m, Füllgrad 90 %, Gasspeicher 430 m³, ca. 20 °C). Digestatstrom: F1 und F2 in N1, N1 in G1. Außerdem vorhanden: ein BHKW 500 kW (eta_el = 40 %, eta_th = 45 %) und eine Notfackel."
+    "content": "Güllebasierte Biogasanlage mit zwei Fermentern F1 und F2 (je Höhe 6 m, Durchmesser 26 m, Füllgrad 90 %, Gasraum 719 m³, mesophil 40 °C), einem Nachgärer N1 (Höhe 6 m, Durchmesser 26 m, gleiche Parameter) und einem unbeheizten Gärrestlager G1 (Höhe 6 m, Durchmesser 28 m, Füllgrad 90 %, Gasraum 799 m³, ca. 20 °C). Digestatstrom: F1 und F2 in N1, N1 in G1. Außerdem vorhanden: ein BHKW 500 kW (eta_el = 40 %, eta_th = 45 %) und eine Notfackel.\n\nSubstratzufuhr: je 50 t/d Maissilage über die Dosierer (Dos1 in F1, Dos2 in F2) und je 20 m³/d Rindergülle aus zwei Vorgruben (in F1 und F2)."
   },
   "regime": "fully_specified",
   "scope": {
@@ -23,7 +23,7 @@
         "params": {
           "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
           "V_liq": { "value": 2867, "obligation": "derivable", "formula": "pi/4*26^2 * fill_fraction*6", "accept": { "min": 2548, "max": 3028 } },
-          "V_gas": { "value": 400, "obligation": "given", "accept": { "min": 350, "max": 450 } },
+          "V_gas": { "value": 719, "obligation": "given", "accept": { "min": 650, "max": 790 } },
           "T_ad": { "value": 313.15, "obligation": "given", "accept": { "min": 311.15, "max": 316.15 } }
         }
       },
@@ -42,7 +42,7 @@
         "params": {
           "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
           "V_liq": { "value": 3325, "obligation": "derivable", "formula": "pi/4*28^2 * fill_fraction*6", "accept": { "min": 2956, "max": 3508 } },
-          "V_gas": { "value": 430, "obligation": "given", "accept": { "min": 380, "max": 480 } },
+          "V_gas": { "value": 799, "obligation": "given", "accept": { "min": 720, "max": 880 } },
           "T_ad": { "value": 293.15, "obligation": "given", "accept": { "min": 283.15, "max": 303.15 } }
         }
       },
@@ -81,10 +81,11 @@
   "expected_open_questions": [],
   "must_not_invent": ["Separator (Anlage hat keinen)", "BGAA (Anlage hat keine)"],
   "oracle": {
+    "substrate_feed": "je 50 t/d Maissilage über die Dosierer (Dos1 in F1, Dos2 in F2) und je 20 m³/d Rindergülle aus zwei Vorgruben (in F1 und F2)",
     "bgaa.exists": false,
     "chp.exists": true,
     "bhkw.P_el_nom": 500.0, "bhkw.eta_el": 0.40, "bhkw.eta_th": 0.45,
-    "F1.V_gas": 400, "F2.V_gas": 400, "N1.V_gas": 400, "G1.V_gas": 430,
+    "F1.V_gas": 719, "F2.V_gas": 719, "N1.V_gas": 719, "G1.V_gas": 799,
     "F1.T_ad": 313.15, "F2.T_ad": 313.15, "N1.T_ad": 313.15, "G1.T_ad": 293.15,
     "F1.fill_fraction": 0.90, "G1.fill_fraction": 0.90,
     "digestate_cascade": "F1->N1, F2->N1, N1->G1"

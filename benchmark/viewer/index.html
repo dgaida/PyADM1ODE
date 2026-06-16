@@ -160,7 +160,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 870,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -253,7 +253,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 570,
+              "value": 994,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -510,15 +510,16 @@ const EMBEDDED = [
       "BHKW/CHP (Anlage hat keins)"
     ],
     "oracle": {
+      "substrate_feed": "ca. 80 t/d Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und 20 m³/d Rindergülle aus der Vorgrube (in F1 und F2)",
       "chp.exists": false,
       "bgaa.exists": true,
       "bgaa.capacity_m3h": 500.0,
       "bgaa.ch4_recovery": 0.98,
       "bgaa.ch4_content_out": 0.97,
-      "F1.V_gas": 500,
-      "F2.V_gas": 500,
-      "N1.V_gas": 500,
-      "G1.V_gas": 570,
+      "F1.V_gas": 870,
+      "F2.V_gas": 870,
+      "N1.V_gas": 870,
+      "G1.V_gas": 994,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -553,7 +554,7 @@ const EMBEDDED = [
       "modality": "hybrid",
       "language": "de",
       "image_path": "BGA1_sketch.png",
-      "content": "Die Fermenter F1 und F2 sowie der Nachgärer N1 werden mesophil bei 40 °C betrieben. Der maximale Füllgrad aller Behälter beträgt 90 %. Das Kuppeldach dient als Gasspeicher mit einem Volumen von je 500 m³. Das Gärrestlager G1 ist unbeheizt (ca. 20 °C) und hat einen maximalen Füllgrad von 90 % und ein Gasspeichervolumen von 570 m³. Der Digestatstrom verläuft von F1 und F2 in den Nachgärer N1 und von dort in das Gärrestlager G1. Das Biogas aller Behälter wird der Biogasaufbereitung zugeführt. Der Separator ist eine Schneckenpresse und erhält Gärrest aus dem Nachgärer N1. Die Biogasaufbereitung erreicht eine Methanausbeute von 98 % bei einem Methangehalt von 97 % im eingespeisten Biomethan."
+      "content": "Die Fermenter F1 und F2 sowie der Nachgärer N1 werden mesophil bei 40 °C betrieben. Der maximale Füllgrad aller Behälter beträgt 90 %. Der Gasraum (Kuppeldach plus nicht befüllter Kopfraum) beträgt je 870 m³. Das Gärrestlager G1 ist unbeheizt (ca. 20 °C) und hat einen maximalen Füllgrad von 90 % und einen Gasraum (Kuppeldach plus Kopfraum) von 994 m³. Der Digestatstrom verläuft von F1 und F2 in den Nachgärer N1 und von dort in das Gärrestlager G1. Das Biogas aller Behälter wird der Biogasaufbereitung zugeführt. Der Separator ist eine Schneckenpresse und erhält Gärrest aus dem Nachgärer N1. Die Biogasaufbereitung erreicht eine Methanausbeute von 98 % bei einem Methangehalt von 97 % im eingespeisten Biomethan.\n\nSubstratzufuhr: ca. 80 t/d Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und 20 m³/d Rindergülle aus der Vorgrube (in F1 und F2)."
     },
     "regime": "fully_specified",
     "scope": {
@@ -597,11 +598,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 870,
               "obligation": "given",
               "accept": {
-                "min": 450,
-                "max": 550
+                "min": 780,
+                "max": 960
               }
             },
             "T_ad": {
@@ -686,11 +687,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 570,
+              "value": 994,
               "obligation": "given",
               "accept": {
-                "min": 520,
-                "max": 620
+                "min": 890,
+                "max": 1090
               }
             },
             "T_ad": {
@@ -898,15 +899,16 @@ const EMBEDDED = [
       "BHKW/CHP (Anlage hat keins)"
     ],
     "oracle": {
+      "substrate_feed": "ca. 80 t/d Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und 20 m³/d Rindergülle aus der Vorgrube (in F1 und F2)",
       "chp.exists": false,
       "bgaa.exists": true,
       "bgaa.capacity_m3h": 500.0,
       "bgaa.ch4_recovery": 0.98,
       "bgaa.ch4_content_out": 0.97,
-      "F1.V_gas": 500,
-      "F2.V_gas": 500,
-      "N1.V_gas": 500,
-      "G1.V_gas": 570,
+      "F1.V_gas": 870,
+      "F2.V_gas": 870,
+      "N1.V_gas": 870,
+      "G1.V_gas": 994,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -977,7 +979,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 870,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -1068,7 +1070,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 570,
+              "value": 994,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -1296,15 +1298,16 @@ const EMBEDDED = [
       "BHKW/CHP (Anlage hat keins)"
     ],
     "oracle": {
+      "substrate_feed": "ca. 80 t/d Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und 20 m³/d Rindergülle aus der Vorgrube (in F1 und F2)",
       "chp.exists": false,
       "bgaa.exists": true,
       "bgaa.capacity_m3h": 500.0,
       "bgaa.ch4_recovery": 0.98,
       "bgaa.ch4_content_out": 0.97,
-      "F1.V_gas": 500,
-      "F2.V_gas": 500,
-      "N1.V_gas": 500,
-      "G1.V_gas": 570,
+      "F1.V_gas": 870,
+      "F2.V_gas": 870,
+      "N1.V_gas": 870,
+      "G1.V_gas": 994,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -1331,7 +1334,7 @@ const EMBEDDED = [
     "input": {
       "modality": "text",
       "language": "de",
-      "content": "Güllebasierte Biogasanlage mit zwei Fermentern F1 und F2 (je 6×28 m, Füllgrad 90 %, Gasspeicher 500 m³, mesophil 40 °C), einem Nachgärer N1 (6×28 m, gleiche Parameter) und einem unbeheizten Gärrestlager G1 (6×30 m, Füllgrad 90 %, Gasspeicher 570 m³, ca. 20 °C). Digestatstrom: F1 und F2 in N1, N1 in G1. Außerdem vorhanden: eine Schneckenpresse als Separator (Zulauf aus N1), eine Notfackel und eine Biogasaufbereitung (500 m³/h, 98 % Methanausbeute, 97 % Methangehalt)."
+      "content": "Güllebasierte Biogasanlage mit zwei Fermentern F1 und F2 (je Höhe 6 m, Durchmesser 28 m, Füllgrad 90 %, Gasraum 870 m³, mesophil 40 °C), einem Nachgärer N1 (Höhe 6 m, Durchmesser 28 m, gleiche Parameter) und einem unbeheizten Gärrestlager G1 (Höhe 6 m, Durchmesser 30 m, Füllgrad 90 %, Gasraum 994 m³, ca. 20 °C). Digestatstrom: F1 und F2 in N1, N1 in G1. Außerdem vorhanden: eine Schneckenpresse als Separator (Zulauf aus N1), eine Notfackel und eine Biogasaufbereitung (500 m³/h, 98 % Methanausbeute, 97 % Methangehalt).\n\nSubstratzufuhr: ca. 80 t/d Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und 20 m³/d Rindergülle aus der Vorgrube (in F1 und F2)."
     },
     "regime": "fully_specified",
     "scope": {
@@ -1375,11 +1378,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 870,
               "obligation": "given",
               "accept": {
-                "min": 450,
-                "max": 550
+                "min": 780,
+                "max": 960
               }
             },
             "T_ad": {
@@ -1464,11 +1467,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 570,
+              "value": 994,
               "obligation": "given",
               "accept": {
-                "min": 520,
-                "max": 620
+                "min": 890,
+                "max": 1090
               }
             },
             "T_ad": {
@@ -1667,15 +1670,16 @@ const EMBEDDED = [
       "BHKW/CHP (Anlage hat keins)"
     ],
     "oracle": {
+      "substrate_feed": "ca. 80 t/d Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und 20 m³/d Rindergülle aus der Vorgrube (in F1 und F2)",
       "chp.exists": false,
       "bgaa.exists": true,
       "bgaa.capacity_m3h": 500.0,
       "bgaa.ch4_recovery": 0.98,
       "bgaa.ch4_content_out": 0.97,
-      "F1.V_gas": 500,
-      "F2.V_gas": 500,
-      "N1.V_gas": 500,
-      "G1.V_gas": 570,
+      "F1.V_gas": 870,
+      "F2.V_gas": 870,
+      "N1.V_gas": 870,
+      "G1.V_gas": 994,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -1746,7 +1750,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 870,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -1839,7 +1843,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 570,
+              "value": 994,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -2092,15 +2096,16 @@ const EMBEDDED = [
       "BHKW/CHP (Anlage hat keins)"
     ],
     "oracle": {
+      "substrate_feed": "ca. 80 t/d Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und 20 m³/d Rindergülle aus der Vorgrube (in F1 und F2)",
       "chp.exists": false,
       "bgaa.exists": true,
       "bgaa.capacity_m3h": 500.0,
       "bgaa.ch4_recovery": 0.98,
       "bgaa.ch4_content_out": 0.97,
-      "F1.V_gas": 500,
-      "F2.V_gas": 500,
-      "N1.V_gas": 500,
-      "G1.V_gas": 570,
+      "F1.V_gas": 870,
+      "F2.V_gas": 870,
+      "N1.V_gas": 870,
+      "G1.V_gas": 994,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -2127,7 +2132,7 @@ const EMBEDDED = [
     "input": {
       "modality": "text",
       "language": "de",
-      "content": "Die Biogasanlage BGA1 verarbeitet überwiegend Gülle und wird über drei Wege beschickt. Ein Feststoffdosierer bringt ein flüssiges Mischsubstrat mit rund 80 Tonnen pro Tag ein und beschickt damit die beiden Fermenter F1 und F2. Daneben gibt es eine Vorgrube mit den Maßen 5 mal 10 Meter, in der etwa 20 Kubikmeter Gülle pro Tag gesammelt und über eine Pumpe ebenfalls in F1 und F2 gefördert werden. Drei baugleiche Vorlagebehälter mit jeweils 11 mal 3,5 Meter sind über eine gemeinsame Pumpe an die beiden Fermenter angeschlossen.\n\nDie zwei Hauptfermenter F1 und F2 haben jeweils einen Durchmesser von 28 Metern und eine Höhe von 6 Metern und sind mit je drei Paddelrührwerken ausgestattet. Beide tragen ein Kuppeldach, das zugleich als Gasspeicher mit einem Volumen von jeweils 500 m³ dient. Der Füllgrad der Fermenter beträgt 90 %. Die Anlage wird mesophil bei 40 °C betrieben. Der Gärrest fließt von F1 und F2 in den Nachgärer N1, der ebenfalls 28 Meter Durchmesser und 6 Meter Höhe misst und mit einem Paddelrührwerk sowie einem Langachsrührwerk arbeitet. N1 besitzt ebenfalls ein Kuppeldach mit einem Gasspeichervolumen von 500 m³ und wird bei 40 °C betrieben. Aus dem Nachgärer fließt das Material in das Gärrestlager G1 mit 30 Metern Durchmesser und 6 Metern Höhe, das mit zwei Tauchmotorrührwerken ausgerüstet ist. Das Gärrestlager ist nicht beheizt (ca. 20 °C) und verfügt über ein Gasspeichervolumen von 570 m³.\n\nDas in den Behältern entstehende Biogas wird gesammelt und einer Biogasaufbereitungsanlage mit einer Kapazität von 500 Kubikmetern pro Stunde zugeführt. Die Aufbereitung erreicht eine Methanausbeute von 98 % und speist Biomethan mit einem Methangehalt von 97 % ins Erdgasnetz ein. Für den Störfall steht eine Notfackel bereit, die überschüssiges Gas sicher verbrennt. Der Gärrest aus dem Nachgärer N1 wird einer Schneckenpresse (Separator) zugeführt, die das Digestat in eine feste und eine flüssige Phase trennt. Ein Kondensatschacht ist mit dem Fermenter F1 verbunden, und ein Sickerwasserspeicher ist mit den Fermentern F1 und F2 verbunden."
+      "content": "Die Biogasanlage BGA1 verarbeitet überwiegend Gülle und wird über drei Wege beschickt. Ein Feststoffdosierer bringt ein flüssiges Mischsubstrat mit rund 80 Tonnen pro Tag ein und beschickt damit die beiden Fermenter F1 und F2. Daneben gibt es eine Vorgrube mit den Maßen 5 mal 10 Meter, in der etwa 20 Kubikmeter Gülle pro Tag gesammelt und über eine Pumpe ebenfalls in F1 und F2 gefördert werden. Drei baugleiche Vorlagebehälter mit jeweils 11 mal 3,5 Meter sind über eine gemeinsame Pumpe an die beiden Fermenter angeschlossen.\n\nDie zwei Hauptfermenter F1 und F2 haben jeweils einen Durchmesser von 28 Metern und eine Höhe von 6 Metern und sind mit je drei Paddelrührwerken ausgestattet. Beide tragen ein Kuppeldach; der Gasraum (Kuppeldach plus nicht befüllter Kopfraum) beträgt jeweils 870 m³. Der Füllgrad der Fermenter beträgt 90 %. Die Anlage wird mesophil bei 40 °C betrieben. Der Gärrest fließt von F1 und F2 in den Nachgärer N1, der ebenfalls 28 Meter Durchmesser und 6 Meter Höhe misst und mit einem Paddelrührwerk sowie einem Langachsrührwerk arbeitet. N1 besitzt ebenfalls ein Kuppeldach mit einem Gasraum (inkl. Kopfraum) von 870 m³ und wird bei 40 °C betrieben. Aus dem Nachgärer fließt das Material in das Gärrestlager G1 mit 30 Metern Durchmesser und 6 Metern Höhe, das mit zwei Tauchmotorrührwerken ausgerüstet ist. Das Gärrestlager ist nicht beheizt (ca. 20 °C) und verfügt über einen Gasraum (inkl. Kopfraum) von 994 m³.\n\nDas in den Behältern entstehende Biogas wird gesammelt und einer Biogasaufbereitungsanlage mit einer Kapazität von 500 Kubikmetern pro Stunde zugeführt. Die Aufbereitung erreicht eine Methanausbeute von 98 % und speist Biomethan mit einem Methangehalt von 97 % ins Erdgasnetz ein. Für den Störfall steht eine Notfackel bereit, die überschüssiges Gas sicher verbrennt. Der Gärrest aus dem Nachgärer N1 wird einer Schneckenpresse (Separator) zugeführt, die das Digestat in eine feste und eine flüssige Phase trennt. Ein Kondensatschacht ist mit dem Fermenter F1 verbunden, und ein Sickerwasserspeicher ist mit den Fermentern F1 und F2 verbunden.\n\nSubstratzufuhr: ca. 80 t/d Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und 20 m³/d Rindergülle aus der Vorgrube (in F1 und F2)."
     },
     "regime": "fully_specified",
     "scope": {
@@ -2171,11 +2176,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 870,
               "obligation": "given",
               "accept": {
-                "min": 450,
-                "max": 550
+                "min": 780,
+                "max": 960
               }
             },
             "T_ad": {
@@ -2260,11 +2265,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 570,
+              "value": 994,
               "obligation": "given",
               "accept": {
-                "min": 520,
-                "max": 620
+                "min": 890,
+                "max": 1090
               }
             },
             "T_ad": {
@@ -2476,15 +2481,16 @@ const EMBEDDED = [
       "BHKW/CHP (Anlage hat keins)"
     ],
     "oracle": {
+      "substrate_feed": "ca. 80 t/d Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und 20 m³/d Rindergülle aus der Vorgrube (in F1 und F2)",
       "chp.exists": false,
       "bgaa.exists": true,
       "bgaa.capacity_m3h": 500.0,
       "bgaa.ch4_recovery": 0.98,
       "bgaa.ch4_content_out": 0.97,
-      "F1.V_gas": 500,
-      "F2.V_gas": 500,
-      "N1.V_gas": 500,
-      "G1.V_gas": 570,
+      "F1.V_gas": 870,
+      "F2.V_gas": 870,
+      "N1.V_gas": 870,
+      "G1.V_gas": 994,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -2555,7 +2561,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 870,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -2648,7 +2654,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 570,
+              "value": 994,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -2899,15 +2905,16 @@ const EMBEDDED = [
       "CHP/BHKW (plant has none)"
     ],
     "oracle": {
+      "substrate_feed": "approx. 80 t/d maize silage via the solid feeder (split across F1 and F2) and 20 m³/d cattle slurry from the pre-pit (into F1 and F2)",
       "chp.exists": false,
       "bgaa.exists": true,
       "bgaa.capacity_m3h": 500.0,
       "bgaa.ch4_recovery": 0.98,
       "bgaa.ch4_content_out": 0.97,
-      "F1.V_gas": 500,
-      "F2.V_gas": 500,
-      "N1.V_gas": 500,
-      "G1.V_gas": 570,
+      "F1.V_gas": 870,
+      "F2.V_gas": 870,
+      "N1.V_gas": 870,
+      "G1.V_gas": 994,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -2934,7 +2941,7 @@ const EMBEDDED = [
     "input": {
       "modality": "text",
       "language": "en",
-      "content": "The biogas plant BGA1 mainly processes manure and is fed through three routes. A solids dosing unit feeds a liquid mixed substrate at around 80 tonnes per day into the two digesters F1 and F2. In addition there is a pre pit measuring 5 by 10 metres that collects about 20 cubic metres of manure per day and pumps it into F1 and F2 as well. Three identical feed tanks of 11 by 3.5 metres each are connected to both digesters through a shared pump.\n\nThe two main digesters F1 and F2 each have a diameter of 28 metres and a height of 6 metres and are equipped with three paddle agitators each. Both carry a dome roof that also serves as gas storage with a volume of 500 cubic metres each. The fill level of the digesters is 90 percent. The plant operates mesophilically at 40 degrees Celsius. The digestate flows from F1 and F2 into the secondary digester N1, which also measures 28 metres in diameter and 6 metres in height and uses one paddle agitator and one long axis agitator. N1 also has a dome roof with a gas storage volume of 500 cubic metres and operates at 40 degrees Celsius. From the secondary digester the material moves into the digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators. The digestate store is unheated at approximately 20 degrees Celsius and has a gas storage volume of 570 cubic metres.\n\nThe biogas produced in the tanks is collected and fed to a biogas upgrading unit with a capacity of 500 cubic metres per hour. The upgrading unit achieves a methane recovery of 98 percent and feeds biomethane with a methane content of 97 percent into the gas grid. A safety flare is available to burn off surplus gas in case of a fault. The digestate from secondary digester N1 is fed to a screw press separator that splits the digestate into a solid and a liquid fraction. A condensate shaft is connected to digester F1 and a leachate store is connected to digesters F1 and F2."
+      "content": "The biogas plant BGA1 mainly processes manure and is fed through three routes. A solids dosing unit feeds a liquid mixed substrate at around 80 tonnes per day into the two digesters F1 and F2. In addition there is a pre pit measuring 5 by 10 metres that collects about 20 cubic metres of manure per day and pumps it into F1 and F2 as well. Three identical feed tanks of 11 by 3.5 metres each are connected to both digesters through a shared pump.\n\nThe two main digesters F1 and F2 each have a diameter of 28 metres and a height of 6 metres and are equipped with three paddle agitators each. Both carry a dome roof that also serves as gas storage; the total gas space (dome plus unfilled headspace) is 870 cubic metres each. The fill level of the digesters is 90 percent. The plant operates mesophilically at 40 degrees Celsius. The digestate flows from F1 and F2 into the secondary digester N1, which also measures 28 metres in diameter and 6 metres in height and uses one paddle agitator and one long axis agitator. N1 also has a dome roof with a total gas space of 870 cubic metres and operates at 40 degrees Celsius. From the secondary digester the material moves into the digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators. The digestate store is unheated at approximately 20 degrees Celsius and has a total gas space of 994 cubic metres.\n\nThe biogas produced in the tanks is collected and fed to a biogas upgrading unit with a capacity of 500 cubic metres per hour. The upgrading unit achieves a methane recovery of 98 percent and feeds biomethane with a methane content of 97 percent into the gas grid. A safety flare is available to burn off surplus gas in case of a fault. The digestate from secondary digester N1 is fed to a screw press separator that splits the digestate into a solid and a liquid fraction. A condensate shaft is connected to digester F1 and a leachate store is connected to digesters F1 and F2.\n\nSubstrate feed: approx. 80 t/d maize silage via the solid feeder (split across F1 and F2) and 20 m³/d cattle slurry from the pre-pit (into F1 and F2)."
     },
     "regime": "fully_specified",
     "scope": {
@@ -2978,11 +2985,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 870,
               "obligation": "given",
               "accept": {
-                "min": 450,
-                "max": 550
+                "min": 780,
+                "max": 960
               }
             },
             "T_ad": {
@@ -3067,11 +3074,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 570,
+              "value": 994,
               "obligation": "given",
               "accept": {
-                "min": 520,
-                "max": 620
+                "min": 890,
+                "max": 1090
               }
             },
             "T_ad": {
@@ -3283,15 +3290,16 @@ const EMBEDDED = [
       "CHP/BHKW (plant has none)"
     ],
     "oracle": {
+      "substrate_feed": "approx. 80 t/d maize silage via the solid feeder (split across F1 and F2) and 20 m³/d cattle slurry from the pre-pit (into F1 and F2)",
       "chp.exists": false,
       "bgaa.exists": true,
       "bgaa.capacity_m3h": 500.0,
       "bgaa.ch4_recovery": 0.98,
       "bgaa.ch4_content_out": 0.97,
-      "F1.V_gas": 500,
-      "F2.V_gas": 500,
-      "N1.V_gas": 500,
-      "G1.V_gas": 570,
+      "F1.V_gas": 870,
+      "F2.V_gas": 870,
+      "N1.V_gas": 870,
+      "G1.V_gas": 994,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -3362,7 +3370,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 300,
+              "value": 549,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -3436,7 +3444,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 924,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -3627,14 +3635,15 @@ const EMBEDDED = [
       "BGAA (Anlage hat keine)"
     ],
     "oracle": {
+      "substrate_feed": "50 t/d Maissilage über den Feststoffdosierer in F1 und 10 m³/d Rindergülle aus der Vorgrube in F1",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 250.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 300,
-      "N1.V_gas": 300,
-      "G1.V_gas": 500,
+      "F1.V_gas": 549,
+      "N1.V_gas": 549,
+      "G1.V_gas": 924,
       "F1.T_ad": 313.15,
       "N1.T_ad": 313.15,
       "G1.T_ad": 293.15,
@@ -3665,7 +3674,7 @@ const EMBEDDED = [
       "modality": "hybrid",
       "language": "de",
       "image_path": "BGA2_sketch.png",
-      "content": "Fermenter F1 und Nachgärer N1 werden mesophil bei 40 °C betrieben mit einem maximalen Füllgrad von 90 %. Das Kuppeldach dient als Gasspeicher mit je 300 m³. Das Gärrestlager G1 ist unbeheizt (ca. 20 °C), maximaler Füllgrad 90 %, Gasspeichervolumen 500 m³. Digestatstrom: F1 → N1 → G1. Das Biogas aller Behälter wird dem BHKW zugeführt. Das BHKW hat einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %."
+      "content": "Fermenter F1 und Nachgärer N1 werden mesophil bei 40 °C betrieben mit einem maximalen Füllgrad von 90 %. Der Gasraum (Kuppeldach plus nicht befüllter Kopfraum) beträgt je 549 m³. Das Gärrestlager G1 ist unbeheizt (ca. 20 °C), maximaler Füllgrad 90 %, Gasraum (inkl. Kopfraum) 924 m³. Digestatstrom: F1 → N1 → G1. Das Biogas aller Behälter wird dem BHKW zugeführt. Das BHKW hat einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %.\n\nSubstratzufuhr: 50 t/d Maissilage über den Feststoffdosierer in F1 und 10 m³/d Rindergülle aus der Vorgrube in F1."
     },
     "regime": "fully_specified",
     "scope": {
@@ -3709,11 +3718,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 300,
+              "value": 549,
               "obligation": "given",
               "accept": {
-                "min": 250,
-                "max": 350
+                "min": 490,
+                "max": 610
               }
             },
             "T_ad": {
@@ -3779,11 +3788,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 924,
               "obligation": "given",
               "accept": {
-                "min": 450,
-                "max": 550
+                "min": 830,
+                "max": 1020
               }
             },
             "T_ad": {
@@ -3941,14 +3950,15 @@ const EMBEDDED = [
       "BGAA (Anlage hat keine)"
     ],
     "oracle": {
+      "substrate_feed": "50 t/d Maissilage über den Feststoffdosierer in F1 und 10 m³/d Rindergülle aus der Vorgrube in F1",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 250.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 300,
-      "N1.V_gas": 300,
-      "G1.V_gas": 500,
+      "F1.V_gas": 549,
+      "N1.V_gas": 549,
+      "G1.V_gas": 924,
       "F1.T_ad": 313.15,
       "N1.T_ad": 313.15,
       "G1.T_ad": 293.15,
@@ -4016,7 +4026,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 300,
+              "value": 549,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -4088,7 +4098,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 924,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -4263,14 +4273,15 @@ const EMBEDDED = [
       "BGAA (Anlage hat keine)"
     ],
     "oracle": {
+      "substrate_feed": "50 t/d Maissilage über den Feststoffdosierer in F1 und 10 m³/d Rindergülle aus der Vorgrube in F1",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 250.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 300,
-      "N1.V_gas": 300,
-      "G1.V_gas": 500,
+      "F1.V_gas": 549,
+      "N1.V_gas": 549,
+      "G1.V_gas": 924,
       "F1.T_ad": 313.15,
       "N1.T_ad": 313.15,
       "G1.T_ad": 293.15,
@@ -4294,7 +4305,7 @@ const EMBEDDED = [
     "input": {
       "modality": "text",
       "language": "de",
-      "content": "Güllebasierte Biogasanlage mit einem Fermenter F1 (6×23 m, Füllgrad 90 %, Gasspeicher 300 m³, mesophil 40 °C), einem Nachgärer N1 (6×23 m, gleiche Parameter) und einem unbeheizten Gärrestlager G1 (6×30 m, Füllgrad 90 %, Gasspeicher 500 m³, ca. 20 °C). Digestatstrom: F1 in N1, N1 in G1. Außerdem vorhanden: ein BHKW 250 kW (eta_el = 40 %, eta_th = 45 %) und eine Notfackel."
+      "content": "Güllebasierte Biogasanlage mit einem Fermenter F1 (Höhe 6 m, Durchmesser 23 m, Füllgrad 90 %, Gasraum 549 m³, mesophil 40 °C), einem Nachgärer N1 (Höhe 6 m, Durchmesser 23 m, gleiche Parameter) und einem unbeheizten Gärrestlager G1 (Höhe 6 m, Durchmesser 30 m, Füllgrad 90 %, Gasraum 924 m³, ca. 20 °C). Digestatstrom: F1 in N1, N1 in G1. Außerdem vorhanden: ein BHKW 250 kW (eta_el = 40 %, eta_th = 45 %) und eine Notfackel.\n\nSubstratzufuhr: 50 t/d Maissilage über den Feststoffdosierer in F1 und 10 m³/d Rindergülle aus der Vorgrube in F1."
     },
     "regime": "fully_specified",
     "scope": {
@@ -4338,11 +4349,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 300,
+              "value": 549,
               "obligation": "given",
               "accept": {
-                "min": 250,
-                "max": 350
+                "min": 490,
+                "max": 610
               }
             },
             "T_ad": {
@@ -4408,11 +4419,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 924,
               "obligation": "given",
               "accept": {
-                "min": 450,
-                "max": 550
+                "min": 830,
+                "max": 1020
               }
             },
             "T_ad": {
@@ -4563,14 +4574,15 @@ const EMBEDDED = [
       "BGAA (Anlage hat keine)"
     ],
     "oracle": {
+      "substrate_feed": "50 t/d Maissilage über den Feststoffdosierer in F1 und 10 m³/d Rindergülle aus der Vorgrube in F1",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 250.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 300,
-      "N1.V_gas": 300,
-      "G1.V_gas": 500,
+      "F1.V_gas": 549,
+      "N1.V_gas": 549,
+      "G1.V_gas": 924,
       "F1.T_ad": 313.15,
       "N1.T_ad": 313.15,
       "G1.T_ad": 293.15,
@@ -4638,7 +4650,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 300,
+              "value": 549,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -4712,7 +4724,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 924,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -4892,14 +4904,15 @@ const EMBEDDED = [
       "BGAA (Anlage hat keine)"
     ],
     "oracle": {
+      "substrate_feed": "50 t/d Maissilage über den Feststoffdosierer in F1 und 10 m³/d Rindergülle aus der Vorgrube in F1",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 250.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 300,
-      "N1.V_gas": 300,
-      "G1.V_gas": 500,
+      "F1.V_gas": 549,
+      "N1.V_gas": 549,
+      "G1.V_gas": 924,
       "F1.T_ad": 313.15,
       "N1.T_ad": 313.15,
       "G1.T_ad": 293.15,
@@ -4923,7 +4936,7 @@ const EMBEDDED = [
     "input": {
       "modality": "text",
       "language": "de",
-      "content": "Die Biogasanlage BGA2 verarbeitet hauptsächlich Gülle. Ein Feststoffdosierer gibt täglich 50 Tonnen Mischsubstrat direkt in den Fermenter F1 ein. Eine Gülle-Vorgrube mit den Maßen 4 mal 8 Meter fasst 10 Kubikmeter und fördert die Gülle täglich über eine Pumpe ebenfalls in F1.\n\nDer Fermenter F1 hat einen Durchmesser von 23 Metern und eine Höhe von 6 Metern und ist mit drei Paddelrührwerken ausgestattet. Er trägt ein Kuppeldach, das gleichzeitig als Gasspeicher mit einem Volumen von 300 m³ dient. Die Anlage wird mesophil bei 40 °C betrieben; der Füllgrad beträgt 90 %. Der Gärrest fließt von F1 in den Nachgärer N1, der ebenfalls 23 Meter Durchmesser und 6 Meter Höhe aufweist und mit einem Paddelrührwerk sowie einem Langachsrührwerk arbeitet. N1 besitzt ebenfalls ein Kuppeldach mit einem Gasspeichervolumen von 300 m³ und wird bei 40 °C betrieben. Aus dem Nachgärer fließt das Digestat in das Gärrestlager G1 mit einem Durchmesser von 30 Metern und einer Höhe von 6 Metern, das mit zwei Tauchmotorrührwerken ausgestattet ist. Das Gärrestlager ist nicht beheizt (ca. 20 °C) und hat ein Gasspeichervolumen von 500 m³.\n\nDas erzeugte Biogas wird einem Blockheizkraftwerk (BHKW) mit einer elektrischen Nennleistung von 250 kW zugeführt. Das BHKW erreicht einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %. Eine Notfackel steht für den Störfall bereit. Sowohl ein Kondensatschacht als auch ein Sickerwasserschacht sind mit dem Fermenter F1 verbunden."
+      "content": "Die Biogasanlage BGA2 verarbeitet hauptsächlich Gülle. Ein Feststoffdosierer gibt täglich 50 Tonnen Mischsubstrat direkt in den Fermenter F1 ein. Eine Gülle-Vorgrube mit den Maßen 4 mal 8 Meter fasst 10 Kubikmeter und fördert die Gülle täglich über eine Pumpe ebenfalls in F1.\n\nDer Fermenter F1 hat einen Durchmesser von 23 Metern und eine Höhe von 6 Metern und ist mit drei Paddelrührwerken ausgestattet. Er trägt ein Kuppeldach; der Gasraum (Kuppeldach plus nicht befüllter Kopfraum) beträgt 549 m³. Die Anlage wird mesophil bei 40 °C betrieben; der Füllgrad beträgt 90 %. Der Gärrest fließt von F1 in den Nachgärer N1, der ebenfalls 23 Meter Durchmesser und 6 Meter Höhe aufweist und mit einem Paddelrührwerk sowie einem Langachsrührwerk arbeitet. N1 besitzt ebenfalls ein Kuppeldach mit einem Gasraum (inkl. Kopfraum) von 549 m³ und wird bei 40 °C betrieben. Aus dem Nachgärer fließt das Digestat in das Gärrestlager G1 mit einem Durchmesser von 30 Metern und einer Höhe von 6 Metern, das mit zwei Tauchmotorrührwerken ausgestattet ist. Das Gärrestlager ist nicht beheizt (ca. 20 °C) und hat einen Gasraum (inkl. Kopfraum) von 924 m³.\n\nDas erzeugte Biogas wird einem Blockheizkraftwerk (BHKW) mit einer elektrischen Nennleistung von 250 kW zugeführt. Das BHKW erreicht einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %. Eine Notfackel steht für den Störfall bereit. Sowohl ein Kondensatschacht als auch ein Sickerwasserschacht sind mit dem Fermenter F1 verbunden.\n\nSubstratzufuhr: 50 t/d Maissilage über den Feststoffdosierer in F1 und 10 m³/d Rindergülle aus der Vorgrube in F1."
     },
     "regime": "fully_specified",
     "scope": {
@@ -4967,11 +4980,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 300,
+              "value": 549,
               "obligation": "given",
               "accept": {
-                "min": 250,
-                "max": 350
+                "min": 490,
+                "max": 610
               }
             },
             "T_ad": {
@@ -5037,11 +5050,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 924,
               "obligation": "given",
               "accept": {
-                "min": 450,
-                "max": 550
+                "min": 830,
+                "max": 1020
               }
             },
             "T_ad": {
@@ -5201,14 +5214,15 @@ const EMBEDDED = [
       "BGAA (Anlage hat keine)"
     ],
     "oracle": {
+      "substrate_feed": "50 t/d Maissilage über den Feststoffdosierer in F1 und 10 m³/d Rindergülle aus der Vorgrube in F1",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 250.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 300,
-      "N1.V_gas": 300,
-      "G1.V_gas": 500,
+      "F1.V_gas": 549,
+      "N1.V_gas": 549,
+      "G1.V_gas": 924,
       "F1.T_ad": 313.15,
       "N1.T_ad": 313.15,
       "G1.T_ad": 293.15,
@@ -5276,7 +5290,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 300,
+              "value": 549,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -5350,7 +5364,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 924,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -5530,14 +5544,15 @@ const EMBEDDED = [
       "BGAA (plant has none)"
     ],
     "oracle": {
+      "substrate_feed": "50 t/d maize silage via the solid feeder into F1 and 10 m³/d cattle slurry from the pre-pit into F1",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 250.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 300,
-      "N1.V_gas": 300,
-      "G1.V_gas": 500,
+      "F1.V_gas": 549,
+      "N1.V_gas": 549,
+      "G1.V_gas": 924,
       "F1.T_ad": 313.15,
       "N1.T_ad": 313.15,
       "G1.T_ad": 293.15,
@@ -5561,7 +5576,7 @@ const EMBEDDED = [
     "input": {
       "modality": "text",
       "language": "en",
-      "content": "Biogas plant BGA2 mainly processes slurry. A direct dosing unit feeds 50 tonnes of mixed substrate per day into fermenter F1. A slurry pre-pit measuring 4 by 8 metres holds 10 cubic metres and pumps the slurry daily into F1 as well.\n\nFermenter F1 has a diameter of 23 metres and a wall height of 6 metres, equipped with three paddle agitators. It carries a dome roof that also serves as gas storage with a volume of 300 cubic metres. The fermenter operates mesophilically at 40 degrees Celsius with a fill level of 90 percent. Digestate flows from F1 into secondary digester N1, which also measures 23 metres in diameter and 6 metres in height and is fitted with one paddle agitator and one long-axis agitator. N1 also has a dome roof with a gas storage volume of 300 cubic metres and operates at 40 degrees Celsius. From the secondary digester the digestate moves into digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators. The digestate store is unheated at approximately 20 degrees Celsius and has a gas storage volume of 500 cubic metres.\n\nThe biogas produced is fed to a combined heat and power unit (CHP) with a rated electrical output of 250 kW. The CHP achieves an electrical efficiency of 40 percent and a thermal efficiency of 45 percent. An emergency flare is available for fault conditions. Both a condensate shaft and a leachate shaft are connected to fermenter F1."
+      "content": "Biogas plant BGA2 mainly processes slurry. A direct dosing unit feeds 50 tonnes of mixed substrate per day into fermenter F1. A slurry pre-pit measuring 4 by 8 metres holds 10 cubic metres and pumps the slurry daily into F1 as well.\n\nFermenter F1 has a diameter of 23 metres and a wall height of 6 metres, equipped with three paddle agitators. It carries a dome roof that also serves as gas storage; the total gas space (dome plus unfilled headspace) is 549 cubic metres. The fermenter operates mesophilically at 40 degrees Celsius with a fill level of 90 percent. Digestate flows from F1 into secondary digester N1, which also measures 23 metres in diameter and 6 metres in height and is fitted with one paddle agitator and one long-axis agitator. N1 also has a dome roof with a total gas space of 549 cubic metres and operates at 40 degrees Celsius. From the secondary digester the digestate moves into digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators. The digestate store is unheated at approximately 20 degrees Celsius and has a total gas space of 924 cubic metres.\n\nThe biogas produced is fed to a combined heat and power unit (CHP) with a rated electrical output of 250 kW. The CHP achieves an electrical efficiency of 40 percent and a thermal efficiency of 45 percent. An emergency flare is available for fault conditions. Both a condensate shaft and a leachate shaft are connected to fermenter F1.\n\nSubstrate feed: 50 t/d maize silage via the solid feeder into F1 and 10 m³/d cattle slurry from the pre-pit into F1."
     },
     "regime": "fully_specified",
     "scope": {
@@ -5605,11 +5620,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 300,
+              "value": 549,
               "obligation": "given",
               "accept": {
-                "min": 250,
-                "max": 350
+                "min": 490,
+                "max": 610
               }
             },
             "T_ad": {
@@ -5675,11 +5690,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 500,
+              "value": 924,
               "obligation": "given",
               "accept": {
-                "min": 450,
-                "max": 550
+                "min": 830,
+                "max": 1020
               }
             },
             "T_ad": {
@@ -5839,14 +5854,15 @@ const EMBEDDED = [
       "BGAA (plant has none)"
     ],
     "oracle": {
+      "substrate_feed": "50 t/d maize silage via the solid feeder into F1 and 10 m³/d cattle slurry from the pre-pit into F1",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 250.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 300,
-      "N1.V_gas": 300,
-      "G1.V_gas": 500,
+      "F1.V_gas": 549,
+      "N1.V_gas": 549,
+      "G1.V_gas": 924,
       "F1.T_ad": 313.15,
       "N1.T_ad": 313.15,
       "G1.T_ad": 293.15,
@@ -5914,7 +5930,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 400,
+              "value": 719,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -6007,7 +6023,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 430,
+              "value": 799,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -6225,15 +6241,16 @@ const EMBEDDED = [
       "BGAA (Anlage hat keine)"
     ],
     "oracle": {
+      "substrate_feed": "je 50 t/d Maissilage über die Dosierer (Dos1 in F1, Dos2 in F2) und je 20 m³/d Rindergülle aus zwei Vorgruben (in F1 und F2)",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 500.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 400,
-      "F2.V_gas": 400,
-      "N1.V_gas": 400,
-      "G1.V_gas": 430,
+      "F1.V_gas": 719,
+      "F2.V_gas": 719,
+      "N1.V_gas": 719,
+      "G1.V_gas": 799,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -6265,7 +6282,7 @@ const EMBEDDED = [
       "modality": "hybrid",
       "language": "de",
       "image_path": "BGA_sketch.png",
-      "content": "Ergänzende Informationen zur Anlagenskizze: Fermenter F1 und F2 sowie Nachgärer N1 werden mesophil bei 40 °C betrieben. Maximaler Füllgrad je 90 %. das Kuppeldach dient als Gasspeicher mit je 400 m³. Das Gärrestlager G1 ist unbeheizt (ca. 20 °C), maximaler Füllgrad 90 %, Gasspeichervolumen 430 m³. Digestatstrom: F1 → N1, F2 → N1, N1 → G1. Das Biogas aller Behälter wird dem BHKW zugeführt. Das BHKW hat einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %."
+      "content": "Ergänzende Informationen zur Anlagenskizze: Fermenter F1 und F2 sowie Nachgärer N1 werden mesophil bei 40 °C betrieben. Maximaler Füllgrad je 90 %. der Gasraum (Kuppeldach plus nicht befüllter Kopfraum) beträgt je 719 m³. Das Gärrestlager G1 ist unbeheizt (ca. 20 °C), maximaler Füllgrad 90 %, Gasraum (inkl. Kopfraum) 799 m³. Digestatstrom: F1 → N1, F2 → N1, N1 → G1. Das Biogas aller Behälter wird dem BHKW zugeführt. Das BHKW hat einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %.\n\nSubstratzufuhr: je 50 t/d Maissilage über die Dosierer (Dos1 in F1, Dos2 in F2) und je 20 m³/d Rindergülle aus zwei Vorgruben (in F1 und F2)."
     },
     "regime": "fully_specified",
     "scope": {
@@ -6309,11 +6326,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 400,
+              "value": 719,
               "obligation": "given",
               "accept": {
-                "min": 350,
-                "max": 450
+                "min": 650,
+                "max": 790
               }
             },
             "T_ad": {
@@ -6398,11 +6415,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 430,
+              "value": 799,
               "obligation": "given",
               "accept": {
-                "min": 380,
-                "max": 480
+                "min": 720,
+                "max": 880
               }
             },
             "T_ad": {
@@ -6585,15 +6602,16 @@ const EMBEDDED = [
       "BGAA (Anlage hat keine)"
     ],
     "oracle": {
+      "substrate_feed": "je 50 t/d Maissilage über die Dosierer (Dos1 in F1, Dos2 in F2) und je 20 m³/d Rindergülle aus zwei Vorgruben (in F1 und F2)",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 500.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 400,
-      "F2.V_gas": 400,
-      "N1.V_gas": 400,
-      "G1.V_gas": 430,
+      "F1.V_gas": 719,
+      "F2.V_gas": 719,
+      "N1.V_gas": 719,
+      "G1.V_gas": 799,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -6662,7 +6680,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 400,
+              "value": 719,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -6755,7 +6773,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 430,
+              "value": 799,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -6958,15 +6976,16 @@ const EMBEDDED = [
       "BGAA (Anlage hat keine)"
     ],
     "oracle": {
+      "substrate_feed": "je 50 t/d Maissilage über die Dosierer (Dos1 in F1, Dos2 in F2) und je 20 m³/d Rindergülle aus zwei Vorgruben (in F1 und F2)",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 500.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 400,
-      "F2.V_gas": 400,
-      "N1.V_gas": 400,
-      "G1.V_gas": 430,
+      "F1.V_gas": 719,
+      "F2.V_gas": 719,
+      "N1.V_gas": 719,
+      "G1.V_gas": 799,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -6991,7 +7010,7 @@ const EMBEDDED = [
     "input": {
       "modality": "text",
       "language": "de",
-      "content": "Güllebasierte Biogasanlage mit zwei Fermentern F1 und F2 (je 6×26 m, Füllgrad 90 %, Gasspeicher 400 m³, mesophil 40 °C), einem Nachgärer N1 (6×26 m, gleiche Parameter) und einem unbeheizten Gärrestlager G1 (6×28 m, Füllgrad 90 %, Gasspeicher 430 m³, ca. 20 °C). Digestatstrom: F1 und F2 in N1, N1 in G1. Außerdem vorhanden: ein BHKW 500 kW (eta_el = 40 %, eta_th = 45 %) und eine Notfackel."
+      "content": "Güllebasierte Biogasanlage mit zwei Fermentern F1 und F2 (je Höhe 6 m, Durchmesser 26 m, Füllgrad 90 %, Gasraum 719 m³, mesophil 40 °C), einem Nachgärer N1 (Höhe 6 m, Durchmesser 26 m, gleiche Parameter) und einem unbeheizten Gärrestlager G1 (Höhe 6 m, Durchmesser 28 m, Füllgrad 90 %, Gasraum 799 m³, ca. 20 °C). Digestatstrom: F1 und F2 in N1, N1 in G1. Außerdem vorhanden: ein BHKW 500 kW (eta_el = 40 %, eta_th = 45 %) und eine Notfackel.\n\nSubstratzufuhr: je 50 t/d Maissilage über die Dosierer (Dos1 in F1, Dos2 in F2) und je 20 m³/d Rindergülle aus zwei Vorgruben (in F1 und F2)."
     },
     "regime": "fully_specified",
     "scope": {
@@ -7035,11 +7054,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 400,
+              "value": 719,
               "obligation": "given",
               "accept": {
-                "min": 350,
-                "max": 450
+                "min": 650,
+                "max": 790
               }
             },
             "T_ad": {
@@ -7124,11 +7143,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 430,
+              "value": 799,
               "obligation": "given",
               "accept": {
-                "min": 380,
-                "max": 480
+                "min": 720,
+                "max": 880
               }
             },
             "T_ad": {
@@ -7304,15 +7323,16 @@ const EMBEDDED = [
       "BGAA (Anlage hat keine)"
     ],
     "oracle": {
+      "substrate_feed": "je 50 t/d Maissilage über die Dosierer (Dos1 in F1, Dos2 in F2) und je 20 m³/d Rindergülle aus zwei Vorgruben (in F1 und F2)",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 500.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 400,
-      "F2.V_gas": 400,
-      "N1.V_gas": 400,
-      "G1.V_gas": 430,
+      "F1.V_gas": 719,
+      "F2.V_gas": 719,
+      "N1.V_gas": 719,
+      "G1.V_gas": 799,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -7381,7 +7401,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 400,
+              "value": 719,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -7474,7 +7494,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 430,
+              "value": 799,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -7680,15 +7700,16 @@ const EMBEDDED = [
       "BGAA (Anlage hat keine)"
     ],
     "oracle": {
+      "substrate_feed": "je 50 t/d Maissilage über die Dosierer (Dos1 in F1, Dos2 in F2) und je 20 m³/d Rindergülle aus zwei Vorgruben (in F1 und F2)",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 500.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 400,
-      "F2.V_gas": 400,
-      "N1.V_gas": 400,
-      "G1.V_gas": 430,
+      "F1.V_gas": 719,
+      "F2.V_gas": 719,
+      "N1.V_gas": 719,
+      "G1.V_gas": 799,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -7713,7 +7734,7 @@ const EMBEDDED = [
     "input": {
       "modality": "text",
       "language": "de",
-      "content": "Die Biogasanlage BGA3 verarbeitet hauptsächlich Gülle und Feststoffsubstrat. Zwei Feststoffdosierer (Dos 1 und Dos 2) geben täglich je 50 Tonnen Substrat direkt in die Fermenter F1 bzw. F2 ein. Zwei Gülle-Vorgruben (je 5×8 Meter) fördern über Pumpen täglich je 20 Kubikmeter Gülle in die Fermenter F1 und F2.\n\nFermenter F1 und F2 haben jeweils einen Durchmesser von 26 Metern und eine Wandhöhe von 6 Metern und sind je mit drei Paddelrührwerken ausgestattet. Jeder Fermenter trägt ein Kuppeldach, das gleichzeitig als integrierter Gasspeicher mit einem Volumen von je 400 m³ dient. Die Fermenter werden mesophil bei 40 °C (313,15 K) betrieben; der Füllgrad beträgt jeweils 90 %. Der Gärrest aus F1 und F2 fließt in den Nachgärer N1, der ebenfalls 26 Meter Durchmesser und 6 Meter Höhe aufweist und mit einem Paddelrührwerk sowie einem Langachsrührwerk bestückt ist. N1 besitzt ebenfalls ein Kuppeldach mit einem Gasspeichervolumen von 400 m³ und wird mesophil bei 40 °C betrieben; Füllgrad 90 %. Aus dem Nachgärer fließt das Digestat in das Gärrestlager G1 mit einem Durchmesser von 28 Metern und einer Höhe von 6 Metern, das mit zwei Tauchmotorrührwerken ausgestattet ist. Das Gärrestlager ist nicht beheizt (ca. 20 °C / 293,15 K), hat einen Füllgrad von 90 % und ein Gasspeichervolumen von 430 m³.\n\nDas erzeugte Biogas wird einem Blockheizkraftwerk (BHKW) mit einer elektrischen Nennleistung von 500 kW zugeführt. Das BHKW erreicht einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %. Eine Notfackel steht für den Störfall bereit. Ein Kondensatschacht ist mit dem Fermenter F1 verbunden."
+      "content": "Die Biogasanlage BGA3 verarbeitet hauptsächlich Gülle und Feststoffsubstrat. Zwei Feststoffdosierer (Dos 1 und Dos 2) geben täglich je 50 Tonnen Substrat direkt in die Fermenter F1 bzw. F2 ein. Zwei Gülle-Vorgruben (je 5×8 Meter) fördern über Pumpen täglich je 20 Kubikmeter Gülle in die Fermenter F1 und F2.\n\nFermenter F1 und F2 haben jeweils einen Durchmesser von 26 Metern und eine Wandhöhe von 6 Metern und sind je mit drei Paddelrührwerken ausgestattet. Jeder Fermenter trägt ein Kuppeldach; der Gasraum (Kuppeldach plus nicht befüllter Kopfraum) beträgt je 719 m³. Die Fermenter werden mesophil bei 40 °C (313,15 K) betrieben; der Füllgrad beträgt jeweils 90 %. Der Gärrest aus F1 und F2 fließt in den Nachgärer N1, der ebenfalls 26 Meter Durchmesser und 6 Meter Höhe aufweist und mit einem Paddelrührwerk sowie einem Langachsrührwerk bestückt ist. N1 besitzt ebenfalls ein Kuppeldach mit einem Gasraum (inkl. Kopfraum) von 719 m³ und wird mesophil bei 40 °C betrieben; Füllgrad 90 %. Aus dem Nachgärer fließt das Digestat in das Gärrestlager G1 mit einem Durchmesser von 28 Metern und einer Höhe von 6 Metern, das mit zwei Tauchmotorrührwerken ausgestattet ist. Das Gärrestlager ist nicht beheizt (ca. 20 °C / 293,15 K), hat einen Füllgrad von 90 % und einen Gasraum (inkl. Kopfraum) von 799 m³.\n\nDas erzeugte Biogas wird einem Blockheizkraftwerk (BHKW) mit einer elektrischen Nennleistung von 500 kW zugeführt. Das BHKW erreicht einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %. Eine Notfackel steht für den Störfall bereit. Ein Kondensatschacht ist mit dem Fermenter F1 verbunden.\n\nSubstratzufuhr: je 50 t/d Maissilage über die Dosierer (Dos1 in F1, Dos2 in F2) und je 20 m³/d Rindergülle aus zwei Vorgruben (in F1 und F2)."
     },
     "regime": "fully_specified",
     "scope": {
@@ -7757,11 +7778,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 400,
+              "value": 719,
               "obligation": "given",
               "accept": {
-                "min": 350,
-                "max": 450
+                "min": 650,
+                "max": 790
               }
             },
             "T_ad": {
@@ -7846,11 +7867,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 430,
+              "value": 799,
               "obligation": "given",
               "accept": {
-                "min": 380,
-                "max": 480
+                "min": 720,
+                "max": 880
               }
             },
             "T_ad": {
@@ -8036,15 +8057,16 @@ const EMBEDDED = [
       "BGAA (Anlage hat keine)"
     ],
     "oracle": {
+      "substrate_feed": "je 50 t/d Maissilage über die Dosierer (Dos1 in F1, Dos2 in F2) und je 20 m³/d Rindergülle aus zwei Vorgruben (in F1 und F2)",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 500.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 400,
-      "F2.V_gas": 400,
-      "N1.V_gas": 400,
-      "G1.V_gas": 430,
+      "F1.V_gas": 719,
+      "F2.V_gas": 719,
+      "N1.V_gas": 719,
+      "G1.V_gas": 799,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -8113,7 +8135,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 400,
+              "value": 719,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -8206,7 +8228,7 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 430,
+              "value": 799,
               "obligation": "missing_default_ok",
               "accept": {
                 "min_rel": 0.1,
@@ -8412,15 +8434,16 @@ const EMBEDDED = [
       "BGAA (plant has none)"
     ],
     "oracle": {
+      "substrate_feed": "50 t/d maize silage each via the dosing units (Dos1 into F1, Dos2 into F2) and 20 m³/d cattle slurry each from two pre-pits (into F1 and F2)",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 500.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 400,
-      "F2.V_gas": 400,
-      "N1.V_gas": 400,
-      "G1.V_gas": 430,
+      "F1.V_gas": 719,
+      "F2.V_gas": 719,
+      "N1.V_gas": 719,
+      "G1.V_gas": 799,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,
@@ -8445,7 +8468,7 @@ const EMBEDDED = [
     "input": {
       "modality": "text",
       "language": "en",
-      "content": "Biogas plant BGA3 processes mainly slurry and solid substrate. Two solid dosing units (Dos 1 and Dos 2) each feed 50 tonnes of substrate per day directly into fermenters F1 and F2 respectively. Two slurry pre-pits (each 5×8 metres) pump 20 cubic metres of slurry per day into fermenters F1 and F2.\n\nFermenters F1 and F2 each have a diameter of 26 metres and a wall height of 6 metres, each equipped with three paddle agitators. Each fermenter carries a dome roof that also serves as an integrated gas storage with a volume of 400 cubic metres. The fermenters operate mesophilically at 40 degrees Celsius (313.15 K) with a fill level of 90 percent. Digestate from F1 and F2 flows into secondary digester N1, which also measures 26 metres in diameter and 6 metres in height and is fitted with one paddle agitator and one long-axis agitator. N1 also has a dome roof with a gas storage volume of 400 cubic metres and operates at 40 degrees Celsius with a fill level of 90 percent. From the secondary digester the digestate moves into digestate store G1 with a diameter of 28 metres and a height of 6 metres, equipped with two submersible agitators. The digestate store is unheated (approx. 20 degrees Celsius / 293.15 K), has a fill level of 90 percent and a gas storage volume of 430 cubic metres.\n\nThe biogas produced is fed to a combined heat and power unit (CHP) with a rated electrical output of 500 kW. The CHP achieves an electrical efficiency of 40 percent and a thermal efficiency of 45 percent. An emergency flare is available for fault conditions. A condensate shaft is connected to fermenter F1."
+      "content": "Biogas plant BGA3 processes mainly slurry and solid substrate. Two solid dosing units (Dos 1 and Dos 2) each feed 50 tonnes of substrate per day directly into fermenters F1 and F2 respectively. Two slurry pre-pits (each 5×8 metres) pump 20 cubic metres of slurry per day into fermenters F1 and F2.\n\nFermenters F1 and F2 each have a diameter of 26 metres and a wall height of 6 metres, each equipped with three paddle agitators. Each fermenter carries a dome roof that also serves as an integrated gas storage; the total gas space (dome plus unfilled headspace) is 719 cubic metres. The fermenters operate mesophilically at 40 degrees Celsius (313.15 K) with a fill level of 90 percent. Digestate from F1 and F2 flows into secondary digester N1, which also measures 26 metres in diameter and 6 metres in height and is fitted with one paddle agitator and one long-axis agitator. N1 also has a dome roof with a total gas space of 719 cubic metres and operates at 40 degrees Celsius with a fill level of 90 percent. From the secondary digester the digestate moves into digestate store G1 with a diameter of 28 metres and a height of 6 metres, equipped with two submersible agitators. The digestate store is unheated (approx. 20 degrees Celsius / 293.15 K), has a fill level of 90 percent and a total gas space of 799 cubic metres.\n\nThe biogas produced is fed to a combined heat and power unit (CHP) with a rated electrical output of 500 kW. The CHP achieves an electrical efficiency of 40 percent and a thermal efficiency of 45 percent. An emergency flare is available for fault conditions. A condensate shaft is connected to fermenter F1.\n\nSubstrate feed: 50 t/d maize silage each via the dosing units (Dos1 into F1, Dos2 into F2) and 20 m³/d cattle slurry each from two pre-pits (into F1 and F2)."
     },
     "regime": "fully_specified",
     "scope": {
@@ -8489,11 +8512,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 400,
+              "value": 719,
               "obligation": "given",
               "accept": {
-                "min": 350,
-                "max": 450
+                "min": 650,
+                "max": 790
               }
             },
             "T_ad": {
@@ -8578,11 +8601,11 @@ const EMBEDDED = [
               }
             },
             "V_gas": {
-              "value": 430,
+              "value": 799,
               "obligation": "given",
               "accept": {
-                "min": 380,
-                "max": 480
+                "min": 720,
+                "max": 880
               }
             },
             "T_ad": {
@@ -8768,15 +8791,16 @@ const EMBEDDED = [
       "BGAA (plant has none)"
     ],
     "oracle": {
+      "substrate_feed": "50 t/d maize silage each via the dosing units (Dos1 into F1, Dos2 into F2) and 20 m³/d cattle slurry each from two pre-pits (into F1 and F2)",
       "bgaa.exists": false,
       "chp.exists": true,
       "bhkw.P_el_nom": 500.0,
       "bhkw.eta_el": 0.4,
       "bhkw.eta_th": 0.45,
-      "F1.V_gas": 400,
-      "F2.V_gas": 400,
-      "N1.V_gas": 400,
-      "G1.V_gas": 430,
+      "F1.V_gas": 719,
+      "F2.V_gas": 719,
+      "N1.V_gas": 719,
+      "G1.V_gas": 799,
       "F1.T_ad": 313.15,
       "F2.T_ad": 313.15,
       "N1.T_ad": 313.15,

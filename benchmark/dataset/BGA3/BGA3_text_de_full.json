@@ -4,7 +4,7 @@
   "input": {
     "modality": "text",
     "language": "de",
-    "content": "Die Biogasanlage BGA3 verarbeitet hauptsächlich Gülle und Feststoffsubstrat. Zwei Feststoffdosierer (Dos 1 und Dos 2) geben täglich je 50 Tonnen Substrat direkt in die Fermenter F1 bzw. F2 ein. Zwei Gülle-Vorgruben (je 5×8 Meter) fördern über Pumpen täglich je 20 Kubikmeter Gülle in die Fermenter F1 und F2.\n\nFermenter F1 und F2 haben jeweils einen Durchmesser von 26 Metern und eine Wandhöhe von 6 Metern und sind je mit drei Paddelrührwerken ausgestattet. Jeder Fermenter trägt ein Kuppeldach, das gleichzeitig als integrierter Gasspeicher mit einem Volumen von je 400 m³ dient. Die Fermenter werden mesophil bei 40 °C (313,15 K) betrieben; der Füllgrad beträgt jeweils 90 %. Der Gärrest aus F1 und F2 fließt in den Nachgärer N1, der ebenfalls 26 Meter Durchmesser und 6 Meter Höhe aufweist und mit einem Paddelrührwerk sowie einem Langachsrührwerk bestückt ist. N1 besitzt ebenfalls ein Kuppeldach mit einem Gasspeichervolumen von 400 m³ und wird mesophil bei 40 °C betrieben; Füllgrad 90 %. Aus dem Nachgärer fließt das Digestat in das Gärrestlager G1 mit einem Durchmesser von 28 Metern und einer Höhe von 6 Metern, das mit zwei Tauchmotorrührwerken ausgestattet ist. Das Gärrestlager ist nicht beheizt (ca. 20 °C / 293,15 K), hat einen Füllgrad von 90 % und ein Gasspeichervolumen von 430 m³.\n\nDas erzeugte Biogas wird einem Blockheizkraftwerk (BHKW) mit einer elektrischen Nennleistung von 500 kW zugeführt. Das BHKW erreicht einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %. Eine Notfackel steht für den Störfall bereit. Ein Kondensatschacht ist mit dem Fermenter F1 verbunden."
+    "content": "Die Biogasanlage BGA3 verarbeitet hauptsächlich Gülle und Feststoffsubstrat. Zwei Feststoffdosierer (Dos 1 und Dos 2) geben täglich je 50 Tonnen Substrat direkt in die Fermenter F1 bzw. F2 ein. Zwei Gülle-Vorgruben (je 5×8 Meter) fördern über Pumpen täglich je 20 Kubikmeter Gülle in die Fermenter F1 und F2.\n\nFermenter F1 und F2 haben jeweils einen Durchmesser von 26 Metern und eine Wandhöhe von 6 Metern und sind je mit drei Paddelrührwerken ausgestattet. Jeder Fermenter trägt ein Kuppeldach; der Gasraum (Kuppeldach plus nicht befüllter Kopfraum) beträgt je 719 m³. Die Fermenter werden mesophil bei 40 °C (313,15 K) betrieben; der Füllgrad beträgt jeweils 90 %. Der Gärrest aus F1 und F2 fließt in den Nachgärer N1, der ebenfalls 26 Meter Durchmesser und 6 Meter Höhe aufweist und mit einem Paddelrührwerk sowie einem Langachsrührwerk bestückt ist. N1 besitzt ebenfalls ein Kuppeldach mit einem Gasraum (inkl. Kopfraum) von 719 m³ und wird mesophil bei 40 °C betrieben; Füllgrad 90 %. Aus dem Nachgärer fließt das Digestat in das Gärrestlager G1 mit einem Durchmesser von 28 Metern und einer Höhe von 6 Metern, das mit zwei Tauchmotorrührwerken ausgestattet ist. Das Gärrestlager ist nicht beheizt (ca. 20 °C / 293,15 K), hat einen Füllgrad von 90 % und einen Gasraum (inkl. Kopfraum) von 799 m³.\n\nDas erzeugte Biogas wird einem Blockheizkraftwerk (BHKW) mit einer elektrischen Nennleistung von 500 kW zugeführt. Das BHKW erreicht einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %. Eine Notfackel steht für den Störfall bereit. Ein Kondensatschacht ist mit dem Fermenter F1 verbunden.\n\nSubstratzufuhr: je 50 t/d Maissilage über die Dosierer (Dos1 in F1, Dos2 in F2) und je 20 m³/d Rindergülle aus zwei Vorgruben (in F1 und F2)."
   },
   "regime": "fully_specified",
   "scope": {
@@ -23,7 +23,7 @@
         "params": {
           "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
           "V_liq": { "value": 2867, "obligation": "derivable", "formula": "pi/4*26^2 * fill_fraction*6", "accept": { "min": 2548, "max": 3028 } },
-          "V_gas": { "value": 400, "obligation": "given", "accept": { "min": 350, "max": 450 } },
+          "V_gas": { "value": 719, "obligation": "given", "accept": { "min": 650, "max": 790 } },
           "T_ad": { "value": 313.15, "obligation": "given", "accept": { "min": 311.15, "max": 316.15 } }
         }
       },
@@ -42,7 +42,7 @@
         "params": {
           "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
           "V_liq": { "value": 3325, "obligation": "derivable", "formula": "pi/4*28^2 * fill_fraction*6", "accept": { "min": 2956, "max": 3508 } },
-          "V_gas": { "value": 430, "obligation": "given", "accept": { "min": 380, "max": 480 } },
+          "V_gas": { "value": 799, "obligation": "given", "accept": { "min": 720, "max": 880 } },
           "T_ad": { "value": 293.15, "obligation": "given", "accept": { "min": 283.15, "max": 303.15 } }
         }
       },
@@ -82,10 +82,11 @@
   "expected_open_questions": [],
   "must_not_invent": ["Separator (Anlage hat keinen)", "BGAA (Anlage hat keine)"],
   "oracle": {
+    "substrate_feed": "je 50 t/d Maissilage über die Dosierer (Dos1 in F1, Dos2 in F2) und je 20 m³/d Rindergülle aus zwei Vorgruben (in F1 und F2)",
     "bgaa.exists": false,
     "chp.exists": true,
     "bhkw.P_el_nom": 500.0, "bhkw.eta_el": 0.40, "bhkw.eta_th": 0.45,
-    "F1.V_gas": 400, "F2.V_gas": 400, "N1.V_gas": 400, "G1.V_gas": 430,
+    "F1.V_gas": 719, "F2.V_gas": 719, "N1.V_gas": 719, "G1.V_gas": 799,
     "F1.T_ad": 313.15, "F2.T_ad": 313.15, "N1.T_ad": 313.15, "G1.T_ad": 293.15,
     "F1.fill_fraction": 0.90, "G1.fill_fraction": 0.90,
     "digestate_cascade": "F1->N1, F2->N1, N1->G1"

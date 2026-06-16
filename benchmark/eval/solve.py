@@ -13,8 +13,8 @@ Ablauf je Datenpunkt:
   3b. Falls Fragen gefunden    -> Oracle antwortet -> LLM (Turn 2) -> bewerten
   4. Ergebnisse speichern und Tabelle ausgeben
 
-Benoetigt: pip install anthropic
-API-Key:   ANTHROPIC_API_KEY Umgebungsvariable oder --api-key
+Benoetigt: pip install groq
+API-Key:   GROQ_API_KEY Umgebungsvariable oder --api-key
 
 CLI-Beispiele:
 
@@ -28,10 +28,13 @@ CLI-Beispiele:
   python benchmark/eval/solve.py --id BGA2_text_de_full
 
   # Anderes Modell, eigenes Ausgabeverzeichnis:
-  python benchmark/eval/solve.py --model claude-opus-4-8 --output results/opus
+  python benchmark/eval/solve.py --model openai/gpt-oss-120b --output results/gptoss
 
   # Ohne Oracle (LLM nutzt Default-Werte):
   python benchmark/eval/solve.py --no-oracle
+
+Hinweis: Bild-/Hybrid-Datenpunkte (Skizzen) benoetigen ein vision-faehiges
+Groq-Modell (z.B. ein Llama-4-Vision-Modell). Reine Textlaeufe via --modality text.
 """
 
 from __future__ import annotations
@@ -96,21 +99,21 @@ def extract_questions(text: str) -> Optional[List[Dict[str, str]]]:
 
 
 # ---------------------------------------------------------------------------
-# Anthropic API-Client (need to be changed if you want to use another API)
+# Groq API-Client (OpenAI-kompatibel; bei anderer API nur diese Sektion anpassen)
 # ---------------------------------------------------------------------------
 
 
 def _get_client(api_key: Optional[str]):
     try:
-        import anthropic
+        from groq import Groq
     except ImportError:
-        print("Fehler: 'anthropic' nicht installiert. -> pip install anthropic")
+        print("Fehler: 'groq' nicht installiert. -> pip install groq")
         sys.exit(1)
-    key = api_key or os.environ.get("ANTHROPIC_API_KEY")
+    key = api_key or os.environ.get("GROQ_API_KEY")
     if not key:
-        print("Fehler: API-Key fehlt. Setze ANTHROPIC_API_KEY oder nutze --api-key.")
+        print("Fehler: API-Key fehlt. Setze GROQ_API_KEY oder nutze --api-key.")
         sys.exit(1)
-    return anthropic.Anthropic(api_key=key)
+    return Groq(api_key=key)
 
 
 def call_llm(
@@ -119,14 +122,14 @@ def call_llm(
     messages: List[Dict[str, Any]],
     max_tokens: int = 4096,
 ) -> str:
-    """Sendet Messages an die Anthropic API und gibt den Antworttext zurueck."""
-    resp = client.messages.create(
+    """Sendet Messages an die Groq API (OpenAI-kompatibel) und gibt den Antworttext zurueck."""
+    full_messages = [{"role": "system", "content": SYSTEM_PROMPT}] + messages
+    resp = client.chat.completions.create(
         model=model,
         max_tokens=max_tokens,
-        system=SYSTEM_PROMPT,
-        messages=messages,
+        messages=full_messages,
     )
-    return resp.content[0].text
+    return resp.choices[0].message.content
 
 
 # ---------------------------------------------------------------------------
@@ -386,8 +389,8 @@ def main() -> int:
         description="LLM-Benchmark für PyADM1ODE-Codegenerierung.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    ap.add_argument("--model", default="claude-sonnet-4-6", help="Modell-ID (Default: claude-sonnet-4-6)")
-    ap.add_argument("--api-key", default=None, help="Anthropic API-Key (oder ANTHROPIC_API_KEY setzen)")
+    ap.add_argument("--model", default="llama-3.3-70b-versatile", help="Groq-Modell-ID (Default: llama-3.3-70b-versatile)")
+    ap.add_argument("--api-key", default=None, help="Groq API-Key (oder GROQ_API_KEY setzen)")
     ap.add_argument(
         "--regime",
         choices=["fully_specified", "underspecified", "all"],
@@ -422,7 +425,7 @@ def main() -> int:
     if args.no_oracle:
         print("Oracle: deaktiviert (LLM nutzt Standardwerte)")
 
-    # Anthropic-Client initialisieren
+    # Groq-Client initialisieren
     client = _get_client(args.api_key)
 
     # Evaluation

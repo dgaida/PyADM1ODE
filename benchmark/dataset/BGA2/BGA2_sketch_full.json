@@ -5,7 +5,7 @@
     "modality": "hybrid",
     "language": "de",
     "image_path": "BGA2_sketch.png",
-    "content": "Fermenter F1 und Nachgärer N1 werden mesophil bei 40 °C betrieben mit einem maximalen Füllgrad von 90 %. Das Kuppeldach dient als Gasspeicher mit je 300 m³. Das Gärrestlager G1 ist unbeheizt (ca. 20 °C), maximaler Füllgrad 90 %, Gasspeichervolumen 500 m³. Digestatstrom: F1 → N1 → G1. Das Biogas aller Behälter wird dem BHKW zugeführt. Das BHKW hat einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %."
+    "content": "Fermenter F1 und Nachgärer N1 werden mesophil bei 40 °C betrieben mit einem maximalen Füllgrad von 90 %. Der Gasraum (Kuppeldach plus nicht befüllter Kopfraum) beträgt je 549 m³. Das Gärrestlager G1 ist unbeheizt (ca. 20 °C), maximaler Füllgrad 90 %, Gasraum (inkl. Kopfraum) 924 m³. Digestatstrom: F1 → N1 → G1. Das Biogas aller Behälter wird dem BHKW zugeführt. Das BHKW hat einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %.\n\nSubstratzufuhr: 50 t/d Maissilage über den Feststoffdosierer in F1 und 10 m³/d Rindergülle aus der Vorgrube in F1."
   },
   "regime": "fully_specified",
   "scope": {
@@ -24,7 +24,7 @@
         "params": {
           "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
           "V_liq": { "value": 2244, "obligation": "derivable", "formula": "pi/4*23^2 * fill_fraction*6", "accept": { "min": 1994, "max": 2369 } },
-          "V_gas": { "value": 300, "obligation": "given", "accept": { "min": 250, "max": 350 } },
+          "V_gas": { "value": 549, "obligation": "given", "accept": { "min": 490, "max": 610 } },
           "T_ad": { "value": 313.15, "obligation": "given", "accept": { "min": 311.15, "max": 316.15 } }
         }
       },
@@ -40,7 +40,7 @@
         "params": {
           "fill_fraction": { "value": 0.90, "obligation": "given", "accept": { "min": 0.85, "max": 0.95 } },
           "V_liq": { "value": 3817, "obligation": "derivable", "formula": "pi/4*30^2 * fill_fraction*6", "accept": { "min": 3393, "max": 4030 } },
-          "V_gas": { "value": 500, "obligation": "given", "accept": { "min": 450, "max": 550 } },
+          "V_gas": { "value": 924, "obligation": "given", "accept": { "min": 830, "max": 1020 } },
           "T_ad": { "value": 293.15, "obligation": "given", "accept": { "min": 283.15, "max": 303.15 } }
         }
       },
@@ -77,10 +77,11 @@
   "expected_open_questions": [],
   "must_not_invent": ["zweiten Fermenter F2 (Anlage hat nur F1)", "Separator (Anlage hat keinen)", "BGAA (Anlage hat keine)"],
   "oracle": {
+    "substrate_feed": "50 t/d Maissilage über den Feststoffdosierer in F1 und 10 m³/d Rindergülle aus der Vorgrube in F1",
     "bgaa.exists": false,
     "chp.exists": true,
     "bhkw.P_el_nom": 250.0, "bhkw.eta_el": 0.40, "bhkw.eta_th": 0.45,
-    "F1.V_gas": 300, "N1.V_gas": 300, "G1.V_gas": 500,
+    "F1.V_gas": 549, "N1.V_gas": 549, "G1.V_gas": 924,
     "F1.T_ad": 313.15, "N1.T_ad": 313.15, "G1.T_ad": 293.15,
     "F1.fill_fraction": 0.90, "G1.fill_fraction": 0.90,
     "digestate_cascade": "F1->N1, N1->G1"
