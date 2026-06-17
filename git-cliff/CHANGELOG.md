@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Documentation
+
+- Remove polyfill.io (compromised CDN, scam pop-up)  
+
+## [0.4.5] - 2026-06-16
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
 ### Benchmark
 
 - V_gas als Kuppeldach + 10% Kopfraum, explizite H/D in terse-Full  
