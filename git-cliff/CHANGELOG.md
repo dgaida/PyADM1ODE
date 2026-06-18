@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Features
+
+- Add networkx as a dependency  
+
+## [0.4.8] - 2026-06-18
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
 ## [0.4.7] - 2026-06-18
 
 ### Features
