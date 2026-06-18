@@ -39,8 +39,7 @@ flowchart LR
 ## Who is this documentation for?
 
 This introduction is aimed at readers **without programming experience**. No coding
-knowledge is required – technical terms are explained, and a [glossary](glossar.md)
-summarises the most important ones at the end.
+knowledge is required – technical terms are explained along the way.
 
 ## Where to go next
 
@@ -69,13 +68,5 @@ summarises the most important ones at the end.
     How does a test run, and how is the score produced?
 
     [:octicons-arrow-right-24: Scoring & Workflow](bewertung.md)
-
--   :material-book-alphabet:{ .lg .middle } **Glossary**  
-
-    ---
-
-    All key terms briefly explained.
-
-    [:octicons-arrow-right-24: Glossary](glossar.md)
 
 </div>

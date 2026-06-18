@@ -17,14 +17,6 @@ from pyadm1.configurator.connection_manager import Connection
 from pyadm1.substrates.feedstock import Feedstock
 from pyadm1.configurator.graph import Graph, normalize_candidate
 
-import matplotlib
-
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
-from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
-import networkx as nx
-
 
 class BiogasPlant:
     """
@@ -548,6 +540,13 @@ class BiogasPlant:
         Returns:
             str: Path to the written PNG file.
         """
+        import matplotlib
+
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        from matplotlib.lines import Line2D
+        from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
+        import networkx as nx
 
         graph = self.to_graph()
 

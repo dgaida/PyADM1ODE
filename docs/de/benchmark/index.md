@@ -50,12 +50,4 @@ flowchart LR
 
     [:octicons-arrow-right-24: Bewertung & Ablauf](bewertung.md)
 
--   :material-book-alphabet:{ .lg .middle } **Glossar**  
-
-    ---
-
-    Alle wichtigen Begriffe kurz erklärt.
-
-    [:octicons-arrow-right-24: Glossar](glossar.md)
-
 </div>

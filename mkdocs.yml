@@ -87,7 +87,6 @@ plugins:
             Ein Datenpunkt im Detail: A Data Point in Detail
             Bewertung & Ablauf: Scoring & Workflow
             Datensatz nutzen: Using the Dataset
-            Glossar: Glossary
   - mkdocstrings:
       handlers:
         python:
@@ -166,7 +165,6 @@ nav:
       - Bewertung & Ablauf: benchmark/bewertung.md
       - Datensatz nutzen: benchmark/nutzung.md
       - Viewer: benchmark/viewer.md
-      - Glossar: benchmark/glossar.md
   - Entwicklung:
       - Styleguide: development/style_guide.md
       - Metriken: metrics.md

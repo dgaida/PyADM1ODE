@@ -86,5 +86,3 @@ Tasks with a **sketch** (image) can only be solved by AI models that **understan
 images**. A pure text model cannot "see" a sketch and would inevitably score 0 % on
 such tasks – this is then **not** a content error of the model, but a question of
 choosing the right model.
-
-An overview of all technical terms can be found in the [glossary](glossar.md).
