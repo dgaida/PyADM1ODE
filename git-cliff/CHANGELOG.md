@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.7] - 2026-06-18
+
+### Features
+
+- Add matplotlib as a dependency  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
 ## [0.4.6] - 2026-06-17
 
 ### Documentation
