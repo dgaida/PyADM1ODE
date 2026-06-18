@@ -560,10 +560,4 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/user_guide/components/sensors/"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://dgaida.github.io/PyADM1ODE/devuser_guide/components/sensors/"/>
     </url>
-    <url>
-        <loc>https://dgaida.github.io/PyADM1ODE/dev/en/benchmark/glossar/</loc>
-        <lastmod>2026-06-18</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://dgaida.github.io/PyADM1ODE/dev/en/benchmark/glossar/"/>
-    </url>
 </urlset>
