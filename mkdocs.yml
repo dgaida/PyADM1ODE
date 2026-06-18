@@ -82,6 +82,12 @@ plugins:
             Metriken: Metrics
             Konfigurator: Configurator
             Simulation: Simulation
+            Benchmark-Datensatz: Benchmark Dataset
+            Aufbau des Datensatzes: Dataset Structure
+            Ein Datenpunkt im Detail: A Data Point in Detail
+            Bewertung & Ablauf: Scoring & Workflow
+            Datensatz nutzen: Using the Dataset
+            Glossar: Glossary
   - mkdocstrings:
       handlers:
         python:
@@ -153,6 +159,14 @@ nav:
       - Basis-Fermenter: examples/basic_digester.md
       - Zweistufige Anlage: examples/two_stage_plant.md
       - Parallele Simulation: examples/parallel_simulation.md
+  - Benchmark-Datensatz:
+      - Übersicht: benchmark/index.md
+      - Aufbau des Datensatzes: benchmark/aufbau.md
+      - Ein Datenpunkt im Detail: benchmark/datenpunkt.md
+      - Bewertung & Ablauf: benchmark/bewertung.md
+      - Datensatz nutzen: benchmark/nutzung.md
+      - Viewer: benchmark/viewer.md
+      - Glossar: benchmark/glossar.md
   - Entwicklung:
       - Styleguide: development/style_guide.md
       - Metriken: metrics.md

@@ -15,6 +15,15 @@ from pyadm1.components.base import Component, ComponentType
 from pyadm1.components.biological.digester import Digester
 from pyadm1.configurator.connection_manager import Connection
 from pyadm1.substrates.feedstock import Feedstock
+from pyadm1.configurator.graph import Graph, normalize_candidate
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
+import networkx as nx
 
 
 class BiogasPlant:
@@ -489,6 +498,308 @@ class BiogasPlant:
             visit(comp_id)
 
         return order
+
+    def to_graph(self) -> Graph:
+        """
+        Build the typed component/connection graph for this plant.
+
+        Serializes the plant exactly like the LLM benchmark does (the
+        ``components`` / ``connections`` dict produced by ``to_dict``) and
+        normalizes it into the benchmark ``Graph`` data model. The returned
+        graph has one ``Node`` per component (keyed by component id, carrying
+        its ``component_type`` and serialized scalar parameters) and one
+        ``Edge`` per connection (``liquid`` / ``gas`` / ``heat``).
+
+        Returns:
+            Graph: Graph with ``nodes`` (Dict[str, Node]) and ``edges``
+                (List[Edge]), identical to what ``normalize_candidate`` builds
+                in the benchmark.
+        """
+        candidate = {
+            "components": [comp.to_dict() for comp in self.components.values()],
+            "connections": [conn.to_dict() for conn in self.connections],
+        }
+        return normalize_candidate(candidate)
+
+    def visualize_graph(
+        self,
+        output_path: Optional[str] = None,
+        dpi: int = 150,
+        title: Optional[str] = None,
+    ) -> str:
+        """
+        Render the plant graph (see :meth:`to_graph`) to a PNG file.
+
+        Mirrors the Mermaid ``flowchart LR`` style used for the benchmark
+        dataset: components are drawn as rounded boxes laid out left-to-right by
+        process depth, liquid connections as solid labelled arrows and gas
+        connections as dotted labelled arrows (heat as dashed). Unlike the
+        dataset diagrams, no dataset-specific annotations (obligations,
+        confidences, reference ids) are shown -- only the plant's own
+        components and connections.
+
+        Args:
+            output_path (Optional[str]): Target PNG path. Defaults to
+                ``output/<plant_name>_graph.png`` relative to the repo root.
+            dpi (int): Resolution of the saved figure.
+            title (Optional[str]): Figure title. ``None`` (default) shows no
+                title.
+
+        Returns:
+            str: Path to the written PNG file.
+        """
+
+        graph = self.to_graph()
+
+        # Serialized component_type -> proper PyADM1ODE class name for display.
+        class_names = {
+            "digester": "Digester",
+            "storage": "GasStorage",
+            "chp": "CHP",
+            "flare": "Flare",
+            "heating": "HeatingSystem",
+            "boiler": "Boiler",
+            "separator": "Separator",
+            "upgrading": "BiogasUpgrading",
+            "mixer": "Mixer",
+        }
+
+        # Edge style per transport medium, matching the Mermaid dataset look:
+        # liquid = solid, gas = dotted, heat = dashed.
+        edge_styles = {
+            "liquid": {"linestyle": "solid", "color": "#333333", "label": "liquid"},
+            "gas": {"linestyle": "dotted", "color": "#C0703C", "label": "gas"},
+            "heat": {"linestyle": "dashed", "color": "#C44E52", "label": "heat"},
+        }
+
+        # --- Layered left-to-right layout (process depth = longest path) ------
+        dg = nx.DiGraph()
+        dg.add_nodes_from(graph.nodes)
+        for edge in graph.edges:
+            dg.add_edge(edge.src, edge.dst)
+
+        # Longest-path depth from any source; robust against cycles.
+        depth: Dict[str, int] = {n: 0 for n in dg.nodes}
+        try:
+            for n in nx.topological_sort(dg):
+                for succ in dg.successors(n):
+                    depth[succ] = max(depth[succ], depth[n] + 1)
+        except nx.NetworkXUnfeasible:
+            depth = {n: 0 for n in dg.nodes}  # cyclic: fall back to single column
+
+        # Group nodes by depth (column) and assign vertical slots.
+        columns: Dict[int, List[str]] = {}
+        for nid in graph.nodes:
+            columns.setdefault(depth[nid], []).append(nid)
+
+        def _key_info(ctype: str, p: Dict[str, Any]) -> List[str]:
+            """Most relevant sizing/rating values per component type."""
+
+            def num(key, fmt="{:g}"):
+                v = p.get(key)
+                return fmt.format(v) if isinstance(v, (int, float)) else None
+
+            lines: List[str] = []
+            if ctype == "digester":
+                if num("V_liq"):
+                    lines.append(f"V_liq {num('V_liq')} m³")
+                if num("V_gas"):
+                    lines.append(f"V_gas {num('V_gas')} m³")
+                if isinstance(p.get("T_ad"), (int, float)):
+                    lines.append(f"T {p['T_ad'] - 273.15:.0f} °C")
+            elif ctype == "storage":
+                if num("capacity_m3"):
+                    lines.append(f"V_gas {num('capacity_m3')} m³")
+            elif ctype == "chp":
+                if num("P_el_nom"):
+                    lines.append(f"P_el {num('P_el_nom')} kW")
+                if num("eta_el"):
+                    lines.append(f"η_el {float(p['eta_el']) * 100:.0f} %")
+            elif ctype == "upgrading":
+                if num("capacity_m3h"):
+                    lines.append(f"{num('capacity_m3h')} m³/h")
+            elif ctype == "separator":
+                if num("separation_efficiency"):
+                    lines.append(f"η {float(p['separation_efficiency']) * 100:.0f} %")
+            elif ctype == "flare":
+                if num("destruction_efficiency"):
+                    lines.append(f"η {float(p['destruction_efficiency']) * 100:.0f} %")
+            elif ctype == "heating":
+                if isinstance(p.get("target_temperature"), (int, float)):
+                    t = p["target_temperature"]
+                    t = t - 273.15 if t > 200 else t
+                    lines.append(f"T {t:.0f} °C")
+            return lines
+
+        # Per-node info line; box width adapts to the longest text shown.
+        infos: Dict[str, str] = {
+            nid: "  ·  ".join(_key_info(graph.nodes[nid].ctype, graph.nodes[nid].params)) for nid in graph.nodes
+        }
+        longest = max([len(infos[n]) for n in infos] + [len(n) for n in graph.nodes] + [10])
+        box_h = 1.3
+        box_w = max(3.2, 0.095 * longest + 1.0)
+
+        # --- Layered left-to-right layout (columns by process depth) ----------
+        x_gap, y_gap = box_w + 1.8, 1.9
+        pos: Dict[str, tuple] = {}
+        max_rows = max((len(c) for c in columns.values()), default=1)
+        for col, nids in sorted(columns.items()):
+            n_rows = len(nids)
+            offset = (max_rows - n_rows) / 2.0
+            for row, nid in enumerate(sorted(nids)):
+                pos[nid] = (col * x_gap, -(row + offset) * y_gap)
+
+        n_cols = max(columns) + 1 if columns else 1
+        fig, ax = plt.subplots(figsize=(max(7, n_cols * (box_w + 1.8)), max(4, max_rows * 1.9)))
+
+        for nid, (x, y) in pos.items():
+            node = graph.nodes[nid]
+            ctype = node.ctype
+            box = FancyBboxPatch(
+                (x - box_w / 2, y - box_h / 2),
+                box_w,
+                box_h,
+                boxstyle="round,pad=0.03,rounding_size=0.15",
+                linewidth=1.4,
+                edgecolor="#34495E",
+                facecolor="#ECF3FB",
+                zorder=2,
+            )
+            ax.add_patch(box)
+            ax.text(x, y + box_h * 0.22, nid, ha="center", va="center", fontsize=9, fontweight="bold", zorder=3)
+            ax.text(
+                x,
+                y + box_h * 0.02,
+                class_names.get(ctype, ctype),
+                ha="center",
+                va="center",
+                fontsize=7.5,
+                color="#555555",
+                zorder=3,
+            )
+            info = infos[nid]
+            if info:
+                ax.text(
+                    x,
+                    y - box_h * 0.28,
+                    info,
+                    ha="center",
+                    va="center",
+                    fontsize=6.5,
+                    color="#1A5276",
+                    zorder=3,
+                )
+
+        def _border(cx, cy, tx, ty):
+            """Point on the box border of (cx, cy) facing (tx, ty)."""
+            dx, dy = tx - cx, ty - cy
+            if dx == 0 and dy == 0:
+                return cx, cy
+            sx = (box_w / 2 + 0.06) / abs(dx) if dx else float("inf")
+            sy = (box_h / 2 + 0.06) / abs(dy) if dy else float("inf")
+            t = min(sx, sy)
+            return cx + dx * t, cy + dy * t
+
+        used_styles: Dict[str, dict] = {}
+        # Bow gas edges up and heat edges down so parallel liquid/gas/heat
+        # connections separate; edges spanning intermediate columns bow more
+        # (like Mermaid) to clear the boxes in between.
+        bow_dir = {"liquid": 0.0, "gas": 1.0, "heat": -1.0}
+        for edge in graph.edges:
+            if edge.src not in pos or edge.dst not in pos:
+                continue
+            style = edge_styles.get(edge.etype, edge_styles["liquid"])
+            used_styles[edge.etype] = style
+            cx0, cy0 = pos[edge.src]
+            cx1, cy1 = pos[edge.dst]
+            # Start/end on the box borders so the arrow head stays visible.
+            x0, y0 = _border(cx0, cy0, cx1, cy1)
+            x1, y1 = _border(cx1, cy1, cx0, cy0)
+            span = abs(depth[edge.dst] - depth[edge.src])
+            direction = bow_dir.get(edge.etype, 0.0)
+            chord_x = abs(cx1 - cx0)
+            if chord_x < 0.1:  # same column (e.g. cyclic) -> sidestep
+                rad = 0.3
+            elif direction == 0.0 and span <= 1:  # adjacent liquid -> straight
+                rad = 0.0
+            else:
+                # Fixed apex offset (data units) regardless of span, so long
+                # multi-column edges bow gently instead of dipping far down.
+                apex = 0.8 if span <= 1 else 1.2
+                rad = direction * 2 * apex / chord_x
+            conn = f"arc3,rad={rad}"
+            # Body line in the medium's linestyle, but without a head, so a
+            # dotted gas line does not produce a dotted (broken) arrow head.
+            ax.add_patch(
+                FancyArrowPatch(
+                    (x0, y0),
+                    (x1, y1),
+                    connectionstyle=conn,
+                    arrowstyle="-",
+                    linewidth=1.6,
+                    linestyle=style["linestyle"],
+                    color=style["color"],
+                    shrinkA=1,
+                    shrinkB=2,
+                    zorder=1,
+                )
+            )
+            # Solid filled arrow head only (linewidth 0 -> no body line drawn).
+            ax.add_patch(
+                FancyArrowPatch(
+                    (x0, y0),
+                    (x1, y1),
+                    connectionstyle=conn,
+                    arrowstyle="-|>,head_length=5,head_width=3",
+                    mutation_scale=2.4,
+                    linewidth=0,
+                    color=style["color"],
+                    shrinkA=1,
+                    shrinkB=2,
+                    zorder=1,
+                )
+            )
+
+        legend = [
+            Line2D([0], [0], color=s["color"], linestyle=s["linestyle"], lw=1.6, label=s["label"])
+            for et, s in edge_styles.items()
+            if et in used_styles
+        ]
+        if legend:
+            ax.legend(handles=legend, loc="lower right", fontsize=8, title="connection", framealpha=0.9)
+        if title:
+            ax.set_title(title)
+        ax.axis("off")
+
+        # Tight content bounding box: boxes plus room for the edge bows
+        # (gas bows below, heat above). Sizing the figure to this box keeps the
+        # image height matched to the graph instead of leaving large gaps.
+        xs = [x for x, _ in pos.values()]
+        ys = [y for _, y in pos.values()]
+        pad = 0.5
+        x_lo, x_hi = min(xs) - box_w / 2 - pad, max(xs) + box_w / 2 + pad
+        y_lo = min(ys) - box_h / 2 - (1.4 if "gas" in used_styles else 0.0) - pad
+        y_hi = max(ys) + box_h / 2 + (1.4 if "heat" in used_styles else 0.0) + pad
+        ax.set_xlim(x_lo, x_hi)
+        ax.set_ylim(y_lo, y_hi)
+        ax.set_aspect("equal", adjustable="box")
+
+        scale = 0.55
+        fig.set_size_inches((x_hi - x_lo) * scale, (y_hi - y_lo) * scale)
+        fig.tight_layout()
+
+        if output_path is None:
+            from pathlib import Path
+
+            repo_root = Path(__file__).resolve().parents[2]
+            out_dir = repo_root / "output"
+            out_dir.mkdir(exist_ok=True)
+            safe_name = self.plant_name.replace(" ", "_")
+            output_path = str(out_dir / f"{safe_name}_graph.png")
+
+        fig.savefig(output_path, dpi=dpi, bbox_inches="tight")
+        plt.close(fig)
+        return output_path
 
     def to_json(self, filepath: str) -> None:
         """

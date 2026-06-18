@@ -32,6 +32,7 @@ import json
 import math
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple
+from pyadm1.configurator.graph import AUTO_TYPES, Edge, Graph, Node, normalize_candidate
 
 # --------------------------------------------------------------------------
 # Typ- und Feld-Mappings (Referenz-Typname  <->  serialisierter component_type)
@@ -61,7 +62,6 @@ SERIALIZED_PARAMS: Dict[str, set] = {
     "mixer": set(),
 }
 
-AUTO_TYPES = {"storage", "flare"}
 # Typen, die Gas abnehmen/versenken (gueltige Endpunkte eines Gaspfads).
 GAS_CONSUMER_TYPES = {"chp", "flare", "boiler", "upgrading"}
 
@@ -72,39 +72,6 @@ REQUIRED_EDGE_OBLIGATIONS = {"given", "auto"}
 REQUIRED_INFERRED_CONFIDENCE = {"high"}
 # Diese fliessen NICHT in Struktur/Masse, sondern in den Luecken-Score.
 GAP_OBLIGATIONS = {"missing_ask"}
-
-
-# ==========================================================================
-# Datenmodell (intern, beide Graphen im "candidate-type-value"-Raum)
-# ==========================================================================
-@dataclass
-class Node:
-    id: str
-    ctype: str  # serialisierter component_type, z.B. "digester"
-    obligation: str = "given"
-    auto: bool = False
-    params: Dict[str, Any] = field(default_factory=dict)  # name -> {value,obligation,accept} (ref) ODER name -> wert (cand)
-
-
-@dataclass
-class Edge:
-    src: str
-    dst: str
-    etype: str  # "liquid" | "gas" | "heat"
-    obligation: str = "given"
-    confidence: Optional[str] = None
-
-
-@dataclass
-class Graph:
-    nodes: Dict[str, Node]
-    edges: List[Edge]
-
-    def out_edges(self, nid: str, etype: Optional[str] = None) -> List[Edge]:
-        return [e for e in self.edges if e.src == nid and (etype is None or e.etype == etype)]
-
-    def in_edges(self, nid: str, etype: Optional[str] = None) -> List[Edge]:
-        return [e for e in self.edges if e.dst == nid and (etype is None or e.etype == etype)]
 
 
 # ==========================================================================
@@ -161,25 +128,6 @@ def lint_gas_paths(g: Graph) -> List[str]:
             if not g.out_edges(nd.id, "gas"):
                 warns.append(f"Digester '{nd.id}' hat keine Gas-Kante -> erzeugtes " f"Biogas wird nicht erfasst.")
     return warns
-
-
-def normalize_candidate(cand: Dict[str, Any]) -> Graph:
-    """``BiogasPlant``-Serialisierung (to_json/to_dict-Struktur) -> internen Graph."""
-    nodes: Dict[str, Node] = {}
-    for c in cand.get("components", []):
-        cid = c["component_id"]
-        ctype = c["component_type"]
-        # Alle serialisierten Skalar-Felder als Parameter uebernehmen.
-        params = {
-            k: v
-            for k, v in c.items()
-            if k not in ("component_id", "component_type", "name", "inputs", "outputs", "state", "outputs_data")
-            and isinstance(v, (int, float, str, bool))
-        }
-        nodes[cid] = Node(id=cid, ctype=ctype, auto=ctype in AUTO_TYPES, params=params)
-
-    edges = [Edge(e["from"], e["to"], e["type"]) for e in cand.get("connections", [])]
-    return Graph(nodes, edges)
 
 
 # ==========================================================================
