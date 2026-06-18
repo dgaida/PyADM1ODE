@@ -27,10 +27,10 @@ variant, it is a detailed text, a terse text or a sketch (image). The AI receive
 The reference describes **what the plant should correctly look like**. It is the
 "ground truth" against which the AI's result is measured. It consists of two lists:
 
-- **Components:** all vessels and devices (e.g. fermenter, secondary digester,
+- **Components:** all vessels and devices (e.g. fermenter, secondary digester,  
   digestate store, combined heat and power unit) with their key data such as size
-  and temperature.
-- **Connections:** who is connected to whom – that is, where the digestate flows and
+  and temperature.  
+- **Connections:** who is connected to whom – that is, where the digestate flows and  
   where the biogas is routed.
 
 !!! example "A plant as components + connections (BGA2)"
@@ -62,13 +62,13 @@ oracle provides the correct answer (e.g. "40 °C"). The oracle also recognises
 
 Two additional pieces of information ensure fair scoring:
 
-- **Regime** – describes whether the task is **complete** or **incomplete**:
+- **Regime** – describes whether the task is **complete** or **incomplete**:  
 
-    - *fully specified*: All information is in the description. No asking needed.
-    - *underspecified*: Information is missing and must be asked for or sensibly
+    - *fully specified*: All information is in the description. No asking needed.  
+    - *underspecified*: Information is missing and must be asked for or sensibly  
       filled in.
 
-- **Prohibitions** (`must_not_invent`) – things the AI **must not invent**. If a
+- **Prohibitions** (`must_not_invent`) – things the AI **must not invent**. If a  
   plant has no combined heat and power unit, for instance, the AI must not add one.
 
 ## How "certain" a piece of information is
@@ -90,8 +90,8 @@ counting as an error straight away – as long as the addition is plausible.
 
 A vivid example is the **gas space** of a vessel. It is made up of two parts:
 
-1. the **dome roof**, which sits on top of the vessel and serves as gas storage, and
-2. the **unfilled headspace** – the part of the vessel deliberately left without
+1. the **dome roof**, which sits on top of the vessel and serves as gas storage, and  
+2. the **unfilled headspace** – the part of the vessel deliberately left without  
    liquid (typically around 10 %).
 
 In the complete descriptions, the total gas space is stated directly, so the AI does

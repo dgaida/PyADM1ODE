@@ -41,8 +41,8 @@ benchmark/
 
 Each plant exists in several variants. The `_full` suffix marks completeness:
 
-- **`fully_specified`** (`_full`): all data is in the input – no oracle needed.
-- **`underspecified`** (no `_full`): values are missing – the model must ask or fill
+- **`fully_specified`** (`_full`): all data is in the input – no oracle needed.  
+- **`underspecified`** (no `_full`): values are missing – the model must ask or fill  
   them in plausibly.
 
 | Axis | Values | Distribution (24) |
@@ -156,9 +156,9 @@ for entry in index["datapoints"]:
 
 Three scores are computed:
 
-1. **Structure** – components (matched by type, not by name) and connections.
-2. **Measures** – simulated parameters (`V_liq`, `V_gas`, `T_ad`, `P_el_nom`, …) within the acceptance band.
-3. **Missing values** – asked or plausibly filled instead of silently invented.
+1. **Structure** – components (matched by type, not by name) and connections.  
+2. **Measures** – simulated parameters (`V_liq`, `V_gas`, `T_ad`, `P_el_nom`, …) within the acceptance band.  
+3. **Missing values** – asked or plausibly filled instead of silently invented.  
 
 How the final score is produced is explained in [Scoring & Workflow](bewertung.md).
 You can explore the dataset visually in the [Viewer](viewer.md).

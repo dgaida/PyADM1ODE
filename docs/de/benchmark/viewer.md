@@ -7,9 +7,9 @@ Er läuft **offline im Browser**, ganz ohne Server.
 
 ## Was der Viewer zeigt
 
-- **Anlagengraph**: Bauteile als Knoten, Verbindungen als Kanten.
-- **Bauteil-Details**: Tabelle der simulierten Parameter, Akzeptanzband und Hinweisen.
-- **Seitenleiste**: die **Eingabe**, die **erwarteten Rückfragen**, die **Oracle-Antworten**, die
+- **Anlagengraph**: Bauteile als Knoten, Verbindungen als Kanten.  
+- **Bauteil-Details**: Tabelle der simulierten Parameter, Akzeptanzband und Hinweisen.  
+- **Seitenleiste**: die **Eingabe**, die **erwarteten Rückfragen**, die **Oracle-Antworten**, die  
   **„nicht erfinden"**-Verbote, die **verworfenen** (nicht simulierten) Teile und die **Metadaten**.
 
 ## Legende (Graph)

@@ -30,10 +30,10 @@ flowchart LR
 
 ## Why is this useful?
 
-- **Comparability:** Different AI models solve the same tasks – you can objectively
-  see which one performs better.
-- **Realism:** The plants are based on real agricultural biogas plants.
-- **Understanding:** The dataset vividly shows what a biogas plant consists of and
+- **Comparability:** Different AI models solve the same tasks – you can objectively  
+  see which one performs better.  
+- **Realism:** The plants are based on real agricultural biogas plants.  
+- **Understanding:** The dataset vividly shows what a biogas plant consists of and  
   what matters when modelling one.
 
 ## Who is this documentation for?
@@ -46,7 +46,7 @@ summarises the most important ones at the end.
 
 <div class="grid cards" markdown>
 
--   :material-folder-multiple:{ .lg .middle } **Dataset Structure**
+-   :material-folder-multiple:{ .lg .middle } **Dataset Structure**  
 
     ---
 
@@ -54,7 +54,7 @@ summarises the most important ones at the end.
 
     [:octicons-arrow-right-24: Dataset Structure](aufbau.md)
 
--   :material-file-document-outline:{ .lg .middle } **A Data Point in Detail**
+-   :material-file-document-outline:{ .lg .middle } **A Data Point in Detail**  
 
     ---
 
@@ -62,7 +62,7 @@ summarises the most important ones at the end.
 
     [:octicons-arrow-right-24: A Data Point in Detail](datenpunkt.md)
 
--   :material-scale-balance:{ .lg .middle } **Scoring & Workflow**
+-   :material-scale-balance:{ .lg .middle } **Scoring & Workflow**  
 
     ---
 
@@ -70,7 +70,7 @@ summarises the most important ones at the end.
 
     [:octicons-arrow-right-24: Scoring & Workflow](bewertung.md)
 
--   :material-book-alphabet:{ .lg .middle } **Glossary**
+-   :material-book-alphabet:{ .lg .middle } **Glossary**  
 
     ---
 

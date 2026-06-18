@@ -27,16 +27,16 @@ Zwei Eigenschaften werden dabei kombiniert:
 
 **1. Die Form der Beschreibung**
 
-- **ausführlicher Text** – ein erklärender Fließtext
-- **knapper Text** (terse) – nur die wichtigsten Eckdaten
-- **englischer Text** – dieselbe Anlage auf Englisch
-- **Skizze** – eine Zeichnung der Anlage (Bild)
+- **ausführlicher Text** – ein erklärender Fließtext  
+- **knapper Text** (terse) – nur die wichtigsten Eckdaten  
+- **englischer Text** – dieselbe Anlage auf Englisch  
+- **Skizze** – eine Zeichnung der Anlage (Bild)  
 
 **2. Die Vollständigkeit der Angaben**
 
-- **vollständig**: Alle nötigen Angaben stehen in der Beschreibung.
-  Die KI muss nichts nachfragen.
-- **unvollständig**: Es fehlen Angaben (z. B. die Betriebstemperatur). Die KI muss
+- **vollständig**: Alle nötigen Angaben stehen in der Beschreibung.  
+  Die KI muss nichts nachfragen.  
+- **unvollständig**: Es fehlen Angaben (z. B. die Betriebstemperatur). Die KI muss  
   diese **erfragen** oder sinnvoll **ergänzen**.
 
 ## Die Musterlösung („Gold")
