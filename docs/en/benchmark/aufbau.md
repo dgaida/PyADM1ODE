@@ -28,16 +28,16 @@ Two properties are combined here:
 
 **1. The form of the description**
 
-- **detailed text** – an explanatory prose description
-- **terse text** – only the key figures
-- **English text** – the same plant in English
-- **sketch** – a drawing of the plant (image)
+- **detailed text** – an explanatory prose description  
+- **terse text** – only the key figures  
+- **English text** – the same plant in English  
+- **sketch** – a drawing of the plant (image)  
 
 **2. The completeness of the information**
 
-- **complete** (suffix `_full`): All required information is in the description. The
-  AI does not need to ask anything.
-- **incomplete**: Some information is missing (e.g. the operating temperature). The
+- **complete** (suffix `_full`): All required information is in the description. The  
+  AI does not need to ask anything.  
+- **incomplete**: Some information is missing (e.g. the operating temperature). The  
   AI has to **ask** for it or fill it in sensibly.
 
 !!! example "Example"

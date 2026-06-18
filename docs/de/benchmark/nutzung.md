@@ -42,8 +42,8 @@ Gold-Lösung `gold.py` (korrekter PyADM1ODE-Code).
 Jede Anlage existiert in mehreren Varianten. Das Suffix `_full`
 markiert die Vollständigkeit:
 
-- **`fully_specified`** (`_full`): alle Angaben im Input – kein Oracle nötig.
-- **`underspecified`** (ohne `_full`): Werte fehlen – das Modell muss nachfragen
+- **`fully_specified`** (`_full`): alle Angaben im Input – kein Oracle nötig.  
+- **`underspecified`** (ohne `_full`): Werte fehlen – das Modell muss nachfragen  
   oder plausibel ergänzen.
 
 | Achse | Werte | Verteilung (24) |
@@ -159,9 +159,9 @@ for entry in index["datapoints"]:
 
 Bewertet werden drei Scores:
 
-1. **Struktur** – Bauteile (nach Typ zugeordnet, nicht nach Namen) und Verbindungen.
-2. **Maße** – simulierte Parameter (`V_liq`, `V_gas`, `T_ad`, `P_el_nom`, …) im Akzeptanzband.
-3. **Fehlende Werte** – nachgefragt oder plausibel gefüllt statt still erfunden.
+1. **Struktur** – Bauteile (nach Typ zugeordnet, nicht nach Namen) und Verbindungen.  
+2. **Maße** – simulierte Parameter (`V_liq`, `V_gas`, `T_ad`, `P_el_nom`, …) im Akzeptanzband.  
+3. **Fehlende Werte** – nachgefragt oder plausibel gefüllt statt still erfunden.  
 
 Wie daraus die Endbewertung entsteht, erklärt [Bewertung & Ablauf](bewertung.md).
 Den Datensatz visuell erkunden kannst du im [Viewer](viewer.md).

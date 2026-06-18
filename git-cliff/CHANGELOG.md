@@ -2,11 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.4.6] - 2026-06-17
 
 ### Documentation
 
 - Remove polyfill.io (compromised CDN, scam pop-up)  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.4.5] - 2026-06-16
 

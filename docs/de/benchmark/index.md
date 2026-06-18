@@ -26,7 +26,7 @@ flowchart LR
 
 <div class="grid cards" markdown>
 
--   :material-folder-multiple:{ .lg .middle } **Aufbau des Datensatzes**
+-   :material-folder-multiple:{ .lg .middle } **Aufbau des Datensatzes**  
 
     ---
 
@@ -34,7 +34,7 @@ flowchart LR
 
     [:octicons-arrow-right-24: Aufbau des Datensatzes](aufbau.md)
 
--   :material-file-document-outline:{ .lg .middle } **Ein Datenpunkt im Detail**
+-   :material-file-document-outline:{ .lg .middle } **Ein Datenpunkt im Detail**  
 
     ---
 
@@ -42,7 +42,7 @@ flowchart LR
 
     [:octicons-arrow-right-24: Ein Datenpunkt im Detail](datenpunkt.md)
 
--   :material-scale-balance:{ .lg .middle } **Bewertung & Ablauf**
+-   :material-scale-balance:{ .lg .middle } **Bewertung & Ablauf**  
 
     ---
 
@@ -50,7 +50,7 @@ flowchart LR
 
     [:octicons-arrow-right-24: Bewertung & Ablauf](bewertung.md)
 
--   :material-book-alphabet:{ .lg .middle } **Glossar**
+-   :material-book-alphabet:{ .lg .middle } **Glossar**  
 
     ---
 

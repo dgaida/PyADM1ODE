@@ -25,9 +25,9 @@ Die KI bekommt **nur** diese Eingabe, sonst nichts.
 Die Referenz beschreibt, **wie die Anlage richtig aussieht**. An ihr wird das Ergebnis
 der KI gemessen. Sie besteht aus zwei Listen:
 
-- **Bauteile:** alle Behälter und Geräte (z. B. Fermenter, Nachgärer, Gärrestlager,
-  Blockheizkraftwerk) mit ihren Eckdaten wie Größe und Temperatur.
-- **Verbindungen:** wer mit wem verbunden ist, also den Weg des Gärrests und
+- **Bauteile:** alle Behälter und Geräte (z. B. Fermenter, Nachgärer, Gärrestlager,  
+  Blockheizkraftwerk) mit ihren Eckdaten wie Größe und Temperatur.  
+- **Verbindungen:** wer mit wem verbunden ist, also den Weg des Gärrests und  
  des Biogases durch die Anlage.
 
 !!! example "So sieht eine Anlage als Bauteile + Verbindungen aus (BGA2)"
@@ -57,15 +57,15 @@ Fragt die KI zum Beispiel „Bei welcher Temperatur läuft der Fermenter?", lief
 
 Zwei Zusatzangaben sorgen für eine faire Bewertung:
 
-- **Vollständigkeit** – gibt an, ob die Aufgabe **vollständig** oder **unvollständig**
+- **Vollständigkeit** – gibt an, ob die Aufgabe **vollständig** oder **unvollständig**  
   beschrieben ist:
 
-    - *vollständig spezifiziert*: Alle Angaben stehen in der Beschreibung. Kein
-      Nachfragen nötig.
-    - *unvollständig spezifiziert*: Es fehlen Angaben, die erfragt oder sinnvoll
+    - *vollständig spezifiziert*: Alle Angaben stehen in der Beschreibung. Kein  
+      Nachfragen nötig.  
+    - *unvollständig spezifiziert*: Es fehlen Angaben, die erfragt oder sinnvoll  
       ergänzt werden müssen.
 
-- **Verbote** – Dinge, die die KI **nicht erfinden** darf. Hat eine Anlage
+- **Verbote** – Dinge, die die KI **nicht erfinden** darf. Hat eine Anlage  
  z. B. kein Blockheizkraftwerk, darf die KI auch keines hinzufügen.
 
 ## Wie „sicher" eine Angabe ist
