@@ -4,9 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Refactor
+
+- Remove glossary and update documentation references  
+
+## [0.4.9] - 2026-06-18
+
 ### Features
 
 - Add networkx as a dependency  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.4.8] - 2026-06-18
 
