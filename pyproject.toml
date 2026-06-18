@@ -41,6 +41,7 @@ dependencies = [
     "pandas>=1.3.0",
     "scipy>=1.7.0",
     "matplotlib",
+    "networkx",
     "pythonnet>=3.0.0",
     "PyYAML>=6.0",
     "tomli>=2.0; python_version < '3.11'",
