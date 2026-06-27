@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.5.0] - 2026-06-18
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ### Refactor
 

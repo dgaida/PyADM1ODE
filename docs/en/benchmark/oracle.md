@@ -13,9 +13,9 @@ about the mechanism behind it.
 
 The oracle is consulted **only** for under-specified tasks:
 
-- **fully specified** (`fully_specified`): all information is in the description. There
-  is nothing to ask – the oracle stays silent.
-- **under-specified** (`underspecified`): values are missing. Only here may the AI ask
+- **fully specified** (`fully_specified`): all information is in the description. There  
+  is nothing to ask – the oracle stays silent.  
+- **under-specified** (`underspecified`): values are missing. Only here may the AI ask  
   follow-up questions, and only then does the oracle answer.
 
 !!! info "Basis: the `oracle` field"
@@ -46,16 +46,16 @@ flowchart TB
     E --> Z
 ```
 
-1. **Round 1:** the AI receives the description. For under-specified tasks it may emit
+1. **Round 1:** the AI receives the description. For under-specified tasks it may emit  
    its open questions as a small JSON block instead of guessing immediately:
 
     ```json
     { "open_questions": [{ "field": "F1.T_ad" }, { "field": "sep.source" }] }
     ```
 
-2. **Oracle:** if the AI asks questions (and does not yet supply code), the oracle looks
-   up the matching values in the `oracle` field and returns them as an answer.
-3. **Round 2:** with the answers in hand, the AI writes the full PyADM1ODE code, which
+2. **Oracle:** if the AI asks questions (and does not yet supply code), the oracle looks  
+   up the matching values in the `oracle` field and returns them as an answer.  
+3. **Round 2:** with the answers in hand, the AI writes the full PyADM1ODE code, which  
    is then scored.
 
 If the AI already writes finished code in round 1, the oracle round is skipped. There
@@ -104,9 +104,9 @@ return **both** related fields (`eta_el` and `eta_th`).
 
 The oracle is deliberately **cooperative**:
 
-- **No matching question recognised?** Then it would rather hand out **all** available
-  information than leave the AI stuck.
-- **Only a little asked?** If the AI asked for only a small part and at most five other
+- **No matching question recognised?** Then it would rather hand out **all** available  
+  information than leave the AI stuck.  
+- **Only a little asked?** If the AI asked for only a small part and at most five other  
   fields remain open, the oracle adds them as "further relevant information". A run thus
   does not fail because of a single forgotten question.
 
@@ -114,8 +114,8 @@ The oracle is deliberately **cooperative**:
 
 The oracle separates two behaviours that would otherwise be indistinguishable:
 
-- A **good AI asks** when information is missing – and then builds the plant correctly.
-- A **weaker AI guesses** and may invent an implausible value.
+- A **good AI asks** when information is missing – and then builds the plant correctly.  
+- A **weaker AI guesses** and may invent an implausible value.  
 
 This is exactly what the scoring reflects: for under-specified data points the **gap
 score** counts whether a missing field was **asked about** or plausibly **filled**
