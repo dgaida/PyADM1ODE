@@ -42,6 +42,14 @@ flowchart LR
 
     [:octicons-arrow-right-24: Ein Datenpunkt im Detail](datenpunkt.md)
 
+-   :material-crystal-ball:{ .lg .middle } **Wie funktioniert das Oracle?**  
+
+    ---
+
+    Wie die KI bei fehlenden Werten nachfragen darf – und wie das Oracle antwortet.
+
+    [:octicons-arrow-right-24: Wie funktioniert das Oracle?](oracle.md)
+
 -   :material-scale-balance:{ .lg .middle } **Bewertung & Ablauf**  
 
     ---

@@ -5,6 +5,8 @@ The **viewer** (`benchmark/viewer/index.html`) shows each data point
 every component). Ideal for exploring the dataset and understanding a plant. It runs
 **offline in the browser**, with no server.
 
+![Data point viewer with plant graph and sidebar](../../assets/viewer_img.png)
+
 ## What the viewer shows
 
 - **Plant graph**: components as nodes, connections as edges.  

@@ -5,6 +5,8 @@ Der **Viewer** (`benchmark/viewer/index.html`) zeigt jeden Datenpunkt
 jedes Bauteils). Ideal, um den Datensatz zu erkunden, eine Anlage zu verstehen.
 Er läuft **offline im Browser**, ganz ohne Server.
 
+![Datenpunkt-Viewer mit Anlagengraph und Seitenleiste](../../assets/viewer_img.png)
+
 ## Was der Viewer zeigt
 
 - **Anlagengraph**: Bauteile als Knoten, Verbindungen als Kanten.  

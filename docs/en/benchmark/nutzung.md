@@ -91,7 +91,18 @@ The **input** is in the data point under `input` (fields `modality`, `language`,
 builds the plant. The **reference** for comparison is under `reference` (components +
 connections as a typed graph). `gold.py` shows a correct implementation per plant.
 
-There are two ways to evaluate your own model:
+The quickest path is **interactively in the notebook**. For automated runs there are
+two scripted ways (A and B).
+
+### Quick start: notebook
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_en.ipynb)
+
+The notebook [`benchmark/llm_benchmark_en.ipynb`](https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_en.ipynb)
+runs the full pipeline (LLM → oracle → scoring) for a single data point – ideal for a
+quick try. It wires the LLM in via [litellm](https://github.com/BerriAI/litellm), so
+switching provider is a one-liner; the default is the free Groq tier. A German version
+is at [`benchmark/llm_benchmark_de.ipynb`](https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_de.ipynb).
 
 ### A) Generate code offline, then score
 

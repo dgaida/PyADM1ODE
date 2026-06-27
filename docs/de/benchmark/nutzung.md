@@ -93,7 +93,18 @@ Anlage baut. Die **Referenz** zum Abgleich steht unter `reference` (Bauteile +
 Verbindungen als typisierter Graph). `gold.py` zeigt je Anlage eine korrekte
 Umsetzung.
 
-Es gibt zwei Wege, ein eigenes Modell zu bewerten:
+Am schnellsten geht es **interaktiv im Notebook**. Für automatisierte Läufe gibt es
+zwei Skript-Wege (A und B).
+
+### Schnellstart: Notebook
+
+[![In Google Colab öffnen](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_de.ipynb)
+
+Das Notebook [`benchmark/llm_benchmark_de.ipynb`](https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_de.ipynb)
+führt die komplette Pipeline (LLM → Oracle → Bewertung) für einen einzelnen Datenpunkt
+aus. Das LLM wird über [litellm](https://github.com/BerriAI/litellm) eingebunden, sodass ein Anbieterwechsel
+ein Einzeiler ist; voreingestellt ist das kostenlose Groq-Tier. Eine englische Fassung
+liegt unter [`benchmark/llm_benchmark_en.ipynb`](https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_en.ipynb).
 
 ### A) Offline Code erzeugen, dann bewerten
 

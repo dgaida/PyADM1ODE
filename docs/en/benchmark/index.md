@@ -61,6 +61,14 @@ knowledge is required – technical terms are explained along the way.
 
     [:octicons-arrow-right-24: A Data Point in Detail](datenpunkt.md)
 
+-   :material-crystal-ball:{ .lg .middle } **How does the Oracle work?**  
+
+    ---
+
+    How the AI may ask about missing values – and how the oracle answers.
+
+    [:octicons-arrow-right-24: How does the Oracle work?](oracle.md)
+
 -   :material-scale-balance:{ .lg .middle } **Scoring & Workflow**  
 
     ---

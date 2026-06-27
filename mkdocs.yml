@@ -85,6 +85,7 @@ plugins:
             Benchmark-Datensatz: Benchmark Dataset
             Aufbau des Datensatzes: Dataset Structure
             Ein Datenpunkt im Detail: A Data Point in Detail
+            Wie funktioniert das Oracle?: How does the Oracle work?
             Bewertung & Ablauf: Scoring & Workflow
             Datensatz nutzen: Using the Dataset
   - mkdocstrings:
@@ -162,9 +163,10 @@ nav:
       - Übersicht: benchmark/index.md
       - Aufbau des Datensatzes: benchmark/aufbau.md
       - Ein Datenpunkt im Detail: benchmark/datenpunkt.md
+      - Wie funktioniert das Oracle?: benchmark/oracle.md
       - Bewertung & Ablauf: benchmark/bewertung.md
-      - Datensatz nutzen: benchmark/nutzung.md
       - Viewer: benchmark/viewer.md
+      - Datensatz nutzen: benchmark/nutzung.md
   - Entwicklung:
       - Styleguide: development/style_guide.md
       - Metriken: metrics.md
