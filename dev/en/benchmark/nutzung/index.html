@@ -15,10 +15,10 @@
         <link rel="canonical" href="https://dgaida.github.io/PyADM1ODE/dev/en/benchmark/nutzung/">
       
       
-        <link rel="prev" href="../bewertung/">
+        <link rel="prev" href="../viewer/">
       
       
-        <link rel="next" href="../viewer/">
+        <link rel="next" href="../../development/style_guide/">
       
       
         
@@ -1531,6 +1531,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../oracle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How does the Oracle work?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../bewertung/" class="md-nav__link">
         
   
@@ -1539,6 +1567,34 @@
     
   
     Scoring & Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../viewer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Viewer
   
 
     
@@ -1681,6 +1737,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#quick-start-notebook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick start: notebook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#a-generate-code-offline-then-score" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1744,34 +1811,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../viewer/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Viewer
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -2330,6 +2369,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#quick-start-notebook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick start: notebook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#a-generate-code-offline-then-score" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2544,7 +2594,15 @@ generated code per data point under <code>benchmark/results/</code>.</p>
 <code>content</code>, optionally <code>image_path</code>). The <strong>target</strong> is runnable PyADM1ODE code that
 builds the plant. The <strong>reference</strong> for comparison is under <code>reference</code> (components +
 connections as a typed graph). <code>gold.py</code> shows a correct implementation per plant.</p>
-<p>There are two ways to evaluate your own model:</p>
+<p>The quickest path is <strong>interactively in the notebook</strong>. For automated runs there are
+two scripted ways (A and B).</p>
+<h3 id="quick-start-notebook">Quick start: notebook<a class="headerlink" href="#quick-start-notebook" title="Permanent link">&para;</a></h3>
+<p><a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_en.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<p>The notebook <a href="https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_en.ipynb"><code>benchmark/llm_benchmark_en.ipynb</code></a>
+runs the full pipeline (LLM → oracle → scoring) for a single data point – ideal for a
+quick try. It wires the LLM in via <a href="https://github.com/BerriAI/litellm">litellm</a>, so
+switching provider is a one-liner; the default is the free Groq tier. A German version
+is at <a href="https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_de.ipynb"><code>benchmark/llm_benchmark_de.ipynb</code></a>.</p>
 <h3 id="a-generate-code-offline-then-score">A) Generate code offline, then score<a class="headerlink" href="#a-generate-code-offline-then-score" title="Permanent link">&para;</a></h3>
 <p>Have your model produce Python code per data point and save it as
 <code>&lt;datapoint-id&gt;.py</code> in a folder. Then:</p>

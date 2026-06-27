@@ -7,28 +7,28 @@
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="Python framework for modeling, simulating, and optimizing agricultural biogas plants" name="description"/>
 <meta content="Daniel Gaida" name="author"/>
-<link href="https://dgaida.github.io/PyADM1ODE/dev/architecture/" rel="canonical"/>
-<link href="../user_guide/adm1_implementation/" rel="prev"/>
-<link href="../user_guide/validation/" rel="next"/>
+<link href="https://dgaida.github.io/PyADM1ODE/dev/benchmark/oracle/" rel="canonical"/>
+<link href="../datenpunkt/" rel="prev"/>
+<link href="../bewertung/" rel="next"/>
 <link href="./" hreflang="de" rel="alternate"/>
-<link href="../en/architecture/" hreflang="en" rel="alternate"/>
-<link href="../assets/images/favicon.png" rel="icon"/>
+<link href="../../en/benchmark/oracle/" hreflang="en" rel="alternate"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
 <meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
-<title>Architektur - PyADM1ODE</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
-<link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<title>Wie funktioniert das Oracle? - PyADM1ODE</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
 <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
-<link href="../assets/_mkdocstrings.css" rel="stylesheet"/>
-<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<link href="../../assets/_mkdocstrings.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
 </head>
 <body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
 <input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#architektur">
+<a class="md-skip" href="#wie-funktioniert-das-oracle">
           Zum Inhalt
         </a>
 </div>
@@ -36,7 +36,7 @@
 </div>
 <header class="md-header" data-md-component="header">
 <nav aria-label="Kopfzeile" class="md-header__inner md-grid">
-<a aria-label="PyADM1ODE" class="md-header__button md-logo" data-md-component="logo" href=".." title="PyADM1ODE">
+<a aria-label="PyADM1ODE" class="md-header__button md-logo" data-md-component="logo" href="../.." title="PyADM1ODE">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
 </a>
 <label class="md-header__button md-icon" for="__drawer">
@@ -52,7 +52,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              Architektur
+              Wie funktioniert das Oracle?
             
           </span>
 </div>
@@ -82,7 +82,7 @@
             </a>
 </li>
 <li class="md-select__item">
-<a class="md-select__link" href="../en/architecture/" hreflang="en">
+<a class="md-select__link" href="../../en/benchmark/oracle/" hreflang="en">
               English
             </a>
 </li>
@@ -138,7 +138,7 @@
 <div class="md-grid">
 <ul class="md-tabs__list">
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="..">
+<a class="md-tabs__link" href="../..">
         
   
   
@@ -149,7 +149,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../user_guide/installation/">
+<a class="md-tabs__link" href="../../user_guide/installation/">
           
   
   
@@ -158,7 +158,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../user_guide/components/">
+<a class="md-tabs__link" href="../../user_guide/components/">
           
   
   
@@ -166,8 +166,8 @@
 
         </a>
 </li>
-<li class="md-tabs__item md-tabs__item--active">
-<a class="md-tabs__link" href="../user_guide/adm1_implementation/">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../user_guide/adm1_implementation/">
           
   
   
@@ -176,7 +176,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../examples/basic_digester/">
+<a class="md-tabs__link" href="../../examples/basic_digester/">
           
   
   
@@ -184,8 +184,8 @@
 
         </a>
 </li>
-<li class="md-tabs__item">
-<a class="md-tabs__link" href="../benchmark/">
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../">
           
   
   
@@ -194,7 +194,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../development/style_guide/">
+<a class="md-tabs__link" href="../../development/style_guide/">
           
   
   
@@ -203,7 +203,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../api/core/">
+<a class="md-tabs__link" href="../../api/core/">
           
   
   
@@ -212,7 +212,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../CHANGELOG/">
+<a class="md-tabs__link" href="../../CHANGELOG/">
         
   
   
@@ -232,7 +232,7 @@
 <div class="md-sidebar__inner">
 <nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
 <label class="md-nav__title" for="__drawer">
-<a aria-label="PyADM1ODE" class="md-nav__button md-logo" data-md-component="logo" href=".." title="PyADM1ODE">
+<a aria-label="PyADM1ODE" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="PyADM1ODE">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
 </a>
     PyADM1ODE
@@ -249,7 +249,7 @@
 </div>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="..">
+<a class="md-nav__link" href="../..">
 <span class="md-ellipsis">
     
   
@@ -284,7 +284,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/installation/">
+<a class="md-nav__link" href="../../user_guide/installation/">
 <span class="md-ellipsis">
     
   
@@ -296,7 +296,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/quickstart/">
+<a class="md-nav__link" href="../../user_guide/quickstart/">
 <span class="md-ellipsis">
     
   
@@ -357,7 +357,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/components/">
+<a class="md-nav__link" href="../../user_guide/components/">
 <span class="md-ellipsis">
     
   
@@ -369,7 +369,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/components/biological/">
+<a class="md-nav__link" href="../../user_guide/components/biological/">
 <span class="md-ellipsis">
     
   
@@ -381,7 +381,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/components/energy/">
+<a class="md-nav__link" href="../../user_guide/components/energy/">
 <span class="md-ellipsis">
     
   
@@ -393,7 +393,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/components/feeding/">
+<a class="md-nav__link" href="../../user_guide/components/feeding/">
 <span class="md-ellipsis">
     
   
@@ -405,7 +405,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/components/mechanical/">
+<a class="md-nav__link" href="../../user_guide/components/mechanical/">
 <span class="md-ellipsis">
     
   
@@ -417,7 +417,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/components/sensors/">
+<a class="md-nav__link" href="../../user_guide/components/sensors/">
 <span class="md-ellipsis">
     
   
@@ -432,7 +432,7 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/substrates/">
+<a class="md-nav__link" href="../../user_guide/substrates/">
 <span class="md-ellipsis">
     
   
@@ -444,7 +444,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/applications/">
+<a class="md-nav__link" href="../../user_guide/applications/">
 <span class="md-ellipsis">
     
   
@@ -456,7 +456,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/advanced_features/">
+<a class="md-nav__link" href="../../user_guide/advanced_features/">
 <span class="md-ellipsis">
     
   
@@ -468,7 +468,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/troubleshooting/">
+<a class="md-nav__link" href="../../user_guide/troubleshooting/">
 <span class="md-ellipsis">
     
   
@@ -480,7 +480,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/llm_api/">
+<a class="md-nav__link" href="../../user_guide/llm_api/">
 <span class="md-ellipsis">
     
   
@@ -494,9 +494,9 @@
 </ul>
 </nav>
 </li>
-<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
-<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
 <span class="md-ellipsis">
     
   
@@ -507,7 +507,7 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="true" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
 <label class="md-nav__title" for="__nav_4">
 <span class="md-nav__icon md-icon"></span>
             
@@ -518,7 +518,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/adm1_implementation/">
+<a class="md-nav__link" href="../../user_guide/adm1_implementation/">
 <span class="md-ellipsis">
     
   
@@ -529,20 +529,8 @@
   </span>
 </a>
 </li>
-<li class="md-nav__item md-nav__item--active">
-<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
-<label class="md-nav__link md-nav__link--active" for="__toc">
-<span class="md-ellipsis">
-    
-  
-    Architektur
-  
-
-    
-  </span>
-<span class="md-nav__icon md-icon"></span>
-</label>
-<a class="md-nav__link md-nav__link--active" href="./">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -552,44 +540,9 @@
     
   </span>
 </a>
-<nav aria-label="Inhaltsverzeichnis" class="md-nav md-nav--secondary">
-<label class="md-nav__title" for="__toc">
-<span class="md-nav__icon md-icon"></span>
-      Inhaltsverzeichnis
-    </label>
-<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#systemubersicht">
-<span class="md-ellipsis">
-      
-        Systemübersicht
-      
-    </span>
-</a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#datenfluss">
-<span class="md-ellipsis">
-      
-        Datenfluss
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#drei-pass-simulationsprozess">
-<span class="md-ellipsis">
-      
-        Drei-Pass-Simulationsprozess
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/validation/">
+<a class="md-nav__link" href="../../user_guide/validation/">
 <span class="md-ellipsis">
     
   
@@ -601,7 +554,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../user_guide/references/">
+<a class="md-nav__link" href="../../user_guide/references/">
 <span class="md-ellipsis">
     
   
@@ -639,7 +592,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../examples/basic_digester/">
+<a class="md-nav__link" href="../../examples/basic_digester/">
 <span class="md-ellipsis">
     
   
@@ -651,7 +604,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../examples/two_stage_plant/">
+<a class="md-nav__link" href="../../examples/two_stage_plant/">
 <span class="md-ellipsis">
     
   
@@ -663,7 +616,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../examples/parallel_simulation/">
+<a class="md-nav__link" href="../../examples/parallel_simulation/">
 <span class="md-ellipsis">
     
   
@@ -677,9 +630,9 @@
 </ul>
 </nav>
 </li>
-<li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_6" type="checkbox"/>
-<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
 <span class="md-ellipsis">
     
   
@@ -690,7 +643,7 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<nav aria-expanded="true" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
 <label class="md-nav__title" for="__nav_6">
 <span class="md-nav__icon md-icon"></span>
             
@@ -701,7 +654,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../benchmark/">
+<a class="md-nav__link" href="../">
 <span class="md-ellipsis">
     
   
@@ -713,7 +666,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../benchmark/aufbau/">
+<a class="md-nav__link" href="../aufbau/">
 <span class="md-ellipsis">
     
   
@@ -725,7 +678,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../benchmark/datenpunkt/">
+<a class="md-nav__link" href="../datenpunkt/">
 <span class="md-ellipsis">
     
   
@@ -736,8 +689,20 @@
   </span>
 </a>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../benchmark/oracle/">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Wie funktioniert das Oracle?
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
 <span class="md-ellipsis">
     
   
@@ -747,9 +712,75 @@
     
   </span>
 </a>
+<nav aria-label="Inhaltsverzeichnis" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#wann-ist-das-oracle-aktiv">
+<span class="md-ellipsis">
+      
+        Wann ist das Oracle aktiv?
+      
+    </span>
+</a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../benchmark/bewertung/">
+<a class="md-nav__link" href="#der-ablauf-in-zwei-runden">
+<span class="md-ellipsis">
+      
+        Der Ablauf in zwei Runden
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#wie-aus-einer-frage-eine-antwort-wird">
+<span class="md-ellipsis">
+      
+        Wie aus einer Frage eine Antwort wird
+      
+    </span>
+</a>
+<nav aria-label="Wie aus einer Frage eine Antwort wird" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#hilfreich-aber-nicht-allwissend">
+<span class="md-ellipsis">
+      
+        Hilfreich, aber nicht allwissend
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#warum-es-das-oracle-gibt">
+<span class="md-ellipsis">
+      
+        Warum es das Oracle gibt
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#oracle-abschalten">
+<span class="md-ellipsis">
+      
+        Oracle abschalten
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../bewertung/">
 <span class="md-ellipsis">
     
   
@@ -761,7 +792,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../benchmark/viewer/">
+<a class="md-nav__link" href="../viewer/">
 <span class="md-ellipsis">
     
   
@@ -773,7 +804,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../benchmark/nutzung/">
+<a class="md-nav__link" href="../nutzung/">
 <span class="md-ellipsis">
     
   
@@ -811,7 +842,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../development/style_guide/">
+<a class="md-nav__link" href="../../development/style_guide/">
 <span class="md-ellipsis">
     
   
@@ -823,7 +854,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../metrics/">
+<a class="md-nav__link" href="../../metrics/">
 <span class="md-ellipsis">
     
   
@@ -861,7 +892,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../api/core/">
+<a class="md-nav__link" href="../../api/core/">
 <span class="md-ellipsis">
     
   
@@ -873,7 +904,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../api/biological/">
+<a class="md-nav__link" href="../../api/biological/">
 <span class="md-ellipsis">
     
   
@@ -885,7 +916,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../api/energy/">
+<a class="md-nav__link" href="../../api/energy/">
 <span class="md-ellipsis">
     
   
@@ -897,7 +928,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../api/mechanical/">
+<a class="md-nav__link" href="../../api/mechanical/">
 <span class="md-ellipsis">
     
   
@@ -909,7 +940,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../api/feeding/">
+<a class="md-nav__link" href="../../api/feeding/">
 <span class="md-ellipsis">
     
   
@@ -921,7 +952,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../api/sensors/">
+<a class="md-nav__link" href="../../api/sensors/">
 <span class="md-ellipsis">
     
   
@@ -933,7 +964,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../api/configurator/">
+<a class="md-nav__link" href="../../api/configurator/">
 <span class="md-ellipsis">
     
   
@@ -945,7 +976,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../api/simulation/">
+<a class="md-nav__link" href="../../api/simulation/">
 <span class="md-ellipsis">
     
   
@@ -957,7 +988,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../api/substrates/">
+<a class="md-nav__link" href="../../api/substrates/">
 <span class="md-ellipsis">
     
   
@@ -972,7 +1003,7 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../CHANGELOG/">
+<a class="md-nav__link" href="../../CHANGELOG/">
 <span class="md-ellipsis">
     
   
@@ -998,28 +1029,59 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#systemubersicht">
+<a class="md-nav__link" href="#wann-ist-das-oracle-aktiv">
 <span class="md-ellipsis">
       
-        Systemübersicht
+        Wann ist das Oracle aktiv?
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#datenfluss">
+<a class="md-nav__link" href="#der-ablauf-in-zwei-runden">
 <span class="md-ellipsis">
       
-        Datenfluss
+        Der Ablauf in zwei Runden
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#drei-pass-simulationsprozess">
+<a class="md-nav__link" href="#wie-aus-einer-frage-eine-antwort-wird">
 <span class="md-ellipsis">
       
-        Drei-Pass-Simulationsprozess
+        Wie aus einer Frage eine Antwort wird
+      
+    </span>
+</a>
+<nav aria-label="Wie aus einer Frage eine Antwort wird" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#hilfreich-aber-nicht-allwissend">
+<span class="md-ellipsis">
+      
+        Hilfreich, aber nicht allwissend
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#warum-es-das-oracle-gibt">
+<span class="md-ellipsis">
+      
+        Warum es das Oracle gibt
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#oracle-abschalten">
+<span class="md-ellipsis">
+      
+        Oracle abschalten
       
     </span>
 </a>
@@ -1031,65 +1093,161 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="architektur">Architektur<a class="headerlink" href="#architektur" title="Permanent link">¶</a></h1>
-<p>Diese Seite beschreibt die Systemarchitektur und den Datenfluss von PyADM1ODE.</p>
-<h2 id="systemubersicht">Systemübersicht<a class="headerlink" href="#systemubersicht" title="Permanent link">¶</a></h2>
-<p>Das Framework besteht aus mehreren modularen Schichten:</p>
-<pre class="mermaid"><code>graph TD
-    UI[Benutzeroberfläche / Skripte] --&gt; Config[Anlagenkonfigurator]
-    Config --&gt; Builder[Plant Builder]
-    Builder --&gt; Components[Komponentensystem]
-
-    subgraph Components
-        Bio[Biologisch: Fermenter]
-        Energy[Energie: BHKW, Speicher, Fackel]
-        Mech[Mechanisch: Pumpen, Rührwerke]
-        Feed[Fütterung: Lagerung, Dosierer]
-    end
-
-    Bio --&gt; Core[Kern-ADM1-Engine]
-    Core --&gt; Params[ADM-Parameter]
-    Core --&gt; Equations[Prozessgleichungen]</code></pre>
-<h2 id="datenfluss">Datenfluss<a class="headerlink" href="#datenfluss" title="Permanent link">¶</a></h2>
-<pre class="mermaid"><code>graph LR
-    Sub[Substrate] --&gt; Feedstock[Feedstock-Manager]
-    Feedstock --&gt; ADM_In[ADM1-Zulauf]
-    ADM_In --&gt; Digester[Fermenter-Komponente]
-    Digester --&gt; Biogas[Biogasproduktion]
-    Biogas --&gt; Storage[Gasspeicher]
-    Storage --&gt; CHP[BHKW-Einheit]
-    CHP --&gt; Power[Strom &amp; Wärme]
-    Storage -- Überdruck --&gt; Flare[Sicherheitsfackel]</code></pre>
-<h2 id="drei-pass-simulationsprozess">Drei-Pass-Simulationsprozess<a class="headerlink" href="#drei-pass-simulationsprozess" title="Permanent link">¶</a></h2>
-<p>Um Gasflussabhängigkeiten korrekt zu behandeln, verwendet die Simulation ein Drei-Pass-Modell für jeden Zeitschritt:</p>
-<pre class="mermaid"><code>sequenceDiagram
-    participant S as Simulator
-    participant D as Fermenter
-    participant G as Gasspeicher
-    participant C as BHKW / Verbraucher
-
-    Note over S,G: Zeitschritt (t -&gt; t + dt)
-
-    rect rgb(200, 220, 240)
-    Note right of S: Pass 1: Produktion
-    S-&gt;&gt;D: step()
-    D-&gt;&gt;G: Produziertes Gas hinzufügen
-    end
-
-    rect rgb(220, 240, 200)
-    Note right of S: Pass 2: Speicher-Update
-    S-&gt;&gt;G: step()
-    G-&gt;&gt;G: Druck &amp; Volumen aktualisieren
-    Note right of G: Abblasen falls voll
-    end
-
-    rect rgb(240, 220, 200)
-    Note right of S: Pass 3: Verbrauch
-    S-&gt;&gt;C: step()
-    C-&gt;&gt;G: Gas anfordern
-    G--&gt;&gt;C: Tatsächlich verfügbares Gas liefern
-    C-&gt;&gt;C: Neu ausführen mit tatsächlichem Angebot
-    end</code></pre>
+<h1 id="wie-funktioniert-das-oracle">Wie funktioniert das Oracle?<a class="headerlink" href="#wie-funktioniert-das-oracle" title="Permanent link">¶</a></h1>
+<p>Manche Anlagenbeschreibungen sind absichtlich <strong>unvollständig</strong>, wo nicht immer
+alle Angaben vorliegen. Damit die KI trotzdem weiterarbeiten kann, gibt es das
+<strong>Oracle</strong>: einen simulierten Experten, den die KI bei Unklarheiten <strong>gezielt befragen</strong> darf.
+Diese Seite erklärt, <strong>wann</strong> das Oracle aktiv ist, <strong>wie</strong> eine Frage zu einer Antwort wird
+und <strong>warum</strong> das für eine faire Bewertung wichtig ist.</p>
+<p>Eine erste Einordnung steht unter <a href="../datenpunkt/">Ein Datenpunkt im Detail</a>; hier
+geht es um die Mechanik dahinter.</p>
+<h2 id="wann-ist-das-oracle-aktiv">Wann ist das Oracle aktiv?<a class="headerlink" href="#wann-ist-das-oracle-aktiv" title="Permanent link">¶</a></h2>
+<p>Das Oracle wird <strong>nur</strong> bei unvollständig beschriebenen Aufgaben befragt:</p>
+<ul>
+<li><strong>vollständig spezifiziert</strong> (<code>fully_specified</code>): Alle Angaben stehen in der<br/>
+  Beschreibung. Es gibt nichts zu fragen, das Oracle bleibt stumm.</li>
+<li><strong>unvollständig spezifiziert</strong> (<code>underspecified</code>): Werte fehlen. Erst hier darf die<br/>
+  KI Rückfragen stellen und nur dann antwortet das Oracle.</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Grundlage: das <code>oracle</code>-Feld</p>
+<p>Jeder Datenpunkt trägt ein <code>oracle</code>-Feld, ein Verzeichnis aus <strong>Feldname →
+Wert</strong>. Es ist die einzige Wissensquelle des Experten. Beispiel (gekürzt):</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nt">"oracle"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="nt">"F1.T_ad"</span><span class="p">:</span><span class="w"> </span><span class="mf">313.15</span><span class="p">,</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span><span class="nt">"G1.T_ad"</span><span class="p">:</span><span class="w"> </span><span class="mf">293.15</span><span class="p">,</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">  </span><span class="nt">"F1.fill_fraction"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">  </span><span class="nt">"bgaa.exists"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">  </span><span class="nt">"chp.exists"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">  </span><span class="nt">"sep.source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"N1"</span><span class="p">,</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">  </span><span class="nt">"substrate_feed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ca. 80 t/d Maissilage und 20 m³/d Rindergülle"</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="p">}</span>
+</code></pre></div>
+</div>
+<h2 id="der-ablauf-in-zwei-runden">Der Ablauf in zwei Runden<a class="headerlink" href="#der-ablauf-in-zwei-runden" title="Permanent link">¶</a></h2>
+<pre class="mermaid"><code>flowchart TB
+    A["📝 Eingabe&lt;br&gt;(unvollständig)"] --&gt; B["🤖 KI – Runde 1"]
+    B --&gt; C{"Code schon&lt;br&gt;geschrieben?"}
+    C --&gt;|"ja"| Z["⚖️ Bewertung"]
+    C --&gt;|"nein, stellt Fragen"| D["🔮 Oracle&lt;br&gt;beantwortet die Fragen"]
+    D --&gt; E["🤖 KI – Runde 2&lt;br&gt;schreibt den Code"]
+    E --&gt; Z</code></pre>
+<ol>
+<li>
+<p><strong>Runde 1:</strong> Die KI erhält die Beschreibung. Bei unvollständigen Aufgaben darf sie<br/>
+   ihre offenen Fragen als kleinen JSON-Block ausgeben, statt sofort zu raten:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="p">{</span><span class="w"> </span><span class="nt">"open_questions"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"F1.T_ad"</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sep.source"</span><span class="w"> </span><span class="p">}]</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+</li>
+<li>
+<p><strong>Oracle:</strong> Stellt die KI Fragen, schlägt das Oracle<br/>
+   die passenden Werte im <code>oracle</code>-Feld nach und schickt sie als Antwort zurück.</p>
+</li>
+<li><strong>Runde 2:</strong> Mit den Antworten schreibt die KI den vollständigen PyADM1ODE-Code,<br/>
+   der anschließend bewertet wird.</li>
+</ol>
+<p>Schreibt die KI bereits in Runde 1 fertigen Code, entfällt die Oracle-Runde. Pro
+Datenpunkt gibt es <strong>höchstens eine</strong> Oracle-Runde.</p>
+<h2 id="wie-aus-einer-frage-eine-antwort-wird">Wie aus einer Frage eine Antwort wird<a class="headerlink" href="#wie-aus-einer-frage-eine-antwort-wird" title="Permanent link">¶</a></h2>
+<p>Das Oracle versteht <strong>unterschiedliche Formulierungen</strong> derselben Frage. Es muss
+nicht das interne Feld <code>F1.T_ad</code> getroffen werden, es genügt „Bei welcher Temperatur läuft der
+Fermenter?". Die Zuordnung läuft in mehreren Stufen, von der genauesten zur
+großzügigsten:</p>
+<table>
+<thead>
+<tr>
+<th>Stufe</th>
+<th>Was passiert</th>
+<th>Beispiel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. Exakter Treffer</strong></td>
+<td>Die Frage nennt den Feldnamen direkt.</td>
+<td><code>F1.T_ad</code> → <code>313.15</code></td>
+</tr>
+<tr>
+<td><strong>2. Schlüsselwörter</strong></td>
+<td>Synonyme werden auf eine Größe abgebildet.</td>
+<td>„Temperatur", „beheizt", „mesophil" → alle <code>*.T_ad</code></td>
+</tr>
+<tr>
+<td><strong>3. Bauteil-Kürzel</strong></td>
+<td>Eine genannte Komponente liefert alle ihre Felder.</td>
+<td>„F1" → <code>F1.T_ad</code>, <code>F1.V_gas</code>, <code>F1.fill_fraction</code></td>
+</tr>
+<tr>
+<td><strong>4. Wörtliche Felder</strong></td>
+<td>Im Frage­text auftauchende Feldnamen werden ergänzt.</td>
+<td>„… <code>bgaa.capacity_m3h</code> …"</td>
+</tr>
+</tbody>
+</table>
+<p>Die Schlüsselwort-Tabelle ist <strong>zwei­sprachig</strong> (Deutsch und Englisch) und deckt
+typische Begriffe ab, etwa „Gasspeicher"/„gas storage" für <code>V_gas</code>,
+„Füllgrad"/„fill level" für <code>fill_fraction</code>, „Nennleistung"/„rated power" für
+<code>P_el_nom</code> oder „Substrat"/„feedstock" für <code>substrate_feed</code>. Begriffe wie
+„Wirkungsgrad" liefern bewusst <strong>beide</strong> zugehörigen Felder (<code>eta_el</code> und <code>eta_th</code>).</p>
+<div class="admonition example">
+<p class="admonition-title">Frage → Oracle-Antwort</p>
+<p>Frage der KI:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="p">{</span><span class="w"> </span><span class="nt">"open_questions"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Betriebstemperatur der Fermenter"</span><span class="w"> </span><span class="p">}]</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>Antwort des Oracle:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>Antworten auf deine Fragen:
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>- F1.T_ad: 313.15  
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>- F2.T_ad: 313.15  
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>- N1.T_ad: 313.15  
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>- G1.T_ad: 293.15  
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>Bitte schreibe nun den vollständigen Python-Code.
+</code></pre></div>
+</div>
+<h3 id="hilfreich-aber-nicht-allwissend">Hilfreich, aber nicht allwissend<a class="headerlink" href="#hilfreich-aber-nicht-allwissend" title="Permanent link">¶</a></h3>
+<p>Das Oracle ist bewusst <strong>kooperativ</strong>:</p>
+<ul>
+<li><strong>Keine passende Frage erkannt?</strong> Dann gibt es lieber <strong>alle</strong> verfügbaren Angaben<br/>
+  heraus, statt die KI im Stich zu lassen.</li>
+<li><strong>Nur wenig gefragt?</strong> Hat die KI nur einen kleinen Teil erfragt und bleiben<br/>
+  höchstens fünf weitere Felder offen, ergänzt das Oracle diese als „Weitere relevante
+  Informationen". So scheitert ein Lauf nicht an einer einzelnen vergessenen Frage.</li>
+</ul>
+<h2 id="warum-es-das-oracle-gibt">Warum es das Oracle gibt<a class="headerlink" href="#warum-es-das-oracle-gibt" title="Permanent link">¶</a></h2>
+<p>Das Oracle trennt zwei Verhaltensweisen, die ohne es ununterscheidbar wären:</p>
+<ul>
+<li>Eine <strong>gute KI fragt nach</strong>, wenn eine Angabe fehlt und baut die Anlage danach<br/>
+  korrekt.</li>
+<li>Eine <strong>schwächere KI rät</strong> und erfindet möglicherweise einen unplausiblen Wert.  </li>
+</ul>
+<p>Genau das schlägt sich in der Bewertung nieder: Für unvollständige Datenpunkte zählt
+der <strong>Lücken-Score</strong>, ob ein fehlendes Feld <strong>erfragt</strong> oder plausibel im
+Akzeptanzband <strong>ergänzt</strong> wurde. Das <strong>stille Erfinden</strong> eines unplausiblen Werts ist
+der schwerste Fehler. Details dazu auf der Seite
+<a href="../bewertung/">Bewertung &amp; Ablauf</a>.</p>
+<div class="admonition tip">
+<p class="admonition-title"><code>response.json</code> – Fragen und Annahmen festhalten</p>
+<p>Wer ein eigenes Modell <strong>offline</strong> auswertet, macht erfragte und ergänzte Felder
+in einer <code>response.json</code> neben dem Code explizit:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="p">{</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">  </span><span class="nt">"open_questions"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sep.source"</span><span class="w"> </span><span class="p">}],</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">  </span><span class="nt">"assumptions"</span><span class="p">:</span><span class="w">    </span><span class="p">[{</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"F1.T_ad"</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">313.15</span><span class="w"> </span><span class="p">}]</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="p">}</span>
+</code></pre></div>
+<p>Mehr dazu unter <a href="../nutzung/">Datensatz nutzen</a>.</p>
+</div>
+<h2 id="oracle-abschalten">Oracle abschalten<a class="headerlink" href="#oracle-abschalten" title="Permanent link">¶</a></h2>
+<p>Zum Vergleich lässt sich das Oracle deaktivieren. Dann stellt die KI <strong>keine</strong>
+Rückfragen und muss fehlende Werte selbst plausibel annehmen oder mit Standardwerten
+arbeiten:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>python<span class="w"> </span>benchmark/eval/solve.py<span class="w"> </span>--no-oracle
+</code></pre></div>
+<p>Das zeigt, wie gut ein Modell <strong>ohne</strong> Hilfestellung mit Lücken umgeht, eine nützliche
+Gegenprobe zum regulären Lauf mit Oracle.</p>
+<hr/>
+<p>Den Datensatz visuell erkunden – inklusive der erwarteten Rückfragen und der
+Oracle-Antworten pro Datenpunkt – kannst du im <a href="../viewer/">Viewer</a>.</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -1129,9 +1287,9 @@
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "navigation.tracking", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
-<script src="../assets/mathjax-config.js"></script>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "navigation.tracking", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/mathjax-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>
 </html>
