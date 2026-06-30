@@ -1737,17 +1737,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#quick-start-notebook" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quick start: notebook
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#a-generate-code-offline-then-score" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2369,17 +2358,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#quick-start-notebook" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quick start: notebook
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#a-generate-code-offline-then-score" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2463,6 +2441,8 @@
 <p>This page is for <strong>users of the dataset</strong>, for example to evaluate or train your
 own model. It explains <strong>what the dataset contains</strong>, <strong>what you run</strong>, and <strong>how to
 plug in your own model</strong>.</p>
+<p>The notebook benchmark/llm_benchmark_en.ipynb provides a simple introduction to using the dataset:</p>
+<p><a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_en.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
 <h2 id="getting-the-dataset">Getting the dataset<a class="headerlink" href="#getting-the-dataset" title="Permanent link">&para;</a></h2>
 <p>The dataset is part of the repository under <code>benchmark/</code>. No separate download is
 required:</p>
@@ -2596,13 +2576,6 @@ builds the plant. The <strong>reference</strong> for comparison is under <code>r
 connections as a typed graph). <code>gold.py</code> shows a correct implementation per plant.</p>
 <p>The quickest path is <strong>interactively in the notebook</strong>. For automated runs there are
 two scripted ways (A and B).</p>
-<h3 id="quick-start-notebook">Quick start: notebook<a class="headerlink" href="#quick-start-notebook" title="Permanent link">&para;</a></h3>
-<p><a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_en.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
-<p>The notebook <a href="https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_en.ipynb"><code>benchmark/llm_benchmark_en.ipynb</code></a>
-runs the full pipeline (LLM → oracle → scoring) for a single data point – ideal for a
-quick try. It wires the LLM in via <a href="https://github.com/BerriAI/litellm">litellm</a>, so
-switching provider is a one-liner; the default is the free Groq tier. A German version
-is at <a href="https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_de.ipynb"><code>benchmark/llm_benchmark_de.ipynb</code></a>.</p>
 <h3 id="a-generate-code-offline-then-score">A) Generate code offline, then score<a class="headerlink" href="#a-generate-code-offline-then-score" title="Permanent link">&para;</a></h3>
 <p>Have your model produce Python code per data point and save it as
 <code>&lt;datapoint-id&gt;.py</code> in a folder. Then:</p>
