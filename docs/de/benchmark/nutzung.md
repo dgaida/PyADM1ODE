@@ -4,6 +4,10 @@ Diese Seite richtet sich an **Nutzer des Datensatzes**, etwa um ein eigenes
 Modell zu evaluieren oder zu trainieren. Sie erklärt, **was im Datensatz steckt**,
 **was man ausführt** und **wie man ein eigenes Modell anbindet**.
 
+Das Notebook [`benchmark/llm_benchmark_de.ipynb`](https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_de.ipynb) bietet einen einfachen Einstieg in die Nutzung vom Datensatz:
+
+[![In Google Colab öffnen](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_de.ipynb)
+
 ## Datensatz beschaffen
 
 Der Datensatz ist Teil des Repositorys unter `benchmark/`. Es ist kein separater
@@ -95,16 +99,6 @@ Umsetzung.
 
 Am schnellsten geht es **interaktiv im Notebook**. Für automatisierte Läufe gibt es
 zwei Skript-Wege (A und B).
-
-### Schnellstart: Notebook
-
-[![In Google Colab öffnen](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_de.ipynb)
-
-Das Notebook [`benchmark/llm_benchmark_de.ipynb`](https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_de.ipynb)
-führt die komplette Pipeline (LLM → Oracle → Bewertung) für einen einzelnen Datenpunkt
-aus. Das LLM wird über [litellm](https://github.com/BerriAI/litellm) eingebunden, sodass ein Anbieterwechsel
-ein Einzeiler ist; voreingestellt ist das kostenlose Groq-Tier. Eine englische Fassung
-liegt unter [`benchmark/llm_benchmark_en.ipynb`](https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_en.ipynb).
 
 ### A) Offline Code erzeugen, dann bewerten
 
