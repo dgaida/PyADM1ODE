@@ -1106,7 +1106,7 @@ about the mechanism behind it.</p>
 <p>The oracle is consulted <strong>only</strong> for under-specified tasks:</p>
 <ul>
 <li><strong>fully specified</strong> (<code>fully_specified</code>): all information is in the description. There<br/>
-  is nothing to ask – the oracle stays silent.</li>
+  is nothing to ask – the oracle stays silent.  </li>
 <li><strong>under-specified</strong> (<code>underspecified</code>): values are missing. Only here may the AI ask<br/>
   follow-up questions, and only then does the oracle answer.</li>
 </ul>
@@ -1142,7 +1142,7 @@ value</strong>. It is the expert's only source of knowledge. Example (shortened)
 </li>
 <li>
 <p><strong>Oracle:</strong> if the AI asks questions (and does not yet supply code), the oracle looks<br/>
-   up the matching values in the <code>oracle</code> field and returns them as an answer.</p>
+   up the matching values in the <code>oracle</code> field and returns them as an answer.  </p>
 </li>
 <li><strong>Round 2:</strong> with the answers in hand, the AI writes the full PyADM1ODE code, which<br/>
    is then scored.</li>
@@ -1209,7 +1209,7 @@ return <strong>both</strong> related fields (<code>eta_el</code> and <code>eta_t
 <p>The oracle is deliberately <strong>cooperative</strong>:</p>
 <ul>
 <li><strong>No matching question recognised?</strong> Then it would rather hand out <strong>all</strong> available<br/>
-  information than leave the AI stuck.</li>
+  information than leave the AI stuck.  </li>
 <li><strong>Only a little asked?</strong> If the AI asked for only a small part and at most five other<br/>
   fields remain open, the oracle adds them as "further relevant information". A run thus
   does not fail because of a single forgotten question.</li>

@@ -1735,17 +1735,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#schnellstart-notebook" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Schnellstart: Notebook
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#a-offline-code-erzeugen-dann-bewerten" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2356,17 +2345,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#schnellstart-notebook" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Schnellstart: Notebook
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#a-offline-code-erzeugen-dann-bewerten" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2439,6 +2417,8 @@
 <p>Diese Seite richtet sich an <strong>Nutzer des Datensatzes</strong>, etwa um ein eigenes
 Modell zu evaluieren oder zu trainieren. Sie erklärt, <strong>was im Datensatz steckt</strong>,
 <strong>was man ausführt</strong> und <strong>wie man ein eigenes Modell anbindet</strong>.</p>
+<p>Das Notebook <a href="https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_de.ipynb"><code>benchmark/llm_benchmark_de.ipynb</code></a> bietet einen einfachen Einstieg in die Nutzung vom Datensatz:</p>
+<p><a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_de.ipynb"><img alt="In Google Colab öffnen" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
 <h2 id="datensatz-beschaffen">Datensatz beschaffen<a class="headerlink" href="#datensatz-beschaffen" title="Permanent link">&para;</a></h2>
 <p>Der Datensatz ist Teil des Repositorys unter <code>benchmark/</code>. Es ist kein separater
 Download nötig:</p>
@@ -2574,13 +2554,6 @@ Verbindungen als typisierter Graph). <code>gold.py</code> zeigt je Anlage eine k
 Umsetzung.</p>
 <p>Am schnellsten geht es <strong>interaktiv im Notebook</strong>. Für automatisierte Läufe gibt es
 zwei Skript-Wege (A und B).</p>
-<h3 id="schnellstart-notebook">Schnellstart: Notebook<a class="headerlink" href="#schnellstart-notebook" title="Permanent link">&para;</a></h3>
-<p><a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_de.ipynb"><img alt="In Google Colab öffnen" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
-<p>Das Notebook <a href="https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_de.ipynb"><code>benchmark/llm_benchmark_de.ipynb</code></a>
-führt die komplette Pipeline (LLM → Oracle → Bewertung) für einen einzelnen Datenpunkt
-aus. Das LLM wird über <a href="https://github.com/BerriAI/litellm">litellm</a> eingebunden, sodass ein Anbieterwechsel
-ein Einzeiler ist; voreingestellt ist das kostenlose Groq-Tier. Eine englische Fassung
-liegt unter <a href="https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_en.ipynb"><code>benchmark/llm_benchmark_en.ipynb</code></a>.</p>
 <h3 id="a-offline-code-erzeugen-dann-bewerten">A) Offline Code erzeugen, dann bewerten<a class="headerlink" href="#a-offline-code-erzeugen-dann-bewerten" title="Permanent link">&para;</a></h3>
 <p>Lasse dein Modell pro Datenpunkt einen Python-Code erzeugen und speichere ihn
 als <code>&lt;datapoint-id&gt;.py</code> in einem Ordner. Danach:</p>
