@@ -4,6 +4,10 @@ This page is for **users of the dataset**, for example to evaluate or train your
 own model. It explains **what the dataset contains**, **what you run**, and **how to
 plug in your own model**.
 
+The notebook benchmark/llm_benchmark_en.ipynb provides a simple introduction to using the dataset:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_en.ipynb)
+
 ## Getting the dataset
 
 The dataset is part of the repository under `benchmark/`. No separate download is
@@ -93,16 +97,6 @@ connections as a typed graph). `gold.py` shows a correct implementation per plan
 
 The quickest path is **interactively in the notebook**. For automated runs there are
 two scripted ways (A and B).
-
-### Quick start: notebook
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_en.ipynb)
-
-The notebook [`benchmark/llm_benchmark_en.ipynb`](https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_en.ipynb)
-runs the full pipeline (LLM → oracle → scoring) for a single data point – ideal for a
-quick try. It wires the LLM in via [litellm](https://github.com/BerriAI/litellm), so
-switching provider is a one-liner; the default is the free Groq tier. A German version
-is at [`benchmark/llm_benchmark_de.ipynb`](https://github.com/dgaida/PyADM1ODE/blob/master/benchmark/llm_benchmark_de.ipynb).
 
 ### A) Generate code offline, then score
 
