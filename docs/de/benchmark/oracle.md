@@ -13,9 +13,9 @@ geht es um die Mechanik dahinter.
 
 Das Oracle wird **nur** bei unvollständig beschriebenen Aufgaben befragt:
 
-- **vollständig spezifiziert** (`fully_specified`): Alle Angaben stehen in der
-  Beschreibung. Es gibt nichts zu fragen, das Oracle bleibt stumm.
-- **unvollständig spezifiziert** (`underspecified`): Werte fehlen. Erst hier darf die
+- **vollständig spezifiziert** (`fully_specified`): Alle Angaben stehen in der  
+  Beschreibung. Es gibt nichts zu fragen, das Oracle bleibt stumm.  
+- **unvollständig spezifiziert** (`underspecified`): Werte fehlen. Erst hier darf die  
   KI Rückfragen stellen und nur dann antwortet das Oracle.
 
 !!! info "Grundlage: das `oracle`-Feld"
@@ -46,16 +46,16 @@ flowchart TB
     E --> Z
 ```
 
-1. **Runde 1:** Die KI erhält die Beschreibung. Bei unvollständigen Aufgaben darf sie
+1. **Runde 1:** Die KI erhält die Beschreibung. Bei unvollständigen Aufgaben darf sie  
    ihre offenen Fragen als kleinen JSON-Block ausgeben, statt sofort zu raten:
 
     ```json
     { "open_questions": [{ "field": "F1.T_ad" }, { "field": "sep.source" }] }
     ```
 
-2. **Oracle:** Stellt die KI Fragen, schlägt das Oracle
-   die passenden Werte im `oracle`-Feld nach und schickt sie als Antwort zurück.
-3. **Runde 2:** Mit den Antworten schreibt die KI den vollständigen PyADM1ODE-Code,
+2. **Oracle:** Stellt die KI Fragen, schlägt das Oracle  
+   die passenden Werte im `oracle`-Feld nach und schickt sie als Antwort zurück.  
+3. **Runde 2:** Mit den Antworten schreibt die KI den vollständigen PyADM1ODE-Code,  
    der anschließend bewertet wird.
 
 Schreibt die KI bereits in Runde 1 fertigen Code, entfällt die Oracle-Runde. Pro
@@ -105,9 +105,9 @@ typische Begriffe ab, etwa „Gasspeicher"/„gas storage" für `V_gas`,
 
 Das Oracle ist bewusst **kooperativ**:
 
-- **Keine passende Frage erkannt?** Dann gibt es lieber **alle** verfügbaren Angaben
-  heraus, statt die KI im Stich zu lassen.
-- **Nur wenig gefragt?** Hat die KI nur einen kleinen Teil erfragt und bleiben
+- **Keine passende Frage erkannt?** Dann gibt es lieber **alle** verfügbaren Angaben  
+  heraus, statt die KI im Stich zu lassen.  
+- **Nur wenig gefragt?** Hat die KI nur einen kleinen Teil erfragt und bleiben  
   höchstens fünf weitere Felder offen, ergänzt das Oracle diese als „Weitere relevante
   Informationen". So scheitert ein Lauf nicht an einer einzelnen vergessenen Frage.
 
@@ -115,9 +115,9 @@ Das Oracle ist bewusst **kooperativ**:
 
 Das Oracle trennt zwei Verhaltensweisen, die ohne es ununterscheidbar wären:
 
-- Eine **gute KI fragt nach**, wenn eine Angabe fehlt und baut die Anlage danach
-  korrekt.
-- Eine **schwächere KI rät** und erfindet möglicherweise einen unplausiblen Wert.
+- Eine **gute KI fragt nach**, wenn eine Angabe fehlt und baut die Anlage danach  
+  korrekt.  
+- Eine **schwächere KI rät** und erfindet möglicherweise einen unplausiblen Wert.  
 
 Genau das schlägt sich in der Bewertung nieder: Für unvollständige Datenpunkte zählt
 der **Lücken-Score**, ob ein fehlendes Feld **erfragt** oder plausibel im
