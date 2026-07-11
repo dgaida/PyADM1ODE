@@ -42,7 +42,6 @@ dependencies = [
     "scipy>=1.7.0",
     "matplotlib",
     "networkx",
-    "pythonnet>=3.0.0",
     "PyYAML>=6.0",
     "tomli>=2.0; python_version < '3.11'",
 ]
@@ -107,6 +106,12 @@ exclude = '''
 # Example scripts need sys.path.insert before importing pyadm1, which puts
 # third-party imports after a statement. That's intentional for standalone runs.
 "examples/*.py" = ["E402"]
+# Benchmark notebooks add benchmark/eval to sys.path before importing its
+# modules; that path setup must precede the imports.
+"benchmark/*.ipynb" = ["E402"]
+# Torch tests import the backend only after pytest.importorskip("torch"), so the
+# module imports intentionally follow that guard.
+"tests/unit/test_core/test_adm1_torch.py" = ["E402"]
 
 [tool.isort]
 profile = "black"

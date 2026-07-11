@@ -90,6 +90,10 @@ class Digester(Component):
         V_max) / τ_out)``. Only used when ``dynamic_volume=True``. Steady-
         state sludge volume sits slightly above ``V_max`` at
         ``V_max + (Q_in − q_S,loss)·τ_out``.
+    backend : str, optional
+            ADM1 right-hand-side backend, ``"numpy"`` (default) or ``"torch"``
+            (differentiable, same values). ``None`` uses the process-wide
+            default (see :func:`pyadm1.set_default_adm1_backend`).
     """
 
     def __init__(
@@ -103,6 +107,7 @@ class Digester(Component):
         dynamic_volume: bool = False,
         initial_fill_fraction: float = 1.0,
         outflow_time_constant: float = 1.0,
+        backend: Optional[str] = None,
     ):
         super().__init__(component_id, ComponentType.DIGESTER, name)
 
@@ -130,7 +135,7 @@ class Digester(Component):
         self.adm1_state: List[float] = []
         self.Q_substrates: List[float] = [0.0] * 10
 
-        self.adm1 = ADM1(feedstock=feedstock, V_liq=V_liq, V_gas=V_gas, T_ad=T_ad)
+        self.adm1 = ADM1(feedstock=feedstock, V_liq=V_liq, V_gas=V_gas, T_ad=T_ad, backend=backend)
 
     # ------------------------------------------------------------------
     # Component lifecycle
@@ -450,7 +455,7 @@ class Digester(Component):
             self.adm1._Q_out_override = None
 
         result = solve_ivp(
-            fun=self.adm1.ADM_ODE,
+            fun=self.adm1.rhs_callable(),
             t_span=(t, t + dt),
             y0=self.adm1_state,
             method="BDF",
@@ -565,14 +570,13 @@ class Digester(Component):
             "component_id": self.component_id,
             "component_type": self.component_type.value,
             "name": self.name,
-            # Persist the geometric maximum so a round-trip rebuild gets the
-            # same tank size. The current dynamic V lives in state["V_liq"].
             "V_liq": self._V_liq_max,
             "V_gas": self.V_gas,
             "T_ad": self.T_ad,
             "dynamic_volume": self._dynamic_volume,
             "initial_fill_fraction": self._initial_fill_fraction,
             "outflow_time_constant": self._tau_out,
+            "adm1_backend": self.adm1.backend,
             "inputs": self.inputs,
             "outputs": self.outputs,
             "state": self.state,
@@ -591,6 +595,7 @@ class Digester(Component):
             dynamic_volume=config.get("dynamic_volume", False),
             initial_fill_fraction=config.get("initial_fill_fraction", 1.0),
             outflow_time_constant=config.get("outflow_time_constant", 1.0),
+            backend=config.get("adm1_backend"),
         )
         digester.inputs = config.get("inputs", [])
         digester.outputs = config.get("outputs", [])

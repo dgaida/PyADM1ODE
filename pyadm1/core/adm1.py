@@ -171,6 +171,34 @@ _IDX_P_TOTAL = 40
 
 STATE_SIZE = 41
 
+# --------------------------------------------------------------------------
+# Right-hand-side backend selection
+# --------------------------------------------------------------------------
+_VALID_BACKENDS = ("numpy", "torch")
+
+# Process-wide default backend. ADM1 instances that don't pass ``backend``
+# explicitly fall back to this. Flip it once (``set_default_adm1_backend(
+# "torch")``) to route a whole run through the differentiable PyTorch backend
+# without touching every construction site.
+_DEFAULT_BACKEND = "numpy"
+
+
+def set_default_adm1_backend(backend: str) -> None:
+    """Set the process-wide default ADM1 right-hand-side backend.
+
+    Args:
+        backend: ``"numpy"`` (default) or ``"torch"``.
+    """
+    if backend not in _VALID_BACKENDS:
+        raise ValueError(f"Unknown ADM1 backend: {backend!r} (expected 'numpy' or 'torch').")
+    global _DEFAULT_BACKEND
+    _DEFAULT_BACKEND = backend
+
+
+def get_default_adm1_backend() -> str:
+    """Return the process-wide default ADM1 backend."""
+    return _DEFAULT_BACKEND
+
 
 def get_state_zero_from_csv(csv_file: str) -> List[float]:
     """
@@ -214,6 +242,7 @@ class ADM1:
         V_liq: float = 1977.0,
         V_gas: float = 304.0,
         T_ad: float = 308.15,
+        backend: Optional[str] = None,
     ) -> None:
         """
         Initialize the ADM1 model.
@@ -229,7 +258,20 @@ class ADM1:
             Gas headspace volume [m³].
         T_ad : float
             Operating temperature [K] (default 308.15 K = 35 °C).
+        backend : str, optional
+            Right-hand-side backend used for integration: ``"numpy"``
+            evaluates :meth:`ADM_ODE`; ``"torch"`` evaluates the equivalent
+            differentiable PyTorch implementation
+            (:func:`pyadm1.core.adm1_torch.adm1da_rhs_torch`). Both produce the
+            same values; ``"torch"`` requires PyTorch to be installed. When
+            ``None`` (default) the process-wide default is used (see
+            :func:`set_default_adm1_backend`). Select the callable via
+            :meth:`rhs_callable`.
         """
+        resolved_backend = backend if backend is not None else _DEFAULT_BACKEND
+        if resolved_backend not in _VALID_BACKENDS:
+            raise ValueError(f"Unknown ADM1 backend: {resolved_backend!r} (expected 'numpy' or 'torch').")
+        self.backend = resolved_backend
         # --- Reactor volumes ---
         self.V_liq = V_liq
         self._V_gas = V_gas
@@ -524,6 +566,28 @@ class ADM1:
     # ------------------------------------------------------------------
     # ODE system
     # ------------------------------------------------------------------
+
+    def rhs_callable(self):
+        """Return the ``fun(t, y)`` right-hand side for the selected backend.
+
+        Use this instead of referencing :meth:`ADM_ODE` directly when the
+        backend must be switchable. For ``backend="numpy"`` this returns
+        :meth:`ADM_ODE` unchanged (so the default path is byte-identical). For
+        ``backend="torch"`` it returns a scipy-compatible adapter around the
+        differentiable PyTorch right-hand side, which produces the same values.
+
+        The torch adapter snapshots the model parameters once (they are
+        constant within a scipy step, exactly as the numpy model treats them),
+        so build a fresh callable at the start of each integration step.
+        """
+        if self.backend == "numpy":
+            return self.ADM_ODE
+        if self.backend == "torch":
+            # Lazy import so numpy-only users never need PyTorch installed.
+            from pyadm1.core.adm1_torch import make_scipy_rhs
+
+            return make_scipy_rhs(self)
+        raise ValueError(f"Unknown ADM1 backend: {self.backend!r} (expected 'numpy' or 'torch').")
 
     def ADM_ODE(self, t: float, state: List[float]) -> Tuple[float, ...]:
         """

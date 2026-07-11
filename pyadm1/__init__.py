@@ -54,6 +54,10 @@ from .simulation import Simulator
 # Component base classes
 from .components import Component, ComponentType
 
+# ADM1 right-hand-side backend selection (numpy default; torch is the
+# differentiable alternative). See pyadm1.core.adm1_torch.
+from .core.adm1 import get_default_adm1_backend, set_default_adm1_backend
+
 __all__ = [
     "__version__",
     "BiogasPlant",
@@ -61,6 +65,8 @@ __all__ = [
     "Simulator",
     "Component",
     "ComponentType",
+    "set_default_adm1_backend",
+    "get_default_adm1_backend",
 ]
 
 __author__ = "Daniel Gaida"

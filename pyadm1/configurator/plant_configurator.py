@@ -58,6 +58,7 @@ class PlantConfigurator:
         dynamic_volume: bool = False,
         initial_fill_fraction: float = 1.0,
         outflow_time_constant: float = 1.0,
+        backend: Optional[str] = None,
     ) -> "tuple[Digester, str]":
         """
         Add an ADM1da digester to the plant.
@@ -97,6 +98,10 @@ class PlantConfigurator:
         outflow_time_constant : float, default 1.0
             Overflow-weir time constant ``τ_out`` [d]. Only used when
             ``dynamic_volume=True``.
+        backend : str, optional
+            ADM1 right-hand-side backend, ``"numpy"`` (default) or ``"torch"``
+            (differentiable, same values). ``None`` uses the process-wide
+            default (see :func:`pyadm1.set_default_adm1_backend`).
 
         Returns
         -------
@@ -114,6 +119,7 @@ class PlantConfigurator:
             dynamic_volume=dynamic_volume,
             initial_fill_fraction=initial_fill_fraction,
             outflow_time_constant=outflow_time_constant,
+            backend=backend,
         )
 
         if k_L_a is not None:
