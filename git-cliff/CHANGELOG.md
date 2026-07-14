@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Documentation
+
+- Add REQUIREMENTS.md containing functional and non-functional requirements  
+
+## [0.5.4] - 2026-07-11
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
 ## [0.5.3] - 2026-06-30
 
 ### Miscellaneous Tasks
