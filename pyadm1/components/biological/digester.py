@@ -25,6 +25,7 @@ from ..base import Component, ComponentType
 from ..energy import GasStorage
 from ...core.adm1 import (
     ADM1,
+    calc_total_solids,
     STATE_SIZE as _ADM1_STATE_SIZE,
     _IDX_P_H2,
     _IDX_P_CH4,
@@ -199,6 +200,7 @@ class Digester(Component):
             "pH": 7.0,
             "VFA": 0.0,
             "TAC": 0.0,
+            "TS": 0.0,
             # Filtered hydraulic retention time tracked via the first-order
             # lag dHRT/dt + HRT*(Q_in/V_S) = 1, so the reported value rises
             # from start-up toward V_S/Q_in with time constant HRT_ss itself.
@@ -402,7 +404,9 @@ class Digester(Component):
             - float(st[_IDX_S_CATION])
         )
         tac = 50.0 * tac_mol
-        return {"pH": pH, "VFA": vfa, "TAC": tac}
+
+        ts = calc_total_solids(st)  # % TS (Proline Teqwave MW 300 surrogate)
+        return {"pH": pH, "VFA": vfa, "TAC": tac, "TS": ts}
 
     # ------------------------------------------------------------------
     # Step
@@ -531,6 +535,7 @@ class Digester(Component):
             "pH": indicators["pH"],
             "VFA": indicators["VFA"],
             "TAC": indicators["TAC"],
+            "TS": indicators["TS"],
             "HRT": float(hrt_new),
             "V_liq": float(self.V_liq),
             "Q_gas_to_storage_m3_per_day": float(q_gas),

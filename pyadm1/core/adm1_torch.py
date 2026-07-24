@@ -81,6 +81,12 @@ from pyadm1.core.adm1 import (
     _IDX_P_CH4,
     _IDX_P_CO2,
     _IDX_P_TOTAL,
+    _CODVS_CH,
+    _CODVS_PR,
+    _CODVS_LI,
+    _CODVS_BIO,
+    _VS_TS_RATIO,
+    _TS_PCT_PER_GL,
 )
 
 if TYPE_CHECKING:
@@ -864,3 +870,28 @@ def tac_torch(x: torch.Tensor, p: Adm1TorchParams) -> torch.Tensor:
         - x[..., _IDX_S_CATION]
     )
     return 50.0 * tac_mol
+
+
+def ts_torch(x: torch.Tensor) -> torch.Tensor:
+    """Total solids [% mass] — Proline Teqwave MW 300 surrogate, differentiable.
+
+    Mirrors :func:`pyadm1.core.adm1.calc_total_solids` (same constants/indices):
+    particulate + non-volatile soluble COD pools, COD->VS per class, plus the
+    mineral/ash fraction, expressed as a dry-matter mass percent.
+    """
+    ch = x[..., _IDX_X_PS_CH] + x[..., _IDX_X_PF_CH] + x[..., _IDX_X_S_CH]
+    pr = x[..., _IDX_X_PS_PR] + x[..., _IDX_X_PF_PR] + x[..., _IDX_X_S_PR]
+    li = x[..., _IDX_X_PS_LI] + x[..., _IDX_X_PF_LI] + x[..., _IDX_X_S_LI]
+    bio = (
+        x[..., _IDX_X_I]
+        + x[..., _IDX_X_SU]
+        + x[..., _IDX_X_AA]
+        + x[..., _IDX_X_FA]
+        + x[..., _IDX_X_C4]
+        + x[..., _IDX_X_PRO]
+        + x[..., _IDX_X_AC]
+        + x[..., _IDX_X_H2]
+    )
+    sol = x[..., _IDX_S_SU] + x[..., _IDX_S_AA] + x[..., _IDX_S_FA] + x[..., _IDX_S_I]
+    vs = ch / _CODVS_CH + pr / _CODVS_PR + li / _CODVS_LI + (bio + sol) / _CODVS_BIO
+    return vs / _VS_TS_RATIO * _TS_PCT_PER_GL

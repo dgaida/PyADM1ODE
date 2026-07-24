@@ -172,6 +172,37 @@ _IDX_P_TOTAL = 40
 STATE_SIZE = 41
 
 # --------------------------------------------------------------------------
+# Total-solids (TS) surrogate — Proline Teqwave MW 300 (microwave, % TS)
+# --------------------------------------------------------------------------
+# COD-to-volatile-solids conversion per organic class [g COD / g VS] and the
+# volatile/total-solids ratio (mineral/ash fraction). Digestate density ~ water,
+# so a dry-matter concentration in g/L maps to % TS via 1 % = 10 g/L.
+_CODVS_CH, _CODVS_PR, _CODVS_LI, _CODVS_BIO = 1.03, 1.5, 2.9, 1.42
+_VS_TS_RATIO = 0.80  # oTS/TS (adds ~20 % mineral/ash)
+_TS_PCT_PER_GL = 0.1  # g/L -> % TS at ~ water density
+
+
+def calc_total_solids(state) -> float:
+    """Total solids [% mass] from an ADM1da state — Proline Teqwave MW 300 surrogate.
+
+    Sums the particulate + non-volatile soluble COD pools, converts COD -> VS per
+    organic class, adds the mineral/ash fraction (VS/TS ratio) and expresses the
+    dry-matter concentration as a mass percent. Volatile acids and dissolved gases
+    are excluded (they escape at 105 °C drying).
+    """
+    s = state
+    ch = float(s[_IDX_X_PS_CH] + s[_IDX_X_PF_CH] + s[_IDX_X_S_CH])
+    pr = float(s[_IDX_X_PS_PR] + s[_IDX_X_PF_PR] + s[_IDX_X_S_PR])
+    li = float(s[_IDX_X_PS_LI] + s[_IDX_X_PF_LI] + s[_IDX_X_S_LI])
+    bio = float(
+        s[_IDX_X_I] + s[_IDX_X_SU] + s[_IDX_X_AA] + s[_IDX_X_FA] + s[_IDX_X_C4] + s[_IDX_X_PRO] + s[_IDX_X_AC] + s[_IDX_X_H2]
+    )
+    sol = float(s[_IDX_S_SU] + s[_IDX_S_AA] + s[_IDX_S_FA] + s[_IDX_S_I])
+    vs = ch / _CODVS_CH + pr / _CODVS_PR + li / _CODVS_LI + (bio + sol) / _CODVS_BIO
+    return vs / _VS_TS_RATIO * _TS_PCT_PER_GL
+
+
+# --------------------------------------------------------------------------
 # Right-hand-side backend selection
 # --------------------------------------------------------------------------
 _VALID_BACKENDS = ("numpy", "torch")

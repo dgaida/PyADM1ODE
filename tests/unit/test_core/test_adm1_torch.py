@@ -19,6 +19,7 @@ from pyadm1.core.adm1_torch import (
     calc_gas_torch,
     ph_torch,
     tac_torch,
+    ts_torch,
     vfa_torch,
 )
 
@@ -289,8 +290,8 @@ def _indicator_reference(feedstock, state):
     return d._compute_indicators()
 
 
-def test_ph_vfa_tac_torch_parity():
-    """pH / VFA / TAC torch maps must match the Digester indicator formulas."""
+def test_ph_vfa_tac_ts_torch_parity():
+    """pH / VFA / TAC / TS torch maps must match the Digester indicator formulas."""
     feedstock = Feedstock(["maize_silage_milk_ripeness", "swine_manure"], feeding_freq=24, total_simtime=10)
     adm1 = ADM1(feedstock=None, V_liq=1200.0, V_gas=216.0, T_ad=315.15)
     params = Adm1TorchParams.from_adm1(adm1)
@@ -305,6 +306,7 @@ def test_ph_vfa_tac_torch_parity():
         assert ph_torch(x, params).item() == pytest.approx(ref["pH"], rel=1e-6, abs=1e-4)
         assert vfa_torch(x).item() == pytest.approx(ref["VFA"], rel=1e-9, abs=1e-9)
         assert tac_torch(x, params).item() == pytest.approx(ref["TAC"], rel=1e-7, abs=1e-9)
+        assert ts_torch(x).item() == pytest.approx(ref["TS"], rel=1e-12, abs=1e-12)
 
 
 def test_measurement_map_batched_and_differentiable():
