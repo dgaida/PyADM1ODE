@@ -4,9 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- Add total solids calculation and update related tests  
+
+## [0.5.5] - 2026-07-14
+
 ### Documentation
 
 - Add REQUIREMENTS.md containing functional and non-functional requirements  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.5.4] - 2026-07-11
 
