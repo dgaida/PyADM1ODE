@@ -40,8 +40,11 @@ Example:
     >>> print(f"Level: {result['current_level']:.1f} t")
 """
 
-from typing import Dict, Any, Optional
+from __future__ import annotations
+
 from enum import Enum
+from typing import Any
+
 import numpy as np
 
 from ..base import Component, ComponentType
@@ -111,9 +114,9 @@ class SubstrateStorage(Component):
         substrate_type: str = "corn_silage",
         capacity: float = 1000.0,
         initial_level: float = 0.0,
-        degradation_rate: Optional[float] = None,
+        degradation_rate: float | None = None,
         temperature: float = 288.15,  # 15°C
-        name: Optional[str] = None,
+        name: str | None = None,
     ):
         """
         Initialize substrate storage component.
@@ -157,7 +160,7 @@ class SubstrateStorage(Component):
         # Initialize
         self.initialize()
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
+    def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
         """
         Initialize storage state.
 
@@ -197,7 +200,7 @@ class SubstrateStorage(Component):
 
         self._initialized = True
 
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Perform one simulation time step.
 
@@ -398,7 +401,7 @@ class SubstrateStorage(Component):
 
         self.density, self.dry_matter, self.vs_content = properties.get(self.substrate_type, (800, 25, 85))
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize storage to dictionary."""
         return {
             "component_id": self.component_id,
@@ -418,7 +421,7 @@ class SubstrateStorage(Component):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "SubstrateStorage":
+    def from_dict(cls, config: dict[str, Any]) -> SubstrateStorage:
         """Create storage from dictionary."""
         storage = cls(
             component_id=config["component_id"],

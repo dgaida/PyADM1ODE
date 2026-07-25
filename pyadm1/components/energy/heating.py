@@ -28,7 +28,9 @@ an auxiliary heater:
 Units: UA in kW/K, heat flows in kW, auxiliary energy in kWh.
 """
 
-from typing import Any, Dict, Optional, Sequence
+from __future__ import annotations
+
+from typing import Any, Sequence
 
 from ..base import Component, ComponentType
 
@@ -64,7 +66,7 @@ def _substrate_cp(s) -> float:
 
 
 def _calc_process_heat_kw(
-    q_substrates: Optional[Sequence[float]],
+    q_substrates: Sequence[float] | None,
     feedstock,
     target_temperature: float,
     t_inlet: float,
@@ -126,7 +128,7 @@ class HeatingSystem(Component):
         component_id: str,
         target_temperature: float = 308.15,
         heat_loss_coefficient: float = 0.5,
-        name: Optional[str] = None,
+        name: str | None = None,
         feedstock=None,
     ):
         """
@@ -148,7 +150,7 @@ class HeatingSystem(Component):
         # Auto-initialize with default state
         self.initialize()
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
+    def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
         """
         Initialize heating system state.
 
@@ -168,7 +170,7 @@ class HeatingSystem(Component):
             "P_aux_heat": 0.0,
         }
 
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Perform one simulation time step.
 
@@ -222,7 +224,7 @@ class HeatingSystem(Component):
 
         return self.outputs_data
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Serialize to dictionary.
 
@@ -241,7 +243,7 @@ class HeatingSystem(Component):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "HeatingSystem":
+    def from_dict(cls, config: dict[str, Any]) -> HeatingSystem:
         """
         Create from dictionary.
 

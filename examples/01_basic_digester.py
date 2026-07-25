@@ -18,9 +18,11 @@ Usage
     python examples/01_basic_digester.py
 """
 
-from pathlib import Path
-from typing import Dict, Mapping, Optional
+from __future__ import annotations
+
 import sys
+from pathlib import Path
+from typing import Mapping
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
@@ -29,14 +31,14 @@ if str(REPO_ROOT) not in sys.path:
 import numpy as np
 
 # Default substrate mix [m³/d] — maize silage + swine + cattle manure.
-DEFAULT_FEED: Dict[str, float] = {
+DEFAULT_FEED: dict[str, float] = {
     "maize_silage_milk_ripeness": 11.4,
     "swine_manure": 6.1,
     "cattle_manure": 5.0,
 }
 
 
-def main(feed: Optional[Mapping[str, float]] = None):
+def main(feed: Mapping[str, float] | None = None):
     """
     Run the basic single-digester example.
 
@@ -90,7 +92,7 @@ def main(feed: Optional[Mapping[str, float]] = None):
 
     print(f"{'Day':>5s}  {'Biogas':>10s}  {'Methane':>10s}  {'CH4%':>6s}  {'pH':>6s}")
     print("-" * 50)
-    for day in sorted(set(list(range(0, int(times[-1]) + 1, 10)) + [int(times[-1])])):
+    for day in sorted(set([*list(range(0, int(times[-1]) + 1, 10)), int(times[-1])])):
         i = int(np.argmin(np.abs(times - day)))
         ch4p = q_ch4[i] / q_gas[i] * 100.0 if q_gas[i] > 0.0 else 0.0
         print(f"{day:>5d}  {q_gas[i]:>10.1f}  {q_ch4[i]:>10.1f}  {ch4p:>6.1f}  {pH[i]:>6.2f}")

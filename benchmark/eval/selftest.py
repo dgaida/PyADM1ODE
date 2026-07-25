@@ -98,7 +98,8 @@ def build_broken():
 
 
 def main():
-    dp = json.load(open(DP_PATH, encoding="utf-8"))
+    with open(DP_PATH, encoding="utf-8") as f:
+        dp = json.load(f)
 
     print("\n### A) PERFEKTER KANDIDAT (andere IDs) ###")
     print(evaluate(dp, build_perfect()).pretty())

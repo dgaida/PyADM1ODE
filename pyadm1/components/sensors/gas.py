@@ -39,7 +39,7 @@ References (default measurement parameters):
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -67,7 +67,7 @@ class GasAnalyzerMethod(str, Enum):
     GAS_CHROMATOGRAPHY = "gas_chromatography"
 
 
-_DEFAULT_SENSOR_CONFIG: Dict[GasSensorType, Dict[str, Any]] = {
+_DEFAULT_SENSOR_CONFIG: dict[GasSensorType, dict[str, Any]] = {
     GasSensorType.CH4: {
         "signal_key": "CH4",
         "candidate_keys": ("CH4", "ch4", "methane_fraction", "CH4_fraction"),
@@ -117,7 +117,7 @@ _DEFAULT_SENSOR_CONFIG: Dict[GasSensorType, Dict[str, Any]] = {
 #   measurement_delay — time from sampling to result release (batch only);
 #                       > 0 activates the pending-samples queue.
 # These values apply when the user does not supply an explicit override.
-_ANALYZER_METHOD_DEFAULTS: Dict[GasSensorType, Dict[GasAnalyzerMethod, Dict[str, float]]] = {
+_ANALYZER_METHOD_DEFAULTS: dict[GasSensorType, dict[GasAnalyzerMethod, dict[str, float]]] = {
     GasSensorType.CH4: {
         GasAnalyzerMethod.INFRARED: {
             "measurement_noise": 0.3,  # % std dev — NDIR accuracy ±0.5% FS → σ ≈ 0.3% [1,2,3]
@@ -260,21 +260,21 @@ class GasSensor(AbstractSensor):
         self,
         component_id: str,
         sensor_type: str = "CH4",
-        analyzer_method: Optional[str] = None,
-        signal_key: Optional[str] = None,
-        measurement_range: Optional[Tuple[float, float]] = None,
-        measurement_noise: Optional[float] = None,
+        analyzer_method: str | None = None,
+        signal_key: str | None = None,
+        measurement_range: tuple[float, float] | None = None,
+        measurement_noise: float | None = None,
         accuracy: float = 0.0,
         drift_rate: float = 0.0,
-        response_time: Optional[float] = None,
+        response_time: float | None = None,
         sample_interval: float = 0.0,
-        measurement_delay: Optional[float] = None,
-        detection_limit: Optional[float] = None,
-        cross_sensitivity: Optional[Dict[str, float]] = None,
-        unit: Optional[str] = None,
-        output_key: Optional[str] = None,
-        rng_seed: Optional[int] = None,
-        name: Optional[str] = None,
+        measurement_delay: float | None = None,
+        detection_limit: float | None = None,
+        cross_sensitivity: dict[str, float] | None = None,
+        unit: str | None = None,
+        output_key: str | None = None,
+        rng_seed: int | None = None,
+        name: str | None = None,
     ):
         self.sensor_type = self._parse_sensor_type(sensor_type)
         defaults = _DEFAULT_SENSOR_CONFIG[self.sensor_type]
@@ -312,12 +312,12 @@ class GasSensor(AbstractSensor):
         self.response_time = float(max(0.0, resolved_response_time))
         self.measurement_delay = float(max(0.0, resolved_delay))
         self.detection_limit = float(max(0.0, resolved_detection_limit))
-        self.cross_sensitivity: Dict[str, float] = dict(cross_sensitivity) if cross_sensitivity else {}
+        self.cross_sensitivity: dict[str, float] = dict(cross_sensitivity) if cross_sensitivity else {}
 
         self.filtered_value: float = np.nan
         self.reported_value: float = np.nan
         self.is_detected: bool = False
-        self._pending_samples: List[Tuple[float, float]] = []
+        self._pending_samples: list[tuple[float, float]] = []
 
         self.initialize()
 
@@ -355,7 +355,7 @@ class GasSensor(AbstractSensor):
         }
         return AbstractSensor._parse_enum(analyzer_method, aliases, GasAnalyzerMethod, "analyzer method")
 
-    def _apply_cross_sensitivity(self, value: float, inputs: Dict[str, Any]) -> float:
+    def _apply_cross_sensitivity(self, value: float, inputs: dict[str, Any]) -> float:
         """Add interference bias from other signals in *inputs*."""
         if not self.cross_sensitivity:
             return value
@@ -370,7 +370,7 @@ class GasSensor(AbstractSensor):
                 continue
         return value + bias
 
-    def _initialize_subclass(self, initial_state: Optional[Dict[str, Any]]) -> None:
+    def _initialize_subclass(self, initial_state: dict[str, Any] | None) -> None:
         """Reset / restore gas-sensor extras and build state + outputs."""
         self.filtered_value = np.nan
         self.reported_value = np.nan
@@ -399,7 +399,7 @@ class GasSensor(AbstractSensor):
             },
         )
 
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Advance the sensor by one simulation step.
 
@@ -471,10 +471,10 @@ class GasSensor(AbstractSensor):
         )
         return self.outputs_data
 
-    def _pop_latest_ready_sample(self, t: float) -> Optional[float]:
+    def _pop_latest_ready_sample(self, t: float) -> float | None:
         """Return the latest sample whose analysis delay has elapsed."""
-        latest_ready: Optional[float] = None
-        pending: List[Tuple[float, float]] = []
+        latest_ready: float | None = None
+        pending: list[tuple[float, float]] = []
         for release_time, sample_value in self._pending_samples:
             if release_time <= t + 1e-12:
                 latest_ready = sample_value
@@ -483,7 +483,7 @@ class GasSensor(AbstractSensor):
         self._pending_samples = pending
         return latest_ready
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize sensor configuration and state."""
         return {
             **self._base_config_dict(),
@@ -497,7 +497,7 @@ class GasSensor(AbstractSensor):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "GasSensor":
+    def from_dict(cls, config: dict[str, Any]) -> GasSensor:
         """Create sensor from serialized configuration."""
         sensor = cls(
             component_id=config["component_id"],

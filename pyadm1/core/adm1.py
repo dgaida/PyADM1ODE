@@ -70,10 +70,12 @@ DataFrame with columns:
     → 38 columns total (no gas-phase states in influent).
 """
 
+from __future__ import annotations
+
 import logging
+
 import numpy as np
 import pandas as pd
-from typing import List, Optional, Tuple
 
 from pyadm1.core.adm_params import ADMParams
 
@@ -222,7 +224,7 @@ def set_default_adm1_backend(backend: str) -> None:
     """
     if backend not in _VALID_BACKENDS:
         raise ValueError(f"Unknown ADM1 backend: {backend!r} (expected 'numpy' or 'torch').")
-    global _DEFAULT_BACKEND
+    global _DEFAULT_BACKEND  # noqa: PLW0603 - process-wide backend selector
     _DEFAULT_BACKEND = backend
 
 
@@ -231,7 +233,7 @@ def get_default_adm1_backend() -> str:
     return _DEFAULT_BACKEND
 
 
-def get_state_zero_from_csv(csv_file: str) -> List[float]:
+def get_state_zero_from_csv(csv_file: str) -> list[float]:
     """
     Load an ADM1 initial state vector from a CSV file.
 
@@ -273,7 +275,7 @@ class ADM1:
         V_liq: float = 1977.0,
         V_gas: float = 304.0,
         T_ad: float = 308.15,
-        backend: Optional[str] = None,
+        backend: str | None = None,
     ) -> None:
         """
         Initialize the ADM1 model.
@@ -321,23 +323,23 @@ class ADM1:
 
         # --- Feedstock / influent ---
         self._feedstock = feedstock
-        self._Q: Optional[List[float]] = None
-        self._state_input: Optional[List[float]] = None
+        self._Q: list[float] | None = None
+        self._state_input: list[float] | None = None
 
         # --- Calibration overrides ---
         self._calibration_params: dict = {}
 
         # --- Result-tracking lists ---
-        self._Q_GAS: List[float] = []
-        self._Q_CH4: List[float] = []
-        self._Q_CO2: List[float] = []
-        self._Q_H2O: List[float] = []
-        self._P_GAS: List[float] = []
-        self._pH_l: List[float] = []
-        self._FOSTAC: List[float] = []
-        self._AcvsPro: List[float] = []
-        self._VFA: List[float] = []
-        self._TAC: List[float] = []
+        self._Q_GAS: list[float] = []
+        self._Q_CH4: list[float] = []
+        self._Q_CO2: list[float] = []
+        self._Q_H2O: list[float] = []
+        self._P_GAS: list[float] = []
+        self._pH_l: list[float] = []
+        self._FOSTAC: list[float] = []
+        self._AcvsPro: list[float] = []
+        self._VFA: list[float] = []
+        self._TAC: list[float] = []
 
         # --- Temperature-corrected kinetics (reused across ODE calls) ---
         base_kinetic = ADMParams.get_kinetic_params()
@@ -373,7 +375,7 @@ class ADM1:
         self._dP_min_pipe = 1.0e-3
 
         # Optional external influent DataFrame.
-        self._influent_df: Optional[pd.DataFrame] = None
+        self._influent_df: pd.DataFrame | None = None
 
         # Influent / sludge densities (used by ``create_influent`` only).
         self._rho_in: float = 1000.0
@@ -384,7 +386,7 @@ class ADM1:
         # caller is then responsible for advancing V_liq between ODE steps.
         # ``_q_S_loss_last`` caches the most recent q_S_loss so the caller
         # can integrate the volume balance externally.
-        self._Q_out_override: Optional[float] = None
+        self._Q_out_override: float | None = None
         self._q_S_loss_last: float = 0.0
 
     # ------------------------------------------------------------------
@@ -407,52 +409,52 @@ class ADM1:
         return self._feedstock
 
     @property
-    def Q_GAS(self) -> List[float]:
+    def Q_GAS(self) -> list[float]:
         """History of total biogas flow rate [m^3/d]."""
         return self._Q_GAS
 
     @property
-    def Q_CH4(self) -> List[float]:
+    def Q_CH4(self) -> list[float]:
         """History of methane flow rate [m^3/d]."""
         return self._Q_CH4
 
     @property
-    def Q_CO2(self) -> List[float]:
+    def Q_CO2(self) -> list[float]:
         """History of carbon dioxide flow rate [m^3/d]."""
         return self._Q_CO2
 
     @property
-    def Q_H2O(self) -> List[float]:
+    def Q_H2O(self) -> list[float]:
         """History of water-vapour flow rate [m^3/d]."""
         return self._Q_H2O
 
     @property
-    def P_GAS(self) -> List[float]:
+    def P_GAS(self) -> list[float]:
         """History of total headspace pressure [bar]."""
         return self._P_GAS
 
     @property
-    def pH_l(self) -> List[float]:
+    def pH_l(self) -> list[float]:
         """History of liquid-phase pH."""
         return self._pH_l
 
     @property
-    def VFA_TA(self) -> List[float]:
+    def VFA_TA(self) -> list[float]:
         """History of the VFA/TA (FOS/TAC) ratio."""
         return self._FOSTAC
 
     @property
-    def AcvsPro(self) -> List[float]:
+    def AcvsPro(self) -> list[float]:
         """History of the acetate-to-propionate ratio."""
         return self._AcvsPro
 
     @property
-    def VFA(self) -> List[float]:
+    def VFA(self) -> list[float]:
         """History of total volatile fatty acid concentration [kg HAc-eq/m^3]."""
         return self._VFA
 
     @property
-    def TAC(self) -> List[float]:
+    def TAC(self) -> list[float]:
         """History of total alkalinity (TAC)."""
         return self._TAC
 
@@ -507,7 +509,7 @@ class ADM1:
         pi_Sch4: float,
         pi_Sco2: float,
         pTOTAL: float,
-    ) -> Tuple[float, float, float, float, float]:
+    ) -> tuple[float, float, float, float, float]:
         """
         Calculate biogas production rates, normalised to standard reference
         conditions (theta = 20 °C, P = 1.01325 bar; ADM1da convention).
@@ -563,9 +565,9 @@ class ADM1:
 
     def create_influent(
         self,
-        Q: List[float],
+        Q: list[float],
         i: int,
-        rho: Optional[List[float]] = None,
+        rho: list[float] | None = None,
     ) -> None:
         """
         Build the influent vector for time step *i*.
@@ -574,10 +576,7 @@ class ADM1:
         ``set_influent_dataframe()``, that DataFrame is used.  Otherwise
         the feedstock object is used to derive the influent.
         """
-        if hasattr(self._feedstock, "actual_Q"):
-            Q_actual = self._feedstock.actual_Q(Q)
-        else:
-            Q_actual = list(Q)
+        Q_actual = self._feedstock.actual_Q(Q) if hasattr(self._feedstock, "actual_Q") else list(Q)
         self._Q = Q_actual
         if rho is not None and len(rho) == len(Q_actual):
             q_total = sum(Q_actual)
@@ -620,7 +619,7 @@ class ADM1:
             return make_scipy_rhs(self)
         raise ValueError(f"Unknown ADM1 backend: {self.backend!r} (expected 'numpy' or 'torch').")
 
-    def ADM_ODE(self, t: float, state: List[float]) -> Tuple[float, ...]:
+    def ADM_ODE(self, t: float, state: list[float]) -> tuple[float, ...]:
         """
         Compute dy/dt for the 41-element ADM1 state vector.
 
@@ -869,10 +868,7 @@ class ADM1:
         # If the caller has supplied an outflow (e.g. via a level controller
         # that owns the volume balance), use it. Otherwise enforce volume
         # conservation by setting Q_out = Q_in - q_S_loss.
-        if self._Q_out_override is not None:
-            _Q_out = max(float(self._Q_out_override), 0.0)
-        else:
-            _Q_out = max(q_ad - _q_S_loss, 0.0)
+        _Q_out = max(float(self._Q_out_override), 0.0) if self._Q_out_override is not None else max(q_ad - _q_S_loss, 0.0)
         D_out = _Q_out / self.V_liq
 
         # --- Dissolved (0–11) ---
@@ -1060,7 +1056,7 @@ class ADM1:
     # Result-tracking helper
     # ------------------------------------------------------------------
 
-    def print_params_at_current_state(self, state: List[float]) -> None:
+    def print_params_at_current_state(self, state: list[float]) -> None:
         """Compute and store process indicators (pH, gas) from the current state."""
         ip = self._inhib_params
         S_H = self._calc_ph(
@@ -1086,7 +1082,7 @@ class ADM1:
         )
         self._track_gas(q_gas, q_ch4, q_co2, q_h2o, p_gas)
 
-    def resume_from_broken_simulation(self, Q_CH4: List[float]) -> None:
+    def resume_from_broken_simulation(self, Q_CH4: list[float]) -> None:
         """Re-populate the methane tracking list after a simulation restart."""
         for q in Q_CH4:
             self._Q_CH4.append(q)

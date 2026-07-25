@@ -1,5 +1,4 @@
 # tests/unit/test_components/test_pump.py
-# -*- coding: utf-8 -*-
 """
 Unit tests for the Pump component.
 

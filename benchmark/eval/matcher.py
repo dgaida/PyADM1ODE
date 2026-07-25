@@ -31,13 +31,14 @@ import itertools
 import json
 import math
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
+
 from pyadm1.configurator.graph import AUTO_TYPES, Edge, Graph, Node, normalize_candidate
 
 # --------------------------------------------------------------------------
 # Typ- und Feld-Mappings (Referenz-Typname  <->  serialisierter component_type)
 # --------------------------------------------------------------------------
-TYPE_MAP: Dict[str, str] = {
+TYPE_MAP: dict[str, str] = {
     "Digester": "digester",
     "GasStorage": "storage",
     "Separator": "separator",
@@ -50,7 +51,7 @@ TYPE_MAP: Dict[str, str] = {
 }
 
 # Parameter, die PyADM1ODE pro Typ tatsaechlich serialisiert (to_dict).
-SERIALIZED_PARAMS: Dict[str, set] = {
+SERIALIZED_PARAMS: dict[str, set] = {
     "digester": {"V_liq", "V_gas", "T_ad"},
     "chp": {"P_el_nom", "eta_el", "eta_th"},
     "heating": {"target_temperature", "heat_loss_coefficient"},
@@ -77,11 +78,11 @@ GAP_OBLIGATIONS = {"missing_ask"}
 # ==========================================================================
 # Laden / Normalisieren
 # ==========================================================================
-def expand_reference(dp: Dict[str, Any]) -> Graph:
+def expand_reference(dp: dict[str, Any]) -> Graph:
     """Referenz-Datenpunkt -> internen Graph (mit _same_as-Expansion)."""
     raw = {c["id"]: c for c in dp["reference"]["components"]}
 
-    def resolve_params(comp: Dict[str, Any]) -> Dict[str, Any]:
+    def resolve_params(comp: dict[str, Any]) -> dict[str, Any]:
         params = dict(comp.get("params", {}) or {})
         ref_id = params.pop("_same_as", None)
         if ref_id is not None:
@@ -90,7 +91,7 @@ def expand_reference(dp: Dict[str, Any]) -> Graph:
             params = base
         return params
 
-    nodes: Dict[str, Node] = {}
+    nodes: dict[str, Node] = {}
     for cid, comp in raw.items():
         ctype = TYPE_MAP.get(comp["type"], comp["type"].lower())
         nodes[cid] = Node(
@@ -108,14 +109,14 @@ def expand_reference(dp: Dict[str, Any]) -> Graph:
     return Graph(nodes, edges)
 
 
-def lint_gas_paths(g: Graph) -> List[str]:
+def lint_gas_paths(g: Graph) -> list[str]:
     """Strukturwarnungen fuer 'tote' Gaspfade.
 
     PyADM1ODE leitet Biogas nur bedarfsgesteuert weiter, wenn jede GasStorage
     einen Abnehmer (CHP/Flare/Boiler/BGAA) hat. Knoten ohne Abnahme bedeuten, dass
     erzeugtes Gas im Modell nicht genutzt wird.
     """
-    warns: List[str] = []
+    warns: list[str] = []
     for nd in g.nodes.values():
         if nd.ctype == "storage":
             outs = g.out_edges(nd.id, "gas")
@@ -133,7 +134,7 @@ def lint_gas_paths(g: Graph) -> List[str]:
 # ==========================================================================
 # Akzeptanz-Pruefung (ein Parameter)
 # ==========================================================================
-def within_accept(pdef: Dict[str, Any], value: Any, ref_params: Dict[str, Any]) -> bool:
+def within_accept(pdef: dict[str, Any], value: Any, ref_params: dict[str, Any]) -> bool:
     """Liegt ``value`` im Akzeptanzband von ``pdef``? (absolut / relativ / Enum)"""
     accept = pdef.get("accept")
     if isinstance(accept, list):  # kategorial
@@ -186,7 +187,7 @@ def _param_distance(ref: Node, cand: Node) -> float:
 # ==========================================================================
 # Zuordnung der Knoten (Typ-Gruppen)
 # ==========================================================================
-def _signature(g: Graph, nid: str) -> Tuple[int, ...]:
+def _signature(g: Graph, nid: str) -> tuple[int, ...]:
     """Topologische Signatur eines Knotens: Kantengrade je Typ/Richtung.
 
     Unterscheidet sonst parameter-gleiche Knoten (z. B. Nachgaerer vs. Fermenter:
@@ -201,7 +202,7 @@ def _signature(g: Graph, nid: str) -> Tuple[int, ...]:
     )
 
 
-def _optimal_assign(ref_list: List[Node], cand_list: List[Node], cost_fn) -> Dict[str, str]:
+def _optimal_assign(ref_list: list[Node], cand_list: list[Node], cost_fn) -> dict[str, str]:
     """Minimiert die Summe von ``cost_fn``; brute-force fuer kleine Gruppen."""
     if not ref_list or not cand_list:
         return {}
@@ -214,7 +215,7 @@ def _optimal_assign(ref_list: List[Node], cand_list: List[Node], cost_fn) -> Dic
                 best_cost, best = cost, combo
         return {ref_list[i].id: cand_list[best[i]].id for i in range(len(best))} if best else {}
     # Greedy-Fallback fuer grosse Gruppen
-    assign: Dict[str, str] = {}
+    assign: dict[str, str] = {}
     used = set()
     for r in ref_list:
         cands = [(c, cost_fn(r, c)) for c in cand_list if c.id not in used]
@@ -226,9 +227,9 @@ def _optimal_assign(ref_list: List[Node], cand_list: List[Node], cost_fn) -> Dic
     return assign
 
 
-def assign_nodes(ref: Graph, cand: Graph) -> Dict[str, str]:
+def assign_nodes(ref: Graph, cand: Graph) -> dict[str, str]:
     """ref-ID -> cand-ID. Primaertypen ueber Parameter + Topologie, Auto-Knoten ueber Topologie."""
-    assign: Dict[str, str] = {}
+    assign: dict[str, str] = {}
 
     ref_sig = {nid: _signature(ref, nid) for nid in ref.nodes}
     cand_sig = {nid: _signature(cand, nid) for nid in cand.nodes}
@@ -239,8 +240,8 @@ def assign_nodes(ref: Graph, cand: Graph) -> Dict[str, str]:
         return _param_distance(r, c) + 0.5 * sig_d
 
     # 1) Primaertypen (alles ausser storage/flare) gruppenweise zuordnen
-    by_type_ref: Dict[str, List[Node]] = {}
-    by_type_cand: Dict[str, List[Node]] = {}
+    by_type_ref: dict[str, list[Node]] = {}
+    by_type_cand: dict[str, list[Node]] = {}
     for nd in ref.nodes.values():
         if nd.ctype not in AUTO_TYPES:
             by_type_ref.setdefault(nd.ctype, []).append(nd)
@@ -251,7 +252,7 @@ def assign_nodes(ref: Graph, cand: Graph) -> Dict[str, str]:
         assign.update(_optimal_assign(refs, by_type_cand.get(ctype, []), cost_fn))
 
     # 2) GasStorage ueber den speisenden Digester ausrichten
-    def storage_of(g: Graph, dig_id: str) -> Optional[str]:
+    def storage_of(g: Graph, dig_id: str) -> str | None:
         for e in g.out_edges(dig_id, "gas"):
             if e.dst in g.nodes and g.nodes[e.dst].ctype == "storage":
                 return e.dst
@@ -301,17 +302,13 @@ def assign_nodes(ref: Graph, cand: Graph) -> Dict[str, str]:
 def _edge_required(e: Edge) -> bool:
     if e.obligation in REQUIRED_EDGE_OBLIGATIONS:
         return True
-    if e.obligation == "inferred" and (e.confidence in REQUIRED_INFERRED_CONFIDENCE):
-        return True
-    return False
+    return bool(e.obligation == "inferred" and e.confidence in REQUIRED_INFERRED_CONFIDENCE)
 
 
 def _node_required(nd: Node) -> bool:
     if nd.obligation in REQUIRED_NODE_OBLIGATIONS or nd.auto:
         return True
-    if nd.obligation == "inferred":
-        return True
-    return False
+    return nd.obligation == "inferred"
 
 
 @dataclass
@@ -320,7 +317,7 @@ class Report:
     structure: float = 0.0
     measures: float = 0.0
     gaps: float = 0.0
-    details: Dict[str, Any] = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=dict)
 
     def overall(self) -> float:
         return round((self.structure + self.measures + self.gaps) / 3.0, 3)
@@ -329,11 +326,16 @@ class Report:
         d = self.details
         lines = [
             "=" * 60,
-            f"  Struktur        {self.structure:6.1%}   "
-            f"(Knoten {d.get('node_tp',0)}/{d.get('node_req',0)}, "
-            f"Kanten {d.get('edge_tp',0)}/{d.get('edge_req',0)})",
-            f"  Masse           {self.measures:6.1%}   " f"({d.get('meas_pass',0)}/{d.get('meas_total',0)} Parameter im Band)",
-            f"  Fehlende Werte  {self.gaps:6.1%}   " f"({d.get('gap_ok',0)}/{d.get('gap_total',0)} korrekt behandelt)",
+            (
+                f"  Struktur        {self.structure:6.1%}   "
+                f"(Knoten {d.get('node_tp',0)}/{d.get('node_req',0)}, "
+                f"Kanten {d.get('edge_tp',0)}/{d.get('edge_req',0)})"
+            ),
+            (
+                f"  Masse           {self.measures:6.1%}   "
+                f"({d.get('meas_pass',0)}/{d.get('meas_total',0)} Parameter im Band)"
+            ),
+            (f"  Fehlende Werte  {self.gaps:6.1%}   " f"({d.get('gap_ok',0)}/{d.get('gap_total',0)} korrekt behandelt)"),
             "-" * 60,
             f"  GESAMT          {self.overall():6.1%}",
             "=" * 60,
@@ -347,7 +349,7 @@ class Report:
         return "\n".join(lines)
 
 
-def evaluate(datapoint: Dict[str, Any], candidate: Dict[str, Any], response: Optional[Dict[str, Any]] = None) -> Report:
+def evaluate(datapoint: dict[str, Any], candidate: dict[str, Any], response: dict[str, Any] | None = None) -> Report:
     """
     Bewertet eine Kandidaten-Anlage gegen einen Referenz-Datenpunkt.
 
@@ -372,7 +374,7 @@ def evaluate(datapoint: Dict[str, Any], candidate: Dict[str, Any], response: Opt
     response = response or {}
     asked_fields = " ".join(q.get("field", "") for q in response.get("open_questions", [])).lower()
     assumptions = {a.get("field", ""): a.get("value") for a in response.get("assumptions", [])}
-    violations: List[str] = []
+    violations: list[str] = []
 
     # ----- 1) STRUKTUR: Knoten -----
     req_nodes = [nd for nd in ref.nodes.values() if _node_required(nd)]
@@ -499,7 +501,12 @@ if __name__ == "__main__":
     if len(sys.argv) < 3:
         print("usage: python matcher.py <datapoint.json> <candidate.json> [response.json]")
         raise SystemExit(2)
-    dp = json.load(open(sys.argv[1], encoding="utf-8"))
-    ca = json.load(open(sys.argv[2], encoding="utf-8"))
-    rs = json.load(open(sys.argv[3], encoding="utf-8")) if len(sys.argv) > 3 else None
+    with open(sys.argv[1], encoding="utf-8") as f:
+        dp = json.load(f)
+    with open(sys.argv[2], encoding="utf-8") as f:
+        ca = json.load(f)
+    rs = None
+    if len(sys.argv) > 3:
+        with open(sys.argv[3], encoding="utf-8") as f:
+            rs = json.load(f)
     print(evaluate(dp, ca, rs).pretty())

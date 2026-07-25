@@ -38,9 +38,13 @@ Example:
     >>> print(f"Power consumption: {result['P_consumed']:.1f} kW")
 """
 
-from typing import Dict, Any, Optional
+from __future__ import annotations
+
 from enum import Enum
+from typing import Any
+
 import numpy as np
+
 from ..base import Component, ComponentType
 
 # Account for motor efficiency (typical 85-95%)
@@ -98,15 +102,15 @@ class Mixer(Component):
         component_id: str,
         mixer_type: str = "propeller",
         tank_volume: float = 2000.0,
-        tank_diameter: Optional[float] = None,
-        tank_height: Optional[float] = None,
+        tank_diameter: float | None = None,
+        tank_height: float | None = None,
         mixing_intensity: str = "medium",
-        power_installed: Optional[float] = None,
-        impeller_diameter: Optional[float] = None,
-        operating_speed: Optional[float] = None,
+        power_installed: float | None = None,
+        impeller_diameter: float | None = None,
+        operating_speed: float | None = None,
         intermittent: bool = True,
         on_time_fraction: float = 0.25,
-        name: Optional[str] = None,
+        name: str | None = None,
     ):
         """
         Initialize mixer component.
@@ -161,7 +165,7 @@ class Mixer(Component):
         # Initialize state
         self.initialize()
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
+    def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
         """
         Initialize mixer state.
 
@@ -199,7 +203,7 @@ class Mixer(Component):
 
         self._initialized = True
 
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Perform one simulation time step.
 
@@ -254,10 +258,7 @@ class Mixer(Component):
         P_consumed = self._calculate_power_consumption()
 
         # Calculate time-averaged power (accounting for intermittent operation)
-        if self.intermittent:
-            P_average = P_consumed * self.on_time_fraction
-        else:
-            P_average = P_consumed
+        P_average = P_consumed * self.on_time_fraction if self.intermittent else P_consumed
 
         # Calculate mixing quality
         mixing_quality = self._calculate_mixing_quality()
@@ -398,10 +399,7 @@ class Mixer(Component):
 
         # Part-load electrical limit should scale with speed^3
         speed = max(self.current_speed_fraction, 0.0)
-        if speed <= 1.0:
-            dynamic_limit = self.power_installed * speed**3
-        else:
-            dynamic_limit = self.power_installed * min(speed**3, 1.2)
+        dynamic_limit = self.power_installed * speed**3 if speed <= 1.0 else self.power_installed * min(speed**3, 1.2)
 
         # Limit to installed power
         P_actual = min(P_electrical, dynamic_limit)
@@ -593,7 +591,7 @@ class Mixer(Component):
 
         return power
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Serialize mixer to dictionary.
 
@@ -622,7 +620,7 @@ class Mixer(Component):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "Mixer":
+    def from_dict(cls, config: dict[str, Any]) -> Mixer:
         """
         Create mixer from dictionary.
 

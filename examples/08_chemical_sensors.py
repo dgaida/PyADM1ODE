@@ -22,8 +22,8 @@ Usage:
     py examples/08_chemical_sensors.py
 """
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(REPO_ROOT) not in sys.path:
@@ -37,13 +37,13 @@ def main() -> None:
     except ImportError as exc:
         raise SystemExit("matplotlib is required for this example: pip install matplotlib") from exc
 
-    from pyadm1.components.sensors import ChemicalSensor
     from examples._sensor_demo_helpers import (
         apply_substrate_feed,
         build_single_digester_plant,
         extract_chemical_signals,
         substrate_feed_profile,
     )
+    from pyadm1.components.sensors import ChemicalSensor
 
     duration_days = 10.0
     dt = 1.0 / 24.0

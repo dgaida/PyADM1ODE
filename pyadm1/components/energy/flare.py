@@ -7,7 +7,9 @@ The Flare is a gas sink that combusts (destroys) vented/excess biogas safely.
 It keeps track of vented volume and combustion emissions (simplified).
 """
 
-from typing import Dict, Any, Optional
+from __future__ import annotations
+
+from typing import Any
 
 from ..base import Component, ComponentType
 
@@ -32,14 +34,14 @@ class Flare(Component):
         self,
         component_id: str,
         destruction_efficiency: float = 0.98,
-        name: Optional[str] = None,
+        name: str | None = None,
     ):
         super().__init__(component_id, ComponentType.FLARE, name)
         self.destruction_efficiency: float = float(destruction_efficiency)
         self._cum_vented_m3: float = 0.0
         self.initialize()
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
+    def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
         """Initialize flare internal state.
 
         Args:
@@ -48,7 +50,7 @@ class Flare(Component):
         if initial_state and "cumulative_vented_m3" in initial_state:
             try:
                 self._cum_vented_m3 = float(initial_state["cumulative_vented_m3"])
-            except Exception:
+            except (TypeError, ValueError):
                 self._cum_vented_m3 = 0.0
         else:
             self._cum_vented_m3 = 0.0
@@ -60,7 +62,7 @@ class Flare(Component):
         }
         self._initialized = True
 
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """Process one timestep and combust incoming gas.
 
         Args:
@@ -97,7 +99,7 @@ class Flare(Component):
 
         return self.outputs_data
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize flare configuration and state."""
         return {
             "component_id": self.component_id,
@@ -108,7 +110,7 @@ class Flare(Component):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "Flare":
+    def from_dict(cls, config: dict[str, Any]) -> Flare:
         """Instantiate Flare from dict created by `to_dict`."""
         flare = cls(
             component_id=config["component_id"],

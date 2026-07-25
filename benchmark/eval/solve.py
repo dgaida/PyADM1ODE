@@ -47,7 +47,7 @@ import re
 import sys
 import time
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Pfade
@@ -60,9 +60,9 @@ sys.path.insert(0, HERE)
 from oracle import Oracle  # noqa: E402
 from prompt import (  # noqa: E402
     SYSTEM_PROMPT,
-    build_messages,
     add_oracle_answers,
     append_assistant,
+    build_messages,
 )
 from runner import evaluate_code  # noqa: E402
 
@@ -71,7 +71,7 @@ from runner import evaluate_code  # noqa: E402
 # ---------------------------------------------------------------------------
 
 
-def extract_code(text: str) -> Optional[str]:
+def extract_code(text: str) -> str | None:
     """Extrahiert den ersten ```python … ```-Block aus einer LLM-Antwort."""
     m = re.search(r"```python\s*(.*?)```", text, re.DOTALL)
     if m:
@@ -82,7 +82,7 @@ def extract_code(text: str) -> Optional[str]:
     return None
 
 
-def extract_questions(text: str) -> Optional[List[Dict[str, str]]]:
+def extract_questions(text: str) -> list[dict[str, str]] | None:
     """
     Extrahiert open_questions aus einem ```json … ```-Block der LLM-Antwort.
     Gibt None zurueck, wenn kein JSON-Block gefunden oder leer.
@@ -103,7 +103,7 @@ def extract_questions(text: str) -> Optional[List[Dict[str, str]]]:
 # ---------------------------------------------------------------------------
 
 
-def _get_client(api_key: Optional[str]):
+def _get_client(api_key: str | None):
     try:
         from groq import Groq
     except ImportError:
@@ -119,11 +119,11 @@ def _get_client(api_key: Optional[str]):
 def call_llm(
     client,
     model: str,
-    messages: List[Dict[str, Any]],
+    messages: list[dict[str, Any]],
     max_tokens: int = 4096,
 ) -> str:
     """Sendet Messages an die Groq API (OpenAI-kompatibel) und gibt den Antworttext zurueck."""
-    full_messages = [{"role": "system", "content": SYSTEM_PROMPT}] + messages
+    full_messages = [{"role": "system", "content": SYSTEM_PROMPT}, *messages]
     resp = client.chat.completions.create(
         model=model,
         max_tokens=max_tokens,
@@ -152,7 +152,7 @@ class EvalResult:
     error: str = ""
     generated_code: str = ""
 
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> dict[str, Any]:
         return {
             "id": self.dp_id,
             "regime": self.regime,
@@ -174,7 +174,7 @@ class EvalResult:
 
 
 def evaluate_datapoint(
-    dp: Dict[str, Any],
+    dp: dict[str, Any],
     dp_dir: str,
     client,
     model: str,
@@ -208,7 +208,7 @@ def evaluate_datapoint(
     # -- Turn 1 --
     try:
         resp1 = call_llm(client, model, messages)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - record any LLM API failure and stop this datapoint
         result.error = f"API-Fehler Turn 1: {e}"
         return result
 
@@ -233,7 +233,7 @@ def evaluate_datapoint(
 
         try:
             resp2 = call_llm(client, model, messages)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - record any LLM API failure and stop this datapoint
             result.error = f"API-Fehler Turn 2: {e}"
             return result
 
@@ -252,7 +252,7 @@ def evaluate_datapoint(
     # -- Bewerten --
     try:
         report = evaluate_code(dp, code)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - record any evaluation failure and stop this datapoint
         result.error = f"Evaluierungsfehler: {e}"
         return result
 
@@ -271,11 +271,11 @@ def evaluate_datapoint(
 
 def load_datapoints(
     dataset_dir: str,
-    regime_filter: Optional[str],
-    id_filter: Optional[str],
-    modality_filter: Optional[str],
-    language_filter: Optional[str],
-) -> List[Tuple[str, str, Dict[str, Any]]]:
+    regime_filter: str | None,
+    id_filter: str | None,
+    modality_filter: str | None,
+    language_filter: str | None,
+) -> list[tuple[str, str, dict[str, Any]]]:
     """
     Laedt Datenpunkte aus dataset/index.json und wendet Filter an.
 
@@ -286,7 +286,8 @@ def load_datapoints(
         print(f"Fehler: {index_path} nicht gefunden. -> python make_index.py")
         sys.exit(1)
 
-    index = json.load(open(index_path, encoding="utf-8"))
+    with open(index_path, encoding="utf-8") as f:
+        index = json.load(f)
     selected = []
 
     for entry in index.get("datapoints", []):
@@ -306,7 +307,8 @@ def load_datapoints(
         if not os.path.exists(abs_path):
             print(f"  Warnung: {abs_path} nicht gefunden, uebersprungen.")
             continue
-        dp = json.load(open(abs_path, encoding="utf-8"))
+        with open(abs_path, encoding="utf-8") as f:
+            dp = json.load(f)
         selected.append((dp_id, abs_path, dp))
 
     return selected
@@ -317,7 +319,7 @@ def load_datapoints(
 # ---------------------------------------------------------------------------
 
 
-def save_results(results: List[EvalResult], output_dir: str, model: str) -> None:
+def save_results(results: list[EvalResult], output_dir: str, model: str) -> None:
     os.makedirs(output_dir, exist_ok=True)
     timestamp = time.strftime("%Y%m%d_%H%M%S")
     model_slug = re.sub(r"[^a-zA-Z0-9_-]", "_", model)
@@ -347,7 +349,7 @@ def save_results(results: List[EvalResult], output_dir: str, model: str) -> None
 # ---------------------------------------------------------------------------
 
 
-def print_table(results: List[EvalResult], model: str) -> None:
+def print_table(results: list[EvalResult], model: str) -> None:
     hdr = (
         f"{'#':>2}  {'ID':<28} {'Reg.':<7} {'Mod.':<7} {'B':>1} "
         f"{'Struk':>6} {'Masse':>6} {'Lücke':>6} {'Gesamt':>7}  {'O':>1}"
@@ -429,7 +431,7 @@ def main() -> int:
     client = _get_client(args.api_key)
 
     # Evaluation
-    results: List[EvalResult] = []
+    results: list[EvalResult] = []
     for i, (dp_id, dp_path, dp) in enumerate(datapoints, 1):
         dp_dir = os.path.dirname(dp_path)
         print(f"\n[{i}/{len(datapoints)}] {dp_id}  ({dp.get('regime','?')} / {dp['input'].get('modality','?')})")

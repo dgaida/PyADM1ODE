@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Unit tests for ParallelSimulator (sequential mode + helpers)."""
 
 import pytest

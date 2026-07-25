@@ -37,8 +37,10 @@ Example:
     >>> print(f"Power: {result['P_consumed']:.1f} kW")
 """
 
-from typing import Dict, Any, Optional
+from __future__ import annotations
+
 from enum import Enum
+from typing import Any
 
 from ..base import Component, ComponentType
 
@@ -87,11 +89,11 @@ class Pump(Component):
         pump_type: str = "progressive_cavity",
         Q_nom: float = 10.0,
         pressure_head: float = 50.0,
-        efficiency: Optional[float] = None,
+        efficiency: float | None = None,
         motor_efficiency: float = 0.90,
         fluid_density: float = 1020.0,
         speed_control: bool = True,
-        name: Optional[str] = None,
+        name: str | None = None,
     ):
         """
         Initialize pump component.
@@ -134,7 +136,7 @@ class Pump(Component):
         # Initialize state
         self.initialize()
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
+    def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
         """
         Initialize pump state.
 
@@ -173,7 +175,7 @@ class Pump(Component):
 
         self._initialized = True
 
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Perform one simulation time step.
 
@@ -434,7 +436,7 @@ class Pump(Component):
 
         return P_electrical
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Serialize pump to dictionary.
 
@@ -458,7 +460,7 @@ class Pump(Component):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "Pump":
+    def from_dict(cls, config: dict[str, Any]) -> Pump:
         """
         Create pump from dictionary.
 

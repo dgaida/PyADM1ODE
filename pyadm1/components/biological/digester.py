@@ -16,37 +16,42 @@ Example
     >>> dig.initialize({"Q_substrates": [11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0]})
 """
 
-from typing import Any, Dict, List, Optional
+from __future__ import annotations
+
+import os
+from typing import Any
 
 import numpy as np
 from scipy.integrate import solve_ivp
 
-from ..base import Component, ComponentType
-from ..energy import GasStorage
 from ...core.adm1 import (
-    ADM1,
-    calc_total_solids,
-    STATE_SIZE as _ADM1_STATE_SIZE,
-    _IDX_P_H2,
     _IDX_P_CH4,
     _IDX_P_CO2,
+    _IDX_P_H2,
     _IDX_P_TOTAL,
-    _IDX_S_CO2,
-    _IDX_S_NH4,
-    _IDX_S_NH3,
-    _IDX_S_HCO3,
-    _IDX_S_AC_ION,
-    _IDX_S_PRO_ION,
-    _IDX_S_BU_ION,
-    _IDX_S_VA_ION,
-    _IDX_S_CATION,
-    _IDX_S_ANION,
-    _IDX_S_VA,
-    _IDX_S_BU,
-    _IDX_S_PRO,
     _IDX_S_AC,
+    _IDX_S_AC_ION,
+    _IDX_S_ANION,
+    _IDX_S_BU,
+    _IDX_S_BU_ION,
+    _IDX_S_CATION,
+    _IDX_S_CO2,
+    _IDX_S_HCO3,
+    _IDX_S_NH3,
+    _IDX_S_NH4,
+    _IDX_S_PRO,
+    _IDX_S_PRO_ION,
+    _IDX_S_VA,
+    _IDX_S_VA_ION,
+    ADM1,
+    calc_total_solids,
+)
+from ...core.adm1 import (
+    STATE_SIZE as _ADM1_STATE_SIZE,
 )
 from ...core.adm_params import ADMParams
+from ..base import Component, ComponentType
+from ..energy import GasStorage
 
 # The 37 liquid-state columns the influent vector carries (Q lives separately on
 # ``ADM1._Q`` because ``_state_input`` indexes 0..36 are the dissolved /
@@ -104,11 +109,11 @@ class Digester(Component):
         V_liq: float = 1977.0,
         V_gas: float = 304.0,
         T_ad: float = 308.15,
-        name: Optional[str] = None,
+        name: str | None = None,
         dynamic_volume: bool = False,
         initial_fill_fraction: float = 1.0,
         outflow_time_constant: float = 1.0,
-        backend: Optional[str] = None,
+        backend: str | None = None,
     ):
         super().__init__(component_id, ComponentType.DIGESTER, name)
 
@@ -133,8 +138,8 @@ class Digester(Component):
             name=f"{self.name} Gas Storage",
         )
 
-        self.adm1_state: List[float] = []
-        self.Q_substrates: List[float] = [0.0] * 10
+        self.adm1_state: list[float] = []
+        self.Q_substrates: list[float] = [0.0] * 10
 
         self.adm1 = ADM1(feedstock=feedstock, V_liq=V_liq, V_gas=V_gas, T_ad=T_ad, backend=backend)
 
@@ -142,7 +147,7 @@ class Digester(Component):
     # Component lifecycle
     # ------------------------------------------------------------------
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
+    def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
         """
         Initialize the digester state and attached gas storage.
 
@@ -213,7 +218,7 @@ class Digester(Component):
         gs_state = initial_state.get("gas_storage")
         try:
             self.gas_storage.initialize(gs_state)
-        except Exception:
+        except Exception:  # noqa: BLE001 - state restore is best-effort; start fresh on any failure
             self.gas_storage.initialize()
 
         self._initialized = True
@@ -342,7 +347,7 @@ class Digester(Component):
         q_array = getattr(self.adm1, "_Q", None)
         return state_input is not None and q_array is not None and len(q_array) > 0
 
-    def _compute_indicators(self) -> Dict[str, float]:
+    def _compute_indicators(self) -> dict[str, float]:
         """Compute pH, VFA, and TAC from the current state (Schlattmann 2011)."""
         st = self.adm1_state
         inhib = ADMParams.get_inhibition_params(self.adm1._R, self.adm1._T_base, self.adm1._T_ad)
@@ -360,7 +365,7 @@ class Digester(Component):
                 inhib["K_w"],
             )
             pH = -np.log10(max(float(S_H), 1.0e-14))
-        except Exception:
+        except Exception:  # noqa: BLE001 - numeric fallback to neutral pH if the acid-base solve fails
             pH = 7.0
 
         # VFA [kg HAc-eq/m³] (Schlattmann 2011)
@@ -412,7 +417,7 @@ class Digester(Component):
     # Step
     # ------------------------------------------------------------------
 
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Integrate the ADM1 ODE by *dt* days and return outputs.
 
@@ -458,14 +463,21 @@ class Digester(Component):
             Q_out_weir = None
             self.adm1._Q_out_override = None
 
+        # ODE tolerances default to the accurate truth-generation settings; they can
+        # be loosened via env vars (ADM1_SOLVE_RTOL / _ATOL / _MAXSTEP_FRAC) for a
+        # faster, slightly-less-accurate integration — e.g. the expensive UKF
+        # sigma-point propagation on stiff trajectories (see run_ukf_references.py).
+        rtol = float(os.environ.get("ADM1_SOLVE_RTOL", "1e-6"))
+        atol = float(os.environ.get("ADM1_SOLVE_ATOL", "1e-8"))
+        max_step_frac = float(os.environ.get("ADM1_SOLVE_MAXSTEP_FRAC", "0.1"))
         result = solve_ivp(
             fun=self.adm1.rhs_callable(),
             t_span=(t, t + dt),
             y0=self.adm1_state,
             method="BDF",
-            rtol=1.0e-6,
-            atol=1.0e-8,
-            max_step=max(0.1 * dt, 1.0e-3),
+            rtol=rtol,
+            atol=atol,
+            max_step=max(max_step_frac * dt, 1.0e-3),
         )
         if not result.success:
             raise RuntimeError(f"ADM1 integration failed in '{self.component_id}': {result.message}")
@@ -569,7 +581,7 @@ class Digester(Component):
     # Serialization
     # ------------------------------------------------------------------
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize the digester to a configuration dictionary."""
         return {
             "component_id": self.component_id,
@@ -588,7 +600,7 @@ class Digester(Component):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any], feedstock=None) -> "Digester":
+    def from_dict(cls, config: dict[str, Any], feedstock=None) -> Digester:
         """Reconstruct a Digester from a configuration dictionary."""
         digester = cls(
             component_id=config["component_id"],

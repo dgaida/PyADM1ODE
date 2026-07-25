@@ -1,5 +1,4 @@
 # tests/unit/test_components/test_feeding/test_substrate_storage.py
-# -*- coding: utf-8 -*-
 """
 Unit tests for the SubstrateStorage component.
 
@@ -8,9 +7,10 @@ for different substrate types including silos and tanks.
 """
 
 import numpy as np
+
 from pyadm1.components.feeding.substrate_storage import (
-    SubstrateStorage,
     StorageType,
+    SubstrateStorage,
     SubstrateType,
 )
 

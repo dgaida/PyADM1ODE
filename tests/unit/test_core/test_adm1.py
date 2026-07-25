@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Unit tests for the ADM1 (SIMBA# biogas) core model."""
 
 import numpy as np

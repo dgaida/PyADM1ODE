@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Unit tests for the HeatingSystem component and the pure-Python sensible-heat
 helper :func:`_calc_process_heat_kw`.
@@ -145,7 +144,7 @@ class TestHeatingSerialization:
         called_with = []
         original_initialize = HeatingSystem.initialize
 
-        def fake_initialize(self, initial_state=None):  # noqa: ANN001
+        def fake_initialize(self, initial_state=None):
             called_with.append(initial_state)
             original_initialize(self, initial_state)
 

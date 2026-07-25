@@ -9,18 +9,18 @@ tools.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from pyadm1.components.energy.biogas_upgrading import BiogasUpgrading
 
-from pyadm1.configurator.plant_builder import BiogasPlant
 from pyadm1.components.biological.digester import Digester
 from pyadm1.components.energy.chp import CHP
-from pyadm1.components.energy.heating import HeatingSystem
-from pyadm1.components.energy.gas_storage import GasStorage
 from pyadm1.components.energy.flare import Flare
+from pyadm1.components.energy.gas_storage import GasStorage
+from pyadm1.components.energy.heating import HeatingSystem
 from pyadm1.configurator.connection_manager import Connection
+from pyadm1.configurator.plant_builder import BiogasPlant
 from pyadm1.substrates.feedstock import Feedstock
 
 
@@ -51,15 +51,15 @@ class PlantConfigurator:
         V_liq: float = 1050.0,
         V_gas: float = 150.0,
         T_ad: float = 315.15,
-        name: Optional[str] = None,
-        Q_substrates: Optional[list] = None,
-        k_L_a: Optional[float] = None,
-        adm1_state: Optional[list] = None,
+        name: str | None = None,
+        Q_substrates: list | None = None,
+        k_L_a: float | None = None,
+        adm1_state: list | None = None,
         dynamic_volume: bool = False,
         initial_fill_fraction: float = 1.0,
         outflow_time_constant: float = 1.0,
-        backend: Optional[str] = None,
-    ) -> "tuple[Digester, str]":
+        backend: str | None = None,
+    ) -> tuple[Digester, str]:
         """
         Add an ADM1da digester to the plant.
 
@@ -128,7 +128,7 @@ class PlantConfigurator:
         if Q_substrates is None:
             Q_substrates = [0.0] * 10
 
-        init_kwargs: Dict[str, Any] = {"Q_substrates": Q_substrates}
+        init_kwargs: dict[str, Any] = {"Q_substrates": Q_substrates}
         if adm1_state is not None:
             init_kwargs["adm1_state"] = list(adm1_state)
             state_info = "  - Initial state: User-supplied 41-element ADM1 vector\n"
@@ -157,7 +157,7 @@ class PlantConfigurator:
         P_el_nom: float = 500.0,
         eta_el: float = 0.40,
         eta_th: float = 0.45,
-        name: Optional[str] = None,
+        name: str | None = None,
     ) -> CHP:
         """
         Add a CHP unit to the plant.
@@ -186,7 +186,7 @@ class PlantConfigurator:
         heating_id: str,
         target_temperature: float = 308.15,
         heat_loss_coefficient: float = 0.5,
-        name: Optional[str] = None,
+        name: str | None = None,
     ) -> HeatingSystem:
         """Add a heating system to the plant."""
         heating = HeatingSystem(
@@ -230,8 +230,8 @@ class PlantConfigurator:
         ch4_recovery: float = 0.98,
         ch4_content_in: float = 0.55,
         ch4_content_out: float = 0.97,
-        name: Optional[str] = None,
-    ) -> "BiogasUpgrading":
+        name: str | None = None,
+    ) -> BiogasUpgrading:
         """
         Add a biogas upgrading unit (Biogasaufbereitungsanlage) to the plant.
 
@@ -269,11 +269,11 @@ class PlantConfigurator:
 
     def create_single_stage_plant(
         self,
-        digester_config: Optional[Dict[str, Any]] = None,
-        chp_config: Optional[Dict[str, Any]] = None,
-        heating_config: Optional[Dict[str, Any]] = None,
+        digester_config: dict[str, Any] | None = None,
+        chp_config: dict[str, Any] | None = None,
+        heating_config: dict[str, Any] | None = None,
         auto_connect: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Create a complete single-stage plant configuration."""
         digester_config = digester_config or {}
         chp_config = chp_config or {}
@@ -309,12 +309,12 @@ class PlantConfigurator:
 
     def create_two_stage_plant(
         self,
-        hydrolysis_config: Optional[Dict[str, Any]] = None,
-        digester_config: Optional[Dict[str, Any]] = None,
-        chp_config: Optional[Dict[str, Any]] = None,
-        heating_configs: Optional[list] = None,
+        hydrolysis_config: dict[str, Any] | None = None,
+        digester_config: dict[str, Any] | None = None,
+        chp_config: dict[str, Any] | None = None,
+        heating_configs: list | None = None,
         auto_connect: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Create a two-stage plant: hydrolysis pre-tank → main fermenter.
 

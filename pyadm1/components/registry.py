@@ -8,7 +8,10 @@ This module provides a registry system for managing and instantiating
 biogas plant components dynamically.
 """
 
-from typing import Dict, Type, Any, Optional
+from __future__ import annotations
+
+from typing import Any
+
 from .base import Component
 
 
@@ -31,7 +34,7 @@ class ComponentRegistry:
 
     def __init__(self):
         """Initialize an empty component registry."""
-        self._registry: Dict[str, Type[Component]] = {}
+        self._registry: dict[str, type[Component]] = {}
         self._auto_register_components()
 
     def _auto_register_components(self) -> None:
@@ -120,7 +123,7 @@ class ComponentRegistry:
         except ImportError:
             pass
 
-    def register(self, name: str, component_class: Type[Component]) -> None:
+    def register(self, name: str, component_class: type[Component]) -> None:
         """
         Register a component class with a given name.
 
@@ -177,7 +180,7 @@ class ComponentRegistry:
         component_class = self._registry[name]
         return component_class(component_id=component_id, **kwargs)
 
-    def get_registered_components(self) -> Dict[str, Type[Component]]:
+    def get_registered_components(self) -> dict[str, type[Component]]:
         """
         Get all registered component classes.
 
@@ -209,7 +212,7 @@ class ComponentRegistry:
 
 
 # Global registry instance
-_global_registry: Optional[ComponentRegistry] = None
+_global_registry: ComponentRegistry | None = None
 
 
 def get_registry() -> ComponentRegistry:
@@ -223,13 +226,13 @@ def get_registry() -> ComponentRegistry:
         >>> registry = get_registry()
         >>> component = registry.create("Digester", "dig1", feedstock=feedstock)
     """
-    global _global_registry
+    global _global_registry  # noqa: PLW0603 - module-level lazy singleton
     if _global_registry is None:
         _global_registry = ComponentRegistry()
     return _global_registry
 
 
-def register_component(name: str, component_class: Type[Component]) -> None:
+def register_component(name: str, component_class: type[Component]) -> None:
     """
     Register a component in the global registry.
 

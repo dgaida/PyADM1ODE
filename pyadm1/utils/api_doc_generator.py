@@ -21,12 +21,14 @@ Example:
     ... )
 """
 
-import inspect
+from __future__ import annotations
+
 import importlib
+import inspect
 import re
-from pathlib import Path
-from typing import Any, List, Optional, Tuple
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
 
 
 @dataclass
@@ -36,9 +38,9 @@ class ClassInfo:
     name: str
     module_path: str
     docstring: str
-    methods: List[Tuple[str, str]]  # (method_name, signature)
-    attributes: List[Tuple[str, str]]  # (attr_name, description)
-    bases: List[str]
+    methods: list[tuple[str, str]]  # (method_name, signature)
+    attributes: list[tuple[str, str]]  # (attr_name, description)
+    bases: list[str]
 
 
 @dataclass
@@ -48,8 +50,8 @@ class ModuleInfo:
     name: str
     path: str
     docstring: str
-    classes: List[ClassInfo]
-    functions: List[Tuple[str, str, str]]  # (name, signature, docstring)
+    classes: list[ClassInfo]
+    functions: list[tuple[str, str, str]]  # (name, signature, docstring)
 
 
 class APIDocGenerator:
@@ -76,7 +78,7 @@ class APIDocGenerator:
         package_name: str,
         output_dir: str = "docs/api_reference",
         exclude_private: bool = True,
-        package_title: Optional[str] = None,
+        package_title: str | None = None,
     ):
         """
         Initialize documentation generator.
@@ -143,7 +145,7 @@ class APIDocGenerator:
         # Use last part of package name
         return f"{self.package_name.split('.')[-1]}.md"
 
-    def _get_subpackages(self, package: Any) -> List[str]:
+    def _get_subpackages(self, package: Any) -> list[str]:
         """
         Get list of subpackages in a package.
 
@@ -157,13 +159,12 @@ class APIDocGenerator:
         package_path = Path(package.__file__).parent
 
         for item in package_path.iterdir():
-            if item.is_dir() and not item.name.startswith("_"):
-                if (item / "__init__.py").exists():
-                    subpackages.append(item.name)
+            if item.is_dir() and not item.name.startswith("_") and (item / "__init__.py").exists():
+                subpackages.append(item.name)
 
         return sorted(subpackages)
 
-    def _get_direct_package_classes(self, package_path: str) -> List[str]:
+    def _get_direct_package_classes(self, package_path: str) -> list[str]:
         """
         Get classes exposed at package level (not in subpackages).
 
@@ -206,8 +207,8 @@ class APIDocGenerator:
     def _generate_main_file(
         self,
         package: Any,
-        subpackages: List[str],
-        direct_classes: List[str],
+        subpackages: list[str],
+        direct_classes: list[str],
         filename: str,
     ) -> None:
         """
@@ -461,12 +462,9 @@ class APIDocGenerator:
             line = lines[i]
             result_lines.append(line)
 
-            # Check if this line is a section header
-            if re.match(section_pattern, line.strip()):
-                # Check if next line exists and is not blank
-                if i + 1 < len(lines) and lines[i + 1].strip():
-                    # Add blank line after section header
-                    result_lines.append("")
+            # Add a blank line after a section header when a following non-blank line exists
+            if re.match(section_pattern, line.strip()) and i + 1 < len(lines) and lines[i + 1].strip():
+                result_lines.append("")
 
             i += 1
 
@@ -508,7 +506,7 @@ class APIDocGenerator:
                     break
 
                 # after Attributes sometimes also come Examples. then we reached the end of the Attributes section
-                if stripped_line.startswith("Example:") or stripped_line.startswith("Examples:"):
+                if stripped_line.startswith(("Example:", "Examples:")):
                     break
 
                 # Extract attribute info (skip empty lines and separators)
@@ -517,7 +515,7 @@ class APIDocGenerator:
 
         file_handle.write("\n")
 
-    def _get_package_classes(self, package_path: str) -> List[str]:
+    def _get_package_classes(self, package_path: str) -> list[str]:
         """
         Get all public classes defined in a package.
 
@@ -537,10 +535,9 @@ class APIDocGenerator:
                 # Get all classes from module
                 classes = []
                 for name, obj in inspect.getmembers(package, inspect.isclass):
-                    if not name.startswith("_"):
-                        # Check if class is defined in this module
-                        if obj.__module__.startswith(package_path):
-                            classes.append(name)
+                    # Keep public classes that are defined in this module
+                    if not name.startswith("_") and obj.__module__.startswith(package_path):
+                        classes.append(name)
 
             return sorted(classes)
 
@@ -707,7 +704,7 @@ class APIDocGenerator:
         """
         return name.replace("_", " ").title()
 
-    def _get_brief_description(self, docstring: Optional[str]) -> str:
+    def _get_brief_description(self, docstring: str | None) -> str:
         """
         Extract brief description from docstring (first line).
 
@@ -729,7 +726,7 @@ class APIDocGenerator:
         return ""
 
 
-def generate_api_docs(output_dir: str, package_name: str, package_title: Optional[str] = None) -> None:
+def generate_api_docs(output_dir: str, package_name: str, package_title: str | None = None) -> None:
     """
     Generate API documentation for a PyADM1 package.
 

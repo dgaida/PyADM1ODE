@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Unit tests for PlantConfigurator (high-level builder helpers)."""
 
 import pytest

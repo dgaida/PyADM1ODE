@@ -102,10 +102,47 @@ exclude = '''
 )/
 '''
 
+[tool.ruff]
+line-length = 127
+target-version = "py38"
+
+[tool.ruff.lint]
+# Curated strict rule set: modernization, safety and simplification. The noisy
+# docstring (D), annotation (ANN) and naming (N8xx) groups are intentionally
+# left out because they do not fit a scientific codebase (e.g. ``S_su``,
+# ``X_ch`` variable names follow the ADM1 nomenclature).
+select = [
+    "E", "F", "W",  # pycodestyle + pyflakes
+    "I",            # isort
+    "UP",           # pyupgrade
+    "FA",           # flake8-future-annotations
+    "SIM",          # flake8-simplify
+    "BLE",          # flake8-blind-except
+    "S",            # flake8-bandit (security)
+    "PIE",          # flake8-pie
+    "EXE",          # flake8-executable
+    "ISC",          # flake8-implicit-str-concat
+    "PLW",          # pylint warnings
+    "RUF",          # ruff-specific rules
+    "N999",         # invalid-module-name
+]
+ignore = [
+    "E501",         # line length is enforced by black (line-length = 127)
+    "S101",         # asserts are expected in tests and the benchmark harness
+    "ISC001",       # single-line implicit concat conflicts with the formatter
+    "RUF001",       # ambiguous unicode in German docstrings/strings
+    "RUF002",       # ambiguous unicode in German docstrings
+    "RUF003",       # ambiguous unicode in German comments
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["pyadm1"]
+
 [tool.ruff.lint.per-file-ignores]
 # Example scripts need sys.path.insert before importing pyadm1, which puts
 # third-party imports after a statement. That's intentional for standalone runs.
-"examples/*.py" = ["E402"]
+# The numeric ``NN_name`` filenames are deliberate tutorial ordering (N999).
+"examples/*.py" = ["E402", "N999"]
 # Benchmark notebooks add benchmark/eval to sys.path before importing its
 # modules; that path setup must precede the imports.
 "benchmark/*.ipynb" = ["E402"]

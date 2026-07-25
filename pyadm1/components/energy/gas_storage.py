@@ -17,8 +17,10 @@ Features:
 - outputs_data contains stored_volume, pressure, utilization, vented_volume, Q_gas_supplied
 """
 
-from typing import Dict, Any, Optional
+from __future__ import annotations
+
 from dataclasses import dataclass
+from typing import Any
 
 from ..base import Component, ComponentType
 
@@ -57,7 +59,7 @@ class GasStorage(Component):
         p_min_bar: float = 0.95,
         p_max_bar: float = 1.05,
         initial_fill_fraction: float = 0.1,
-        name: Optional[str] = None,
+        name: str | None = None,
     ):
         """
 
@@ -88,12 +90,12 @@ class GasStorage(Component):
         self._cum_vented_m3 = 0.0
 
         # control setpoint (pressure in bar) - None means no active setpoint
-        self.pressure_setpoint_bar: Optional[float] = None
+        self.pressure_setpoint_bar: float | None = None
 
         # initialize default state
         self.initialize()
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
+    def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
         """Initialize storage state; initial_state may contain stored_volume_m3, pressure_setpoint_bar."""
         if initial_state is not None:
             if "stored_volume_m3" in initial_state:
@@ -147,7 +149,7 @@ class GasStorage(Component):
     # ------------------------------
     # Main simulation step
     # ------------------------------
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         One simulation step.
 
@@ -178,7 +180,7 @@ class GasStorage(Component):
             sp = inputs["set_pressure"]
             try:
                 self.pressure_setpoint_bar = None if sp is None else float(sp)
-            except Exception as e:
+            except (TypeError, ValueError) as e:
                 # ignore invalid setpoint
                 print(e)
 
@@ -215,14 +217,13 @@ class GasStorage(Component):
         # If a pressure setpoint is requested and higher than current,
         # we might choose to deny outflow to increase pressure
         restrict_factor = 1.0
-        if self.pressure_setpoint_bar is not None:
-            # If setpoint is higher than current pressure, prioritize charging (i.e., restrict outflow)
-            if self.pressure_setpoint_bar > current_pressure:
-                # reduce allowed outflow proportionally
-                # factor between 0..1 -> 0 means block outflow, 1 means full
-                gap = self.pressure_setpoint_bar - current_pressure
-                span = max(1e-6, self.p_max_bar - self.p_atm_bar)
-                restrict_factor = max(0.0, 1.0 - gap / span)
+        # If a pressure setpoint above the current pressure is requested, restrict
+        # outflow to prioritize charging: reduce allowed outflow proportionally,
+        # factor between 0..1 where 0 blocks outflow and 1 allows full outflow.
+        if self.pressure_setpoint_bar is not None and self.pressure_setpoint_bar > current_pressure:
+            gap = self.pressure_setpoint_bar - current_pressure
+            span = max(1e-6, self.p_max_bar - self.p_atm_bar)
+            restrict_factor = max(0.0, 1.0 - gap / span)
 
         allowed_out_vol = self.stored_volume_m3 * restrict_factor  # simple limit
         desired_out_vol = min(vol_out_req, allowed_out_vol)
@@ -282,10 +283,7 @@ class GasStorage(Component):
                 # if current fraction > 1.0 (theory), set to 1.0
                 target_frac = min(target_frac, 1.0)
                 target_volume = target_frac * self.capacity_m3
-                if self.stored_volume_m3 > target_volume:
-                    vent = self.stored_volume_m3 - target_volume
-                else:
-                    vent = 0.0
+                vent = self.stored_volume_m3 - target_volume if self.stored_volume_m3 > target_volume else 0.0
             else:  # compressed
                 # reduce to fraction that yields p_max_bar approx equal to 1.0 fraction
                 # simpler: vent until stored <= capacity * 0.999 (small safety)
@@ -320,7 +318,7 @@ class GasStorage(Component):
     # ------------------------------
     # Serialization
     # ------------------------------
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize configuration + current state."""
         return {
             "component_id": self.component_id,
@@ -339,7 +337,7 @@ class GasStorage(Component):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "GasStorage":
+    def from_dict(cls, config: dict[str, Any]) -> GasStorage:
         """Create GasStorage from dict produced by to_dict."""
         gs = cls(
             component_id=config["component_id"],
@@ -354,7 +352,7 @@ class GasStorage(Component):
         if "stored_volume_m3" in config:
             try:
                 gs.stored_volume_m3 = float(config["stored_volume_m3"])
-            except Exception as e:
+            except (TypeError, ValueError) as e:
                 print(e)
 
         if "pressure_setpoint_bar" in config:

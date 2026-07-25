@@ -33,7 +33,7 @@ def _install_substrate_fallback() -> None:
     """
     try:
         from pyadm1.substrates import feedstock as fs
-    except Exception:
+    except Exception:  # noqa: BLE001 - best-effort patch; skip if PyADM1ODE is not importable
         return  # PyADM1ODE not importable here — nothing to patch
 
     # Guaranteed-valid fallback: prefer cattle_manure, else first available file.
@@ -53,7 +53,7 @@ def _install_substrate_fallback() -> None:
     def safe_resolve(item):
         try:
             return original(item)
-        except Exception:
+        except Exception:  # noqa: BLE001 - fall back to a valid default substrate for any unknown/invalid ID
             return fs.load_substrate(fallback_path)
 
     fs.Feedstock._resolve_substrate = staticmethod(safe_resolve)
@@ -68,8 +68,9 @@ def main() -> None:
         with open(code_path, encoding="utf-8") as fh:
             src = fh.read()
         ns = {"__name__": "__candidate__"}
-        exec(compile(src, code_path, "exec"), ns)
-    except Exception:
+        compiled = compile(src, code_path, "exec")
+        exec(compiled, ns)  # noqa: S102 - running LLM-generated candidate code is this harness's purpose
+    except Exception:  # noqa: BLE001 - report any candidate failure as JSON instead of crashing
         print(json.dumps({"__error__": traceback.format_exc()}))
         return
 
@@ -86,7 +87,7 @@ def main() -> None:
     try:
         components = [c.to_dict() for c in plant.components.values()]
         connections = [cn.to_dict() for cn in plant.connections]
-    except Exception:
+    except Exception:  # noqa: BLE001 - report any serialization failure as JSON instead of crashing
         print(json.dumps({"__error__": traceback.format_exc()}))
         return
 

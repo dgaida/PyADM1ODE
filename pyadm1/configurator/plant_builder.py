@@ -8,14 +8,16 @@ This module provides the BiogasPlant class which manages multiple components
 and their connections to build complete biogas plant configurations.
 """
 
+from __future__ import annotations
+
 import json
-from typing import Dict, Any, List, Optional
+from typing import Any
 
 from pyadm1.components.base import Component, ComponentType
 from pyadm1.components.biological.digester import Digester
 from pyadm1.configurator.connection_manager import Connection
-from pyadm1.substrates.feedstock import Feedstock
 from pyadm1.configurator.graph import Graph, normalize_candidate
+from pyadm1.substrates.feedstock import Feedstock
 
 
 class BiogasPlant:
@@ -50,8 +52,8 @@ class BiogasPlant:
             plant_name (str): Name of the plant. Defaults to "Biogas Plant".
         """
         self.plant_name = plant_name
-        self.components: Dict[str, Component] = {}
-        self.connections: List[Connection] = []
+        self.components: dict[str, Component] = {}
+        self.connections: list[Connection] = []
         self.simulation_time = 0.0
 
     def add_component(self, component: Component) -> None:
@@ -105,7 +107,7 @@ class BiogasPlant:
             if not component._initialized:
                 component.initialize()
 
-    def step(self, dt: float) -> Dict[str, Dict[str, Any]]:
+    def step(self, dt: float) -> dict[str, dict[str, Any]]:
         """
         Perform one simulation time step for all components.
 
@@ -318,7 +320,7 @@ class BiogasPlant:
                 P_th_per_heater = chp_output.get("P_th", 0.0) / len(connected_heaters)
                 for h_id in connected_heaters:
                     heater = self.components[h_id]
-                    heater_inputs: Dict[str, Any] = {"P_th_available": P_th_per_heater}
+                    heater_inputs: dict[str, Any] = {"P_th_available": P_th_per_heater}
                     # Forward any non-heat upstream inputs the heater may
                     # need (e.g. T_digester from a connected digester).
                     for conn in self.connections:
@@ -417,8 +419,8 @@ class BiogasPlant:
         self,
         duration: float,
         dt: float = 1.0 / 24.0,
-        save_interval: Optional[float] = None,
-    ) -> List[Dict[str, Any]]:
+        save_interval: float | None = None,
+    ) -> list[dict[str, Any]]:
         """
         Run simulation for specified duration.
 
@@ -462,7 +464,7 @@ class BiogasPlant:
 
         return results
 
-    def _get_execution_order(self) -> List[str]:
+    def _get_execution_order(self) -> list[str]:
         """
         Determine execution order based on component dependencies.
 
@@ -515,9 +517,9 @@ class BiogasPlant:
 
     def visualize_graph(
         self,
-        output_path: Optional[str] = None,
+        output_path: str | None = None,
         dpi: int = 150,
-        title: Optional[str] = None,
+        title: str | None = None,
     ) -> str:
         """
         Render the plant graph (see :meth:`to_graph`) to a PNG file.
@@ -544,9 +546,9 @@ class BiogasPlant:
 
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
+        import networkx as nx
         from matplotlib.lines import Line2D
         from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
-        import networkx as nx
 
         graph = self.to_graph()
 
@@ -578,7 +580,7 @@ class BiogasPlant:
             dg.add_edge(edge.src, edge.dst)
 
         # Longest-path depth from any source; robust against cycles.
-        depth: Dict[str, int] = {n: 0 for n in dg.nodes}
+        depth: dict[str, int] = {n: 0 for n in dg.nodes}
         try:
             for n in nx.topological_sort(dg):
                 for succ in dg.successors(n):
@@ -587,18 +589,18 @@ class BiogasPlant:
             depth = {n: 0 for n in dg.nodes}  # cyclic: fall back to single column
 
         # Group nodes by depth (column) and assign vertical slots.
-        columns: Dict[int, List[str]] = {}
+        columns: dict[int, list[str]] = {}
         for nid in graph.nodes:
             columns.setdefault(depth[nid], []).append(nid)
 
-        def _key_info(ctype: str, p: Dict[str, Any]) -> List[str]:
+        def _key_info(ctype: str, p: dict[str, Any]) -> list[str]:
             """Most relevant sizing/rating values per component type."""
 
             def num(key, fmt="{:g}"):
                 v = p.get(key)
                 return fmt.format(v) if isinstance(v, (int, float)) else None
 
-            lines: List[str] = []
+            lines: list[str] = []
             if ctype == "digester":
                 if num("V_liq"):
                     lines.append(f"V_liq {num('V_liq')} m³")
@@ -631,7 +633,7 @@ class BiogasPlant:
             return lines
 
         # Per-node info line; box width adapts to the longest text shown.
-        infos: Dict[str, str] = {
+        infos: dict[str, str] = {
             nid: "  ·  ".join(_key_info(graph.nodes[nid].ctype, graph.nodes[nid].params)) for nid in graph.nodes
         }
         longest = max([len(infos[n]) for n in infos] + [len(n) for n in graph.nodes] + [10])
@@ -640,7 +642,7 @@ class BiogasPlant:
 
         # --- Layered left-to-right layout (columns by process depth) ----------
         x_gap, y_gap = box_w + 1.8, 1.9
-        pos: Dict[str, tuple] = {}
+        pos: dict[str, tuple] = {}
         max_rows = max((len(c) for c in columns.values()), default=1)
         for col, nids in sorted(columns.items()):
             n_rows = len(nids)
@@ -699,7 +701,7 @@ class BiogasPlant:
             t = min(sx, sy)
             return cx + dx * t, cy + dy * t
 
-        used_styles: Dict[str, dict] = {}
+        used_styles: dict[str, dict] = {}
         # Bow gas edges up and heat edges down so parallel liquid/gas/heat
         # connections separate; edges spanning intermediate columns bow more
         # (like Mermaid) to clear the boxes in between.
@@ -820,7 +822,7 @@ class BiogasPlant:
         print(f"Plant configuration saved to {filepath}")
 
     @classmethod
-    def from_json(cls, filepath: str, feedstock: Optional[Feedstock] = None) -> "BiogasPlant":
+    def from_json(cls, filepath: str, feedstock: Feedstock | None = None) -> BiogasPlant:
         """
         Load plant configuration from JSON file.
 
@@ -835,7 +837,7 @@ class BiogasPlant:
         Raises:
             ValueError: If feedstock is None but plant contains digesters.
         """
-        with open(filepath, "r") as f:
+        with open(filepath) as f:
             config = json.load(f)
 
         plant = cls(config.get("plant_name", "Biogas Plant"))

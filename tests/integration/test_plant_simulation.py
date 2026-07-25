@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Integration tests: end-to-end ADM1 plant simulation."""
 
 import pytest

@@ -35,7 +35,8 @@ def collect_datapoints() -> list:
         if os.path.basename(path) == "index.json":
             continue
         try:
-            d = json.load(open(path, encoding="utf-8"))
+            with open(path, encoding="utf-8") as fh:
+                d = json.load(fh)
         except (json.JSONDecodeError, OSError):
             continue
         if not (isinstance(d, dict) and "reference" in d and "input" in d):

@@ -34,59 +34,59 @@ Reference: identical formulation to :meth:`ADM1.ADM_ODE`; see
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Callable
 
 import numpy as np
 import torch
 
 from pyadm1.core.adm1 import (
-    _IDX_S_SU,
-    _IDX_S_AA,
-    _IDX_S_FA,
-    _IDX_S_VA,
-    _IDX_S_BU,
-    _IDX_S_PRO,
-    _IDX_S_AC,
-    _IDX_S_H2,
-    _IDX_S_CH4,
-    _IDX_S_CO2,
-    _IDX_S_NH4,
-    _IDX_S_I,
-    _IDX_X_PS_CH,
-    _IDX_X_PS_PR,
-    _IDX_X_PS_LI,
-    _IDX_X_PF_CH,
-    _IDX_X_PF_PR,
-    _IDX_X_PF_LI,
-    _IDX_X_S_CH,
-    _IDX_X_S_PR,
-    _IDX_X_S_LI,
-    _IDX_X_I,
-    _IDX_X_SU,
-    _IDX_X_AA,
-    _IDX_X_FA,
-    _IDX_X_C4,
-    _IDX_X_PRO,
-    _IDX_X_AC,
-    _IDX_X_H2,
-    _IDX_S_CATION,
-    _IDX_S_ANION,
-    _IDX_S_VA_ION,
-    _IDX_S_BU_ION,
-    _IDX_S_PRO_ION,
-    _IDX_S_AC_ION,
-    _IDX_S_HCO3,
-    _IDX_S_NH3,
-    _IDX_P_H2,
+    _CODVS_BIO,
+    _CODVS_CH,
+    _CODVS_LI,
+    _CODVS_PR,
     _IDX_P_CH4,
     _IDX_P_CO2,
+    _IDX_P_H2,
     _IDX_P_TOTAL,
-    _CODVS_CH,
-    _CODVS_PR,
-    _CODVS_LI,
-    _CODVS_BIO,
-    _VS_TS_RATIO,
+    _IDX_S_AA,
+    _IDX_S_AC,
+    _IDX_S_AC_ION,
+    _IDX_S_ANION,
+    _IDX_S_BU,
+    _IDX_S_BU_ION,
+    _IDX_S_CATION,
+    _IDX_S_CH4,
+    _IDX_S_CO2,
+    _IDX_S_FA,
+    _IDX_S_H2,
+    _IDX_S_HCO3,
+    _IDX_S_I,
+    _IDX_S_NH3,
+    _IDX_S_NH4,
+    _IDX_S_PRO,
+    _IDX_S_PRO_ION,
+    _IDX_S_SU,
+    _IDX_S_VA,
+    _IDX_S_VA_ION,
+    _IDX_X_AA,
+    _IDX_X_AC,
+    _IDX_X_C4,
+    _IDX_X_FA,
+    _IDX_X_H2,
+    _IDX_X_I,
+    _IDX_X_PF_CH,
+    _IDX_X_PF_LI,
+    _IDX_X_PF_PR,
+    _IDX_X_PRO,
+    _IDX_X_PS_CH,
+    _IDX_X_PS_LI,
+    _IDX_X_PS_PR,
+    _IDX_X_S_CH,
+    _IDX_X_S_LI,
+    _IDX_X_S_PR,
+    _IDX_X_SU,
     _TS_PCT_PER_GL,
+    _VS_TS_RATIO,
 )
 
 if TYPE_CHECKING:
@@ -110,10 +110,10 @@ class Adm1TorchParams:
     them.
     """
 
-    kinetic: Dict[str, float]
-    stoich: Dict[str, float]
-    fractions: Dict[str, float]
-    inhib: Dict[str, float]
+    kinetic: dict[str, float]
+    stoich: dict[str, float]
+    fractions: dict[str, float]
+    inhib: dict[str, float]
 
     V_liq: float
     V_gas: float
@@ -128,10 +128,10 @@ class Adm1TorchParams:
     NQ: float
 
     q_ad: float
-    s_in: List[float] = field(default_factory=lambda: [0.0] * _N_INFLUENT)
-    Q_out_override: Optional[float] = None
+    s_in: list[float] = field(default_factory=lambda: [0.0] * _N_INFLUENT)
+    Q_out_override: float | None = None
 
-    def with_q_ad(self, q_ad: float) -> "Adm1TorchParams":
+    def with_q_ad(self, q_ad: float) -> Adm1TorchParams:
         """Return a copy with the total influent flow ``q_ad`` replaced.
 
         Makes the physics feed-aware for a different operating point: the ODE
@@ -145,7 +145,7 @@ class Adm1TorchParams:
         return dataclasses.replace(self, q_ad=float(q_ad))
 
     @classmethod
-    def from_adm1(cls, adm1: "ADM1") -> "Adm1TorchParams":
+    def from_adm1(cls, adm1: ADM1) -> Adm1TorchParams:
         """Snapshot the current parameter state of an :class:`ADM1` instance.
 
         Resolves the ``k_L_a`` / ``k_p`` calibration overrides the same way
@@ -640,7 +640,7 @@ def adm1da_rhs_torch(x: torch.Tensor, p: Adm1TorchParams) -> torch.Tensor:
     )
 
 
-def make_scipy_rhs(adm1: "ADM1") -> Callable[[float, np.ndarray], np.ndarray]:
+def make_scipy_rhs(adm1: ADM1) -> Callable[[float, np.ndarray], np.ndarray]:
     """Return a scipy ``solve_ivp``-compatible ``fun(t, y)`` using the torch RHS.
 
     The parameters are snapshotted once (constant within a scipy step), so

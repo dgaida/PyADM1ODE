@@ -50,19 +50,18 @@ Example:
     >>> component = registry.create("Digester", "dig1", feedstock=feedstock)
 """
 
+# Import all component types for registry
+from . import biological, energy, feeding, mechanical, sensors
 from .base import Component, ComponentType
 from .registry import ComponentRegistry
 
-# Import all component types for registry
-from . import biological, mechanical, energy, feeding, sensors
-
 __all__ = [
     "Component",
-    "ComponentType",
     "ComponentRegistry",
+    "ComponentType",
     "biological",
-    "mechanical",
     "energy",
     "feeding",
+    "mechanical",
     "sensors",
 ]

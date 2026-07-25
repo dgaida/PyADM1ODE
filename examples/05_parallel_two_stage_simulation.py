@@ -13,9 +13,9 @@ Usage:
     python examples/05_parallel_two_stage_simulation.py
 """
 
-from pathlib import Path
 import sys
 import time
+from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:

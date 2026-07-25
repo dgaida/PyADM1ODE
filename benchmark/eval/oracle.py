@@ -10,7 +10,7 @@ Grundlage ist das "oracle"-Feld im Datenpunkt-JSON.
 from __future__ import annotations
 
 import re
-from typing import Any, Dict, List
+from typing import Any
 
 # Kanonische Feldnamen, die das LLM typischerweise nennt, gemappt auf oracle-Keys
 _KEYWORD_MAP = {
@@ -105,8 +105,8 @@ class Oracle:
         answer_text = oracle.answer(questions)  # questions = list[dict] oder list[str]
     """
 
-    def __init__(self, datapoint: Dict[str, Any]) -> None:
-        self.facts: Dict[str, Any] = datapoint.get("oracle", {})
+    def __init__(self, datapoint: dict[str, Any]) -> None:
+        self.facts: dict[str, Any] = datapoint.get("oracle", {})
         self.regime: str = datapoint.get("regime", "underspecified")
 
     @property
@@ -117,7 +117,7 @@ class Oracle:
     # Oeffentliche API
     # ------------------------------------------------------------------
 
-    def answer(self, questions: List[Any]) -> str:
+    def answer(self, questions: list[Any]) -> str:
         """
         Beantwortet eine Liste von Fragen.
 
@@ -130,13 +130,10 @@ class Oracle:
         if not questions:
             return self._all_facts_text()
 
-        answered: Dict[str, Any] = {}
+        answered: dict[str, Any] = {}
 
         for q in questions:
-            if isinstance(q, dict):
-                field = q.get("field") or q.get("question") or ""
-            else:
-                field = str(q)
+            field = q.get("field") or q.get("question") or "" if isinstance(q, dict) else str(q)
 
             matches = self._match(field)
             answered.update(matches)
@@ -166,9 +163,9 @@ class Oracle:
     # Intern
     # ------------------------------------------------------------------
 
-    def _match(self, query: str) -> Dict[str, Any]:
+    def _match(self, query: str) -> dict[str, Any]:
         """Sucht passende oracle-Keys für eine Feldbezeichnung oder Frage."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         q = query.strip()
 
         # 1) Exakter Treffer

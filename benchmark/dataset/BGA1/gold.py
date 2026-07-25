@@ -7,8 +7,8 @@ Convention: the variable ``plant`` (a ``BiogasPlant``) must exist at the end.
 """
 
 from pyadm1 import BiogasPlant, Feedstock
-from pyadm1.configurator.plant_configurator import PlantConfigurator
 from pyadm1.components.biological.separator import Separator
+from pyadm1.configurator.plant_configurator import PlantConfigurator
 
 # Substrates are not scored, but the feed mirrors the task description:
 # ~80 t/d maize silage (solid feeder) split across F1+F2, plus 20 m3/d cattle

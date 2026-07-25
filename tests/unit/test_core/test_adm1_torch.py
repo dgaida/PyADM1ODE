@@ -317,7 +317,7 @@ def test_measurement_map_batched_and_differentiable():
     batch = np.stack([_random_state(rng) for _ in range(6)], axis=0)
     x = torch.tensor(batch, dtype=torch.float64, requires_grad=True)
 
-    q_gas, q_ch4, q_co2 = calc_gas_torch(x, params)
+    q_gas, _q_ch4, _q_co2 = calc_gas_torch(x, params)
     y = q_gas.sum() + ph_torch(x, params).sum() + vfa_torch(x).sum() + tac_torch(x, params).sum()
     y.backward()
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Unit tests for the BiogasPlant class (plant_builder)."""
 
 import json

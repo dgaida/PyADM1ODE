@@ -5,15 +5,16 @@ PyADM1 is now pure Python (no .NET / DLL dependency), so this file no longer
 needs to mock CLR or skip DLL-bound tests.
 """
 
+from __future__ import annotations
+
 from pathlib import Path
-from typing import List
 
 import numpy as np
 import pytest
 
 
 @pytest.fixture
-def sample_state_vector() -> List[float]:
+def sample_state_vector() -> list[float]:
     """
     Provide a representative ADM1 state vector (41 elements) for testing.
     """
@@ -76,7 +77,7 @@ def test_data_dir(tmp_path: Path) -> Path:
 
 
 @pytest.fixture
-def sample_flow_rates() -> List[float]:
+def sample_flow_rates() -> list[float]:
     """Per-substrate flow rates [m³/d], shape (10,)."""
     return [11.4, 6.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 

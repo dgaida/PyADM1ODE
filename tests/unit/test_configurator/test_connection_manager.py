@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Unit tests for connection management utilities."""
 
 import pytest
@@ -142,7 +141,7 @@ class TestConnectionManager:
 
         assert any("non-existent source component: missing_src" in e for e in errors)
         assert any("non-existent target component: missing_tgt" in e for e in errors)
-        assert any("Circular dependency detected in connections" == e for e in errors)
+        assert any(e == "Circular dependency detected in connections" for e in errors)
 
     def test_to_dict_and_from_dict_roundtrip_and_empty_config(self) -> None:
         manager = ConnectionManager()

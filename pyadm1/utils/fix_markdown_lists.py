@@ -4,7 +4,7 @@ import sys
 
 
 def fix_markdown_file(filepath):
-    with open(filepath, "r", encoding="utf-8") as f:
+    with open(filepath, encoding="utf-8") as f:
         lines = f.readlines()
 
     modified = False
@@ -17,10 +17,9 @@ def fix_markdown_file(filepath):
         stripped_line = line.rstrip("\n")
 
         # Check if it's a list item and doesn't already end with two spaces
-        if list_pattern.match(stripped_line):
-            if not stripped_line.endswith("  "):
-                stripped_line = stripped_line.rstrip() + "  "
-                modified = True
+        if list_pattern.match(stripped_line) and not stripped_line.endswith("  "):
+            stripped_line = stripped_line.rstrip() + "  "
+            modified = True
 
         new_lines.append(stripped_line + "\n")
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Unit tests for physical sensor components."""
 
 import math

@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """Unit tests for pyadm1.utils.generate_skill_md."""
 
 import inspect
-
 
 from pyadm1.utils import generate_skill_md as skill_module
 from pyadm1.utils.generate_skill_md import generate_skill_md, get_full_doc

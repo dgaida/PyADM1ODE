@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Unit tests for the ADM1 Digester component (SIMBA# biogas, 41-state)."""
 
 import pytest

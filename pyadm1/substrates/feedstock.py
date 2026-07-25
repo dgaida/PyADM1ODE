@@ -16,10 +16,12 @@ No C#/.NET DLL dependency — works in any Python environment.
 Reference: Schlattmann (2011); SIMBA# biogas 4.2 Tutorial.
 """
 
+from __future__ import annotations
+
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, fields
 from pathlib import Path
-from typing import Dict, List, Sequence, Union
+from typing import Sequence, Union
 
 import numpy as np
 import pandas as pd
@@ -55,7 +57,7 @@ _DEFAULT_SUBSTRATE_ORDER: tuple = (
 )
 
 
-def _order_substrates(available: Sequence[str]) -> List[str]:
+def _order_substrates(available: Sequence[str]) -> list[str]:
     """Reorder substrate IDs by :data:`_DEFAULT_SUBSTRATE_ORDER`."""
     available_set = set(available)
     ordered = [sid for sid in _DEFAULT_SUBSTRATE_ORDER if sid in available_set]
@@ -173,7 +175,7 @@ class SubstrateParams:
 # ---------------------------------------------------------------------------
 
 
-def _build_substrate_params(substrate_name: str, raw: Dict[str, object], source: Path) -> SubstrateParams:
+def _build_substrate_params(substrate_name: str, raw: dict[str, object], source: Path) -> SubstrateParams:
     """Common dict -> SubstrateParams construction used by all loaders."""
     kwargs: dict = {"name": substrate_name}
     for f in fields(SubstrateParams):
@@ -188,7 +190,7 @@ def _build_substrate_params(substrate_name: str, raw: Dict[str, object], source:
     return SubstrateParams(**kwargs)
 
 
-def load_substrate_xml(path: Union[str, Path]) -> SubstrateParams:
+def load_substrate_xml(path: str | Path) -> SubstrateParams:
     """
     Load a substrate definition from an XML file.
 
@@ -199,10 +201,10 @@ def load_substrate_xml(path: Union[str, Path]) -> SubstrateParams:
     if not path.exists():
         raise FileNotFoundError(f"Substrate XML not found: {path}")
 
-    root = ET.parse(path).getroot()
+    root = ET.parse(path).getroot()  # noqa: S314 - trusted local substrate definition files, not untrusted input
     substrate_name = root.get("name", path.stem)
 
-    raw: Dict[str, str] = {}
+    raw: dict[str, str] = {}
     for elem in root.findall("param"):
         pname = elem.get("name")
         pvalue = elem.get("value")
@@ -212,7 +214,7 @@ def load_substrate_xml(path: Union[str, Path]) -> SubstrateParams:
     return _build_substrate_params(substrate_name, raw, path)
 
 
-def load_substrate_yaml(path: Union[str, Path]) -> SubstrateParams:
+def load_substrate_yaml(path: str | Path) -> SubstrateParams:
     """
     Load a substrate definition from a YAML file.
 
@@ -237,7 +239,7 @@ def load_substrate_yaml(path: Union[str, Path]) -> SubstrateParams:
     return _build_substrate_params(substrate_name, data, path)
 
 
-def load_substrate_toml(path: Union[str, Path]) -> SubstrateParams:
+def load_substrate_toml(path: str | Path) -> SubstrateParams:
     """
     Load a substrate definition from a TOML file.
 
@@ -267,7 +269,7 @@ def load_substrate_toml(path: Union[str, Path]) -> SubstrateParams:
     return _build_substrate_params(substrate_name, data, path)
 
 
-def load_substrate(path: Union[str, Path]) -> SubstrateParams:
+def load_substrate(path: str | Path) -> SubstrateParams:
     """
     Load a substrate definition from any supported file format.
 
@@ -311,8 +313,8 @@ class SubstrateRegistry:
 
     def __init__(
         self,
-        data_dir: Union[str, Path, None] = None,
-        xml_dir: Union[str, Path, None] = None,
+        data_dir: str | Path | None = None,
+        xml_dir: str | Path | None = None,
     ) -> None:
         # ``xml_dir`` is the legacy keyword from when substrates were
         # XML-only; kept as a back-compat alias so existing callers don't
@@ -322,9 +324,9 @@ class SubstrateRegistry:
                 raise TypeError("SubstrateRegistry() accepts 'data_dir' or 'xml_dir', not both.")
             data_dir = xml_dir
         self._dir = Path(data_dir) if data_dir is not None else _DEFAULT_DATA_DIR
-        self._cache: Dict[str, SubstrateParams] = {}
+        self._cache: dict[str, SubstrateParams] = {}
 
-    def available(self) -> List[str]:
+    def available(self) -> list[str]:
         """Return substrate IDs (file stems) found in the directory."""
         if not self._dir.exists():
             return []
@@ -334,7 +336,7 @@ class SubstrateRegistry:
                 seen.add(p.stem)
         return sorted(seen)
 
-    def _find_path(self, substrate_id: str) -> Union[Path, None]:
+    def _find_path(self, substrate_id: str) -> Path | None:
         for ext in _SUBSTRATE_EXTENSIONS:
             candidate = self._dir / f"{substrate_id}{ext}"
             if candidate.exists():
@@ -350,7 +352,7 @@ class SubstrateRegistry:
             self._cache[substrate_id] = load_substrate(path)
         return self._cache[substrate_id]
 
-    def load_all(self) -> Dict[str, SubstrateParams]:
+    def load_all(self) -> dict[str, SubstrateParams]:
         """Load every substrate file in the directory."""
         for sid in self.available():
             self.get(sid)
@@ -393,7 +395,7 @@ class Feedstock:
 
     def __init__(
         self,
-        substrates: Union[_SubstrateInput, Sequence[_SubstrateInput], None] = None,
+        substrates: _SubstrateInput | Sequence[_SubstrateInput] | None = None,
         feeding_freq: int = 48,
         total_simtime: int = 60,
         simba_q_convention: bool = True,
@@ -433,7 +435,7 @@ class Feedstock:
                     f"No substrate files found in {_DEFAULT_DATA_DIR}; " "pass an explicit substrate list or add files."
                 )
             self._multi = True
-            raw_subs: List[_SubstrateInput] = list(_order_substrates(available))
+            raw_subs: list[_SubstrateInput] = list(_order_substrates(available))
         elif isinstance(substrates, (list, tuple)):
             if len(substrates) == 0:
                 raise ValueError("At least one substrate must be provided.")
@@ -448,18 +450,18 @@ class Feedstock:
         # rebuilding the feedstock in a fresh process) where the human-readable
         # ``SubstrateParams.name`` may not match the XML file stem.
         self._raw_inputs = list(raw_subs)
-        self._substrate_ids: List[str] = [self._raw_input_id(item) for item in raw_subs]
+        self._substrate_ids: list[str] = [self._raw_input_id(item) for item in raw_subs]
 
-        self._subs: List[SubstrateParams] = [self._resolve_substrate(item) for item in raw_subs]
+        self._subs: list[SubstrateParams] = [self._resolve_substrate(item) for item in raw_subs]
         self._simtime = np.arange(0, total_simtime, float(feeding_freq) / 24.0)
         self._feeding_freq = int(feeding_freq)
 
-        self._densities: List[float] = [self._calc_density(s) for s in self._subs]
-        self._conc_list: List[dict] = [self._calc_concentrations(s, rho) for s, rho in zip(self._subs, self._densities)]
+        self._densities: list[float] = [self._calc_density(s) for s in self._subs]
+        self._conc_list: list[dict] = [self._calc_concentrations(s, rho) for s, rho in zip(self._subs, self._densities)]
 
         self._simba_q_convention = bool(simba_q_convention)
         if self._simba_q_convention:
-            self._q_factors: List[float] = [1000.0 / rho for rho in self._densities]
+            self._q_factors: list[float] = [1000.0 / rho for rho in self._densities]
         else:
             self._q_factors = [1.0] * len(self._subs)
 
@@ -467,7 +469,7 @@ class Feedstock:
     # Public API
     # ------------------------------------------------------------------
 
-    def get_influent_dataframe(self, Q: Union[float, Sequence[float]]) -> pd.DataFrame:
+    def get_influent_dataframe(self, Q: float | Sequence[float]) -> pd.DataFrame:
         """
         Generate an ADM1 influent DataFrame for the full simulation period.
 
@@ -487,7 +489,7 @@ class Feedstock:
         """Simulation time array [days]."""
         return self._simtime
 
-    def header(self) -> List[str]:
+    def header(self) -> list[str]:
         """Names of ADM1 input stream columns."""
         return list(INFLUENT_COLUMNS)
 
@@ -517,16 +519,16 @@ class Feedstock:
     # ---- Multi-substrate accessors ------------------------------------
 
     @property
-    def substrates(self) -> List[SubstrateParams]:
+    def substrates(self) -> list[SubstrateParams]:
         """All configured substrates, in feed-index order."""
         return list(self._subs)
 
     @property
-    def densities(self) -> List[float]:
+    def densities(self) -> list[float]:
         """Per-substrate fresh-matter densities [kg/m³]."""
         return list(self._densities)
 
-    def actual_Q(self, Q: Union[float, Sequence[float]]) -> List[float]:
+    def actual_Q(self, Q: float | Sequence[float]) -> list[float]:
         """
         Return per-substrate actual liquid volume flows [m³/d].
 
@@ -536,12 +538,12 @@ class Feedstock:
         return self._validate_Q(Q).tolist()
 
     @property
-    def q_conversion_factors(self) -> List[float]:
+    def q_conversion_factors(self) -> list[float]:
         """Per-substrate ADM1da Q-conversion factors [-]."""
         return list(self._q_factors)
 
     @property
-    def concentrations_list(self) -> List[dict]:
+    def concentrations_list(self) -> list[dict]:
         """Per-substrate influent concentrations."""
         return [dict(c) for c in self._conc_list]
 
@@ -577,7 +579,7 @@ class Feedstock:
             return 0.0
         return degradable_cod * th_yield / vs * 1000.0
 
-    def blended_density(self, Q: Union[float, Sequence[float]]) -> float:
+    def blended_density(self, Q: float | Sequence[float]) -> float:
         """Volumetric-flow-weighted fresh-matter density [kg/m³]."""
         Q_arr = self._validate_Q(Q)
         q_tot = float(np.sum(Q_arr))
@@ -585,7 +587,7 @@ class Feedstock:
             return 1000.0
         return float(np.dot(Q_arr, self._densities) / q_tot)
 
-    def blended_vs_content(self, Q: Union[float, Sequence[float]]) -> float:
+    def blended_vs_content(self, Q: float | Sequence[float]) -> float:
         """Volumetric-flow-weighted VS content [kg VS/m³]."""
         Q_arr = self._validate_Q(Q)
         q_tot = float(np.sum(Q_arr))
@@ -594,7 +596,7 @@ class Feedstock:
         vs = np.array([self.vs_content(i) for i in range(len(self._subs))])
         return float(np.dot(Q_arr, vs) / q_tot)
 
-    def blended_concentrations(self, Q: Union[float, Sequence[float]]) -> dict:
+    def blended_concentrations(self, Q: float | Sequence[float]) -> dict:
         """Volumetric-flow-weighted influent concentrations (no Q field)."""
         Q_arr = self._validate_Q(Q)
         return self._blended_concentrations(Q_arr)
@@ -604,7 +606,7 @@ class Feedstock:
     # ------------------------------------------------------------------
 
     @property
-    def substrate_ids(self) -> List[str]:
+    def substrate_ids(self) -> list[str]:
         """
         Stable identifiers for the configured substrates.
 
@@ -651,12 +653,9 @@ class Feedstock:
                 f"'{prop}' is a single-substrate accessor; this feedstock has " f"{len(self._subs)} substrates. {hint}."
             )
 
-    def _validate_Q(self, Q: Union[float, Sequence[float]]) -> np.ndarray:
+    def _validate_Q(self, Q: float | Sequence[float]) -> np.ndarray:
         """Normalise *Q* to a per-substrate numpy array."""
-        if np.isscalar(Q):
-            Q_arr = np.array([float(Q)], dtype=float)
-        else:
-            Q_arr = np.asarray(list(Q), dtype=float)
+        Q_arr = np.array([float(Q)], dtype=float) if np.isscalar(Q) else np.asarray(list(Q), dtype=float)
 
         n_subs = len(self._subs)
         if Q_arr.size < n_subs:

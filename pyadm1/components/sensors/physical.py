@@ -16,7 +16,7 @@ models practical measurement effects including:
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -37,7 +37,7 @@ class PhysicalSensorType(str, Enum):
     FLOW = "flow"
 
 
-_DEFAULT_SENSOR_CONFIG: Dict[PhysicalSensorType, Dict[str, Any]] = {
+_DEFAULT_SENSOR_CONFIG: dict[PhysicalSensorType, dict[str, Any]] = {
     PhysicalSensorType.PH: {
         "signal_key": "pH",
         "candidate_keys": ("pH",),
@@ -120,18 +120,18 @@ class PhysicalSensor(AbstractSensor):
         self,
         component_id: str,
         sensor_type: str = "temperature",
-        signal_key: Optional[str] = None,
-        measurement_range: Optional[Tuple[float, float]] = None,
+        signal_key: str | None = None,
+        measurement_range: tuple[float, float] | None = None,
         measurement_noise: float = 0.0,
         accuracy: float = 0.0,
         drift_rate: float = 0.0,
         response_time: float = 0.0,
         sample_interval: float = 0.0,
-        unit: Optional[str] = None,
-        output_key: Optional[str] = None,
-        rng_seed: Optional[int] = None,
-        name: Optional[str] = None,
-        temperature_signal_key: Optional[str] = None,
+        unit: str | None = None,
+        output_key: str | None = None,
+        rng_seed: int | None = None,
+        name: str | None = None,
+        temperature_signal_key: str | None = None,
         temperature_reference: float = 298.15,
         pH_isopotential: float = 7.0,
     ):
@@ -182,7 +182,7 @@ class PhysicalSensor(AbstractSensor):
         }
         return AbstractSensor._parse_enum(sensor_type, aliases, PhysicalSensorType, "physical sensor type")
 
-    def _apply_nernst_correction(self, pH_value: float, inputs: Dict[str, Any]) -> float:
+    def _apply_nernst_correction(self, pH_value: float, inputs: dict[str, Any]) -> float:
         """Apply Nernst temperature correction to *pH_value*.
 
         Returns *pH_value* unchanged when *temperature_signal_key* is not set,
@@ -214,7 +214,7 @@ class PhysicalSensor(AbstractSensor):
         # T_actual > T_ref.
         return self.pH_isopotential + (pH_value - self.pH_isopotential) * (self.temperature_reference / T_actual)
 
-    def _initialize_subclass(self, initial_state: Optional[Dict[str, Any]]) -> None:
+    def _initialize_subclass(self, initial_state: dict[str, Any] | None) -> None:
         """Reset / restore physical-sensor extras and build state + outputs."""
         self.filtered_value = np.nan
         self._temperature_value = np.nan
@@ -232,7 +232,7 @@ class PhysicalSensor(AbstractSensor):
             extras={"temperature_value": float(self._temperature_value)},
         )
 
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Advance the sensor by one simulation step.
 
@@ -269,7 +269,7 @@ class PhysicalSensor(AbstractSensor):
         )
         return self.outputs_data
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize sensor configuration and state."""
         return {
             **self._base_config_dict(),
@@ -282,7 +282,7 @@ class PhysicalSensor(AbstractSensor):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "PhysicalSensor":
+    def from_dict(cls, config: dict[str, Any]) -> PhysicalSensor:
         """Create sensor from serialized configuration."""
         sensor = cls(
             component_id=config["component_id"],

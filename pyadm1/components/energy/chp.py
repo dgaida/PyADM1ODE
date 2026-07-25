@@ -8,7 +8,9 @@ This module provides the CHP class for converting biogas to electricity
 and heat in a biogas plant configuration.
 """
 
-from typing import Dict, Any, Optional
+from __future__ import annotations
+
+from typing import Any
 
 from ..base import Component, ComponentType
 
@@ -37,7 +39,7 @@ class CHP(Component):
         P_el_nom: float = 500.0,
         eta_el: float = 0.40,
         eta_th: float = 0.45,
-        name: Optional[str] = None,
+        name: str | None = None,
     ):
         """
         Initialize CHP unit.
@@ -61,7 +63,7 @@ class CHP(Component):
         # Auto-initialize with default state
         self.initialize()
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
+    def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
         """
         Initialize CHP state.
 
@@ -93,7 +95,7 @@ class CHP(Component):
 
         self._initialized = True
 
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Perform one simulation time step.
 
@@ -123,12 +125,9 @@ class CHP(Component):
         # Assume 60% methane content in biogas from storage
         CH4_content = 0.60
 
-        if Q_gas_from_storage > 0:
-            # Use gas from storage (normal operation)
-            Q_ch4_available = Q_gas_from_storage * CH4_content
-        else:
-            # Fallback: use direct CH4 from digester
-            Q_ch4_available = Q_ch4_direct
+        # Use gas from storage during normal operation, otherwise fall back to
+        # the direct CH4 stream from the digester.
+        Q_ch4_available = Q_gas_from_storage * CH4_content if Q_gas_from_storage > 0 else Q_ch4_direct
 
         load_setpoint = inputs.get("load_setpoint", 1.0)
 
@@ -168,7 +167,7 @@ class CHP(Component):
 
         return self.outputs_data
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Serialize to dictionary.
 
@@ -188,7 +187,7 @@ class CHP(Component):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "CHP":
+    def from_dict(cls, config: dict[str, Any]) -> CHP:
         """
         Create from dictionary.
 

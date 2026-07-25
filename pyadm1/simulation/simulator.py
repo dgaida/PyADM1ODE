@@ -25,10 +25,10 @@ Example:
     >>> final_state = sim.simulate_AD_plant([0.0, 1.0], state0)
 """
 
-from typing import List, Tuple
+from __future__ import annotations
 
 from pyadm1.core.adm1 import ADM1
-from pyadm1.core.solver import create_solver, ODESolver
+from pyadm1.core.solver import ODESolver, create_solver
 
 
 class Simulator:
@@ -47,7 +47,7 @@ class Simulator:
         self._adm1 = adm1
         self._solver = solver or create_solver(method="BDF", rtol=1e-6, atol=1e-8)
 
-    def simulate_AD_plant(self, tstep: List[float], state_zero: List[float]) -> List[float]:
+    def simulate_AD_plant(self, tstep: list[float], state_zero: list[float]) -> list[float]:
         """
         Integrate the ADM1 ODE for the requested time span.
 
@@ -74,10 +74,10 @@ class Simulator:
 
     def simulate_gas_production(
         self,
-        tstep: List[float],
-        state_zero: List[float],
-        Q: List[float],
-    ) -> Tuple[float, float]:
+        tstep: list[float],
+        state_zero: list[float],
+        Q: list[float],
+    ) -> tuple[float, float]:
         """
         Integrate the ODE and return final-state gas production rates.
 

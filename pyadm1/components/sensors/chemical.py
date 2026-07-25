@@ -35,7 +35,7 @@ References (default measurement parameters):
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -61,7 +61,7 @@ class ChemicalAnalyzerMethod(str, Enum):
     COLORIMETRIC = "colorimetric"
 
 
-_DEFAULT_SENSOR_CONFIG: Dict[ChemicalSensorType, Dict[str, Any]] = {
+_DEFAULT_SENSOR_CONFIG: dict[ChemicalSensorType, dict[str, Any]] = {
     ChemicalSensorType.VFA: {
         "signal_key": "VFA",
         "candidate_keys": ("VFA",),
@@ -107,7 +107,7 @@ _DEFAULT_SENSOR_CONFIG: Dict[ChemicalSensorType, Dict[str, Any]] = {
 # measurement_delay is in days (e.g. 20.0 / 1440 = 20 minutes).
 # measurement_noise is the Gaussian std dev in engineering units.
 # These values apply when the user does not supply an explicit override.
-_ANALYZER_METHOD_DEFAULTS: Dict[ChemicalSensorType, Dict[ChemicalAnalyzerMethod, Dict[str, float]]] = {
+_ANALYZER_METHOD_DEFAULTS: dict[ChemicalSensorType, dict[ChemicalAnalyzerMethod, dict[str, float]]] = {
     ChemicalSensorType.VFA: {
         ChemicalAnalyzerMethod.ONLINE_TITRATION: {
             "measurement_noise": 0.06,  # g/L std dev — FOS/TAC ±3% FS → σ ≈ 5 mg/L [1,2]
@@ -195,20 +195,20 @@ class ChemicalSensor(AbstractSensor):
         self,
         component_id: str,
         sensor_type: str = "VFA",
-        analyzer_method: Optional[str] = None,
-        signal_key: Optional[str] = None,
-        measurement_range: Optional[Tuple[float, float]] = None,
-        measurement_noise: Optional[float] = None,
+        analyzer_method: str | None = None,
+        signal_key: str | None = None,
+        measurement_range: tuple[float, float] | None = None,
+        measurement_noise: float | None = None,
         accuracy: float = 0.0,
         drift_rate: float = 0.0,
         sample_interval: float = 0.0,
-        measurement_delay: Optional[float] = None,
-        response_time: Optional[float] = None,
-        detection_limit: Optional[float] = None,
-        unit: Optional[str] = None,
-        output_key: Optional[str] = None,
-        rng_seed: Optional[int] = None,
-        name: Optional[str] = None,
+        measurement_delay: float | None = None,
+        response_time: float | None = None,
+        detection_limit: float | None = None,
+        unit: str | None = None,
+        output_key: str | None = None,
+        rng_seed: int | None = None,
+        name: str | None = None,
     ):
         self.sensor_type = self._parse_sensor_type(sensor_type)
         defaults = _DEFAULT_SENSOR_CONFIG[self.sensor_type]
@@ -251,7 +251,7 @@ class ChemicalSensor(AbstractSensor):
         self.reported_value: float = np.nan
         self.last_result_time: float = -np.inf
         self.is_detected: bool = False
-        self._pending_samples: List[Tuple[float, float]] = []
+        self._pending_samples: list[tuple[float, float]] = []
 
         self.initialize()
 
@@ -287,7 +287,7 @@ class ChemicalSensor(AbstractSensor):
         }
         return AbstractSensor._parse_enum(analyzer_method, aliases, ChemicalAnalyzerMethod, "analyzer method")
 
-    def _initialize_subclass(self, initial_state: Optional[Dict[str, Any]]) -> None:
+    def _initialize_subclass(self, initial_state: dict[str, Any] | None) -> None:
         """Reset / restore chemical-analyzer extras and build state + outputs."""
         self.filtered_value = np.nan
         self.reported_value = np.nan
@@ -319,7 +319,7 @@ class ChemicalSensor(AbstractSensor):
             },
         )
 
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """Advance the analyzer by one simulation step."""
         self._advance_drift_and_read(dt, inputs)
 
@@ -361,7 +361,7 @@ class ChemicalSensor(AbstractSensor):
         )
         return self.outputs_data
 
-    def _pop_latest_ready_sample(self, t_end: float) -> Optional[float]:
+    def _pop_latest_ready_sample(self, t_end: float) -> float | None:
         """
         Return the latest sample whose analysis delay completes before *t_end*.
 
@@ -373,8 +373,8 @@ class ChemicalSensor(AbstractSensor):
         half-open convention — a sample releasing exactly at ``t + dt``
         matures on the next step).
         """
-        latest_ready: Optional[float] = None
-        pending: List[Tuple[float, float]] = []
+        latest_ready: float | None = None
+        pending: list[tuple[float, float]] = []
         for release_time, sample_value in self._pending_samples:
             if release_time < t_end:
                 latest_ready = sample_value
@@ -383,7 +383,7 @@ class ChemicalSensor(AbstractSensor):
         self._pending_samples = pending
         return latest_ready
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize analyzer configuration and state."""
         return {
             **self._base_config_dict(),
@@ -396,7 +396,7 @@ class ChemicalSensor(AbstractSensor):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "ChemicalSensor":
+    def from_dict(cls, config: dict[str, Any]) -> ChemicalSensor:
         """Create analyzer from serialized configuration."""
         sensor = cls(
             component_id=config["component_id"],

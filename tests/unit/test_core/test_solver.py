@@ -22,26 +22,26 @@ class TestODESolverSolve:
     def test_solve_inserts_interval_bounds_when_default_t_eval_empty(self, monkeypatch: pytest.MonkeyPatch) -> None:
         captured = {}
 
-        def fake_solve_ivp(**kwargs):  # noqa: ANN001
+        def fake_solve_ivp(**kwargs):
             captured.update(kwargs)
             return _ok_result(kwargs["t_eval"], [[1.0] * len(kwargs["t_eval"])])
 
         monkeypatch.setattr(solver_module.scipy.integrate, "solve_ivp", fake_solve_ivp)
         solver = ODESolver()
-        solver.solve(lambda t, y: y, (0.0, 0.01), [1.0])  # noqa: ARG005
+        solver.solve(lambda t, y: y, (0.0, 0.01), [1.0])
 
         assert np.allclose(captured["t_eval"], np.array([0.0, 0.01]))
 
     def test_solve_passes_lsoda_min_step_and_first_step(self, monkeypatch: pytest.MonkeyPatch) -> None:
         captured = {}
 
-        def fake_solve_ivp(**kwargs):  # noqa: ANN001
+        def fake_solve_ivp(**kwargs):
             captured.update(kwargs)
             return _ok_result([0.0, 1.0], [[1.0, 0.5]])
 
         monkeypatch.setattr(solver_module.scipy.integrate, "solve_ivp", fake_solve_ivp)
         cfg = SolverConfig(method="LSODA", min_step=1e-4, max_step=0.2, first_step=1e-3)
-        ODESolver(cfg).solve(lambda t, y: y, (0.0, 1.0), [1.0], t_eval=np.array([0.0, 1.0]))  # noqa: ARG005
+        ODESolver(cfg).solve(lambda t, y: y, (0.0, 1.0), [1.0], t_eval=np.array([0.0, 1.0]))
 
         assert captured["min_step"] == 1e-4
         assert captured["max_step"] == 0.2
@@ -50,17 +50,17 @@ class TestODESolverSolve:
     def test_solve_inserts_t_start_when_default_arange_misses_start(self, monkeypatch: pytest.MonkeyPatch) -> None:
         captured = {}
 
-        def fake_arange(*args, **kwargs):  # noqa: ANN001
+        def fake_arange(*args, **kwargs):
             return np.array([0.1, 0.15], dtype=float)
 
-        def fake_solve_ivp(**kwargs):  # noqa: ANN001
+        def fake_solve_ivp(**kwargs):
             captured.update(kwargs)
             return _ok_result(kwargs["t_eval"], [[1.0] * len(kwargs["t_eval"])])
 
         monkeypatch.setattr(solver_module.np, "arange", fake_arange)
         monkeypatch.setattr(solver_module.scipy.integrate, "solve_ivp", fake_solve_ivp)
 
-        ODESolver().solve(lambda t, y: y, (0.0, 0.2), [1.0])  # noqa: ARG005
+        ODESolver().solve(lambda t, y: y, (0.0, 0.2), [1.0])
 
         assert np.isclose(captured["t_eval"][0], 0.0)
 
@@ -70,14 +70,12 @@ class TestODESolverIterativeMethods:
         solver = ODESolver()
         calls = []
 
-        def fake_solve(fun, t_span, y0, t_eval=None, dense_output=False):  # noqa: ANN001, ARG001
+        def fake_solve(fun, t_span, y0, t_eval=None, dense_output=False):
             calls.append((t_span, list(y0)))
             return _ok_result([t_span[0], t_span[1]], [[1.0, 1.0], [2.0, 2.0]])
 
         monkeypatch.setattr(solver, "solve", fake_solve)
-        state, final_time, converged = solver.solve_to_steady_state(
-            lambda t, y: y, [1.0, 2.0], check_interval=5.0
-        )  # noqa: ARG005
+        state, final_time, converged = solver.solve_to_steady_state(lambda t, y: y, [1.0, 2.0], check_interval=5.0)
 
         assert converged is True
         assert final_time == 5.0
@@ -93,7 +91,7 @@ class TestODESolverIterativeMethods:
             ]
         )
 
-        def fake_solve(fun, t_span, y0, t_eval=None, dense_output=False):  # noqa: ANN001, ARG001
+        def fake_solve(fun, t_span, y0, t_eval=None, dense_output=False):
             return _ok_result([t_span[0], t_span[1]], next(values))
 
         monkeypatch.setattr(solver, "solve", fake_solve)
@@ -102,7 +100,7 @@ class TestODESolverIterativeMethods:
             [0.0, 0.0],
             max_time=20.0,
             check_interval=10.0,
-            steady_state_tol=1e-12,  # noqa: ARG005
+            steady_state_tol=1e-12,
         )
 
         assert converged is False
@@ -118,11 +116,11 @@ class TestODESolverIterativeMethods:
             ]
         )
 
-        def fake_solve(fun, t_span, y0, t_eval=None, dense_output=False):  # noqa: ANN001, ARG001
+        def fake_solve(fun, t_span, y0, t_eval=None, dense_output=False):
             return _ok_result([t_span[0], t_span[1]], next(terminal_states))
 
         monkeypatch.setattr(solver, "solve", fake_solve)
-        states = solver.solve_sequential(lambda t, y: y, [0.0, 1.0, 2.0], [1.0, 0.0])  # noqa: ARG005
+        states = solver.solve_sequential(lambda t, y: y, [0.0, 1.0, 2.0], [1.0, 0.0])
 
         assert states[0] == [1.0, 0.0]
         assert states[1] == [2.0, 1.0]
@@ -143,9 +141,9 @@ class TestAdaptiveODESolver:
 
         solver = AdaptiveODESolver(adaptive=True)
         called = []
-        monkeypatch.setattr(solver, "_update_tolerances", lambda r: called.append(r))
+        monkeypatch.setattr(solver, "_update_tolerances", called.append)
 
-        out = solver.solve(lambda t, y: y, (0.0, 1.0), [1.0])  # noqa: ARG005
+        out = solver.solve(lambda t, y: y, (0.0, 1.0), [1.0])
 
         assert out is result
         assert called == [result]

@@ -10,20 +10,19 @@ Usage:
     python examples/03_realistic_plant.py
 """
 
-from pathlib import Path
+import contextlib
 import sys
+from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-try:
+with contextlib.suppress(Exception):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-except Exception:
-    pass
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 Q_PRIMARY = [25.0, 15.0, 0, 0, 0, 0, 0, 0, 0, 0]  # m^3/d: maize, cattle
 Q_PASSTHROUGH = [0.0] * 10

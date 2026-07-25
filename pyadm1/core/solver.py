@@ -19,10 +19,13 @@ Example:
     >>> result = solver.solve(ode_func, (0, 10), [1.0])
 """
 
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Callable
+
 import numpy as np
 import scipy.integrate
-from typing import Callable, List, Tuple, Optional, TYPE_CHECKING
-from dataclasses import dataclass
 
 if TYPE_CHECKING:
     from scipy.integrate._ivp.ivp import OdeResult
@@ -49,7 +52,7 @@ class SolverConfig:
     atol: float = 1e-8
     min_step: float = 1e-6
     max_step: float = 0.1
-    first_step: Optional[float] = None
+    first_step: float | None = None
 
 
 class ODESolver:
@@ -68,7 +71,7 @@ class ODESolver:
         >>> print(result.y[:, -1])  # Final state
     """
 
-    def __init__(self, config: Optional[SolverConfig] = None):
+    def __init__(self, config: SolverConfig | None = None):
         """
         Initialize ODE solver with configuration.
 
@@ -79,12 +82,12 @@ class ODESolver:
 
     def solve(
         self,
-        fun: Callable[[float, List[float]], List[float]],
-        t_span: Tuple[float, float],
-        y0: List[float],
-        t_eval: Optional[np.ndarray] = None,
+        fun: Callable[[float, list[float]], list[float]],
+        t_span: tuple[float, float],
+        y0: list[float],
+        t_eval: np.ndarray | None = None,
         dense_output: bool = False,
-    ) -> "OdeResult":
+    ) -> OdeResult:
         """
         Solve ODE system over time span.
 
@@ -141,16 +144,16 @@ class ODESolver:
             return result
 
         except Exception as e:
-            raise RuntimeError(f"Error during ODE integration: {str(e)}") from e
+            raise RuntimeError(f"Error during ODE integration: {e!s}") from e
 
     def solve_to_steady_state(
         self,
-        fun: Callable[[float, List[float]], List[float]],
-        y0: List[float],
+        fun: Callable[[float, list[float]], list[float]],
+        y0: list[float],
         max_time: float = 1000.0,
         steady_state_tol: float = 1e-6,
         check_interval: float = 10.0,
-    ) -> Tuple[List[float], float, bool]:
+    ) -> tuple[list[float], float, bool]:
         """
         Integrate until steady state is reached or max time exceeded.
 
@@ -196,10 +199,10 @@ class ODESolver:
 
     def solve_sequential(
         self,
-        fun: Callable[[float, List[float]], List[float]],
-        t_points: List[float],
-        y0: List[float],
-    ) -> List[List[float]]:
+        fun: Callable[[float, list[float]], list[float]],
+        t_points: list[float],
+        y0: list[float],
+    ) -> list[list[float]]:
         """
         Solve ODE system sequentially through multiple time points.
 
@@ -236,7 +239,7 @@ class AdaptiveODESolver(ODESolver):
 
     def __init__(
         self,
-        config: Optional[SolverConfig] = None,
+        config: SolverConfig | None = None,
         adaptive: bool = True,
         min_rtol: float = 1e-8,
         max_rtol: float = 1e-4,
@@ -258,12 +261,12 @@ class AdaptiveODESolver(ODESolver):
 
     def solve(
         self,
-        fun: Callable[[float, List[float]], List[float]],
-        t_span: Tuple[float, float],
-        y0: List[float],
-        t_eval: Optional[np.ndarray] = None,
+        fun: Callable[[float, list[float]], list[float]],
+        t_span: tuple[float, float],
+        y0: list[float],
+        t_eval: np.ndarray | None = None,
         dense_output: bool = False,
-    ) -> "OdeResult":
+    ) -> OdeResult:
         """
         Solve with adaptive tolerance adjustment.
 
@@ -276,7 +279,7 @@ class AdaptiveODESolver(ODESolver):
 
         return result
 
-    def _update_tolerances(self, result: "OdeResult") -> None:
+    def _update_tolerances(self, result: OdeResult) -> None:
         """
         Update solver tolerances based on solution behavior.
 

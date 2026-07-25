@@ -1,5 +1,4 @@
 # tests/unit/test_components/test_feeding/test_feeder.py
-# -*- coding: utf-8 -*-
 """
 Unit tests for the Feeder component.
 
@@ -8,6 +7,7 @@ systems for feeding substrates into biogas digesters.
 """
 
 import numpy as np
+
 from pyadm1.components.feeding.feeder import Feeder, FeederType, SubstrateCategory
 
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Unit tests for the pure-Python Feedstock class."""
 
 import numpy as np

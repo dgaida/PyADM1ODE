@@ -8,8 +8,10 @@ This module provides classes for defining and managing connections between
 components in a biogas plant configuration.
 """
 
-from typing import Any, Dict, List, Set, Optional
+from __future__ import annotations
+
 from enum import Enum
+from typing import Any
 
 
 class ConnectionType(Enum):
@@ -64,7 +66,7 @@ class Connection:
         self.to_component = to_component
         self.connection_type = connection_type
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Serialize to dictionary.
 
@@ -78,7 +80,7 @@ class Connection:
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "Connection":
+    def from_dict(cls, config: dict[str, Any]) -> Connection:
         """
         Create from dictionary.
 
@@ -119,7 +121,7 @@ class ConnectionManager:
 
     def __init__(self):
         """Initialize an empty connection manager."""
-        self.connections: List[Connection] = []
+        self.connections: list[Connection] = []
 
     def add_connection(self, connection: Connection) -> None:
         """
@@ -149,7 +151,7 @@ class ConnectionManager:
         self,
         from_component: str,
         to_component: str,
-        connection_type: Optional[str] = None,
+        connection_type: str | None = None,
     ) -> bool:
         """
         Remove a connection.
@@ -176,7 +178,7 @@ class ConnectionManager:
         ]
         return removed
 
-    def get_connections_from(self, component_id: str) -> List[Connection]:
+    def get_connections_from(self, component_id: str) -> list[Connection]:
         """
         Get all connections originating from a component.
 
@@ -188,7 +190,7 @@ class ConnectionManager:
         """
         return [conn for conn in self.connections if conn.from_component == component_id]
 
-    def get_connections_to(self, component_id: str) -> List[Connection]:
+    def get_connections_to(self, component_id: str) -> list[Connection]:
         """
         Get all connections terminating at a component.
 
@@ -200,7 +202,7 @@ class ConnectionManager:
         """
         return [conn for conn in self.connections if conn.to_component == component_id]
 
-    def get_dependencies(self, component_id: str) -> List[str]:
+    def get_dependencies(self, component_id: str) -> list[str]:
         """
         Get all components that the given component depends on.
 
@@ -212,7 +214,7 @@ class ConnectionManager:
         """
         return [conn.from_component for conn in self.get_connections_to(component_id)]
 
-    def get_dependents(self, component_id: str) -> List[str]:
+    def get_dependents(self, component_id: str) -> list[str]:
         """
         Get all components that depend on the given component.
 
@@ -224,7 +226,7 @@ class ConnectionManager:
         """
         return [conn.to_component for conn in self.get_connections_from(component_id)]
 
-    def get_execution_order(self, component_ids: List[str]) -> List[str]:
+    def get_execution_order(self, component_ids: list[str]) -> list[str]:
         """
         Determine execution order based on dependencies (topological sort).
 
@@ -265,7 +267,7 @@ class ConnectionManager:
 
         return result
 
-    def has_circular_dependency(self, component_ids: List[str]) -> bool:
+    def has_circular_dependency(self, component_ids: list[str]) -> bool:
         """
         Check if there are circular dependencies.
 
@@ -281,7 +283,7 @@ class ConnectionManager:
         except ValueError:
             return True
 
-    def get_connected_components(self, component_id: str) -> Set[str]:
+    def get_connected_components(self, component_id: str) -> set[str]:
         """
         Get all components connected to the given component (directly or indirectly).
 
@@ -311,7 +313,7 @@ class ConnectionManager:
         visited.discard(component_id)  # Remove the starting component
         return visited
 
-    def validate_connections(self, component_ids: List[str]) -> List[str]:
+    def validate_connections(self, component_ids: list[str]) -> list[str]:
         """
         Validate all connections and return list of issues.
 
@@ -336,7 +338,7 @@ class ConnectionManager:
 
         return errors
 
-    def get_all_connections(self) -> List[Connection]:
+    def get_all_connections(self) -> list[Connection]:
         """
         Get all connections.
 
@@ -349,7 +351,7 @@ class ConnectionManager:
         """Remove all connections."""
         self.connections.clear()
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Serialize all connections to dictionary.
 
@@ -359,7 +361,7 @@ class ConnectionManager:
         return {"connections": [conn.to_dict() for conn in self.connections]}
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "ConnectionManager":
+    def from_dict(cls, config: dict[str, Any]) -> ConnectionManager:
         """
         Create ConnectionManager from dictionary.
 

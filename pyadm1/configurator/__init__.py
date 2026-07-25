@@ -39,25 +39,23 @@ Example:
     >>> plant = TwoStageTemplate.create(feedstock=feedstock)
 """
 
-from .plant_builder import BiogasPlant
-from .plant_configurator import PlantConfigurator
-from .connection_manager import (
-    ConnectionManager,
-    Connection,
-    ConnectionType,
-)
-
 # from pyadm1.configurator.validation import PlantValidator
-
 # Import templates
 from . import templates
+from .connection_manager import (
+    Connection,
+    ConnectionManager,
+    ConnectionType,
+)
+from .plant_builder import BiogasPlant
+from .plant_configurator import PlantConfigurator
 
 __all__ = [
     "BiogasPlant",
-    "PlantConfigurator",
-    "ConnectionManager",
     "Connection",
+    "ConnectionManager",
     "ConnectionType",
+    "PlantConfigurator",
     # "PlantValidator",
     "templates",
 ]

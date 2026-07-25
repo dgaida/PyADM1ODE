@@ -42,8 +42,11 @@ Example:
     >>> print(f"Flow: {result['Q_actual']:.2f} m³/d")
 """
 
-from typing import Dict, Any, Optional
+from __future__ import annotations
+
 from enum import Enum
+from typing import Any, ClassVar
+
 import numpy as np
 
 from ..base import Component, ComponentType
@@ -100,13 +103,13 @@ class Feeder(Component):
     def __init__(
         self,
         component_id: str,
-        feeder_type: Optional[str] = None,
+        feeder_type: str | None = None,
         Q_max: float = 20.0,
-        substrate_type: Optional[str] = None,
-        dosing_accuracy: Optional[float] = None,
-        power_installed: Optional[float] = None,
+        substrate_type: str | None = None,
+        dosing_accuracy: float | None = None,
+        power_installed: float | None = None,
         enable_dosing_noise: bool = True,
-        name: Optional[str] = None,
+        name: str | None = None,
     ):
         """
         Initialize feeder component.
@@ -124,17 +127,11 @@ class Feeder(Component):
         super().__init__(component_id, ComponentType.MIXER, name)  # Use MIXER as closest type
 
         if substrate_type is None:
-            if feeder_type is None:
-                substrate_type = "solid"
-            else:
-                substrate_type = self._default_substrate_for_feeder_type(feeder_type)
+            substrate_type = "solid" if feeder_type is None else self._default_substrate_for_feeder_type(feeder_type)
 
         if feeder_type is None:
             # Default to screw feeder for solid substrates
-            if substrate_type.lower() in ["solid", "fibrous"]:
-                feeder_type = "screw"
-            else:
-                feeder_type = "centrifugal_pump"
+            feeder_type = "screw" if substrate_type.lower() in ["solid", "fibrous"] else "centrifugal_pump"
 
         # Configuration
         self.feeder_type = FeederType(feeder_type.lower())
@@ -166,7 +163,7 @@ class Feeder(Component):
         self.initialize()
 
     # feeder types that cannot handle the given substrate category
-    _INCOMPATIBLE: Dict[FeederType, set] = {
+    _INCOMPATIBLE: ClassVar[dict[FeederType, set]] = {
         FeederType.SCREW: {SubstrateCategory.LIQUID},
         FeederType.TWIN_SCREW: {SubstrateCategory.LIQUID},
         FeederType.CENTRIFUGAL_PUMP: {
@@ -205,7 +202,7 @@ class Feeder(Component):
                 f"{[s.value for s in incompatible]}."
             )
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
+    def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
         """
         Initialize feeder state.
 
@@ -245,7 +242,7 @@ class Feeder(Component):
 
         self._initialized = True
 
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Perform one simulation time step.
 
@@ -335,10 +332,7 @@ class Feeder(Component):
         load_factor = self.current_flow / max(1e-6, self.Q_max) if self.is_running else 0.0
 
         # Calculate dosing error
-        if Q_setpoint > 0:
-            dosing_error = abs(self.current_flow - Q_setpoint) / Q_setpoint * 100
-        else:
-            dosing_error = 0.0
+        dosing_error = abs(self.current_flow - Q_setpoint) / Q_setpoint * 100 if Q_setpoint > 0 else 0.0
 
         # Update state
         self.state.update(
@@ -454,7 +448,7 @@ class Feeder(Component):
 
         return max(1.0, power)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize feeder to dictionary."""
         return {
             "component_id": self.component_id,
@@ -472,7 +466,7 @@ class Feeder(Component):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "Feeder":
+    def from_dict(cls, config: dict[str, Any]) -> Feeder:
         """Create feeder from dictionary."""
         feeder = cls(
             component_id=config["component_id"],

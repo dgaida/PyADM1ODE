@@ -22,8 +22,8 @@ Usage:
     py examples/09_gas_sensors.py
 """
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(REPO_ROOT) not in sys.path:
@@ -37,19 +37,19 @@ def main() -> None:
     except ImportError as exc:
         raise SystemExit("matplotlib is required for this example: pip install matplotlib") from exc
 
-    from pyadm1.components.sensors import GasSensor
     from examples._sensor_demo_helpers import (
         apply_substrate_feed,
         build_single_digester_plant,
         extract_gas_signals,
         substrate_feed_profile,
     )
+    from pyadm1.components.sensors import GasSensor
 
     duration_days = 10.0
     dt = 1.0 / 24.0
     n_steps = int(duration_days / dt)
 
-    plant, digester, _, q_substrates = build_single_digester_plant()
+    plant, digester, _, _q_substrates = build_single_digester_plant()
 
     ch4_sensor = GasSensor(
         component_id="ch4_sensor",

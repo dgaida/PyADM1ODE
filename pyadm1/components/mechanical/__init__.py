@@ -35,15 +35,15 @@ Example:
     >>> hex = HeatExchanger("hex1", effectiveness=0.7, area=50)
 """
 
-from .pump import Pump
 from .mixer import Mixer
+from .pump import Pump
 
 # from pyadm1.components.mechanical.valve import Valve
 # from pyadm1.components.mechanical.heat_exchanger import HeatExchanger
 #
 __all__ = [
-    "Pump",
     "Mixer",
+    "Pump",
     #     "Valve",
     #     "HeatExchanger",
 ]

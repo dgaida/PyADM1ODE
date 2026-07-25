@@ -5,9 +5,11 @@
 Base classes for biogas plant components.
 """
 
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Dict, Any, List, Optional
+from typing import Any
 
 
 class ComponentType(Enum):
@@ -37,7 +39,7 @@ class Component(ABC):
         self,
         component_id: str,
         component_type: ComponentType,
-        name: Optional[str] = None,
+        name: str | None = None,
     ):
         """
         Initialize a component.
@@ -56,20 +58,20 @@ class Component(ABC):
         self.name = name or component_id
 
         # Connections to other components
-        self.inputs: List[str] = []  # IDs of input components
-        self.outputs: List[str] = []  # IDs of output components
+        self.inputs: list[str] = []  # IDs of input components
+        self.outputs: list[str] = []  # IDs of output components
 
         # State variables
-        self.state: Dict[str, Any] = {}
+        self.state: dict[str, Any] = {}
 
         # Output variables (what this component provides to others)
-        self.outputs_data: Dict[str, Any] = {}
+        self.outputs_data: dict[str, Any] = {}
 
         # Flag to track if component has been initialized
         self._initialized: bool = False
 
     @abstractmethod
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Perform one simulation time step.
 
@@ -87,10 +89,9 @@ class Component(ABC):
         Dict[str, Any]
             Output data to be passed to connected components
         """
-        pass
 
     @abstractmethod
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
+    def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
         """
         Initialize component state.
 
@@ -99,10 +100,9 @@ class Component(ABC):
         initial_state : Optional[Dict[str, Any]]
             Initial state values
         """
-        pass
 
     @abstractmethod
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Serialize component to dictionary for JSON export.
 
@@ -111,11 +111,10 @@ class Component(ABC):
         Dict[str, Any]
             Component configuration as dictionary
         """
-        pass
 
     @classmethod
     @abstractmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "Component":
+    def from_dict(cls, config: dict[str, Any]) -> Component:
         """
         Create component from dictionary configuration.
 
@@ -129,13 +128,12 @@ class Component(ABC):
         Component
             Initialized component
         """
-        pass
 
-    def get_state(self) -> Dict[str, Any]:
+    def get_state(self) -> dict[str, Any]:
         """Get current component state."""
         return self.state.copy()
 
-    def set_state(self, state: Dict[str, Any]) -> None:
+    def set_state(self, state: dict[str, Any]) -> None:
         """Set component state."""
         self.state = state.copy()
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Integration test: ParallelSimulator end-to-end (sequential mode)."""
 
 import pytest

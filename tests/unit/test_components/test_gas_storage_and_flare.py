@@ -3,8 +3,8 @@ import math
 
 import pytest
 
-from pyadm1.components.energy.gas_storage import GasStorage
 from pyadm1.components.energy.flare import Flare
+from pyadm1.components.energy.gas_storage import GasStorage
 
 
 def test_gas_storage_basic_charge_and_vent():

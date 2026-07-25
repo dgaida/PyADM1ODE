@@ -31,13 +31,13 @@ Example:
     >>> wagon = MixerWagon("wagon1", capacity=30, mixing_time=15)
 """
 
-from .substrate_storage import SubstrateStorage
 from .feeder import Feeder
+from .substrate_storage import SubstrateStorage
 
 # from pyadm1.components.feeding.mixer_wagon import MixerWagon
 
 __all__ = [
-    "SubstrateStorage",
     "Feeder",
+    "SubstrateStorage",
     # "MixerWagon",
 ]

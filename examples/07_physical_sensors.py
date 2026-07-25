@@ -22,8 +22,8 @@ Usage:
     py examples/07_physical_sensors.py
 """
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import numpy as np
 
@@ -39,16 +39,16 @@ def main() -> None:
     except ImportError as exc:
         raise SystemExit("matplotlib is required for this example: pip install matplotlib") from exc
 
-    from pyadm1.components.energy.gas_storage import GasStorage
-    from pyadm1.components.sensors import PhysicalSensor
     from examples._sensor_demo_helpers import (
-        apply_substrate_feed,
         apply_digester_temperature,
+        apply_substrate_feed,
         build_single_digester_plant,
         digester_temperature_profile,
         extract_physical_signals,
         substrate_feed_profile,
     )
+    from pyadm1.components.energy.gas_storage import GasStorage
+    from pyadm1.components.sensors import PhysicalSensor
 
     duration_days = 10.0
     dt = 1.0 / 24.0

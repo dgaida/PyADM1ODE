@@ -16,7 +16,7 @@ Pure stdlib, no external dependencies.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 # Component types that PyADM1ODE creates automatically (one GasStorage per
 # digester, one Flare per CHP). The benchmark aligns these via topology, so the
@@ -31,7 +31,7 @@ class Node:
     obligation: str = "given"
     auto: bool = False
     # name -> {value, obligation, accept} (reference) OR name -> value (candidate)
-    params: Dict[str, Any] = field(default_factory=dict)
+    params: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -40,24 +40,24 @@ class Edge:
     dst: str
     etype: str  # "liquid" | "gas" | "heat"
     obligation: str = "given"
-    confidence: Optional[str] = None
+    confidence: str | None = None
 
 
 @dataclass
 class Graph:
-    nodes: Dict[str, Node]
-    edges: List[Edge]
+    nodes: dict[str, Node]
+    edges: list[Edge]
 
-    def out_edges(self, nid: str, etype: Optional[str] = None) -> List[Edge]:
+    def out_edges(self, nid: str, etype: str | None = None) -> list[Edge]:
         return [e for e in self.edges if e.src == nid and (etype is None or e.etype == etype)]
 
-    def in_edges(self, nid: str, etype: Optional[str] = None) -> List[Edge]:
+    def in_edges(self, nid: str, etype: str | None = None) -> list[Edge]:
         return [e for e in self.edges if e.dst == nid and (etype is None or e.etype == etype)]
 
 
-def normalize_candidate(cand: Dict[str, Any]) -> Graph:
+def normalize_candidate(cand: dict[str, Any]) -> Graph:
     """``BiogasPlant`` serialization (to_json/to_dict structure) -> Graph."""
-    nodes: Dict[str, Node] = {}
+    nodes: dict[str, Node] = {}
     for c in cand.get("components", []):
         cid = c["component_id"]
         ctype = c["component_type"]

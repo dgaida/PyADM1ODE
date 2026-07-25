@@ -40,7 +40,8 @@ def discover(dataset_dir: str):
     items = []
     for path in sorted(glob.glob(os.path.join(dataset_dir, "**", "*.json"), recursive=True)):
         try:
-            d = json.load(open(path, encoding="utf-8"))
+            with open(path, encoding="utf-8") as fh:
+                d = json.load(fh)
         except (json.JSONDecodeError, OSError):
             continue
         if is_datapoint(d):
@@ -109,7 +110,9 @@ def main() -> int:
         else:
             cand_label = os.path.basename(code_path)
             if code_path not in cand_cache:
-                cand_cache[code_path] = run_candidate_code(open(code_path, encoding="utf-8").read(), timeout=args.timeout)
+                with open(code_path, encoding="utf-8") as fh:
+                    code_text = fh.read()
+                cand_cache[code_path] = run_candidate_code(code_text, timeout=args.timeout)
             cand, err = cand_cache[code_path]
             if cand is None:
                 rep = evaluate(dp, {}, response)

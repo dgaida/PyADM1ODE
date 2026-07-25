@@ -20,7 +20,9 @@ References:
     - DIN EN 16723-2 (2017): Natural gas and biomethane for use in transport and biomethane for injection
 """
 
-from typing import Dict, Any, Optional
+from __future__ import annotations
+
+from typing import Any
 
 from ..base import Component, ComponentType
 
@@ -56,7 +58,7 @@ class BiogasUpgrading(Component):
         ch4_recovery: float = 0.98,
         ch4_content_in: float = 0.55,
         ch4_content_out: float = 0.97,
-        name: Optional[str] = None,
+        name: str | None = None,
     ):
         super().__init__(component_id, ComponentType.UPGRADING, name)
 
@@ -81,7 +83,7 @@ class BiogasUpgrading(Component):
     # Component interface
     # ------------------------------------------------------------------
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
+    def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
         """Initialize or restore cumulative state."""
         if initial_state:
             self._cum_gas_in_m3 = float(initial_state.get("cumulative_gas_in_m3", 0.0))
@@ -106,7 +108,7 @@ class BiogasUpgrading(Component):
         }
         self._initialized = True
 
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Process one simulation timestep.
 
@@ -163,7 +165,7 @@ class BiogasUpgrading(Component):
         }
         return self.outputs_data
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize configuration and cumulative state."""
         return {
             "component_id": self.component_id,
@@ -183,7 +185,7 @@ class BiogasUpgrading(Component):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "BiogasUpgrading":
+    def from_dict(cls, config: dict[str, Any]) -> BiogasUpgrading:
         """Reconstruct from dict produced by to_dict."""
         obj = cls(
             component_id=config["component_id"],

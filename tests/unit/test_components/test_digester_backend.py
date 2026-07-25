@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Digester-level tests for the switchable ADM1 right-hand-side backend.
 
 The torch backend must be a drop-in for the numpy one: same construction API,

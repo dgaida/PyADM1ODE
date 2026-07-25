@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import base64
 import os
-from typing import Any, Dict, List
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # System-Prompt (statisch, enthält vollständige PyADM1ODE API-Referenz)
@@ -109,11 +109,11 @@ Schreibe den Python-Code für diese Anlage.
 
 
 def build_messages(
-    datapoint: Dict[str, Any],
+    datapoint: dict[str, Any],
     dataset_dir: str,
     *,
     allow_questions: bool = True,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """
     Baut die initiale Nachrichten-Liste (User-Turn) im OpenAI/Groq-Format auf.
 
@@ -127,7 +127,7 @@ def build_messages(
     """
     inp = datapoint.get("input", {})
     modality = inp.get("modality", "text")
-    content_parts: List[Any] = []
+    content_parts: list[Any] = []
 
     # ---- Bild laden (image / hybrid) ----
     if modality in ("image", "hybrid"):
@@ -153,7 +153,7 @@ def build_messages(
         )
 
     # ---- Textinhalt ----
-    text_blocks: List[str] = []
+    text_blocks: list[str] = []
     if modality == "image":
         text_blocks.append("Analysiere die obige Anlagenskizze.")
     elif modality == "hybrid":
@@ -173,9 +173,9 @@ def build_messages(
 
 
 def add_oracle_answers(
-    messages: List[Dict[str, Any]],
+    messages: list[dict[str, Any]],
     answer_text: str,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """
     Fügt Oracle-Antworten als User-Turn zur Nachrichten-Liste hinzu.
     Die vorherige Assistenten-Antwort muss bereits enthalten sein.
@@ -190,9 +190,9 @@ def add_oracle_answers(
 
 
 def append_assistant(
-    messages: List[Dict[str, Any]],
+    messages: list[dict[str, Any]],
     text: str,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Fügt eine Assistenten-Nachricht zur History hinzu."""
     messages.append({"role": "assistant", "content": text})
     return messages

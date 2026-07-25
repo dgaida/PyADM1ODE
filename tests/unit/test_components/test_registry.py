@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Unit tests for the component registry."""
 
 from types import ModuleType
@@ -229,7 +228,7 @@ class TestGlobalRegistryHelpers:
             def register(self, name, component_class):
                 calls.append((name, component_class))
 
-        monkeypatch.setattr(registry_module, "get_registry", lambda: FakeRegistry())
+        monkeypatch.setattr(registry_module, "get_registry", FakeRegistry)
 
         registry_module.register_component("Dummy", DummyComponent)
 

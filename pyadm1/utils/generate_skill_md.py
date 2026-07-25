@@ -1,12 +1,13 @@
 import inspect
 import os
-from pyadm1.substrates.feedstock import Feedstock
+
+from pyadm1.components.feeding.feeder import Feeder
+from pyadm1.components.feeding.substrate_storage import SubstrateStorage
+from pyadm1.components.mechanical.mixer import Mixer
+from pyadm1.components.mechanical.pump import Pump
 from pyadm1.configurator.plant_builder import BiogasPlant
 from pyadm1.configurator.plant_configurator import PlantConfigurator
-from pyadm1.components.mechanical.pump import Pump
-from pyadm1.components.mechanical.mixer import Mixer
-from pyadm1.components.feeding.substrate_storage import SubstrateStorage
-from pyadm1.components.feeding.feeder import Feeder
+from pyadm1.substrates.feedstock import Feedstock
 
 
 def get_full_doc(obj):

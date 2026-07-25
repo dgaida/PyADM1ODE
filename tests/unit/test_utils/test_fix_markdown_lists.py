@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Unit tests for pyadm1.utils.fix_markdown_lists."""
 
 from pathlib import Path

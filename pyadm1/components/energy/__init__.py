@@ -35,16 +35,16 @@ Example:
     >>> flare = Flare("flare1", capacity=500, destruction_efficiency=0.98)
 """
 
-from .chp import CHP
-from .boiler import Boiler
-from .gas_storage import GasStorage
-from .flare import Flare
 from .biogas_upgrading import BiogasUpgrading
+from .boiler import Boiler
+from .chp import CHP
+from .flare import Flare
+from .gas_storage import GasStorage
 
 __all__ = [
     "CHP",
-    "Boiler",
-    "GasStorage",
-    "Flare",
     "BiogasUpgrading",
+    "Boiler",
+    "Flare",
+    "GasStorage",
 ]

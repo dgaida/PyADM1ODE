@@ -21,8 +21,9 @@ Batstone et al. (2002) formulation this variant adds:
     values.
 """
 
+from __future__ import annotations
+
 import numpy as np
-from typing import Tuple
 
 
 class ADMParams:
@@ -242,7 +243,7 @@ class ADMParams:
         return corrected
 
     @staticmethod
-    def getADMgasparams(R: float, T_base: float, T_ad: float) -> Tuple[float, float, float, float, float, float]:
+    def getADMgasparams(R: float, T_base: float, T_ad: float) -> tuple[float, float, float, float, float, float]:
         """
         Get gas phase parameters including Henry constants.
 

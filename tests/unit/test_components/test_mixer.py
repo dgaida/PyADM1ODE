@@ -1,5 +1,4 @@
 # tests/unit/test_components/test_mixer.py
-# -*- coding: utf-8 -*-
 """
 Unit tests for the Mixer component.
 
@@ -8,6 +7,7 @@ for maintaining homogeneity in anaerobic digesters.
 """
 
 import numpy as np
+
 from pyadm1.components.mechanical.mixer import Mixer, MixerType, MixingIntensity
 
 

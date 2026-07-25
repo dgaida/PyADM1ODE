@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Unit tests for ADMParams (SIMBA# biogas model parameters)."""
 
 import pytest

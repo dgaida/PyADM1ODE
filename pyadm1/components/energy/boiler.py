@@ -40,7 +40,10 @@ Example:
     ...       f"Gas: {result['Q_gas_consumed_m3_per_day']:.1f} m3/d")
 """
 
-from typing import Dict, Any, Optional
+from __future__ import annotations
+
+from typing import Any
+
 from ..base import Component, ComponentType
 
 # Lower heating values [kWh/m3] at standard conditions
@@ -83,7 +86,7 @@ class Boiler(Component):
         fuel_type: str = "dual",
         lhv_biogas: float = _LHV_BIOGAS,
         lhv_natural_gas: float = _LHV_NATURAL_GAS,
-        name: Optional[str] = None,
+        name: str | None = None,
     ):
         """
         Initialize boiler.
@@ -126,7 +129,7 @@ class Boiler(Component):
     # Component interface
     # ------------------------------------------------------------------
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
+    def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
         """
         Initialize boiler state.
 
@@ -162,7 +165,7 @@ class Boiler(Component):
 
         self._initialized = True
 
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Perform one simulation time step.
 
@@ -251,7 +254,7 @@ class Boiler(Component):
     # Serialization
     # ------------------------------------------------------------------
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize configuration and cumulative state to dictionary."""
         return {
             "component_id": self.component_id,
@@ -268,7 +271,7 @@ class Boiler(Component):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "Boiler":
+    def from_dict(cls, config: dict[str, Any]) -> Boiler:
         """
         Create Boiler from dictionary (produced by :meth:`to_dict`).
 

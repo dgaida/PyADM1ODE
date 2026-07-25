@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Minimal example script demonstrating PyADM1 usage.
 

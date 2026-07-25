@@ -16,6 +16,8 @@ Each scenario is a dictionary that may contain:
     :data:`_CALIBRATION_PARAM_KEYS`).
 """
 
+from __future__ import annotations
+
 import multiprocessing as mp
 import os
 import sys
@@ -23,7 +25,7 @@ import time
 import traceback
 from dataclasses import dataclass, field
 from functools import partial
-from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
@@ -58,13 +60,13 @@ class ScenarioResult:
     """Result from a single simulation scenario."""
 
     scenario_id: int
-    parameters: Dict[str, Any]
+    parameters: dict[str, Any]
     success: bool
     duration: float
-    final_state: Optional[List[float]] = None
-    time_series: Optional[Dict[str, List[float]]] = None
-    metrics: Dict[str, float] = field(default_factory=dict)
-    error: Optional[str] = None
+    final_state: list[float] | None = None
+    time_series: dict[str, list[float]] | None = None
+    metrics: dict[str, float] = field(default_factory=dict)
+    error: str | None = None
     execution_time: float = 0.0
 
 
@@ -73,8 +75,8 @@ class ParameterSweepConfig:
     """Configuration for a single-parameter sweep."""
 
     parameter_name: str
-    values: List[float]
-    other_params: Dict[str, Any] = field(default_factory=dict)
+    values: list[float]
+    other_params: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -82,9 +84,9 @@ class MonteCarloConfig:
     """Configuration for Monte Carlo simulation."""
 
     n_samples: int
-    parameter_distributions: Dict[str, Tuple[float, float]]
-    fixed_params: Dict[str, Any] = field(default_factory=dict)
-    seed: Optional[int] = None
+    parameter_distributions: dict[str, tuple[float, float]]
+    fixed_params: dict[str, Any] = field(default_factory=dict)
+    seed: int | None = None
 
 
 def _get_mp_context() -> mp.context.BaseContext:
@@ -108,7 +110,7 @@ class ParallelSimulator:
     Parallel simulator for running multiple ADM1 scenarios concurrently.
     """
 
-    def __init__(self, adm1: "ADM1", n_workers: Optional[int] = None, verbose: bool = True):
+    def __init__(self, adm1: ADM1, n_workers: int | None = None, verbose: bool = True):
         """
         Parameters
         ----------
@@ -126,13 +128,13 @@ class ParallelSimulator:
 
     def run_scenarios(
         self,
-        scenarios: List[Dict[str, Any]],
+        scenarios: list[dict[str, Any]],
         duration: float,
-        initial_state: List[float],
+        initial_state: list[float],
         dt: float = 1.0 / 24.0,
         compute_metrics: bool = True,
         save_time_series: bool = False,
-    ) -> List[ScenarioResult]:
+    ) -> list[ScenarioResult]:
         """Run multiple scenarios in parallel."""
         if self.verbose:
             print(f"Starting parallel simulation with {len(scenarios)} scenarios")
@@ -190,9 +192,9 @@ class ParallelSimulator:
         self,
         config: ParameterSweepConfig,
         duration: float,
-        initial_state: List[float],
+        initial_state: list[float],
         **kwargs: Any,
-    ) -> List[ScenarioResult]:
+    ) -> list[ScenarioResult]:
         """Run a single-parameter sweep."""
         scenarios = []
         for value in config.values:
@@ -208,12 +210,12 @@ class ParallelSimulator:
 
     def multi_parameter_sweep(
         self,
-        parameter_configs: Dict[str, List[float]],
+        parameter_configs: dict[str, list[float]],
         duration: float,
-        initial_state: List[float],
-        fixed_params: Optional[Dict[str, Any]] = None,
+        initial_state: list[float],
+        fixed_params: dict[str, Any] | None = None,
         **kwargs: Any,
-    ) -> List[ScenarioResult]:
+    ) -> list[ScenarioResult]:
         """Run a multi-parameter sweep (full factorial design)."""
         fixed_params = fixed_params or {}
 
@@ -239,9 +241,9 @@ class ParallelSimulator:
         self,
         config: MonteCarloConfig,
         duration: float,
-        initial_state: List[float],
+        initial_state: list[float],
         **kwargs: Any,
-    ) -> List[ScenarioResult]:
+    ) -> list[ScenarioResult]:
         """Run Monte Carlo simulation with parameter uncertainty."""
         if config.seed is not None:
             np.random.seed(config.seed)
@@ -263,7 +265,7 @@ class ParallelSimulator:
 
         return self.run_scenarios(scenarios, duration, initial_state, **kwargs)
 
-    def summarize_results(self, results: List[ScenarioResult], metrics: Optional[List[str]] = None) -> Dict[str, Any]:
+    def summarize_results(self, results: list[ScenarioResult], metrics: list[str] | None = None) -> dict[str, Any]:
         """Compute summary statistics across multiple scenarios."""
         successful = [r for r in results if r.success]
         n_scenarios = len(results)
@@ -304,10 +306,10 @@ class ParallelSimulator:
 
         return summary
 
-    def _serialize_adm1(self) -> Dict[str, Any]:
+    def _serialize_adm1(self) -> dict[str, Any]:
         """Serialize ADM1 model configuration for the worker pool."""
         feedstock = self.adm1.feedstock
-        substrate_ids: List[str] = []
+        substrate_ids: list[str] = []
         feeding_freq = 24
         if feedstock is not None:
             substrate_ids = list(getattr(feedstock, "substrate_ids", []))
@@ -322,7 +324,7 @@ class ParallelSimulator:
         }
 
     @staticmethod
-    def _generate_combinations(value_lists: List[List[Any]]) -> List[Tuple]:
+    def _generate_combinations(value_lists: list[list[Any]]) -> list[tuple]:
         """Cartesian product of a list of value lists."""
         if not value_lists:
             return [()]
@@ -330,16 +332,16 @@ class ParallelSimulator:
         result = []
         for value in value_lists[0]:
             for rest in ParallelSimulator._generate_combinations(value_lists[1:]):
-                result.append((value,) + rest)
+                result.append((value, *rest))
 
         return result
 
 
 def _run_single_scenario(
-    scenario_data: Tuple[int, Dict[str, Any]],
-    adm1_config: Dict[str, Any],
+    scenario_data: tuple[int, dict[str, Any]],
+    adm1_config: dict[str, Any],
     duration: float,
-    initial_state: List[float],
+    initial_state: list[float],
     dt: float,
     compute_metrics: bool,
     save_time_series: bool,
@@ -351,8 +353,8 @@ def _run_single_scenario(
 
     try:
         from pyadm1.core.adm1 import ADM1, STATE_SIZE
-        from pyadm1.substrates.feedstock import Feedstock
         from pyadm1.simulation.simulator import Simulator
+        from pyadm1.substrates.feedstock import Feedstock
 
         substrate_ids = adm1_config.get("feedstock_substrates") or []
         feeding_freq = adm1_config.get("feeding_freq", 24)
@@ -421,7 +423,7 @@ def _run_single_scenario(
             execution_time=execution_time,
         )
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - worker boundary: report any scenario failure instead of crashing the batch
         execution_time = time.time() - start_time
 
         return ScenarioResult(
@@ -429,12 +431,12 @@ def _run_single_scenario(
             parameters=parameters,
             success=False,
             duration=duration,
-            error=f"{type(e).__name__}: {str(e)}\n{traceback.format_exc()}",
+            error=f"{type(e).__name__}: {e!s}\n{traceback.format_exc()}",
             execution_time=execution_time,
         )
 
 
-def _compute_scenario_metrics(adm1: "ADM1", final_state: List[float], Q: List[float]) -> Dict[str, float]:
+def _compute_scenario_metrics(adm1: ADM1, final_state: list[float], Q: list[float]) -> dict[str, float]:
     """Compute performance metrics from simulation results."""
     metrics = {}
 
@@ -475,7 +477,7 @@ def _compute_scenario_metrics(adm1: "ADM1", final_state: List[float], Q: List[fl
             metrics["specific_ch4_production"] = float(q_ch4 / Q_total)
             metrics["HRT"] = float(adm1.V_liq / Q_total)
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - capture any metric-computation error into the result
         metrics["error"] = str(e)
 
     return metrics

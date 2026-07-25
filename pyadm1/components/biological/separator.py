@@ -48,8 +48,10 @@ Example:
     ...       f"Solid: {result['Q_solid']:.2f} m3/d")
 """
 
-from typing import Dict, Any, Optional
+from __future__ import annotations
+
 from enum import Enum
+from typing import Any
 
 from ..base import Component, ComponentType
 
@@ -67,7 +69,7 @@ class SeparatorType(str, Enum):
 # Type-specific default parameters
 # Source: KTBL (2013), Hjorth et al. (2010)
 # ---------------------------------------------------------------------------
-_SEPARATOR_DEFAULTS: Dict[str, Dict[str, float]] = {
+_SEPARATOR_DEFAULTS: dict[str, dict[str, float]] = {
     # separation_efficiency: fraction of total solids captured in solid phase
     # ts_solid_target:       target TS content of solid fraction [kg/m3]
     #                        (= TS% * density_solid / 100, density ~900 kg/m3)
@@ -139,13 +141,13 @@ class Separator(Component):
         self,
         component_id: str,
         separator_type: str = "screw_press",
-        separation_efficiency: Optional[float] = None,
-        ts_solid_target: Optional[float] = None,
-        n_to_solid: Optional[float] = None,
-        p_to_solid: Optional[float] = None,
-        specific_energy: Optional[float] = None,
+        separation_efficiency: float | None = None,
+        ts_solid_target: float | None = None,
+        n_to_solid: float | None = None,
+        p_to_solid: float | None = None,
+        specific_energy: float | None = None,
         fluid_density: float = _DIGESTATE_DENSITY,
-        name: Optional[str] = None,
+        name: str | None = None,
     ):
         """
         Initialize separator component.
@@ -187,7 +189,7 @@ class Separator(Component):
     # Component interface
     # ------------------------------------------------------------------
 
-    def initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None:
+    def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
         """
         Initialize separator state.
 
@@ -225,7 +227,7 @@ class Separator(Component):
 
         self._initialized = True
 
-    def step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Perform one simulation time step.
 
@@ -269,13 +271,10 @@ class Separator(Component):
         TS_in = float(inputs.get("TS_in", 0.0))
 
         if TS_in <= 0.0:
-            # Estimate from ADM1 state vector if available
+            # Estimate from the ADM1 state vector if available, otherwise fall
+            # back to typical mesophilic digestate TS ~40 kg/m3 (4%).
             adm1_state = inputs.get("state_out")
-            if adm1_state is not None:
-                TS_in = self._estimate_ts_from_adm1(adm1_state)
-            else:
-                # Fallback: typical mesophilic digestate TS ~40 kg/m3 (4%)
-                TS_in = 40.0
+            TS_in = self._estimate_ts_from_adm1(adm1_state) if adm1_state is not None else 40.0
 
         VS_in = float(inputs.get("VS_in", TS_in * 0.75))  # ~75% VS/TS
         TAN_in = float(inputs.get("TAN_in", 0.0))
@@ -360,7 +359,7 @@ class Separator(Component):
     # Serialization
     # ------------------------------------------------------------------
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize separator configuration to dictionary."""
         return {
             "component_id": self.component_id,
@@ -379,7 +378,7 @@ class Separator(Component):
         }
 
     @classmethod
-    def from_dict(cls, config: Dict[str, Any]) -> "Separator":
+    def from_dict(cls, config: dict[str, Any]) -> Separator:
         """
         Create separator from dictionary.
 

@@ -16,9 +16,9 @@ from .feedstock import (
     SubstrateParams,
     SubstrateRegistry,
     load_substrate,
+    load_substrate_toml,
     load_substrate_xml,
     load_substrate_yaml,
-    load_substrate_toml,
 )
 
 __all__ = [
@@ -26,7 +26,7 @@ __all__ = [
     "SubstrateParams",
     "SubstrateRegistry",
     "load_substrate",
+    "load_substrate_toml",
     "load_substrate_xml",
     "load_substrate_yaml",
-    "load_substrate_toml",
 ]

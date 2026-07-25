@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Integration tests: ``ParallelSimulator`` batch results must equal the
 single-scenario results.
@@ -20,7 +19,7 @@ guarding against regressions like the silent calibration no-op that
 shipped before the ``set_calibration_parameters`` fix landed.
 """
 
-from typing import Dict, List, Tuple
+from __future__ import annotations
 
 import pytest
 
@@ -34,20 +33,20 @@ from pyadm1.simulation.parallel import ParallelSimulator, ScenarioResult
 # ---------------------------------------------------------------------------
 
 
-def _pre_inoculated(fs: Feedstock, V_liq: float, V_gas: float, T_ad: float, Q: List[float]) -> List[float]:
+def _pre_inoculated(fs: Feedstock, V_liq: float, V_gas: float, T_ad: float, Q: list[float]) -> list[float]:
     """Build a physically-consistent warm-start state via Digester helper."""
     proxy = Digester("_test_inoc", fs, V_liq=V_liq, V_gas=V_gas, T_ad=T_ad)
     return proxy._build_pre_inoculated_state(Q)
 
 
 def _build_plant(
-    substrates: List[str],
+    substrates: list[str],
     V_liq: float,
     V_gas: float,
     T_ad: float,
-    base_Q: List[float],
+    base_Q: list[float],
     duration: float,
-) -> Tuple[ADM1, List[float]]:
+) -> tuple[ADM1, list[float]]:
     """Construct an ADM1 instance + a pre-inoculated initial state."""
     fs = Feedstock(substrates, feeding_freq=24, total_simtime=max(2, int(duration) + 1))
     adm1 = ADM1(fs, V_liq=V_liq, V_gas=V_gas, T_ad=T_ad)
@@ -57,13 +56,13 @@ def _build_plant(
     return adm1, initial_state
 
 
-def _require_success(results: List[ScenarioResult], label: str) -> None:
+def _require_success(results: list[ScenarioResult], label: str) -> None:
     for r in results:
         if not r.success:
             pytest.skip(f"{label}: scenario {r.scenario_id} failed (likely a scipy/BDF environment issue): {r.error}")
 
 
-def _assert_metrics_close(a: Dict[str, float], b: Dict[str, float], keys: Tuple[str, ...]) -> None:
+def _assert_metrics_close(a: dict[str, float], b: dict[str, float], keys: tuple[str, ...]) -> None:
     """Batch and sequential paths should be bit-for-bit identical: each scenario
     builds a fresh ADM1, so there's nothing to drift. A tight rel tolerance
     catches any accidental state leak without flagging FPU rounding noise."""
@@ -77,10 +76,10 @@ def _assert_metrics_close(a: Dict[str, float], b: Dict[str, float], keys: Tuple[
 
 def _run_both_ways(
     adm1: ADM1,
-    scenarios: List[Dict],
-    initial_state: List[float],
+    scenarios: list[dict],
+    initial_state: list[float],
     duration: float,
-) -> Tuple[List[ScenarioResult], List[ScenarioResult]]:
+) -> tuple[list[ScenarioResult], list[ScenarioResult]]:
     """Run the same scenarios as one batch and as N single-scenario calls."""
     batch_sim = ParallelSimulator(adm1, n_workers=1, verbose=False)
     batch = batch_sim.run_scenarios(
@@ -91,7 +90,7 @@ def _run_both_ways(
     )
 
     seq_sim = ParallelSimulator(adm1, n_workers=1, verbose=False)
-    sequential: List[ScenarioResult] = []
+    sequential: list[ScenarioResult] = []
     for scenario in scenarios:
         result = seq_sim.run_scenarios(
             scenarios=[scenario],

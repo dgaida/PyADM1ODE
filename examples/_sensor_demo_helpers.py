@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Tuple
+from typing import Any
 
 
-def build_single_digester_plant() -> Tuple[Any, Any, str, list[float]]:
+def build_single_digester_plant() -> tuple[Any, Any, str, list[float]]:
     """
     Build a simple one-fermenter biogas plant with maize silage + swine manure.
 
@@ -85,7 +85,7 @@ def apply_digester_temperature(digester: Any, temperature_k: float) -> None:
         digester.adm1._T_ad = float(temperature_k)
 
 
-def extract_physical_signals(digester: Any, digester_out: Dict[str, Any], storage_out: Dict[str, Any]) -> Dict[str, float]:
+def extract_physical_signals(digester: Any, digester_out: dict[str, Any], storage_out: dict[str, Any]) -> dict[str, float]:
     """Build physical sensor signals from plant outputs."""
     return {
         "current_level": float(storage_out.get("stored_volume_m3", 0.0)),
@@ -96,7 +96,7 @@ def extract_physical_signals(digester: Any, digester_out: Dict[str, Any], storag
     }
 
 
-def extract_chemical_signals(digester_out: Dict[str, Any]) -> Dict[str, float]:
+def extract_chemical_signals(digester_out: dict[str, Any]) -> dict[str, float]:
     """
     Build chemical sensor signals from digester outputs and ADM1 effluent state.
 
@@ -158,7 +158,7 @@ def extract_chemical_signals(digester_out: Dict[str, Any]) -> Dict[str, float]:
     }
 
 
-def extract_gas_signals(digester_out: Dict[str, Any], q_substrates: list[float]) -> Dict[str, float]:
+def extract_gas_signals(digester_out: dict[str, Any], q_substrates: list[float]) -> dict[str, float]:
     """
     Build gas sensor signals from digester gas production and process state.
 

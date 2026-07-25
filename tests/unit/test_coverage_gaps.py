@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Targeted tests for coverage gaps identified by ``pytest --cov``.
 
