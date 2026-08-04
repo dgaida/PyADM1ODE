@@ -2,11 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.5.6] - 2026-07-24
 
 ### Features
 
 - Add total solids calculation and update related tests  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.5.5] - 2026-07-14
 
