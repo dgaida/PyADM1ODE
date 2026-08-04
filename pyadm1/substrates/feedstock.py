@@ -224,7 +224,7 @@ def load_substrate_yaml(path: str | Path) -> SubstrateParams:
     try:
         import yaml  # type: ignore
     except ImportError as exc:  # pragma: no cover
-        raise ImportError("Loading YAML substrate files requires PyYAML. " "Install it with `pip install PyYAML`.") from exc
+        raise ImportError("Loading YAML substrate files requires PyYAML. Install it with `pip install PyYAML`.") from exc
 
     path = Path(path)
     if not path.exists():
@@ -253,7 +253,7 @@ def load_substrate_toml(path: str | Path) -> SubstrateParams:
             import tomli as tomllib  # type: ignore
         except ImportError as exc:
             raise ImportError(
-                "Loading TOML substrate files on Python < 3.11 requires `tomli`. " "Install it with `pip install tomli`."
+                "Loading TOML substrate files on Python < 3.11 requires `tomli`. Install it with `pip install tomli`."
             ) from exc
 
     path = Path(path)
@@ -262,7 +262,7 @@ def load_substrate_toml(path: str | Path) -> SubstrateParams:
 
     with path.open("rb") as fp:
         data = tomllib.load(fp)
-    if not isinstance(data, dict):
+    if not isinstance(data, dict):  # pragma: no cover - TOML's grammar guarantees a top-level table
         raise ValueError(f"Substrate TOML must be a table at the top level: {path}")
 
     substrate_name = str(data.pop("name", path.stem))
@@ -287,7 +287,7 @@ def load_substrate(path: str | Path) -> SubstrateParams:
         return load_substrate_xml(path)
     if suffix == ".toml":
         return load_substrate_toml(path)
-    raise ValueError(f"Unsupported substrate file extension '{suffix}' for {path}. " f"Supported: {_SUBSTRATE_EXTENSIONS}")
+    raise ValueError(f"Unsupported substrate file extension '{suffix}' for {path}. Supported: {_SUBSTRATE_EXTENSIONS}")
 
 
 # ---------------------------------------------------------------------------
@@ -348,7 +348,7 @@ class SubstrateRegistry:
         if substrate_id not in self._cache:
             path = self._find_path(substrate_id)
             if path is None:
-                raise KeyError(f"Substrate '{substrate_id}' not found in {self._dir}. " f"Available: {self.available()}")
+                raise KeyError(f"Substrate '{substrate_id}' not found in {self._dir}. Available: {self.available()}")
             self._cache[substrate_id] = load_substrate(path)
         return self._cache[substrate_id]
 
@@ -432,7 +432,7 @@ class Feedstock:
             available = SubstrateRegistry().available()
             if not available:
                 raise ValueError(
-                    f"No substrate files found in {_DEFAULT_DATA_DIR}; " "pass an explicit substrate list or add files."
+                    f"No substrate files found in {_DEFAULT_DATA_DIR}; pass an explicit substrate list or add files."
                 )
             self._multi = True
             raw_subs: list[_SubstrateInput] = list(_order_substrates(available))
@@ -650,7 +650,7 @@ class Feedstock:
         """Raise ValueError if the single-substrate accessor *prop* is called on a multi-substrate feedstock."""
         if len(self._subs) != 1:
             raise ValueError(
-                f"'{prop}' is a single-substrate accessor; this feedstock has " f"{len(self._subs)} substrates. {hint}."
+                f"'{prop}' is a single-substrate accessor; this feedstock has {len(self._subs)} substrates. {hint}."
             )
 
     def _validate_Q(self, Q: float | Sequence[float]) -> np.ndarray:

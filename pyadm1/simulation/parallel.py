@@ -388,9 +388,12 @@ def _run_single_scenario(
         if calibration_params:
             adm1.set_calibration_parameters(calibration_params)
 
+        # Without substrate ids there is no influent composition to build, and
+        # ``create_influent`` would dereference the absent feedstock. ADM_ODE
+        # treats a missing influent as an autonomous run (q_ad = 0, s_in = 0).
         if feedstock is not None:
             adm1.set_influent_dataframe(feedstock.get_influent_dataframe(Q=Q))
-        adm1.create_influent(Q, 0)
+            adm1.create_influent(Q, 0)
 
         if len(initial_state) != STATE_SIZE:
             raise ValueError(f"initial_state must have {STATE_SIZE} elements; got {len(initial_state)}")

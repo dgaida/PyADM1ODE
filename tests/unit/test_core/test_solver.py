@@ -65,6 +65,35 @@ class TestODESolverSolve:
         assert np.isclose(captured["t_eval"][0], 0.0)
 
 
+class TestODESolverFailureHandling:
+    """Integration failures must surface as RuntimeError, never as a silent bad result."""
+
+    def test_an_unsuccessful_solve_is_reported_with_the_solver_message(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        def failing_solve_ivp(**kwargs):
+            return SimpleNamespace(success=False, message="Required step size is less than spacing", t=None, y=None)
+
+        monkeypatch.setattr(solver_module.scipy.integrate, "solve_ivp", failing_solve_ivp)
+
+        with pytest.raises(RuntimeError, match="Required step size is less than spacing"):
+            ODESolver().solve(lambda t, y: y, (0.0, 1.0), [1.0])
+
+    def test_a_blow_up_in_the_dynamics_is_reported_rather_than_returned(self) -> None:
+        """dy/dt = y^2 escapes to infinity at t = 1; the solver must not return quietly."""
+        with pytest.raises(RuntimeError, match=r"ODE integration failed|Error during ODE integration"):
+            ODESolver(SolverConfig(method="RK45")).solve(lambda t, y: y**2, (0.0, 5.0), [1.0])
+
+    def test_an_exception_from_the_right_hand_side_is_wrapped_and_chained(self) -> None:
+        def broken_rhs(t, y):
+            raise ZeroDivisionError("bad kinetics")
+
+        with pytest.raises(RuntimeError, match="Error during ODE integration") as excinfo:
+            ODESolver().solve(broken_rhs, (0.0, 1.0), [1.0])
+
+        # The original cause stays attached so the real problem is debuggable.
+        assert isinstance(excinfo.value.__cause__, ZeroDivisionError)
+        assert "bad kinetics" in str(excinfo.value)
+
+
 class TestODESolverIterativeMethods:
     def test_solve_to_steady_state_converges(self, monkeypatch: pytest.MonkeyPatch) -> None:
         solver = ODESolver()

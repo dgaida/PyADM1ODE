@@ -2,6 +2,8 @@
 
 import math
 
+import pytest
+
 from pyadm1.components.base import ComponentType
 from pyadm1.components.sensors import GasSensor
 
@@ -130,3 +132,64 @@ class TestGasSensorSerialization:
         assert restored.output_key == "co2_signal"
         assert restored.inputs == ["gas_stream_1"]
         assert restored.outputs == ["controller_1"]
+
+
+class TestGasSensorValidity:
+    """``is_valid`` reports whether the last due sample produced a reading."""
+
+    def test_a_sample_without_an_upstream_signal_is_marked_invalid(self) -> None:
+        """Continuous mode: the sample is due but no signal ever arrived."""
+        sensor = GasSensor("ch4_1", sensor_type="CH4", measurement_noise=0.0, accuracy=0.0)
+
+        sensor.step(t=0.0, dt=1.0 / 24.0, inputs={"unrelated": 1.0})
+
+        assert sensor.is_valid is False
+        assert math.isnan(sensor.true_value)
+        assert math.isnan(sensor.measured_value)
+
+    def test_validity_is_regained_once_the_signal_appears(self) -> None:
+        sensor = GasSensor("ch4_1", sensor_type="CH4", measurement_noise=0.0, accuracy=0.0, response_time=0.0)
+
+        sensor.step(t=0.0, dt=1.0 / 24.0, inputs={})
+        assert sensor.is_valid is False
+
+        sensor.step(t=1.0 / 24.0, dt=1.0 / 24.0, inputs={"methane_fraction": 55.0})
+        assert sensor.is_valid is True
+        assert sensor.measured_value > 0.0
+
+    def test_a_batch_analyzer_without_a_signal_is_marked_invalid(self) -> None:
+        """Batch (GC) mode: nothing can be queued, so the due sample is invalid."""
+        sensor = GasSensor(
+            "gc_1",
+            sensor_type="CH4",
+            analyzer_method="gas_chromatography",
+            measurement_delay=0.05,
+            sample_interval=0.1,
+            measurement_noise=0.0,
+            accuracy=0.0,
+        )
+
+        sensor.step(t=0.0, dt=1.0 / 24.0, inputs={})
+
+        assert sensor.is_valid is False
+        assert sensor._pending_samples == []
+
+    def test_a_stale_reading_between_samples_stays_valid(self) -> None:
+        """Between two due samples the sensor holds its last result rather than flagging invalid."""
+        sensor = GasSensor(
+            "ch4_1",
+            sensor_type="CH4",
+            sample_interval=1.0,
+            measurement_noise=0.0,
+            accuracy=0.0,
+            response_time=0.0,
+        )
+
+        sensor.step(t=0.0, dt=1.0 / 24.0, inputs={"methane_fraction": 55.0})
+        assert sensor.is_valid is True
+
+        # Not due yet -> the invalid branch must not fire.
+        sensor.step(t=0.1, dt=1.0 / 24.0, inputs={})
+
+        assert sensor.is_valid is True
+        assert sensor.measured_value == pytest.approx(55.0)

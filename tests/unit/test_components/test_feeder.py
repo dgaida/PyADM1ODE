@@ -7,6 +7,7 @@ systems for feeding substrates into biogas digesters.
 """
 
 import numpy as np
+import pytest
 
 from pyadm1.components.feeding.feeder import Feeder, FeederType, SubstrateCategory
 
@@ -768,6 +769,49 @@ class TestFeederIntegration:
         assert (
             abs(actual_energy - expected_energy) < 0.1
         ), f"Energy accounting mismatch: {actual_energy:.2f} vs {expected_energy:.2f}"
+
+
+class TestFeederSubstrateCompatibility:
+    """A feeder must refuse a substrate category it physically cannot convey."""
+
+    @pytest.mark.parametrize(
+        ("feeder_type", "substrate_type"),
+        [
+            ("screw", "liquid"),
+            ("twin_screw", "liquid"),
+            ("piston", "liquid"),
+            ("centrifugal_pump", "solid"),
+            ("centrifugal_pump", "fibrous"),
+            ("progressive_cavity", "solid"),
+        ],
+    )
+    def test_incompatible_combinations_are_rejected(self, feeder_type: str, substrate_type: str) -> None:
+        with pytest.raises(ValueError, match="is not compatible with"):
+            Feeder("bad", feeder_type=feeder_type, substrate_type=substrate_type)
+
+    def test_the_error_names_both_sides_and_the_alternatives(self) -> None:
+        with pytest.raises(ValueError) as excinfo:
+            Feeder("bad", feeder_type="centrifugal_pump", substrate_type="solid")
+
+        message = str(excinfo.value)
+        assert "centrifugal_pump" in message
+        assert "solid" in message
+        assert "fibrous" in message  # the other incompatible category is listed too
+
+    @pytest.mark.parametrize(
+        ("feeder_type", "substrate_type"),
+        [
+            ("screw", "solid"),
+            ("screw", "fibrous"),
+            ("centrifugal_pump", "liquid"),
+            ("progressive_cavity", "slurry"),
+        ],
+    )
+    def test_compatible_combinations_are_accepted(self, feeder_type: str, substrate_type: str) -> None:
+        feeder = Feeder("ok", feeder_type=feeder_type, substrate_type=substrate_type)
+
+        assert feeder.feeder_type.value == feeder_type
+        assert feeder.substrate_type.value == substrate_type
 
 
 class TestFeederDocumentation:
