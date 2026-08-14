@@ -1221,33 +1221,21 @@ typische Begriffe ab, etwa „Gasspeicher"/„gas storage" für <code>V_gas</cod
   korrekt.  </li>
 <li>Eine <strong>schwächere KI rät</strong> und erfindet möglicherweise einen unplausiblen Wert.  </li>
 </ul>
-<p>Genau das schlägt sich in der Bewertung nieder: Für unvollständige Datenpunkte zählt
-der <strong>Lücken-Score</strong>, ob ein fehlendes Feld <strong>erfragt</strong> oder plausibel im
-Akzeptanzband <strong>ergänzt</strong> wurde. Das <strong>stille Erfinden</strong> eines unplausiblen Werts ist
-der schwerste Fehler. Details dazu auf der Seite
-<a href="../bewertung/">Bewertung &amp; Ablauf</a>.</p>
-<div class="admonition tip">
-<p class="admonition-title"><code>response.json</code> – Fragen und Annahmen festhalten</p>
-<p>Wer ein eigenes Modell <strong>offline</strong> auswertet, macht erfragte und ergänzte Felder
-in einer <code>response.json</code> neben dem Code explizit:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="p">{</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">  </span><span class="nt">"open_questions"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sep.source"</span><span class="w"> </span><span class="p">}],</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">  </span><span class="nt">"assumptions"</span><span class="p">:</span><span class="w">    </span><span class="p">[{</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"F1.T_ad"</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">313.15</span><span class="w"> </span><span class="p">}]</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="p">}</span>
-</code></pre></div>
-<p>Mehr dazu unter <a href="../nutzung/">Datensatz nutzen</a>.</p>
-</div>
+<p>Genau das schlägt sich in der Bewertung nieder — allerdings <strong>indirekt</strong>: Die
+Rückfragen selbst werden nicht benotet. Wer fragt, bekommt die richtigen Werte und
+liegt bei <strong>Maße</strong> im Akzeptanzband; wer rät und daneben liegt, verliert dort Punkte.
+Details dazu auf der Seite <a href="../bewertung/">Bewertung &amp; Ablauf</a>.</p>
 <h2 id="oracle-abschalten">Oracle abschalten<a class="headerlink" href="#oracle-abschalten" title="Permanent link">¶</a></h2>
 <p>Zum Vergleich lässt sich das Oracle deaktivieren. Dann stellt die KI <strong>keine</strong>
-Rückfragen und muss fehlende Werte selbst plausibel annehmen oder mit Standardwerten
-arbeiten:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>python<span class="w"> </span>benchmark/eval/solve.py<span class="w"> </span>--no-oracle
+Rückfragen und muss die fehlenden Werte raten:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>python<span class="w"> </span>benchmark/eval/solve.py<span class="w"> </span>--no-oracle
 </code></pre></div>
-<p>Das zeigt, wie gut ein Modell <strong>ohne</strong> Hilfestellung mit Lücken umgeht, eine nützliche
-Gegenprobe zum regulären Lauf mit Oracle.</p>
+<p>Das ist die Gegenprobe zum regulären Lauf: Sie zeigt, wie viel das Nachfragen
+tatsächlich wert ist. Erwartungsgemäß bricht dabei vor allem der <strong>Maße</strong>-Score ein —
+die Akzeptanzbänder sind zu eng, um einen ungenannten Wert zu erraten.</p>
 <hr/>
-<p>Den Datensatz visuell erkunden – inklusive der erwarteten Rückfragen und der
-Oracle-Antworten pro Datenpunkt – kannst du im <a href="../viewer/">Viewer</a>.</p>
+<p>Den Datensatz visuell erkunden – inklusive der Oracle-Antworten pro Datenpunkt –
+kannst du im <a href="../viewer/">Viewer</a>.</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>

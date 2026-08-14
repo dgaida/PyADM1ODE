@@ -745,10 +745,10 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#4-the-rules-regime-and-prohibitions">
+<a class="md-nav__link" href="#4-the-regime-complete-or-incomplete">
 <span class="md-ellipsis">
       
-        4. The rules – regime and prohibitions
+        4. The regime – complete or incomplete
       
     </span>
 </a>
@@ -1076,10 +1076,10 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#4-the-rules-regime-and-prohibitions">
+<a class="md-nav__link" href="#4-the-regime-complete-or-incomplete">
 <span class="md-ellipsis">
       
-        4. The rules – regime and prohibitions
+        4. The regime – complete or incomplete
       
     </span>
 </a>
@@ -1122,10 +1122,11 @@ few additional details for fair scoring.</p>
     DP["📄 Data point"] --&gt; E["1) Input&lt;br&gt;the task"]
     DP --&gt; R["2) Reference&lt;br&gt;the correct plant"]
     DP --&gt; O["3) Oracle&lt;br&gt;answers questions"]
-    DP --&gt; Z["4) Rules&lt;br&gt;regime &amp;amp; prohibitions"]</code></pre>
+    DP --&gt; Z["4) Regime&lt;br&gt;complete or not"]</code></pre>
 <h3 id="1-the-input-the-actual-task">1. The input – the actual task<a class="headerlink" href="#1-the-input-the-actual-task" title="Permanent link">¶</a></h3>
 <p>This is the <strong>description of the plant</strong> that the AI gets to see. Depending on the
-variant, it is a detailed text, a terse text or a sketch (image). The AI receives
+variant, it is a detailed text, a terse text, a sketch (image) or a PDF document —
+a written quotation, say. The AI receives
 <strong>only</strong> this input – nothing else.</p>
 <h3 id="2-the-reference-the-correct-plant">2. The reference – the correct plant<a class="headerlink" href="#2-the-reference-the-correct-plant" title="Permanent link">¶</a></h3>
 <p>The reference describes <strong>what the plant should correctly look like</strong>. It is the
@@ -1159,22 +1160,16 @@ oracle provides the correct answer (e.g. "40 °C"). The oracle also recognises
 <p>It is meant to distinguish two behaviours: a good AI <strong>asks</strong> when information is
 missing. A weaker AI simply <strong>guesses</strong> – and may get it wrong.</p>
 </div>
-<h3 id="4-the-rules-regime-and-prohibitions">4. The rules – regime and prohibitions<a class="headerlink" href="#4-the-rules-regime-and-prohibitions" title="Permanent link">¶</a></h3>
-<p>Two additional pieces of information ensure fair scoring:</p>
-<ul>
-<li>
-<p><strong>Regime</strong> – describes whether the task is <strong>complete</strong> or <strong>incomplete</strong>:  </p>
+<h3 id="4-the-regime-complete-or-incomplete">4. The regime – complete or incomplete<a class="headerlink" href="#4-the-regime-complete-or-incomplete" title="Permanent link">¶</a></h3>
+<p>The <strong>regime</strong> describes whether the task is fully described or not:</p>
 <ul>
 <li><em>fully specified</em>: All information is in the description. No asking needed.  </li>
-<li><em>underspecified</em>: Information is missing and must be asked for or sensibly<br/>
-  filled in.</li>
+<li><em>underspecified</em>: Information is missing and has to be <strong>asked</strong> of the oracle.  </li>
 </ul>
-</li>
-<li>
-<p><strong>Prohibitions</strong> (<code>must_not_invent</code>) – things the AI <strong>must not invent</strong>. If a<br/>
-  plant has no combined heat and power unit, for instance, the AI must not add one.</p>
-</li>
-</ul>
+<p>There is no separate list of prohibitions. What the AI must not invent follows
+directly from the reference: a plant whose reference contains no separator simply
+must not contain one — the <a href="../bewertung/">no-inventions score</a> checks that against
+the reference itself.</p>
 <h2 id="how-certain-a-piece-of-information-is">How "certain" a piece of information is<a class="headerlink" href="#how-certain-a-piece-of-information-is" title="Permanent link">¶</a></h2>
 <p>Not every detail is equally unambiguous. Therefore, each property records <strong>where</strong>
 it comes from:</p>
@@ -1196,7 +1191,7 @@ it comes from:</p>
 </tr>
 <tr>
 <td><strong>may be asked</strong></td>
-<td>Missing – the AI should ask or fill it in sensibly.</td>
+<td>Missing – the AI has to ask the oracle; the tolerance band is too tight to guess the value.</td>
 </tr>
 <tr>
 <td><strong>automatic</strong></td>

@@ -2317,7 +2317,7 @@ distinguishes the three examples.</p>
 <h2 id="variants-the-same-plant-described-differently">Variants: the same plant, described differently<a class="headerlink" href="#variants-the-same-plant-described-differently" title="Permanent link">&para;</a></h2>
 <p>For each plant there is the <strong>same</strong> biogas plant, but <strong>described in different
 ways</strong>. This makes it possible to test whether the AI is robust – regardless of
-whether the description is long, short, in English or a sketch.</p>
+whether the description is long, short, in English, a sketch or a PDF document.</p>
 <p>Two properties are combined here:</p>
 <p><strong>1. The form of the description</strong></p>
 <ul>
@@ -2325,13 +2325,14 @@ whether the description is long, short, in English or a sketch.</p>
 <li><strong>terse text</strong> – only the key figures  </li>
 <li><strong>English text</strong> – the same plant in English  </li>
 <li><strong>sketch</strong> – a drawing of the plant (image)  </li>
+<li><strong>PDF</strong> – a real plant document, e.g. a written quotation  </li>
 </ul>
-<p><strong>2. The completeness of the information</strong></p>
+<p><strong>2. How complete the description is</strong></p>
 <ul>
 <li><strong>complete</strong> (suffix <code>_full</code>): All required information is in the description. The<br />
   AI does not need to ask anything.  </li>
 <li><strong>incomplete</strong>: Some information is missing (e.g. the operating temperature). The<br />
-  AI has to <strong>ask</strong> for it or fill it in sensibly.</li>
+  AI has to <strong>ask</strong> the oracle for it — a guess is practically never close enough.</li>
 </ul>
 <div class="admonition example">
 <p class="admonition-title">Example</p>

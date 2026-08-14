@@ -1220,31 +1220,21 @@ return <strong>both</strong> related fields (<code>eta_el</code> and <code>eta_t
 <li>A <strong>good AI asks</strong> when information is missing – and then builds the plant correctly.  </li>
 <li>A <strong>weaker AI guesses</strong> and may invent an implausible value.  </li>
 </ul>
-<p>This is exactly what the scoring reflects: for under-specified data points the <strong>gap
-score</strong> counts whether a missing field was <strong>asked about</strong> or plausibly <strong>filled</strong>
-within the acceptance band. <strong>Silently inventing</strong> an implausible value is the most
-serious mistake. See <a href="../bewertung/">Scoring &amp; Workflow</a> for the details.</p>
-<div class="admonition tip">
-<p class="admonition-title"><code>response.json</code> – recording questions and assumptions</p>
-<p>If you evaluate your own model <strong>offline</strong>, make asked and assumed fields explicit
-in a <code>response.json</code> next to the code:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="p">{</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">  </span><span class="nt">"open_questions"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sep.source"</span><span class="w"> </span><span class="p">}],</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">  </span><span class="nt">"assumptions"</span><span class="p">:</span><span class="w">    </span><span class="p">[{</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"F1.T_ad"</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">313.15</span><span class="w"> </span><span class="p">}]</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="p">}</span>
-</code></pre></div>
-<p>More about this under <a href="../nutzung/">Using the Dataset</a>.</p>
-</div>
+<p>This is exactly what the scoring reflects — but <strong>indirectly</strong>: the questions
+themselves are not graded. A model that asks gets the right values and lands inside
+the acceptance band on <strong>Measures</strong>; one that guesses wrong loses points there.
+See <a href="../bewertung/">Scoring &amp; Workflow</a> for the details.</p>
 <h2 id="turning-the-oracle-off">Turning the oracle off<a class="headerlink" href="#turning-the-oracle-off" title="Permanent link">¶</a></h2>
 <p>For comparison the oracle can be disabled. The AI then asks <strong>no</strong> follow-up questions
-and must plausibly assume missing values itself or work with defaults:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>python<span class="w"> </span>benchmark/eval/solve.py<span class="w"> </span>--no-oracle
+and has to guess the missing values:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>python<span class="w"> </span>benchmark/eval/solve.py<span class="w"> </span>--no-oracle
 </code></pre></div>
-<p>This shows how well a model copes with gaps <strong>without</strong> assistance – a useful
-counter-check to the regular run with the oracle.</p>
+<p>This is the counter-check to the regular run: it shows what asking is actually worth.
+Expect the <strong>Measures</strong> score to drop sharply — the acceptance bands are far too tight
+to guess a value that was never stated.</p>
 <hr/>
-<p>You can explore the dataset visually – including the expected follow-up questions and
-the oracle answers per data point – in the <a href="../viewer/">Viewer</a>.</p>
+<p>You can explore the dataset visually – including the oracle answers per data point –
+in the <a href="../viewer/">Viewer</a>.</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>

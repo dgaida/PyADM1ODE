@@ -1762,17 +1762,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#programmatischer-zugriff" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Programmatischer Zugriff
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#bewertung" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2372,17 +2361,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#programmatischer-zugriff" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Programmatischer Zugriff
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#bewertung" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2433,7 +2411,7 @@ kommen ohne PyADM1ODE aus.</p>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  schema/    plant_datapoint.schema.json   JSON-Schema (Draft 2020-12) eines Datenpunkts
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  dataset/   index.json                    Manifest aller Datenpunkte
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>             BGA1/ BGA2/ ...               je eine Anlage mit Input-Varianten + gold.py
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  eval/      solve.py runner.py matcher.py batch.py make_index.py …
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  eval/      solve.py runner.py matcher.py batch.py make_index.py validate.py …
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>  viewer/    index.html                    interaktiver Datenpunkt-Viewer
 </code></pre></div>
 <p><strong>Ein Ordner pro Anlage.</strong> Darin liegen alle Input-Varianten und eine gemeinsame
@@ -2448,7 +2426,7 @@ Gold-Lösung <code>gold.py</code> (korrekter PyADM1ODE-Code).</p>
 <tbody>
 <tr>
 <td><code>BGAx_&lt;variante&gt;.json</code></td>
-<td><strong>Aufgabe</strong>: Input (Text/Bild) für das Modell <strong>und</strong> die Referenz-Anlage (typisierter Graph) zum Abgleich</td>
+<td><strong>Aufgabe</strong>: Input (Text, Bild oder PDF) für das Modell <strong>und</strong> die Referenz-Anlage (typisierter Graph) zum Abgleich</td>
 </tr>
 <tr>
 <td><code>gold.py</code></td>
@@ -2461,8 +2439,8 @@ Gold-Lösung <code>gold.py</code> (korrekter PyADM1ODE-Code).</p>
 markiert die Vollständigkeit:</p>
 <ul>
 <li><strong><code>fully_specified</code></strong> (<code>_full</code>): alle Angaben im Input – kein Oracle nötig.  </li>
-<li><strong><code>underspecified</code></strong> (ohne <code>_full</code>): Werte fehlen – das Modell muss nachfragen<br />
-  oder plausibel ergänzen.</li>
+<li><strong><code>underspecified</code></strong> (ohne <code>_full</code>): Werte fehlen – das Modell muss beim Oracle<br />
+<strong>nachfragen</strong>. Raten hilft nicht, dafür sind die Akzeptanzbänder zu eng.</li>
 </ul>
 <table>
 <thead>
@@ -2485,8 +2463,8 @@ markiert die Vollständigkeit:</p>
 </tr>
 <tr>
 <td>Modalität</td>
-<td>text / image / hybrid</td>
-<td>18 / 3 / 3</td>
+<td>text / image / hybrid / pdf</td>
+<td>18 / 3 / 3 / 0</td>
 </tr>
 <tr>
 <td>Sprache</td>
@@ -2510,6 +2488,10 @@ JSON-Schema unter <code>benchmark/schema/plant_datapoint.schema.json</code>.</p>
 <tr>
 <td>Matcher-Selbsttest (ohne PyADM1ODE)</td>
 <td><code>python benchmark/eval/selftest.py</code></td>
+</tr>
+<tr>
+<td>Datenpunkte gegen das Schema prüfen</td>
+<td><code>python benchmark/eval/validate.py</code></td>
 </tr>
 <tr>
 <td>Baseline – alle Datenpunkte mit <code>gold.py</code></td>
@@ -2548,7 +2530,8 @@ JSON-Schema unter <code>benchmark/schema/plant_datapoint.schema.json</code>.</p>
 Code je Datenpunkt unter <code>benchmark/results/</code> ab.</p>
 <h2 id="eigenes-modell-anbinden-oder-trainieren">Eigenes Modell anbinden oder trainieren<a class="headerlink" href="#eigenes-modell-anbinden-oder-trainieren" title="Permanent link">&para;</a></h2>
 <p>Die <strong>Eingabe</strong> liegt im Datenpunkt unter <code>input</code> (Felder <code>modality</code>, <code>language</code>,
-<code>content</code>, ggf. <code>image_path</code>). Das <strong>Ziel</strong> ist lauffähiger PyADM1ODE-Code, der die
+<code>content</code>, ggf. <code>image_path</code> oder <code>document_path</code>). Das <strong>Ziel</strong> ist lauffähiger
+PyADM1ODE-Code, der die
 Anlage baut. Die <strong>Referenz</strong> zum Abgleich steht unter <code>reference</code> (Bauteile +
 Verbindungen als typisierter Graph). <code>gold.py</code> zeigt je Anlage eine korrekte
 Umsetzung.</p>
@@ -2559,52 +2542,49 @@ zwei Skript-Wege (A und B).</p>
 als <code>&lt;datapoint-id&gt;.py</code> in einem Ordner. Danach:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>python<span class="w"> </span>benchmark/eval/batch.py<span class="w"> </span>--candidates<span class="w"> </span>pfad/zu/modell_ausgaben
 </code></pre></div>
-<p><code>batch.py</code> führt jeden Kandidaten isoliert aus und bewertet ihn. Liegt neben
-<code>&lt;id&gt;.py</code> eine <code>&lt;id&gt;.response.json</code>, fließt sie in den Lücken-Score ein.</p>
+<p><code>batch.py</code> führt jeden Kandidaten isoliert aus und bewertet ihn.</p>
 <h3 id="b-direkt-uber-solvepy-api">B) Direkt über solve.py (API)<a class="headerlink" href="#b-direkt-uber-solvepy-api" title="Permanent link">&para;</a></h3>
 <p><code>solve.py</code> ist ein vollständiger Lauf inkl. Oracle-Runden. Standardmäßig nutzt
 es die Groq-API. Für ein eigenes Modell muss <strong>nur die Client-Sektion</strong> in <code>solve.py</code>
 angepasst werden, der restliche Ablauf (Prompt, Oracle, Bewertung) bleibt gleich.</p>
 <p>```bash
-pip install groq          # bzw. eigene Client-Bibliothek
+pip install -e ".[benchmark]"   # groq + pypdf; bzw. eigene Client-Bibliothek
 export GROQ_API_KEY=...    # bzw. eigener API-Key
 python benchmark/eval/solve.py --regime fully_specified   # einfachster Einstieg
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>### `response.json` (für den Lücken-Score)
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>### Rückfragen bei unterspezifizierten Datenpunkten
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>Für unterspezifizierte Datenpunkte zählt, ob ein fehlendes Feld **erfragt** oder
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>plausibel **ergänzt** wurde. Eine strukturierte Antwort neben dem Code macht das
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>explizit:
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>Fehlt eine Angabe, darf das Modell zuerst fragen — als JSON-Block mit
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>`open_questions` (Format siehe `prompt.py`). `solve.py` reicht die Fragen an das
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>[Oracle](oracle.md) weiter und schickt die Antworten in einen zweiten Turn.
 <a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>```json
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>{
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>  &quot;open_questions&quot;: [{&quot;field&quot;: &quot;chp.P_el_nom&quot;}, {&quot;field&quot;: &quot;sep.source&quot;}],
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>  &quot;assumptions&quot;:    [{&quot;field&quot;: &quot;F1.T_ad&quot;, &quot;value&quot;: 313.15}]
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>}
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>Die Rückfragen selbst werden **nicht** benotet. Bewertet wird nur die Anlage, die
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>am Ende dabei herauskommt: Wer nicht fragt und trotzdem plausible Werte trifft,
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>verliert nichts — wer nicht fragt und daneben liegt, verliert bei **Maße**.
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>## Programmatischer Zugriff
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>Das Manifest `dataset/index.json` listet alle Datenpunkte mit `id`, `path`,
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>`language`, `modality`, `regime`:
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>```python
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>import json
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>from pathlib import Path
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>root = Path(&quot;benchmark/dataset&quot;)
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>index = json.loads((root / &quot;index.json&quot;).read_text(encoding=&quot;utf-8&quot;))
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>for entry in index[&quot;datapoints&quot;]:
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>    dp = json.loads((root / entry[&quot;path&quot;]).read_text(encoding=&quot;utf-8&quot;))
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>    task = dp[&quot;input&quot;][&quot;content&quot;]        # Beschreibung für das Modell
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>    reference = dp[&quot;reference&quot;]          # Soll-Anlage (Bauteile + Verbindungen)
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>    # ... eigenes Modell aufrufen, Code erzeugen, bewerten ...
 </code></pre></div></p>
-<p>Fragt das Modell nach einem <code>missing_ask</code>-Feld oder füllt es plausibel im Band,
-zählt das als korrekt. Stilles Erfinden eines unplausiblen Werts ist der schwerste
-Fehler.</p>
-<h2 id="programmatischer-zugriff">Programmatischer Zugriff<a class="headerlink" href="#programmatischer-zugriff" title="Permanent link">&para;</a></h2>
-<p>Das Manifest <code>dataset/index.json</code> listet alle Datenpunkte mit <code>id</code>, <code>path</code>,
-<code>language</code>, <code>modality</code>, <code>regime</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;benchmark/dataset&quot;</span><span class="p">)</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">index</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">((</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;index.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">index</span><span class="p">[</span><span class="s2">&quot;datapoints&quot;</span><span class="p">]:</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">dp</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">((</span><span class="n">root</span> <span class="o">/</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">task</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">]</span>        <span class="c1"># Beschreibung für das Modell</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">reference</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">]</span>          <span class="c1"># Soll-Anlage (Bauteile + Verbindungen)</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="c1"># ... eigenes Modell aufrufen, Code erzeugen, bewerten ...</span>
-</code></pre></div>
 <h2 id="bewertung">Bewertung<a class="headerlink" href="#bewertung" title="Permanent link">&para;</a></h2>
-<p>Bewertet werden drei Scores:</p>
+<p>Bewertet werden drei Scores, die bewusst disjunkt sind — jeder Fehler zählt genau einmal:</p>
 <ol>
-<li><strong>Struktur</strong> – Bauteile (nach Typ zugeordnet, nicht nach Namen) und Verbindungen.  </li>
+<li><strong>Vollständigkeit</strong> – sind alle Pflicht-Bauteile und Pflicht-Verbindungen da?  </li>
 <li><strong>Maße</strong> – simulierte Parameter (<code>V_liq</code>, <code>V_gas</code>, <code>T_ad</code>, <code>P_el_nom</code>, …) im Akzeptanzband.  </li>
-<li><strong>Fehlende Werte</strong> – nachgefragt oder plausibel gefüllt statt still erfunden.  </li>
+<li><strong>Keine Erfindungen</strong> – enthält die Anlage <em>nur</em> Bauteile und Verbindungen, die die Referenz kennt?  </li>
 </ol>
 <p>Wie daraus die Endbewertung entsteht, erklärt <a href="../bewertung/">Bewertung &amp; Ablauf</a>.
 Den Datensatz visuell erkunden kannst du im <a href="../viewer/">Viewer</a>.</p>

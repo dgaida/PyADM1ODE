@@ -749,6 +749,15 @@
 </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#jeder-fehler-zahlt-genau-einmal">
+<span class="md-ellipsis">
+      
+        Jeder Fehler zählt genau einmal
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#was-zahlt-und-was-nicht">
 <span class="md-ellipsis">
       
@@ -758,10 +767,10 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#hinweis-zu-skizzen-aufgaben">
+<a class="md-nav__link" href="#hinweis-zu-skizzen-und-pdf-aufgaben">
 <span class="md-ellipsis">
       
-        Hinweis zu Skizzen-Aufgaben
+        Hinweis zu Skizzen- und PDF-Aufgaben
       
     </span>
 </a>
@@ -1025,6 +1034,15 @@
 </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#jeder-fehler-zahlt-genau-einmal">
+<span class="md-ellipsis">
+      
+        Jeder Fehler zählt genau einmal
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#was-zahlt-und-was-nicht">
 <span class="md-ellipsis">
       
@@ -1034,10 +1052,10 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#hinweis-zu-skizzen-aufgaben">
+<a class="md-nav__link" href="#hinweis-zu-skizzen-und-pdf-aufgaben">
 <span class="md-ellipsis">
       
-        Hinweis zu Skizzen-Aufgaben
+        Hinweis zu Skizzen- und PDF-Aufgaben
       
     </span>
 </a>
@@ -1061,7 +1079,7 @@
     E --&gt; F["📊 Drei Bewertungen&lt;br&gt;in Prozent"]</code></pre>
 <p>Schritt für Schritt:</p>
 <ol>
-<li><strong>Aufgabe lesen:</strong> Die KI erhält die Beschreibung (Text oder Skizze).  </li>
+<li><strong>Aufgabe lesen:</strong> Die KI erhält die Beschreibung (Text, Skizze oder PDF).  </li>
 <li><strong>Nachfragen (nur bei unvollständigen Aufgaben):</strong> Fehlt etwas, darf die KI das<br/>
 <a href="../datenpunkt/">Oracle</a> fragen.  </li>
 <li><strong>Anlage bauen:</strong> Die KI generiert den Python-Code, mit dem PyADM1ODE die Anlage aufbaut.  </li>
@@ -1071,15 +1089,15 @@
 </ol>
 <h2 id="die-drei-bewertungen">Die drei Bewertungen<a class="headerlink" href="#die-drei-bewertungen" title="Permanent link">¶</a></h2>
 <p>Das Ergebnis wird aus drei Blickwinkeln betrachtet. Jede Bewertung ist ein
-Prozentwert zwischen 0 % und 100 %.</p>
+Prozentwert zwischen 0 % und 100 %. Die drei Blickwinkel sind bewusst so gewählt,
+dass sich <strong>jeder mögliche Fehler genau einer</strong> Bewertung zuordnen lässt.</p>
 <div class="grid cards">
 <ul>
 <li>
-<p><span class="twemoji lg middle"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.5 17c-.14 0-.26 0-.39.04L17.5 13.8c.45-.45.75-1.09.75-1.8a2.5 2.5 0 0 0-2.5-2.5c-.14 0-.25 0-.4.04L13.74 6.3c.47-.46.76-1.09.76-1.8a2.5 2.5 0 0 0-5 0c0 .7.29 1.34.76 1.79L8.65 9.54c-.15-.04-.26-.04-.4-.04a2.5 2.5 0 0 0-2.5 2.5c0 .71.29 1.34.75 1.79l-1.61 3.25C4.76 17 4.64 17 4.5 17a2.5 2.5 0 0 0 0 5A2.5 2.5 0 0 0 7 19.5c0-.7-.29-1.34-.76-1.79l1.62-3.25c.14.04.26.04.39.04s.25 0 .38-.04l1.63 3.25c-.47.45-.76 1.09-.76 1.79a2.5 2.5 0 0 0 5 0A2.5 2.5 0 0 0 12 17c-.13 0-.26 0-.39.04L10 13.8c.45-.45.75-1.09.75-1.8 0-.7-.29-1.33-.75-1.79l1.61-3.25c.13.04.26.04.39.04s.26 0 .39-.04L14 10.21a2.5 2.5 0 0 0 1.75 4.29c.13 0 .25 0 .38-.04l1.63 3.25c-.47.45-.76 1.09-.76 1.79a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0-2.5-2.5m-15 3.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1m8.5-1c0 .55-.45 1-1 1s-1-.45-1-1 .45-1 1-1 1 .45 1 1M7.25 12c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1M11 4.5c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1m3.75 7.5c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1m4.75 8.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1"></path></svg></span> <strong>1. Struktur</strong> </p>
+<p><span class="twemoji lg middle"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 10H3v2h11zm0-4H3v2h11zM3 16h7v-2H3zm18.5-4.5L23 13l-7 7-4.5-4.5L13 14l3 3z"></path></svg></span> <strong>1. Vollständigkeit</strong> </p>
 <hr/>
-<p>Sind die <strong>richtigen Bauteile</strong> vorhanden und <strong>richtig verbunden</strong>?
-Beispiel: Fließt der Gärrest vom Fermenter in den Nachgärer und das Biogas
-zum Blockheizkraftwerk?</p>
+<p>Ist <strong>alles Nötige da</strong>? Fehlt ein Behälter, ein Blockheizkraftwerk oder eine
+Leitung zwischen zwei Bauteilen, sinkt diese Bewertung.</p>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m1.39 18.36 1.77-1.76L4.58 18l1.06-1.05-1.42-1.41 1.42-1.42 2.47 2.48 1.06-1.06-2.47-2.48 1.41-1.41 1.42 1.41L10.59 12l-1.42-1.41 1.42-1.42 2.47 2.48 1.06-1.06-2.47-2.48 1.41-1.41 1.41 1.41 1.07-1.06-1.42-1.41 1.42-1.42L18 6.7l1.07-1.06-2.47-2.48 1.76-1.77 4.25 4.25L5.64 22.61z"></path></svg></span> <strong>2. Maße</strong> </p>
@@ -1089,13 +1107,55 @@ des Blockheizkraftwerks? Geprüft wird mit einem <strong>Toleranzbereich</strong
 Abweichungen sind also erlaubt.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11 18h2v-2h-2zm1-16A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-14a4 4 0 0 0-4 4h2a2 2 0 0 1 2-2 2 2 0 0 1 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5a4 4 0 0 0-4-4"></path></svg></span> <strong>3. Lücken</strong> </p>
+<p><span class="twemoji lg middle"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8.27 3 3 8.27v7.46L8.27 21h7.46C17.5 19.24 21 15.73 21 15.73V8.27L15.73 3M9.1 5h5.8L19 9.1v5.8L14.9 19H9.1L5 14.9V9.1m6 5.9h2v2h-2zm0-8h2v6h-2z"></path></svg></span> <strong>3. Keine Erfindungen</strong> </p>
 <hr/>
-<p>Ist die KI mit <strong>fehlenden Angaben</strong> richtig umgegangen? Hat sie <strong>nachgefragt</strong>
-oder <strong>plausibel ergänzt</strong>, statt einfach einen falschen Wert zu erfinden?</p>
+<p>Ist <strong>nur</strong> das da, was auch dazugehört? Baut die KI ein zusätzliches Bauteil
+oder eine Leitung ein, die es gar nicht gibt, sinkt diese Bewertung.</p>
 </li>
 </ul>
 </div>
+<div class="admonition info">
+<p class="admonition-title">Wie eng ist der Toleranzbereich?</p>
+<p>Jede Angabe, die für die Simulation gebraucht wird, <strong>steht entweder in der
+Beschreibung oder die KI kann sie erfragen</strong>. Raten muss sie nie. Entsprechend eng
+ist der Bereich — er deckt nur ab, was beim Rechnen unvermeidlich ist:</p>
+<ul>
+<li><strong>Wird der Wert übernommen</strong> (aus der Beschreibung oder vom Oracle), muss die KI<br/>
+  ihn treffen. Erlaubt ist nur Rundung: <code>40 °C</code> als <code>313,0</code> statt <code>313,15 K</code> ist in
+  Ordnung, <code>39 °C</code> nicht.</li>
+<li><strong>Wird der Wert gerechnet</strong> — etwa ein Volumen aus Durchmesser und Höhe —, darf<br/>
+  etwas mehr abweichen. Je nachdem, wo man rundet, kommt man auf leicht
+  unterschiedliche Ergebnisse.</li>
+</ul>
+</div>
+<h2 id="jeder-fehler-zahlt-genau-einmal">Jeder Fehler zählt genau einmal<a class="headerlink" href="#jeder-fehler-zahlt-genau-einmal" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Was die KI falsch macht</th>
+<th>Welche Bewertung sinkt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lässt ein Bauteil oder eine Leitung <strong>weg</strong></td>
+<td>1. Vollständigkeit</td>
+</tr>
+<tr>
+<td><strong>erfindet einen Wert</strong>, der nicht plausibel ist</td>
+<td>2. Maße</td>
+</tr>
+<tr>
+<td><strong>erfindet ein Bauteil</strong> oder eine Leitung</td>
+<td>3. Keine Erfindungen</td>
+</tr>
+</tbody>
+</table>
+<p>Erfindet die KI ein Bauteil einer Art, die es in der Anlage <strong>überhaupt nicht gibt</strong>
+– etwa einen Separator in einer Anlage ganz ohne Separator –, wird die dritte
+Bewertung besonders hart gedeckelt. Das ist der schwerste Fehler.</p>
+<p>Weglassen lohnt sich dabei nicht: Wer ein Bauteil nicht baut, wird auch dessen
+Leitungen nicht los – sie fehlen dann ebenfalls.</p>
 <h2 id="was-zahlt-und-was-nicht">Was zählt – und was nicht<a class="headerlink" href="#was-zahlt-und-was-nicht" title="Permanent link">¶</a></h2>
 <p>Damit die Bewertung fair und aussagekräftig bleibt, werden einige Dinge bewusst
 <strong>nicht</strong> mitgewertet:</p>
@@ -1104,13 +1164,19 @@ oder <strong>plausibel ergänzt</strong>, statt einfach einen falschen Wert zu e
 <strong>Art</strong> des Bauteils (Fermenter, Pumpe …), nicht nach dem Namen.  </li>
 <li><strong>Substrate werden nicht bewertet:</strong> Welche Stoffe gefüttert werden, fließt nicht<br/>
   in die Wertung ein, es geht allein um den <strong>Aufbau</strong> der Anlage.  </li>
-<li><strong>Schwerster Fehler:</strong> Einen unplausiblen Wert <strong>still zu erfinden</strong>, statt<br/>
-  nachzufragen, wird am stärksten abgewertet.</li>
+<li><strong>Rückfragen werden nicht benotet:</strong> Ob die KI nachfragt, ist ihr überlassen.<br/>
+  Bewertet wird nur die Anlage, die am Ende dabei herauskommt — wer rät und daneben
+  liegt, verliert bei den <strong>Maßen</strong>.</li>
 </ul>
-<h2 id="hinweis-zu-skizzen-aufgaben">Hinweis zu Skizzen-Aufgaben<a class="headerlink" href="#hinweis-zu-skizzen-aufgaben" title="Permanent link">¶</a></h2>
+<h2 id="hinweis-zu-skizzen-und-pdf-aufgaben">Hinweis zu Skizzen- und PDF-Aufgaben<a class="headerlink" href="#hinweis-zu-skizzen-und-pdf-aufgaben" title="Permanent link">¶</a></h2>
 <p>Aufgaben mit <strong>Skizze</strong> (Bild) können nur von KI-Modellen gelöst werden, die
 <strong>Bilder verstehen</strong>. Ein reines Text-Modell kann eine Skizze nicht „sehen" und
 würde solche Aufgaben zwangsläufig mit 0 % bewertet bekommen.</p>
+<p><strong>PDF-Aufgaben</strong> brauchen das nicht: Aus dem Dokument wird der Text ausgelesen und
+als Text weitergereicht. Auch ein reines Text-Modell kann sie also lösen. Die
+Schwierigkeit liegt woanders — die technischen Angaben stehen zwischen
+Positionsnummern, Preisen und Zahlungsbedingungen und müssen erst herausgesucht
+werden.</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>

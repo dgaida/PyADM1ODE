@@ -2593,6 +2593,23 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameters_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
   <a href="#auto_connect_chp_to_heating" class="md-nav__link">
     <span class="md-ellipsis">
@@ -2659,8 +2676,41 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#set_feedstock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        set_feedstock
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameters_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#returns_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
   
 </li>
       
@@ -3469,13 +3519,17 @@ and automatic setup of common configurations (gas storage attached to
 digesters, flare attached to CHP, etc.).</p>
 <h3 id="methods-for-plantconfigurator">Methods for PlantConfigurator<a class="headerlink" href="#methods-for-plantconfigurator" title="Permanent link">&para;</a></h3>
 <h4 id="init_2"><strong>init</strong><a class="headerlink" href="#init_2" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plant</span><span class="p">:</span> <span class="s1">&#39;BiogasPlant&#39;</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">:</span> <span class="s1">&#39;Feedstock&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plant</span><span class="p">:</span> <span class="s1">&#39;BiogasPlant&#39;</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">:</span> <span class="s1">&#39;Feedstock | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h2>
 <p>plant : BiogasPlant
     Plant instance to configure.
-feedstock : Feedstock
-    Feedstock used by all digesters added through this configurator.</p>
+feedstock : Feedstock, optional
+    Feedstock used by all digesters added through this configurator.
+    May be omitted to lay out the plant first and supply the substrates
+    later via :meth:<code>set_feedstock</code> -- useful when the structure is
+    known before the feed is. Digesters built without a feedstock can
+    be created and initialized, but not simulated until one is attached.</p>
 <h4 id="add_bgaa">add_bgaa<a class="headerlink" href="#add_bgaa" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="n">add_bgaa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bgaa_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">capacity_m3h</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">500.0</span><span class="p">,</span> <span class="n">ch4_recovery</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">0.98</span><span class="p">,</span> <span class="n">ch4_content_in</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">0.55</span><span class="p">,</span> <span class="n">ch4_content_out</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">0.97</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BiogasUpgrading&#39;</span>
 </code></pre></div>
@@ -3488,12 +3542,16 @@ the BGAA for capacity overflow (<code>{bgaa_id}_flare</code>).</p>
 <p>Add a CHP unit to the plant.</p>
 <p>Automatically creates and connects a safety flare downstream of the CHP.</p>
 <h4 id="add_digester">add_digester<a class="headerlink" href="#add_digester" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="n">add_digester</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digester_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">V_liq</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">1050.0</span><span class="p">,</span> <span class="n">V_gas</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">150.0</span><span class="p">,</span> <span class="n">T_ad</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">315.15</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Q_substrates</span><span class="p">:</span> <span class="s1">&#39;list | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">k_L_a</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">adm1_state</span><span class="p">:</span> <span class="s1">&#39;list | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dynamic_volume</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">initial_fill_fraction</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">outflow_time_constant</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;tuple[Digester, str]&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="n">add_digester</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digester_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">V_liq</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">1050.0</span><span class="p">,</span> <span class="n">V_gas</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">150.0</span><span class="p">,</span> <span class="n">T_ad</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">315.15</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Q_substrates</span><span class="p">:</span> <span class="s1">&#39;list | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">k_L_a</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">adm1_state</span><span class="p">:</span> <span class="s1">&#39;list | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dynamic_volume</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">initial_fill_fraction</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">outflow_time_constant</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">:</span> <span class="s1">&#39;Feedstock | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;tuple[Digester, str]&#39;</span>
 </code></pre></div>
 <p>Add an ADM1da digester to the plant.</p>
 <p>The digester's influent DataFrame, density, and steady-state initial
 state are wired automatically from the attached :class:<code>Feedstock</code>.
 A gas storage is auto-created and connected.</p>
+<p>When no feedstock is available (neither here nor on the configurator),
+the digester is still created and initialized -- attach the substrates
+later with :meth:<code>set_feedstock</code>. <code>T_ad</code> can be changed at any time
+via :meth:<code>Digester.set_temperature</code>.</p>
 <h2 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h2>
 <p>digester_id : str
     Unique identifier for this digester.
@@ -3527,15 +3585,28 @@ outflow_time_constant : float, default 1.0
 backend : str, optional
     ADM1 right-hand-side backend, <code>"numpy"</code> (default) or <code>"torch"</code>
     (differentiable, same values). <code>None</code> uses the process-wide
-    default (see :func:<code>pyadm1.set_default_adm1_backend</code>).</p>
+    default (see :func:<code>pyadm1.set_default_adm1_backend</code>).
+feedstock : Feedstock, optional
+    Per-digester feedstock. Falls back to the configurator's feedstock,
+    which may itself be <code>None</code>.</p>
 <h2 id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h2>
 <p>(Digester, str)
     The created digester and a one-line description of how the
     initial state was determined.</p>
 <h4 id="add_heating">add_heating<a class="headerlink" href="#add_heating" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="n">add_heating</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heating_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">target_temperature</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">308.15</span><span class="p">,</span> <span class="n">heat_loss_coefficient</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;HeatingSystem&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="n">add_heating</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heating_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">target_temperature</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">315.15</span><span class="p">,</span> <span class="n">heat_loss_coefficient</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;HeatingSystem&#39;</span>
 </code></pre></div>
 <p>Add a heating system to the plant.</p>
+<h2 id="parameters_3">Parameters<a class="headerlink" href="#parameters_3" title="Permanent link">&para;</a></h2>
+<p>heating_id : str
+    Unique identifier for this heating system.
+target_temperature : float
+    Setpoint [K] (default 315.15 = 42 °C, matching the <code>T_ad</code> default
+    of :meth:<code>add_digester</code>). Pass it explicitly whenever the digester
+    runs at a different temperature -- the two are not linked.
+heat_loss_coefficient : float
+    Heat loss coefficient [kW/K] (default 0.5).
+name : str, optional</p>
 <h4 id="auto_connect_chp_to_heating">auto_connect_chp_to_heating<a class="headerlink" href="#auto_connect_chp_to_heating" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="n">auto_connect_chp_to_heating</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chp_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">heating_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
@@ -3563,8 +3634,30 @@ backend : str, optional
 <p>The hydrolysis stage is just another :class:<code>Digester</code> instance with
 a higher temperature and shorter HRT — there is no separate
 <code>Hydrolysis</code> class.</p>
+<h4 id="set_feedstock">set_feedstock<a class="headerlink" href="#set_feedstock" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="n">set_feedstock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">:</span> <span class="s1">&#39;Feedstock&#39;</span><span class="p">,</span> <span class="n">digester_ids</span><span class="p">:</span> <span class="s1">&#39;list[str] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Q_substrates</span><span class="p">:</span> <span class="s1">&#39;dict[str, list] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rebuild_state</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;list[str]&#39;</span>
+</code></pre></div>
+<p>Attach a feedstock to this configurator and wire it into digesters.</p>
+<p>Complements the optional <code>feedstock</code> constructor argument: build the
+plant structure first, add the substrates once they are known.</p>
+<h2 id="parameters_4">Parameters<a class="headerlink" href="#parameters_4" title="Permanent link">&para;</a></h2>
+<p>feedstock : Feedstock
+    Feedstock to attach. Also becomes the default for digesters added
+    afterwards.
+digester_ids : list of str, optional
+    Restrict the update to these digesters. Defaults to every digester
+    in the plant.
+Q_substrates : dict, optional
+    Per-digester feed rates <code>{digester_id: [m³/d, ...]}</code>. Digesters
+    not listed keep their current rates.
+rebuild_state : bool, default True
+    Re-derive each digester's pre-inoculated steady state from the new
+    blend.</p>
+<h2 id="returns_1">Returns<a class="headerlink" href="#returns_1" title="Permanent link">&para;</a></h2>
+<p>list of str
+    IDs of the digesters that were updated.</p>
 <h2 id="pump">Pump<a class="headerlink" href="#pump" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="n">Pump</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="n">Pump</span>
 </code></pre></div>
 <p>Pump component for material handling in biogas plants.</p>
 <p>Models different pump types for substrate feeding, recirculation, and
@@ -3591,7 +3684,7 @@ pressure head, and pump efficiency.</p>
     &gt;&gt;&gt; result = pump.step(0, 1/24, {'Q_setpoint': 8.0})</p>
 <h3 id="methods-for-pump">Methods for Pump<a class="headerlink" href="#methods-for-pump" title="Permanent link">&para;</a></h3>
 <h4 id="init_3"><strong>init</strong><a class="headerlink" href="#init_3" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">pump_type</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;progressive_cavity&#39;</span><span class="p">,</span> <span class="n">Q_nom</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">pressure_head</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">50.0</span><span class="p">,</span> <span class="n">efficiency</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">motor_efficiency</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span> <span class="n">fluid_density</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">1020.0</span><span class="p">,</span> <span class="n">speed_control</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">pump_type</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;progressive_cavity&#39;</span><span class="p">,</span> <span class="n">Q_nom</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">pressure_head</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">50.0</span><span class="p">,</span> <span class="n">efficiency</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">motor_efficiency</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span> <span class="n">fluid_density</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">1020.0</span><span class="p">,</span> <span class="n">speed_control</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Initialize pump component.</p>
 <p>Args:
@@ -3605,15 +3698,15 @@ pressure head, and pump efficiency.</p>
     speed_control: Enable variable speed drive
     name: Human-readable name</p>
 <h4 id="add_input">add_input<a class="headerlink" href="#add_input" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="n">add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="n">add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Add an input connection.</p>
 <h4 id="add_output">add_output<a class="headerlink" href="#add_output" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="n">add_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="n">add_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Add an output connection.</p>
 <h4 id="from_dict">from_dict<a class="headerlink" href="#from_dict" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="n">from_dict</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Pump&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="n">from_dict</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Pump&#39;</span>
 </code></pre></div>
 <p>Create pump from dictionary.</p>
 <p>Args:
@@ -3621,11 +3714,11 @@ pressure head, and pump efficiency.</p>
 <p>Returns:
     Pump instance</p>
 <h4 id="get_state">get_state<a class="headerlink" href="#get_state" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="n">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="n">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
 </code></pre></div>
 <p>Get current component state.</p>
 <h4 id="initialize_1">initialize<a class="headerlink" href="#initialize_1" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Initialize pump state.</p>
 <p>Args:
@@ -3636,11 +3729,11 @@ pressure head, and pump efficiency.</p>
         - 'energy_consumed': Cumulative energy [kWh]
         - 'total_volume_pumped': Cumulative volume [m³]</p>
 <h4 id="set_state">set_state<a class="headerlink" href="#set_state" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a><span class="n">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a><span class="n">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Set component state.</p>
 <h4 id="step_1">step<a class="headerlink" href="#step_1" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
 </code></pre></div>
 <p>Perform one simulation time step.</p>
 <p>Args:
@@ -3666,13 +3759,13 @@ pressure head, and pump efficiency.</p>
         - 'pressure_actual': Actual pressure head [m]
         - 'speed_fraction': Speed as fraction of nominal</p>
 <h4 id="to_dict">to_dict<a class="headerlink" href="#to_dict" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a><span class="n">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a><span class="n">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
 </code></pre></div>
 <p>Serialize pump to dictionary.</p>
 <p>Returns:
     Dictionary representation</p>
 <h2 id="mixer">Mixer<a class="headerlink" href="#mixer" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a><span class="n">Mixer</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a><span class="n">Mixer</span>
 </code></pre></div>
 <p>Mixer/agitator component for biogas digesters.
 Models mechanical or hydraulic mixing systems that maintain homogeneity
@@ -3700,7 +3793,7 @@ operating conditions, and fluid properties.</p>
     &gt;&gt;&gt; result = mixer.step(0, 1/24, {})</p>
 <h3 id="methods-for-mixer">Methods for Mixer<a class="headerlink" href="#methods-for-mixer" title="Permanent link">&para;</a></h3>
 <h4 id="init_4"><strong>init</strong><a class="headerlink" href="#init_4" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">mixer_type</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;propeller&#39;</span><span class="p">,</span> <span class="n">tank_volume</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">2000.0</span><span class="p">,</span> <span class="n">tank_diameter</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">tank_height</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mixing_intensity</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;medium&#39;</span><span class="p">,</span> <span class="n">power_installed</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">impeller_diameter</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">operating_speed</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intermittent</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">on_time_fraction</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">mixer_type</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;propeller&#39;</span><span class="p">,</span> <span class="n">tank_volume</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">2000.0</span><span class="p">,</span> <span class="n">tank_diameter</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">tank_height</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mixing_intensity</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;medium&#39;</span><span class="p">,</span> <span class="n">power_installed</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">impeller_diameter</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">operating_speed</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intermittent</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">on_time_fraction</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Initialize mixer component.</p>
 <p>Args:
@@ -3717,15 +3810,15 @@ operating conditions, and fluid properties.</p>
     on_time_fraction: Fraction of time mixer is on (0-1)
     name: Human-readable name</p>
 <h4 id="add_input_1">add_input<a class="headerlink" href="#add_input_1" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a><span class="n">add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a><span class="n">add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Add an input connection.</p>
 <h4 id="add_output_1">add_output<a class="headerlink" href="#add_output_1" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a><span class="n">add_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a><span class="n">add_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Add an output connection.</p>
 <h4 id="from_dict_1">from_dict<a class="headerlink" href="#from_dict_1" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a><span class="n">from_dict</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Mixer&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a><span class="n">from_dict</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Mixer&#39;</span>
 </code></pre></div>
 <p>Create mixer from dictionary.</p>
 <p>Args:
@@ -3733,11 +3826,11 @@ operating conditions, and fluid properties.</p>
 <p>Returns:
     Mixer instance</p>
 <h4 id="get_state_1">get_state<a class="headerlink" href="#get_state_1" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a><span class="n">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a><span class="n">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
 </code></pre></div>
 <p>Get current component state.</p>
 <h4 id="initialize_2">initialize<a class="headerlink" href="#initialize_2" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Initialize mixer state.</p>
 <p>Args:
@@ -3747,11 +3840,11 @@ operating conditions, and fluid properties.</p>
         - 'operating_hours': Cumulative operating hours
         - 'energy_consumed': Cumulative energy [kWh]</p>
 <h4 id="set_state_1">set_state<a class="headerlink" href="#set_state_1" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a><span class="n">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="n">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Set component state.</p>
 <h4 id="step_2">step<a class="headerlink" href="#step_2" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
 </code></pre></div>
 <p>Perform one simulation time step.</p>
 <p>Args:
@@ -3773,13 +3866,13 @@ operating conditions, and fluid properties.</p>
         - 'mixing_time': Mixing time [min]
         - 'shear_rate': Average shear rate [1/s]</p>
 <h4 id="to_dict_1">to_dict<a class="headerlink" href="#to_dict_1" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="n">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a><span class="n">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
 </code></pre></div>
 <p>Serialize mixer to dictionary.</p>
 <p>Returns:
     Dictionary representation</p>
 <h2 id="substratestorage">SubstrateStorage<a class="headerlink" href="#substratestorage" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a><span class="n">SubstrateStorage</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a><span class="n">SubstrateStorage</span>
 </code></pre></div>
 <p>Storage facility component for biogas plant substrates.</p>
 <p>Models storage of different substrate types with inventory tracking,
@@ -3807,7 +3900,7 @@ quality degradation, and capacity management. Supports both solid
     &gt;&gt;&gt; outputs = storage.step(0, 1, {'withdrawal_rate': 15})</p>
 <h3 id="methods-for-substratestorage">Methods for SubstrateStorage<a class="headerlink" href="#methods-for-substratestorage" title="Permanent link">&para;</a></h3>
 <h4 id="init_5"><strong>init</strong><a class="headerlink" href="#init_5" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">storage_type</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;vertical_silo&#39;</span><span class="p">,</span> <span class="n">substrate_type</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;corn_silage&#39;</span><span class="p">,</span> <span class="n">capacity</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">,</span> <span class="n">initial_level</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">degradation_rate</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">temperature</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">288.15</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">storage_type</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;vertical_silo&#39;</span><span class="p">,</span> <span class="n">substrate_type</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;corn_silage&#39;</span><span class="p">,</span> <span class="n">capacity</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">,</span> <span class="n">initial_level</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">degradation_rate</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">temperature</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">288.15</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Initialize substrate storage component.</p>
 <p>Args:
@@ -3820,23 +3913,23 @@ quality degradation, and capacity management. Supports both solid
     temperature: Storage temperature [K]
     name: Human-readable name</p>
 <h4 id="add_input_2">add_input<a class="headerlink" href="#add_input_2" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="n">add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a><span class="n">add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Add an input connection.</p>
 <h4 id="add_output_2">add_output<a class="headerlink" href="#add_output_2" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a><span class="n">add_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-60-1" name="__codelineno-60-1" href="#__codelineno-60-1"></a><span class="n">add_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Add an output connection.</p>
 <h4 id="from_dict_2">from_dict<a class="headerlink" href="#from_dict_2" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-60-1" name="__codelineno-60-1" href="#__codelineno-60-1"></a><span class="n">from_dict</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SubstrateStorage&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a><span class="n">from_dict</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SubstrateStorage&#39;</span>
 </code></pre></div>
 <p>Create storage from dictionary.</p>
 <h4 id="get_state_2">get_state<a class="headerlink" href="#get_state_2" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a><span class="n">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-62-1" name="__codelineno-62-1" href="#__codelineno-62-1"></a><span class="n">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
 </code></pre></div>
 <p>Get current component state.</p>
 <h4 id="initialize_3">initialize<a class="headerlink" href="#initialize_3" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-62-1" name="__codelineno-62-1" href="#__codelineno-62-1"></a><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Initialize storage state.</p>
 <p>Args:
@@ -3846,11 +3939,11 @@ quality degradation, and capacity management. Supports both solid
         - 'storage_time': Time stored [days]
         - 'cumulative_losses': Total losses [t or m³]</p>
 <h4 id="set_state_2">set_state<a class="headerlink" href="#set_state_2" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a><span class="n">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-64-1" name="__codelineno-64-1" href="#__codelineno-64-1"></a><span class="n">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Set component state.</p>
 <h4 id="step_3">step<a class="headerlink" href="#step_3" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-64-1" name="__codelineno-64-1" href="#__codelineno-64-1"></a><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-65-1" name="__codelineno-65-1" href="#__codelineno-65-1"></a><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
 </code></pre></div>
 <p>Perform one simulation time step.</p>
 <p>Args:
@@ -3873,11 +3966,11 @@ quality degradation, and capacity management. Supports both solid
         - 'is_empty': Storage empty flag
         - 'is_full': Storage full flag</p>
 <h4 id="to_dict_2">to_dict<a class="headerlink" href="#to_dict_2" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-65-1" name="__codelineno-65-1" href="#__codelineno-65-1"></a><span class="n">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-66-1" name="__codelineno-66-1" href="#__codelineno-66-1"></a><span class="n">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
 </code></pre></div>
 <p>Serialize storage to dictionary.</p>
 <h2 id="feeder">Feeder<a class="headerlink" href="#feeder" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-66-1" name="__codelineno-66-1" href="#__codelineno-66-1"></a><span class="n">Feeder</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-67-1" name="__codelineno-67-1" href="#__codelineno-67-1"></a><span class="n">Feeder</span>
 </code></pre></div>
 <p>Feeder component for automated substrate dosing.</p>
 <p>Models feeding systems that transfer substrates from storage to digesters.
@@ -3902,7 +3995,7 @@ capacity limits, and power consumption.</p>
     &gt;&gt;&gt; result = feeder.step(0, 1/24, {'Q_setpoint': 15})</p>
 <h3 id="methods-for-feeder">Methods for Feeder<a class="headerlink" href="#methods-for-feeder" title="Permanent link">&para;</a></h3>
 <h4 id="init_6"><strong>init</strong><a class="headerlink" href="#init_6" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-67-1" name="__codelineno-67-1" href="#__codelineno-67-1"></a><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">feeder_type</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Q_max</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">20.0</span><span class="p">,</span> <span class="n">substrate_type</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dosing_accuracy</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">power_installed</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">enable_dosing_noise</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-68-1" name="__codelineno-68-1" href="#__codelineno-68-1"></a><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">feeder_type</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Q_max</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">20.0</span><span class="p">,</span> <span class="n">substrate_type</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dosing_accuracy</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">power_installed</span><span class="p">:</span> <span class="s1">&#39;float | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">enable_dosing_noise</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;str | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Initialize feeder component.</p>
 <p>Args:
@@ -3915,23 +4008,23 @@ capacity limits, and power consumption.</p>
     enable_dosing_noise: Add realistic dosing variance
     name: Human-readable name</p>
 <h4 id="add_input_3">add_input<a class="headerlink" href="#add_input_3" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-68-1" name="__codelineno-68-1" href="#__codelineno-68-1"></a><span class="n">add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-69-1" name="__codelineno-69-1" href="#__codelineno-69-1"></a><span class="n">add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Add an input connection.</p>
 <h4 id="add_output_3">add_output<a class="headerlink" href="#add_output_3" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-69-1" name="__codelineno-69-1" href="#__codelineno-69-1"></a><span class="n">add_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-70-1" name="__codelineno-70-1" href="#__codelineno-70-1"></a><span class="n">add_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_id</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Add an output connection.</p>
 <h4 id="from_dict_3">from_dict<a class="headerlink" href="#from_dict_3" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-70-1" name="__codelineno-70-1" href="#__codelineno-70-1"></a><span class="n">from_dict</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Feeder&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-71-1" name="__codelineno-71-1" href="#__codelineno-71-1"></a><span class="n">from_dict</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Feeder&#39;</span>
 </code></pre></div>
 <p>Create feeder from dictionary.</p>
 <h4 id="get_state_3">get_state<a class="headerlink" href="#get_state_3" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-71-1" name="__codelineno-71-1" href="#__codelineno-71-1"></a><span class="n">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-72-1" name="__codelineno-72-1" href="#__codelineno-72-1"></a><span class="n">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
 </code></pre></div>
 <p>Get current component state.</p>
 <h4 id="initialize_4">initialize<a class="headerlink" href="#initialize_4" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-72-1" name="__codelineno-72-1" href="#__codelineno-72-1"></a><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-73-1" name="__codelineno-73-1" href="#__codelineno-73-1"></a><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Initialize feeder state.</p>
 <p>Args:
@@ -3942,11 +4035,11 @@ capacity limits, and power consumption.</p>
         - 'energy_consumed': Cumulative energy [kWh]
         - 'total_mass_fed': Cumulative mass [t or m³]</p>
 <h4 id="set_state_3">set_state<a class="headerlink" href="#set_state_3" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-73-1" name="__codelineno-73-1" href="#__codelineno-73-1"></a><span class="n">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-74-1" name="__codelineno-74-1" href="#__codelineno-74-1"></a><span class="n">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;None&#39;</span>
 </code></pre></div>
 <p>Set component state.</p>
 <h4 id="step_4">step<a class="headerlink" href="#step_4" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-74-1" name="__codelineno-74-1" href="#__codelineno-74-1"></a><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-75-1" name="__codelineno-75-1" href="#__codelineno-75-1"></a><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="s1">&#39;dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
 </code></pre></div>
 <p>Perform one simulation time step.</p>
 <p>Args:
@@ -3967,7 +4060,7 @@ capacity limits, and power consumption.</p>
         - 'dosing_error': Deviation from setpoint [%]
         - 'speed_fraction': Current speed fraction</p>
 <h4 id="to_dict_3">to_dict<a class="headerlink" href="#to_dict_3" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-75-1" name="__codelineno-75-1" href="#__codelineno-75-1"></a><span class="n">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-76-1" name="__codelineno-76-1" href="#__codelineno-76-1"></a><span class="n">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dict[str, Any]&#39;</span>
 </code></pre></div>
 <p>Serialize feeder to dictionary.</p>
 
