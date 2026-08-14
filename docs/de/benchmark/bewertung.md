@@ -61,10 +61,10 @@ dass sich **jeder mögliche Fehler genau einer** Bewertung zuordnen lässt.
     Beschreibung oder die KI kann sie erfragen**. Raten muss sie nie. Entsprechend eng
     ist der Bereich — er deckt nur ab, was beim Rechnen unvermeidlich ist:
 
-    - **Wird der Wert übernommen** (aus der Beschreibung oder vom Oracle), muss die KI
+    - **Wird der Wert übernommen** (aus der Beschreibung oder vom Oracle), muss die KI  
       ihn treffen. Erlaubt ist nur Rundung: `40 °C` als `313,0` statt `313,15 K` ist in
-      Ordnung, `39 °C` nicht.
-    - **Wird der Wert gerechnet** — etwa ein Volumen aus Durchmesser und Höhe —, darf
+      Ordnung, `39 °C` nicht.  
+    - **Wird der Wert gerechnet** — etwa ein Volumen aus Durchmesser und Höhe —, darf  
       etwas mehr abweichen. Je nachdem, wo man rundet, kommt man auf leicht
       unterschiedliche Ergebnisse.
 
@@ -92,7 +92,7 @@ Damit die Bewertung fair und aussagekräftig bleibt, werden einige Dinge bewusst
   **Art** des Bauteils (Fermenter, Pumpe …), nicht nach dem Namen.  
 - **Substrate werden nicht bewertet:** Welche Stoffe gefüttert werden, fließt nicht  
   in die Wertung ein, es geht allein um den **Aufbau** der Anlage.  
-- **Rückfragen werden nicht benotet:** Ob die KI nachfragt, ist ihr überlassen.
+- **Rückfragen werden nicht benotet:** Ob die KI nachfragt, ist ihr überlassen.  
   Bewertet wird nur die Anlage, die am Ende dabei herauskommt — wer rät und daneben
   liegt, verliert bei den **Maßen**.
 

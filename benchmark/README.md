@@ -76,14 +76,14 @@ das Schema erzwingt das über `additionalProperties: false`.
 
 Bewusst **nicht** im Datenpunkt, weil aus `reference` ableitbar oder unbewertet:
 
-- Zwischenwerte der Herleitung (`D`, `H_wall`, `fill_fraction`) — sie stehen im
+- Zwischenwerte der Herleitung (`D`, `H_wall`, `fill_fraction`) — sie stehen im  
   `formula`-String des abgeleiteten `V_liq`, z. B. `pi/4*28^2*6 * 0.90 (Fuellgrad)`.
-  In `params` gehört nur, was PyADM1ODE auch serialisiert.
-- Anzahl Digester, Topologie, „hat CHP" — steht im Graphen selbst.
-- `must_not_invent` — der Erfindungs-Score prüft direkt gegen die Typen in
+  In `params` gehört nur, was PyADM1ODE auch serialisiert.  
+- Anzahl Digester, Topologie, „hat CHP" — steht im Graphen selbst.  
+- `must_not_invent` — der Erfindungs-Score prüft direkt gegen die Typen in  
   `reference`; eine Prosaliste „erfinde keinen Separator" wäre nur eine zweite,
-  driftende Quelle derselben Information.
-- Die Liste der verworfenen Skizzen-Elemente — das ist keine Eigenschaft eines
+  driftende Quelle derselben Information.  
+- Die Liste der verworfenen Skizzen-Elemente — das ist keine Eigenschaft eines  
   Datenpunkts, sondern die Modellierungsregel unten, einmal formuliert.
 
 ### Was nicht in die Referenz kommt — und warum
@@ -326,14 +326,14 @@ weggelassen -> Score 1        falscher Wert -> Score 2        hinzuerfunden -> S
 
 Details:
 
-- **Pflicht** (Score 1) und **erlaubt** (Score 3) sind zwei verschiedene Mengen. Eine
+- **Pflicht** (Score 1) und **erlaubt** (Score 3) sind zwei verschiedene Mengen. Eine  
   Kante mit `obligation: missing_ask` *muss* nicht gebaut werden, gilt aber auch nicht
-  als Erfindung, wenn sie gebaut wird.
-- Ein Bauteil eines Typs, den die Referenz gar nicht kennt (Separator in einer Anlage
-  ohne Separator), **deckelt Score 3 auf 50 %** — das ist die schwerste Halluzination.
-- Der Nenner von Score 1 umfasst *alle* Pflicht-Kanten. Wer einen Knoten weglässt,
-  wird seine Kanten nicht mit los.
-- Ein still erfundener, unplausibler **Wert** senkt Score 2, weil jeder Referenz-Parameter
+  als Erfindung, wenn sie gebaut wird.  
+- Ein Bauteil eines Typs, den die Referenz gar nicht kennt (Separator in einer Anlage  
+  ohne Separator), **deckelt Score 3 auf 50 %** — das ist die schwerste Halluzination.  
+- Der Nenner von Score 1 umfasst *alle* Pflicht-Kanten. Wer einen Knoten weglässt,  
+  wird seine Kanten nicht mit los.  
+- Ein still erfundener, unplausibler **Wert** senkt Score 2, weil jeder Referenz-Parameter  
   gegen sein Akzeptanzband geprüft wird — unabhängig davon, ob er im Input stand.
 
 ### Kein Raten: gegeben oder erfragbar

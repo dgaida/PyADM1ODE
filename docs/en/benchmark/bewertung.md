@@ -69,10 +69,10 @@ to exactly one** of them.
     can ask for it**. It never has to guess. The range is tight accordingly — it only
     covers what is unavoidable when calculating:
 
-    - **If the value is taken over** (from the description or from the oracle), the AI
+    - **If the value is taken over** (from the description or from the oracle), the AI  
       has to hit it. Only rounding is allowed: `40 °C` as `313.0` instead of `313.15 K`
-      is fine, `39 °C` is not.
-    - **If the value has to be calculated** — a volume from diameter and height, say —
+      is fine, `39 °C` is not.  
+    - **If the value has to be calculated** — a volume from diameter and height, say —  
       slightly more deviation is allowed. Depending on where you round, results differ.
 
 ## Every mistake counts exactly once
@@ -98,7 +98,7 @@ To keep the scoring fair and meaningful, some things are deliberately **not** sc
   **type** of component (fermenter, pump …), not by name.  
 - **Substrates are not scored:** Which materials are fed in does not factor into the  
   score – it is solely about the **structure** of the plant.  
-- **Asking questions is not graded:** Whether the AI asks is up to it. Only the plant
+- **Asking questions is not graded:** Whether the AI asks is up to it. Only the plant  
   it finally produces is scored — guessing wrong costs points on **Measures**.
 
 ## Note on sketch and PDF tasks

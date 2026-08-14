@@ -64,7 +64,7 @@ oracle provides the correct answer (e.g. "40 °C"). The oracle also recognises
 The **regime** describes whether the task is fully described or not:
 
 - *fully specified*: All information is in the description. No asking needed.  
-- *underspecified*: Information is missing and has to be **asked** of the oracle.
+- *underspecified*: Information is missing and has to be **asked** of the oracle.  
 
 There is no separate list of prohibitions. What the AI must not invent follows
 directly from the reference: a plant whose reference contains no separator simply

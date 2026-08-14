@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.8] - 2026-08-04
+
+### Features
+
+- Update default temperatures and feedstock handling in ADM1 and related components  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
 ## [0.5.7] - 2026-07-25
 
 ### Miscellaneous Tasks
