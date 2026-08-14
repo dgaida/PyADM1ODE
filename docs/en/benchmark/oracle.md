@@ -117,37 +117,25 @@ The oracle separates two behaviours that would otherwise be indistinguishable:
 - A **good AI asks** when information is missing – and then builds the plant correctly.  
 - A **weaker AI guesses** and may invent an implausible value.  
 
-This is exactly what the scoring reflects: for under-specified data points the **gap
-score** counts whether a missing field was **asked about** or plausibly **filled**
-within the acceptance band. **Silently inventing** an implausible value is the most
-serious mistake. See [Scoring & Workflow](bewertung.md) for the details.
-
-!!! tip "`response.json` – recording questions and assumptions"
-    If you evaluate your own model **offline**, make asked and assumed fields explicit
-    in a `response.json` next to the code:
-
-    ```json
-    {
-      "open_questions": [{ "field": "sep.source" }],
-      "assumptions":    [{ "field": "F1.T_ad", "value": 313.15 }]
-    }
-    ```
-
-    More about this under [Using the Dataset](nutzung.md).
+This is exactly what the scoring reflects — but **indirectly**: the questions
+themselves are not graded. A model that asks gets the right values and lands inside
+the acceptance band on **Measures**; one that guesses wrong loses points there.
+See [Scoring & Workflow](bewertung.md) for the details.
 
 ## Turning the oracle off
 
 For comparison the oracle can be disabled. The AI then asks **no** follow-up questions
-and must plausibly assume missing values itself or work with defaults:
+and has to guess the missing values:
 
 ```bash
 python benchmark/eval/solve.py --no-oracle
 ```
 
-This shows how well a model copes with gaps **without** assistance – a useful
-counter-check to the regular run with the oracle.
+This is the counter-check to the regular run: it shows what asking is actually worth.
+Expect the **Measures** score to drop sharply — the acceptance bands are far too tight
+to guess a value that was never stated.
 
 ---
 
-You can explore the dataset visually – including the expected follow-up questions and
-the oracle answers per data point – in the [Viewer](viewer.md).
+You can explore the dataset visually – including the oracle answers per data point –
+in the [Viewer](viewer.md).

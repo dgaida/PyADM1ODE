@@ -11,13 +11,14 @@ flowchart TB
     DP["📄 Datenpunkt"] --> E["1) Eingabe<br>(die Aufgabe)"]
     DP --> R["2) Referenz<br>(die richtige Anlage)"]
     DP --> O["3) Oracle<br>(beantwortet Rückfragen)"]
-    DP --> Z["4) Regeln<br>(Verbote &amp; Vollständigkeit)"]
+    DP --> Z["4) Regime<br>(vollständig oder nicht)"]
 ```
 
 ### 1. Die Eingabe
 
 Das ist die **Beschreibung der Anlage**, die die KI zu sehen bekommt. Je nach
-Variante ist das ein ausführlicher Text, ein knapper Text oder eine Skizze (Bild).
+Variante ist das ein ausführlicher Text, ein knapper Text, eine Skizze (Bild) oder
+ein PDF-Dokument — etwa ein Angebotsschreiben.
 Die KI bekommt **nur** diese Eingabe, sonst nichts.
 
 ### 2. Die Referenz
@@ -53,20 +54,20 @@ Fragt die KI zum Beispiel „Bei welcher Temperatur läuft der Fermenter?", lief
     eine Angabe fehlt. Eine schlechtere KI **rät einfach** und liegt möglicherweise
     daneben.
 
-### 4. Die Regeln
+### 4. Das Regime
 
-Zwei Zusatzangaben sorgen für eine faire Bewertung:
+Das **Regime** gibt an, ob die Aufgabe **vollständig** oder **unvollständig**
+beschrieben ist:
 
-- **Vollständigkeit** – gibt an, ob die Aufgabe **vollständig** oder **unvollständig**  
-  beschrieben ist:
+- *vollständig spezifiziert*: Alle Angaben stehen in der Beschreibung. Kein  
+  Nachfragen nötig.  
+- *unvollständig spezifiziert*: Es fehlen Angaben, die beim Oracle **erfragt**  
+  werden müssen.
 
-    - *vollständig spezifiziert*: Alle Angaben stehen in der Beschreibung. Kein  
-      Nachfragen nötig.  
-    - *unvollständig spezifiziert*: Es fehlen Angaben, die erfragt oder sinnvoll  
-      ergänzt werden müssen.
-
-- **Verbote** – Dinge, die die KI **nicht erfinden** darf. Hat eine Anlage  
- z. B. kein Blockheizkraftwerk, darf die KI auch keines hinzufügen.
+Eine eigene Verbotsliste gibt es nicht. Was die KI nicht erfinden darf, ergibt sich
+direkt aus der Referenz: Eine Anlage, deren Referenz keinen Separator enthält, darf
+auch keinen haben — das prüft die [Bewertung „Keine Erfindungen"](bewertung.md)
+unmittelbar gegen die Referenz.
 
 ## Wie „sicher" eine Angabe ist
 
@@ -77,7 +78,7 @@ hinterlegt, **woher** sie kommt:
 | -------------------- | ---------------------------------------------------------------- |
 | **gegeben**          | Steht direkt in der Beschreibung.                                |
 | **ableitbar**        | Lässt sich aus anderen Angaben berechnen (z. B. ein Volumen aus Höhe und Durchmesser). |
-| **erfragbar** | Fehlt in der Beschreibung. Die KI sollte nachfragen oder die Angabe sinnvoll ergänzen.      |
+| **erfragbar** | Fehlt in der Beschreibung. Die KI muss beim Oracle nachfragen — der Toleranzbereich ist zu eng, um den Wert zu erraten. |
 | **automatisch**      | Entsteht beim Aufbau von selbst, zum Beispiel ein Gasspeicher für jeden Fermenter. |
 
 Das ermöglicht eine faire Bewertung: Eine fehlende Angabe darf die KI ergänzen,

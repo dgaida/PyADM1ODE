@@ -22,7 +22,7 @@ differ in size and equipment:
 
 For each plant there is the **same** biogas plant, but **described in different
 ways**. This makes it possible to test whether the AI is robust – regardless of
-whether the description is long, short, in English or a sketch.
+whether the description is long, short, in English, a sketch or a PDF document.
 
 Two properties are combined here:
 
@@ -32,13 +32,14 @@ Two properties are combined here:
 - **terse text** – only the key figures  
 - **English text** – the same plant in English  
 - **sketch** – a drawing of the plant (image)  
+- **PDF** – a real plant document, e.g. a written quotation  
 
-**2. The completeness of the information**
+**2. How complete the description is**
 
 - **complete** (suffix `_full`): All required information is in the description. The  
   AI does not need to ask anything.  
 - **incomplete**: Some information is missing (e.g. the operating temperature). The  
-  AI has to **ask** for it or fill it in sensibly.
+  AI has to **ask** the oracle for it — a guess is practically never close enough.
 
 !!! example "Example"
     `BGA2_terse_de_full` means: plant **BGA2**, **terse** description, in **German**

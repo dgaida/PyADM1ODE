@@ -59,18 +59,6 @@ def find_candidate(dp_path: str, dp: dict, candidates_dir):
     return gold if os.path.exists(gold) else None
 
 
-def find_response(dp_path: str, dp: dict):
-    dpid = dp.get("id") or os.path.splitext(os.path.basename(dp_path))[0]
-    folder = os.path.dirname(dp_path)
-    for cand in (os.path.join(folder, dpid + "_response.json"), os.path.join(folder, "response.json")):
-        if os.path.exists(cand):
-            try:
-                return json.load(open(cand, encoding="utf-8"))
-            except (json.JSONDecodeError, OSError):
-                return None
-    return None
-
-
 def main() -> int:
     ap = argparse.ArgumentParser(description="Batch-Bewertung aller Datenpunkte.")
     ap.add_argument(
@@ -94,17 +82,16 @@ def main() -> int:
     rows = []
 
     print(f"\nBewerte {len(items)} Datenpunkte aus {os.path.relpath(args.dataset, REPO_ROOT)} ...\n")
-    header = f"{'#':>2}  {'id':<26} {'cand':<10} {'build':<6} {'Struk':>6} {'Masse':>6} {'Lueck':>6} {'Gesamt':>7}  W  V"
+    header = f"{'#':>2}  {'id':<26} {'cand':<10} {'build':<6} {'Vollst':>6} {'Masse':>6} {'Erfund':>6} {'Gesamt':>7}  W  V"
     print(header)
     print("-" * len(header))
 
     for i, (dp_path, dp) in enumerate(items, 1):
         dpid = dp.get("id") or os.path.splitext(os.path.basename(dp_path))[0]
         code_path = find_candidate(dp_path, dp, args.candidates)
-        response = find_response(dp_path, dp)
 
         if code_path is None:
-            rep = evaluate(dp, {}, response)
+            rep = evaluate(dp, {})
             rep.details.setdefault("violations", []).insert(0, "Kein Kandidat (gold.py) gefunden.")
             cand_label = "—"
         else:
@@ -115,17 +102,17 @@ def main() -> int:
                 cand_cache[code_path] = run_candidate_code(code_text, timeout=args.timeout)
             cand, err = cand_cache[code_path]
             if cand is None:
-                rep = evaluate(dp, {}, response)
+                rep = evaluate(dp, {})
                 rep.details.setdefault("violations", []).insert(0, f"Ausfuehrung fehlgeschlagen: {err}")
             else:
-                rep = evaluate(dp, cand, response)
+                rep = evaluate(dp, cand)
 
         d = rep.details
         nW, nV = len(d.get("warnings", [])), len(d.get("violations", []))
         print(
             f"{i:>2}  {dpid[:26]:<26} {cand_label:<10} "
             f"{'OK' if rep.build_success else 'FAIL':<6} "
-            f"{rep.structure:>6.1%} {rep.measures:>6.1%} {rep.gaps:>6.1%} {rep.overall():>7.1%}  "
+            f"{rep.completeness:>6.1%} {rep.measures:>6.1%} {rep.inventions:>6.1%} {rep.overall():>7.1%}  "
             f"{nW}  {nV}"
         )
 
@@ -135,9 +122,9 @@ def main() -> int:
                 "datapoint": os.path.relpath(dp_path, REPO_ROOT),
                 "candidate": os.path.relpath(code_path, REPO_ROOT) if code_path else "",
                 "build_success": rep.build_success,
-                "structure": rep.structure,
+                "completeness": rep.completeness,
                 "measures": rep.measures,
-                "gaps": rep.gaps,
+                "inventions": rep.inventions,
                 "overall": rep.overall(),
                 "n_warnings": nW,
                 "n_violations": nV,
@@ -154,8 +141,8 @@ def main() -> int:
 
         print(
             f"    {'MITTEL (build OK)':<26} {'':<10} {len(ok)}/{len(rows):<4} "
-            f"{mean('structure'):>6.1%} {mean('measures'):>6.1%} "
-            f"{mean('gaps'):>6.1%} {mean('overall'):>7.1%}"
+            f"{mean('completeness'):>6.1%} {mean('measures'):>6.1%} "
+            f"{mean('inventions'):>6.1%} {mean('overall'):>7.1%}"
         )
     n_warn = sum(r["n_warnings"] for r in rows)
     if n_warn:

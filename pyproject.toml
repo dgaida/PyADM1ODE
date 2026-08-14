@@ -66,8 +66,14 @@ docs = [
 torch = [
     "torch>=2.0",
 ]
+# LMM benchmark (benchmark/eval). The matcher and validator are stdlib-only;
+# these are needed to call an LLM and to read PDF data points.
+benchmark = [
+    "groq",
+    "pypdf",
+]
 all = [
-    "pyadm1[dev,docs,torch]",
+    "pyadm1[dev,docs,torch,benchmark]",
 ]
 
 [project.urls]

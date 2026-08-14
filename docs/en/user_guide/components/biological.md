@@ -44,6 +44,62 @@ T_meso = 308.15     # 35 °C
 T_thermo = 328.15   # 55 °C
 ```
 
+The default is `315.15 K` (42 °C) — consistent across `ADM1`, `Digester` and
+`PlantConfigurator.add_digester`.
+
+#### Changing the temperature later
+
+`T_ad` can be changed at any time. Ten derived ADM1 constants (kinetics,
+inhibition, Henry coefficients, gas pressures) are recomputed, and any
+calibration overrides are re-applied afterwards:
+
+```python
+digester.T_ad = 328.15                      # short form; recomputes everything
+digester.set_temperature(328.15)            # equivalent, explicit
+digester.set_temperature(328.15, rebuild_state=True)  # re-derive initial state
+```
+
+Without `rebuild_state` the biological state is kept and the biology follows the
+new temperature as a transient — the way a real plant behaves. With
+`rebuild_state=True` the settled state is re-derived at the new temperature; the
+result is identical to a digester built at that temperature from the start.
+
+!!! tip "Keep the heating in sync"
+    `HeatingSystem.target_temperature` shares the same `315.15 K` default but is
+    **not** linked to `T_ad`. When running the digester at a different
+    temperature, adjust the attached heating as well:
+
+    ```python
+    digester.set_temperature(328.15)
+    heating.target_temperature = 328.15
+    ```
+
+### Supplying substrates later
+
+The feedstock is optional: lay out the plant structure first and add the
+substrates later — useful when the structure is known before the feed is.
+
+```python
+cfg = PlantConfigurator(plant)                    # no feedstock
+cfg.add_digester("F1", V_liq=3325, V_gas=870)     # builds and initializes
+
+cfg.set_feedstock(feedstock, Q_substrates={"F1": [40, 10]})
+```
+
+`set_feedstock` wires the influent DataFrame and density through and derives the
+initial state from the new blend — the result is identical to a digester built
+with the feedstock from the start. A plain assignment
+(`digester.feedstock = fs`) is **not** enough.
+
+A digester without a feedstock can be created and initialized but not simulated;
+`step()` then reports clearly:
+
+```text
+RuntimeError: ADM1 has no influent source: attach a Feedstock
+(Digester.set_feedstock / PlantConfigurator.set_feedstock) or provide one
+via set_influent_dataframe().
+```
+
 ### Outputs
 
 ```python

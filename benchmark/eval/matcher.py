@@ -6,19 +6,28 @@ Vergleicht eine vom LMM **gebaute** Anlage (das ``to_dict``/``to_json``-Dict von
 ``BiogasPlant``) gegen einen Referenz-Datenpunkt (siehe
 ``benchmark/schema/plant_datapoint.schema.json``) und liefert drei Scores:
 
-    1. Struktur        - Bauteile (nach Typ) + Verbindungen (typisierter Graph)
-    2. Masse           - simulierte Parameter im Akzeptanzband (Toleranz)
-    3. Fehlende Werte  - missing_ask: nachgefragt ODER plausibel gefuellt?
+    1. Vollstaendigkeit - sind alle Pflicht-Bauteile und Pflicht-Kanten da? (Recall)
+    2. Masse            - simulierte Parameter im Akzeptanzband (Toleranz)
+    3. Keine Erfindungen- enthaelt der Kandidat NUR Bauteile/Kanten, die die
+                          Referenz kennt? (Precision)
 
-Kernideen (entsprechen der Detail-Folie):
+Die drei Achsen sind bewusst disjunkt, damit jeder Fehler genau einmal zaehlt:
+
+    weggelassen  -> Score 1     hinzuerfunden -> Score 3     falscher Wert -> Score 2
+
+Kernideen:
     * Bauteile werden **nach Typ** zugeordnet (bipartites Matching), nicht nach ID
       -- das LMM benennt Komponenten anders.
     * Auto-Knoten (GasStorage je Digester, Flare je CHP) werden ueber die
       **Topologie** ausgerichtet, nicht ueber Namen.
     * Parameter werden im **Akzeptanzband** geprueft (absolut / relativ / kategorial),
-      nie als Punktwert.
-    * ``missing_ask``-Felder fliessen NICHT in Struktur/Masse, sondern in den
-      Luecken-Score (Rueckfrage vs. stilles Erfinden).
+      nie als Punktwert. Ein still erfundener, unplausibler Wert senkt damit Score 2.
+    * **Pflicht** (Score 1) und **erlaubt** (Score 3) sind zwei verschiedene Mengen:
+      eine Kante mit ``obligation: missing_ask`` muss nicht gebaut werden, gilt aber
+      auch nicht als Erfindung, wenn sie gebaut wird.
+    * Ein Bauteil eines Typs, den die Referenz ueberhaupt nicht kennt (Separator in
+      einer Anlage ohne Separator), deckelt Score 3 hart -- das ist die schwerste
+      Form der Halluzination.
 
 Reines stdlib, keine externen Abhaengigkeiten. Die Funktionen sind ohne
 Code-Ausfuehrung testbar (Kandidat = Dict). Das Ausfuehren von LMM-Code
@@ -66,13 +75,13 @@ SERIALIZED_PARAMS: dict[str, set] = {
 # Typen, die Gas abnehmen/versenken (gueltige Endpunkte eines Gaspfads).
 GAS_CONSUMER_TYPES = {"chp", "flare", "boiler", "upgrading"}
 
-# Obligationen, die eine Existenz/Verbindung strukturell ERFORDERN.
-REQUIRED_NODE_OBLIGATIONS = {"given", "derivable", "derivable_with_assumption", "auto"}
-REQUIRED_EDGE_OBLIGATIONS = {"given", "auto"}
-# inferred zaehlt als erforderlich nur bei hoher Konfidenz.
-REQUIRED_INFERRED_CONFIDENCE = {"high"}
-# Diese fliessen NICHT in Struktur/Masse, sondern in den Luecken-Score.
-GAP_OBLIGATIONS = {"missing_ask"}
+# Obligationen, die eine Existenz/Verbindung strukturell ERFORDERN (Score 1).
+# Nicht enthalten -- und damit optional -- ist ausschliesslich "missing_ask":
+# das Element gehoert zur Anlage, muss aber nicht gebaut werden.
+REQUIRED_NODE_OBLIGATIONS = {"given", "derivable", "inferred", "auto"}
+REQUIRED_EDGE_OBLIGATIONS = {"given", "inferred", "auto"}
+# Deckel fuer Score 3, wenn ein Bauteil eines in der Referenz unbekannten Typs auftaucht.
+INVENTED_TYPE_CAP = 0.5
 
 
 # ==========================================================================
@@ -102,10 +111,7 @@ def expand_reference(dp: dict[str, Any]) -> Graph:
             params=resolve_params(comp),
         )
 
-    edges = [
-        Edge(e["from"], e["to"], e["type"], e.get("obligation", "given"), e.get("confidence"))
-        for e in dp["reference"].get("connections", [])
-    ]
+    edges = [Edge(e["from"], e["to"], e["type"], e.get("obligation", "given")) for e in dp["reference"].get("connections", [])]
     return Graph(nodes, edges)
 
 
@@ -134,31 +140,19 @@ def lint_gas_paths(g: Graph) -> list[str]:
 # ==========================================================================
 # Akzeptanz-Pruefung (ein Parameter)
 # ==========================================================================
-def within_accept(pdef: dict[str, Any], value: Any, ref_params: dict[str, Any]) -> bool:
-    """Liegt ``value`` im Akzeptanzband von ``pdef``? (absolut / relativ / Enum)"""
+def within_accept(pdef: dict[str, Any], value: Any) -> bool:
+    """Liegt ``value`` im Akzeptanzband von ``pdef``?
+
+    Die Bandbreite steckt im Datenpunkt, nicht hier: sie richtet sich danach, ob der
+    Wert uebernommen (+-0.1 %) oder gerechnet (+-1 %) wird. Fehlt ``accept``, wird
+    exakt verglichen -- so bei kategorialen Werten wie ``separator_type``.
+    """
     accept = pdef.get("accept")
-    if isinstance(accept, list):  # kategorial
-        return value in accept
-    if isinstance(accept, dict):
-        if "ref" in accept:  # relativ
-            base = ref_params.get(accept["ref"], {})
-            base_val = base.get("value") if isinstance(base, dict) else base
-            if base_val is None:
-                return False
-            lo = accept.get("min_rel", 0.0) * base_val
-            hi = accept.get("max_rel", math.inf) * base_val
-            return lo - 1e-9 <= float(value) <= hi + 1e-9
-        if "min" in accept or "max" in accept:  # absolut
-            lo = accept.get("min", -math.inf)
-            hi = accept.get("max", math.inf)
-            return lo - 1e-9 <= float(value) <= hi + 1e-9
-    # kein Band -> Exaktheit (string exakt, Zahl mit kleiner relativer Toleranz)
-    target = pdef.get("value")
-    if isinstance(target, str):
-        return value == target
-    if isinstance(target, (int, float)) and isinstance(value, (int, float)):
-        return abs(float(value) - float(target)) <= 0.01 * max(1.0, abs(float(target)))
-    return value == target
+    if isinstance(accept, dict) and ("min" in accept or "max" in accept):
+        lo = accept.get("min", -math.inf)
+        hi = accept.get("max", math.inf)
+        return lo - 1e-9 <= float(value) <= hi + 1e-9
+    return value == pdef.get("value")
 
 
 def _param_distance(ref: Node, cand: Node) -> float:
@@ -168,12 +162,10 @@ def _param_distance(ref: Node, cand: Node) -> float:
     for pname, pdef in ref.params.items():
         if pname not in serial or not isinstance(pdef, dict) or "value" not in pdef:
             continue
-        if pdef.get("obligation") in GAP_OBLIGATIONS:
-            continue
         cval = cand.params.get(pname)
         if cval is None:
             cost += 1.0
-        elif within_accept(pdef, cval, ref.params):
+        elif within_accept(pdef, cval):
             cost += 0.0
         else:
             tv = pdef["value"]
@@ -300,44 +292,43 @@ def assign_nodes(ref: Graph, cand: Graph) -> dict[str, str]:
 # Scoring
 # ==========================================================================
 def _edge_required(e: Edge) -> bool:
-    if e.obligation in REQUIRED_EDGE_OBLIGATIONS:
-        return True
-    return bool(e.obligation == "inferred" and e.confidence in REQUIRED_INFERRED_CONFIDENCE)
+    return e.obligation in REQUIRED_EDGE_OBLIGATIONS
 
 
 def _node_required(nd: Node) -> bool:
-    if nd.obligation in REQUIRED_NODE_OBLIGATIONS or nd.auto:
-        return True
-    return nd.obligation == "inferred"
+    return nd.obligation in REQUIRED_NODE_OBLIGATIONS or nd.auto
 
 
 @dataclass
 class Report:
     build_success: bool = True
-    structure: float = 0.0
+    completeness: float = 0.0
     measures: float = 0.0
-    gaps: float = 0.0
+    inventions: float = 0.0
     details: dict[str, Any] = field(default_factory=dict)
 
     def overall(self) -> float:
-        return round((self.structure + self.measures + self.gaps) / 3.0, 3)
+        return round((self.completeness + self.measures + self.inventions) / 3.0, 3)
 
     def pretty(self) -> str:
         d = self.details
         lines = [
             "=" * 60,
             (
-                f"  Struktur        {self.structure:6.1%}   "
-                f"(Knoten {d.get('node_tp',0)}/{d.get('node_req',0)}, "
-                f"Kanten {d.get('edge_tp',0)}/{d.get('edge_req',0)})"
+                f"  Vollstaendigkeit  {self.completeness:6.1%}   "
+                f"(Knoten {d.get('node_found',0)}/{d.get('node_req',0)}, "
+                f"Kanten {d.get('edge_found',0)}/{d.get('edge_req',0)})"
             ),
             (
-                f"  Masse           {self.measures:6.1%}   "
+                f"  Masse             {self.measures:6.1%}   "
                 f"({d.get('meas_pass',0)}/{d.get('meas_total',0)} Parameter im Band)"
             ),
-            (f"  Fehlende Werte  {self.gaps:6.1%}   " f"({d.get('gap_ok',0)}/{d.get('gap_total',0)} korrekt behandelt)"),
+            (
+                f"  Keine Erfindungen {self.inventions:6.1%}   "
+                f"({d.get('n_extra_nodes',0)} Bauteile, {d.get('n_extra_edges',0)} Kanten erfunden)"
+            ),
             "-" * 60,
-            f"  GESAMT          {self.overall():6.1%}",
+            f"  GESAMT            {self.overall():6.1%}",
             "=" * 60,
         ]
         if d.get("violations"):
@@ -349,7 +340,7 @@ class Report:
         return "\n".join(lines)
 
 
-def evaluate(datapoint: dict[str, Any], candidate: dict[str, Any], response: dict[str, Any] | None = None) -> Report:
+def evaluate(datapoint: dict[str, Any], candidate: dict[str, Any]) -> Report:
     """
     Bewertet eine Kandidaten-Anlage gegen einen Referenz-Datenpunkt.
 
@@ -358,9 +349,6 @@ def evaluate(datapoint: dict[str, Any], candidate: dict[str, Any], response: dic
     datapoint : dict   Referenz (Schema-konform).
     candidate : dict   ``BiogasPlant``-Serialisierung mit "components" & "connections".
                        Leeres/None-Dict => build_success=False.
-    response  : dict, optional
-        Strukturierte LMM-Antwort: {"open_questions": [{"field": ...}],
-        "assumptions": [{"field": ..., "value": ...}]}. Fuer den Luecken-Score.
     """
     rep = Report()
     if not candidate or not candidate.get("components"):
@@ -371,142 +359,110 @@ def evaluate(datapoint: dict[str, Any], candidate: dict[str, Any], response: dic
     ref = expand_reference(datapoint)
     cand = normalize_candidate(candidate)
     assign = assign_nodes(ref, cand)
-    response = response or {}
-    asked_fields = " ".join(q.get("field", "") for q in response.get("open_questions", [])).lower()
-    assumptions = {a.get("field", ""): a.get("value") for a in response.get("assumptions", [])}
     violations: list[str] = []
-
-    # ----- 1) STRUKTUR: Knoten -----
-    req_nodes = [nd for nd in ref.nodes.values() if _node_required(nd)]
-    node_tp = sum(1 for nd in req_nodes if nd.id in assign)
-    node_req = len(req_nodes)
-    # extra (nicht zugeordnete) Kandidaten-Knoten -> Praezision
-    matched_cand = set(assign.values())
-    extra_cand = [c for c in cand.nodes.values() if c.id not in matched_cand]
-    node_recall = node_tp / node_req if node_req else 1.0
-    node_prec = len(matched_cand) / len(cand.nodes) if cand.nodes else 1.0
-    node_f1 = _f1(node_prec, node_recall)
-
-    # ----- 1) STRUKTUR: Kanten -----
     cand_edge_set = {(e.src, e.dst, e.etype) for e in cand.edges}
-    req_edges = [e for e in ref.edges if _edge_required(e)]
-    translatable = [e for e in req_edges if e.src in assign and e.dst in assign]
-    ref_edges_in_cand = {(assign[e.src], assign[e.dst], e.etype) for e in translatable}
-    edge_tp = len(ref_edges_in_cand & cand_edge_set)
-    edge_req = len(translatable)
-    edge_recall = edge_tp / edge_req if edge_req else 1.0
-    rep.structure = round((node_f1 + edge_recall) / 2.0, 3)
 
-    # ----- 2) MASSE: Parameter im Band -----
+    # ======================================================================
+    # 1) VOLLSTAENDIGKEIT -- ist alles Noetige da? (Recall)
+    # ======================================================================
+    req_nodes = [nd for nd in ref.nodes.values() if _node_required(nd)]
+    node_found = 0
+    for nd in req_nodes:
+        if nd.id in assign:
+            node_found += 1
+        else:
+            violations.append(f"Fehlend: Bauteil '{nd.id}' ({nd.ctype}) wurde nicht gebaut.")
+    node_recall = node_found / len(req_nodes) if req_nodes else 1.0
+
+    # Der Nenner umfasst ALLE Pflicht-Kanten. Faellt ein Knoten weg, verschwinden
+    # seine Kanten nicht aus der Rechnung -- Weglassen darf sich nicht lohnen.
+    req_edges = [e for e in ref.edges if _edge_required(e)]
+    edge_found = 0
+    for e in req_edges:
+        translated = (assign.get(e.src), assign.get(e.dst), e.etype)
+        if None not in translated[:2] and translated in cand_edge_set:
+            edge_found += 1
+        else:
+            violations.append(f"Fehlend: Verbindung {e.src} -> {e.dst} ({e.etype}).")
+    edge_recall = edge_found / len(req_edges) if req_edges else 1.0
+    rep.completeness = round((node_recall + edge_recall) / 2.0, 3)
+
+    # ======================================================================
+    # 2) MASSE -- stimmen die Werte? (auch still erfundene Werte landen hier)
+    # ======================================================================
     meas_pass = meas_total = 0
     for ref_id, cand_id in assign.items():
         rnode, cnode = ref.nodes[ref_id], cand.nodes[cand_id]
         serial = SERIALIZED_PARAMS.get(rnode.ctype, set())
         for pname, pdef in rnode.params.items():
-            if (
-                pname not in serial
-                or not isinstance(pdef, dict)
-                or "value" not in pdef
-                or pdef.get("obligation") in GAP_OBLIGATIONS
-                or pdef.get("value") is None
-            ):
+            if pname not in serial or not isinstance(pdef, dict) or "value" not in pdef or pdef.get("value") is None:
                 continue
             meas_total += 1
             cval = cnode.params.get(pname)
-            if cval is not None and within_accept(pdef, cval, rnode.params):
+            if cval is not None and within_accept(pdef, cval):
                 meas_pass += 1
             else:
                 violations.append(f"Masse {rnode.id}.{pname}: {cval} ausserhalb Band {pdef.get('accept')}")
     rep.measures = round(meas_pass / meas_total, 3) if meas_total else 1.0
 
-    # ----- 3) FEHLENDE WERTE: missing_ask -----
-    gap_total = gap_ok = 0
+    # ======================================================================
+    # 3) KEINE ERFINDUNGEN -- enthaelt der Kandidat NUR Bekanntes? (Precision)
+    # ======================================================================
+    # "erlaubt" ist weiter gefasst als "Pflicht": auch optionale Referenz-Elemente
+    # (missing_ask, inferred mit niedriger Konfidenz) sind keine Erfindung.
+    ref_types = {nd.ctype for nd in ref.nodes.values()}
+    matched_cand = set(assign.values())
+    extra_nodes = [c for c in cand.nodes.values() if c.id not in matched_cand]
+    node_prec = len(matched_cand) / len(cand.nodes) if cand.nodes else 1.0
 
-    def field_asked(name: str) -> bool:
-        key = name.split(".")[-1].lower()
-        return key in asked_fields or name.lower() in asked_fields
+    allowed_edges = {(assign[e.src], assign[e.dst], e.etype) for e in ref.edges if e.src in assign and e.dst in assign}
+    extra_edges = [e for e in cand.edges if (e.src, e.dst, e.etype) not in allowed_edges]
+    edge_prec = (len(cand.edges) - len(extra_edges)) / len(cand.edges) if cand.edges else 1.0
 
-    # missing_ask-Parameter
-    for nd in ref.nodes.values():
-        for pname, pdef in nd.params.items():
-            if not isinstance(pdef, dict) or pdef.get("obligation") not in GAP_OBLIGATIONS:
-                continue
-            gap_total += 1
-            field = f"{nd.id}.{pname}"
-            cand_id = assign.get(nd.id)
-            cval = cand.nodes[cand_id].params.get(pname) if cand_id else assumptions.get(field)
-            if field_asked(field) or field_asked(pname):
-                gap_ok += 1
-            elif cval is not None and within_accept(pdef, cval, nd.params):
-                if pdef.get("ask_preferred"):
-                    violations.append(f"Luecke {field}: gefuellt statt gefragt (ask_preferred).")
-                gap_ok += 1
-            elif cval is not None:
-                violations.append(f"Luecke {field}: Wert {cval} unplausibel (ausserhalb Band).")
-            else:
-                violations.append(f"Luecke {field}: weder gefragt noch gesetzt.")
+    rep.inventions = round((node_prec + edge_prec) / 2.0, 3)
 
-    # missing_ask-Knoten (z.B. CHP/Heizung, deren Existenz unklar ist)
-    for nd in ref.nodes.values():
-        if nd.obligation not in GAP_OBLIGATIONS:
-            continue
-        gap_total += 1
-        if field_asked(nd.id) or field_asked(nd.ctype):
-            gap_ok += 1
-        elif nd.id in assign:
-            gap_ok += 1  # plausibel ergaenzt (Existenz akzeptiert)
+    unknown_type = False
+    for c in extra_nodes:
+        if c.ctype in ref_types:
+            violations.append(f"Erfunden: zusaetzliches Bauteil '{c.id}' ({c.ctype}) ohne Entsprechung in der Referenz.")
         else:
-            violations.append(f"Luecke Knoten {nd.id} ({nd.ctype}): weder gefragt noch gebaut.")
-
-    rep.gaps = round(gap_ok / gap_total, 3) if gap_total else 1.0
-
-    # ----- must_not_invent -----
-    for inv in datapoint.get("must_not_invent", []):
-        low = inv.lower()
-        if "digester" in low or "fermenter" in low:
-            n_ref = sum(1 for nd in ref.nodes.values() if nd.ctype == "digester")
-            n_cand = sum(1 for nd in cand.nodes.values() if nd.ctype == "digester")
-            if n_cand > n_ref:
-                violations.append(f"must_not_invent: {n_cand} Digester statt {n_ref}.")
-                rep.gaps = round(rep.gaps * 0.5, 3)
+            unknown_type = True
+            violations.append(f"Erfunden: Bauteil '{c.id}' vom Typ '{c.ctype}' -- die Referenzanlage hat keins.")
+    for e in extra_edges:
+        violations.append(f"Erfunden: Verbindung {e.src} -> {e.dst} ({e.etype}) gibt es in der Referenz nicht.")
+    if unknown_type:
+        rep.inventions = round(min(rep.inventions, INVENTED_TYPE_CAP), 3)
 
     rep.details = {
-        "node_tp": node_tp,
-        "node_req": node_req,
-        "node_prec": round(node_prec, 3),
-        "edge_tp": edge_tp,
-        "edge_req": edge_req,
+        "node_found": node_found,
+        "node_req": len(req_nodes),
+        "edge_found": edge_found,
+        "edge_req": len(req_edges),
         "meas_pass": meas_pass,
         "meas_total": meas_total,
-        "gap_ok": gap_ok,
-        "gap_total": gap_total,
+        "node_prec": round(node_prec, 3),
+        "edge_prec": round(edge_prec, 3),
+        "n_extra_nodes": len(extra_nodes),
+        "n_extra_edges": len(extra_edges),
         "assignment": assign,
-        "extra_candidate_nodes": [c.id for c in extra_cand],
+        "extra_candidate_nodes": [c.id for c in extra_nodes],
         "violations": violations,
         "warnings": lint_gas_paths(cand),  # Gaspfad-Lint auf der gebauten Anlage
     }
     return rep
 
 
-def _f1(precision: float, recall: float) -> float:
-    return round(2 * precision * recall / (precision + recall), 3) if (precision + recall) else 0.0
-
-
 # --------------------------------------------------------------------------
-# CLI: matcher.py <datapoint.json> <candidate.json> [response.json]
+# CLI: matcher.py <datapoint.json> <candidate.json>
 # --------------------------------------------------------------------------
 if __name__ == "__main__":
     import sys
 
     if len(sys.argv) < 3:
-        print("usage: python matcher.py <datapoint.json> <candidate.json> [response.json]")
+        print("usage: python matcher.py <datapoint.json> <candidate.json>")
         raise SystemExit(2)
     with open(sys.argv[1], encoding="utf-8") as f:
         dp = json.load(f)
     with open(sys.argv[2], encoding="utf-8") as f:
         ca = json.load(f)
-    rs = None
-    if len(sys.argv) > 3:
-        with open(sys.argv[3], encoding="utf-8") as f:
-            rs = json.load(f)
-    print(evaluate(dp, ca, rs).pretty())
+    print(evaluate(dp, ca).pretty())

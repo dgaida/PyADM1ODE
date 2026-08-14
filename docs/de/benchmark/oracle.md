@@ -119,39 +119,25 @@ Das Oracle trennt zwei Verhaltensweisen, die ohne es ununterscheidbar wären:
   korrekt.  
 - Eine **schwächere KI rät** und erfindet möglicherweise einen unplausiblen Wert.  
 
-Genau das schlägt sich in der Bewertung nieder: Für unvollständige Datenpunkte zählt
-der **Lücken-Score**, ob ein fehlendes Feld **erfragt** oder plausibel im
-Akzeptanzband **ergänzt** wurde. Das **stille Erfinden** eines unplausiblen Werts ist
-der schwerste Fehler. Details dazu auf der Seite
-[Bewertung & Ablauf](bewertung.md).
-
-!!! tip "`response.json` – Fragen und Annahmen festhalten"
-    Wer ein eigenes Modell **offline** auswertet, macht erfragte und ergänzte Felder
-    in einer `response.json` neben dem Code explizit:
-
-    ```json
-    {
-      "open_questions": [{ "field": "sep.source" }],
-      "assumptions":    [{ "field": "F1.T_ad", "value": 313.15 }]
-    }
-    ```
-
-    Mehr dazu unter [Datensatz nutzen](nutzung.md).
+Genau das schlägt sich in der Bewertung nieder — allerdings **indirekt**: Die
+Rückfragen selbst werden nicht benotet. Wer fragt, bekommt die richtigen Werte und
+liegt bei **Maße** im Akzeptanzband; wer rät und daneben liegt, verliert dort Punkte.
+Details dazu auf der Seite [Bewertung & Ablauf](bewertung.md).
 
 ## Oracle abschalten
 
 Zum Vergleich lässt sich das Oracle deaktivieren. Dann stellt die KI **keine**
-Rückfragen und muss fehlende Werte selbst plausibel annehmen oder mit Standardwerten
-arbeiten:
+Rückfragen und muss die fehlenden Werte raten:
 
 ```bash
 python benchmark/eval/solve.py --no-oracle
 ```
 
-Das zeigt, wie gut ein Modell **ohne** Hilfestellung mit Lücken umgeht, eine nützliche
-Gegenprobe zum regulären Lauf mit Oracle.
+Das ist die Gegenprobe zum regulären Lauf: Sie zeigt, wie viel das Nachfragen
+tatsächlich wert ist. Erwartungsgemäß bricht dabei vor allem der **Maße**-Score ein —
+die Akzeptanzbänder sind zu eng, um einen ungenannten Wert zu erraten.
 
 ---
 
-Den Datensatz visuell erkunden – inklusive der erwarteten Rückfragen und der
-Oracle-Antworten pro Datenpunkt – kannst du im [Viewer](viewer.md).
+Den Datensatz visuell erkunden – inklusive der Oracle-Antworten pro Datenpunkt –
+kannst du im [Viewer](viewer.md).

@@ -118,15 +118,15 @@ class HeatingSystem(Component):
             the UAΔT loss term contributes to demand.
 
     Example:
-        >>> heating = HeatingSystem("heat1", target_temperature=308.15, heat_loss_coefficient=0.5)
+        >>> heating = HeatingSystem("heat1", target_temperature=315.15, heat_loss_coefficient=0.5)
         >>> heating.initialize()
-        >>> result = heating.step(t=0, dt=1/24, inputs={"T_digester": 308.15, "P_th_available": 200})
+        >>> result = heating.step(t=0, dt=1/24, inputs={"T_digester": 315.15, "P_th_available": 200})
     """
 
     def __init__(
         self,
         component_id: str,
-        target_temperature: float = 308.15,
+        target_temperature: float = 315.15,
         heat_loss_coefficient: float = 0.5,
         name: str | None = None,
         feedstock=None,
@@ -136,7 +136,8 @@ class HeatingSystem(Component):
 
         Args:
             component_id: Unique identifier.
-            target_temperature: Target digester temperature in K. Defaults to 308.15 (35°C).
+            target_temperature: Target digester temperature in K. Defaults to 315.15
+                (42 °C), matching the default of :class:`Digester`.
             heat_loss_coefficient: Heat loss coefficient in kW/K. Defaults to 0.5.
             name: Human-readable name. Defaults to component_id.
             feedstock: Optional :class:`Feedstock` for sensible-heat calculation.
@@ -255,7 +256,7 @@ class HeatingSystem(Component):
         """
         heating = cls(
             component_id=config["component_id"],
-            target_temperature=config.get("target_temperature", 308.15),
+            target_temperature=config.get("target_temperature", 315.15),
             heat_loss_coefficient=config.get("heat_loss_coefficient", 0.5),
             name=config.get("name"),
         )

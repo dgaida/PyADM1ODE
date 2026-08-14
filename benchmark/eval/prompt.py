@@ -3,7 +3,19 @@
 Prompt-Builder für den PyADM1ODE-Benchmark.
 
 Baut die Messages-Liste im OpenAI/Groq-Chat-Format auf, die an die API
-gesendet wird. Unterstützt Text-, Bild- und Hybrid-Datenpunkte.
+gesendet wird. Unterstützt Text-, Bild-, Hybrid- und PDF-Datenpunkte.
+
+PDF-Datenpunkte (``modality: "pdf"``) bilden den realistischsten Fall ab: ein
+echtes Dokument wie ein Angebotsschreiben, aus dem die Anlagenstruktur erst
+herausgelesen werden muss. Die Textebene des PDFs wird extrahiert und als Text
+mitgeschickt — das funktioniert bei jedem Anbieter, auch ohne Vision-Modell.
+Dafür wird ``pypdf`` benötigt (``pip install pypdf``).
+
+Das Dokument geht **vollständig** in den Prompt. Es gibt bewusst keinen Seiten-
+oder Zeichendeckel: Kürzen würde die Aufgabe stillschweigend verändern — steht
+der technische Anhang auf Seite 22, wäre der Datenpunkt danach unlösbar, und der
+Benchmark würde die Kürzung messen statt das Modell. Was in den Prompt gehört,
+entscheidet der Autor beim Anlegen des Datenpunkts, nicht der Prompt-Builder.
 """
 
 from __future__ import annotations
@@ -11,6 +23,37 @@ from __future__ import annotations
 import base64
 import os
 from typing import Any
+
+
+def extract_pdf_text(pdf_path: str) -> str:
+    """
+    Liest die Textebene eines PDFs vollständig aus, Seite für Seite.
+
+    Raises
+    ------
+    ImportError
+        Wenn ``pypdf`` fehlt.
+    ValueError
+        Wenn das PDF keine Textebene hat (z.B. reiner Scan) -- dann ist der
+        Datenpunkt so nicht lösbar und der Fehler soll früh auffallen.
+    """
+    try:
+        from pypdf import PdfReader
+    except ImportError as exc:  # pragma: no cover - abhängig von der Umgebung
+        raise ImportError("PDF-Datenpunkte brauchen 'pypdf'. Installieren mit: pip install pypdf") from exc
+
+    parts: list[str] = []
+    for i, page in enumerate(PdfReader(pdf_path).pages, start=1):
+        text = (page.extract_text() or "").strip()
+        if text:
+            parts.append(f"--- Seite {i} ---\n{text}")
+    if not parts:
+        raise ValueError(
+            f"{os.path.basename(pdf_path)} hat keine Textebene (vermutlich ein Scan). "
+            "Gescannte PDFs werden derzeit nicht unterstützt."
+        )
+    return "\n\n".join(parts)
+
 
 # ---------------------------------------------------------------------------
 # System-Prompt (statisch, enthält vollständige PyADM1ODE API-Referenz)
@@ -121,7 +164,7 @@ def build_messages(
     ----------
     datapoint    : Datenpunkt-Dict (aus JSON)
     dataset_dir  : Verzeichnis, in dem die Datenpunkt-Datei liegt
-                   (wird für Bildpfade benötigt)
+                   (wird für Bild- und Dokumentpfade benötigt)
     allow_questions : True  -> LLM darf Fragen stellen (underspecified)
                       False -> LLM schreibt sofort Code
     """
@@ -152,6 +195,14 @@ def build_messages(
             }
         )
 
+    # ---- PDF laden (pdf) ----
+    pdf_text = ""
+    if modality == "pdf":
+        doc_path = os.path.join(dataset_dir, inp.get("document_path", ""))
+        if not inp.get("document_path") or not os.path.exists(doc_path):
+            raise FileNotFoundError(f"PDF nicht gefunden: {doc_path}")
+        pdf_text = extract_pdf_text(doc_path)
+
     # ---- Textinhalt ----
     text_blocks: list[str] = []
     if modality == "image":
@@ -160,6 +211,16 @@ def build_messages(
         supp = inp.get("content", "")
         if supp:
             text_blocks.append(f"Anlagenskizze (siehe Bild oben).\n\nErgänzende Informationen:\n{supp}")
+    elif modality == "pdf":
+        name = os.path.basename(inp.get("document_path", "Dokument"))
+        text_blocks.append(
+            f"**Beigefügtes Dokument ({name}):**\n\n{pdf_text}\n\n"
+            "Das Dokument ist ein reales Anlagendokument — es enthält neben den "
+            "technischen Angaben auch Text, der für die Modellierung irrelevant ist."
+        )
+        supp = inp.get("content", "")
+        if supp:
+            text_blocks.append(f"**Ergänzende Informationen:**\n\n{supp}")
     else:  # text
         desc = inp.get("content", "")
         if desc:

@@ -12,15 +12,14 @@ Wie viele Behälter gibt es? Wie groß sind sie? Wie sind sie miteinander verbun
 Gibt es ein Blockheizkraftwerk?
 
 Die KI bekommt eine Beschreibung und erzeugt daraus die Anlage. Als Eingabe kann
-ein Text dienen, eine Zeichnung der Anlagenstruktur oder eine Kombination aus beidem.
-Anschließend wird ihr Ergebnis mit einer bekannten **Musterlösung** verglichen.
+ein Text dienen, eine Zeichnung der Anlagenstruktur, ein PDF-Dokument oder eine
+Kombination daraus. Anschließend wird ihr Ergebnis mit einer bekannten
+**Musterlösung** verglichen.
 
-```mermaid
-flowchart LR
-    A["📝 Beschreibung<br>der Anlage"] --> B["🤖 KI baut<br>die Anlage nach"]
-    B --> C["⚖️ Vergleich mit<br>der Musterlösung"]
-    C --> D["📊 Bewertung<br>in Prozent"]
-```
+![Übersicht über den Benchmark-Datensatz](../../assets/dataset_structure_detail.svg)
+
+Die Grafik gibt einen Überblick über den Datensatz. Die einzelnen Teile sind in den
+folgenden Abschnitten genauer beschrieben.
 
 ## So geht es weiter
 

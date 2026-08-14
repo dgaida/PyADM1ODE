@@ -5,7 +5,8 @@ test how well an **artificial intelligence (AI)** can rebuild a working PyADM1OD
 model from the description of a plant.
 
 !!! tip "In a nutshell"
-    An AI reads the description of a biogas plant – as text or as a sketch – and is
+    An AI reads the description of a biogas plant – as text, as a sketch or as a
+    PDF document – and is
     supposed to rebuild that same plant in the computer. The benchmark measures
     **how accurately** it succeeds.
 
@@ -21,12 +22,10 @@ software** – is the task the benchmark evaluates. The AI receives a descriptio
 produces the plant from it. Its result is then compared against a known
 **reference solution**.
 
-```mermaid
-flowchart LR
-    A["📝 Plant<br>description"] --> B["🤖 AI rebuilds<br>the plant"]
-    B --> C["⚖️ Compare with<br>the reference solution"]
-    C --> D["📊 Score<br>in percent"]
-```
+![Overview of the benchmark dataset](../../assets/dataset_structure_detail_en.svg)
+
+The graphic gives an overview of the dataset. Its individual parts are described in
+detail in the following sections.
 
 ## Why is this useful?
 

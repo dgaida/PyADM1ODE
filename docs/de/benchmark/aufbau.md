@@ -21,7 +21,7 @@ Jede Anlage liegt in einem eigenen Ordner. Das sind zum Beispiel die ersten 3 Be
 
 Pro Anlage gibt es **unterschiedliche Beschreibungen**, welche diselbe Biogasanlage
 beschreiben. So lässt sich prüfen, ob die KI robust ist egal ob die Beschreibung lang,
-kurz, auf Englisch oder als Skizze vorliegt.
+kurz, auf Englisch, als Skizze oder als PDF-Dokument vorliegt.
 
 Zwei Eigenschaften werden dabei kombiniert:
 
@@ -31,13 +31,14 @@ Zwei Eigenschaften werden dabei kombiniert:
 - **knapper Text** (terse) – nur die wichtigsten Eckdaten  
 - **englischer Text** – dieselbe Anlage auf Englisch  
 - **Skizze** – eine Zeichnung der Anlage (Bild)  
+- **PDF** – ein echtes Anlagendokument, etwa ein Angebotsschreiben  
 
-**2. Die Vollständigkeit der Angaben**
+**2. Wie vollständig die Beschreibung ist**
 
 - **vollständig**: Alle nötigen Angaben stehen in der Beschreibung.  
   Die KI muss nichts nachfragen.  
 - **unvollständig**: Es fehlen Angaben (z. B. die Betriebstemperatur). Die KI muss  
-  diese **erfragen** oder sinnvoll **ergänzen**.
+  diese beim Oracle **erfragen** — geraten wird der Wert praktisch nie genau genug.
 
 ## Die Musterlösung („Gold")
 

@@ -44,6 +44,63 @@ T_meso = 308.15     # 35°C
 T_thermo = 328.15   # 55°C
 ```
 
+Der Standardwert ist `315.15 K` (42 °C) — einheitlich in `ADM1`, `Digester` und
+`PlantConfigurator.add_digester`.
+
+#### Temperatur nachträglich ändern
+
+`T_ad` lässt sich jederzeit anpassen. Zehn abgeleitete ADM1-Konstanten (Kinetik,
+Inhibition, Henry-Koeffizienten, Gasdrücke) werden dabei neu berechnet, und
+gesetzte Kalibrierungsparameter werden anschließend wieder aufgelegt:
+
+```python
+digester.T_ad = 328.15                      # kurz: setzt alles Abgeleitete neu
+digester.set_temperature(328.15)            # gleichbedeutend, explizit
+digester.set_temperature(328.15, rebuild_state=True)  # Startzustand neu ableiten
+```
+
+Ohne `rebuild_state` bleibt der biologische Zustand erhalten und die Biologie
+folgt der neuen Temperatur als Übergang — so wie in einer realen Anlage. Mit
+`rebuild_state=True` wird der eingefahrene Zustand bei der neuen Temperatur neu
+abgeleitet; das Ergebnis ist identisch zu einem direkt bei dieser Temperatur
+gebauten Fermenter.
+
+!!! tip "Heizung mitziehen"
+    `HeatingSystem.target_temperature` hat denselben Standardwert `315.15 K`, ist
+    aber **nicht** an `T_ad` gekoppelt. Wer den Fermenter auf eine andere
+    Temperatur setzt, muss die zugehörige Heizung mit anpassen:
+
+    ```python
+    digester.set_temperature(328.15)
+    heating.target_temperature = 328.15
+    ```
+
+### Substrate später nachreichen
+
+Der Feedstock ist optional: Anlagenstruktur zuerst aufbauen, Substrate später
+ergänzen — praktisch, wenn die Struktur früher feststeht als die Fütterung.
+
+```python
+cfg = PlantConfigurator(plant)                    # ohne Feedstock
+cfg.add_digester("F1", V_liq=3325, V_gas=870)     # baut und initialisiert
+
+cfg.set_feedstock(feedstock, Q_substrates={"F1": [40, 10]})
+```
+
+`set_feedstock` verdrahtet Influent-DataFrame und -Dichte und leitet den
+Startzustand aus der neuen Mischung ab — das Ergebnis ist identisch zu einem von
+Anfang an mit Feedstock gebauten Fermenter. Eine einfache Zuweisung
+(`digester.feedstock = fs`) reicht dafür **nicht**.
+
+Ein Fermenter ohne Feedstock lässt sich anlegen und initialisieren, aber nicht
+simulieren; `step()` meldet dann klar:
+
+```text
+RuntimeError: ADM1 has no influent source: attach a Feedstock
+(Digester.set_feedstock / PlantConfigurator.set_feedstock) or provide one
+via set_influent_dataframe().
+```
+
 ### Ausgaben
 
 ```python

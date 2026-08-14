@@ -20,8 +20,12 @@ import glob
 import json
 import os
 import re
+import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+from validate import report as validate_report  # noqa: E402
+
 DATASET = os.path.abspath(os.path.join(HERE, "..", "dataset"))
 VIEWER_HTML = os.path.abspath(os.path.join(HERE, "..", "viewer", "index.html"))
 
@@ -102,11 +106,17 @@ def update_viewer_embedded(entries: list) -> None:
     print(f"viewer/index.html embedded-Block aktualisiert ({len(datapoints)} Datenpunkte)")
 
 
-def main() -> None:
+def main() -> int:
     entries = collect_datapoints()
     write_index_json(entries)
     update_viewer_embedded(entries)
+    # Index/Viewer werden auch bei Schemafehlern geschrieben, damit sich der
+    # kaputte Datenpunkt im Viewer ansehen laesst -- der Exitcode meldet ihn.
+    n_bad = validate_report(DATASET)
+    if n_bad == 0:
+        print("Schema-Pruefung: alle Datenpunkte konform")
+    return 1 if n_bad else 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

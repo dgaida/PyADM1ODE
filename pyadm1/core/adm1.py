@@ -274,7 +274,7 @@ class ADM1:
         feedstock,
         V_liq: float = 1977.0,
         V_gas: float = 304.0,
-        T_ad: float = 308.15,
+        T_ad: float = 315.15,
         backend: str | None = None,
     ) -> None:
         """
@@ -290,7 +290,8 @@ class ADM1:
         V_gas : float
             Gas headspace volume [m³].
         T_ad : float
-            Operating temperature [K] (default 308.15 K = 35 °C).
+            Operating temperature [K] (default 315.15 K = 42 °C, matching
+            :meth:`PlantConfigurator.add_digester` and :class:`Digester`).
         backend : str, optional
             Right-hand-side backend used for integration: ``"numpy"``
             evaluates :meth:`ADM_ODE`; ``"torch"`` evaluates the equivalent
@@ -310,16 +311,10 @@ class ADM1:
         self._V_gas = V_gas
         self._V_ad = V_liq + V_gas
 
-        # --- Temperature ---
-        self._T_ad = T_ad
-
         # --- Physical constants ---
         self._R = 0.08314  # bar·m³·kmol⁻¹·K⁻¹
         self._T_base = 298.15  # 25 °C reference
         self._p_atm = 1.013
-
-        self._RT = self._R * self._T_ad
-        self._p_ext = self._p_atm - 0.0084147 * np.exp(0.054 * (self._T_ad - 273.15))
 
         # --- Feedstock / influent ---
         self._feedstock = feedstock
@@ -327,6 +322,8 @@ class ADM1:
         self._state_input: list[float] | None = None
 
         # --- Calibration overrides ---
+        # Must exist before _apply_temperature: that method re-applies the
+        # overrides on top of the freshly temperature-corrected defaults.
         self._calibration_params: dict = {}
 
         # --- Result-tracking lists ---
@@ -341,30 +338,14 @@ class ADM1:
         self._VFA: list[float] = []
         self._TAC: list[float] = []
 
-        # --- Temperature-corrected kinetics (reused across ODE calls) ---
-        base_kinetic = ADMParams.get_kinetic_params()
-        theta = ADMParams.get_temperature_factors()
-        self._kinetic = ADMParams.apply_temperature_corrections(base_kinetic, theta, T_ad)
-        # Snapshot of the temperature-corrected defaults so calibration
-        # overrides can be reverted cleanly by clear_calibration_parameters().
-        self._kinetic_default = dict(self._kinetic)
-
-        # --- Stoichiometric / fraction / inhibition parameters ---
+        # --- Stoichiometric / fraction parameters (temperature-independent) ---
         self._stoich = ADMParams.get_stoichiometric_params()
         self._fractions = ADMParams.get_product_fractions()
-        self._inhib_params = ADMParams.get_inhibition_params(self._R, self._T_base, T_ad)
 
-        # --- Gas parameters ---
-        p_gas_h2o, k_p, k_L_a, K_H_co2, K_H_ch4, K_H_h2 = ADMParams.getADMgasparams(self._R, self._T_base, T_ad)
-        self._p_gas_h2o = p_gas_h2o
-        self._k_p = k_p
-        self._k_L_a = k_L_a
-        self._K_H_co2 = K_H_co2
-        self._K_H_ch4 = K_H_ch4
-        self._K_H_h2 = K_H_h2
-        self._K_H_co2_default = K_H_co2
-        self._K_H_ch4_default = K_H_ch4
-        self._K_H_h2_default = K_H_h2
+        # --- Temperature and everything derived from it ---
+        # Single entry point, shared with the T_ad setter, so construction and
+        # a later temperature change can never drift apart.
+        self._apply_temperature(T_ad)
 
         # Gas volume reference conditions (theta = 20 °C, 1 atm) — ADM1da convention
         self._T_gas_norm = 293.15
@@ -390,7 +371,54 @@ class ADM1:
         self._q_S_loss_last: float = 0.0
 
     # ------------------------------------------------------------------
-    # Public read-only properties
+    # Temperature
+    # ------------------------------------------------------------------
+
+    def _apply_temperature(self, T_ad: float) -> None:
+        """
+        Set ``T_ad`` and recompute every quantity derived from it.
+
+        Ten constants depend on the operating temperature: ``_RT``, ``_p_ext``,
+        the temperature-corrected kinetics, the inhibition parameters and the
+        six gas parameters. Recomputing them anywhere but here is how the
+        object ends up reporting one temperature while simulating another --
+        therefore ``__init__`` and the ``T_ad`` setter both route through this
+        method.
+
+        Calibration overrides are re-applied afterwards: they are stated
+        relative to the temperature-corrected defaults, and those defaults have
+        just moved.
+        """
+        self._T_ad = float(T_ad)
+
+        self._RT = self._R * self._T_ad
+        self._p_ext = self._p_atm - 0.0084147 * np.exp(0.054 * (self._T_ad - 273.15))
+
+        base_kinetic = ADMParams.get_kinetic_params()
+        theta = ADMParams.get_temperature_factors()
+        # Snapshot of the temperature-corrected defaults so calibration
+        # overrides can be reverted cleanly by clear_calibration_parameters().
+        self._kinetic_default = ADMParams.apply_temperature_corrections(base_kinetic, theta, self._T_ad)
+        self._kinetic = dict(self._kinetic_default)
+
+        self._inhib_params = ADMParams.get_inhibition_params(self._R, self._T_base, self._T_ad)
+
+        p_gas_h2o, k_p, k_L_a, K_H_co2, K_H_ch4, K_H_h2 = ADMParams.getADMgasparams(self._R, self._T_base, self._T_ad)
+        self._p_gas_h2o = p_gas_h2o
+        self._k_p = k_p
+        self._k_L_a = k_L_a
+        self._K_H_co2 = K_H_co2
+        self._K_H_ch4 = K_H_ch4
+        self._K_H_h2 = K_H_h2
+        self._K_H_co2_default = K_H_co2
+        self._K_H_ch4_default = K_H_ch4
+        self._K_H_h2_default = K_H_h2
+
+        if self._calibration_params:
+            self.set_calibration_parameters(dict(self._calibration_params))
+
+    # ------------------------------------------------------------------
+    # Public properties
     # ------------------------------------------------------------------
 
     @property
@@ -403,10 +431,33 @@ class ADM1:
         """Operating temperature [K]."""
         return self._T_ad
 
+    @T_ad.setter
+    def T_ad(self, value: float) -> None:
+        """
+        Change the operating temperature and recompute all derived constants.
+
+        The current ADM1 state vector is left untouched -- the reactor is
+        assumed to be brought to the new temperature, and the biology follows
+        as a transient. Use :meth:`Digester.set_temperature` with
+        ``rebuild_state=True`` to re-derive the steady state instead.
+        """
+        self._apply_temperature(value)
+
     @property
     def feedstock(self):
-        """Feedstock object."""
+        """Feedstock object (``None`` until one is attached)."""
         return self._feedstock
+
+    @feedstock.setter
+    def feedstock(self, value) -> None:
+        """
+        Attach or replace the feedstock.
+
+        Note that the influent DataFrame and density are **not** re-derived
+        here -- callers that want the full wiring should use
+        :meth:`Digester.set_feedstock`.
+        """
+        self._feedstock = value
 
     @property
     def Q_GAS(self) -> list[float]:
@@ -575,7 +626,17 @@ class ADM1:
         If an external influent DataFrame has been set via
         ``set_influent_dataframe()``, that DataFrame is used.  Otherwise
         the feedstock object is used to derive the influent.
+
+        Raises
+        ------
+        RuntimeError
+            When neither a feedstock nor an influent DataFrame is available.
         """
+        if self._feedstock is None and self._influent_df is None:
+            raise RuntimeError(
+                "ADM1 has no influent source: attach a Feedstock (Digester.set_feedstock / "
+                "PlantConfigurator.set_feedstock) or provide one via set_influent_dataframe()."
+            )
         Q_actual = self._feedstock.actual_Q(Q) if hasattr(self._feedstock, "actual_Q") else list(Q)
         self._Q = Q_actual
         if rho is not None and len(rho) == len(Q_actual):

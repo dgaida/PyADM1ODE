@@ -144,9 +144,9 @@ class EvalResult:
     modality: str
     language: str
     build_success: bool = False
-    structure: float = 0.0
+    completeness: float = 0.0
     measures: float = 0.0
-    gaps: float = 0.0
+    inventions: float = 0.0
     overall: float = 0.0
     n_oracle_turns: int = 0
     error: str = ""
@@ -159,9 +159,9 @@ class EvalResult:
             "modality": self.modality,
             "language": self.language,
             "build_success": self.build_success,
-            "structure": self.structure,
+            "completeness": self.completeness,
             "measures": self.measures,
-            "gaps": self.gaps,
+            "inventions": self.inventions,
             "overall": self.overall,
             "oracle_turns": self.n_oracle_turns,
             "error": self.error,
@@ -257,9 +257,9 @@ def evaluate_datapoint(
         return result
 
     result.build_success = report.build_success
-    result.structure = report.structure
+    result.completeness = report.completeness
     result.measures = report.measures
-    result.gaps = report.gaps
+    result.inventions = report.inventions
     result.overall = report.overall()
     return result
 
@@ -352,7 +352,7 @@ def save_results(results: list[EvalResult], output_dir: str, model: str) -> None
 def print_table(results: list[EvalResult], model: str) -> None:
     hdr = (
         f"{'#':>2}  {'ID':<28} {'Reg.':<7} {'Mod.':<7} {'B':>1} "
-        f"{'Struk':>6} {'Masse':>6} {'Lücke':>6} {'Gesamt':>7}  {'O':>1}"
+        f"{'Vollst':>6} {'Masse':>6} {'Erfund':>6} {'Gesamt':>7}  {'O':>1}"
     )
     print(f"\nModell: {model}")
     print(hdr)
@@ -361,7 +361,7 @@ def print_table(results: list[EvalResult], model: str) -> None:
         b = "✓" if r.build_success else "✗"
         print(
             f"{i:>2}  {r.dp_id[:28]:<28} {r.regime[:7]:<7} {r.modality[:7]:<7} {b:>1} "
-            f"{r.structure:>6.1%} {r.measures:>6.1%} {r.gaps:>6.1%} {r.overall:>7.1%}  "
+            f"{r.completeness:>6.1%} {r.measures:>6.1%} {r.inventions:>6.1%} {r.overall:>7.1%}  "
             f"{r.n_oracle_turns:>1}"
         )
         if r.error:
@@ -376,7 +376,7 @@ def print_table(results: list[EvalResult], model: str) -> None:
 
         print(
             f"    {'MITTEL (build OK)':<28} {'':<7} {'':<7} {len(ok)}/{len(results):<4} "
-            f"{avg('structure'):>6.1%} {avg('measures'):>6.1%} {avg('gaps'):>6.1%} "
+            f"{avg('completeness'):>6.1%} {avg('measures'):>6.1%} {avg('inventions'):>6.1%} "
             f"{avg('overall'):>7.1%}"
         )
 
@@ -402,7 +402,7 @@ def main() -> int:
     ap.add_argument("--modality", choices=["text", "image", "hybrid"], default=None, help="Filter: text | image | hybrid")
     ap.add_argument("--language", choices=["de", "en"], default=None, help="Filter: de | en")
     ap.add_argument("--id", default=None, help="Filter: nur Datenpunkte, deren ID diesen String enthalten")
-    ap.add_argument("--no-oracle", action="store_true", help="Oracle deaktivieren (LLM nutzt Standardwerte)")
+    ap.add_argument("--no-oracle", action="store_true", help="Oracle deaktivieren (LLM muss fehlende Werte raten)")
     ap.add_argument("--dataset", default=DATASET_DIR, help="Datensatz-Verzeichnis")
     ap.add_argument(
         "--output", default=os.path.join(REPO_ROOT, "benchmark", "results"), help="Ausgabeverzeichnis für CSV und Code"

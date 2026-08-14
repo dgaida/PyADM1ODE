@@ -8,7 +8,7 @@ Pipeline (entspricht der Detail-Folie):
     ->  Graph-Matcher (matcher.evaluate)  ->  Report
 
 CLI:
-    python runner.py <datapoint.json> <candidate_code.py> [response.json]
+    python runner.py <datapoint.json> <candidate_code.py>
 
 Programmatic:
     from runner import run_candidate_code, evaluate_code
@@ -75,28 +75,22 @@ def run_candidate_code(code: str, timeout: float = 90.0) -> tuple[dict[str, Any]
     return data, ""
 
 
-def evaluate_code(
-    datapoint: dict[str, Any], code: str, response: dict[str, Any] | None = None, timeout: float = 90.0
-) -> Report:
+def evaluate_code(datapoint: dict[str, Any], code: str, timeout: float = 90.0) -> Report:
     """Code ausfuehren + bewerten. Bei Ausfuehrungsfehler: build_success=False."""
     candidate, err = run_candidate_code(code, timeout=timeout)
     if candidate is None:
-        rep = evaluate(datapoint, {}, response)  # liefert build_success=False
+        rep = evaluate(datapoint, {})  # liefert build_success=False
         rep.details.setdefault("violations", []).insert(0, f"Ausfuehrung fehlgeschlagen: {err}")
         return rep
-    return evaluate(datapoint, candidate, response)
+    return evaluate(datapoint, candidate)
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print("usage: python runner.py <datapoint.json> <candidate_code.py> [response.json]")
+        print("usage: python runner.py <datapoint.json> <candidate_code.py>")
         raise SystemExit(2)
     with open(sys.argv[1], encoding="utf-8") as f:
         dp = json.load(f)
     with open(sys.argv[2], encoding="utf-8") as f:
         code_src = f.read()
-    resp = None
-    if len(sys.argv) > 3:
-        with open(sys.argv[3], encoding="utf-8") as f:
-            resp = json.load(f)
-    print(evaluate_code(dp, code_src, resp).pretty())
+    print(evaluate_code(dp, code_src).pretty())

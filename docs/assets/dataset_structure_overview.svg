@@ -32,9 +32,9 @@
   <text x="36" y="356" fill="#64748b" font-size="15" font-weight="700" letter-spacing="1">GEPRÜFT WIRD IN DREI SCORES</text>
   <g>
     <rect x="36" y="372" width="384" height="150" rx="14" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
-    <text x="60" y="426" fill="#065f46" font-size="22" font-weight="700">Struktur</text>
-    <text x="60" y="462" fill="#047857" font-size="16">Bauteile und Verbindungen</text>
-    <text x="60" y="486" fill="#047857" font-size="16">korrekt?</text>
+    <text x="60" y="426" fill="#065f46" font-size="22" font-weight="700">Vollständigkeit</text>
+    <text x="60" y="462" fill="#047857" font-size="16">alle Bauteile und</text>
+    <text x="60" y="486" fill="#047857" font-size="16">Verbindungen vorhanden?</text>
 
     <rect x="448" y="372" width="384" height="150" rx="14" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
     <text x="472" y="426" fill="#92400e" font-size="22" font-weight="700">Maße</text>
@@ -42,9 +42,9 @@
     <text x="472" y="486" fill="#b45309" font-size="16">im Toleranzbereich?</text>
 
     <rect x="860" y="372" width="384" height="150" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
-    <text x="884" y="426" fill="#991b1b" font-size="22" font-weight="700">Fehlende Werte</text>
-    <text x="884" y="462" fill="#b91c1c" font-size="16">nachgefragt —</text>
-    <text x="884" y="486" fill="#b91c1c" font-size="16">statt erfunden?</text>
+    <text x="884" y="426" fill="#991b1b" font-size="22" font-weight="700">Keine Erfindungen</text>
+    <text x="884" y="462" fill="#b91c1c" font-size="16">nichts hinzugefügt,</text>
+    <text x="884" y="486" fill="#b91c1c" font-size="16">das es nicht gibt?</text>
   </g>
 
   <!-- TAKEAWAY -->

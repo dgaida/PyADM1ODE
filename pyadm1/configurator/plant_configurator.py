@@ -33,17 +33,69 @@ class PlantConfigurator:
     digesters, flare attached to CHP, etc.).
     """
 
-    def __init__(self, plant: BiogasPlant, feedstock: Feedstock):
+    def __init__(self, plant: BiogasPlant, feedstock: Feedstock | None = None):
         """
         Parameters
         ----------
         plant : BiogasPlant
             Plant instance to configure.
-        feedstock : Feedstock
+        feedstock : Feedstock, optional
             Feedstock used by all digesters added through this configurator.
+            May be omitted to lay out the plant first and supply the substrates
+            later via :meth:`set_feedstock` -- useful when the structure is
+            known before the feed is. Digesters built without a feedstock can
+            be created and initialized, but not simulated until one is attached.
         """
         self.plant = plant
         self.feedstock = feedstock
+
+    def set_feedstock(
+        self,
+        feedstock: Feedstock,
+        digester_ids: list[str] | None = None,
+        Q_substrates: dict[str, list] | None = None,
+        rebuild_state: bool = True,
+    ) -> list[str]:
+        """
+        Attach a feedstock to this configurator and wire it into digesters.
+
+        Complements the optional ``feedstock`` constructor argument: build the
+        plant structure first, add the substrates once they are known.
+
+        Parameters
+        ----------
+        feedstock : Feedstock
+            Feedstock to attach. Also becomes the default for digesters added
+            afterwards.
+        digester_ids : list of str, optional
+            Restrict the update to these digesters. Defaults to every digester
+            in the plant.
+        Q_substrates : dict, optional
+            Per-digester feed rates ``{digester_id: [m³/d, ...]}``. Digesters
+            not listed keep their current rates.
+        rebuild_state : bool, default True
+            Re-derive each digester's pre-inoculated steady state from the new
+            blend.
+
+        Returns
+        -------
+        list of str
+            IDs of the digesters that were updated.
+        """
+        self.feedstock = feedstock
+        updated: list[str] = []
+        for comp_id, component in self.plant.components.items():
+            if not isinstance(component, Digester):
+                continue
+            if digester_ids is not None and comp_id not in digester_ids:
+                continue
+            component.set_feedstock(
+                feedstock,
+                Q_substrates=(Q_substrates or {}).get(comp_id),
+                rebuild_state=rebuild_state,
+            )
+            updated.append(comp_id)
+        return updated
 
     def add_digester(
         self,
@@ -59,6 +111,7 @@ class PlantConfigurator:
         initial_fill_fraction: float = 1.0,
         outflow_time_constant: float = 1.0,
         backend: str | None = None,
+        feedstock: Feedstock | None = None,
     ) -> tuple[Digester, str]:
         """
         Add an ADM1da digester to the plant.
@@ -66,6 +119,11 @@ class PlantConfigurator:
         The digester's influent DataFrame, density, and steady-state initial
         state are wired automatically from the attached :class:`Feedstock`.
         A gas storage is auto-created and connected.
+
+        When no feedstock is available (neither here nor on the configurator),
+        the digester is still created and initialized -- attach the substrates
+        later with :meth:`set_feedstock`. ``T_ad`` can be changed at any time
+        via :meth:`Digester.set_temperature`.
 
         Parameters
         ----------
@@ -102,6 +160,9 @@ class PlantConfigurator:
             ADM1 right-hand-side backend, ``"numpy"`` (default) or ``"torch"``
             (differentiable, same values). ``None`` uses the process-wide
             default (see :func:`pyadm1.set_default_adm1_backend`).
+        feedstock : Feedstock, optional
+            Per-digester feedstock. Falls back to the configurator's feedstock,
+            which may itself be ``None``.
 
         Returns
         -------
@@ -109,9 +170,11 @@ class PlantConfigurator:
             The created digester and a one-line description of how the
             initial state was determined.
         """
+        fs = feedstock if feedstock is not None else self.feedstock
+
         digester = Digester(
             component_id=digester_id,
-            feedstock=self.feedstock,
+            feedstock=fs,
             V_liq=V_liq,
             V_gas=V_gas,
             T_ad=T_ad,
@@ -132,6 +195,8 @@ class PlantConfigurator:
         if adm1_state is not None:
             init_kwargs["adm1_state"] = list(adm1_state)
             state_info = "  - Initial state: User-supplied 41-element ADM1 vector\n"
+        elif fs is None:
+            state_info = "  - Initial state: no feedstock yet — call set_feedstock() before simulating\n"
         else:
             state_info = "  - Initial state: Auto-built steady-state from feedstock\n"
         digester.initialize(init_kwargs)
@@ -184,11 +249,25 @@ class PlantConfigurator:
     def add_heating(
         self,
         heating_id: str,
-        target_temperature: float = 308.15,
+        target_temperature: float = 315.15,
         heat_loss_coefficient: float = 0.5,
         name: str | None = None,
     ) -> HeatingSystem:
-        """Add a heating system to the plant."""
+        """
+        Add a heating system to the plant.
+
+        Parameters
+        ----------
+        heating_id : str
+            Unique identifier for this heating system.
+        target_temperature : float
+            Setpoint [K] (default 315.15 = 42 °C, matching the ``T_ad`` default
+            of :meth:`add_digester`). Pass it explicitly whenever the digester
+            runs at a different temperature -- the two are not linked.
+        heat_loss_coefficient : float
+            Heat loss coefficient [kW/K] (default 0.5).
+        name : str, optional
+        """
         heating = HeatingSystem(
             component_id=heating_id,
             target_temperature=target_temperature,

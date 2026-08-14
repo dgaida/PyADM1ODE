@@ -6,6 +6,8 @@ float rounding). These tests lock that equivalence at float64 before the
 backend is wired into the digester.
 """
 
+from __future__ import annotations
+
 import numpy as np
 import pytest
 
@@ -75,9 +77,14 @@ _BASE_STATE = np.array(
 )
 
 
-def _make_adm1(T_ad: float = 308.15) -> ADM1:
-    """Build a bare ADM1 (no feedstock needed; we set influent fields directly)."""
-    return ADM1(feedstock=None, V_liq=1977.0, V_gas=304.0, T_ad=T_ad)
+def _make_adm1(T_ad: float = 308.15, backend: str | None = None) -> ADM1:
+    """Build a bare ADM1 (no feedstock needed; we set influent fields directly).
+
+    The numpy/torch equivalence tests must differ in the backend and in *nothing
+    else* -- especially not in ``T_ad``, which drives the kinetics. Both sides
+    therefore go through this helper instead of constructing ADM1 inline.
+    """
+    return ADM1(feedstock=None, V_liq=1977.0, V_gas=304.0, T_ad=T_ad, backend=backend)
 
 
 def _random_state(rng: np.random.Generator) -> np.ndarray:
@@ -236,7 +243,7 @@ def test_step_equivalence_through_solver():
     y0 = _random_state(rng)
 
     adm1_np = _make_adm1()
-    adm1_pt = ADM1(feedstock=None, V_liq=1977.0, V_gas=304.0, backend="torch")
+    adm1_pt = _make_adm1(backend="torch")
     _configure(adm1_np, np.random.default_rng(99))
     _configure(adm1_pt, np.random.default_rng(99))  # identical influent
 
@@ -258,7 +265,7 @@ def test_torch_backend_sets_q_s_loss_last():
     state = _random_state(rng)
 
     adm1_np = _make_adm1()
-    adm1_pt = ADM1(feedstock=None, V_liq=1977.0, V_gas=304.0, backend="torch")
+    adm1_pt = _make_adm1(backend="torch")
 
     adm1_np.ADM_ODE(0.0, list(state))
     adm1_pt.rhs_callable()(0.0, state)

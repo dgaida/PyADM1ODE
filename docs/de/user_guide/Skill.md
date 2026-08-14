@@ -36,7 +36,7 @@ Usage (co-digestion, up to 10 substrates)
 #### __init__
 
 ```python
-__init__(self, substrates: Union[pyadm1.substrates.feedstock.SubstrateParams, str, pathlib.Path, Sequence[Union[pyadm1.substrates.feedstock.SubstrateParams, str, pathlib.Path]], NoneType] = None, feeding_freq: int = 48, total_simtime: int = 60, simba_q_convention: bool = True) -> None
+__init__(self, substrates: '_SubstrateInput | Sequence[_SubstrateInput] | None' = None, feeding_freq: 'int' = 48, total_simtime: 'int' = 60, simba_q_convention: 'bool' = True) -> 'None'
 ```
 
 Parameters
@@ -57,19 +57,19 @@ total_simtime : int
 simba_q_convention : bool, default True
     How to interpret ``Q`` in ``get_influent_dataframe(Q=...)``.
 
-    * ``True`` (default, ADM1da convention): each ``Q_i``  
+    * ``True`` (default, ADM1da convention): each ``Q_i``
       [m³/d] is interpreted as a mass-equivalent flow.  Internally
       ``Q_actual_i = Q_input_i · 1000 / ρ_FM_i``.  For liquid
       substrates (TS < 200) this is a no-op (ρ_FM = 1000 by
       convention).  For solid substrates (e.g. maize silage) this
-      produces a slightly smaller actual liquid volume.  
-    * ``False``: ``Q`` is taken literally as the actual liquid  
+      produces a slightly smaller actual liquid volume.
+    * ``False``: ``Q`` is taken literally as the actual liquid
       volume added to the reactor [m³/d].
 
 #### actual_Q
 
 ```python
-actual_Q(self, Q: Union[float, Sequence[float]]) -> List[float]
+actual_Q(self, Q: 'float | Sequence[float]') -> 'list[float]'
 ```
 
 Return per-substrate actual liquid volume flows [m³/d].
@@ -80,7 +80,7 @@ Applies the ADM1da mass-to-volume conversion when
 #### blended_concentrations
 
 ```python
-blended_concentrations(self, Q: Union[float, Sequence[float]]) -> dict
+blended_concentrations(self, Q: 'float | Sequence[float]') -> 'dict'
 ```
 
 Volumetric-flow-weighted influent concentrations (no Q field).
@@ -88,7 +88,7 @@ Volumetric-flow-weighted influent concentrations (no Q field).
 #### blended_density
 
 ```python
-blended_density(self, Q: Union[float, Sequence[float]]) -> float
+blended_density(self, Q: 'float | Sequence[float]') -> 'float'
 ```
 
 Volumetric-flow-weighted fresh-matter density [kg/m³].
@@ -96,7 +96,7 @@ Volumetric-flow-weighted fresh-matter density [kg/m³].
 #### blended_vs_content
 
 ```python
-blended_vs_content(self, Q: Union[float, Sequence[float]]) -> float
+blended_vs_content(self, Q: 'float | Sequence[float]') -> 'float'
 ```
 
 Volumetric-flow-weighted VS content [kg VS/m³].
@@ -104,7 +104,7 @@ Volumetric-flow-weighted VS content [kg VS/m³].
 #### bmp_theoretical
 
 ```python
-bmp_theoretical(self, index: int = 0) -> float
+bmp_theoretical(self, index: 'int' = 0) -> 'float'
 ```
 
 Theoretical biomethane potential of the i-th substrate [Nm³ CH₄/t VS].
@@ -112,7 +112,7 @@ Theoretical biomethane potential of the i-th substrate [Nm³ CH₄/t VS].
 #### get_influent_dataframe
 
 ```python
-get_influent_dataframe(self, Q: Union[float, Sequence[float]]) -> pandas.DataFrame
+get_influent_dataframe(self, Q: 'float | Sequence[float]') -> 'pd.DataFrame'
 ```
 
 Generate an ADM1 influent DataFrame for the full simulation period.
@@ -124,7 +124,7 @@ composition assumption).  Pass the result to
 #### header
 
 ```python
-header(self) -> List[str]
+header(self) -> 'list[str]'
 ```
 
 Names of ADM1 input stream columns.
@@ -132,7 +132,7 @@ Names of ADM1 input stream columns.
 #### simtime
 
 ```python
-simtime(self) -> numpy.ndarray
+simtime(self) -> 'np.ndarray'
 ```
 
 Simulation time array [days].
@@ -140,7 +140,7 @@ Simulation time array [days].
 #### total_cod
 
 ```python
-total_cod(self, index: int = 0) -> float
+total_cod(self, index: 'int' = 0) -> 'float'
 ```
 
 Total COD concentration of the i-th substrate [kg COD/m³].
@@ -148,7 +148,7 @@ Total COD concentration of the i-th substrate [kg COD/m³].
 #### vs_content
 
 ```python
-vs_content(self, index: int = 0) -> float
+vs_content(self, index: 'int' = 0) -> 'float'
 ```
 
 Volatile-solids content of the i-th substrate [kg VS/m³].
@@ -185,7 +185,7 @@ Example:
 #### __init__
 
 ```python
-__init__(self, plant_name: str = 'Biogas Plant')
+__init__(self, plant_name: 'str' = 'Biogas Plant')
 ```
 
 Initialize biogas plant.
@@ -196,7 +196,7 @@ Args:
 #### add_component
 
 ```python
-add_component(self, component: pyadm1.components.base.Component) -> None
+add_component(self, component: 'Component') -> 'None'
 ```
 
 Add a component to the plant.
@@ -210,7 +210,7 @@ Raises:
 #### add_connection
 
 ```python
-add_connection(self, connection: pyadm1.configurator.connection_manager.Connection) -> None
+add_connection(self, connection: 'Connection') -> 'None'
 ```
 
 Add a connection between components.
@@ -224,7 +224,7 @@ Raises:
 #### from_json
 
 ```python
-from_json(filepath: str, feedstock: Optional[pyadm1.substrates.feedstock.Feedstock] = None) -> 'BiogasPlant'
+from_json(filepath: 'str', feedstock: 'Feedstock | None' = None) -> 'BiogasPlant'
 ```
 
 Load plant configuration from JSON file.
@@ -243,7 +243,7 @@ Raises:
 #### get_summary
 
 ```python
-get_summary(self) -> str
+get_summary(self) -> 'str'
 ```
 
 Get human-readable summary of plant configuration.
@@ -254,7 +254,7 @@ Returns:
 #### initialize
 
 ```python
-initialize(self) -> None
+initialize(self) -> 'None'
 ```
 
 Initialize all components.
@@ -266,7 +266,7 @@ components that need explicit initialization are handled.
 #### simulate
 
 ```python
-simulate(self, duration: float, dt: float = 0.041666666666666664, save_interval: Optional[float] = None) -> List[Dict[str, Any]]
+simulate(self, duration: 'float', dt: 'float' = 0.041666666666666664, save_interval: 'float | None' = None) -> 'list[dict[str, Any]]'
 ```
 
 Run simulation for specified duration.
@@ -288,15 +288,17 @@ Example:
 #### step
 
 ```python
-step(self, dt: float) -> Dict[str, Dict[str, Any]]
+step(self, dt: 'float') -> 'dict[str, dict[str, Any]]'
 ```
 
 Perform one simulation time step for all components.
 
-This uses a three-pass execution model:  
-1. Execute digesters to produce gas → storages  
-2. Execute CHPs to determine gas demand → storages  
-3. Execute storages to supply gas → CHPs (re-execute with actual supply)  
+This uses a multi-pass execution model:
+1. Execute digesters to produce gas → storages
+2. Execute CHPs to determine gas demand → storages
+3. Execute storages to supply gas → CHPs (re-execute with actual supply)
+4. Execute BiogasUpgrading units: re-execute storages with BGAA demand,
+   then re-execute BGAA with actual supply, then re-execute its flare.
 
 Args:
     dt (float): Time step in days.
@@ -304,16 +306,62 @@ Args:
 Returns:
     Dict[str, Dict[str, Any]]: Results from all components.
 
+#### to_graph
+
+```python
+to_graph(self) -> 'Graph'
+```
+
+Build the typed component/connection graph for this plant.
+
+Serializes the plant exactly like the LLM benchmark does (the
+``components`` / ``connections`` dict produced by ``to_dict``) and
+normalizes it into the benchmark ``Graph`` data model. The returned
+graph has one ``Node`` per component (keyed by component id, carrying
+its ``component_type`` and serialized scalar parameters) and one
+``Edge`` per connection (``liquid`` / ``gas`` / ``heat``).
+
+Returns:
+    Graph: Graph with ``nodes`` (Dict[str, Node]) and ``edges``
+        (List[Edge]), identical to what ``normalize_candidate`` builds
+        in the benchmark.
+
 #### to_json
 
 ```python
-to_json(self, filepath: str) -> None
+to_json(self, filepath: 'str') -> 'None'
 ```
 
 Save plant configuration to JSON file.
 
 Args:
     filepath (str): Path to JSON file.
+
+#### visualize_graph
+
+```python
+visualize_graph(self, output_path: 'str | None' = None, dpi: 'int' = 150, title: 'str | None' = None) -> 'str'
+```
+
+Render the plant graph (see :meth:`to_graph`) to a PNG file.
+
+Mirrors the Mermaid ``flowchart LR`` style used for the benchmark
+dataset: components are drawn as rounded boxes laid out left-to-right by
+process depth, liquid connections as solid labelled arrows and gas
+connections as dotted labelled arrows (heat as dashed). Unlike the
+dataset diagrams, no dataset-specific annotations (obligations,
+confidences, reference ids) are shown -- only the plant's own
+components and connections.
+
+Args:
+    output_path (Optional[str]): Target PNG path. Defaults to
+        ``output/<plant_name>_graph.png`` relative to the repo root.
+    dpi (int): Resolution of the saved figure.
+    title (Optional[str]): Figure title. ``None`` (default) shows no
+        title.
+
+Returns:
+    str: Path to the written PNG file.
 
 ## PlantConfigurator
 
@@ -332,20 +380,35 @@ digesters, flare attached to CHP, etc.).
 #### __init__
 
 ```python
-__init__(self, plant: pyadm1.configurator.plant_builder.BiogasPlant, feedstock: pyadm1.substrates.feedstock.Feedstock)
+__init__(self, plant: 'BiogasPlant', feedstock: 'Feedstock | None' = None)
 ```
 
 Parameters
 ----------
 plant : BiogasPlant
     Plant instance to configure.
-feedstock : Feedstock
+feedstock : Feedstock, optional
     Feedstock used by all digesters added through this configurator.
+    May be omitted to lay out the plant first and supply the substrates
+    later via :meth:`set_feedstock` -- useful when the structure is
+    known before the feed is. Digesters built without a feedstock can
+    be created and initialized, but not simulated until one is attached.
+
+#### add_bgaa
+
+```python
+add_bgaa(self, bgaa_id: 'str', capacity_m3h: 'float' = 500.0, ch4_recovery: 'float' = 0.98, ch4_content_in: 'float' = 0.55, ch4_content_out: 'float' = 0.97, name: 'str | None' = None) -> 'BiogasUpgrading'
+```
+
+Add a biogas upgrading unit (Biogasaufbereitungsanlage) to the plant.
+
+Automatically creates and connects an emergency flare downstream of
+the BGAA for capacity overflow (``{bgaa_id}_flare``).
 
 #### add_chp
 
 ```python
-add_chp(self, chp_id: str, P_el_nom: float = 500.0, eta_el: float = 0.4, eta_th: float = 0.45, name: Optional[str] = None) -> pyadm1.components.energy.chp.CHP
+add_chp(self, chp_id: 'str', P_el_nom: 'float' = 500.0, eta_el: 'float' = 0.4, eta_th: 'float' = 0.45, name: 'str | None' = None) -> 'CHP'
 ```
 
 Add a CHP unit to the plant.
@@ -355,7 +418,7 @@ Automatically creates and connects a safety flare downstream of the CHP.
 #### add_digester
 
 ```python
-add_digester(self, digester_id: str, V_liq: float = 1050.0, V_gas: float = 150.0, T_ad: float = 315.15, name: Optional[str] = None, Q_substrates: Optional[list] = None, k_L_a: Optional[float] = None, adm1_state: Optional[list] = None, dynamic_volume: bool = False, initial_fill_fraction: float = 1.0, outflow_time_constant: float = 1.0) -> 'tuple[Digester, str]'
+add_digester(self, digester_id: 'str', V_liq: 'float' = 1050.0, V_gas: 'float' = 150.0, T_ad: 'float' = 315.15, name: 'str | None' = None, Q_substrates: 'list | None' = None, k_L_a: 'float | None' = None, adm1_state: 'list | None' = None, dynamic_volume: 'bool' = False, initial_fill_fraction: 'float' = 1.0, outflow_time_constant: 'float' = 1.0, backend: 'str | None' = None, feedstock: 'Feedstock | None' = None) -> 'tuple[Digester, str]'
 ```
 
 Add an ADM1da digester to the plant.
@@ -363,6 +426,11 @@ Add an ADM1da digester to the plant.
 The digester's influent DataFrame, density, and steady-state initial
 state are wired automatically from the attached :class:`Feedstock`.
 A gas storage is auto-created and connected.
+
+When no feedstock is available (neither here nor on the configurator),
+the digester is still created and initialized -- attach the substrates
+later with :meth:`set_feedstock`. ``T_ad`` can be changed at any time
+via :meth:`Digester.set_temperature`.
 
 Parameters
 ----------
@@ -395,6 +463,13 @@ initial_fill_fraction : float, default 1.0
 outflow_time_constant : float, default 1.0
     Overflow-weir time constant ``τ_out`` [d]. Only used when
     ``dynamic_volume=True``.
+backend : str, optional
+    ADM1 right-hand-side backend, ``"numpy"`` (default) or ``"torch"``
+    (differentiable, same values). ``None`` uses the process-wide
+    default (see :func:`pyadm1.set_default_adm1_backend`).
+feedstock : Feedstock, optional
+    Per-digester feedstock. Falls back to the configurator's feedstock,
+    which may itself be ``None``.
 
 Returns
 -------
@@ -405,23 +480,43 @@ Returns
 #### add_heating
 
 ```python
-add_heating(self, heating_id: str, target_temperature: float = 308.15, heat_loss_coefficient: float = 0.5, name: Optional[str] = None) -> pyadm1.components.energy.heating.HeatingSystem
+add_heating(self, heating_id: 'str', target_temperature: 'float' = 315.15, heat_loss_coefficient: 'float' = 0.5, name: 'str | None' = None) -> 'HeatingSystem'
 ```
 
 Add a heating system to the plant.
 
+Parameters
+----------
+heating_id : str
+    Unique identifier for this heating system.
+target_temperature : float
+    Setpoint [K] (default 315.15 = 42 °C, matching the ``T_ad`` default
+    of :meth:`add_digester`). Pass it explicitly whenever the digester
+    runs at a different temperature -- the two are not linked.
+heat_loss_coefficient : float
+    Heat loss coefficient [kW/K] (default 0.5).
+name : str, optional
+
 #### auto_connect_chp_to_heating
 
 ```python
-auto_connect_chp_to_heating(self, chp_id: str, heating_id: str) -> None
+auto_connect_chp_to_heating(self, chp_id: 'str', heating_id: 'str') -> 'None'
 ```
 
 Connect CHP → heating with heat flow.
 
+#### auto_connect_digester_to_bgaa
+
+```python
+auto_connect_digester_to_bgaa(self, digester_id: 'str', bgaa_id: 'str') -> 'None'
+```
+
+Connect digester gas storage → BGAA.
+
 #### auto_connect_digester_to_chp
 
 ```python
-auto_connect_digester_to_chp(self, digester_id: str, chp_id: str) -> None
+auto_connect_digester_to_chp(self, digester_id: 'str', chp_id: 'str') -> 'None'
 ```
 
 Connect digester → gas_storage → chp.
@@ -429,7 +524,7 @@ Connect digester → gas_storage → chp.
 #### connect
 
 ```python
-connect(self, from_component: str, to_component: str, connection_type: str = 'default') -> pyadm1.configurator.connection_manager.Connection
+connect(self, from_component: 'str', to_component: 'str', connection_type: 'str' = 'default') -> 'Connection'
 ```
 
 Connect two components.
@@ -437,7 +532,7 @@ Connect two components.
 #### create_single_stage_plant
 
 ```python
-create_single_stage_plant(self, digester_config: Optional[Dict[str, Any]] = None, chp_config: Optional[Dict[str, Any]] = None, heating_config: Optional[Dict[str, Any]] = None, auto_connect: bool = True) -> Dict[str, Any]
+create_single_stage_plant(self, digester_config: 'dict[str, Any] | None' = None, chp_config: 'dict[str, Any] | None' = None, heating_config: 'dict[str, Any] | None' = None, auto_connect: 'bool' = True) -> 'dict[str, Any]'
 ```
 
 Create a complete single-stage plant configuration.
@@ -445,7 +540,7 @@ Create a complete single-stage plant configuration.
 #### create_two_stage_plant
 
 ```python
-create_two_stage_plant(self, hydrolysis_config: Optional[Dict[str, Any]] = None, digester_config: Optional[Dict[str, Any]] = None, chp_config: Optional[Dict[str, Any]] = None, heating_configs: Optional[list] = None, auto_connect: bool = True) -> Dict[str, Any]
+create_two_stage_plant(self, hydrolysis_config: 'dict[str, Any] | None' = None, digester_config: 'dict[str, Any] | None' = None, chp_config: 'dict[str, Any] | None' = None, heating_configs: 'list | None' = None, auto_connect: 'bool' = True) -> 'dict[str, Any]'
 ```
 
 Create a two-stage plant: hydrolysis pre-tank → main fermenter.
@@ -453,6 +548,37 @@ Create a two-stage plant: hydrolysis pre-tank → main fermenter.
 The hydrolysis stage is just another :class:`Digester` instance with
 a higher temperature and shorter HRT — there is no separate
 ``Hydrolysis`` class.
+
+#### set_feedstock
+
+```python
+set_feedstock(self, feedstock: 'Feedstock', digester_ids: 'list[str] | None' = None, Q_substrates: 'dict[str, list] | None' = None, rebuild_state: 'bool' = True) -> 'list[str]'
+```
+
+Attach a feedstock to this configurator and wire it into digesters.
+
+Complements the optional ``feedstock`` constructor argument: build the
+plant structure first, add the substrates once they are known.
+
+Parameters
+----------
+feedstock : Feedstock
+    Feedstock to attach. Also becomes the default for digesters added
+    afterwards.
+digester_ids : list of str, optional
+    Restrict the update to these digesters. Defaults to every digester
+    in the plant.
+Q_substrates : dict, optional
+    Per-digester feed rates ``{digester_id: [m³/d, ...]}``. Digesters
+    not listed keep their current rates.
+rebuild_state : bool, default True
+    Re-derive each digester's pre-inoculated steady state from the new
+    blend.
+
+Returns
+-------
+list of str
+    IDs of the digesters that were updated.
 
 ## Pump
 
@@ -492,7 +618,7 @@ Example:
 #### __init__
 
 ```python
-__init__(self, component_id: str, pump_type: str = 'progressive_cavity', Q_nom: float = 10.0, pressure_head: float = 50.0, efficiency: Optional[float] = None, motor_efficiency: float = 0.9, fluid_density: float = 1020.0, speed_control: bool = True, name: Optional[str] = None)
+__init__(self, component_id: 'str', pump_type: 'str' = 'progressive_cavity', Q_nom: 'float' = 10.0, pressure_head: 'float' = 50.0, efficiency: 'float | None' = None, motor_efficiency: 'float' = 0.9, fluid_density: 'float' = 1020.0, speed_control: 'bool' = True, name: 'str | None' = None)
 ```
 
 Initialize pump component.
@@ -511,7 +637,7 @@ Args:
 #### add_input
 
 ```python
-add_input(self, component_id: str) -> None
+add_input(self, component_id: 'str') -> 'None'
 ```
 
 Add an input connection.
@@ -519,7 +645,7 @@ Add an input connection.
 #### add_output
 
 ```python
-add_output(self, component_id: str) -> None
+add_output(self, component_id: 'str') -> 'None'
 ```
 
 Add an output connection.
@@ -527,7 +653,7 @@ Add an output connection.
 #### from_dict
 
 ```python
-from_dict(config: Dict[str, Any]) -> 'Pump'
+from_dict(config: 'dict[str, Any]') -> 'Pump'
 ```
 
 Create pump from dictionary.
@@ -541,7 +667,7 @@ Returns:
 #### get_state
 
 ```python
-get_state(self) -> Dict[str, Any]
+get_state(self) -> 'dict[str, Any]'
 ```
 
 Get current component state.
@@ -549,23 +675,23 @@ Get current component state.
 #### initialize
 
 ```python
-initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None
+initialize(self, initial_state: 'dict[str, Any] | None' = None) -> 'None'
 ```
 
 Initialize pump state.
 
 Args:
-    initial_state: Optional initial state dictionary with keys:  
-        - 'is_running': Initial pump state  
-        - 'current_flow': Initial flow rate [m³/d]  
-        - 'operating_hours': Cumulative operating hours  
-        - 'energy_consumed': Cumulative energy [kWh]  
-        - 'total_volume_pumped': Cumulative volume [m³]  
+    initial_state: Optional initial state dictionary with keys:
+        - 'is_running': Initial pump state
+        - 'current_flow': Initial flow rate [m³/d]
+        - 'operating_hours': Cumulative operating hours
+        - 'energy_consumed': Cumulative energy [kWh]
+        - 'total_volume_pumped': Cumulative volume [m³]
 
 #### set_state
 
 ```python
-set_state(self, state: Dict[str, Any]) -> None
+set_state(self, state: 'dict[str, Any]') -> 'None'
 ```
 
 Set component state.
@@ -573,7 +699,7 @@ Set component state.
 #### step
 
 ```python
-step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]
+step(self, t: 'float', dt: 'float', inputs: 'dict[str, Any]') -> 'dict[str, Any]'
 ```
 
 Perform one simulation time step.
@@ -581,31 +707,31 @@ Perform one simulation time step.
 Args:
     t: Current time [days]
     dt: Time step [days]
-    inputs: Input data with optional keys:  
-        - 'Q_setpoint': Desired flow rate [m³/d]  
-        - 'Q_actual': Actual flow from connected upstream component [m³/d].  
+    inputs: Input data with optional keys:
+        - 'Q_setpoint': Desired flow rate [m³/d]
+        - 'Q_actual': Actual flow from connected upstream component [m³/d].
           If provided, overrides setpoint-based calculation and is used
-          directly for power consumption.  
-        - 'Q_out': Actual effluent flow from an upstream digester [m³/d].  
-          Used when the pump is connected between digesters.  
-        - 'enable_pump': Enable/disable pump  
-        - 'fluid_density': Fluid density [kg/m³]  
-        - 'fluid_viscosity': Fluid viscosity [Pa·s]  
-        - 'pressure_head': Required pressure head [m]  
+          directly for power consumption.
+        - 'Q_out': Actual effluent flow from an upstream digester [m³/d].
+          Used when the pump is connected between digesters.
+        - 'enable_pump': Enable/disable pump
+        - 'fluid_density': Fluid density [kg/m³]
+        - 'fluid_viscosity': Fluid viscosity [Pa·s]
+        - 'pressure_head': Required pressure head [m]
 
 Returns:
-    Dict with keys:  
-        - 'P_consumed': Power consumption [kW]  
-        - 'Q_actual': Actual flow rate [m³/d]  
-        - 'is_running': Current running state  
-        - 'efficiency': Current operating efficiency  
-        - 'pressure_actual': Actual pressure head [m]  
-        - 'speed_fraction': Speed as fraction of nominal  
+    Dict with keys:
+        - 'P_consumed': Power consumption [kW]
+        - 'Q_actual': Actual flow rate [m³/d]
+        - 'is_running': Current running state
+        - 'efficiency': Current operating efficiency
+        - 'pressure_actual': Actual pressure head [m]
+        - 'speed_fraction': Speed as fraction of nominal
 
 #### to_dict
 
 ```python
-to_dict(self) -> Dict[str, Any]
+to_dict(self) -> 'dict[str, Any]'
 ```
 
 Serialize pump to dictionary.
@@ -651,7 +777,7 @@ Example:
 #### __init__
 
 ```python
-__init__(self, component_id: str, mixer_type: str = 'propeller', tank_volume: float = 2000.0, tank_diameter: Optional[float] = None, tank_height: Optional[float] = None, mixing_intensity: str = 'medium', power_installed: Optional[float] = None, impeller_diameter: Optional[float] = None, operating_speed: Optional[float] = None, intermittent: bool = True, on_time_fraction: float = 0.25, name: Optional[str] = None)
+__init__(self, component_id: 'str', mixer_type: 'str' = 'propeller', tank_volume: 'float' = 2000.0, tank_diameter: 'float | None' = None, tank_height: 'float | None' = None, mixing_intensity: 'str' = 'medium', power_installed: 'float | None' = None, impeller_diameter: 'float | None' = None, operating_speed: 'float | None' = None, intermittent: 'bool' = True, on_time_fraction: 'float' = 0.25, name: 'str | None' = None)
 ```
 
 Initialize mixer component.
@@ -673,7 +799,7 @@ Args:
 #### add_input
 
 ```python
-add_input(self, component_id: str) -> None
+add_input(self, component_id: 'str') -> 'None'
 ```
 
 Add an input connection.
@@ -681,7 +807,7 @@ Add an input connection.
 #### add_output
 
 ```python
-add_output(self, component_id: str) -> None
+add_output(self, component_id: 'str') -> 'None'
 ```
 
 Add an output connection.
@@ -689,7 +815,7 @@ Add an output connection.
 #### from_dict
 
 ```python
-from_dict(config: Dict[str, Any]) -> 'Mixer'
+from_dict(config: 'dict[str, Any]') -> 'Mixer'
 ```
 
 Create mixer from dictionary.
@@ -703,7 +829,7 @@ Returns:
 #### get_state
 
 ```python
-get_state(self) -> Dict[str, Any]
+get_state(self) -> 'dict[str, Any]'
 ```
 
 Get current component state.
@@ -711,22 +837,22 @@ Get current component state.
 #### initialize
 
 ```python
-initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None
+initialize(self, initial_state: 'dict[str, Any] | None' = None) -> 'None'
 ```
 
 Initialize mixer state.
 
 Args:
-    initial_state: Optional initial state dictionary with keys:  
-        - 'is_running': Mixer running state  
-        - 'current_speed_fraction': Speed fraction (0-1)  
-        - 'operating_hours': Cumulative operating hours  
-        - 'energy_consumed': Cumulative energy [kWh]  
+    initial_state: Optional initial state dictionary with keys:
+        - 'is_running': Mixer running state
+        - 'current_speed_fraction': Speed fraction (0-1)
+        - 'operating_hours': Cumulative operating hours
+        - 'energy_consumed': Cumulative energy [kWh]
 
 #### set_state
 
 ```python
-set_state(self, state: Dict[str, Any]) -> None
+set_state(self, state: 'dict[str, Any]') -> 'None'
 ```
 
 Set component state.
@@ -734,7 +860,7 @@ Set component state.
 #### step
 
 ```python
-step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]
+step(self, t: 'float', dt: 'float', inputs: 'dict[str, Any]') -> 'dict[str, Any]'
 ```
 
 Perform one simulation time step.
@@ -742,27 +868,27 @@ Perform one simulation time step.
 Args:
     t: Current time [days]
     dt: Time step [days]
-    inputs: Input data with optional keys:  
-        - 'speed_setpoint': Desired speed fraction (0-1)  
-        - 'enable_mixing': Enable/disable mixer  
-        - 'fluid_viscosity': Fluid viscosity [Pa·s]  
-        - 'temperature': Fluid temperature [K]  
+    inputs: Input data with optional keys:
+        - 'speed_setpoint': Desired speed fraction (0-1)
+        - 'enable_mixing': Enable/disable mixer
+        - 'fluid_viscosity': Fluid viscosity [Pa·s]
+        - 'temperature': Fluid temperature [K]
 
 Returns:
-    Dict with keys:  
-        - 'P_consumed': Power consumption [kW]  
-        - 'P_average': Time-averaged power [kW]  
-        - 'is_running': Current running state  
-        - 'mixing_quality': Mixing quality index (0-1)  
-        - 'reynolds_number': Reynolds number  
-        - 'power_number': Power number  
-        - 'mixing_time': Mixing time [min]  
-        - 'shear_rate': Average shear rate [1/s]  
+    Dict with keys:
+        - 'P_consumed': Power consumption [kW]
+        - 'P_average': Time-averaged power [kW]
+        - 'is_running': Current running state
+        - 'mixing_quality': Mixing quality index (0-1)
+        - 'reynolds_number': Reynolds number
+        - 'power_number': Power number
+        - 'mixing_time': Mixing time [min]
+        - 'shear_rate': Average shear rate [1/s]
 
 #### to_dict
 
 ```python
-to_dict(self) -> Dict[str, Any]
+to_dict(self) -> 'dict[str, Any]'
 ```
 
 Serialize mixer to dictionary.
@@ -809,7 +935,7 @@ Example:
 #### __init__
 
 ```python
-__init__(self, component_id: str, storage_type: str = 'vertical_silo', substrate_type: str = 'corn_silage', capacity: float = 1000.0, initial_level: float = 0.0, degradation_rate: Optional[float] = None, temperature: float = 288.15, name: Optional[str] = None)
+__init__(self, component_id: 'str', storage_type: 'str' = 'vertical_silo', substrate_type: 'str' = 'corn_silage', capacity: 'float' = 1000.0, initial_level: 'float' = 0.0, degradation_rate: 'float | None' = None, temperature: 'float' = 288.15, name: 'str | None' = None)
 ```
 
 Initialize substrate storage component.
@@ -827,7 +953,7 @@ Args:
 #### add_input
 
 ```python
-add_input(self, component_id: str) -> None
+add_input(self, component_id: 'str') -> 'None'
 ```
 
 Add an input connection.
@@ -835,7 +961,7 @@ Add an input connection.
 #### add_output
 
 ```python
-add_output(self, component_id: str) -> None
+add_output(self, component_id: 'str') -> 'None'
 ```
 
 Add an output connection.
@@ -843,7 +969,7 @@ Add an output connection.
 #### from_dict
 
 ```python
-from_dict(config: Dict[str, Any]) -> 'SubstrateStorage'
+from_dict(config: 'dict[str, Any]') -> 'SubstrateStorage'
 ```
 
 Create storage from dictionary.
@@ -851,7 +977,7 @@ Create storage from dictionary.
 #### get_state
 
 ```python
-get_state(self) -> Dict[str, Any]
+get_state(self) -> 'dict[str, Any]'
 ```
 
 Get current component state.
@@ -859,22 +985,22 @@ Get current component state.
 #### initialize
 
 ```python
-initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None
+initialize(self, initial_state: 'dict[str, Any] | None' = None) -> 'None'
 ```
 
 Initialize storage state.
 
 Args:
-    initial_state: Optional initial state with keys:  
-        - 'current_level': Inventory level [t or m³]  
-        - 'quality_factor': Quality factor (0-1)  
-        - 'storage_time': Time stored [days]  
-        - 'cumulative_losses': Total losses [t or m³]  
+    initial_state: Optional initial state with keys:
+        - 'current_level': Inventory level [t or m³]
+        - 'quality_factor': Quality factor (0-1)
+        - 'storage_time': Time stored [days]
+        - 'cumulative_losses': Total losses [t or m³]
 
 #### set_state
 
 ```python
-set_state(self, state: Dict[str, Any]) -> None
+set_state(self, state: 'dict[str, Any]') -> 'None'
 ```
 
 Set component state.
@@ -882,7 +1008,7 @@ Set component state.
 #### step
 
 ```python
-step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]
+step(self, t: 'float', dt: 'float', inputs: 'dict[str, Any]') -> 'dict[str, Any]'
 ```
 
 Perform one simulation time step.
@@ -890,28 +1016,28 @@ Perform one simulation time step.
 Args:
     t: Current time [days]
     dt: Time step [days]
-    inputs: Input data with optional keys:  
-        - 'withdrawal_rate': Withdrawal rate [t/d or m³/d]  
-        - 'refill_amount': Amount to add [t or m³]  
-        - 'refill_quality': Quality of refill (0-1)  
-        - 'temperature': Ambient/storage temperature [K]  
+    inputs: Input data with optional keys:
+        - 'withdrawal_rate': Withdrawal rate [t/d or m³/d]
+        - 'refill_amount': Amount to add [t or m³]
+        - 'refill_quality': Quality of refill (0-1)
+        - 'temperature': Ambient/storage temperature [K]
 
 Returns:
-    Dict with keys:  
-        - 'current_level': Current inventory [t or m³]  
-        - 'utilization': Fill level (0-1)  
-        - 'quality_factor': Current quality (0-1)  
-        - 'available_mass': Usable inventory [t or m³]  
-        - 'degradation_rate': Current degradation rate [1/d]  
-        - 'losses_this_step': Mass lost this timestep [t or m³]  
-        - 'withdrawn_this_step': Mass withdrawn [t or m³]  
-        - 'is_empty': Storage empty flag  
-        - 'is_full': Storage full flag  
+    Dict with keys:
+        - 'current_level': Current inventory [t or m³]
+        - 'utilization': Fill level (0-1)
+        - 'quality_factor': Current quality (0-1)
+        - 'available_mass': Usable inventory [t or m³]
+        - 'degradation_rate': Current degradation rate [1/d]
+        - 'losses_this_step': Mass lost this timestep [t or m³]
+        - 'withdrawn_this_step': Mass withdrawn [t or m³]
+        - 'is_empty': Storage empty flag
+        - 'is_full': Storage full flag
 
 #### to_dict
 
 ```python
-to_dict(self) -> Dict[str, Any]
+to_dict(self) -> 'dict[str, Any]'
 ```
 
 Serialize storage to dictionary.
@@ -952,7 +1078,7 @@ Example:
 #### __init__
 
 ```python
-__init__(self, component_id: str, feeder_type: Optional[str] = None, Q_max: float = 20.0, substrate_type: Optional[str] = None, dosing_accuracy: Optional[float] = None, power_installed: Optional[float] = None, enable_dosing_noise: bool = True, name: Optional[str] = None)
+__init__(self, component_id: 'str', feeder_type: 'str | None' = None, Q_max: 'float' = 20.0, substrate_type: 'str | None' = None, dosing_accuracy: 'float | None' = None, power_installed: 'float | None' = None, enable_dosing_noise: 'bool' = True, name: 'str | None' = None)
 ```
 
 Initialize feeder component.
@@ -970,7 +1096,7 @@ Args:
 #### add_input
 
 ```python
-add_input(self, component_id: str) -> None
+add_input(self, component_id: 'str') -> 'None'
 ```
 
 Add an input connection.
@@ -978,7 +1104,7 @@ Add an input connection.
 #### add_output
 
 ```python
-add_output(self, component_id: str) -> None
+add_output(self, component_id: 'str') -> 'None'
 ```
 
 Add an output connection.
@@ -986,7 +1112,7 @@ Add an output connection.
 #### from_dict
 
 ```python
-from_dict(config: Dict[str, Any]) -> 'Feeder'
+from_dict(config: 'dict[str, Any]') -> 'Feeder'
 ```
 
 Create feeder from dictionary.
@@ -994,7 +1120,7 @@ Create feeder from dictionary.
 #### get_state
 
 ```python
-get_state(self) -> Dict[str, Any]
+get_state(self) -> 'dict[str, Any]'
 ```
 
 Get current component state.
@@ -1002,23 +1128,23 @@ Get current component state.
 #### initialize
 
 ```python
-initialize(self, initial_state: Optional[Dict[str, Any]] = None) -> None
+initialize(self, initial_state: 'dict[str, Any] | None' = None) -> 'None'
 ```
 
 Initialize feeder state.
 
 Args:
-    initial_state: Optional initial state with keys:  
-        - 'is_running': Initial operating state  
-        - 'current_flow': Initial flow rate [m³/d or t/d]  
-        - 'operating_hours': Cumulative operating hours  
-        - 'energy_consumed': Cumulative energy [kWh]  
-        - 'total_mass_fed': Cumulative mass [t or m³]  
+    initial_state: Optional initial state with keys:
+        - 'is_running': Initial operating state
+        - 'current_flow': Initial flow rate [m³/d or t/d]
+        - 'operating_hours': Cumulative operating hours
+        - 'energy_consumed': Cumulative energy [kWh]
+        - 'total_mass_fed': Cumulative mass [t or m³]
 
 #### set_state
 
 ```python
-set_state(self, state: Dict[str, Any]) -> None
+set_state(self, state: 'dict[str, Any]') -> 'None'
 ```
 
 Set component state.
@@ -1026,7 +1152,7 @@ Set component state.
 #### step
 
 ```python
-step(self, t: float, dt: float, inputs: Dict[str, Any]) -> Dict[str, Any]
+step(self, t: 'float', dt: 'float', inputs: 'dict[str, Any]') -> 'dict[str, Any]'
 ```
 
 Perform one simulation time step.
@@ -1034,26 +1160,27 @@ Perform one simulation time step.
 Args:
     t: Current time [days]
     dt: Time step [days]
-    inputs: Input data with optional keys:  
-        - 'Q_setpoint': Desired flow rate [m³/d or t/d]  
-        - 'enable_feeding': Enable/disable feeder  
-        - 'substrate_available': Amount available in storage [t or m³]  
-        - 'speed_setpoint': Desired speed fraction (0-1)  
+    inputs: Input data with optional keys:
+        - 'Q_setpoint': Desired flow rate [m³/d or t/d]
+        - 'enable_feeding': Enable/disable feeder
+        - 'substrate_available': Amount available in storage [t or m³]
+        - 'speed_setpoint': Desired speed fraction (0-1)
 
 Returns:
-    Dict with keys:  
-        - 'Q_actual': Actual flow rate [m³/d or t/d]  
-        - 'is_running': Current operating state  
-        - 'load_factor': Operating load (0-1)  
-        - 'P_consumed': Power consumption [kW]  
-        - 'blockage_detected': Blockage alarm  
-        - 'dosing_error': Deviation from setpoint [%]  
-        - 'speed_fraction': Current speed fraction  
+    Dict with keys:
+        - 'Q_actual': Actual flow rate [m³/d or t/d]
+        - 'is_running': Current operating state
+        - 'load_factor': Operating load (0-1)
+        - 'P_consumed': Power consumption [kW]
+        - 'blockage_detected': Blockage alarm
+        - 'dosing_error': Deviation from setpoint [%]
+        - 'speed_fraction': Current speed fraction
 
 #### to_dict
 
 ```python
-to_dict(self) -> Dict[str, Any]
+to_dict(self) -> 'dict[str, Any]'
 ```
 
 Serialize feeder to dictionary.
+

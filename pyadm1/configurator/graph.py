@@ -40,7 +40,6 @@ class Edge:
     dst: str
     etype: str  # "liquid" | "gas" | "heat"
     obligation: str = "given"
-    confidence: str | None = None
 
 
 @dataclass

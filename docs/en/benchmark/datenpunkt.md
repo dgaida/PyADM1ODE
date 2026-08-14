@@ -13,13 +13,14 @@ flowchart TB
     DP["📄 Data point"] --> E["1) Input<br>the task"]
     DP --> R["2) Reference<br>the correct plant"]
     DP --> O["3) Oracle<br>answers questions"]
-    DP --> Z["4) Rules<br>regime &amp; prohibitions"]
+    DP --> Z["4) Regime<br>complete or not"]
 ```
 
 ### 1. The input – the actual task
 
 This is the **description of the plant** that the AI gets to see. Depending on the
-variant, it is a detailed text, a terse text or a sketch (image). The AI receives
+variant, it is a detailed text, a terse text, a sketch (image) or a PDF document —
+a written quotation, say. The AI receives
 **only** this input – nothing else.
 
 ### 2. The reference – the correct plant
@@ -58,18 +59,17 @@ oracle provides the correct answer (e.g. "40 °C"). The oracle also recognises
     It is meant to distinguish two behaviours: a good AI **asks** when information is
     missing. A weaker AI simply **guesses** – and may get it wrong.
 
-### 4. The rules – regime and prohibitions
+### 4. The regime – complete or incomplete
 
-Two additional pieces of information ensure fair scoring:
+The **regime** describes whether the task is fully described or not:
 
-- **Regime** – describes whether the task is **complete** or **incomplete**:  
+- *fully specified*: All information is in the description. No asking needed.  
+- *underspecified*: Information is missing and has to be **asked** of the oracle.
 
-    - *fully specified*: All information is in the description. No asking needed.  
-    - *underspecified*: Information is missing and must be asked for or sensibly  
-      filled in.
-
-- **Prohibitions** (`must_not_invent`) – things the AI **must not invent**. If a  
-  plant has no combined heat and power unit, for instance, the AI must not add one.
+There is no separate list of prohibitions. What the AI must not invent follows
+directly from the reference: a plant whose reference contains no separator simply
+must not contain one — the [no-inventions score](bewertung.md) checks that against
+the reference itself.
 
 ## How "certain" a piece of information is
 
@@ -80,7 +80,7 @@ it comes from:
 | ------------------ | ---------------------------------------------------------------- |
 | **given**          | Stated directly in the description.                              |
 | **derivable**      | Can be computed from other information (e.g. a volume from height and diameter). |
-| **may be asked**   | Missing – the AI should ask or fill it in sensibly.              |
+| **may be asked**   | Missing – the AI has to ask the oracle; the tolerance band is too tight to guess the value. |
 | **automatic**      | Created on its own during assembly (e.g. a gas storage for each fermenter). |
 
 This allows fair scoring later on: the AI may fill in a missing value without it

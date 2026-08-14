@@ -15,7 +15,9 @@ class TestHeatingInitialization:
 
     def test_heating_initialization_sets_defaults(self) -> None:
         heating = HeatingSystem("heat_1")
-        assert heating.target_temperature == 308.15
+        # 315.15 K (42 °C) matches the Digester/ADM1 default, so a heating
+        # system left at its default does not fight the digester it serves.
+        assert heating.target_temperature == 315.15
         assert heating.heat_loss_coefficient == 0.5
 
     def test_initialize_sets_state_and_outputs(self) -> None:

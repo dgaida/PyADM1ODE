@@ -29,7 +29,7 @@ benchmark/
   schema/    plant_datapoint.schema.json   JSON schema (Draft 2020-12) of a data point
   dataset/   index.json                    manifest of all data points
              BGA1/ BGA2/ ...               one plant each, input variants + gold.py
-  eval/      solve.py runner.py matcher.py batch.py make_index.py …
+  eval/      solve.py runner.py matcher.py batch.py make_index.py validate.py …
   viewer/    index.html                    interactive data point viewer
 ```
 
@@ -38,7 +38,7 @@ benchmark/
 
 | File | Role |
 | ---- | ---- |
-| `BGAx_<variant>.json` | **Task**: input (text/image) for the model **and** the reference plant (typed graph) for comparison |
+| `BGAx_<variant>.json` | **Task**: input (text, image or PDF) for the model **and** the reference plant (typed graph) for comparison |
 | `gold.py` | **Gold solution**: known-correct implementation, validates the harness and serves as reference code |
 
 ### Variants and regime
@@ -46,14 +46,14 @@ benchmark/
 Each plant exists in several variants. The `_full` suffix marks completeness:
 
 - **`fully_specified`** (`_full`): all data is in the input – no oracle needed.  
-- **`underspecified`** (no `_full`): values are missing – the model must ask or fill  
-  them in plausibly.
+- **`underspecified`** (no `_full`): values are missing – the model has to **ask** the  
+  oracle. Guessing does not work; the acceptance bands are too tight for that.
 
 | Axis | Values | Distribution (24) |
 | ---- | ------ | ----------------- |
 | Plant | BGA1, BGA2, BGA3 | 8 each |
 | Completeness | fully_specified / underspecified | 12 / 12 |
-| Modality | text / image / hybrid | 18 / 3 / 3 |
+| Modality | text / image / hybrid / pdf | 18 / 3 / 3 / 0 |
 | Language | de / en | 18 / 6 |
 
 The exact makeup of a single data point is described in
@@ -65,6 +65,7 @@ schema at `benchmark/schema/plant_datapoint.schema.json`.
 | Goal | Command |
 | ---- | ------- |
 | Matcher self-test (without PyADM1ODE) | `python benchmark/eval/selftest.py` |
+| Validate data points against the schema | `python benchmark/eval/validate.py` |
 | Baseline – all data points with `gold.py` | `python benchmark/eval/batch.py` |
 | One data point: run code + score | `python benchmark/eval/runner.py <datapoint.json> <code.py>` |
 | Score the graph only (no code run) | `python benchmark/eval/matcher.py <datapoint.json> <candidate.json>` |
@@ -91,7 +92,8 @@ generated code per data point under `benchmark/results/`.
 ## Plugging in or training your own model
 
 The **input** is in the data point under `input` (fields `modality`, `language`,
-`content`, optionally `image_path`). The **target** is runnable PyADM1ODE code that
+`content`, optionally `image_path` or `document_path`). The **target** is runnable
+PyADM1ODE code that
 builds the plant. The **reference** for comparison is under `reference` (components +
 connections as a typed graph). `gold.py` shows a correct implementation per plant.
 
@@ -107,8 +109,7 @@ Have your model produce Python code per data point and save it as
 python benchmark/eval/batch.py --candidates path/to/model_outputs
 ```
 
-`batch.py` runs each candidate in isolation and scores it. If a `<id>.response.json`
-sits next to `<id>.py`, it feeds into the missing-values score.
+`batch.py` runs each candidate in isolation and scores it.
 
 ### B) Directly via solve.py (API)
 
@@ -117,26 +118,20 @@ For your own model, **only the client section** in `solve.py` needs adapting; th
 rest of the workflow (prompt, oracle, scoring) stays the same.
 
 ```bash
-pip install groq          # or your own client library
+pip install -e ".[benchmark]"   # groq + pypdf; or your own client library
 export GROQ_API_KEY=...    # or your own API key
 python benchmark/eval/solve.py --regime fully_specified   # simplest entry point
 ```
 
-### `response.json` (for the missing-values score)
+### Follow-up questions on underspecified data points
 
-For underspecified data points, what counts is whether a missing field was **asked**
-or plausibly **filled in**. A structured response next to the code makes this
-explicit:
+If a value is missing, the model may ask first — as a JSON block with
+`open_questions` (format see `prompt.py`). `solve.py` forwards the questions to the
+[oracle](oracle.md) and sends the answers in a second turn.
 
-```json
-{
-  "open_questions": [{"field": "chp.P_el_nom"}, {"field": "sep.source"}],
-  "assumptions":    [{"field": "F1.T_ad", "value": 313.15}]
-}
-```
-
-If the model asks about a `missing_ask` field or fills it plausibly within the band,
-that counts as correct. Silently inventing an implausible value is the worst error.
+The questions themselves are **not** graded. Only the plant that finally comes out
+is scored: not asking and still hitting plausible values costs nothing — not asking
+and getting it wrong costs points on **Measures**.
 
 ## Programmatic access
 
@@ -159,11 +154,11 @@ for entry in index["datapoints"]:
 
 ## Scoring
 
-Three scores are computed:
+Three scores are computed, deliberately disjoint — every mistake counts exactly once:
 
-1. **Structure** – components (matched by type, not by name) and connections.  
+1. **Completeness** – are all required components and connections present?  
 2. **Measures** – simulated parameters (`V_liq`, `V_gas`, `T_ad`, `P_el_nom`, …) within the acceptance band.  
-3. **Missing values** – asked or plausibly filled instead of silently invented.  
+3. **No inventions** – does the plant contain *only* components and connections the reference knows?  
 
 How the final score is produced is explained in [Scoring & Workflow](bewertung.md).
 You can explore the dataset visually in the [Viewer](viewer.md).

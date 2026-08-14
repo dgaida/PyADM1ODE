@@ -11,8 +11,7 @@ Er läuft **offline im Browser**, ganz ohne Server.
 
 - **Anlagengraph**: Bauteile als Knoten, Verbindungen als Kanten.  
 - **Bauteil-Details**: Tabelle der simulierten Parameter, Akzeptanzband und Hinweisen.  
-- **Seitenleiste**: die **Eingabe**, die **erwarteten Rückfragen**, die **Oracle-Antworten**, die  
-  **„nicht erfinden"**-Verbote, die **verworfenen** (nicht simulierten) Teile und die **Metadaten**.
+- **Seitenleiste**: die **Eingabe**, die **Oracle-Antworten** und die **Metadaten**.
 
 ## Legende (Graph)
 

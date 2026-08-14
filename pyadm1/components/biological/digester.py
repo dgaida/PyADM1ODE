@@ -108,7 +108,7 @@ class Digester(Component):
         feedstock,
         V_liq: float = 1977.0,
         V_gas: float = 304.0,
-        T_ad: float = 308.15,
+        T_ad: float = 315.15,
         name: str | None = None,
         dynamic_volume: bool = False,
         initial_fill_fraction: float = 1.0,
@@ -117,10 +117,12 @@ class Digester(Component):
     ):
         super().__init__(component_id, ComponentType.DIGESTER, name)
 
-        self.feedstock = feedstock
         self.V_liq = V_liq
         self.V_gas = V_gas
-        self.T_ad = T_ad
+
+        # Built first: ``feedstock`` and ``T_ad`` are properties that read
+        # through to the ADM1 instance, so it has to exist before they are set.
+        self.adm1 = ADM1(feedstock=feedstock, V_liq=V_liq, V_gas=V_gas, T_ad=T_ad, backend=backend)
 
         # Dynamic sludge volume with overflow-weir effluent.
         self._dynamic_volume = bool(dynamic_volume)
@@ -141,7 +143,91 @@ class Digester(Component):
         self.adm1_state: list[float] = []
         self.Q_substrates: list[float] = [0.0] * 10
 
-        self.adm1 = ADM1(feedstock=feedstock, V_liq=V_liq, V_gas=V_gas, T_ad=T_ad, backend=backend)
+    # ------------------------------------------------------------------
+    # Operating point: temperature and feedstock
+    # ------------------------------------------------------------------
+
+    @property
+    def T_ad(self) -> float:
+        """Operating temperature [K]. Writable -- see :meth:`set_temperature`."""
+        return self.adm1.T_ad
+
+    @T_ad.setter
+    def T_ad(self, value: float) -> None:
+        self.adm1.T_ad = value
+
+    @property
+    def feedstock(self):
+        """Attached :class:`Feedstock`, or ``None``. Set via :meth:`set_feedstock`."""
+        return self.adm1.feedstock
+
+    @feedstock.setter
+    def feedstock(self, value) -> None:
+        self.adm1.feedstock = value
+
+    def set_temperature(self, T_ad: float, rebuild_state: bool = False) -> None:
+        """
+        Change the operating temperature.
+
+        All temperature-dependent ADM1 constants (kinetics, inhibition, Henry
+        coefficients, gas pressures) are recomputed, and any calibration
+        overrides are re-applied on top.
+
+        Parameters
+        ----------
+        T_ad : float
+            New operating temperature [K].
+        rebuild_state : bool, default False
+            When False the current biological state is kept and the reactor
+            simply runs on at the new temperature -- the biology follows as a
+            transient, which is what happens in a real plant. Set True to
+            re-derive the pre-inoculated steady state at the new temperature
+            instead; this discards the current state and needs a feedstock.
+        """
+        self.adm1.T_ad = T_ad
+        if rebuild_state:
+            if self.feedstock is None:
+                raise RuntimeError(
+                    f"Digester '{self.component_id}': rebuild_state=True needs a feedstock; "
+                    "call set_feedstock() first or use rebuild_state=False."
+                )
+            self.adm1_state = self._build_pre_inoculated_state(self.Q_substrates)
+            self.state["adm1_state"] = self.adm1_state
+
+    def set_feedstock(self, feedstock, Q_substrates: list | None = None, rebuild_state: bool = True) -> None:
+        """
+        Attach or replace the feedstock and wire the influent through.
+
+        Assigning ``digester.feedstock`` alone is not enough: the ADM1 solver
+        also needs its influent DataFrame and density, and the initial state is
+        derived from the blend. This method does all of it in one step, so a
+        digester may be created without a feedstock and completed later.
+
+        Parameters
+        ----------
+        feedstock : Feedstock
+            The feedstock to attach.
+        Q_substrates : list of float, optional
+            New substrate feed rates [m³/d]. Keeps the current rates when omitted.
+        rebuild_state : bool, default True
+            Re-derive the pre-inoculated steady state from the new blend.
+            Set False to keep the current biological state.
+        """
+        self.feedstock = feedstock
+        if Q_substrates is not None:
+            self.Q_substrates = list(Q_substrates)
+
+        from ...substrates.feedstock import Feedstock as _Feedstock
+
+        if isinstance(feedstock, _Feedstock):
+            self.adm1.set_influent_dataframe(feedstock.get_influent_dataframe(Q=self.Q_substrates))
+            self.adm1.set_influent_density(feedstock.blended_density(self.Q_substrates))
+            if rebuild_state:
+                self.adm1_state = self._build_pre_inoculated_state(self.Q_substrates)
+
+        if self._initialized:
+            self.state["adm1_state"] = self.adm1_state
+            self.state["Q_substrates"] = self.Q_substrates
 
     # ------------------------------------------------------------------
     # Component lifecycle
@@ -607,7 +693,7 @@ class Digester(Component):
             feedstock=feedstock,
             V_liq=config.get("V_liq", 1977.0),
             V_gas=config.get("V_gas", 304.0),
-            T_ad=config.get("T_ad", 308.15),
+            T_ad=config.get("T_ad", 315.15),
             name=config.get("name"),
             dynamic_volume=config.get("dynamic_volume", False),
             initial_fill_fraction=config.get("initial_fill_fraction", 1.0),

@@ -11,9 +11,7 @@ every component). Ideal for exploring the dataset and understanding a plant. It 
 
 - **Plant graph**: components as nodes, connections as edges.  
 - **Component details**: a table of the simulated parameters, acceptance band and notes.  
-- **Sidebar**: the **input**, the **expected follow-up questions**, the **oracle  
-  answers**, the **"must not invent"** prohibitions, the **dropped** (not simulated)
-  parts and the **metadata**.
+- **Sidebar**: the **input**, the **oracle answers** and the **metadata**.
 
 ## Legend (graph)
 
