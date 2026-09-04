@@ -768,10 +768,10 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#note-on-sketch-and-pdf-tasks">
+<a class="md-nav__link" href="#note-on-sketch-tasks">
 <span class="md-ellipsis">
       
-        Note on sketch and PDF tasks
+        Note on sketch tasks
       
     </span>
 </a>
@@ -1053,10 +1053,10 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#note-on-sketch-and-pdf-tasks">
+<a class="md-nav__link" href="#note-on-sketch-tasks">
 <span class="md-ellipsis">
       
-        Note on sketch and PDF tasks
+        Note on sketch tasks
       
     </span>
 </a>
@@ -1081,7 +1081,7 @@ any programming knowledge.</p>
     E --&gt; F["📊 Three scores&lt;br&gt;in percent"]</code></pre>
 <p>Step by step:</p>
 <ol>
-<li><strong>Read the task:</strong> The AI receives the description (text, sketch or PDF).  </li>
+<li><strong>Read the task:</strong> The AI receives the description (text or sketch).  </li>
 <li><strong>Ask questions (only for incomplete tasks):</strong> If something is missing, the AI may<br/>
    query the <a href="../datenpunkt/">oracle</a>.  </li>
 <li><strong>Build the plant:</strong> The AI creates instructions with which PyADM1ODE actually<br/>
@@ -1132,7 +1132,7 @@ covers what is unavoidable when calculating:</p>
 <ul>
 <li><strong>If the value is taken over</strong> (from the description or from the oracle), the AI<br/>
   has to hit it. Only rounding is allowed: <code>40 °C</code> as <code>313.0</code> instead of <code>313.15 K</code>
-  is fine, <code>39 °C</code> is not.</li>
+  is fine, <code>39 °C</code> is not.  </li>
 <li><strong>If the value has to be calculated</strong> — a volume from diameter and height, say —<br/>
   slightly more deviation is allowed. Depending on where you round, results differ.</li>
 </ul>
@@ -1175,15 +1175,12 @@ pipes – they then count as missing as well.</p>
 <li><strong>Asking questions is not graded:</strong> Whether the AI asks is up to it. Only the plant<br/>
   it finally produces is scored — guessing wrong costs points on <strong>Measures</strong>.</li>
 </ul>
-<h2 id="note-on-sketch-and-pdf-tasks">Note on sketch and PDF tasks<a class="headerlink" href="#note-on-sketch-and-pdf-tasks" title="Permanent link">¶</a></h2>
+<h2 id="note-on-sketch-tasks">Note on sketch tasks<a class="headerlink" href="#note-on-sketch-tasks" title="Permanent link">¶</a></h2>
 <p>Tasks with a <strong>sketch</strong> (image) can only be solved by AI models that <strong>understand
 images</strong>. A pure text model cannot "see" a sketch and would inevitably score 0 % on
 such tasks – this is then <strong>not</strong> a content error of the model, but a question of
-choosing the right model.</p>
-<p><strong>PDF tasks</strong> do not need that: the text is extracted from the document and passed
-on as text, so a pure text model can solve them too. The difficulty lies elsewhere –
-the technical data sits between item numbers, prices and payment terms and has to be
-picked out first.</p>
+choosing the right model. Whether a model accepts images is usually reported by the
+API itself; on Groq, for instance, as <code>input_modalities</code>.</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>

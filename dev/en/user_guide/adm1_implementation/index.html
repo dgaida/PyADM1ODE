@@ -3085,6 +3085,19 @@ of the four VFA species:</p>
 + \sum_{i = \text{va},\text{bu},\text{pro},\text{ac}} (\cdots)  
 + F_{AN} - F_{CAT} \Bigr]  
 \]</div>
+<div class="admonition warning">
+<p class="admonition-title">Convention: the ion term assumes <span class="arithmatex">\(S_{cation} = 0\)</span></p>
+<p>The term <span class="arithmatex">\(F_{AN} - F_{CAT}\)</span> subtracts the strong-ion difference, because
+the ADM1da substrate characterisation fixes <span class="arithmatex">\(S_{cation} \equiv 0\)</span> and
+derives <span class="arithmatex">\(S_{anion}\)</span> from the charge balance. A state that carries its
+buffer as strong cations instead therefore reports too little acid
+capacity — negative in the extreme. The pre-inoculated initial state
+follows the same convention, and tanks without a substrate feed of their
+own (post-digesters, stores) are seeded with the ammonium of the ADM1da
+reference inoculum rather than with zero nitrogen. Should the formula
+still yield <span class="arithmatex">\(\text{TAC} \le 0\)</span>, PyADM1ODE reports <code>NaN</code> and warns once —
+this keeps FOS/TAC from exploding on a denominator drifting through zero.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Prefactor 50 vs 100</p>
 <p>The TAC formula as written in Schlattmann (2011) uses the molar mass of

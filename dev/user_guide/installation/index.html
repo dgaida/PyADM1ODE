@@ -2972,7 +2972,7 @@
 <ol>
 <li><strong>Installation überprüfen</strong>:  </li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python -c &quot;import pyadm1; print(pyadm1.__version__)&quot;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python -c "import pyadm1; print(pyadm1.__version__)"
 </code></pre></div>
 <h3 id="linux-installation-ubuntudebian">Linux-Installation (Ubuntu/Debian)<a class="headerlink" href="#linux-installation-ubuntudebian" title="Permanent link">&para;</a></h3>
 <ol>
@@ -2993,13 +2993,13 @@
 <ol>
 <li><strong>Installation überprüfen</strong>:  </li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import pyadm1; print(pyadm1.__version__)&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import pyadm1; print(pyadm1.__version__)"</span>
 </code></pre></div>
 <h3 id="macos-installation">macOS-Installation<a class="headerlink" href="#macos-installation" title="Permanent link">&para;</a></h3>
 <ol>
 <li><strong>Homebrew installieren</strong> (falls noch nicht geschehen):  </li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="k">)</span><span class="s2">&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="k">)</span><span class="s2">"</span>
 </code></pre></div>
 <ol>
 <li><strong>Python installieren</strong>:  </li>
@@ -3018,7 +3018,7 @@
 <ol>
 <li><strong>Installation überprüfen</strong>:  </li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import pyadm1; print(pyadm1.__version__)&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import pyadm1; print(pyadm1.__version__)"</span>
 </code></pre></div>
 <h2 id="kernabhangigkeiten">Kernabhängigkeiten<a class="headerlink" href="#kernabhangigkeiten" title="Permanent link">&para;</a></h2>
 <p>PyADM1 installiert diese Kernabhängigkeiten automatisch:</p>
@@ -3035,17 +3035,17 @@
 <h3 id="schnelluberprufung">Schnellüberprüfung<a class="headerlink" href="#schnelluberprufung" title="Permanent link">&para;</a></h3>
 <p>Führen Sie dieses Python-Skript aus, um alle Komponenten zu überprüfen:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="ch">#!/usr/bin/env python3</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="sd">&quot;&quot;&quot;PyADM1-Installation überprüfen.&quot;&quot;&quot;</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="sd">"""PyADM1-Installation überprüfen."""</span>
 <a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
 <a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">verify_installation</span><span class="p">():</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Prüft alle PyADM1-Komponenten.&quot;&quot;&quot;</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="sd">"""Prüft alle PyADM1-Komponenten."""</span>
 <a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
 <a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    <span class="c1"># 1. Core-Import prüfen</span>
 <a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    <span class="k">try</span><span class="p">:</span>
 <a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>        <span class="kn">import</span><span class="w"> </span><span class="nn">pyadm1</span>
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ PyADM1 Version: </span><span class="si">{</span><span class="n">pyadm1</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✓ PyADM1 Version: </span><span class="si">{</span><span class="n">pyadm1</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Import von pyadm1 fehlgeschlagen: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✗ Import von pyadm1 fehlgeschlagen: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>        <span class="k">return</span> <span class="kc">False</span>
 <a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>
 <a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>    <span class="c1"># 2. Kernmodule prüfen</span>
@@ -3053,18 +3053,18 @@
 <a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">ADM1</span>
 <a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.substrates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Feedstock</span>
 <a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulator</span>
-<a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Kernmodule erfolgreich importiert&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">"✓ Kernmodule erfolgreich importiert"</span><span class="p">)</span>
 <a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a>    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Import der Kernmodule fehlgeschlagen: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✗ Import der Kernmodule fehlgeschlagen: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a id="__codelineno-14-23" name="__codelineno-14-23" href="#__codelineno-14-23"></a>        <span class="k">return</span> <span class="kc">False</span>
 <a id="__codelineno-14-24" name="__codelineno-14-24" href="#__codelineno-14-24"></a>
 <a id="__codelineno-14-25" name="__codelineno-14-25" href="#__codelineno-14-25"></a>    <span class="c1"># 3. Feedstock aus der mitgelieferten Substratbibliothek laden</span>
 <a id="__codelineno-14-26" name="__codelineno-14-26" href="#__codelineno-14-26"></a>    <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-14-27" name="__codelineno-14-27" href="#__codelineno-14-27"></a>        <span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">([</span><span class="s2">&quot;maize_silage_milk_ripeness&quot;</span><span class="p">,</span> <span class="s2">&quot;swine_manure&quot;</span><span class="p">],</span>
+<a id="__codelineno-14-27" name="__codelineno-14-27" href="#__codelineno-14-27"></a>        <span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">([</span><span class="s2">"maize_silage_milk_ripeness"</span><span class="p">,</span> <span class="s2">"swine_manure"</span><span class="p">],</span>
 <a id="__codelineno-14-28" name="__codelineno-14-28" href="#__codelineno-14-28"></a>                              <span class="n">feeding_freq</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
-<a id="__codelineno-14-29" name="__codelineno-14-29" href="#__codelineno-14-29"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Feedstock aus data/substrates/ geladen&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-29" name="__codelineno-14-29" href="#__codelineno-14-29"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">"✓ Feedstock aus data/substrates/ geladen"</span><span class="p">)</span>
 <a id="__codelineno-14-30" name="__codelineno-14-30" href="#__codelineno-14-30"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-14-31" name="__codelineno-14-31" href="#__codelineno-14-31"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Feedstock-Laden fehlgeschlagen: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-31" name="__codelineno-14-31" href="#__codelineno-14-31"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✗ Feedstock-Laden fehlgeschlagen: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a id="__codelineno-14-32" name="__codelineno-14-32" href="#__codelineno-14-32"></a>        <span class="k">return</span> <span class="kc">False</span>
 <a id="__codelineno-14-33" name="__codelineno-14-33" href="#__codelineno-14-33"></a>
 <a id="__codelineno-14-34" name="__codelineno-14-34" href="#__codelineno-14-34"></a>    <span class="c1"># 4. Schneller Simulationstest</span>
@@ -3073,15 +3073,15 @@
 <a id="__codelineno-14-37" name="__codelineno-14-37" href="#__codelineno-14-37"></a>        <span class="n">adm1</span> <span class="o">=</span> <span class="n">ADM1</span><span class="p">(</span><span class="n">feedstock</span><span class="p">,</span> <span class="n">V_liq</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">T_ad</span><span class="o">=</span><span class="mf">308.15</span><span class="p">)</span>
 <a id="__codelineno-14-38" name="__codelineno-14-38" href="#__codelineno-14-38"></a>        <span class="n">initial_state</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">]</span> <span class="o">*</span> <span class="n">STATE_SIZE</span>  <span class="c1"># 41-State ADM1da-Vektor</span>
 <a id="__codelineno-14-39" name="__codelineno-14-39" href="#__codelineno-14-39"></a>        <span class="n">adm1</span><span class="o">.</span><span class="n">create_influent</span><span class="p">([</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
-<a id="__codelineno-14-40" name="__codelineno-14-40" href="#__codelineno-14-40"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Grundlegender Simulationsaufbau funktioniert (</span><span class="si">{</span><span class="n">STATE_SIZE</span><span class="si">}</span><span class="s2"> States)&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-40" name="__codelineno-14-40" href="#__codelineno-14-40"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✓ Grundlegender Simulationsaufbau funktioniert (</span><span class="si">{</span><span class="n">STATE_SIZE</span><span class="si">}</span><span class="s2"> States)"</span><span class="p">)</span>
 <a id="__codelineno-14-41" name="__codelineno-14-41" href="#__codelineno-14-41"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-14-42" name="__codelineno-14-42" href="#__codelineno-14-42"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Simulationstest fehlgeschlagen: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-42" name="__codelineno-14-42" href="#__codelineno-14-42"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✗ Simulationstest fehlgeschlagen: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a id="__codelineno-14-43" name="__codelineno-14-43" href="#__codelineno-14-43"></a>        <span class="k">return</span> <span class="kc">False</span>
 <a id="__codelineno-14-44" name="__codelineno-14-44" href="#__codelineno-14-44"></a>
-<a id="__codelineno-14-45" name="__codelineno-14-45" href="#__codelineno-14-45"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✅ Alle Überprüfungen erfolgreich!&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-45" name="__codelineno-14-45" href="#__codelineno-14-45"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">✅ Alle Überprüfungen erfolgreich!"</span><span class="p">)</span>
 <a id="__codelineno-14-46" name="__codelineno-14-46" href="#__codelineno-14-46"></a>    <span class="k">return</span> <span class="kc">True</span>
 <a id="__codelineno-14-47" name="__codelineno-14-47" href="#__codelineno-14-47"></a>
-<a id="__codelineno-14-48" name="__codelineno-14-48" href="#__codelineno-14-48"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<a id="__codelineno-14-48" name="__codelineno-14-48" href="#__codelineno-14-48"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
 <a id="__codelineno-14-49" name="__codelineno-14-49" href="#__codelineno-14-49"></a>    <span class="n">verify_installation</span><span class="p">()</span>
 </code></pre></div>
 <p>Speichern Sie das Skript als <code>verify_install.py</code> und führen Sie es aus:</p>

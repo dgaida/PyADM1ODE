@@ -1125,8 +1125,7 @@ few additional details for fair scoring.</p>
     DP --&gt; Z["4) Regime&lt;br&gt;complete or not"]</code></pre>
 <h3 id="1-the-input-the-actual-task">1. The input – the actual task<a class="headerlink" href="#1-the-input-the-actual-task" title="Permanent link">¶</a></h3>
 <p>This is the <strong>description of the plant</strong> that the AI gets to see. Depending on the
-variant, it is a detailed text, a terse text, a sketch (image) or a PDF document —
-a written quotation, say. The AI receives
+variant, it is a detailed text, a terse text or a sketch (image). The AI receives
 <strong>only</strong> this input – nothing else.</p>
 <h3 id="2-the-reference-the-correct-plant">2. The reference – the correct plant<a class="headerlink" href="#2-the-reference-the-correct-plant" title="Permanent link">¶</a></h3>
 <p>The reference describes <strong>what the plant should correctly look like</strong>. It is the
@@ -1155,6 +1154,10 @@ something is unclear.</p>
 <p>If the AI asks, for example, "At what temperature does the fermenter run?", the
 oracle provides the correct answer (e.g. "40 °C"). The oracle also recognises
 <strong>different phrasings</strong> of the same question.</p>
+<p>Besides single values it answers questions about the plant flow: where the
+digestate goes, and which tanks feed the CHP or the upgrading unit. Tasks that
+are described <strong>completely</strong> have no oracle at all — everything is in the input
+there.</p>
 <div class="admonition tip">
 <p class="admonition-title">Why is there an oracle?</p>
 <p>It is meant to distinguish two behaviours: a good AI <strong>asks</strong> when information is

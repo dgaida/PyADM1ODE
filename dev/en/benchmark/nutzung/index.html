@@ -2472,7 +2472,7 @@ PyADM1ODE.</p>
 <tbody>
 <tr>
 <td><code>BGAx_&lt;variant&gt;.json</code></td>
-<td><strong>Task</strong>: input (text, image or PDF) for the model <strong>and</strong> the reference plant (typed graph) for comparison</td>
+<td><strong>Task</strong>: input (text or image) for the model <strong>and</strong> the reference plant (typed graph) for comparison</td>
 </tr>
 <tr>
 <td><code>gold.py</code></td>
@@ -2492,29 +2492,29 @@ PyADM1ODE.</p>
 <tr>
 <th>Axis</th>
 <th>Values</th>
-<th>Distribution (24)</th>
+<th>Distribution (88)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Plant</td>
-<td>BGA1, BGA2, BGA3</td>
+<td>BGA1 … BGA11</td>
 <td>8 each</td>
 </tr>
 <tr>
 <td>Completeness</td>
 <td>fully_specified / underspecified</td>
-<td>12 / 12</td>
+<td>44 / 44</td>
 </tr>
 <tr>
 <td>Modality</td>
-<td>text / image / hybrid / pdf</td>
-<td>18 / 3 / 3 / 0</td>
+<td>text / image / hybrid</td>
+<td>66 / 11 / 11</td>
 </tr>
 <tr>
 <td>Language</td>
 <td>de / en</td>
-<td>18 / 6</td>
+<td>66 / 22</td>
 </tr>
 </tbody>
 </table>
@@ -2564,7 +2564,7 @@ schema at <code>benchmark/schema/plant_datapoint.schema.json</code>.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># 1) Quick functional check of the matcher (no PyADM1ODE needed)</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>python<span class="w"> </span>benchmark/eval/selftest.py
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># 2) Baseline: score all 24 data points against their gold.py</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># 2) Baseline: score all 88 data points against their gold.py</span>
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>python<span class="w"> </span>benchmark/eval/batch.py
 <a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
 <a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># 3) Run and score a single data point with the gold solution</span>
@@ -2591,7 +2591,7 @@ two scripted ways (A and B).</p>
 <p><code>solve.py</code> is a full run including oracle rounds. By default it uses the Groq API.
 For your own model, <strong>only the client section</strong> in <code>solve.py</code> needs adapting; the
 rest of the workflow (prompt, oracle, scoring) stays the same.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[benchmark]&quot;</span><span class="w">   </span><span class="c1"># groq + pypdf; or your own client library</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[benchmark]"</span><span class="w">   </span><span class="c1"># groq; or your own client library</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GROQ_API_KEY</span><span class="o">=</span>...<span class="w">    </span><span class="c1"># or your own API key</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>python<span class="w"> </span>benchmark/eval/solve.py<span class="w"> </span>--regime<span class="w"> </span>fully_specified<span class="w">   </span><span class="c1"># simplest entry point</span>
 </code></pre></div>
@@ -2608,13 +2608,13 @@ and getting it wrong costs points on <strong>Measures</strong>.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;benchmark/dataset&quot;</span><span class="p">)</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">index</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">((</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;index.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"benchmark/dataset"</span><span class="p">)</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">index</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">((</span><span class="n">root</span> <span class="o">/</span> <span class="s2">"index.json"</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">))</span>
 <a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">index</span><span class="p">[</span><span class="s2">&quot;datapoints&quot;</span><span class="p">]:</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">dp</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">((</span><span class="n">root</span> <span class="o">/</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">task</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">]</span>        <span class="c1"># description for the model</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">reference</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">]</span>          <span class="c1"># target plant (components + connections)</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">index</span><span class="p">[</span><span class="s2">"datapoints"</span><span class="p">]:</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">dp</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">((</span><span class="n">root</span> <span class="o">/</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"path"</span><span class="p">])</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">))</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">task</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="s2">"input"</span><span class="p">][</span><span class="s2">"content"</span><span class="p">]</span>        <span class="c1"># description for the model</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">reference</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="s2">"reference"</span><span class="p">]</span>          <span class="c1"># target plant (components + connections)</span>
 <a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="c1"># ... call your own model, generate code, score ...</span>
 </code></pre></div>
 <h2 id="scoring">Scoring<a class="headerlink" href="#scoring" title="Permanent link">&para;</a></h2>

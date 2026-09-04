@@ -2283,7 +2283,7 @@
 <p>Der Datensatz ist wie ein <strong>Aufgabenheft</strong> aufgebaut: Es gibt mehrere Anlagen, und
 zu jeder Anlage mehrere Aufgaben-Varianten.</p>
 <h2 id="anlagen-als-bausteine">Anlagen als Bausteine<a class="headerlink" href="#anlagen-als-bausteine" title="Permanent link">&para;</a></h2>
-<p>Jede Anlage liegt in einem eigenen Ordner. Das sind zum Beispiel die ersten 3 Beispielanlagen:</p>
+<p>Jede Anlage liegt in einem eigenen Ordner. Das sind die elf Beispielanlagen:</p>
 <table>
 <thead>
 <tr>
@@ -2304,17 +2304,49 @@ zu jeder Anlage mehrere Aufgaben-Varianten.</p>
 <td><strong>BGA3</strong></td>
 <td>Mittlere Anlage: zwei Fermenter, Nachgärer, Gärrestlager, Blockheizkraftwerk</td>
 </tr>
+<tr>
+<td><strong>BGA4</strong></td>
+<td>Reale Anlage (250 kW): Fermenter, Nachgärer, Gärproduktlager, Blockheizkraftwerk</td>
+</tr>
+<tr>
+<td><strong>BGA5</strong></td>
+<td>Güllekleinanlage (75 kW): nur Fermenter und gasdicht abgedecktes Gärrestlager, kein Nachgärer</td>
+</tr>
+<tr>
+<td><strong>BGA6</strong></td>
+<td>NawaRo-Anlage (360 kW): liegender Pfropfenstromfermenter (thermophil), Nachgärer, Gärrestlager, Separator mit Presswasser-Rezirkulation</td>
+</tr>
+<tr>
+<td><strong>BGA7</strong></td>
+<td>Flexibilisierte Anlage (800 kW): zwei Fermenter in Reihe, gasdichtes und offenes Gärrestlager, Separator, <strong>zwei</strong> Blockheizkraftwerke</td>
+</tr>
+<tr>
+<td><strong>BGA8</strong></td>
+<td>Anlage mit vierstufiger Kette (300 kW): Fermenter, <strong>zwei baugleiche Nachgärer in Reihe</strong>, Gärrestlager, Blockheizkraftwerk</td>
+</tr>
+<tr>
+<td><strong>BGA9</strong></td>
+<td>Anlage mit vierstufiger Kette (400 kW): Fermenter, Nachgärer, <strong>zwei gasdichte Gärrestlager in Reihe</strong>, Blockheizkraftwerk</td>
+</tr>
+<tr>
+<td><strong>BGA10</strong></td>
+<td>Anlage mit <strong>zwei parallelen Linien</strong> (750 kW): je Linie ein Fermenter und ein Nachgärer, gemeinsames Gärrestlager, Blockheizkraftwerk — fünf Behälter</td>
+</tr>
+<tr>
+<td><strong>BGA11</strong></td>
+<td>Anlage mit <strong>zwei Gasabnehmern</strong> (250 kW + 350 m³/h): zwei Fermenter, Nachgärer, Gärrestlager, Blockheizkraftwerk <strong>und</strong> Biogasaufbereitung parallel</td>
+</tr>
 </tbody>
 </table>
 <div class="admonition info">
 <p class="admonition-title">BGA = Biogasanlage</p>
 <p>„BGA" steht für <strong>B</strong>io<strong>g</strong>as<strong>a</strong>nlage. Die Nummer unterscheidet die
-drei Beispiele.</p>
+elf Beispiele.</p>
 </div>
 <h2 id="varianten">Varianten<a class="headerlink" href="#varianten" title="Permanent link">&para;</a></h2>
 <p>Pro Anlage gibt es <strong>unterschiedliche Beschreibungen</strong>, welche diselbe Biogasanlage
 beschreiben. So lässt sich prüfen, ob die KI robust ist egal ob die Beschreibung lang,
-kurz, auf Englisch, als Skizze oder als PDF-Dokument vorliegt.</p>
+kurz, auf Englisch oder als Skizze vorliegt.</p>
 <p>Zwei Eigenschaften werden dabei kombiniert:</p>
 <p><strong>1. Die Form der Beschreibung</strong></p>
 <ul>
@@ -2322,7 +2354,6 @@ kurz, auf Englisch, als Skizze oder als PDF-Dokument vorliegt.</p>
 <li><strong>knapper Text</strong> (terse) – nur die wichtigsten Eckdaten  </li>
 <li><strong>englischer Text</strong> – dieselbe Anlage auf Englisch  </li>
 <li><strong>Skizze</strong> – eine Zeichnung der Anlage (Bild)  </li>
-<li><strong>PDF</strong> – ein echtes Anlagendokument, etwa ein Angebotsschreiben  </li>
 </ul>
 <p><strong>2. Wie vollständig die Beschreibung ist</strong></p>
 <ul>
@@ -2331,6 +2362,15 @@ kurz, auf Englisch, als Skizze oder als PDF-Dokument vorliegt.</p>
 <li><strong>unvollständig</strong>: Es fehlen Angaben (z. B. die Betriebstemperatur). Die KI muss<br />
   diese beim Oracle <strong>erfragen</strong> — geraten wird der Wert praktisch nie genau genug.</li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Bei der Skizze ergänzt der Text nur das Fehlende</p>
+<p>In der vollständigen Variante <code>…_sketch_full</code> steht im Zusatztext <strong>nur, was
+das Bild nicht selbst hergibt</strong>. Die Skizze beschriftet Maße und
+BHKW-Leistung — der Zusatztext wiederholt das nicht, sondern liefert
+Betriebstemperatur, Füllgrad, Gasraum, Wirkungsgrade und den Weg des
+Gärrests. So bleibt die Aufgabe daran gebunden, die Skizze tatsächlich zu
+lesen.</p>
+</div>
 <h2 id="die-musterlosung-gold">Die Musterlösung („Gold")<a class="headerlink" href="#die-musterlosung-gold" title="Permanent link">&para;</a></h2>
 <p>Zu jeder Anlage gehört eine <strong>Musterlösung</strong>. Sie beschreibt die korrekt aufgebaute Anlage und
 dient als Maßstab, an dem das Ergebnis der KI gemessen wird. Alle Varianten einer Anlage
@@ -2348,6 +2388,14 @@ teilen sich dieselbe Musterlösung, weil es ja immer dieselbe Anlage ist.</p>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    gold.py                   die gemeinsame Musterlösung
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  BGA2/  …                   ← Anlage 2 (gleicher Aufbau)
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  BGA3/  …                   ← Anlage 3 (gleicher Aufbau)
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  BGA4/  …                   ← Anlage 4 (gleicher Aufbau)
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  BGA5/  …                   ← Anlage 5 (gleicher Aufbau, ohne Nachgärer)
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>  BGA6/  …                   ← Anlage 6 (gleicher Aufbau, Pfropfenstrom)
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>  BGA7/  …                   ← Anlage 7 (gleicher Aufbau, zwei BHKW)
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>  BGA8/  …                   ← Anlage 8 (gleicher Aufbau, serielle Kette)
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>  BGA9/  …                   ← Anlage 9 (gleicher Aufbau, zwei Lager)
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>  BGA10/ …                   ← Anlage 10 (gleicher Aufbau, zwei Linien)
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>  BGA11/ …                   ← Anlage 11 (gleicher Aufbau, BHKW + Aufbereitung)
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Was ist eine <code>.json</code>-Datei?</p>

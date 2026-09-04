@@ -2285,7 +2285,7 @@
 <p>The dataset is organised like a <strong>workbook</strong>: there are several plants, and for each
 plant several task variants. This page explains how everything fits together.</p>
 <h2 id="plants-as-building-blocks">Plants as building blocks<a class="headerlink" href="#plants-as-building-blocks" title="Permanent link">&para;</a></h2>
-<p>Each plant lives in its own folder. There are currently three example plants that
+<p>Each plant lives in its own folder. There are currently eleven example plants that
 differ in size and equipment:</p>
 <table>
 <thead>
@@ -2307,17 +2307,49 @@ differ in size and equipment:</p>
 <td><strong>BGA3</strong></td>
 <td>Medium plant: two fermenters, secondary digester, digestate store, combined heat and power unit</td>
 </tr>
+<tr>
+<td><strong>BGA4</strong></td>
+<td>Real plant (250 kW): digester, post-digester, digestate store, combined heat and power unit</td>
+</tr>
+<tr>
+<td><strong>BGA5</strong></td>
+<td>Small slurry plant (75 kW): fermenter and gas-tight digestate store only, no secondary digester</td>
+</tr>
+<tr>
+<td><strong>BGA6</strong></td>
+<td>Energy-crop plant (360 kW): horizontal plug-flow digester (thermophilic), secondary digester, digestate store, separator with press-water recirculation</td>
+</tr>
+<tr>
+<td><strong>BGA7</strong></td>
+<td>Flexibilised plant (800 kW): two fermenters in series, gas-tight and open digestate store, separator, <strong>two</strong> CHP units</td>
+</tr>
+<tr>
+<td><strong>BGA8</strong></td>
+<td>Four-stage chain (300 kW): fermenter, <strong>two identical secondary digesters in series</strong>, digestate store, combined heat and power unit</td>
+</tr>
+<tr>
+<td><strong>BGA9</strong></td>
+<td>Four-stage chain (400 kW): fermenter, secondary digester, <strong>two gas-tight digestate stores in series</strong>, combined heat and power unit</td>
+</tr>
+<tr>
+<td><strong>BGA10</strong></td>
+<td><strong>Two parallel lines</strong> (750 kW): one fermenter and one secondary digester per line, shared digestate store, combined heat and power unit — five tanks</td>
+</tr>
+<tr>
+<td><strong>BGA11</strong></td>
+<td><strong>Two gas consumers</strong> (250 kW + 350 m³/h): two fermenters, secondary digester, digestate store, combined heat and power unit <strong>and</strong> biogas upgrading in parallel</td>
+</tr>
 </tbody>
 </table>
 <div class="admonition info">
 <p class="admonition-title">BGA = biogas plant</p>
 <p>"BGA" simply stands for the German <em>Biogasanlage</em> (biogas plant). The number
-distinguishes the three examples.</p>
+distinguishes the eleven examples.</p>
 </div>
 <h2 id="variants-the-same-plant-described-differently">Variants: the same plant, described differently<a class="headerlink" href="#variants-the-same-plant-described-differently" title="Permanent link">&para;</a></h2>
 <p>For each plant there is the <strong>same</strong> biogas plant, but <strong>described in different
 ways</strong>. This makes it possible to test whether the AI is robust – regardless of
-whether the description is long, short, in English, a sketch or a PDF document.</p>
+whether the description is long, short, in English or a sketch.</p>
 <p>Two properties are combined here:</p>
 <p><strong>1. The form of the description</strong></p>
 <ul>
@@ -2325,7 +2357,6 @@ whether the description is long, short, in English, a sketch or a PDF document.<
 <li><strong>terse text</strong> – only the key figures  </li>
 <li><strong>English text</strong> – the same plant in English  </li>
 <li><strong>sketch</strong> – a drawing of the plant (image)  </li>
-<li><strong>PDF</strong> – a real plant document, e.g. a written quotation  </li>
 </ul>
 <p><strong>2. How complete the description is</strong></p>
 <ul>
@@ -2334,6 +2365,14 @@ whether the description is long, short, in English, a sketch or a PDF document.<
 <li><strong>incomplete</strong>: Some information is missing (e.g. the operating temperature). The<br />
   AI has to <strong>ask</strong> the oracle for it — a guess is practically never close enough.</li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">For the sketch the text adds only what is missing</p>
+<p>In the complete variant <code>…_sketch_full</code> the supplementary text states <strong>only
+what the image does not carry itself</strong>. The sketch labels dimensions and CHP
+power — the supplement does not repeat that, it supplies the operating
+temperature, the fill level, the gas space, the efficiencies and the path of
+the digestate. That keeps the task tied to actually reading the sketch.</p>
+</div>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p><code>BGA2_terse_de_full</code> means: plant <strong>BGA2</strong>, <strong>terse</strong> description, in <strong>German</strong>
@@ -2357,6 +2396,14 @@ reference solution, because it is always the same plant.</p>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    gold.py                   the shared reference solution
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  BGA2/  …                   ← plant 2 (same layout)
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  BGA3/  …                   ← plant 3 (same layout)
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  BGA4/  …                   ← plant 4 (same layout)
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  BGA5/  …                   ← plant 5 (same layout, no secondary digester)
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>  BGA6/  …                   ← plant 6 (same layout, plug-flow digester)
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>  BGA7/  …                   ← plant 7 (same layout, two CHP units)
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>  BGA8/  …                   ← plant 8 (same layout, serial chain)
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>  BGA9/  …                   ← plant 9 (same layout, two stores)
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>  BGA10/ …                   ← plant 10 (same layout, two parallel lines)
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>  BGA11/ …                   ← plant 11 (same layout, CHP + upgrading)
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">What is a <code>.json</code> file?</p>

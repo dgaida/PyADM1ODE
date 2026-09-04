@@ -3091,6 +3091,19 @@ pro VFA (va = 208, bu = 160, pro = 112, ac = 64 g COD/mol).</p>
 + \sum_{i = \text{va},\text{bu},\text{pro},\text{ac}} (\cdots)  
 + F_{AN} - F_{CAT} \Bigr]  
 \]</div>
+<div class="admonition warning">
+<p class="admonition-title">Konvention: der Ionenterm setzt <span class="arithmatex">\(S_{cation} = 0\)</span> voraus</p>
+<p>Der Term <span class="arithmatex">\(F_{AN} - F_{CAT}\)</span> zieht die Starkionen-Differenz ab, weil die
+ADM1da-Substratcharakterisierung <span class="arithmatex">\(S_{cation} \equiv 0\)</span> setzt und <span class="arithmatex">\(S_{anion}\)</span>
+aus der Ladungsbilanz ableitet. Ein Zustand, der seinen Puffer stattdessen
+über starke Kationen trägt, meldet dadurch zu wenig Säurekapazität — im
+Extremfall negativ. Der vorinokulierte Startzustand folgt deshalb derselben
+Konvention, und Behälter ohne eigenen Substratzulauf (Nachgärer, Lager)
+werden mit dem Ammonium des ADM1da-Referenzinokulums initialisiert statt mit
+null Stickstoff. Ergibt die Formel dennoch <span class="arithmatex">\(\text{TAC} \le 0\)</span>, liefert
+PyADM1ODE <code>NaN</code> und warnt einmalig — das verhindert FOS/TAC-Werte, die durch
+eine gegen null laufende Bezugsgröße ins Unendliche laufen.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Vorfaktor 50 vs 100</p>
 <p>Die TAC-Formel in Schlattmann (2011) verwendet die Molmasse von CaCO₃

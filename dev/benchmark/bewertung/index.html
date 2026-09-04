@@ -767,10 +767,10 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#hinweis-zu-skizzen-und-pdf-aufgaben">
+<a class="md-nav__link" href="#hinweis-zu-skizzen-aufgaben">
 <span class="md-ellipsis">
       
-        Hinweis zu Skizzen- und PDF-Aufgaben
+        Hinweis zu Skizzen-Aufgaben
       
     </span>
 </a>
@@ -1052,10 +1052,10 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#hinweis-zu-skizzen-und-pdf-aufgaben">
+<a class="md-nav__link" href="#hinweis-zu-skizzen-aufgaben">
 <span class="md-ellipsis">
       
-        Hinweis zu Skizzen- und PDF-Aufgaben
+        Hinweis zu Skizzen-Aufgaben
       
     </span>
 </a>
@@ -1079,7 +1079,7 @@
     E --&gt; F["📊 Drei Bewertungen&lt;br&gt;in Prozent"]</code></pre>
 <p>Schritt für Schritt:</p>
 <ol>
-<li><strong>Aufgabe lesen:</strong> Die KI erhält die Beschreibung (Text, Skizze oder PDF).  </li>
+<li><strong>Aufgabe lesen:</strong> Die KI erhält die Beschreibung (Text oder Skizze).  </li>
 <li><strong>Nachfragen (nur bei unvollständigen Aufgaben):</strong> Fehlt etwas, darf die KI das<br/>
 <a href="../datenpunkt/">Oracle</a> fragen.  </li>
 <li><strong>Anlage bauen:</strong> Die KI generiert den Python-Code, mit dem PyADM1ODE die Anlage aufbaut.  </li>
@@ -1122,7 +1122,7 @@ ist der Bereich — er deckt nur ab, was beim Rechnen unvermeidlich ist:</p>
 <ul>
 <li><strong>Wird der Wert übernommen</strong> (aus der Beschreibung oder vom Oracle), muss die KI<br/>
   ihn treffen. Erlaubt ist nur Rundung: <code>40 °C</code> als <code>313,0</code> statt <code>313,15 K</code> ist in
-  Ordnung, <code>39 °C</code> nicht.</li>
+  Ordnung, <code>39 °C</code> nicht.  </li>
 <li><strong>Wird der Wert gerechnet</strong> — etwa ein Volumen aus Durchmesser und Höhe —, darf<br/>
   etwas mehr abweichen. Je nachdem, wo man rundet, kommt man auf leicht
   unterschiedliche Ergebnisse.</li>
@@ -1168,15 +1168,12 @@ Leitungen nicht los – sie fehlen dann ebenfalls.</p>
   Bewertet wird nur die Anlage, die am Ende dabei herauskommt — wer rät und daneben
   liegt, verliert bei den <strong>Maßen</strong>.</li>
 </ul>
-<h2 id="hinweis-zu-skizzen-und-pdf-aufgaben">Hinweis zu Skizzen- und PDF-Aufgaben<a class="headerlink" href="#hinweis-zu-skizzen-und-pdf-aufgaben" title="Permanent link">¶</a></h2>
+<h2 id="hinweis-zu-skizzen-aufgaben">Hinweis zu Skizzen-Aufgaben<a class="headerlink" href="#hinweis-zu-skizzen-aufgaben" title="Permanent link">¶</a></h2>
 <p>Aufgaben mit <strong>Skizze</strong> (Bild) können nur von KI-Modellen gelöst werden, die
 <strong>Bilder verstehen</strong>. Ein reines Text-Modell kann eine Skizze nicht „sehen" und
-würde solche Aufgaben zwangsläufig mit 0 % bewertet bekommen.</p>
-<p><strong>PDF-Aufgaben</strong> brauchen das nicht: Aus dem Dokument wird der Text ausgelesen und
-als Text weitergereicht. Auch ein reines Text-Modell kann sie also lösen. Die
-Schwierigkeit liegt woanders — die technischen Angaben stehen zwischen
-Positionsnummern, Preisen und Zahlungsbedingungen und müssen erst herausgesucht
-werden.</p>
+würde solche Aufgaben zwangsläufig mit 0 % bewertet bekommen. Ob ein Modell Bilder
+annimmt, meldet die API in der Regel selbst — bei Groq etwa als
+<code>input_modalities</code>.</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
