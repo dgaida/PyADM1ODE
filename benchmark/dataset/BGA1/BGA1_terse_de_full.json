@@ -82,26 +82,5 @@
       {"from": "bgaa", "to": "bgaa_flare", "type": "gas", "obligation": "auto"}
     ]
   },
-  "oracle": {
-    "substrate_feed": "ca. 80 t/d Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und 20 m³/d Rindergülle aus der Vorgrube (in F1 und F2)",
-    "chp.exists": false,
-    "bgaa.exists": true,
-    "bgaa.capacity_m3h": 500.0,
-    "bgaa.ch4_recovery": 0.98,
-    "bgaa.ch4_content_out": 0.97,
-    "F1.V_gas": 870,
-    "F2.V_gas": 870,
-    "N1.V_gas": 870,
-    "G1.V_gas": 994,
-    "F1.T_ad": 313.15,
-    "F2.T_ad": 313.15,
-    "N1.T_ad": 313.15,
-    "G1.T_ad": 293.15,
-    "F1.fill_fraction": 0.9,
-    "G1.fill_fraction": 0.9,
-    "sep.source": "N1",
-    "sep.separator_type": "screw_press",
-    "digestate_cascade": "F1->N1, F2->N1, N1->G1"
-  },
   "metadata": {"difficulty": "easy", "split": "test"}
 }

@@ -17,7 +17,7 @@ flowchart TB
 
 Step by step:
 
-1. **Read the task:** The AI receives the description (text, sketch or PDF).  
+1. **Read the task:** The AI receives the description (text or sketch).  
 2. **Ask questions (only for incomplete tasks):** If something is missing, the AI may  
    query the [oracle](datenpunkt.md).  
 3. **Build the plant:** The AI creates instructions with which PyADM1ODE actually  
@@ -101,14 +101,10 @@ To keep the scoring fair and meaningful, some things are deliberately **not** sc
 - **Asking questions is not graded:** Whether the AI asks is up to it. Only the plant  
   it finally produces is scored — guessing wrong costs points on **Measures**.
 
-## Note on sketch and PDF tasks
+## Note on sketch tasks
 
 Tasks with a **sketch** (image) can only be solved by AI models that **understand
 images**. A pure text model cannot "see" a sketch and would inevitably score 0 % on
 such tasks – this is then **not** a content error of the model, but a question of
-choosing the right model.
-
-**PDF tasks** do not need that: the text is extracted from the document and passed
-on as text, so a pure text model can solve them too. The difficulty lies elsewhere –
-the technical data sits between item numbers, prices and payment terms and has to be
-picked out first.
+choosing the right model. Whether a model accepts images is usually reported by the
+API itself; on Groq, for instance, as `input_modalities`.

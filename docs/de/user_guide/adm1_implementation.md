@@ -378,6 +378,18 @@ $$
 + F_{AN} - F_{CAT} \Bigr]  
 $$
 
+!!! warning "Konvention: der Ionenterm setzt $S_{cation} = 0$ voraus"
+    Der Term $F_{AN} - F_{CAT}$ zieht die Starkionen-Differenz ab, weil die
+    ADM1da-Substratcharakterisierung $S_{cation} \equiv 0$ setzt und $S_{anion}$
+    aus der Ladungsbilanz ableitet. Ein Zustand, der seinen Puffer stattdessen
+    über starke Kationen trägt, meldet dadurch zu wenig Säurekapazität — im
+    Extremfall negativ. Der vorinokulierte Startzustand folgt deshalb derselben
+    Konvention, und Behälter ohne eigenen Substratzulauf (Nachgärer, Lager)
+    werden mit dem Ammonium des ADM1da-Referenzinokulums initialisiert statt mit
+    null Stickstoff. Ergibt die Formel dennoch $\text{TAC} \le 0$, liefert
+    PyADM1ODE `NaN` und warnt einmalig — das verhindert FOS/TAC-Werte, die durch
+    eine gegen null laufende Bezugsgröße ins Unendliche laufen.
+
 !!! note "Vorfaktor 50 vs 100"
     Die TAC-Formel in Schlattmann (2011) verwendet die Molmasse von CaCO₃
     (100 kg/kmol) als Vorfaktor. Der physikalisch korrekte Wert ist das

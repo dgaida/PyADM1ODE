@@ -1,18 +1,18 @@
 # benchmark/eval/batch.py
 """
-Batch-Runner: wertet alle Datenpunkte unter ``dataset/`` aus.
+Batch runner: scores every datapoint under ``dataset/``.
 
-Fuer jeden Datenpunkt (JSON mit ``reference`` + ``input``):
-  1. Kandidaten-Code finden (Default: ``gold.py`` im selben Ordner; optional ein
-     ``--candidates DIR`` mit ``<id>.py``),
-  2. Code isoliert ausfuehren (runner) -> Anlagen-Dict,
-  3. mit dem Graph-Matcher bewerten,
-  4. Zeile fuer die Score-Tabelle + CSV sammeln.
+For each datapoint (JSON with ``reference`` + ``input``):
+  1. find the candidate code (default: ``gold.py`` in the same folder; optionally
+     a ``--candidates DIR`` holding ``<id>.py``),
+  2. run the code in isolation (runner) -> plant dict,
+  3. score it with the graph matcher,
+  4. collect a row for the score table and the CSV.
 
-Mehrere Input-Varianten im selben Ordner teilen sich ``gold.py``; das Bauen der
-Anlage wird pro Kandidaten-Datei gecacht (nur einmal ausgefuehrt).
+Several input variants in one folder share ``gold.py``; building the plant is
+cached per candidate file, so it runs only once.
 
-Ausfuehren in der Umgebung mit PyADM1ODE-Deps:
+Run it in the environment that has the PyADM1ODE dependencies:
     conda run -n biogas --no-capture-output python benchmark/eval/batch.py
     conda run -n biogas --no-capture-output python benchmark/eval/batch.py --candidates path/to/llm_outputs
 """
@@ -36,7 +36,7 @@ def is_datapoint(d) -> bool:
 
 
 def discover(dataset_dir: str):
-    """Alle *.json, die wie Datenpunkte aussehen (mit reference + input)."""
+    """Every *.json that looks like a datapoint (has reference + input)."""
     items = []
     for path in sorted(glob.glob(os.path.join(dataset_dir, "**", "*.json"), recursive=True)):
         try:

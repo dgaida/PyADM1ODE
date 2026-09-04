@@ -1,0 +1,133 @@
+{
+  "id": "BGA10_sketch_full",
+  "input": {
+    "modality": "hybrid",
+    "language": "de",
+    "image_path": "BGA10_sketch.png",
+    "content": "Die Fermenter F1 und F2 sowie die Nachgärer N1 und N2 sind baugleich und werden mesophil bei 39 °C betrieben; das Gärrestlager G1 ist unbeheizt (ca. 20 °C). Der maximale Füllgrad aller fünf Behälter beträgt 90 %. Der Gasraum (Kuppeldach plus Kopfraum) beträgt bei F1, F2, N1 und N2 je 830 m³ und bei G1 1.450 m³. Die beiden Linien bleiben getrennt: Der Gärrest fließt von F1 in N1 und von F2 in N2; beide Nachgärer geben in G1 ab. Das Biogas aller fünf Behälter wird dem BHKW zugeführt (elektrischer Wirkungsgrad 42 %, thermischer Wirkungsgrad 43 %). Eine Biogasaufbereitung und einen Separator gibt es nicht.\n\nSubstratzufuhr: Maissilage über die Dosierer (Dos 1 in F1, Dos 2 in F2) und Rindergülle aus den Vorgruben (in F1 und F2)."
+  },
+  "regime": "fully_specified",
+  "reference": {
+    "components": [
+      {
+        "id": "F1",
+        "type": "Digester",
+        "label": "Fermenter 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 3092,
+            "obligation": "derivable",
+            "formula": "pi/4*27^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 3061, "max": 3123}
+          },
+          "V_gas": {
+            "value": 830,
+            "obligation": "given",
+            "accept": {"min": 829, "max": 831},
+            "note": "Kuppeldach plus nicht befuellter Kopfraum"
+          },
+          "T_ad": {
+            "value": 312.15,
+            "obligation": "given",
+            "accept": {"min": 311.84, "max": 312.46},
+            "rationale": "mesophil bei 39 C — der 40-C-Default liegt ausserhalb des Bandes"
+          }
+        }
+      },
+      {
+        "id": "F2",
+        "type": "Digester",
+        "label": "Fermenter 2",
+        "obligation": "given",
+        "note": "zweite, eigenstaendige Linie — kein gemeinsamer Nachgaerer mit F1",
+        "params": {"_same_as": "F1"}
+      },
+      {
+        "id": "N1",
+        "type": "Digester",
+        "label": "Nachgärer 1",
+        "obligation": "given",
+        "note": "baugleich zu den Fermentern; gehoert zur Linie 1 (F1)",
+        "params": {"_same_as": "F1"}
+      },
+      {
+        "id": "N2",
+        "type": "Digester",
+        "label": "Nachgärer 2",
+        "obligation": "given",
+        "note": "baugleich zu den Fermentern; gehoert zur Linie 2 (F2)",
+        "params": {"_same_as": "F1"}
+      },
+      {
+        "id": "G1",
+        "type": "Digester",
+        "label": "Gärrestlager",
+        "obligation": "given",
+        "note": "gemeinsames Lager beider Linien — erst hier laufen sie zusammen",
+        "params": {
+          "V_liq": {
+            "value": 5791,
+            "obligation": "derivable",
+            "formula": "pi/4*32^2*8 * 0.90 (Fuellgrad)",
+            "accept": {"min": 5733, "max": 5849}
+          },
+          "V_gas": {"value": 1450, "obligation": "given", "accept": {"min": 1449, "max": 1451}},
+          "T_ad": {
+            "value": 293.15,
+            "obligation": "given",
+            "accept": {"min": 292.85, "max": 293.45},
+            "note": "unbeheiztes Lager ~ Umgebungstemperatur"
+          }
+        }
+      },
+      {"id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "F2_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "N1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "N2_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {
+        "id": "bhkw",
+        "type": "CHP",
+        "label": "BHKW 750 kW",
+        "obligation": "given",
+        "params": {
+          "P_el_nom": {"value": 750.0, "obligation": "given", "accept": {"min": 749.25, "max": 750.75}},
+          "eta_el": {"value": 0.42, "obligation": "given", "accept": {"min": 0.4196, "max": 0.4204}},
+          "eta_th": {"value": 0.43, "obligation": "given", "accept": {"min": 0.4296, "max": 0.4304}}
+        }
+      },
+      {"id": "bhkw_flare", "type": "Flare", "label": "Notfackel", "obligation": "auto", "auto_created": true}
+    ],
+    "connections": [
+      {
+        "from": "F1",
+        "to": "N1",
+        "type": "liquid",
+        "obligation": "given",
+        "note": "Linie 1 — F1 speist ausschliesslich N1"
+      },
+      {
+        "from": "F2",
+        "to": "N2",
+        "type": "liquid",
+        "obligation": "given",
+        "note": "Linie 2 — F2 speist ausschliesslich N2"
+      },
+      {"from": "N1", "to": "G1", "type": "liquid", "obligation": "given"},
+      {"from": "N2", "to": "G1", "type": "liquid", "obligation": "given"},
+      {"from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "F2", "to": "F2_storage", "type": "gas", "obligation": "auto"},
+      {"from": "N1", "to": "N1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "N2", "to": "N2_storage", "type": "gas", "obligation": "auto"},
+      {"from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "F1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "F2_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "N1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "N2_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto"}
+    ]
+  },
+  "metadata": {"difficulty": "easy", "split": "test"}
+}

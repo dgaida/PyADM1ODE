@@ -4,7 +4,7 @@
     "modality": "hybrid",
     "language": "de",
     "image_path": "BGA1_sketch.png",
-    "content": "Die Fermenter F1 und F2 sowie der Nachgärer N1 werden mesophil bei 40 °C betrieben. Der maximale Füllgrad aller Behälter beträgt 90 %. Der Gasraum (Kuppeldach plus nicht befüllter Kopfraum) beträgt je 870 m³. Das Gärrestlager G1 ist unbeheizt (ca. 20 °C) und hat einen maximalen Füllgrad von 90 % und einen Gasraum (Kuppeldach plus Kopfraum) von 994 m³. Der Digestatstrom verläuft von F1 und F2 in den Nachgärer N1 und von dort in das Gärrestlager G1. Das Biogas aller Behälter wird der Biogasaufbereitung zugeführt. Der Separator ist eine Schneckenpresse und erhält Gärrest aus dem Nachgärer N1. Die Biogasaufbereitung erreicht eine Methanausbeute von 98 % bei einem Methangehalt von 97 % im eingespeisten Biomethan.\n\nSubstratzufuhr: ca. 80 t/d Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und 20 m³/d Rindergülle aus der Vorgrube (in F1 und F2)."
+    "content": "Die Fermenter F1 und F2 sowie der Nachgärer N1 werden mesophil bei 40 °C betrieben. Der maximale Füllgrad aller Behälter beträgt 90 %. Der Gasraum (Kuppeldach plus nicht befüllter Kopfraum) beträgt je 870 m³. Das Gärrestlager G1 ist unbeheizt (ca. 20 °C) und hat einen maximalen Füllgrad von 90 % und einen Gasraum (Kuppeldach plus Kopfraum) von 994 m³. Der Digestatstrom verläuft von F1 und F2 in den Nachgärer N1 und von dort in das Gärrestlager G1. Das Biogas aller Behälter wird der Biogasaufbereitung zugeführt. Der Separator ist eine Schneckenpresse und erhält Gärrest aus dem Nachgärer N1. Die Biogasaufbereitung erreicht eine Methanausbeute von 98 % bei einem Methangehalt von 97 % im eingespeisten Biomethan.\n\nSubstratzufuhr: Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und Rindergülle aus der Vorgrube (in F1 und F2)."
   },
   "regime": "fully_specified",
   "reference": {
@@ -82,27 +82,6 @@
       {"from": "G1_storage", "to": "bgaa", "type": "gas", "obligation": "given"},
       {"from": "bgaa", "to": "bgaa_flare", "type": "gas", "obligation": "auto"}
     ]
-  },
-  "oracle": {
-    "substrate_feed": "ca. 80 t/d Maissilage über den Feststoffdosierer (auf F1 und F2 verteilt) und 20 m³/d Rindergülle aus der Vorgrube (in F1 und F2)",
-    "chp.exists": false,
-    "bgaa.exists": true,
-    "bgaa.capacity_m3h": 500.0,
-    "bgaa.ch4_recovery": 0.98,
-    "bgaa.ch4_content_out": 0.97,
-    "F1.V_gas": 870,
-    "F2.V_gas": 870,
-    "N1.V_gas": 870,
-    "G1.V_gas": 994,
-    "F1.T_ad": 313.15,
-    "F2.T_ad": 313.15,
-    "N1.T_ad": 313.15,
-    "G1.T_ad": 293.15,
-    "F1.fill_fraction": 0.9,
-    "G1.fill_fraction": 0.9,
-    "sep.source": "N1",
-    "sep.separator_type": "screw_press",
-    "digestate_cascade": "F1->N1, F2->N1, N1->G1"
   },
   "metadata": {"difficulty": "easy", "split": "test"}
 }

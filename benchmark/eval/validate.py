@@ -1,18 +1,17 @@
 # benchmark/eval/validate.py
 """
-Prueft Datenpunkte gegen ``benchmark/schema/plant_datapoint.schema.json``.
+Validates datapoints against ``benchmark/schema/plant_datapoint.schema.json``.
 
-Das Schema steht ueberall auf ``additionalProperties: false``. Das nuetzt aber nur,
-wenn jemand tatsaechlich validiert -- sonst schleichen sich Felder wieder ein, die
-kein Konsument liest. ``make_index.py`` ruft diese Pruefung deshalb bei jedem Lauf
-auf, und sie kommt ohne externe Abhaengigkeit aus (reines stdlib, wie der Rest von
-``eval/``).
+The schema sets ``additionalProperties: false`` throughout, which only helps if
+someone actually validates -- otherwise fields nobody reads creep back in.
+``make_index.py`` therefore calls this check on every run, and it works without
+an external dependency (pure stdlib, like the rest of ``eval/``).
 
-Unterstuetzt die Teilmenge von JSON Schema Draft 2020-12, die dieses Schema nutzt:
-``$ref``, ``type``, ``enum``, ``required``, ``properties``, ``additionalProperties``
-(bool oder Teilschema), ``items`` und ``oneOf``. Fuer eine vollstaendige Pruefung
-(z.B. beim Aendern des Schemas selbst) bleibt ``pip install jsonschema`` die
-Referenz; beide melden auf diesem Schema dieselben Fehler.
+Supports the subset of JSON Schema Draft 2020-12 this schema uses: ``$ref``,
+``type``, ``enum``, ``required``, ``properties``, ``additionalProperties`` (bool
+or subschema), ``items`` and ``oneOf``. For a complete check (when changing the
+schema itself, say) ``pip install jsonschema`` stays the reference; both report
+the same errors on this schema.
 
 CLI:
     python benchmark/eval/validate.py [dataset_dir]
@@ -53,7 +52,7 @@ def _type_ok(value: Any, name: str) -> bool:
 
 
 def validate(instance: Any, schema: dict[str, Any], root: dict[str, Any], path: str = "") -> list[str]:
-    """Gibt eine Liste von Fehlermeldungen zurueck (leer = gueltig)."""
+    """Return a list of error messages (empty means valid)."""
     if "$ref" in schema:
         ref = schema["$ref"]
         if not ref.startswith("#/"):
@@ -114,7 +113,7 @@ def validate_datapoint(dp: dict[str, Any], schema: dict[str, Any] | None = None)
 
 
 def validate_dataset(dataset_dir: str = DATASET_DIR) -> dict[str, list[str]]:
-    """Pfad -> Fehlerliste, nur fuer Dateien mit mindestens einem Fehler."""
+    """Path -> error list, only for files with at least one error."""
     schema = load_schema()
     bad: dict[str, list[str]] = {}
     for path in sorted(glob.glob(os.path.join(dataset_dir, "**", "*.json"), recursive=True)):
@@ -135,7 +134,7 @@ def validate_dataset(dataset_dir: str = DATASET_DIR) -> dict[str, list[str]]:
 
 
 def report(dataset_dir: str = DATASET_DIR) -> int:
-    """Prueft und druckt; gibt die Anzahl fehlerhafter Dateien zurueck."""
+    """Validate and print; returns the number of invalid files."""
     bad = validate_dataset(dataset_dir)
     if not bad:
         return 0

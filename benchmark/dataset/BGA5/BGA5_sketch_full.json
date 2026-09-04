@@ -1,0 +1,101 @@
+{
+  "id": "BGA5_sketch_full",
+  "input": {
+    "modality": "hybrid",
+    "language": "de",
+    "image_path": "BGA5_sketch.png",
+    "content": "Der Fermenter F1 wird mesophil bei 38 °C betrieben, das Gärrestlager G1 ist unbeheizt (ca. 20 °C). Der maximale Füllgrad beider Behälter beträgt 90 %. Der Gasraum (Membrandach plus nicht befüllter Kopfraum) beträgt bei F1 160 m³ und bei G1 355 m³. Einen Nachgärer gibt es nicht; der Gärrest fließt von F1 direkt in G1. Das Biogas beider Behälter wird dem BHKW zugeführt (elektrischer Wirkungsgrad 37 %, thermischer Wirkungsgrad 44 %). Eine Biogasaufbereitung gibt es nicht.\n\nSubstratzufuhr: Rindergülle aus der Vorgrube in F1 sowie Feststoffe (Rindermist und Grassilage) über den Dosierer in F1."
+  },
+  "regime": "fully_specified",
+  "reference": {
+    "components": [
+      {
+        "id": "F1",
+        "type": "Digester",
+        "label": "Fermenter 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 831,
+            "obligation": "derivable",
+            "formula": "pi/4*14^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 823, "max": 839}
+          },
+          "V_gas": {
+            "value": 160,
+            "obligation": "given",
+            "accept": {"min": 159, "max": 161},
+            "note": "Doppelmembrandach plus nicht befuellter Kopfraum"
+          },
+          "T_ad": {
+            "value": 311.15,
+            "obligation": "given",
+            "accept": {"min": 310.84, "max": 311.46},
+            "rationale": "mesophil bei 38 C — nicht die 40 C der uebrigen Anlagen"
+          }
+        }
+      },
+      {
+        "id": "G1",
+        "type": "Digester",
+        "label": "Gärrestlager",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 1414,
+            "obligation": "derivable",
+            "formula": "pi/4*20^2*5 * 0.90 (Fuellgrad)",
+            "accept": {"min": 1400, "max": 1428}
+          },
+          "V_gas": {
+            "value": 355,
+            "obligation": "given",
+            "accept": {"min": 354, "max": 356},
+            "note": "gasdicht abgedecktes Lager: Membrandach plus Kopfraum"
+          },
+          "T_ad": {
+            "value": 293.15,
+            "obligation": "given",
+            "accept": {"min": 292.85, "max": 293.45},
+            "note": "unbeheiztes Lager ~ Umgebungstemperatur"
+          }
+        }
+      },
+      {"id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {
+        "id": "bhkw",
+        "type": "CHP",
+        "label": "BHKW 75 kW",
+        "obligation": "given",
+        "params": {
+          "P_el_nom": {"value": 75.0, "obligation": "given", "accept": {"min": 74.9, "max": 75.1}},
+          "eta_el": {"value": 0.37, "obligation": "given", "accept": {"min": 0.3696, "max": 0.3704}},
+          "eta_th": {"value": 0.44, "obligation": "given", "accept": {"min": 0.4396, "max": 0.4404}}
+        }
+      },
+      {
+        "id": "bhkw_flare",
+        "type": "Flare",
+        "obligation": "auto",
+        "auto_created": true,
+        "note": "von add_chp erzeugt; die Anlage selbst hat keine Fackel, sondern nur kombinierte Ueber-/Unterdrucksicherungen"
+      }
+    ],
+    "connections": [
+      {
+        "from": "F1",
+        "to": "G1",
+        "type": "liquid",
+        "obligation": "given",
+        "note": "kein Nachgaerer: der Gaerrest laeuft direkt ins Lager"
+      },
+      {"from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "F1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto"}
+    ]
+  },
+  "metadata": {"difficulty": "easy", "split": "test"}
+}

@@ -16,7 +16,7 @@ flowchart TB
 
 Schritt für Schritt:
 
-1. **Aufgabe lesen:** Die KI erhält die Beschreibung (Text, Skizze oder PDF).  
+1. **Aufgabe lesen:** Die KI erhält die Beschreibung (Text oder Skizze).  
 2. **Nachfragen (nur bei unvollständigen Aufgaben):** Fehlt etwas, darf die KI das  
    [Oracle](datenpunkt.md) fragen.  
 3. **Anlage bauen:** Die KI generiert den Python-Code, mit dem PyADM1ODE die Anlage aufbaut.  
@@ -96,14 +96,10 @@ Damit die Bewertung fair und aussagekräftig bleibt, werden einige Dinge bewusst
   Bewertet wird nur die Anlage, die am Ende dabei herauskommt — wer rät und daneben
   liegt, verliert bei den **Maßen**.
 
-## Hinweis zu Skizzen- und PDF-Aufgaben
+## Hinweis zu Skizzen-Aufgaben
 
 Aufgaben mit **Skizze** (Bild) können nur von KI-Modellen gelöst werden, die
 **Bilder verstehen**. Ein reines Text-Modell kann eine Skizze nicht „sehen" und
-würde solche Aufgaben zwangsläufig mit 0 % bewertet bekommen.
-
-**PDF-Aufgaben** brauchen das nicht: Aus dem Dokument wird der Text ausgelesen und
-als Text weitergereicht. Auch ein reines Text-Modell kann sie also lösen. Die
-Schwierigkeit liegt woanders — die technischen Angaben stehen zwischen
-Positionsnummern, Preisen und Zahlungsbedingungen und müssen erst herausgesucht
-werden.
+würde solche Aufgaben zwangsläufig mit 0 % bewertet bekommen. Ob ein Modell Bilder
+annimmt, meldet die API in der Regel selbst — bei Groq etwa als
+`input_modalities`.

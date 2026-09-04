@@ -4,7 +4,7 @@
     "modality": "hybrid",
     "language": "de",
     "image_path": "BGA2_sketch.png",
-    "content": "Fermenter F1 und Nachgärer N1 werden mesophil bei 40 °C betrieben mit einem maximalen Füllgrad von 90 %. Der Gasraum (Kuppeldach plus nicht befüllter Kopfraum) beträgt je 549 m³. Das Gärrestlager G1 ist unbeheizt (ca. 20 °C), maximaler Füllgrad 90 %, Gasraum (inkl. Kopfraum) 924 m³. Digestatstrom: F1 → N1 → G1. Das Biogas aller Behälter wird dem BHKW zugeführt. Das BHKW hat einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %.\n\nSubstratzufuhr: 50 t/d Maissilage über den Feststoffdosierer in F1 und 10 m³/d Rindergülle aus der Vorgrube in F1."
+    "content": "Fermenter F1 und Nachgärer N1 werden mesophil bei 40 °C betrieben mit einem maximalen Füllgrad von 90 %. Der Gasraum (Kuppeldach plus nicht befüllter Kopfraum) beträgt je 549 m³. Das Gärrestlager G1 ist unbeheizt (ca. 20 °C), maximaler Füllgrad 90 %, Gasraum (inkl. Kopfraum) 924 m³. Digestatstrom: F1 → N1 → G1. Das Biogas aller Behälter wird dem BHKW zugeführt. Das BHKW hat einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %.\n\nSubstratzufuhr: Maissilage über den Feststoffdosierer in F1 und Rindergülle aus der Vorgrube in F1."
   },
   "regime": "fully_specified",
   "reference": {
@@ -76,23 +76,6 @@
       {"from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "given"},
       {"from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto"}
     ]
-  },
-  "oracle": {
-    "substrate_feed": "50 t/d Maissilage über den Feststoffdosierer in F1 und 10 m³/d Rindergülle aus der Vorgrube in F1",
-    "bgaa.exists": false,
-    "chp.exists": true,
-    "bhkw.P_el_nom": 250.0,
-    "bhkw.eta_el": 0.4,
-    "bhkw.eta_th": 0.45,
-    "F1.V_gas": 549,
-    "N1.V_gas": 549,
-    "G1.V_gas": 924,
-    "F1.T_ad": 313.15,
-    "N1.T_ad": 313.15,
-    "G1.T_ad": 293.15,
-    "F1.fill_fraction": 0.9,
-    "G1.fill_fraction": 0.9,
-    "digestate_cascade": "F1->N1, N1->G1"
   },
   "metadata": {"difficulty": "easy", "split": "test"}
 }

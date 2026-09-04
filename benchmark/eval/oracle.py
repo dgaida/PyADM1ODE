@@ -1,10 +1,10 @@
 # benchmark/eval/oracle.py
 """
-Oracle: beantwortet LLM-Fragen aus dem oracle-Dict eines Datenpunkts.
+Oracle: answers LLM questions from a datapoint's ``oracle`` dict.
 
-Der Oracle simuliert einen menschlichen Experten, der fehlende Informationen
-(z.B. Betriebstemperatur, Gasspeichervolumen) auf Nachfrage liefert.
-Grundlage ist das "oracle"-Feld im Datenpunkt-JSON.
+It stands in for a human expert who supplies missing information (operating
+temperature, gas storage volume, ...) when asked. The source of truth is the
+"oracle" field of the datapoint JSON.
 """
 
 from __future__ import annotations
@@ -12,9 +12,9 @@ from __future__ import annotations
 import re
 from typing import Any
 
-# Kanonische Feldnamen, die das LLM typischerweise nennt, gemappt auf oracle-Keys
+# Canonical field names an LLM typically uses, mapped to oracle keys
 _KEYWORD_MAP = {
-    # Betriebstemperatur (T_ad)
+    # operating temperature (T_ad)
     "t_ad": "T_ad",
     "betriebstemperatur": "T_ad",
     "prozesstemperatur": "T_ad",
@@ -24,14 +24,14 @@ _KEYWORD_MAP = {
     "beheiz": "T_ad",
     "mesophil": "T_ad",
     "thermophil": "T_ad",
-    # Gasspeichervolumen (V_gas)
+    # gas storage volume (V_gas)
     "v_gas": "V_gas",
     "gasspeicher": "V_gas",
     "gasraum": "V_gas",
     "gas_storage": "V_gas",
     "gas storage": "V_gas",
     "headspace": "V_gas",
-    # Füllgrad (fill_fraction)
+    # fill level (fill_fraction)
     "fill_fraction": "fill_fraction",
     "füllgrad": "fill_fraction",
     "fuellgrad": "fill_fraction",
@@ -39,18 +39,18 @@ _KEYWORD_MAP = {
     "befüll": "fill_fraction",
     "fill level": "fill_fraction",
     "fillgrade": "fill_fraction",
-    # Elektrische Nennleistung (P_el_nom)
+    # rated electrical power (P_el_nom)
     "p_el_nom": "P_el_nom",
     "elektrische leistung": "P_el_nom",
     "leistung": "P_el_nom",
     "nennleistung": "P_el_nom",
     "rated power": "P_el_nom",
-    # Wirkungsgrade (eta_el / eta_th) — "wirkungsgrad" liefert beide
+    # efficiencies (eta_el / eta_th) -- "wirkungsgrad" returns both
     "eta_el": "eta_el",
     "eta_th": "eta_th",
     "wirkungsgrad": "eta",
     "efficiency": "eta",
-    # Biogasaufbereitung (BGAA)
+    # biogas upgrading unit (BGAA)
     "capacity_m3h": "capacity_m3h",
     "kapazität": "capacity_m3h",
     "ch4_recovery": "ch4_recovery",
@@ -58,7 +58,7 @@ _KEYWORD_MAP = {
     "methane recovery": "ch4_recovery",
     "ch4_content_out": "ch4_content_out",
     "methangehalt": "ch4_content_out",
-    # Digestat-/Gärrestkaskade (digestate_cascade)
+    # digestate cascade (digestate_cascade)
     "digestate_cascade": "digestate_cascade",
     "kaskade": "digestate_cascade",
     "cascade": "digestate_cascade",
@@ -67,7 +67,18 @@ _KEYWORD_MAP = {
     "gaerrest": "digestate_cascade",
     "digestat": "digestate_cascade",
     "reihenfolge": "digestate_cascade",
-    # Substratzufuhr (substrate_feed)
+    # gas path to the consumers (gas_routing)
+    "gas_routing": "gas_routing",
+    "gasweg": "gas_routing",
+    "gasführung": "gas_routing",
+    "gasfuehrung": "gas_routing",
+    "gaspfad": "gas_routing",
+    "gasverwertung": "gas_routing",
+    "gassammelleitung": "gas_routing",
+    "gasabnehmer": "gas_routing",
+    "gas routing": "gas_routing",
+    "gas path": "gas_routing",
+    # substrate feed (substrate_feed)
     "substrate_feed": "substrate_feed",
     "substrat": "substrate_feed",
     "substrate": "substrate_feed",
@@ -83,11 +94,11 @@ _KEYWORD_MAP = {
     "einsatzmaterial": "substrate_feed",
     "inputmaterial": "substrate_feed",
     "input material": "substrate_feed",
-    # Separator (Typ + Quelle) — "separator"/"sep" liefert beide sep.*-Felder
+    # separator (type + source) -- "separator"/"sep" returns both sep.* fields
     "separator": "sep",
     "separator_type": "sep",
     "sep.source": "sep.source",
-    # Existenz von Komponenten
+    # component existence
     "bgaa": "bgaa.exists",
     "biogasaufbereitung": "bgaa.exists",
     "chp": "chp.exists",
@@ -98,11 +109,11 @@ _KEYWORD_MAP = {
 
 class Oracle:
     """
-    Beantwortet LLM-Fragen anhand des oracle-Dicts eines Datenpunkts.
+    Answers LLM questions from a datapoint's oracle dict.
 
-    Verwendung:
+    Usage:
         oracle = Oracle(datapoint)
-        answer_text = oracle.answer(questions)  # questions = list[dict] oder list[str]
+        answer_text = oracle.answer(questions)  # questions = list[dict] or list[str]
     """
 
     def __init__(self, datapoint: dict[str, Any]) -> None:
@@ -114,18 +125,18 @@ class Oracle:
         return self.regime == "underspecified"
 
     # ------------------------------------------------------------------
-    # Oeffentliche API
+    # Public API
     # ------------------------------------------------------------------
 
     def answer(self, questions: list[Any]) -> str:
         """
-        Beantwortet eine Liste von Fragen.
+        Answer a list of questions.
 
-        questions kann sein:
-          - list[dict]  mit "field" und optional "question" (strukturiertes JSON)
-          - list[str]   freie Fragen
+        ``questions`` may be:
+          - list[dict]  with "field" and optionally "question" (structured JSON)
+          - list[str]   free-form questions
 
-        Gibt formatierten Text zurück, der direkt als User-Nachricht gesendet wird.
+        Returns formatted text, sent on as a user message unchanged.
         """
         if not questions:
             return self._all_facts_text()
@@ -145,7 +156,7 @@ class Oracle:
         for k, v in sorted(answered.items()):
             lines.append(f"- {k}: {self._fmt(v)}")
 
-        # Fehlende oracle-Keys ergänzen, wenn der LLM wenig gefragt hat
+        # top up with unasked oracle keys when the LLM asked for little
         missing_keys = set(self.facts) - set(answered)
         if 0 < len(missing_keys) <= 5:
             lines.append("\nWeitere relevante Informationen:")
@@ -156,39 +167,39 @@ class Oracle:
         return "\n".join(lines)
 
     def answer_all(self) -> str:
-        """Gibt alle oracle-Fakten zurück (für --no-oracle-Modus)."""
+        """Return every oracle fact (used by the --no-oracle mode)."""
         return self._all_facts_text()
 
     # ------------------------------------------------------------------
-    # Intern
+    # Internal
     # ------------------------------------------------------------------
 
     def _match(self, query: str) -> dict[str, Any]:
-        """Sucht passende oracle-Keys für eine Feldbezeichnung oder Frage."""
+        """Find the oracle keys matching a field name or a question."""
         result: dict[str, Any] = {}
         q = query.strip()
 
-        # 1) Exakter Treffer
+        # 1) exact match
         if q in self.facts:
             return {q: self.facts[q]}
 
         q_lower = q.lower()
 
-        # 2) Keyword-Mapping -> oracle-Feldname -> alle passenden Keys
+        # 2) keyword mapping -> oracle field name -> every matching key
         for kw, canon in _KEYWORD_MAP.items():
             if kw in q_lower:
                 for key, val in self.facts.items():
                     if canon.lower() in key.lower():
                         result[key] = val
 
-        # 3) Explizit genannte Komponenten-IDs (z.B. "F1", "N1", "G1", "bhkw")
+        # 3) component ids named explicitly (e.g. "F1", "N1", "G1", "bhkw")
         for comp_id in re.findall(r"\b([A-Z]\d+|bhkw|bgaa|sep)\b", q, re.IGNORECASE):
             prefix = comp_id.lower() + "."
             for key, val in self.facts.items():
                 if key.lower().startswith(prefix):
                     result[key] = val
 
-        # 4) Alle oracle-Keys, die direkt im Query auftauchen (case-insensitive)
+        # 4) every oracle key appearing verbatim in the query (case-insensitive)
         for key, val in self.facts.items():
             if key.lower() in q_lower:
                 result[key] = val

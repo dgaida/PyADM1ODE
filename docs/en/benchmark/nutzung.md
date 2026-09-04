@@ -38,7 +38,7 @@ benchmark/
 
 | File | Role |
 | ---- | ---- |
-| `BGAx_<variant>.json` | **Task**: input (text, image or PDF) for the model **and** the reference plant (typed graph) for comparison |
+| `BGAx_<variant>.json` | **Task**: input (text or image) for the model **and** the reference plant (typed graph) for comparison |
 | `gold.py` | **Gold solution**: known-correct implementation, validates the harness and serves as reference code |
 
 ### Variants and regime
@@ -49,12 +49,12 @@ Each plant exists in several variants. The `_full` suffix marks completeness:
 - **`underspecified`** (no `_full`): values are missing – the model has to **ask** the  
   oracle. Guessing does not work; the acceptance bands are too tight for that.
 
-| Axis | Values | Distribution (24) |
+| Axis | Values | Distribution (88) |
 | ---- | ------ | ----------------- |
-| Plant | BGA1, BGA2, BGA3 | 8 each |
-| Completeness | fully_specified / underspecified | 12 / 12 |
-| Modality | text / image / hybrid / pdf | 18 / 3 / 3 / 0 |
-| Language | de / en | 18 / 6 |
+| Plant | BGA1 … BGA11 | 8 each |
+| Completeness | fully_specified / underspecified | 44 / 44 |
+| Modality | text / image / hybrid | 66 / 11 / 11 |
+| Language | de / en | 66 / 22 |
 
 The exact makeup of a single data point is described in
 [A Data Point in Detail](datenpunkt.md). The authoritative format lives in the JSON
@@ -78,7 +78,7 @@ Examples:
 # 1) Quick functional check of the matcher (no PyADM1ODE needed)
 python benchmark/eval/selftest.py
 
-# 2) Baseline: score all 24 data points against their gold.py
+# 2) Baseline: score all 88 data points against their gold.py
 python benchmark/eval/batch.py
 
 # 3) Run and score a single data point with the gold solution
@@ -118,7 +118,7 @@ For your own model, **only the client section** in `solve.py` needs adapting; th
 rest of the workflow (prompt, oracle, scoring) stays the same.
 
 ```bash
-pip install -e ".[benchmark]"   # groq + pypdf; or your own client library
+pip install -e ".[benchmark]"   # groq; or your own client library
 export GROQ_API_KEY=...    # or your own API key
 python benchmark/eval/solve.py --regime fully_specified   # simplest entry point
 ```

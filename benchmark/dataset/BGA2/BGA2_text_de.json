@@ -100,7 +100,8 @@
     "G1.T_ad": 293.15,
     "F1.fill_fraction": 0.9,
     "G1.fill_fraction": 0.9,
-    "digestate_cascade": "F1->N1, N1->G1"
+    "digestate_cascade": "F1->N1, N1->G1",
+    "gas_routing": "Alle drei Behälter (F1, N1, G1) speisen das BHKW"
   },
   "metadata": {"difficulty": "medium", "split": "test"}
 }

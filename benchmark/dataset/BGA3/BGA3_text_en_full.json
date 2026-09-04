@@ -3,7 +3,7 @@
   "input": {
     "modality": "text",
     "language": "en",
-    "content": "Biogas plant BGA3 processes mainly slurry and solid substrate. Two solid dosing units (Dos 1 and Dos 2) each feed 50 tonnes of substrate per day directly into fermenters F1 and F2 respectively. Two slurry pre-pits (each 5×8 metres) pump 20 cubic metres of slurry per day into fermenters F1 and F2.\n\nFermenters F1 and F2 each have a diameter of 26 metres and a wall height of 6 metres, each equipped with three paddle agitators. Each fermenter carries a dome roof that also serves as an integrated gas storage; the total gas space (dome plus unfilled headspace) is 719 cubic metres. The fermenters operate mesophilically at 40 degrees Celsius (313.15 K) with a fill level of 90 percent. Digestate from F1 and F2 flows into secondary digester N1, which also measures 26 metres in diameter and 6 metres in height and is fitted with one paddle agitator and one long-axis agitator. N1 also has a dome roof with a total gas space of 719 cubic metres and operates at 40 degrees Celsius with a fill level of 90 percent. From the secondary digester the digestate moves into digestate store G1 with a diameter of 28 metres and a height of 6 metres, equipped with two submersible agitators. The digestate store is unheated (approx. 20 degrees Celsius / 293.15 K), has a fill level of 90 percent and a total gas space of 799 cubic metres.\n\nThe biogas produced is fed to a combined heat and power unit (CHP) with a rated electrical output of 500 kW. The CHP achieves an electrical efficiency of 40 percent and a thermal efficiency of 45 percent. An emergency flare is available for fault conditions. A condensate shaft is connected to fermenter F1.\n\nSubstrate feed: 50 t/d maize silage each via the dosing units (Dos1 into F1, Dos2 into F2) and 20 m³/d cattle slurry each from two pre-pits (into F1 and F2)."
+    "content": "Biogas plant BGA3 processes mainly slurry and solid substrate. Two solid dosing units (Dos 1 and Dos 2) each feed 50 tonnes of substrate per day directly into digesters F1 and F2 respectively. Two slurry pre-pits (each 5×8 metres) pump 20 cubic metres of slurry per day into digesters F1 and F2.\n\nDigesters F1 and F2 each have a diameter of 26 metres and a wall height of 6 metres, each equipped with three paddle agitators. Each digester carries a dome roof that also serves as an integrated gas storage; the total gas space (dome plus unfilled headspace) is 719 cubic metres. The digesters operate mesophilically at 40 degrees Celsius (313.15 K) with a fill level of 90 percent. Digestate from F1 and F2 flows into post-digester N1, which also measures 26 metres in diameter and 6 metres in height and is fitted with one paddle agitator and one long-axis agitator. N1 also has a dome roof with a total gas space of 719 cubic metres and operates at 40 degrees Celsius with a fill level of 90 percent. From the post-digester the digestate moves into digestate store G1 with a diameter of 28 metres and a height of 6 metres, equipped with two submersible agitators. The digestate store is unheated (approx. 20 degrees Celsius / 293.15 K), has a fill level of 90 percent and a total gas space of 799 cubic metres.\n\nThe biogas produced is fed to a combined heat and power unit (CHP) with a rated electrical output of 500 kW. The CHP achieves an electrical efficiency of 40 percent and a thermal efficiency of 45 percent. An emergency flare is available for fault conditions. A condensate shaft is connected to digester F1.\n\nSubstrate feed: 50 t/d maize silage each via the dosing units (Dos1 into F1, Dos2 into F2) and 20 m³/d cattle slurry each from two pre-pits (into F1 and F2)."
   },
   "regime": "fully_specified",
   "reference": {
@@ -79,25 +79,6 @@
       {"from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
       {"from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto"}
     ]
-  },
-  "oracle": {
-    "substrate_feed": "50 t/d maize silage each via the dosing units (Dos1 into F1, Dos2 into F2) and 20 m³/d cattle slurry each from two pre-pits (into F1 and F2)",
-    "bgaa.exists": false,
-    "chp.exists": true,
-    "bhkw.P_el_nom": 500.0,
-    "bhkw.eta_el": 0.4,
-    "bhkw.eta_th": 0.45,
-    "F1.V_gas": 719,
-    "F2.V_gas": 719,
-    "N1.V_gas": 719,
-    "G1.V_gas": 799,
-    "F1.T_ad": 313.15,
-    "F2.T_ad": 313.15,
-    "N1.T_ad": 313.15,
-    "G1.T_ad": 293.15,
-    "F1.fill_fraction": 0.9,
-    "G1.fill_fraction": 0.9,
-    "digestate_cascade": "F1->N1, F2->N1, N1->G1"
   },
   "metadata": {"difficulty": "easy", "split": "test"}
 }

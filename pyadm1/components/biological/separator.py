@@ -109,6 +109,7 @@ _SEPARATOR_DEFAULTS: dict[str, dict[str, float]] = {
 # ADM1 state indices of particulate (non-soluble) components [kg COD/m3]
 # Indices 12-24 of the 37-element ADM1 state vector (Batstone et al. 2002)
 _ADM1_PARTICULATE_INDICES = list(range(12, 25))
+_ADM1_PARTICULATE_INDEX_SET = set(_ADM1_PARTICULATE_INDICES)
 
 # Conversion: kg COD -> kg TS
 # VS/COD = 1/1.42 (standard ADM1 biomass factor)
@@ -268,12 +269,17 @@ class Separator(Component):
             return self.outputs_data  # no flow, no separation
 
         # --- resolve total solids ------------------------------------------
+        # The plant router renames ``state_out`` to ``state_in`` on liquid
+        # transfers, so accept both spellings — otherwise the estimate never
+        # fires inside a plant and the 40 kg/m3 fallback silently takes over.
+        # Resolved before the TS branch because the liquid-phase state below
+        # needs it in every case.
+        adm1_state = inputs.get("state_in", inputs.get("state_out"))
         TS_in = float(inputs.get("TS_in", 0.0))
 
         if TS_in <= 0.0:
             # Estimate from the ADM1 state vector if available, otherwise fall
             # back to typical mesophilic digestate TS ~40 kg/m3 (4%).
-            adm1_state = inputs.get("state_out")
             TS_in = self._estimate_ts_from_adm1(adm1_state) if adm1_state is not None else 40.0
 
         VS_in = float(inputs.get("VS_in", TS_in * 0.75))  # ~75% VS/TS
@@ -335,9 +341,17 @@ class Separator(Component):
             }
         )
 
+        # The liquid phase leaves as a proper ADM1 stream so a downstream
+        # digester or store can actually receive it: particulates are depleted
+        # by the separation efficiency, dissolved components stay at their
+        # concentration (the press cake carries liquid of the same quality).
+        state_out = self._split_state(adm1_state, Q_in, Q_liquid)
+
         self.outputs_data = {
             "Q_liquid": float(Q_liquid),
             "Q_solid": float(Q_solid),
+            # Q_out/state_out are the keys the liquid cascade transports.
+            "Q_out": float(Q_liquid),
             "TS_liquid": float(TS_liquid),
             "TS_solid": float(self.ts_solid_target),
             "VS_liquid": float(VS_liquid),
@@ -348,6 +362,7 @@ class Separator(Component):
             "TP_solid": float(TP_solid_conc),
             "P_consumed": float(P_consumed),
             "separation_efficiency": float(self.separation_efficiency),
+            "state_out": state_out,
             # Convenience summary
             "solid_fraction_ts_pct": float(self.ts_solid_target / (self.fluid_density * 10.0)),  # % TS
             "recovery_solid_pct": float(self.separation_efficiency * 100.0),
@@ -411,6 +426,25 @@ class Separator(Component):
     # ------------------------------------------------------------------
     # Private helpers
     # ------------------------------------------------------------------
+
+    def _split_state(self, state: Any, Q_in: float, Q_liquid: float) -> Any:
+        """Return the ADM1 state of the liquid fraction.
+
+        Mass balance per component: particulates (``X_*``) are captured with the
+        separation efficiency, so the load left in the liquid is
+        ``(1 - eta) * Q_in * C``; dissolved components are not retained by the
+        press, so their concentration is unchanged. Returns ``None`` when no
+        upstream state is available — the separator then stays a pure reporting
+        component, exactly as before.
+        """
+        if state is None or Q_liquid <= 0.0:
+            return None
+        try:
+            values = [float(v) for v in state]
+        except (TypeError, ValueError):
+            return None
+        keep = (1.0 - self.separation_efficiency) * Q_in / Q_liquid
+        return [v * keep if i in _ADM1_PARTICULATE_INDEX_SET else v for i, v in enumerate(values)]
 
     @staticmethod
     def _estimate_ts_from_adm1(state: Any) -> float:

@@ -3,7 +3,7 @@
   "input": {
     "modality": "text",
     "language": "en",
-    "content": "The biogas plant BGA1 mainly processes manure and is fed through three routes. A solids dosing unit feeds a liquid mixed substrate at around 80 tonnes per day into the two digesters F1 and F2. In addition there is a pre pit measuring 5 by 10 metres that collects about 20 cubic metres of manure per day and pumps it into F1 and F2 as well. Three identical feed tanks of 11 by 3.5 metres each are connected to both digesters through a shared pump.\n\nThe two main digesters F1 and F2 each have a diameter of 28 metres and a height of 6 metres and are equipped with three paddle agitators each. Both carry a dome roof that also serves as gas storage. The digestate then flows into the secondary digester N1, which also measures 28 metres in diameter and 6 metres in height and uses one paddle agitator and one long axis agitator. N1 also has a dome roof. From the secondary digester the material moves into the digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators.\n\nThe biogas produced in the tanks is collected and fed to a biogas upgrading unit with a capacity of 500 cubic metres per hour. A safety flare is available to burn off surplus gas in case of a fault. A separator splits the digestate into a solid and a liquid fraction. A condensate shaft is connected to digester F1 and a leachate store is connected to digesters F1 and F2."
+    "content": "The biogas plant BGA1 mainly processes manure and is fed through three routes. A solids dosing unit feeds a liquid mixed substrate at around 80 tonnes per day into the two digesters F1 and F2. In addition there is a pre pit measuring 5 by 10 metres that collects about 20 cubic metres of manure per day and pumps it into F1 and F2 as well. Three identical feed tanks of 11 by 3.5 metres each are connected to both digesters through a shared pump.\n\nThe two main digesters F1 and F2 each have a diameter of 28 metres and a height of 6 metres and are equipped with three paddle agitators each. Both carry a dome roof that also serves as gas storage. The digestate then flows into the post-digester N1, which also measures 28 metres in diameter and 6 metres in height and uses one paddle agitator and one long axis agitator. N1 also has a dome roof. From the post-digester the material moves into the digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators.\n\nThe biogas produced in the tanks is collected and fed to a biogas upgrading unit with a capacity of 500 cubic metres per hour. A safety flare is available to burn off surplus gas in case of a fault. A separator splits the digestate into a solid and a liquid fraction. A condensate shaft is connected to digester F1 and a leachate store is connected to digesters F1 and F2."
   },
   "regime": "underspecified",
   "reference": {
@@ -141,7 +141,8 @@
     "G1.fill_fraction": 0.9,
     "sep.source": "N1",
     "sep.separator_type": "screw_press",
-    "digestate_cascade": "F1->N1, F2->N1, N1->G1"
+    "digestate_cascade": "F1->N1, F2->N1, N1->G1",
+    "gas_routing": "Alle vier Behälter (F1, F2, N1, G1) speisen die Biogasaufbereitung"
   },
   "metadata": {"difficulty": "hard", "split": "test"}
 }

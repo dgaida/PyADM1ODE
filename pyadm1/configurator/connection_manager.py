@@ -52,7 +52,13 @@ class Connection:
         >>> config = conn.to_dict()
     """
 
-    def __init__(self, from_component: str, to_component: str, connection_type: str = "default"):
+    def __init__(
+        self,
+        from_component: str,
+        to_component: str,
+        connection_type: str = "default",
+        split_fraction: float = 1.0,
+    ):
         """
         Initialize connection.
 
@@ -61,10 +67,17 @@ class Connection:
             to_component (str): Target component ID.
             connection_type (str): Type of connection (e.g., 'liquid', 'gas',
                 'heat', 'power'). Defaults to "default".
+            split_fraction (float): Share of the source's effluent that travels
+                along this edge, 0..1. Defaults to 1.0, which reproduces the
+                historical behaviour (every downstream component sees the full
+                flow). Use it when one stream is split, e.g. a separator that
+                recirculates part of its press water to the digester and sends
+                the rest to the store.
         """
         self.from_component = from_component
         self.to_component = to_component
         self.connection_type = connection_type
+        self.split_fraction = float(split_fraction)
 
     def to_dict(self) -> dict[str, Any]:
         """
@@ -73,11 +86,16 @@ class Connection:
         Returns:
             Dict[str, Any]: Dictionary representation of the connection.
         """
-        return {
+        data = {
             "from": self.from_component,
             "to": self.to_component,
             "type": self.connection_type,
         }
+        # Only serialized when it actually splits, so existing graph dumps and
+        # the benchmark matcher keep their exact shape.
+        if self.split_fraction != 1.0:
+            data["split_fraction"] = self.split_fraction
+        return data
 
     @classmethod
     def from_dict(cls, config: dict[str, Any]) -> Connection:
@@ -95,6 +113,7 @@ class Connection:
             from_component=config["from"],
             to_component=config["to"],
             connection_type=config.get("type", "default"),
+            split_fraction=float(config.get("split_fraction", 1.0)),
         )
 
     def __repr__(self) -> str:

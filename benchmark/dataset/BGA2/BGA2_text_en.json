@@ -3,7 +3,7 @@
   "input": {
     "modality": "text",
     "language": "en",
-    "content": "Biogas plant BGA2 mainly processes slurry. A direct dosing unit feeds 50 tonnes of mixed substrate per day into fermenter F1. A slurry pre-pit measuring 4 by 8 metres holds 10 cubic metres and pumps the slurry daily into F1 as well.\n\nFermenter F1 has a diameter of 23 metres and a wall height of 6 metres, equipped with three paddle agitators. It carries a dome roof that also serves as gas storage. Digestate flows from F1 into secondary digester N1, which also measures 23 metres in diameter and 6 metres in height and is fitted with one paddle agitator and one long-axis agitator. N1 also has a dome roof. From the secondary digester the digestate moves into digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators.\n\nThe biogas produced is fed to a combined heat and power unit (CHP) with a rated electrical output of 250 kW, generating electricity and heat simultaneously. An emergency flare is available for fault conditions. Both a condensate shaft and a leachate shaft are connected to fermenter F1."
+    "content": "Biogas plant BGA2 mainly processes slurry. A direct dosing unit feeds 50 tonnes of mixed substrate per day into digester F1. A slurry pre-pit measuring 4 by 8 metres holds 10 cubic metres and pumps the slurry daily into F1 as well.\n\nDigester F1 has a diameter of 23 metres and a wall height of 6 metres, equipped with three paddle agitators. It carries a dome roof that also serves as gas storage. Digestate flows from F1 into post-digester N1, which also measures 23 metres in diameter and 6 metres in height and is fitted with one paddle agitator and one long-axis agitator. N1 also has a dome roof. From the post-digester the digestate moves into digestate store G1 with a diameter of 30 metres and a height of 6 metres, equipped with two submersible agitators.\n\nThe biogas produced is fed to a combined heat and power unit (CHP) with a rated electrical output of 250 kW, generating electricity and heat simultaneously. An emergency flare is available for fault conditions. Both a condensate shaft and a leachate shaft are connected to digester F1."
   },
   "regime": "underspecified",
   "reference": {
@@ -106,7 +106,8 @@
     "G1.T_ad": 293.15,
     "F1.fill_fraction": 0.9,
     "G1.fill_fraction": 0.9,
-    "digestate_cascade": "F1->N1, N1->G1"
+    "digestate_cascade": "F1->N1, N1->G1",
+    "gas_routing": "Alle drei Behälter (F1, N1, G1) speisen das BHKW"
   },
   "metadata": {"difficulty": "medium", "split": "test"}
 }

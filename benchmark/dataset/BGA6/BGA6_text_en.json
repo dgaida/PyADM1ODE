@@ -1,0 +1,175 @@
+{
+  "id": "BGA6_text_en",
+  "input": {
+    "modality": "text",
+    "language": "en",
+    "content": "Biogas plant BGA6 is a two-stage energy-crop plant that uses no slurry. A solid feeder with a 45 cubic metre hopper, a hydraulic push-floor and a press screw charges the plug-flow digester directly through its front face. Press water from the separation stage is recirculated to mash the solids.\n\nDigester F1 is a horizontal steel tank of plug-flow design, 32 m long, 6 m wide and 4.5 m high (gross volume 864 cubic metres), with a slow-running reel agitator along its longitudinal axis and heating registers in the wall and floor. It runs thermophilically; it has no gas storage roof, the gas is led through the gas collecting pipe into the gas space of the post-digester. The digestate passes into post-digester N1, a round tank of 22 m diameter and 6 m height fitted with one paddle agitator, one long-axis agitator and a dome roof; N1 is heated and runs mesophilically. At the outlet of N1 a screw press separates the digestate; the solid fraction is hauled away, about 10 cubic metres per day of press water flow back into F1 and the remainder into digestate store G1 (26 m diameter, 6 m height, two submersible agitators, unheated).\n\nAir is blown into the gas space of the post-digester for biological desulphurisation. The biogas is converted in a CHP unit with a rated electrical output of 360 kW. An emergency flare rated 250 cubic metres per hour is available for fault conditions; a condensate shaft sits on the gas collecting pipe."
+  },
+  "regime": "underspecified",
+  "reference": {
+    "components": [
+      {
+        "id": "F1",
+        "type": "Digester",
+        "label": "Pfropfenstromfermenter",
+        "obligation": "given",
+        "note": "PyADM1ODE kennt nur den ruehrkessel-artigen Digester; die Pfropfenstrom-Hydraulik wird nicht abgebildet, nur Volumen und Temperatur",
+        "params": {
+          "V_liq": {
+            "value": 778,
+            "obligation": "missing_ask",
+            "formula": "32*6*4.5 * 0.90 (Fuellgrad)",
+            "accept": {"min": 770, "max": 786}
+          },
+          "V_gas": {
+            "value": 86,
+            "obligation": "missing_ask",
+            "accept": {"min": 85, "max": 87},
+            "note": "kein Gasspeicherdach: nur der Kopfraum ueber dem Substrat"
+          },
+          "T_ad": {
+            "value": 325.15,
+            "obligation": "missing_ask",
+            "accept": {"min": 324.82, "max": 325.48},
+            "rationale": "thermophile erste Stufe bei 52 C"
+          }
+        }
+      },
+      {
+        "id": "N1",
+        "type": "Digester",
+        "label": "Nachgärer 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 2053,
+            "obligation": "missing_ask",
+            "formula": "pi/4*22^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 2032, "max": 2074}
+          },
+          "V_gas": {
+            "value": 505,
+            "obligation": "missing_ask",
+            "accept": {"min": 504, "max": 506},
+            "note": "Kuppeldach plus Kopfraum; speichert zugleich das Gas aus F1"
+          },
+          "T_ad": {
+            "value": 315.15,
+            "obligation": "missing_ask",
+            "accept": {"min": 314.84, "max": 315.46},
+            "rationale": "mesophiler Nachgaerer bei 42 C"
+          }
+        }
+      },
+      {
+        "id": "G1",
+        "type": "Digester",
+        "label": "Gärrestlager",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 2867,
+            "obligation": "missing_ask",
+            "formula": "pi/4*26^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 2838, "max": 2896}
+          },
+          "V_gas": {"value": 719, "obligation": "missing_ask", "accept": {"min": 718, "max": 720}},
+          "T_ad": {
+            "value": 293.15,
+            "obligation": "missing_ask",
+            "accept": {"min": 292.85, "max": 293.45},
+            "note": "unbeheiztes Lager ~ Umgebungstemperatur"
+          }
+        }
+      },
+      {"id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "N1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {
+        "id": "sep",
+        "type": "Separator",
+        "label": "Separator",
+        "obligation": "given",
+        "params": {
+          "separator_type": {
+            "value": "screw_press",
+            "obligation": "given",
+            "note": "im Input als Schneckenpresse benannt"
+          }
+        }
+      },
+      {
+        "id": "bhkw",
+        "type": "CHP",
+        "label": "BHKW 360 kW",
+        "obligation": "given",
+        "params": {
+          "P_el_nom": {"value": 360.0, "obligation": "given", "accept": {"min": 359.6, "max": 360.4}},
+          "eta_el": {"value": 0.41, "obligation": "missing_ask", "accept": {"min": 0.4096, "max": 0.4104}},
+          "eta_th": {"value": 0.43, "obligation": "missing_ask", "accept": {"min": 0.4296, "max": 0.4304}}
+        }
+      },
+      {"id": "bhkw_flare", "type": "Flare", "label": "Notfackel", "obligation": "auto", "auto_created": true}
+    ],
+    "connections": [
+      {"from": "F1", "to": "N1", "type": "liquid", "obligation": "given"},
+      {
+        "from": "N1",
+        "to": "sep",
+        "type": "liquid",
+        "obligation": "given",
+        "note": "der gesamte Gaerrest laeuft ueber die Presse — es gibt keine direkte Kante N1->G1"
+      },
+      {
+        "from": "sep",
+        "to": "F1",
+        "type": "liquid",
+        "obligation": "given",
+        "note": "Presswasser-Rezirkulation, ca. 10 m3/d (split_fraction 0.38); der Separator gibt die Fluessigphase als Q_out/state_out weiter"
+      },
+      {
+        "from": "sep",
+        "to": "G1",
+        "type": "liquid",
+        "obligation": "given",
+        "note": "restliches Presswasser in das Lager (split_fraction 0.62)"
+      },
+      {"from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "N1", "to": "N1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto"},
+      {
+        "from": "F1_storage",
+        "to": "N1_storage",
+        "type": "gas",
+        "obligation": "missing_ask",
+        "note": "Gas aus F1 wird real im Gasraum von N1 gespeichert; ein Gasspeicher summiert aber nur Digester-Quellen, Speicher->Speicher traegt nichts"
+      },
+      {"from": "F1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "N1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto"}
+    ]
+  },
+  "oracle": {
+    "substrate_feed": "14 t/d Maissilage, 4 t/d Ganzpflanzensilage und 3 t/d Rindermist über den Feststoffdosierer in F1 sowie ca. 10 m³/d rezirkuliertes Presswasser in F1",
+    "bgaa.exists": false,
+    "chp.exists": true,
+    "bhkw.P_el_nom": 360.0,
+    "bhkw.eta_el": 0.41,
+    "bhkw.eta_th": 0.43,
+    "F1.V_gas": 86,
+    "N1.V_gas": 505,
+    "G1.V_gas": 719,
+    "F1.T_ad": 325.15,
+    "N1.T_ad": 315.15,
+    "G1.T_ad": 293.15,
+    "F1.fill_fraction": 0.9,
+    "N1.fill_fraction": 0.9,
+    "G1.fill_fraction": 0.9,
+    "sep.separator_type": "screw_press",
+    "sep.source": "N1",
+    "digestate_cascade": "F1->N1, N1->G1; der Separator hängt am Ablauf von N1. Die Presswasser-Rezirkulation sep->F1 und die Flüssigphase sep->G1 dürfen gebaut werden, werden von PyADM1ODE aber nicht geroutet",
+    "gas_routing": "Das Gas aus F1 wird real im Gasraum von N1 gespeichert; im Modell behält jeder Behälter seinen eigenen Gasspeicher und alle speisen das BHKW"
+  },
+  "metadata": {"difficulty": "hard", "split": "test"}
+}

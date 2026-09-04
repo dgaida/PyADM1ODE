@@ -280,9 +280,22 @@ class PlantConfigurator:
 
         return heating
 
-    def connect(self, from_component: str, to_component: str, connection_type: str = "default") -> Connection:
-        """Connect two components."""
-        connection = Connection(from_component, to_component, connection_type)
+    def connect(
+        self,
+        from_component: str,
+        to_component: str,
+        connection_type: str = "default",
+        split_fraction: float = 1.0,
+    ) -> Connection:
+        """Connect two components.
+
+        ``split_fraction`` (0..1) sends only part of the source's effluent along
+        this edge — e.g. a separator that recirculates 60 % of its press water
+        into the digester and passes the rest to the store. The default 1.0
+        keeps the previous behaviour: every downstream component sees the full
+        flow.
+        """
+        connection = Connection(from_component, to_component, connection_type, split_fraction)
         self.plant.add_connection(connection)
         return connection
 

@@ -147,7 +147,8 @@
     "G1.fill_fraction": 0.9,
     "sep.source": "N1",
     "sep.separator_type": "screw_press",
-    "digestate_cascade": "F1->N1, F2->N1, N1->G1"
+    "digestate_cascade": "F1->N1, F2->N1, N1->G1",
+    "gas_routing": "Alle vier Behälter (F1, F2, N1, G1) speisen die Biogasaufbereitung"
   },
   "metadata": {"difficulty": "hard", "split": "test"}
 }

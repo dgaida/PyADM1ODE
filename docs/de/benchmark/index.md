@@ -12,7 +12,7 @@ Wie viele Behälter gibt es? Wie groß sind sie? Wie sind sie miteinander verbun
 Gibt es ein Blockheizkraftwerk?
 
 Die KI bekommt eine Beschreibung und erzeugt daraus die Anlage. Als Eingabe kann
-ein Text dienen, eine Zeichnung der Anlagenstruktur, ein PDF-Dokument oder eine
+ein Text dienen, eine Zeichnung der Anlagenstruktur oder eine
 Kombination daraus. Anschließend wird ihr Ergebnis mit einer bekannten
 **Musterlösung** verglichen.
 

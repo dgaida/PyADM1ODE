@@ -1,21 +1,6 @@
 # benchmark/eval/prompt.py
 """
-Prompt-Builder für den PyADM1ODE-Benchmark.
-
-Baut die Messages-Liste im OpenAI/Groq-Chat-Format auf, die an die API
-gesendet wird. Unterstützt Text-, Bild-, Hybrid- und PDF-Datenpunkte.
-
-PDF-Datenpunkte (``modality: "pdf"``) bilden den realistischsten Fall ab: ein
-echtes Dokument wie ein Angebotsschreiben, aus dem die Anlagenstruktur erst
-herausgelesen werden muss. Die Textebene des PDFs wird extrahiert und als Text
-mitgeschickt — das funktioniert bei jedem Anbieter, auch ohne Vision-Modell.
-Dafür wird ``pypdf`` benötigt (``pip install pypdf``).
-
-Das Dokument geht **vollständig** in den Prompt. Es gibt bewusst keinen Seiten-
-oder Zeichendeckel: Kürzen würde die Aufgabe stillschweigend verändern — steht
-der technische Anhang auf Seite 22, wäre der Datenpunkt danach unlösbar, und der
-Benchmark würde die Kürzung messen statt das Modell. Was in den Prompt gehört,
-entscheidet der Autor beim Anlegen des Datenpunkts, nicht der Prompt-Builder.
+Prompt builder for the PyADM1ODE benchmark.
 """
 
 from __future__ import annotations
@@ -27,19 +12,19 @@ from typing import Any
 
 def extract_pdf_text(pdf_path: str) -> str:
     """
-    Liest die Textebene eines PDFs vollständig aus, Seite für Seite.
+    Read a PDF's text layer in full, page by page.
 
     Raises
     ------
     ImportError
-        Wenn ``pypdf`` fehlt.
+        If ``pypdf`` is missing.
     ValueError
-        Wenn das PDF keine Textebene hat (z.B. reiner Scan) -- dann ist der
-        Datenpunkt so nicht lösbar und der Fehler soll früh auffallen.
+        If the PDF has no text layer (a pure scan, say) -- the datapoint is then
+        unsolvable and the failure should surface early.
     """
     try:
         from pypdf import PdfReader
-    except ImportError as exc:  # pragma: no cover - abhängig von der Umgebung
+    except ImportError as exc:  # pragma: no cover - depends on the environment
         raise ImportError("PDF-Datenpunkte brauchen 'pypdf'. Installieren mit: pip install pypdf") from exc
 
     parts: list[str] = []
@@ -56,70 +41,56 @@ def extract_pdf_text(pdf_path: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# System-Prompt (statisch, enthält vollständige PyADM1ODE API-Referenz)
+# System-Prompt
 # ---------------------------------------------------------------------------
+#
+# MINIMAL System Prompt as example.
 
-SYSTEM_PROMPT = """\
-Du bist ein Experte für Biogasanlagen-Modellierung mit dem Python-Paket PyADM1ODE.
-Deine Aufgabe: Schreibe lauffähigen Python-Code, der die beschriebene Biogasanlage aufbaut.
+SYSTEM_PROMPT = """Schreibe Python-Code, der die beschriebene Biogasanlage mit dem Paket
+PyADM1ODE aufbaut.
 
-## PyADM1ODE API-Kurzreferenz
+## API
 
 ```python
 from pyadm1 import BiogasPlant, Feedstock
+from pyadm1.components.biological.separator import Separator
 from pyadm1.configurator.plant_configurator import PlantConfigurator
 
-# Substrate werden NICHT bewertet — uebernimm diese Zeile UNVERAENDERT,
-# egal welche Substrate in der Beschreibung genannt werden:
-feedstock = Feedstock(["cattle_manure"], feeding_freq=24, total_simtime=30)
-plant = BiogasPlant("ANLAGE")          # Variable MUSS "plant" heissen
+# <substrate_name>: maize_silage_milk_ripeness, cattle_manure, swine_manure,
+# corn_cob_mix, grass_silage, green_rye_silage, cereal_gps_silage, onion_waste,
+# cattle_manure_solid, chicken_manure_dry, wheat_whole_plant_silage,
+# maize_silage_gummersbach, swine_manure_gummersbach
+feedstock = Feedstock(["<substrate_name>", ...], feeding_freq=24, total_simtime=30)
+plant = BiogasPlant("ANLAGE")
 cfg = PlantConfigurator(plant, feedstock)
 
-# Fermenter / Nachgärer / Gärrestlager
-cfg.add_digester("F1", V_liq=3325, V_gas=500, T_ad=313.15, name="Fermenter 1")
+# Tanks (primary digester, post-digester, digestate store)
+cfg.add_digester("<id>", V_liq=..., V_gas=..., T_ad=..., name="...")
 
-# BHKW (CHP) — erstellt automatisch <id>_flare (Notfackel)
-cfg.add_chp("bhkw", P_el_nom=500.0, eta_el=0.40, eta_th=0.45, name="BHKW 500 kW")
+# Gas utilisation -- both create a flare "<id>_flare" automatically
+cfg.add_chp("<id>", P_el_nom=..., eta_el=..., eta_th=..., name="...")
+cfg.add_bgaa("<id>", capacity_m3h=..., ch4_recovery=..., ch4_content_out=..., name="...")
 
-# Biogasaufbereitung (BGAA) — erstellt automatisch <id>_flare
-cfg.add_bgaa("bgaa", capacity_m3h=500.0, ch4_recovery=0.98, ch4_content_out=0.97,
-             name="Biogasaufbereitung")
+# Separator (separator_type: "screw_press", "decanter", "belt_press",
+# "vibrating_screen")
+plant.add_component(Separator("<id>", separator_type="screw_press", name="..."))
 
-# Flüssigverbindungen (Gärrest-Kaskade)
-cfg.connect("F1", "N1", "liquid")
-cfg.connect("N1", "G1", "liquid")
-
-# Gasverbindungen: Digester → GasStorage → Abnehmer (BHKW oder BGAA)
-cfg.auto_connect_digester_to_chp("F1", "bhkw")   # BHKW-Anlage
-cfg.auto_connect_digester_to_bgaa("F1", "bgaa")  # BGAA-Anlage
-
-# Separator (optional — nur wenn explizit vorhanden)
-from pyadm1.components.biological.separator import Separator
-plant.add_component(Separator("sep", separator_type="screw_press", name="Separator"))
-cfg.connect("N1", "sep", "liquid")
+# Connections
+cfg.connect("<from>", "<to>", "liquid")            # digestate, also tank -> separator
+cfg.connect("<from>", "<to>", "liquid", split_fraction=...)   # partial stream
+cfg.auto_connect_digester_to_chp("<tank>", "<chp>")            # gas path to the CHP
+cfg.auto_connect_digester_to_bgaa("<tank>", "<bgaa>")          # gas path to the upgrading unit
 
 plant.initialize()
 ```
 
-## Typische Standardwerte (wenn nicht angegeben)
-- Füllgrad: 0.90  →  V_liq = π/4 × D² × 0.90 × H_wall
-- T_ad mesophil: 313.15 K (40 °C)
-- T_ad unbeheizt (Gärrestlager): 293.15 K (20 °C)
-- BHKW-Wirkungsgrade: eta_el = 0.40, eta_th = 0.45
-
-## Ausgaberegeln
-- Code ausschließlich in einem ```python … ``` Block
-- Variable muss `plant` heißen
-- Bewertet wird ausschließlich die **Anlagenstruktur** (Bauteile, Verbindungen,
-  Maße). Substrate/Feedstock zählen nicht — nutze die Feedstock-Zeile oben
-  unverändert und ignoriere in der Beschreibung genannte Substrate.
-- Maßangaben wie „6 × 23 m" meinen Höhe × Durchmesser (H × D), sofern nicht
-  ausdrücklich anders bezeichnet.
-- Keine Erklärungen außerhalb des Code-Blocks
+## Regeln
+- Antworte mit genau einem ```python-Block und keinem Text daneben.
+- Die fertige Anlage muss in der Variablen `plant` stehen.
 """
 
 # ---------------------------------------------------------------------------
-# Anweisungen für Datenpunkt-Varianten
+# Instructions per datapoint variant
 # ---------------------------------------------------------------------------
 
 _QUESTION_INSTR = """
@@ -147,7 +118,7 @@ Schreibe den Python-Code für diese Anlage.
 """
 
 # ---------------------------------------------------------------------------
-# Oeffentliche Funktionen
+# Public functions
 # ---------------------------------------------------------------------------
 
 
@@ -158,21 +129,21 @@ def build_messages(
     allow_questions: bool = True,
 ) -> list[dict[str, Any]]:
     """
-    Baut die initiale Nachrichten-Liste (User-Turn) im OpenAI/Groq-Format auf.
+    Build the initial message list (user turn) in the OpenAI/Groq format.
 
     Parameters
     ----------
-    datapoint    : Datenpunkt-Dict (aus JSON)
-    dataset_dir  : Verzeichnis, in dem die Datenpunkt-Datei liegt
-                   (wird für Bild- und Dokumentpfade benötigt)
-    allow_questions : True  -> LLM darf Fragen stellen (underspecified)
-                      False -> LLM schreibt sofort Code
+    datapoint    : datapoint dict (from JSON)
+    dataset_dir  : directory holding the datapoint file
+                   (needed to resolve image and document paths)
+    allow_questions : True  -> the LLM may ask questions (underspecified)
+                      False -> the LLM writes code straight away
     """
     inp = datapoint.get("input", {})
     modality = inp.get("modality", "text")
     content_parts: list[Any] = []
 
-    # ---- Bild laden (image / hybrid) ----
+    # ---- load the image (image / hybrid) ----
     if modality in ("image", "hybrid"):
         image_path = os.path.join(dataset_dir, inp.get("image_path", ""))
         if not os.path.exists(image_path):
@@ -195,7 +166,7 @@ def build_messages(
             }
         )
 
-    # ---- PDF laden (pdf) ----
+    # ---- load the PDF (pdf) ----
     pdf_text = ""
     if modality == "pdf":
         doc_path = os.path.join(dataset_dir, inp.get("document_path", ""))
@@ -203,7 +174,7 @@ def build_messages(
             raise FileNotFoundError(f"PDF nicht gefunden: {doc_path}")
         pdf_text = extract_pdf_text(doc_path)
 
-    # ---- Textinhalt ----
+    # ---- text content ----
     text_blocks: list[str] = []
     if modality == "image":
         text_blocks.append("Analysiere die obige Anlagenskizze.")
@@ -226,7 +197,7 @@ def build_messages(
         if desc:
             text_blocks.append(f"**Anlagenbeschreibung:**\n\n{desc}")
 
-    # ---- Aufgaben-Anweisung anhängen ----
+    # ---- append the task instruction ----
     text_blocks.append(_QUESTION_INSTR if allow_questions else _CODE_ONLY_INSTR)
     content_parts.append({"type": "text", "text": "\n".join(text_blocks)})
 
@@ -238,8 +209,8 @@ def add_oracle_answers(
     answer_text: str,
 ) -> list[dict[str, Any]]:
     """
-    Fügt Oracle-Antworten als User-Turn zur Nachrichten-Liste hinzu.
-    Die vorherige Assistenten-Antwort muss bereits enthalten sein.
+    Append the oracle answers to the message list as a user turn.
+    The preceding assistant response must already be in the list.
     """
     messages.append(
         {
@@ -254,6 +225,6 @@ def append_assistant(
     messages: list[dict[str, Any]],
     text: str,
 ) -> list[dict[str, Any]]:
-    """Fügt eine Assistenten-Nachricht zur History hinzu."""
+    """Append an assistant message to the history."""
     messages.append({"role": "assistant", "content": text})
     return messages

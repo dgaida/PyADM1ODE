@@ -212,3 +212,8 @@ output/
 .claude/
 .DS_Store
 scripts/
+benchmark/private/
+
+# Generated evaluation output
+benchmark/results.csv
+benchmark/results/

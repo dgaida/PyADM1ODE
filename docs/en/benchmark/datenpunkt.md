@@ -19,8 +19,7 @@ flowchart TB
 ### 1. The input – the actual task
 
 This is the **description of the plant** that the AI gets to see. Depending on the
-variant, it is a detailed text, a terse text, a sketch (image) or a PDF document —
-a written quotation, say. The AI receives
+variant, it is a detailed text, a terse text or a sketch (image). The AI receives
 **only** this input – nothing else.
 
 ### 2. The reference – the correct plant
@@ -54,6 +53,11 @@ something is unclear.
 If the AI asks, for example, "At what temperature does the fermenter run?", the
 oracle provides the correct answer (e.g. "40 °C"). The oracle also recognises
 **different phrasings** of the same question.
+
+Besides single values it answers questions about the plant flow: where the
+digestate goes, and which tanks feed the CHP or the upgrading unit. Tasks that
+are described **completely** have no oracle at all — everything is in the input
+there.
 
 !!! tip "Why is there an oracle?"
     It is meant to distinguish two behaviours: a good AI **asks** when information is

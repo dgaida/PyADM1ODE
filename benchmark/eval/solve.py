@@ -1,45 +1,46 @@
 # benchmark/eval/solve.py
 """
-LLM-Evaluation fuer den PyADM1ODE-Benchmark.
+LLM evaluation for the PyADM1ODE benchmark.
 
-Testet, wie gut ein KI-Modell aus einer Anlagenbeschreibung lauffaehigen
-PyADM1ODE-Code generiert. Unterstuetzt Oracle-Rueckfragen fuer Datenpunkte,
-bei denen Informationen fehlen.
+Measures how well a model turns a plant description into runnable PyADM1ODE
+code. Supports oracle follow-up questions for datapoints with missing values.
 
-Ablauf je Datenpunkt:
-  1. Prompt aufbauen (Text / Bild / Hybrid)
-  2. LLM aufrufen  (Turn 1)
-  3a. Falls Code extrahierbar  -> direkt bewerten
-  3b. Falls Fragen gefunden    -> Oracle antwortet -> LLM (Turn 2) -> bewerten
-  4. Ergebnisse speichern und Tabelle ausgeben
+Per datapoint:
+  1. build the prompt (text / image / hybrid / pdf)
+  2. call the LLM (turn 1)
+  3a. code extractable  -> score it directly
+  3b. questions found   -> oracle answers -> LLM (turn 2) -> score it
+  4. save the results and print the table
 
-Benoetigt: pip install groq
-API-Key:   GROQ_API_KEY Umgebungsvariable oder --api-key
+Requires: pip install groq
+API key:  GROQ_API_KEY environment variable or --api-key
 
-CLI-Beispiele:
+CLI examples:
 
-  # Nur vollstaendig spezifizierte Datenpunkte (kein Oracle noetig):
+  # Fully specified datapoints only (no oracle needed):
   python benchmark/eval/solve.py --regime fully_specified
 
-  # Alle Datenpunkte mit Oracle-Unterstuetzung:
+  # All datapoints, oracle enabled:
   python benchmark/eval/solve.py
 
-  # Einzelnen Datenpunkt testen:
+  # A single datapoint:
   python benchmark/eval/solve.py --id BGA2_text_de_full
 
-  # Anderes Modell, eigenes Ausgabeverzeichnis:
+  # Another model, custom output directory:
   python benchmark/eval/solve.py --model openai/gpt-oss-120b --output results/gptoss
 
-  # Ohne Oracle (LLM nutzt Default-Werte):
+  # Without the oracle (the LLM has to guess the missing values):
   python benchmark/eval/solve.py --no-oracle
 
-Hinweis: Bild-/Hybrid-Datenpunkte (Skizzen) benoetigen ein vision-faehiges
-Groq-Modell (z.B. ein Llama-4-Vision-Modell). Reine Textlaeufe via --modality text.
+Note: image and hybrid datapoints (the sketches) need a vision-capable model;
+the API reports that per model as ``input_modalities``. Text-only runs via
+--modality text.
 """
 
 from __future__ import annotations
 
 import argparse
+import contextlib
 import csv
 import json
 import os
@@ -50,7 +51,7 @@ from dataclasses import dataclass
 from typing import Any
 
 # ---------------------------------------------------------------------------
-# Pfade
+# Paths
 # ---------------------------------------------------------------------------
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -67,16 +68,16 @@ from prompt import (  # noqa: E402
 from runner import evaluate_code  # noqa: E402
 
 # ---------------------------------------------------------------------------
-# Hilfsfunktionen: LLM-Antwort parsen
+# Helpers: parse the LLM response
 # ---------------------------------------------------------------------------
 
 
 def extract_code(text: str) -> str | None:
-    """Extrahiert den ersten ```python … ```-Block aus einer LLM-Antwort."""
+    """Extract the first ```python … ``` block from an LLM response."""
     m = re.search(r"```python\s*(.*?)```", text, re.DOTALL)
     if m:
         return m.group(1).strip()
-    # Fallback: kein Codeblock-Marker, aber import-Statement gefunden
+    # fallback: no code fence, but an import statement is present
     if "from pyadm1" in text or "import pyadm1" in text:
         return text.strip()
     return None
@@ -84,8 +85,8 @@ def extract_code(text: str) -> str | None:
 
 def extract_questions(text: str) -> list[dict[str, str]] | None:
     """
-    Extrahiert open_questions aus einem ```json … ```-Block der LLM-Antwort.
-    Gibt None zurueck, wenn kein JSON-Block gefunden oder leer.
+    Extract ``open_questions`` from a ```json … ``` block of the LLM response.
+    Returns None if no JSON block is found or the list is empty.
     """
     m = re.search(r"```json\s*(.*?)```", text, re.DOTALL)
     if not m:
@@ -98,8 +99,21 @@ def extract_questions(text: str) -> list[dict[str, str]] | None:
     return questions if questions else None
 
 
+def count_asked_fields(questions: list[Any]) -> int:
+    """How many distinct fields the model asked the oracle for.
+
+    The prompt asks for entries shaped ``{"field": ..., "question": ...}``, so
+    distinct ``field`` values are counted; asking twice for ``F1.T_ad`` is one
+    field. Entries without a ``field`` key fall back to being counted one by
+    one, which is all a free-form question allows.
+    """
+    fields = {str(q.get("field")).strip() for q in questions if isinstance(q, dict) and str(q.get("field") or "").strip()}
+    without_field = [q for q in questions if not (isinstance(q, dict) and str(q.get("field") or "").strip())]
+    return len(fields) + len(without_field)
+
+
 # ---------------------------------------------------------------------------
-# Groq API-Client (OpenAI-kompatibel; bei anderer API nur diese Sektion anpassen)
+# Groq API client (OpenAI-compatible; for another API only this section changes)
 # ---------------------------------------------------------------------------
 
 
@@ -116,24 +130,49 @@ def _get_client(api_key: str | None):
     return Groq(api_key=key)
 
 
+#: Groq states the wait in the 429 message ("Please try again in 2.565s").
+_RETRY_AFTER = re.compile(r"try again in ([\d.]+)s")
+
+
 def call_llm(
     client,
     model: str,
     messages: list[dict[str, Any]],
     max_tokens: int = 4096,
+    retries: int = 3,
+    system_prompt: str | None = None,
 ) -> str:
-    """Sendet Messages an die Groq API (OpenAI-kompatibel) und gibt den Antworttext zurueck."""
-    full_messages = [{"role": "system", "content": SYSTEM_PROMPT}, *messages]
-    resp = client.chat.completions.create(
-        model=model,
-        max_tokens=max_tokens,
-        messages=full_messages,
-    )
-    return resp.choices[0].message.content
+    """Send the messages to the Groq API (OpenAI-compatible) and return the text.
+
+    A 429 (tokens per minute exhausted) is waited out and retried -- otherwise
+    the benchmark measures the rate limit instead of the model. A 413 ("request
+    too large") is *not* retried: the request exceeds the tier and still will
+    on a second attempt.
+    """
+    full_messages = [
+        {"role": "system", "content": system_prompt or SYSTEM_PROMPT},
+        *messages,
+    ]
+    for attempt in range(retries + 1):
+        try:
+            resp = client.chat.completions.create(
+                model=model,
+                max_tokens=max_tokens,
+                messages=full_messages,
+            )
+            return resp.choices[0].message.content
+        except Exception as exc:
+            if getattr(exc, "status_code", None) != 429 or attempt == retries:
+                raise
+            hit = _RETRY_AFTER.search(str(exc))
+            wait = float(hit.group(1)) + 0.5 if hit else 5.0 * (attempt + 1)
+            print(f"     Rate-Limit: warte {wait:.1f}s (Versuch {attempt + 2}/{retries + 1})")
+            time.sleep(min(wait, 60.0))
+    raise RuntimeError("unerreichbar")  # pragma: no cover
 
 
 # ---------------------------------------------------------------------------
-# Ergebnisstruktur
+# Result structure
 # ---------------------------------------------------------------------------
 
 
@@ -149,6 +188,8 @@ class EvalResult:
     inventions: float = 0.0
     overall: float = 0.0
     n_oracle_turns: int = 0
+    #: how many fields the model asked the oracle for (0 = it did not ask)
+    n_questions: int = 0
     error: str = ""
     generated_code: str = ""
 
@@ -164,13 +205,30 @@ class EvalResult:
             "inventions": self.inventions,
             "overall": self.overall,
             "oracle_turns": self.n_oracle_turns,
+            "questions": self.n_questions,
             "error": self.error,
         }
 
 
 # ---------------------------------------------------------------------------
-# Kern-Logik: einen Datenpunkt auswerten
+# Core: evaluate one datapoint
 # ---------------------------------------------------------------------------
+
+
+def _condense(message: str, limit: int = 200) -> str:
+    """Shorten a failure message to its most telling line.
+
+    A traceback truncated at the front says "Traceback (most recent call last)"
+    and nothing else; its *last* line names the exception that actually
+    stopped the build.
+    """
+    lines = [ln.strip() for ln in message.splitlines() if ln.strip()]
+    if not lines:
+        return ""
+    text = lines[-1] if len(lines) > 1 else lines[0]
+    if len(lines) > 1 and not text.endswith("."):
+        text = f"{lines[0].rstrip(':')}: {text}" if len(text) < 60 else text
+    return text[:limit]
 
 
 def evaluate_datapoint(
@@ -181,13 +239,15 @@ def evaluate_datapoint(
     *,
     use_oracle: bool = True,
     verbose: bool = False,
+    max_tokens: int = 4096,
+    system_prompt: str | None = None,
 ) -> EvalResult:
     """
-    Fuehrt die vollstaendige Evaluation fuer einen Datenpunkt durch:
-      1. Prompt aufbauen
-      2. LLM Turn 1
-      3. Falls Fragen: Oracle -> LLM Turn 2
-      4. Code extrahieren und bewerten
+    Run the full evaluation for one datapoint:
+      1. build the prompt
+      2. LLM turn 1
+      3. on questions: oracle -> LLM turn 2
+      4. extract the code and score it
     """
     dp_id = dp.get("id", "?")
     regime = dp.get("regime", "underspecified")
@@ -197,7 +257,7 @@ def evaluate_datapoint(
 
     result = EvalResult(dp_id=dp_id, regime=regime, modality=modality, language=language)
 
-    # -- Prompt aufbauen --
+    # -- build the prompt --
     allow_questions = use_oracle and regime == "underspecified"
     try:
         messages = build_messages(dp, dp_dir, allow_questions=allow_questions)
@@ -207,7 +267,7 @@ def evaluate_datapoint(
 
     # -- Turn 1 --
     try:
-        resp1 = call_llm(client, model, messages)
+        resp1 = call_llm(client, model, messages, max_tokens=max_tokens, system_prompt=system_prompt)
     except Exception as e:  # noqa: BLE001 - record any LLM API failure and stop this datapoint
         result.error = f"API-Fehler Turn 1: {e}"
         return result
@@ -215,13 +275,14 @@ def evaluate_datapoint(
     if verbose:
         print(f"\n  [Turn 1 Antwort]\n{resp1[:400]}{'...' if len(resp1) > 400 else ''}")
 
-    # -- Code direkt in Turn 1? --
+    # -- code already in turn 1? --
     code = extract_code(resp1)
     questions = extract_questions(resp1)
 
-    # -- Oracle-Runde (Turn 2) --
+    # -- oracle round (turn 2) --
     if code is None and questions and use_oracle and regime == "underspecified":
         result.n_oracle_turns = 1
+        result.n_questions = count_asked_fields(questions)
         oracle = Oracle(dp)
         answer_text = oracle.answer(questions)
 
@@ -232,7 +293,7 @@ def evaluate_datapoint(
         add_oracle_answers(messages, answer_text)
 
         try:
-            resp2 = call_llm(client, model, messages)
+            resp2 = call_llm(client, model, messages, max_tokens=max_tokens, system_prompt=system_prompt)
         except Exception as e:  # noqa: BLE001 - record any LLM API failure and stop this datapoint
             result.error = f"API-Fehler Turn 2: {e}"
             return result
@@ -242,14 +303,14 @@ def evaluate_datapoint(
 
         code = extract_code(resp2)
 
-    # -- Kein Code extrahierbar --
+    # -- no code extractable --
     if code is None:
         result.error = "Kein Python-Code in LLM-Antwort gefunden."
         return result
 
     result.generated_code = code
 
-    # -- Bewerten --
+    # -- score it --
     try:
         report = evaluate_code(dp, code)
     except Exception as e:  # noqa: BLE001 - record any evaluation failure and stop this datapoint
@@ -261,11 +322,17 @@ def evaluate_datapoint(
     result.measures = report.measures
     result.inventions = report.inventions
     result.overall = report.overall()
+    if not report.build_success and not result.error:
+        # Without this the CSV shows a bare 0: the reason (SyntaxError, an
+        # invented API call, ...) lives only in the matcher's report.
+        violations = report.details.get("violations") or []
+        if violations:
+            result.error = _condense(str(violations[0]))
     return result
 
 
 # ---------------------------------------------------------------------------
-# Datensatz laden
+# Load the dataset
 # ---------------------------------------------------------------------------
 
 
@@ -277,7 +344,7 @@ def load_datapoints(
     language_filter: str | None,
 ) -> list[tuple[str, str, dict[str, Any]]]:
     """
-    Laedt Datenpunkte aus dataset/index.json und wendet Filter an.
+    Load datapoints from dataset/index.json and apply the filters.
 
     Returns: list of (dp_id, dp_path_abs, datapoint_dict)
     """
@@ -292,7 +359,7 @@ def load_datapoints(
 
     for entry in index.get("datapoints", []):
         dp_id = entry["id"]
-        # Filter
+        # filters
         if id_filter and id_filter.lower() not in dp_id.lower():
             continue
         if regime_filter and regime_filter != "all" and entry.get("regime") != regime_filter:
@@ -315,7 +382,7 @@ def load_datapoints(
 
 
 # ---------------------------------------------------------------------------
-# Ergebnisse speichern
+# Save the results
 # ---------------------------------------------------------------------------
 
 
@@ -332,7 +399,7 @@ def save_results(results: list[EvalResult], output_dir: str, model: str) -> None
         writer.writeheader()
         writer.writerows(rows)
 
-    # Generierten Code speichern (optional, zur Inspektion)
+    # store the generated code (optional, for inspection)
     code_dir = os.path.join(output_dir, f"{model_slug}_{timestamp}_code")
     os.makedirs(code_dir, exist_ok=True)
     for r in results:
@@ -345,14 +412,14 @@ def save_results(results: list[EvalResult], output_dir: str, model: str) -> None
 
 
 # ---------------------------------------------------------------------------
-# Tabelle ausgeben
+# Print the table
 # ---------------------------------------------------------------------------
 
 
 def print_table(results: list[EvalResult], model: str) -> None:
     hdr = (
         f"{'#':>2}  {'ID':<28} {'Reg.':<7} {'Mod.':<7} {'B':>1} "
-        f"{'Vollst':>6} {'Masse':>6} {'Erfund':>6} {'Gesamt':>7}  {'O':>1}"
+        f"{'Vollst':>6} {'Masse':>6} {'Erfund':>6} {'Gesamt':>7}  {'O':>1} {'Fragen':>6}"
     )
     print(f"\nModell: {model}")
     print(hdr)
@@ -362,7 +429,7 @@ def print_table(results: list[EvalResult], model: str) -> None:
         print(
             f"{i:>2}  {r.dp_id[:28]:<28} {r.regime[:7]:<7} {r.modality[:7]:<7} {b:>1} "
             f"{r.completeness:>6.1%} {r.measures:>6.1%} {r.inventions:>6.1%} {r.overall:>7.1%}  "
-            f"{r.n_oracle_turns:>1}"
+            f"{r.n_oracle_turns:>1} {r.n_questions:>6}"
         )
         if r.error:
             print(f"     !! {r.error}")
@@ -374,10 +441,13 @@ def print_table(results: list[EvalResult], model: str) -> None:
         def avg(attr):
             return sum(getattr(r, attr) for r in ok) / len(ok)
 
+        # column widths mirror the data rows above, so the summary lines up
+        label = f"MITTEL (build OK) {len(ok)}/{len(results)}"
+        total_questions = sum(r.n_questions for r in results)
         print(
-            f"    {'MITTEL (build OK)':<28} {'':<7} {'':<7} {len(ok)}/{len(results):<4} "
+            f"{'':>2}  {label:<28} {'':<7} {'':<7} {'':>1} "
             f"{avg('completeness'):>6.1%} {avg('measures'):>6.1%} {avg('inventions'):>6.1%} "
-            f"{avg('overall'):>7.1%}"
+            f"{avg('overall'):>7.1%}  {'':>1} {'S' + str(total_questions):>6}"
         )
 
 
@@ -386,7 +456,22 @@ def print_table(results: list[EvalResult], model: str) -> None:
 # ---------------------------------------------------------------------------
 
 
+def _force_utf8_stdout() -> None:
+    """Keep the report printable on a cp1252 console.
+
+    The result table marks a failed build with U+2717, and German plant labels
+    carry umlauts - both raise UnicodeEncodeError on a Windows console, which
+    used to abort the run *after* the API calls and before the results were
+    written. The output stream is therefore switched to UTF-8 up front.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        # an exotic stream may lack reconfigure() or refuse the encoding
+        with contextlib.suppress(AttributeError, ValueError):
+            stream.reconfigure(encoding="utf-8", errors="replace")
+
+
 def main() -> int:
+    _force_utf8_stdout()
     ap = argparse.ArgumentParser(
         description="LLM-Benchmark für PyADM1ODE-Codegenerierung.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -399,7 +484,12 @@ def main() -> int:
         default="all",
         help="Datenpunkt-Filter: fully_specified | underspecified | all",
     )
-    ap.add_argument("--modality", choices=["text", "image", "hybrid"], default=None, help="Filter: text | image | hybrid")
+    ap.add_argument(
+        "--modality",
+        choices=["text", "image", "hybrid", "pdf"],
+        default=None,
+        help="Filter: text | image | hybrid | pdf",
+    )
     ap.add_argument("--language", choices=["de", "en"], default=None, help="Filter: de | en")
     ap.add_argument("--id", default=None, help="Filter: nur Datenpunkte, deren ID diesen String enthalten")
     ap.add_argument("--no-oracle", action="store_true", help="Oracle deaktivieren (LLM muss fehlende Werte raten)")
@@ -409,9 +499,24 @@ def main() -> int:
     )
     ap.add_argument("--verbose", action="store_true", help="LLM-Antworten ausdrucken")
     ap.add_argument("--delay", type=float, default=1.0, help="Pause zwischen API-Aufrufen in Sekunden (Default: 1.0)")
+    ap.add_argument(
+        "--system-prompt",
+        default=None,
+        metavar="DATEI",
+        help="Textdatei mit einem eigenen System-Prompt. Der eingebaute Prompt ist "
+        "bewusst minimal (nur API-Signaturen, Variablenname, Ausgabeformat) — "
+        "Modellierungshinweise und Standardwerte zu formulieren ist Teil der Aufgabe",
+    )
+    ap.add_argument(
+        "--max-tokens",
+        type=int,
+        default=4096,
+        help="Antwortbudget je Aufruf. Reasoning-Modelle zaehlen ihre Denk-Token "
+        "mit und liefern bei 4096 mitunter gar keinen Code mehr (Default: 4096)",
+    )
     args = ap.parse_args()
 
-    # Datenpunkte laden
+    # load the datapoints
     datapoints = load_datapoints(
         args.dataset,
         regime_filter=args.regime,
@@ -423,7 +528,19 @@ def main() -> int:
         print("Keine Datenpunkte nach Filter. Prüfe --regime / --id / --modality.")
         return 1
 
+    system_prompt = None
+    if args.system_prompt:
+        if not os.path.exists(args.system_prompt):
+            print(f"Fehler: System-Prompt-Datei nicht gefunden: {args.system_prompt}")
+            return 1
+        with open(args.system_prompt, encoding="utf-8") as fh:
+            system_prompt = fh.read()
+
     print(f"\n{len(datapoints)} Datenpunkte geladen  |  Modell: {args.model}")
+    print(
+        "System-Prompt: "
+        + (f"{args.system_prompt} ({len(system_prompt)} Zeichen)" if system_prompt else "eingebauter Minimal-Prompt")
+    )
     if args.no_oracle:
         print("Oracle: deaktiviert (LLM nutzt Standardwerte)")
 
@@ -443,11 +560,19 @@ def main() -> int:
             args.model,
             use_oracle=not args.no_oracle,
             verbose=args.verbose,
+            max_tokens=args.max_tokens,
+            system_prompt=system_prompt,
         )
         results.append(result)
 
-        status = "OK" if result.build_success else f"FAIL ({result.error[:60]})"
-        print(f"  -> {status}  |  Gesamt: {result.overall:.1%}  |  Oracle-Turns: {result.n_oracle_turns}")
+        status = "OK" if result.build_success else "FAIL"
+        print(
+            f"  -> {status}  |  Gesamt: {result.overall:.1%}"
+            f"  |  Oracle-Turns: {result.n_oracle_turns}"
+            f"  |  Nachgefragte Felder: {result.n_questions}"
+        )
+        if result.error:
+            print(f"     !! {result.error}")
 
         if i < len(datapoints) and args.delay > 0:
             time.sleep(args.delay)

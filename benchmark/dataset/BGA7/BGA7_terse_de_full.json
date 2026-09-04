@@ -1,0 +1,186 @@
+{
+  "id": "BGA7_terse_de_full",
+  "input": {
+    "modality": "text",
+    "language": "de",
+    "content": "Flexibilisierte Anlage mit zwei in Reihe geschalteten, baugleichen Fermentern F1 und F2 (je Wandhöhe 6 m, Innendurchmesser 24 m, Füllgrad 90 %, Gasraum je 610 m³, mesophil 40 °C), einem gasdicht abgedeckten Gärrestlager G1 (Wandhöhe 6 m, Innendurchmesser 32 m, Füllgrad 90 %, Gasraum 1.290 m³, unbeheizt ca. 20 °C) und einem offenen Gärrestlager G2 ohne Gaserfassung (Wandhöhe 6 m, Innendurchmesser 36 m, Füllgrad 90 %, Gasraum = Kopfraum ca. 611 m³, unbeheizt ca. 20 °C). Digestatstrom: F1 in F2, F2 in G1, G1 in G2; am Ablauf von F2 steht eine Schneckenpresse. Außerdem vorhanden: BHKW 1 mit 250 kW (eta_el = 40 %, eta_th = 45 %), BHKW 2 mit 550 kW (eta_el = 42 %, eta_th = 43 %) und eine Notfackel.\n\nSubstratzufuhr: 20 t/d Maissilage, 4 t/d Zuckerrübensilage und 3 t/d Grassilage über den Feststoffdosierer in F1 sowie 15 m³/d Schweinegülle aus der Vorgrube in F1."
+  },
+  "regime": "fully_specified",
+  "reference": {
+    "components": [
+      {
+        "id": "F1",
+        "type": "Digester",
+        "label": "Fermenter 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 2443,
+            "obligation": "derivable",
+            "formula": "pi/4*24^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 2419, "max": 2467}
+          },
+          "V_gas": {
+            "value": 610,
+            "obligation": "given",
+            "accept": {"min": 609, "max": 611},
+            "note": "Doppelmembrandach plus nicht befuellter Kopfraum"
+          },
+          "T_ad": {"value": 313.15, "obligation": "given", "accept": {"min": 312.83, "max": 313.47}}
+        }
+      },
+      {
+        "id": "F2",
+        "type": "Digester",
+        "label": "Fermenter 2",
+        "obligation": "given",
+        "note": "baugleich zu F1, in Reihe geschaltet (serielle Kaskade)",
+        "params": {"_same_as": "F1"}
+      },
+      {
+        "id": "G1",
+        "type": "Digester",
+        "label": "Gärrestlager 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 4343,
+            "obligation": "derivable",
+            "formula": "pi/4*32^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 4300, "max": 4386}
+          },
+          "V_gas": {
+            "value": 1290,
+            "obligation": "given",
+            "accept": {"min": 1289, "max": 1291},
+            "note": "gasdicht abgedecktes Lager: Membrandach plus Kopfraum"
+          },
+          "T_ad": {
+            "value": 293.15,
+            "obligation": "given",
+            "accept": {"min": 292.85, "max": 293.45},
+            "note": "unbeheiztes Lager ~ Umgebungstemperatur"
+          }
+        }
+      },
+      {
+        "id": "G2",
+        "type": "Digester",
+        "label": "Gärrestlager 2 (offen)",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 5497,
+            "obligation": "derivable",
+            "formula": "pi/4*36^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 5442, "max": 5552}
+          },
+          "V_gas": {
+            "value": 611,
+            "obligation": "derivable",
+            "formula": "pi/4*36^2*6 * 0.10 (nicht befuellter Kopfraum, kein Speicherdach)",
+            "accept": {"min": 610, "max": 612},
+            "note": "offenes Lager ohne Gasspeicherdach: der Gasraum ist der nicht befuellte Kopfraum, also pi/4*36^2*6 * 0.10"
+          },
+          "T_ad": {
+            "value": 293.15,
+            "obligation": "given",
+            "accept": {"min": 292.85, "max": 293.45},
+            "note": "unbeheiztes Lager ~ Umgebungstemperatur"
+          }
+        },
+        "note": "saisonaler Puffer ohne Gaserfassung; PyADM1ODE haengt trotzdem einen GasStorage an den Digester, der bewusst ohne Abnehmer bleibt"
+      },
+      {"id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "F2_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {
+        "id": "G2_storage",
+        "type": "GasStorage",
+        "obligation": "auto",
+        "auto_created": true,
+        "note": "bleibt ohne Gas-Abnehmer — das Lager ist offen; der Matcher meldet dafuer eine Struktur-Warnung, die hier die Realitaet abbildet"
+      },
+      {
+        "id": "sep",
+        "type": "Separator",
+        "label": "Separator",
+        "obligation": "given",
+        "params": {
+          "separator_type": {
+            "value": "screw_press",
+            "obligation": "given",
+            "note": "im Input als Schneckenpresse benannt"
+          }
+        }
+      },
+      {
+        "id": "bhkw1",
+        "type": "CHP",
+        "label": "BHKW 1 (250 kW, Grundlast)",
+        "obligation": "given",
+        "params": {
+          "P_el_nom": {"value": 250.0, "obligation": "given", "accept": {"min": 249.75, "max": 250.25}},
+          "eta_el": {"value": 0.4, "obligation": "given", "accept": {"min": 0.3996, "max": 0.4004}},
+          "eta_th": {"value": 0.45, "obligation": "given", "accept": {"min": 0.4495, "max": 0.4505}}
+        }
+      },
+      {
+        "id": "bhkw2",
+        "type": "CHP",
+        "label": "BHKW 2 (550 kW, Flexbetrieb)",
+        "obligation": "given",
+        "params": {
+          "P_el_nom": {"value": 550.0, "obligation": "given", "accept": {"min": 549.45, "max": 550.55}},
+          "eta_el": {"value": 0.42, "obligation": "given", "accept": {"min": 0.4196, "max": 0.4204}},
+          "eta_th": {"value": 0.43, "obligation": "given", "accept": {"min": 0.4296, "max": 0.4304}}
+        }
+      },
+      {
+        "id": "bhkw1_flare",
+        "type": "Flare",
+        "obligation": "auto",
+        "auto_created": true,
+        "note": "von add_chp erzeugt; der Input nennt nur eine gemeinsame Notfackel"
+      },
+      {"id": "bhkw2_flare", "type": "Flare", "obligation": "auto", "auto_created": true}
+    ],
+    "connections": [
+      {"from": "F1", "to": "F2", "type": "liquid", "obligation": "given"},
+      {
+        "from": "G1",
+        "to": "G2",
+        "type": "liquid",
+        "obligation": "inferred",
+        "note": "das offene Lager puffert saisonal hinter dem gasdichten Lager"
+      },
+      {
+        "from": "F2",
+        "to": "sep",
+        "type": "liquid",
+        "obligation": "given",
+        "note": "der gesamte Gaerrest laeuft ueber die Presse — es gibt keine direkte Kante F2->G1"
+      },
+      {
+        "from": "sep",
+        "to": "G1",
+        "type": "liquid",
+        "obligation": "given",
+        "note": "Fluessigphase in das Lager; die Festphase wird vermarktet und verlaesst das Modell"
+      },
+      {"from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "F2", "to": "F2_storage", "type": "gas", "obligation": "auto"},
+      {"from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "G2", "to": "G2_storage", "type": "gas", "obligation": "auto"},
+      {"from": "F1_storage", "to": "bhkw1", "type": "gas", "obligation": "inferred"},
+      {"from": "F1_storage", "to": "bhkw2", "type": "gas", "obligation": "inferred"},
+      {"from": "F2_storage", "to": "bhkw1", "type": "gas", "obligation": "inferred"},
+      {"from": "F2_storage", "to": "bhkw2", "type": "gas", "obligation": "inferred"},
+      {"from": "G1_storage", "to": "bhkw1", "type": "gas", "obligation": "inferred"},
+      {"from": "G1_storage", "to": "bhkw2", "type": "gas", "obligation": "inferred"},
+      {"from": "bhkw1", "to": "bhkw1_flare", "type": "gas", "obligation": "auto"},
+      {"from": "bhkw2", "to": "bhkw2_flare", "type": "gas", "obligation": "auto"}
+    ]
+  },
+  "metadata": {"difficulty": "easy", "split": "test"}
+}

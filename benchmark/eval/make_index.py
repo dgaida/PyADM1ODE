@@ -1,21 +1,22 @@
 # benchmark/eval/make_index.py
 """
-Erzeugt ``dataset/index.json`` und aktualisiert den embedded-Block in
-``viewer/index.html`` mit den aktuellen Datenpunkten. Nach dem
-Hinzufuegen/Aendern von Datenpunkten erneut ausfuehren:
+Writes ``dataset/index.json`` and refreshes the embedded block in
+``viewer/index.html`` with the current datapoints. Run it again after adding or
+changing a datapoint:
 
     python benchmark/eval/make_index.py
 
-Reines stdlib (laeuft ueberall). Listet jede *.json unter dataset/, die ein
-Datenpunkt ist (hat ``reference`` + ``input``), mit Pfad relativ zu dataset/.
-Der embedded-Block in viewer/index.html wird zwischen den Markern
+Pure stdlib, so it runs anywhere. Lists every *.json under dataset/ that is a
+datapoint (has ``reference`` + ``input``), with its path relative to dataset/.
+The embedded block in viewer/index.html is replaced between the markers
 
     // @@BEGIN_EMBEDDED@@
     // @@END_EMBEDDED@@
 
-ersetzt. Alle anderen Teile der HTML-Datei bleiben unveraendert.
+Everything else in the HTML file stays untouched.
 """
 
+import argparse
 import glob
 import json
 import os
@@ -33,9 +34,9 @@ BEGIN_MARKER = "// @@BEGIN_EMBEDDED@@"
 END_MARKER = "// @@END_EMBEDDED@@"
 
 
-def collect_datapoints() -> list:
+def collect_datapoints(dataset: str = DATASET) -> list:
     entries = []
-    for path in sorted(glob.glob(os.path.join(DATASET, "**", "*.json"), recursive=True)):
+    for path in sorted(glob.glob(os.path.join(dataset, "**", "*.json"), recursive=True)):
         if os.path.basename(path) == "index.json":
             continue
         try:
@@ -49,10 +50,10 @@ def collect_datapoints() -> list:
     return entries
 
 
-def write_index_json(entries: list) -> None:
+def write_index_json(entries: list, dataset: str = DATASET) -> None:
     records = []
     for path, d in entries:
-        rel = os.path.relpath(path, DATASET).replace(os.sep, "/")
+        rel = os.path.relpath(path, dataset).replace(os.sep, "/")
         inp = d.get("input", {})
         records.append(
             {
@@ -63,7 +64,7 @@ def write_index_json(entries: list) -> None:
                 "regime": d.get("regime"),
             }
         )
-    out = os.path.join(DATASET, "index.json")
+    out = os.path.join(dataset, "index.json")
     with open(out, "w", encoding="utf-8") as fh:
         json.dump({"datapoints": records}, fh, ensure_ascii=False, indent=2)
     print(f"{len(records)} Datenpunkte -> {os.path.relpath(out, os.path.join(HERE, '..', '..'))}")
@@ -107,12 +108,34 @@ def update_viewer_embedded(entries: list) -> None:
 
 
 def main() -> int:
-    entries = collect_datapoints()
-    write_index_json(entries)
-    update_viewer_embedded(entries)
-    # Index/Viewer werden auch bei Schemafehlern geschrieben, damit sich der
-    # kaputte Datenpunkt im Viewer ansehen laesst -- der Exitcode meldet ihn.
-    n_bad = validate_report(DATASET)
+    ap = argparse.ArgumentParser(description=__doc__.strip().splitlines()[0])
+    ap.add_argument(
+        "--dataset",
+        default=DATASET,
+        help="Datensatz-Verzeichnis (Default: benchmark/dataset)",
+    )
+    ap.add_argument(
+        "--no-viewer",
+        action="store_true",
+        help="viewer/index.html nicht anfassen",
+    )
+    args = ap.parse_args()
+    dataset = os.path.abspath(args.dataset)
+
+    entries = collect_datapoints(dataset)
+    write_index_json(entries, dataset)
+
+    # The viewer ships the public dataset inline. Embedding a different
+    # dataset would publish it through the viewer, so that only happens for
+    # the default directory and never silently.
+    if args.no_viewer:
+        print("viewer/index.html: uebersprungen (--no-viewer)")
+    elif dataset != DATASET:
+        print(f"viewer/index.html: uebersprungen ({os.path.basename(dataset)} ist nicht der Standard-Datensatz)")
+    else:
+        update_viewer_embedded(entries)
+
+    n_bad = validate_report(dataset)
     if n_bad == 0:
         print("Schema-Pruefung: alle Datenpunkte konform")
     return 1 if n_bad else 0

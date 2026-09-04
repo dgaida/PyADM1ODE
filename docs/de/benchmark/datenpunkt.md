@@ -17,8 +17,7 @@ flowchart TB
 ### 1. Die Eingabe
 
 Das ist die **Beschreibung der Anlage**, die die KI zu sehen bekommt. Je nach
-Variante ist das ein ausführlicher Text, ein knapper Text, eine Skizze (Bild) oder
-ein PDF-Dokument — etwa ein Angebotsschreiben.
+Variante ist das ein ausführlicher Text, ein knapper Text oder eine Skizze (Bild).
 Die KI bekommt **nur** diese Eingabe, sonst nichts.
 
 ### 2. Die Referenz
@@ -48,6 +47,11 @@ Praxis, wo nicht immer alle Angaben vorliegen. Für solche Fälle gibt es das
 **Oracle**: einen Experten, den die KI bei Unklarheiten **gezielt befragen** kann.
 
 Fragt die KI zum Beispiel „Bei welcher Temperatur läuft der Fermenter?", liefert das Oracle die passende Antwort, etwa „40 °C". Dabei erkennt es auch **unterschiedliche Formulierungen** für dieselbe Frage.
+
+Neben einzelnen Werten beantwortet es auch Fragen nach dem Anlagenfluss: wohin der
+Gärrest läuft und welche Behälter das Gas an BHKW oder Aufbereitung abgeben. Bei
+**vollständig** beschriebenen Aufgaben gibt es kein Oracle — dort steht alles im
+Input.
 
 !!! tip "Warum gibt es das Oracle?"
     Es soll zwei Verhaltensweisen unterscheiden: Eine gute KI **fragt nach**, wenn

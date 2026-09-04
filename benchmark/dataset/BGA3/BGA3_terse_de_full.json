@@ -74,24 +74,5 @@
       {"from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto"}
     ]
   },
-  "oracle": {
-    "substrate_feed": "je 50 t/d Maissilage über die Dosierer (Dos1 in F1, Dos2 in F2) und je 20 m³/d Rindergülle aus zwei Vorgruben (in F1 und F2)",
-    "bgaa.exists": false,
-    "chp.exists": true,
-    "bhkw.P_el_nom": 500.0,
-    "bhkw.eta_el": 0.4,
-    "bhkw.eta_th": 0.45,
-    "F1.V_gas": 719,
-    "F2.V_gas": 719,
-    "N1.V_gas": 719,
-    "G1.V_gas": 799,
-    "F1.T_ad": 313.15,
-    "F2.T_ad": 313.15,
-    "N1.T_ad": 313.15,
-    "G1.T_ad": 293.15,
-    "F1.fill_fraction": 0.9,
-    "G1.fill_fraction": 0.9,
-    "digestate_cascade": "F1->N1, F2->N1, N1->G1"
-  },
   "metadata": {"difficulty": "easy", "split": "test"}
 }

@@ -1,0 +1,119 @@
+{
+  "id": "BGA9_text_de_full",
+  "input": {
+    "modality": "text",
+    "language": "de",
+    "content": "Die Biogasanlage BGA9 verarbeitet Schweinegülle und energiereiche Feststoffsubstrate. Ein Feststoffdosierer mit 55 m³ Behältervolumen, Vertikalmischschnecken und Wiegeeinrichtung beschickt den Fermenter F1; eine runde Vorgrube (6 m Innendurchmesser, 3 m Tiefe, ca. 85 m³) fördert die Schweinegülle über eine Exzenterschneckenpumpe in F1.\n\nDer Fermenter F1 hat 25 m Durchmesser und 6 m Wandhöhe, drei Paddelrührwerke, ein Kuppeldach und einen Gasraum (inkl. Kopfraum) von 680 m³; Betrieb mesophil bei 40 °C (313,15 K), Füllgrad 90 %. Der Gärrest fließt in den Nachgärer N1 (ebenfalls 25 m Durchmesser, 6 m Wandhöhe, ein Paddel- und ein Langachsrührwerk, Kuppeldach mit 680 m³ Gasraum, 40 °C, Füllgrad 90 %). Aus N1 gelangt das Digestat in das Gärrestlager G1 (28 m Durchmesser, 6 m Wandhöhe, zwei Tauchmotorrührwerke, unbeheizt ca. 20 °C, Füllgrad 90 %, Gasraum inkl. Kopfraum 799 m³) und aus diesem weiter in das baugleiche, ebenfalls gasdicht abgedeckte Gärrestlager G2 (28 m Durchmesser, 6 m Wandhöhe, ein Tauchmotorrührwerk, unbeheizt, Füllgrad 90 %, Gasraum 799 m³).\n\nDas Biogas aller Behälter wird einem BHKW mit 400 kW elektrischer Nennleistung zugeführt (elektrisch 41 %, thermisch 44 %); die Abwärme versorgt die Fermenterheizung und die Stallgebäude. Eine Notfackel mit 400 m³/h steht bereit; Kondensat- und Sickerwasserschacht sind mit F1 verbunden.\n\nSubstratzufuhr: 16 t/d Maissilage und 1,5 t/d CCM (Corn-Cob-Mix) über den Feststoffdosierer in F1 sowie 20 m³/d Schweinegülle aus der Vorgrube in F1."
+  },
+  "regime": "fully_specified",
+  "reference": {
+    "components": [
+      {
+        "id": "F1",
+        "type": "Digester",
+        "label": "Fermenter 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 2651,
+            "obligation": "derivable",
+            "formula": "pi/4*25^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 2624, "max": 2678}
+          },
+          "V_gas": {
+            "value": 680,
+            "obligation": "given",
+            "accept": {"min": 679, "max": 681},
+            "note": "Kuppeldach plus nicht befuellter Kopfraum"
+          },
+          "T_ad": {"value": 313.15, "obligation": "given", "accept": {"min": 312.83, "max": 313.47}}
+        }
+      },
+      {
+        "id": "N1",
+        "type": "Digester",
+        "label": "Nachgärer 1",
+        "obligation": "given",
+        "note": "baugleich zu F1",
+        "params": {"_same_as": "F1"}
+      },
+      {
+        "id": "G1",
+        "type": "Digester",
+        "label": "Gärrestlager 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 3325,
+            "obligation": "derivable",
+            "formula": "pi/4*28^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 3292, "max": 3358}
+          },
+          "V_gas": {
+            "value": 799,
+            "obligation": "given",
+            "accept": {"min": 798, "max": 800},
+            "note": "gasdicht abgedecktes Lager: Membrandach plus Kopfraum"
+          },
+          "T_ad": {
+            "value": 293.15,
+            "obligation": "given",
+            "accept": {"min": 292.85, "max": 293.45},
+            "note": "unbeheiztes Lager ~ Umgebungstemperatur"
+          }
+        }
+      },
+      {
+        "id": "G2",
+        "type": "Digester",
+        "label": "Gärrestlager 2",
+        "obligation": "given",
+        "note": "baugleich zu G1 und ebenfalls gasdicht abgedeckt — beide Lager speisen das BHKW, anders als das offene zweite Lager in BGA7",
+        "params": {"_same_as": "G1"}
+      },
+      {"id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "N1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "G2_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {
+        "id": "bhkw",
+        "type": "CHP",
+        "label": "BHKW 400 kW",
+        "obligation": "given",
+        "params": {
+          "P_el_nom": {"value": 400.0, "obligation": "given", "accept": {"min": 399.6, "max": 400.4}},
+          "eta_el": {"value": 0.41, "obligation": "given", "accept": {"min": 0.4096, "max": 0.4104}},
+          "eta_th": {"value": 0.44, "obligation": "given", "accept": {"min": 0.4396, "max": 0.4404}}
+        }
+      },
+      {"id": "bhkw_flare", "type": "Flare", "label": "Notfackel", "obligation": "auto", "auto_created": true}
+    ],
+    "connections": [
+      {"from": "F1", "to": "N1", "type": "liquid", "obligation": "given"},
+      {"from": "N1", "to": "G1", "type": "liquid", "obligation": "given"},
+      {
+        "from": "G1",
+        "to": "G2",
+        "type": "liquid",
+        "obligation": "given",
+        "note": "die beiden Lager sind in Reihe geschaltet"
+      },
+      {"from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "N1", "to": "N1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "G2", "to": "G2_storage", "type": "gas", "obligation": "auto"},
+      {"from": "F1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "N1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {
+        "from": "G2_storage",
+        "to": "bhkw",
+        "type": "gas",
+        "obligation": "inferred",
+        "note": "auch das zweite Lager ist gasdicht und liefert Gas"
+      },
+      {"from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto"}
+    ]
+  },
+  "metadata": {"difficulty": "easy", "split": "test"}
+}

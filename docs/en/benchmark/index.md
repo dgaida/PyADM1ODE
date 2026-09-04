@@ -5,9 +5,8 @@ test how well an **artificial intelligence (AI)** can rebuild a working PyADM1OD
 model from the description of a plant.
 
 !!! tip "In a nutshell"
-    An AI reads the description of a biogas plant – as text, as a sketch or as a
-    PDF document – and is
-    supposed to rebuild that same plant in the computer. The benchmark measures
+    An AI reads the description of a biogas plant – as text or as a sketch – and
+    is supposed to rebuild that same plant in the computer. The benchmark measures
     **how accurately** it succeeds.
 
 ## What is this about?

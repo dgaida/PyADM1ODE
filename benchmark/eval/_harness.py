@@ -1,18 +1,17 @@
 # benchmark/eval/_harness.py
 """
-Isolierter Ausfuehrungs-Harness fuer LMM-generierten Code.
+Isolated execution harness for LMM-generated code.
 
-Wird von ``runner.py`` als eigener Subprozess gestartet:
+Started by ``runner.py`` as its own subprocess:
     python _harness.py <repo_root> <candidate_code.py>
 
-Fuehrt den Kandidaten-Code aus, sucht das ``BiogasPlant``-Objekt (Variable
-``plant`` oder ein beliebiges Objekt mit ``components``/``connections``) und gibt
-dessen Serialisierung als JSON auf stdout aus. Fehler werden als
-{"__error__": "..."} zurueckgegeben (statt zu crashen), damit der Runner sie als
-build_success=False werten kann.
+Runs the candidate code, looks for the ``BiogasPlant`` object (the variable
+``plant``, or any object with ``components``/``connections``) and writes its
+serialisation as JSON to stdout. Failures come back as {"__error__": "..."}
+instead of crashing, so the runner can score them as build_success=False.
 
-Hinweis: Das ist Prozess-Isolation + Timeout, KEIN vollwertiges Sandboxing.
-Fuer nicht vertrauenswuerdigen Code zusaetzlich Container/seccomp verwenden.
+Note: this is process isolation plus a timeout, NOT a full sandbox. For
+untrusted code add a container or seccomp on top.
 """
 
 import json

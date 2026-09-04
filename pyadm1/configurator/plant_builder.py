@@ -156,23 +156,44 @@ class BiogasPlant:
             # carries flow. Other connection types (gas, heat, ...) keep
             # their keys verbatim.
             inputs = {}
+            # Liquid inflows are ACCUMULATED, not overwritten: a post-digester
+            # fed by two fermenters receives the sum of both flows, and the
+            # state handed downstream is their flow-weighted mixture. Before
+            # this, the last input processed silently won and half the flow
+            # disappeared. ``split_fraction`` on the connection lets one source
+            # feed several targets with a share each (separator recirculation).
+            q_liquid = 0.0
+            state_load: list[float] | None = None
             for input_id in component.inputs:
                 if input_id not in self.components:
                     continue
                 input_comp = self.components[input_id]
                 out = input_comp.outputs_data
                 conn_type = None
+                split = 1.0
                 for conn in self.connections:
                     if conn.from_component == input_id and conn.to_component == component_id:
                         conn_type = conn.connection_type
+                        split = float(getattr(conn, "split_fraction", 1.0))
                         break
                 if conn_type == "liquid":
-                    if "Q_out" in out:
-                        inputs["Q_in"] = out["Q_out"]
-                    if "state_out" in out:
-                        inputs["state_in"] = out["state_out"]
+                    q = float(out.get("Q_out", 0.0)) * split
+                    if q <= 0.0:
+                        continue
+                    q_liquid += q
+                    state = out.get("state_out")
+                    if state is not None:
+                        if state_load is None:
+                            state_load = [0.0] * len(state)
+                        for idx, conc in enumerate(state):
+                            if idx < len(state_load):
+                                state_load[idx] += q * float(conc)
                 else:
                     inputs.update(out)
+            if q_liquid > 0.0:
+                inputs["Q_in"] = q_liquid
+                if state_load is not None:
+                    inputs["state_in"] = [load / q_liquid for load in state_load]
 
             # Execute component
             output = component.step(self.simulation_time, dt, inputs)

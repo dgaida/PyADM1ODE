@@ -1,0 +1,100 @@
+{
+  "id": "BGA5_text_en_full",
+  "input": {
+    "modality": "text",
+    "language": "en",
+    "content": "Biogas plant BGA5 is a small slurry-based farm plant with 75 kW of installed electrical capacity; more than 95 percent of its feed mass is farm manure. A round cast-in-place concrete pre-pit (6 m inner diameter, 3 m deep, approx. 85 cubic metres) collects the cattle slurry from the neighbouring dairy barn and pumps it into the digester with a submersible pump. Solids are charged through a small vertical-mixer feeder with a 12 cubic metre hopper.\n\nDigester F1 is a cast-in-place concrete tank with an inner diameter of 14 m and a wall height of 6 m (gross volume 924 cubic metres). It is equipped with one paddle agitator and one submersible agitator, has internal wall heating and carries a double-membrane roof; the gas space (including headspace) is approx. 160 cubic metres. It runs mesophilically at 38 degrees Celsius (311.15 K) with a fill level of 90 percent. There is no post-digester: the digestate flows straight into the gas-tight digestate store G1 (20 m diameter, 5 m wall height, gross volume 1,571 cubic metres) fitted with one submersible agitator, unheated (approx. 20 degrees Celsius / 293.15 K), fill level 90 percent, gas space including headspace approx. 355 cubic metres.\n\nThe biogas from both tanks is converted in a CHP unit with a rated electrical output of 75 kW (electrical efficiency 37 percent, thermal efficiency 44 percent); its waste heat serves the digester and the farmhouse. The gas train is protected by combined over-/under-pressure relief valves. A condensate shaft sits at the low point of the gas pipe.\n\nSubstrate feed: approx. 20 cubic metres per day of cattle slurry from the pre-pit into F1 plus 3 t/d solid cattle manure and 0.8 t/d grass silage via the feeder into F1."
+  },
+  "regime": "fully_specified",
+  "reference": {
+    "components": [
+      {
+        "id": "F1",
+        "type": "Digester",
+        "label": "Fermenter 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 831,
+            "obligation": "derivable",
+            "formula": "pi/4*14^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 823, "max": 839}
+          },
+          "V_gas": {
+            "value": 160,
+            "obligation": "given",
+            "accept": {"min": 159, "max": 161},
+            "note": "Doppelmembrandach plus nicht befuellter Kopfraum"
+          },
+          "T_ad": {
+            "value": 311.15,
+            "obligation": "given",
+            "accept": {"min": 310.84, "max": 311.46},
+            "rationale": "mesophil bei 38 C — nicht die 40 C der uebrigen Anlagen"
+          }
+        }
+      },
+      {
+        "id": "G1",
+        "type": "Digester",
+        "label": "Gärrestlager",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 1414,
+            "obligation": "derivable",
+            "formula": "pi/4*20^2*5 * 0.90 (Fuellgrad)",
+            "accept": {"min": 1400, "max": 1428}
+          },
+          "V_gas": {
+            "value": 355,
+            "obligation": "given",
+            "accept": {"min": 354, "max": 356},
+            "note": "gasdicht abgedecktes Lager: Membrandach plus Kopfraum"
+          },
+          "T_ad": {
+            "value": 293.15,
+            "obligation": "given",
+            "accept": {"min": 292.85, "max": 293.45},
+            "note": "unbeheiztes Lager ~ Umgebungstemperatur"
+          }
+        }
+      },
+      {"id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {
+        "id": "bhkw",
+        "type": "CHP",
+        "label": "BHKW 75 kW",
+        "obligation": "given",
+        "params": {
+          "P_el_nom": {"value": 75.0, "obligation": "given", "accept": {"min": 74.9, "max": 75.1}},
+          "eta_el": {"value": 0.37, "obligation": "given", "accept": {"min": 0.3696, "max": 0.3704}},
+          "eta_th": {"value": 0.44, "obligation": "given", "accept": {"min": 0.4396, "max": 0.4404}}
+        }
+      },
+      {
+        "id": "bhkw_flare",
+        "type": "Flare",
+        "obligation": "auto",
+        "auto_created": true,
+        "note": "von add_chp erzeugt; die Anlage selbst hat keine Fackel, sondern nur kombinierte Ueber-/Unterdrucksicherungen"
+      }
+    ],
+    "connections": [
+      {
+        "from": "F1",
+        "to": "G1",
+        "type": "liquid",
+        "obligation": "given",
+        "note": "kein Nachgaerer: der Gaerrest laeuft direkt ins Lager"
+      },
+      {"from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "F1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto"}
+    ]
+  },
+  "metadata": {"difficulty": "easy", "split": "test"}
+}

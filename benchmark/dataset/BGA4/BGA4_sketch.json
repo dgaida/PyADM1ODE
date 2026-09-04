@@ -1,0 +1,115 @@
+{
+  "id": "BGA4_sketch",
+  "input": {"modality": "image", "language": "de", "image_path": "BGA4_sketch.png"},
+  "regime": "underspecified",
+  "reference": {
+    "components": [
+      {
+        "id": "F1",
+        "type": "Digester",
+        "label": "Fermenter 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 1531,
+            "obligation": "missing_ask",
+            "formula": "pi/4*19^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 1516, "max": 1546}
+          },
+          "V_gas": {
+            "value": 599,
+            "obligation": "missing_ask",
+            "accept": {"min": 598, "max": 600},
+            "note": "Gasspeichervolumen des 1/4-Kugel-Doppelmembrandachs"
+          },
+          "T_ad": {
+            "value": 313.15,
+            "obligation": "missing_ask",
+            "accept": {"min": 312.83, "max": 313.47},
+            "rationale": "Input nennt nur 'mesophil' -> mesophile Standardtemperatur 40 C"
+          }
+        }
+      },
+      {
+        "id": "N1",
+        "type": "Digester",
+        "label": "Nachgärer 1",
+        "obligation": "given",
+        "params": {"_same_as": "F1"}
+      },
+      {
+        "id": "G1",
+        "type": "Digester",
+        "label": "Gärproduktlager 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 6537,
+            "obligation": "missing_ask",
+            "formula": "pi/4*34^2*8 * 0.90 (Fuellgrad)",
+            "accept": {"min": 6472, "max": 6602}
+          },
+          "V_gas": {"value": 3432, "obligation": "missing_ask", "accept": {"min": 3431, "max": 3433}},
+          "T_ad": {
+            "value": 293.15,
+            "obligation": "missing_ask",
+            "accept": {"min": 292.85, "max": 293.45},
+            "note": "Lager ohne eigene Heizung -> Umgebungstemperatur"
+          }
+        }
+      },
+      {"id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "N1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {
+        "id": "bhkw",
+        "type": "CHP",
+        "label": "BHKW 250 kW",
+        "obligation": "given",
+        "params": {
+          "P_el_nom": {"value": 250.0, "obligation": "given", "accept": {"min": 249, "max": 251}},
+          "eta_el": {"value": 0.4, "obligation": "missing_ask", "accept": {"min": 0.3996, "max": 0.4004}},
+          "eta_th": {"value": 0.45, "obligation": "missing_ask", "accept": {"min": 0.4495, "max": 0.4505}}
+        }
+      },
+      {
+        "id": "bhkw_flare",
+        "type": "Flare",
+        "label": "Biogas-Fackel",
+        "obligation": "auto",
+        "auto_created": true,
+        "note": "von add_chp erzeugt; entspricht der beschriebenen Biogas-Fackel (max. 300 m3/h)"
+      }
+    ],
+    "connections": [
+      {"from": "F1", "to": "N1", "type": "liquid", "obligation": "inferred"},
+      {"from": "N1", "to": "G1", "type": "liquid", "obligation": "inferred"},
+      {"from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "N1", "to": "N1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "F1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "N1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto"}
+    ]
+  },
+  "oracle": {
+    "substrate_feed": "ca. 13 m³/d Rindergülle aus der Vorgrube in F1 sowie über den Feststoff-Dosierer 4,7 t/d Maissilage, 2,5 t/d Rindermist, 1,7 t/d Hühnertrockenkot und 0,4 t/d Grassilage in F1 (Jahresmengen / 365 d)",
+    "bgaa.exists": false,
+    "chp.exists": true,
+    "bhkw.P_el_nom": 250.0,
+    "bhkw.eta_el": 0.4,
+    "bhkw.eta_th": 0.45,
+    "F1.V_gas": 599,
+    "N1.V_gas": 599,
+    "G1.V_gas": 3432,
+    "F1.T_ad": 313.15,
+    "N1.T_ad": 313.15,
+    "G1.T_ad": 293.15,
+    "F1.fill_fraction": 0.9,
+    "G1.fill_fraction": 0.9,
+    "digestate_cascade": "F1->N1, N1->G1",
+    "gas_routing": "Alle drei Behälter (F1, N1, G1) speisen das BHKW"
+  },
+  "metadata": {"difficulty": "hard", "split": "test"}
+}

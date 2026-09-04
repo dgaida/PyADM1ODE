@@ -19,6 +19,7 @@ Example
 from __future__ import annotations
 
 import os
+import warnings
 from typing import Any
 
 import numpy as np
@@ -57,6 +58,11 @@ from ..energy import GasStorage
 # ``ADM1._Q`` because ``_state_input`` indexes 0..36 are the dissolved /
 # particulate concentrations the ODE reads).
 _N_LIQUID_STATE = 37
+
+#: Ammonium of the ADM1da / SIMBA# reference inoculum [kmol N/m3]. Used to seed
+#: tanks that have no substrate feed of their own, so their charge balance is
+#: carried by ammonium as in real digestate instead of by strong ions.
+_ADM1DA_INOCULUM_S_NH4 = 0.13223400394857032
 
 
 class Digester(Component):
@@ -101,6 +107,10 @@ class Digester(Component):
             (differentiable, same values). ``None`` uses the process-wide
             default (see :func:`pyadm1.set_default_adm1_backend`).
     """
+
+    #: Set once the TAC guard has fired, so a long simulation warns a single
+    #: time instead of on every step.
+    _tac_warned: bool = False
 
     def __init__(
         self,
@@ -339,6 +349,16 @@ class Digester(Component):
         S_ac_0, S_pro_0, S_bu_0, S_va_0 = 0.10, 0.02, 0.01, 0.01
         S_co2_0 = 0.18
         S_nh4_0 = conc.get("S_nh4", 0.0) * 1.5
+        if S_nh4_0 <= 0.0:
+            # A tank without its own substrate feed (post-digester, digestate
+            # store) gets an all-zero blend, so the inoculum would start with
+            # zero ammonium — and the charge balance at pH 7 would have to be
+            # closed with strong ions alone: 0.149 kmol/m3, 8.5x the ADM1da
+            # reference state. Real digestate carries its ammonium along, and
+            # the TAC formula subtracts exactly that strong-ion difference, so
+            # such a tank reported almost no acid capacity (negative in stores).
+            # Seed the ADM1da/SIMBA# reference inoculum instead.
+            S_nh4_0 = _ADM1DA_INOCULUM_S_NH4
 
         S_ac_ion_0 = K_a_ac / (K_a_ac + S_H_0) * S_ac_0
         S_pro_ion_0 = K_a_pro / (K_a_pro + S_H_0) * S_pro_0
@@ -349,8 +369,22 @@ class Digester(Component):
 
         vfa_kmol_0 = S_ac_ion_0 / 64.0 + S_pro_ion_0 / 112.0 + S_bu_ion_0 / 160.0 + S_va_ion_0 / 208.0
 
-        S_anion_0 = conc.get("S_anion", 0.0)
-        S_cation_0 = S_anion_0 + S_hco3_0 + vfa_kmol_0 + K_w / S_H_0 - S_nh4_0 + S_nh3_0 - S_H_0
+        # Charge balance, closed the way the ADM1da substrate characterisation
+        # does it (Schlattmann 2011): ``S_cation`` is fixed at zero and
+        # ``S_anion`` absorbs the balance — it may go negative for net-cationic
+        # material. Closing it the other way round (solving for S_cation) left
+        # the state with 0.10-0.15 kmol/m3 of strong cations, up to four times
+        # the ADM1da reference state, and a tank without its own substrate feed
+        # ended up with strong cations but no ammonium at all. The TAC formula
+        # subtracts the strong-ion difference, so those states reported an acid
+        # capacity far too low — negative in long-retention stores.
+        #
+        # Only the DIFFERENCE ``S_cation - S_anion`` enters pH and speciation,
+        # and that difference is unchanged here: the chemistry of the initial
+        # state is identical, only the bookkeeping now follows the convention
+        # the influent already uses.
+        S_cation_0 = 0.0
+        S_anion_0 = S_nh4_0 - S_nh3_0 + S_H_0 - S_hco3_0 - vfa_kmol_0 - K_w / S_H_0
 
         # --- Particulate pools at retention-factor steady state ---
         D = Q_total / V_liq if V_liq > 0.0 else 0.0
@@ -495,6 +529,28 @@ class Digester(Component):
             - float(st[_IDX_S_CATION])
         )
         tac = 50.0 * tac_mol
+
+        if tac <= 0.0:
+            # An acid capacity of zero or less is chemically impossible for a
+            # digestate at neutral pH: it means the state's strong-ion split
+            # does not follow the ADM1da convention (S_cation = 0), so the
+            # ion term of the TAC formula over-subtracts. Reporting NaN keeps
+            # the artefact out of FOS/TAC ratios — dividing by a value drifting
+            # through zero produced numbers in the 1e9 range — and makes the
+            # broken state visible instead of silently plausible.
+            if not Digester._tac_warned:
+                Digester._tac_warned = True
+                warnings.warn(
+                    f"Digester '{self.component_id}': TAC <= 0 "
+                    f"({tac:.3g} kg CaCO3/m3). The strong-ion difference "
+                    f"S_cation-S_anion={float(st[_IDX_S_CATION]) - float(st[_IDX_S_ANION]):.4g} "
+                    "kmol/m3 exceeds the carbonate buffer, which the ADM1da TAC "
+                    "formula subtracts — usually a sign that the state carries "
+                    "too little ammonium. TAC/FOS-TAC reported as NaN.",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+            tac = float("nan")
 
         ts = calc_total_solids(st)  # % TS (Proline Teqwave MW 300 surrogate)
         return {"pH": pH, "VFA": vfa, "TAC": tac, "TS": ts}

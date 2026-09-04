@@ -1,11 +1,11 @@
 # benchmark/eval/runner.py
 """
-Runner: fuehrt LMM-generierten PyADM1ODE-Code isoliert aus und bewertet die
-gebaute Anlage gegen einen Referenz-Datenpunkt.
+Runner: executes LMM-generated PyADM1ODE code in isolation and scores the
+resulting plant against a reference datapoint.
 
-Pipeline (entspricht der Detail-Folie):
-    Code ausfuehren (Sandbox + Timeout)  ->  Anlage serialisieren (to_dict)
-    ->  Graph-Matcher (matcher.evaluate)  ->  Report
+Pipeline (matching the detail slide):
+    run the code (sandbox + timeout)  ->  serialise the plant (to_dict)
+    ->  graph matcher (matcher.evaluate)  ->  report
 
 CLI:
     python runner.py <datapoint.json> <candidate_code.py>
@@ -35,14 +35,13 @@ from matcher import Report, evaluate  # noqa: E402
 
 def run_candidate_code(code: str, timeout: float = 90.0) -> tuple[dict[str, Any] | None, str]:
     """
-    Fuehrt ``code`` in einem isolierten Subprozess aus und gibt die
-    Anlagen-Serialisierung zurueck.
+    Run ``code`` in an isolated subprocess and return the plant serialisation.
 
     Returns
     -------
     (candidate_dict, error)
-        candidate_dict ist None bei Fehler/Timeout; error enthaelt dann die
-        Begruendung (sonst "").
+        candidate_dict is None on failure or timeout; ``error`` then carries the
+        reason (otherwise "").
     """
     with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False, encoding="utf-8") as tf:
         tf.write(code)

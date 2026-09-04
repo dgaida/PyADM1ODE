@@ -1,14 +1,14 @@
 # benchmark/eval/selftest.py
 """
-Selbsttest des Graph-Matchers ohne ADM1-Ausfuehrung.
+Self-test of the graph matcher without running ADM1.
 
-Baut zwei Kandidaten-Anlagen als Dicts (genau die Schluessel, die PyADM1ODE
-``to_dict`` erzeugt) und prueft sie gegen benchmark/dataset/BGA3/BGA3_text_de.json:
+Builds two candidate plants as dicts (exactly the keys PyADM1ODE's ``to_dict``
+produces) and checks them against benchmark/dataset/BGA3/BGA3_text_de.json:
 
-    A) perfekter Kandidat  -> bewusst ANDERE IDs (beweist Typ-Matching)
-    B) kaputter Kandidat   -> falsche V_liq, fehlende Kante, erfundener Digester
+    A) perfect candidate  -> deliberately DIFFERENT ids (proves type matching)
+    B) broken candidate   -> wrong V_liq, missing edge, invented digester
 
-Erwartung: A ~ 100 %, B deutlich niedriger mit konkreten Verstoessen.
+Expected: A ~ 100 %, B clearly lower with concrete violations.
 """
 
 import json
@@ -31,7 +31,7 @@ def storage(cid, cap):
 
 
 def build_perfect():
-    """Gold-Build, aber mit voellig anderen Bezeichnern."""
+    """The gold build, but with completely different identifiers."""
     comps = [
         dig("ferm_a", 2867, 719, 313.15),
         dig("ferm_b", 2867, 719, 313.15),
@@ -62,14 +62,14 @@ def build_perfect():
 
 
 def build_broken():
-    """Mehrere Fehler: falsche V_liq, fehlende Kaskaden-Kante, erfundener Digester,
-    BHKW unplausibel gross."""
+    """Several faults: wrong V_liq, a missing cascade edge, an invented digester,
+    an implausibly large CHP."""
     p = build_perfect()
     comps = {c["component_id"]: dict(c) for c in p["components"]}
-    comps["ferm_a"]["V_liq"] = 3186  # auf 6 m gefuellt -> ausserhalb [2548,3028]
-    comps["bhkw"]["P_el_nom"] = 2000.0  # ausserhalb [450,550]
-    comps["ferm_x"] = dig("ferm_x", 2867, 719, 313.15)  # erfundener 5. Digester
-    conns = [c for c in p["connections"] if not (c["from"] == "nachg" and c["to"] == "lager")]  # Kaskaden-Kante fehlt
+    comps["ferm_a"]["V_liq"] = 3186  # filled to 6 m -> outside [2548,3028]
+    comps["bhkw"]["P_el_nom"] = 2000.0  # outside [450,550]
+    comps["ferm_x"] = dig("ferm_x", 2867, 719, 313.15)  # invented 5th digester
+    conns = [c for c in p["connections"] if not (c["from"] == "nachg" and c["to"] == "lager")]  # cascade edge missing
     return {"plant_name": "Kaputt", "components": list(comps.values()), "connections": conns}
 
 

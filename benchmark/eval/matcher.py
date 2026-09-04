@@ -1,37 +1,37 @@
 # benchmark/eval/matcher.py
 """
-Graph-Matcher fuer den PyADM1ODE-LMM-Benchmark.
+Graph matcher for the PyADM1ODE LMM benchmark.
 
-Vergleicht eine vom LMM **gebaute** Anlage (das ``to_dict``/``to_json``-Dict von
-``BiogasPlant``) gegen einen Referenz-Datenpunkt (siehe
-``benchmark/schema/plant_datapoint.schema.json``) und liefert drei Scores:
+Compares a plant **built** by the LMM (the ``to_dict``/``to_json`` dict of
+``BiogasPlant``) against a reference datapoint (see
+``benchmark/schema/plant_datapoint.schema.json``) and returns three scores:
 
-    1. Vollstaendigkeit - sind alle Pflicht-Bauteile und Pflicht-Kanten da? (Recall)
-    2. Masse            - simulierte Parameter im Akzeptanzband (Toleranz)
-    3. Keine Erfindungen- enthaelt der Kandidat NUR Bauteile/Kanten, die die
-                          Referenz kennt? (Precision)
+    1. Completeness  - are all required components and edges there? (recall)
+    2. Measures      - simulated parameters inside their acceptance band
+    3. No inventions - does the candidate contain ONLY components/edges the
+                       reference knows? (precision)
 
-Die drei Achsen sind bewusst disjunkt, damit jeder Fehler genau einmal zaehlt:
+The three axes are deliberately disjoint so every mistake counts exactly once:
 
-    weggelassen  -> Score 1     hinzuerfunden -> Score 3     falscher Wert -> Score 2
+    omitted -> score 1     invented -> score 3     wrong value -> score 2
 
-Kernideen:
-    * Bauteile werden **nach Typ** zugeordnet (bipartites Matching), nicht nach ID
-      -- das LMM benennt Komponenten anders.
-    * Auto-Knoten (GasStorage je Digester, Flare je CHP) werden ueber die
-      **Topologie** ausgerichtet, nicht ueber Namen.
-    * Parameter werden im **Akzeptanzband** geprueft (absolut / relativ / kategorial),
-      nie als Punktwert. Ein still erfundener, unplausibler Wert senkt damit Score 2.
-    * **Pflicht** (Score 1) und **erlaubt** (Score 3) sind zwei verschiedene Mengen:
-      eine Kante mit ``obligation: missing_ask`` muss nicht gebaut werden, gilt aber
-      auch nicht als Erfindung, wenn sie gebaut wird.
-    * Ein Bauteil eines Typs, den die Referenz ueberhaupt nicht kennt (Separator in
-      einer Anlage ohne Separator), deckelt Score 3 hart -- das ist die schwerste
-      Form der Halluzination.
+Core ideas:
+    * Components are matched **by type** (bipartite matching), not by id -- the
+      LMM names them differently.
+    * Auto nodes (a GasStorage per digester, a flare per CHP) are aligned via the
+      **topology**, not via names.
+    * Parameters are checked against their **acceptance band** (absolute /
+      relative / categorical), never as a point value. A silently invented,
+      implausible value therefore lowers score 2.
+    * **Required** (score 1) and **allowed** (score 3) are two different sets: an
+      edge with ``obligation: missing_ask`` need not be built, but does not count
+      as an invention when it is.
+    * A component of a type the reference does not know at all (a separator in a
+      plant without one) caps score 3 hard -- the worst kind of hallucination.
 
-Reines stdlib, keine externen Abhaengigkeiten. Die Funktionen sind ohne
-Code-Ausfuehrung testbar (Kandidat = Dict). Das Ausfuehren von LMM-Code
-uebernimmt ``runner.py``.
+Pure stdlib, no external dependencies. The functions are testable without
+executing code (the candidate is a dict); running LMM code is ``runner.py``'s
+job.
 """
 
 from __future__ import annotations
@@ -45,7 +45,7 @@ from typing import Any
 from pyadm1.configurator.graph import AUTO_TYPES, Edge, Graph, Node, normalize_candidate
 
 # --------------------------------------------------------------------------
-# Typ- und Feld-Mappings (Referenz-Typname  <->  serialisierter component_type)
+# Type and field mappings (reference type name <-> serialised component_type)
 # --------------------------------------------------------------------------
 TYPE_MAP: dict[str, str] = {
     "Digester": "digester",
@@ -59,7 +59,7 @@ TYPE_MAP: dict[str, str] = {
     "Mixer": "mixer",
 }
 
-# Parameter, die PyADM1ODE pro Typ tatsaechlich serialisiert (to_dict).
+# Parameters PyADM1ODE actually serialises per type (to_dict).
 SERIALIZED_PARAMS: dict[str, set] = {
     "digester": {"V_liq", "V_gas", "T_ad"},
     "chp": {"P_el_nom", "eta_el", "eta_th"},
@@ -72,23 +72,23 @@ SERIALIZED_PARAMS: dict[str, set] = {
     "mixer": set(),
 }
 
-# Typen, die Gas abnehmen/versenken (gueltige Endpunkte eines Gaspfads).
+# Types that consume gas (valid end points of a gas path).
 GAS_CONSUMER_TYPES = {"chp", "flare", "boiler", "upgrading"}
 
-# Obligationen, die eine Existenz/Verbindung strukturell ERFORDERN (Score 1).
-# Nicht enthalten -- und damit optional -- ist ausschliesslich "missing_ask":
-# das Element gehoert zur Anlage, muss aber nicht gebaut werden.
+# Obligations that structurally REQUIRE a component or connection (score 1).
+# The only one left out -- and therefore optional -- is "missing_ask": the
+# element belongs to the plant but does not have to be built.
 REQUIRED_NODE_OBLIGATIONS = {"given", "derivable", "inferred", "auto"}
 REQUIRED_EDGE_OBLIGATIONS = {"given", "inferred", "auto"}
-# Deckel fuer Score 3, wenn ein Bauteil eines in der Referenz unbekannten Typs auftaucht.
+# Cap for score 3 when a component of a type unknown to the reference shows up.
 INVENTED_TYPE_CAP = 0.5
 
 
 # ==========================================================================
-# Laden / Normalisieren
+# Loading / normalising
 # ==========================================================================
 def expand_reference(dp: dict[str, Any]) -> Graph:
-    """Referenz-Datenpunkt -> internen Graph (mit _same_as-Expansion)."""
+    """Reference datapoint -> internal graph (with _same_as expansion)."""
     raw = {c["id"]: c for c in dp["reference"]["components"]}
 
     def resolve_params(comp: dict[str, Any]) -> dict[str, Any]:
@@ -116,11 +116,11 @@ def expand_reference(dp: dict[str, Any]) -> Graph:
 
 
 def lint_gas_paths(g: Graph) -> list[str]:
-    """Strukturwarnungen fuer 'tote' Gaspfade.
+    """Structural warnings for "dead" gas paths.
 
-    PyADM1ODE leitet Biogas nur bedarfsgesteuert weiter, wenn jede GasStorage
-    einen Abnehmer (CHP/Flare/Boiler/BGAA) hat. Knoten ohne Abnahme bedeuten, dass
-    erzeugtes Gas im Modell nicht genutzt wird.
+    PyADM1ODE only forwards biogas on demand, which requires every GasStorage to
+    have a consumer (CHP/flare/boiler/BGAA). A node without one means the gas it
+    produces goes unused in the model.
     """
     warns: list[str] = []
     for nd in g.nodes.values():
@@ -138,14 +138,14 @@ def lint_gas_paths(g: Graph) -> list[str]:
 
 
 # ==========================================================================
-# Akzeptanz-Pruefung (ein Parameter)
+# Acceptance check (one parameter)
 # ==========================================================================
 def within_accept(pdef: dict[str, Any], value: Any) -> bool:
-    """Liegt ``value`` im Akzeptanzband von ``pdef``?
+    """Is ``value`` inside the acceptance band of ``pdef``?
 
-    Die Bandbreite steckt im Datenpunkt, nicht hier: sie richtet sich danach, ob der
-    Wert uebernommen (+-0.1 %) oder gerechnet (+-1 %) wird. Fehlt ``accept``, wird
-    exakt verglichen -- so bei kategorialen Werten wie ``separator_type``.
+    The band width lives in the datapoint, not here: it follows from whether the
+    value is taken verbatim (+-0.1 %) or computed (+-1 %). Without ``accept`` the
+    comparison is exact -- as for categorical values like ``separator_type``.
     """
     accept = pdef.get("accept")
     if isinstance(accept, dict) and ("min" in accept or "max" in accept):
@@ -156,7 +156,7 @@ def within_accept(pdef: dict[str, Any], value: Any) -> bool:
 
 
 def _param_distance(ref: Node, cand: Node) -> float:
-    """Kosten fuer das Matching: kleiner = bessere Uebereinstimmung."""
+    """Matching cost: lower means a better fit."""
     serial = SERIALIZED_PARAMS.get(ref.ctype, set())
     cost = 0.0
     for pname, pdef in ref.params.items():
@@ -177,13 +177,13 @@ def _param_distance(ref: Node, cand: Node) -> float:
 
 
 # ==========================================================================
-# Zuordnung der Knoten (Typ-Gruppen)
+# Node assignment (per type group)
 # ==========================================================================
 def _signature(g: Graph, nid: str) -> tuple[int, ...]:
-    """Topologische Signatur eines Knotens: Kantengrade je Typ/Richtung.
+    """Topological signature of a node: edge degrees per type and direction.
 
-    Unterscheidet sonst parameter-gleiche Knoten (z. B. Nachgaerer vs. Fermenter:
-    der Nachgaerer hat zwei eingehende liquid-Kanten)."""
+    Separates nodes that are otherwise parameter-identical (a post-digester vs. a
+    primary digester: the post-digester has two incoming liquid edges)."""
     return (
         len(g.out_edges(nid, "liquid")),
         len(g.in_edges(nid, "liquid")),
@@ -195,7 +195,7 @@ def _signature(g: Graph, nid: str) -> tuple[int, ...]:
 
 
 def _optimal_assign(ref_list: list[Node], cand_list: list[Node], cost_fn) -> dict[str, str]:
-    """Minimiert die Summe von ``cost_fn``; brute-force fuer kleine Gruppen."""
+    """Minimises the sum of ``cost_fn``; brute force for small groups."""
     if not ref_list or not cand_list:
         return {}
     n, m = len(ref_list), len(cand_list)
@@ -206,7 +206,7 @@ def _optimal_assign(ref_list: list[Node], cand_list: list[Node], cost_fn) -> dic
             if cost < best_cost:
                 best_cost, best = cost, combo
         return {ref_list[i].id: cand_list[best[i]].id for i in range(len(best))} if best else {}
-    # Greedy-Fallback fuer grosse Gruppen
+    # greedy fallback for large groups
     assign: dict[str, str] = {}
     used = set()
     for r in ref_list:
@@ -220,18 +220,18 @@ def _optimal_assign(ref_list: list[Node], cand_list: list[Node], cost_fn) -> dic
 
 
 def assign_nodes(ref: Graph, cand: Graph) -> dict[str, str]:
-    """ref-ID -> cand-ID. Primaertypen ueber Parameter + Topologie, Auto-Knoten ueber Topologie."""
+    """ref id -> candidate id. Primary types via parameters + topology, auto nodes via topology."""
     assign: dict[str, str] = {}
 
     ref_sig = {nid: _signature(ref, nid) for nid in ref.nodes}
     cand_sig = {nid: _signature(cand, nid) for nid in cand.nodes}
 
     def cost_fn(r: Node, c: Node) -> float:
-        # Parameter-Distanz + (kleiner gewichtete) Signatur-Distanz
+        # parameter distance + (lower weighted) signature distance
         sig_d = sum(abs(a - b) for a, b in zip(ref_sig[r.id], cand_sig[c.id]))
         return _param_distance(r, c) + 0.5 * sig_d
 
-    # 1) Primaertypen (alles ausser storage/flare) gruppenweise zuordnen
+    # 1) assign the primary types (everything but storage/flare) group by group
     by_type_ref: dict[str, list[Node]] = {}
     by_type_cand: dict[str, list[Node]] = {}
     for nd in ref.nodes.values():
@@ -243,7 +243,7 @@ def assign_nodes(ref: Graph, cand: Graph) -> dict[str, str]:
     for ctype, refs in by_type_ref.items():
         assign.update(_optimal_assign(refs, by_type_cand.get(ctype, []), cost_fn))
 
-    # 2) GasStorage ueber den speisenden Digester ausrichten
+    # 2) align GasStorage via the digester feeding it
     def storage_of(g: Graph, dig_id: str) -> str | None:
         for e in g.out_edges(dig_id, "gas"):
             if e.dst in g.nodes and g.nodes[e.dst].ctype == "storage":
@@ -254,7 +254,7 @@ def assign_nodes(ref: Graph, cand: Graph) -> dict[str, str]:
     for nd in ref.nodes.values():
         if nd.ctype != "storage":
             continue
-        # speisender Digester in der Referenz
+        # feeding digester in the reference
         src_dig = next(
             (e.src for e in ref.in_edges(nd.id, "gas") if ref.nodes.get(e.src) and ref.nodes[e.src].ctype == "digester"), None
         )
@@ -265,7 +265,7 @@ def assign_nodes(ref: Graph, cand: Graph) -> dict[str, str]:
             assign[nd.id] = cand_storage
             used_storages.add(cand_storage)
 
-    # 3) Flare ueber den speisenden CHP ausrichten (sonst per Rest/Anzahl)
+    # 3) align the flare via the CHP feeding it (otherwise by leftovers/count)
     used_flares = set()
     for nd in ref.nodes.values():
         if nd.ctype != "flare":
@@ -342,13 +342,13 @@ class Report:
 
 def evaluate(datapoint: dict[str, Any], candidate: dict[str, Any]) -> Report:
     """
-    Bewertet eine Kandidaten-Anlage gegen einen Referenz-Datenpunkt.
+    Score a candidate plant against a reference datapoint.
 
     Parameters
     ----------
-    datapoint : dict   Referenz (Schema-konform).
-    candidate : dict   ``BiogasPlant``-Serialisierung mit "components" & "connections".
-                       Leeres/None-Dict => build_success=False.
+    datapoint : dict   the reference (schema-conform).
+    candidate : dict   ``BiogasPlant`` serialisation with "components" and
+                       "connections". An empty/None dict => build_success=False.
     """
     rep = Report()
     if not candidate or not candidate.get("components"):
@@ -363,7 +363,7 @@ def evaluate(datapoint: dict[str, Any], candidate: dict[str, Any]) -> Report:
     cand_edge_set = {(e.src, e.dst, e.etype) for e in cand.edges}
 
     # ======================================================================
-    # 1) VOLLSTAENDIGKEIT -- ist alles Noetige da? (Recall)
+    # 1) COMPLETENESS -- is everything required present? (recall)
     # ======================================================================
     req_nodes = [nd for nd in ref.nodes.values() if _node_required(nd)]
     node_found = 0
@@ -374,8 +374,8 @@ def evaluate(datapoint: dict[str, Any], candidate: dict[str, Any]) -> Report:
             violations.append(f"Fehlend: Bauteil '{nd.id}' ({nd.ctype}) wurde nicht gebaut.")
     node_recall = node_found / len(req_nodes) if req_nodes else 1.0
 
-    # Der Nenner umfasst ALLE Pflicht-Kanten. Faellt ein Knoten weg, verschwinden
-    # seine Kanten nicht aus der Rechnung -- Weglassen darf sich nicht lohnen.
+    # The denominator covers ALL required edges. If a node is missing, its edges
+    # do not drop out of the count -- leaving things out must not pay off.
     req_edges = [e for e in ref.edges if _edge_required(e)]
     edge_found = 0
     for e in req_edges:
@@ -388,7 +388,7 @@ def evaluate(datapoint: dict[str, Any], candidate: dict[str, Any]) -> Report:
     rep.completeness = round((node_recall + edge_recall) / 2.0, 3)
 
     # ======================================================================
-    # 2) MASSE -- stimmen die Werte? (auch still erfundene Werte landen hier)
+    # 2) MEASURES -- are the values right? (silently invented values land here too)
     # ======================================================================
     meas_pass = meas_total = 0
     for ref_id, cand_id in assign.items():
@@ -406,10 +406,10 @@ def evaluate(datapoint: dict[str, Any], candidate: dict[str, Any]) -> Report:
     rep.measures = round(meas_pass / meas_total, 3) if meas_total else 1.0
 
     # ======================================================================
-    # 3) KEINE ERFINDUNGEN -- enthaelt der Kandidat NUR Bekanntes? (Precision)
+    # 3) NO INVENTIONS -- does the candidate contain ONLY known elements? (precision)
     # ======================================================================
-    # "erlaubt" ist weiter gefasst als "Pflicht": auch optionale Referenz-Elemente
-    # (missing_ask, inferred mit niedriger Konfidenz) sind keine Erfindung.
+    # "allowed" is wider than "required": optional reference elements
+    # (missing_ask, low-confidence inferred) do not count as inventions either.
     ref_types = {nd.ctype for nd in ref.nodes.values()}
     matched_cand = set(assign.values())
     extra_nodes = [c for c in cand.nodes.values() if c.id not in matched_cand]

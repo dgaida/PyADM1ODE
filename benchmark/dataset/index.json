@@ -1,6 +1,118 @@
 {
   "datapoints": [
     {
+      "id": "BGA10_sketch",
+      "path": "BGA10/BGA10_sketch.json",
+      "language": "de",
+      "modality": "image",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA10_sketch_full",
+      "path": "BGA10/BGA10_sketch_full.json",
+      "language": "de",
+      "modality": "hybrid",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA10_terse_de",
+      "path": "BGA10/BGA10_terse_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA10_terse_de_full",
+      "path": "BGA10/BGA10_terse_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA10_text_de",
+      "path": "BGA10/BGA10_text_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA10_text_de_full",
+      "path": "BGA10/BGA10_text_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA10_text_en",
+      "path": "BGA10/BGA10_text_en.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA10_text_en_full",
+      "path": "BGA10/BGA10_text_en_full.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA11_sketch",
+      "path": "BGA11/BGA11_sketch.json",
+      "language": "de",
+      "modality": "image",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA11_sketch_full",
+      "path": "BGA11/BGA11_sketch_full.json",
+      "language": "de",
+      "modality": "hybrid",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA11_terse_de",
+      "path": "BGA11/BGA11_terse_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA11_terse_de_full",
+      "path": "BGA11/BGA11_terse_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA11_text_de",
+      "path": "BGA11/BGA11_text_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA11_text_de_full",
+      "path": "BGA11/BGA11_text_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA11_text_en",
+      "path": "BGA11/BGA11_text_en.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA11_text_en_full",
+      "path": "BGA11/BGA11_text_en_full.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
       "id": "BGA1_sketch",
       "path": "BGA1/BGA1_sketch.json",
       "language": "de",
@@ -164,6 +276,342 @@
     {
       "id": "BGA3_text_en_full",
       "path": "BGA3/BGA3_text_en_full.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA4_sketch",
+      "path": "BGA4/BGA4_sketch.json",
+      "language": "de",
+      "modality": "image",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA4_sketch_full",
+      "path": "BGA4/BGA4_sketch_full.json",
+      "language": "de",
+      "modality": "hybrid",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA4_terse_de",
+      "path": "BGA4/BGA4_terse_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA4_terse_de_full",
+      "path": "BGA4/BGA4_terse_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA4_text_de",
+      "path": "BGA4/BGA4_text_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA4_text_de_full",
+      "path": "BGA4/BGA4_text_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA4_text_en",
+      "path": "BGA4/BGA4_text_en.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA4_text_en_full",
+      "path": "BGA4/BGA4_text_en_full.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA5_sketch",
+      "path": "BGA5/BGA5_sketch.json",
+      "language": "de",
+      "modality": "image",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA5_sketch_full",
+      "path": "BGA5/BGA5_sketch_full.json",
+      "language": "de",
+      "modality": "hybrid",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA5_terse_de",
+      "path": "BGA5/BGA5_terse_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA5_terse_de_full",
+      "path": "BGA5/BGA5_terse_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA5_text_de",
+      "path": "BGA5/BGA5_text_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA5_text_de_full",
+      "path": "BGA5/BGA5_text_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA5_text_en",
+      "path": "BGA5/BGA5_text_en.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA5_text_en_full",
+      "path": "BGA5/BGA5_text_en_full.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA6_sketch",
+      "path": "BGA6/BGA6_sketch.json",
+      "language": "de",
+      "modality": "image",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA6_sketch_full",
+      "path": "BGA6/BGA6_sketch_full.json",
+      "language": "de",
+      "modality": "hybrid",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA6_terse_de",
+      "path": "BGA6/BGA6_terse_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA6_terse_de_full",
+      "path": "BGA6/BGA6_terse_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA6_text_de",
+      "path": "BGA6/BGA6_text_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA6_text_de_full",
+      "path": "BGA6/BGA6_text_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA6_text_en",
+      "path": "BGA6/BGA6_text_en.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA6_text_en_full",
+      "path": "BGA6/BGA6_text_en_full.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA7_sketch",
+      "path": "BGA7/BGA7_sketch.json",
+      "language": "de",
+      "modality": "image",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA7_sketch_full",
+      "path": "BGA7/BGA7_sketch_full.json",
+      "language": "de",
+      "modality": "hybrid",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA7_terse_de",
+      "path": "BGA7/BGA7_terse_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA7_terse_de_full",
+      "path": "BGA7/BGA7_terse_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA7_text_de",
+      "path": "BGA7/BGA7_text_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA7_text_de_full",
+      "path": "BGA7/BGA7_text_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA7_text_en",
+      "path": "BGA7/BGA7_text_en.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA7_text_en_full",
+      "path": "BGA7/BGA7_text_en_full.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA8_sketch",
+      "path": "BGA8/BGA8_sketch.json",
+      "language": "de",
+      "modality": "image",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA8_sketch_full",
+      "path": "BGA8/BGA8_sketch_full.json",
+      "language": "de",
+      "modality": "hybrid",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA8_terse_de",
+      "path": "BGA8/BGA8_terse_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA8_terse_de_full",
+      "path": "BGA8/BGA8_terse_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA8_text_de",
+      "path": "BGA8/BGA8_text_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA8_text_de_full",
+      "path": "BGA8/BGA8_text_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA8_text_en",
+      "path": "BGA8/BGA8_text_en.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA8_text_en_full",
+      "path": "BGA8/BGA8_text_en_full.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA9_sketch",
+      "path": "BGA9/BGA9_sketch.json",
+      "language": "de",
+      "modality": "image",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA9_sketch_full",
+      "path": "BGA9/BGA9_sketch_full.json",
+      "language": "de",
+      "modality": "hybrid",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA9_terse_de",
+      "path": "BGA9/BGA9_terse_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA9_terse_de_full",
+      "path": "BGA9/BGA9_terse_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA9_text_de",
+      "path": "BGA9/BGA9_text_de.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA9_text_de_full",
+      "path": "BGA9/BGA9_text_de_full.json",
+      "language": "de",
+      "modality": "text",
+      "regime": "fully_specified"
+    },
+    {
+      "id": "BGA9_text_en",
+      "path": "BGA9/BGA9_text_en.json",
+      "language": "en",
+      "modality": "text",
+      "regime": "underspecified"
+    },
+    {
+      "id": "BGA9_text_en_full",
+      "path": "BGA9/BGA9_text_en_full.json",
       "language": "en",
       "modality": "text",
       "regime": "fully_specified"

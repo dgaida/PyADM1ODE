@@ -1,0 +1,96 @@
+{
+  "id": "BGA4_text_de_full",
+  "input": {
+    "modality": "text",
+    "language": "de",
+    "content": "Die Biogasanlage BGA4 ist eine landwirtschaftliche Individualanlage mit 250 kW installierter elektrischer Leistung. Sie wird über zwei Wege beschickt. Eine Vorgrube als Ortbeton-Behälter mit 8 Metern Innendurchmesser und 4 Metern Wandhöhe (Brutto-Volumen 201 m³) sammelt die flüssigen Substrate — rund 4.793 Kubikmeter Rindergülle pro Jahr — und fördert sie über eine Tauchmotorpumpe in den Fermenter. Ein Feststoff-Dosierer mit 42 m³ Behältervolumen, hydraulischem Schubboden und Mischschnecke bringt die festen Substrate ein: 1.729 Tonnen Maissilage, 911 Tonnen Rindermist, 615 Tonnen Hühnerkot und 130 Tonnen Grassilage pro Jahr.\n\nDer Fermenter 1 ist ein Ortbeton-Behälter mit 19 Metern Innendurchmesser und 6 Metern Wandhöhe (Brutto-Volumen 1.701 m³). Er ist mit zwei Paddel-Rührwerken und einem Tauchmotor-Rührwerk ausgestattet und besitzt eine innenliegende Registerheizung mit zwei Heizkreisen. Sein Doppelmembrandach in Form einer 1/4-Kugel dient zugleich als Gasspeicher; das Gasspeichervolumen beträgt 599 m³. Der Fermenter wird mesophil bei 40 °C (313,15 K) betrieben, der maximale Füllgrad beträgt 90 % des Brutto-Volumens. Der Gärrest fließt weiter in den Nachgärer 1, der dieselben Maße hat (19 Meter Innendurchmesser, 6 Meter Wandhöhe, 1.701 m³ brutto), mit einem Paddel-Rührwerk und einem Tauchmotor-Rührwerk arbeitet und ein Doppelmembrandach mit 599 m³ Gasspeichervolumen trägt; auch er wird bei 40 °C und 90 % Füllgrad gefahren. Aus dem Nachgärer gelangt das Gärprodukt in das Gärproduktlager 1 mit 34 Metern Innendurchmesser und 8 Metern Wandhöhe (Brutto-Volumen 7.263 m³), das mit zwei Tauchmotor-Rührwerken bestückt ist. Sein Doppelmembrandach fasst 3.432 m³; das Lager ist unbeheizt (ca. 20 °C / 293,15 K) und wird bis 90 % gefüllt.\n\nDas Biogas aller drei Behälter läuft über eine Gaskühlung mit Nacherwärmung und zwei Aktivkohlefilter zur Feinentschwefelung und wird anschließend in einem Blockheizkraftwerk mit 250 kW elektrischer Nennleistung verwertet. Das BHKW erreicht einen elektrischen Wirkungsgrad von 40 % und einen thermischen Wirkungsgrad von 45 %. Eine Biogasaufbereitung zur Einspeisung von Biomethan ist nicht vorhanden — Gaskühlung und Aktivkohlefilter dienen allein der Gasreinigung vor dem BHKW. Für den Störfall steht eine Biogas-Fackel mit maximal 300 m³/h bereit. Ein Kondensatschacht nimmt das Kondensat aus der Gassammelleitung auf.\n\nSubstratzufuhr: ca. 13 m³/d Rindergülle aus der Vorgrube in F1 sowie über den Feststoff-Dosierer 4,7 t/d Maissilage, 2,5 t/d Rindermist, 1,7 t/d Hühnertrockenkot und 0,4 t/d Grassilage in F1."
+  },
+  "regime": "fully_specified",
+  "reference": {
+    "components": [
+      {
+        "id": "F1",
+        "type": "Digester",
+        "label": "Fermenter 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 1531,
+            "obligation": "derivable",
+            "formula": "pi/4*19^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 1516, "max": 1546}
+          },
+          "V_gas": {
+            "value": 599,
+            "obligation": "given",
+            "accept": {"min": 598, "max": 600},
+            "note": "Gasspeichervolumen des 1/4-Kugel-Doppelmembrandachs"
+          },
+          "T_ad": {"value": 313.15, "obligation": "given", "accept": {"min": 312.83, "max": 313.47}}
+        }
+      },
+      {
+        "id": "N1",
+        "type": "Digester",
+        "label": "Nachgärer 1",
+        "obligation": "given",
+        "params": {"_same_as": "F1"}
+      },
+      {
+        "id": "G1",
+        "type": "Digester",
+        "label": "Gärproduktlager 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 6537,
+            "obligation": "derivable",
+            "formula": "pi/4*34^2*8 * 0.90 (Fuellgrad)",
+            "accept": {"min": 6472, "max": 6602}
+          },
+          "V_gas": {"value": 3432, "obligation": "given", "accept": {"min": 3431, "max": 3433}},
+          "T_ad": {
+            "value": 293.15,
+            "obligation": "given",
+            "accept": {"min": 292.85, "max": 293.45},
+            "note": "Lager ohne eigene Heizung -> Umgebungstemperatur"
+          }
+        }
+      },
+      {"id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "N1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {
+        "id": "bhkw",
+        "type": "CHP",
+        "label": "BHKW 250 kW",
+        "obligation": "given",
+        "params": {
+          "P_el_nom": {"value": 250.0, "obligation": "given", "accept": {"min": 249, "max": 251}},
+          "eta_el": {"value": 0.4, "obligation": "given", "accept": {"min": 0.3996, "max": 0.4004}},
+          "eta_th": {"value": 0.45, "obligation": "given", "accept": {"min": 0.4495, "max": 0.4505}}
+        }
+      },
+      {
+        "id": "bhkw_flare",
+        "type": "Flare",
+        "label": "Biogas-Fackel",
+        "obligation": "auto",
+        "auto_created": true,
+        "note": "von add_chp erzeugt; entspricht der beschriebenen Biogas-Fackel (max. 300 m3/h)"
+      }
+    ],
+    "connections": [
+      {"from": "F1", "to": "N1", "type": "liquid", "obligation": "given"},
+      {"from": "N1", "to": "G1", "type": "liquid", "obligation": "given"},
+      {"from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "N1", "to": "N1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "F1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "N1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto"}
+    ]
+  },
+  "metadata": {"difficulty": "easy", "split": "test"}
+}

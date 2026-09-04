@@ -1,0 +1,156 @@
+{
+  "id": "BGA11_text_en_full",
+  "input": {
+    "modality": "text",
+    "language": "en",
+    "content": "Biogas plant BGA11 digests maize silage, grass silage, solid cattle manure and cattle slurry. Two solid feeders (Dos 1 and Dos 2, 60 cubic metres each, hydraulic push-floor) charge digesters F1 and F2 respectively; a shared slurry pre-pit (5×8 m, approx. 40 cubic metres) pumps the cattle slurry into F1 and F2 in equal shares.\n\nDigesters F1 and F2 are connected in parallel and structurally identical: 25 m diameter and 6 m wall height each, three paddle agitators, dome roof with a gas space (including headspace) of 680 cubic metres each; operated mesophilically at 40 degrees Celsius (313.15 K), fill level 90 percent. The digestate from F1 and F2 flows into post-digester N1 with 29 m diameter and 6 m wall height, one paddle and one long-axis agitator and a dome roof with a gas space (including headspace) of 995 cubic metres; operated at 40 degrees Celsius, fill level 90 percent. From N1 the digestate passes into the gas-tight digestate store G1 with 33 m diameter, 6 m wall height, two submersible agitators and a gas space (including headspace) of 1,400 cubic metres; the store is unheated (approx. 20 degrees Celsius / 293.15 K), fill level 90 percent.\n\nThe biogas of all tanks runs through a gas collecting pipe and is split there into two parallel utilisation paths. A CHP unit with a rated electrical output of 250 kW (electrical efficiency 39 percent, thermal efficiency 46 percent) runs heat-led at base load and covers the plant's process heat demand. The remaining gas stream — about 300 cubic metres per hour in normal operation — goes into a biogas upgrading unit using amine scrubbing with a capacity of 350 cubic metres per hour of raw gas, 99 percent methane recovery and 97 percent methane content in the product gas; the biomethane is compressed and injected into the local natural gas grid. Besides the digester heating, the CHP's waste heat also serves the regeneration of the scrubbing solution. Ahead of the upgrading unit the gas passes a gas cooler for drying and an activated carbon filter for fine desulphurisation; in addition, air is blown into the gas space of N1 for biological desulphurisation. An emergency flare rated 500 cubic metres per hour is available; a condensate shaft sits at the low point of the gas collecting pipe.\n\nSubstrate feed: 21 t/d maize silage, 2 t/d grass silage and 4 t/d solid cattle manure each through the feeders (Dos 1 into F1, Dos 2 into F2) plus 15 cubic metres per day of cattle slurry each from the pre-pit into F1 and F2."
+  },
+  "regime": "fully_specified",
+  "reference": {
+    "components": [
+      {
+        "id": "F1",
+        "type": "Digester",
+        "label": "Fermenter 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 2651,
+            "obligation": "derivable",
+            "formula": "pi/4*25^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 2624, "max": 2678}
+          },
+          "V_gas": {
+            "value": 680,
+            "obligation": "given",
+            "accept": {"min": 679, "max": 681},
+            "note": "Kuppeldach plus nicht befuellter Kopfraum"
+          },
+          "T_ad": {"value": 313.15, "obligation": "given", "accept": {"min": 312.83, "max": 313.47}}
+        }
+      },
+      {
+        "id": "F2",
+        "type": "Digester",
+        "label": "Fermenter 2",
+        "obligation": "given",
+        "note": "baugleich zu F1 und parallel geschaltet — beide speisen denselben Nachgaerer",
+        "params": {"_same_as": "F1"}
+      },
+      {
+        "id": "N1",
+        "type": "Digester",
+        "label": "Nachgärer 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 3567,
+            "obligation": "derivable",
+            "formula": "pi/4*29^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 3531, "max": 3603}
+          },
+          "V_gas": {
+            "value": 995,
+            "obligation": "given",
+            "accept": {"min": 994, "max": 996},
+            "note": "Kuppeldach plus Kopfraum; hier wird auch die Luft zur biologischen Entschwefelung eingeblasen"
+          },
+          "T_ad": {"value": 313.15, "obligation": "given", "accept": {"min": 312.83, "max": 313.47}}
+        }
+      },
+      {
+        "id": "G1",
+        "type": "Digester",
+        "label": "Gärrestlager",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 4619,
+            "obligation": "derivable",
+            "formula": "pi/4*33^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 4573, "max": 4665}
+          },
+          "V_gas": {
+            "value": 1400,
+            "obligation": "given",
+            "accept": {"min": 1399, "max": 1401},
+            "note": "gasdicht abgedecktes Lager: Membrandach plus Kopfraum"
+          },
+          "T_ad": {
+            "value": 293.15,
+            "obligation": "given",
+            "accept": {"min": 292.85, "max": 293.45},
+            "note": "unbeheiztes Lager ~ Umgebungstemperatur"
+          }
+        }
+      },
+      {"id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "F2_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "N1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {
+        "id": "bhkw",
+        "type": "CHP",
+        "label": "BHKW 250 kW (wärmegeführt)",
+        "obligation": "given",
+        "note": "deckt den Prozesswaermebedarf inkl. Regeneration der Waschloesung",
+        "params": {
+          "P_el_nom": {"value": 250.0, "obligation": "given", "accept": {"min": 249.75, "max": 250.25}},
+          "eta_el": {"value": 0.39, "obligation": "given", "accept": {"min": 0.3896, "max": 0.3904}},
+          "eta_th": {"value": 0.46, "obligation": "given", "accept": {"min": 0.4595, "max": 0.4605}}
+        }
+      },
+      {
+        "id": "bgaa",
+        "type": "BiogasUpgrading",
+        "label": "Biogasaufbereitung 350 m³/h",
+        "obligation": "given",
+        "note": "zweiter Verwertungspfad neben dem BHKW — im Datensatz die einzige Anlage mit beiden Abnehmern",
+        "params": {
+          "capacity_m3h": {
+            "value": 350.0,
+            "obligation": "given",
+            "accept": {"min": 349.65, "max": 350.35},
+            "note": "Kapazitaet Rohbiogas; im Regelbetrieb laufen ca. 300 m3/h durch"
+          },
+          "ch4_recovery": {"value": 0.99, "obligation": "given", "accept": {"min": 0.989, "max": 0.991}},
+          "ch4_content_out": {"value": 0.97, "obligation": "given", "accept": {"min": 0.969, "max": 0.971}}
+        }
+      },
+      {
+        "id": "bhkw_flare",
+        "type": "Flare",
+        "obligation": "auto",
+        "auto_created": true,
+        "note": "von add_chp erzeugt; der Input nennt nur eine gemeinsame Notfackel"
+      },
+      {
+        "id": "bgaa_flare",
+        "type": "Flare",
+        "obligation": "auto",
+        "auto_created": true,
+        "note": "von add_bgaa erzeugt — deshalb traegt die Anlage zwei Auto-Fackeln"
+      }
+    ],
+    "connections": [
+      {"from": "F1", "to": "N1", "type": "liquid", "obligation": "given"},
+      {"from": "F2", "to": "N1", "type": "liquid", "obligation": "given"},
+      {"from": "N1", "to": "G1", "type": "liquid", "obligation": "given"},
+      {"from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "F2", "to": "F2_storage", "type": "gas", "obligation": "auto"},
+      {"from": "N1", "to": "N1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "F1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "F1_storage", "to": "bgaa", "type": "gas", "obligation": "inferred"},
+      {"from": "F2_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "F2_storage", "to": "bgaa", "type": "gas", "obligation": "inferred"},
+      {"from": "N1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "N1_storage", "to": "bgaa", "type": "gas", "obligation": "inferred"},
+      {"from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "G1_storage", "to": "bgaa", "type": "gas", "obligation": "inferred"},
+      {"from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto"},
+      {"from": "bgaa", "to": "bgaa_flare", "type": "gas", "obligation": "auto"}
+    ]
+  },
+  "metadata": {"difficulty": "easy", "split": "test"}
+}

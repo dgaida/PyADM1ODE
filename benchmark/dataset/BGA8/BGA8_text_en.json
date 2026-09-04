@@ -1,0 +1,147 @@
+{
+  "id": "BGA8_text_en",
+  "input": {
+    "modality": "text",
+    "language": "en",
+    "content": "Biogas plant BGA8 digests maize silage, grass silage and cattle slurry. A solid feeder with a 40 cubic metre hopper and a hydraulic push-floor charges the solid substrate directly into digester F1; a slurry pre-pit (4×6 m, approx. 40 cubic metres) pumps the cattle slurry into F1 as well.\n\nDigester F1 has a diameter of 20 m and a wall height of 6 m and is equipped with two paddle agitators and one submersible agitator. It carries a dome roof and is operated mesophilically. The digestate flows from F1 into post-digester N1 and from there on into post-digester N2. Both post-digesters are structurally identical: 24 m diameter, 6 m wall height, one long-axis agitator and one submersible agitator each, dome roof, heated. From N2 the digestate passes into digestate store G1 with 26 m diameter, 6 m wall height and two submersible agitators; the store is unheated.\n\nThe biogas of all four tanks is fed through a gas collecting pipe to a CHP unit with a rated electrical output of 300 kW. Air is blown into the gas space of N1 for desulphurisation. An emergency flare rated 300 cubic metres per hour and a condensate shaft are present."
+  },
+  "regime": "underspecified",
+  "reference": {
+    "components": [
+      {
+        "id": "F1",
+        "type": "Digester",
+        "label": "Fermenter 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 1696,
+            "obligation": "missing_ask",
+            "formula": "pi/4*20^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 1679, "max": 1713}
+          },
+          "V_gas": {
+            "value": 385,
+            "obligation": "missing_ask",
+            "accept": {"min": 384, "max": 386},
+            "note": "Kuppeldach plus nicht befuellter Kopfraum"
+          },
+          "T_ad": {
+            "value": 314.15,
+            "obligation": "missing_ask",
+            "accept": {"min": 313.84, "max": 314.46},
+            "rationale": "mesophil bei 41 C — der 40-C-Default liegt ausserhalb des Bandes"
+          }
+        }
+      },
+      {
+        "id": "N1",
+        "type": "Digester",
+        "label": "Nachgärer 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 2443,
+            "obligation": "missing_ask",
+            "formula": "pi/4*24^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 2419, "max": 2467}
+          },
+          "V_gas": {
+            "value": 610,
+            "obligation": "missing_ask",
+            "accept": {"min": 609, "max": 611},
+            "note": "Kuppeldach plus Kopfraum; hier wird auch die Luft zur biologischen Entschwefelung eingeblasen"
+          },
+          "T_ad": {"value": 314.15, "obligation": "missing_ask", "accept": {"min": 313.84, "max": 314.46}}
+        }
+      },
+      {
+        "id": "N2",
+        "type": "Digester",
+        "label": "Nachgärer 2",
+        "obligation": "given",
+        "note": "baugleich zu N1 und dahinter in Reihe geschaltet — zwei Nachgaerer hintereinander gibt es sonst in keiner Anlage des Datensatzes",
+        "params": {"_same_as": "N1"}
+      },
+      {
+        "id": "G1",
+        "type": "Digester",
+        "label": "Gärrestlager",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 2867,
+            "obligation": "missing_ask",
+            "formula": "pi/4*26^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 2838, "max": 2896}
+          },
+          "V_gas": {"value": 719, "obligation": "missing_ask", "accept": {"min": 718, "max": 720}},
+          "T_ad": {
+            "value": 293.15,
+            "obligation": "missing_ask",
+            "accept": {"min": 292.85, "max": 293.45},
+            "note": "unbeheiztes Lager ~ Umgebungstemperatur"
+          }
+        }
+      },
+      {"id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "N1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "N2_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {
+        "id": "bhkw",
+        "type": "CHP",
+        "label": "BHKW 300 kW",
+        "obligation": "given",
+        "params": {
+          "P_el_nom": {"value": 300.0, "obligation": "given", "accept": {"min": 299.7, "max": 300.3}},
+          "eta_el": {"value": 0.4, "obligation": "missing_ask", "accept": {"min": 0.3996, "max": 0.4004}},
+          "eta_th": {"value": 0.45, "obligation": "missing_ask", "accept": {"min": 0.4495, "max": 0.4505}}
+        }
+      },
+      {"id": "bhkw_flare", "type": "Flare", "label": "Notfackel", "obligation": "auto", "auto_created": true}
+    ],
+    "connections": [
+      {
+        "from": "F1",
+        "to": "N1",
+        "type": "liquid",
+        "obligation": "given",
+        "note": "streng serielle Kaskade — kein paralleler Zweig"
+      },
+      {"from": "N1", "to": "N2", "type": "liquid", "obligation": "given"},
+      {"from": "N2", "to": "G1", "type": "liquid", "obligation": "given"},
+      {"from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "N1", "to": "N1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "N2", "to": "N2_storage", "type": "gas", "obligation": "auto"},
+      {"from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "F1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "N1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "N2_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto"}
+    ]
+  },
+  "oracle": {
+    "substrate_feed": "12 t/d Maissilage und 3 t/d Grassilage über den Feststoffdosierer in F1 sowie 12 m³/d Rindergülle aus der Vorgrube in F1; N1, N2 und G1 erhalten keinen Frischfeed",
+    "bgaa.exists": false,
+    "chp.exists": true,
+    "bhkw.P_el_nom": 300.0,
+    "bhkw.eta_el": 0.4,
+    "bhkw.eta_th": 0.45,
+    "F1.V_gas": 385,
+    "N1.V_gas": 610,
+    "N2.V_gas": 610,
+    "G1.V_gas": 719,
+    "F1.T_ad": 314.15,
+    "N1.T_ad": 314.15,
+    "N2.T_ad": 314.15,
+    "G1.T_ad": 293.15,
+    "F1.fill_fraction": 0.9,
+    "N1.fill_fraction": 0.9,
+    "G1.fill_fraction": 0.9,
+    "digestate_cascade": "F1->N1, N1->N2, N2->G1 (streng seriell, kein paralleler Zweig)",
+    "gas_routing": "Alle vier Behälter (F1, N1, N2, G1) speisen das BHKW"
+  },
+  "metadata": {"difficulty": "medium", "split": "test"}
+}

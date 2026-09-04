@@ -1,0 +1,113 @@
+{
+  "id": "BGA5_sketch",
+  "input": {"modality": "image", "language": "de", "image_path": "BGA5_sketch.png"},
+  "regime": "underspecified",
+  "reference": {
+    "components": [
+      {
+        "id": "F1",
+        "type": "Digester",
+        "label": "Fermenter 1",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 831,
+            "obligation": "missing_ask",
+            "formula": "pi/4*14^2*6 * 0.90 (Fuellgrad)",
+            "accept": {"min": 823, "max": 839}
+          },
+          "V_gas": {
+            "value": 160,
+            "obligation": "missing_ask",
+            "accept": {"min": 159, "max": 161},
+            "note": "Doppelmembrandach plus nicht befuellter Kopfraum"
+          },
+          "T_ad": {
+            "value": 311.15,
+            "obligation": "missing_ask",
+            "accept": {"min": 310.84, "max": 311.46},
+            "rationale": "mesophil bei 38 C — nicht die 40 C der uebrigen Anlagen"
+          }
+        }
+      },
+      {
+        "id": "G1",
+        "type": "Digester",
+        "label": "Gärrestlager",
+        "obligation": "given",
+        "params": {
+          "V_liq": {
+            "value": 1414,
+            "obligation": "missing_ask",
+            "formula": "pi/4*20^2*5 * 0.90 (Fuellgrad)",
+            "accept": {"min": 1400, "max": 1428}
+          },
+          "V_gas": {
+            "value": 355,
+            "obligation": "missing_ask",
+            "accept": {"min": 354, "max": 356},
+            "note": "gasdicht abgedecktes Lager: Membrandach plus Kopfraum"
+          },
+          "T_ad": {
+            "value": 293.15,
+            "obligation": "missing_ask",
+            "accept": {"min": 292.85, "max": 293.45},
+            "note": "unbeheiztes Lager ~ Umgebungstemperatur"
+          }
+        }
+      },
+      {"id": "F1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {"id": "G1_storage", "type": "GasStorage", "obligation": "auto", "auto_created": true},
+      {
+        "id": "bhkw",
+        "type": "CHP",
+        "label": "BHKW 75 kW",
+        "obligation": "given",
+        "params": {
+          "P_el_nom": {"value": 75.0, "obligation": "given", "accept": {"min": 74.9, "max": 75.1}},
+          "eta_el": {"value": 0.37, "obligation": "missing_ask", "accept": {"min": 0.3696, "max": 0.3704}},
+          "eta_th": {"value": 0.44, "obligation": "missing_ask", "accept": {"min": 0.4396, "max": 0.4404}}
+        }
+      },
+      {
+        "id": "bhkw_flare",
+        "type": "Flare",
+        "obligation": "auto",
+        "auto_created": true,
+        "note": "von add_chp erzeugt; die Anlage selbst hat keine Fackel, sondern nur kombinierte Ueber-/Unterdrucksicherungen"
+      }
+    ],
+    "connections": [
+      {
+        "from": "F1",
+        "to": "G1",
+        "type": "liquid",
+        "obligation": "inferred",
+        "note": "kein Nachgaerer: der Gaerrest laeuft direkt ins Lager"
+      },
+      {"from": "F1", "to": "F1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "G1", "to": "G1_storage", "type": "gas", "obligation": "auto"},
+      {"from": "F1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "G1_storage", "to": "bhkw", "type": "gas", "obligation": "inferred"},
+      {"from": "bhkw", "to": "bhkw_flare", "type": "gas", "obligation": "auto"}
+    ]
+  },
+  "oracle": {
+    "substrate_feed": "ca. 20 m³/d Rindergülle aus der Vorgrube in F1 sowie 3 t/d Rindermist und 0,8 t/d Grassilage über den Dosierer in F1",
+    "bgaa.exists": false,
+    "chp.exists": true,
+    "postdigester.exists": false,
+    "bhkw.P_el_nom": 75.0,
+    "bhkw.eta_el": 0.37,
+    "bhkw.eta_th": 0.44,
+    "F1.V_gas": 160,
+    "G1.V_gas": 355,
+    "F1.T_ad": 311.15,
+    "G1.T_ad": 293.15,
+    "F1.fill_fraction": 0.9,
+    "G1.fill_fraction": 0.9,
+    "digestate_cascade": "F1->G1",
+    "gas_routing": "Beide Behälter (F1, G1) speisen das BHKW"
+  },
+  "metadata": {"difficulty": "hard", "split": "test"}
+}

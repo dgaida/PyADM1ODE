@@ -370,6 +370,18 @@ $$
 + F_{AN} - F_{CAT} \Bigr]  
 $$
 
+!!! warning "Convention: the ion term assumes $S_{cation} = 0$"
+    The term $F_{AN} - F_{CAT}$ subtracts the strong-ion difference, because
+    the ADM1da substrate characterisation fixes $S_{cation} \equiv 0$ and
+    derives $S_{anion}$ from the charge balance. A state that carries its
+    buffer as strong cations instead therefore reports too little acid
+    capacity — negative in the extreme. The pre-inoculated initial state
+    follows the same convention, and tanks without a substrate feed of their
+    own (post-digesters, stores) are seeded with the ammonium of the ADM1da
+    reference inoculum rather than with zero nitrogen. Should the formula
+    still yield $\text{TAC} \le 0$, PyADM1ODE reports `NaN` and warns once —
+    this keeps FOS/TAC from exploding on a denominator drifting through zero.
+
 !!! note "Prefactor 50 vs 100"
     The TAC formula as written in Schlattmann (2011) uses the molar mass of
     CaCO₃ (100 kg/kmol) as prefactor. The physically correct value is the

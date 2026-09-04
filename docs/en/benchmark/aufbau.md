@@ -5,7 +5,7 @@ plant several task variants. This page explains how everything fits together.
 
 ## Plants as building blocks
 
-Each plant lives in its own folder. There are currently three example plants that
+Each plant lives in its own folder. There are currently eleven example plants that
 differ in size and equipment:
 
 | Plant    | Short description                                                        |
@@ -13,16 +13,24 @@ differ in size and equipment:
 | **BGA1** | Large plant: two fermenters, secondary digester, digestate store, biogas upgrading, separator |
 | **BGA2** | Small plant: one fermenter, secondary digester, digestate store, combined heat and power unit |
 | **BGA3** | Medium plant: two fermenters, secondary digester, digestate store, combined heat and power unit |
+| **BGA4** | Real plant (250 kW): digester, post-digester, digestate store, combined heat and power unit |
+| **BGA5** | Small slurry plant (75 kW): fermenter and gas-tight digestate store only, no secondary digester |
+| **BGA6** | Energy-crop plant (360 kW): horizontal plug-flow digester (thermophilic), secondary digester, digestate store, separator with press-water recirculation |
+| **BGA7** | Flexibilised plant (800 kW): two fermenters in series, gas-tight and open digestate store, separator, **two** CHP units |
+| **BGA8** | Four-stage chain (300 kW): fermenter, **two identical secondary digesters in series**, digestate store, combined heat and power unit |
+| **BGA9** | Four-stage chain (400 kW): fermenter, secondary digester, **two gas-tight digestate stores in series**, combined heat and power unit |
+| **BGA10** | **Two parallel lines** (750 kW): one fermenter and one secondary digester per line, shared digestate store, combined heat and power unit — five tanks |
+| **BGA11** | **Two gas consumers** (250 kW + 350 m³/h): two fermenters, secondary digester, digestate store, combined heat and power unit **and** biogas upgrading in parallel |
 
 !!! info "BGA = biogas plant"
     "BGA" simply stands for the German *Biogasanlage* (biogas plant). The number
-    distinguishes the three examples.
+    distinguishes the eleven examples.
 
 ## Variants: the same plant, described differently
 
 For each plant there is the **same** biogas plant, but **described in different
 ways**. This makes it possible to test whether the AI is robust – regardless of
-whether the description is long, short, in English, a sketch or a PDF document.
+whether the description is long, short, in English or a sketch.
 
 Two properties are combined here:
 
@@ -32,7 +40,6 @@ Two properties are combined here:
 - **terse text** – only the key figures  
 - **English text** – the same plant in English  
 - **sketch** – a drawing of the plant (image)  
-- **PDF** – a real plant document, e.g. a written quotation  
 
 **2. How complete the description is**
 
@@ -40,6 +47,13 @@ Two properties are combined here:
   AI does not need to ask anything.  
 - **incomplete**: Some information is missing (e.g. the operating temperature). The  
   AI has to **ask** the oracle for it — a guess is practically never close enough.
+
+!!! note "For the sketch the text adds only what is missing"
+    In the complete variant `…_sketch_full` the supplementary text states **only
+    what the image does not carry itself**. The sketch labels dimensions and CHP
+    power — the supplement does not repeat that, it supplies the operating
+    temperature, the fill level, the gas space, the efficiencies and the path of
+    the digestate. That keeps the task tied to actually reading the sketch.
 
 !!! example "Example"
     `BGA2_terse_de_full` means: plant **BGA2**, **terse** description, in **German**
@@ -68,6 +82,14 @@ Dataset/
     gold.py                   the shared reference solution
   BGA2/  …                   ← plant 2 (same layout)
   BGA3/  …                   ← plant 3 (same layout)
+  BGA4/  …                   ← plant 4 (same layout)
+  BGA5/  …                   ← plant 5 (same layout, no secondary digester)
+  BGA6/  …                   ← plant 6 (same layout, plug-flow digester)
+  BGA7/  …                   ← plant 7 (same layout, two CHP units)
+  BGA8/  …                   ← plant 8 (same layout, serial chain)
+  BGA9/  …                   ← plant 9 (same layout, two stores)
+  BGA10/ …                   ← plant 10 (same layout, two parallel lines)
+  BGA11/ …                   ← plant 11 (same layout, CHP + upgrading)
 ```
 
 !!! note "What is a `.json` file?"
