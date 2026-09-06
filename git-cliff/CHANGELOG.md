@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Features
+
+- Enhance state management in Component class and refine package data inclusion  
+
+## [0.6.0] - 2026-09-04
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
 ## [0.5.9] - 2026-08-14
 
 ### Features
