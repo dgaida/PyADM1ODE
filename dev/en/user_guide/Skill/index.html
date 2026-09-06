@@ -3723,7 +3723,11 @@ pressure head, and pump efficiency.</p>
 <h4 id="get_state">get_state<a class="headerlink" href="#get_state" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="n">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'dict[str, Any]'</span>
 </code></pre></div>
-<p>Get current component state.</p>
+<p>Get current component state as an independent snapshot.</p>
+<p>The copy is deep on purpose: <code>state</code> holds references to the live
+containers a component integrates in place (<code>adm1_state</code> above all),
+so a shallow copy would keep mutating with the component and be
+worthless as a snapshot.</p>
 <h4 id="initialize_1">initialize<a class="headerlink" href="#initialize_1" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="s1">'dict[str, Any] | None'</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'None'</span>
 </code></pre></div>
@@ -3738,7 +3742,12 @@ pressure head, and pump efficiency.</p>
 <h4 id="set_state">set_state<a class="headerlink" href="#set_state" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a><span class="n">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="s1">'dict[str, Any]'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'None'</span>
 </code></pre></div>
-<p>Set component state.</p>
+<p>Restore a state previously taken with :meth:<code>get_state</code>.</p>
+<p><code>state</code> is a report of the attributes a component computes from, so
+assigning the dict alone would leave the component running on its old
+values -- restoring <code>adm1_state</code> has to reach <code>self.adm1_state</code>,
+not just <code>self.state["adm1_state"]</code>. Every key that names an
+existing writable attribute is therefore mirrored back onto it.</p>
 <h4 id="step_1">step<a class="headerlink" href="#step_1" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="s1">'dict[str, Any]'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'dict[str, Any]'</span>
 </code></pre></div>
@@ -3835,7 +3844,11 @@ operating conditions, and fluid properties.</p>
 <h4 id="get_state_1">get_state<a class="headerlink" href="#get_state_1" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a><span class="n">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'dict[str, Any]'</span>
 </code></pre></div>
-<p>Get current component state.</p>
+<p>Get current component state as an independent snapshot.</p>
+<p>The copy is deep on purpose: <code>state</code> holds references to the live
+containers a component integrates in place (<code>adm1_state</code> above all),
+so a shallow copy would keep mutating with the component and be
+worthless as a snapshot.</p>
 <h4 id="initialize_2">initialize<a class="headerlink" href="#initialize_2" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="s1">'dict[str, Any] | None'</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'None'</span>
 </code></pre></div>
@@ -3849,7 +3862,12 @@ operating conditions, and fluid properties.</p>
 <h4 id="set_state_1">set_state<a class="headerlink" href="#set_state_1" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="n">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="s1">'dict[str, Any]'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'None'</span>
 </code></pre></div>
-<p>Set component state.</p>
+<p>Restore a state previously taken with :meth:<code>get_state</code>.</p>
+<p><code>state</code> is a report of the attributes a component computes from, so
+assigning the dict alone would leave the component running on its old
+values -- restoring <code>adm1_state</code> has to reach <code>self.adm1_state</code>,
+not just <code>self.state["adm1_state"]</code>. Every key that names an
+existing writable attribute is therefore mirrored back onto it.</p>
 <h4 id="step_2">step<a class="headerlink" href="#step_2" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="s1">'dict[str, Any]'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'dict[str, Any]'</span>
 </code></pre></div>
@@ -3934,7 +3952,11 @@ quality degradation, and capacity management. Supports both solid
 <h4 id="get_state_2">get_state<a class="headerlink" href="#get_state_2" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-62-1" name="__codelineno-62-1" href="#__codelineno-62-1"></a><span class="n">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'dict[str, Any]'</span>
 </code></pre></div>
-<p>Get current component state.</p>
+<p>Get current component state as an independent snapshot.</p>
+<p>The copy is deep on purpose: <code>state</code> holds references to the live
+containers a component integrates in place (<code>adm1_state</code> above all),
+so a shallow copy would keep mutating with the component and be
+worthless as a snapshot.</p>
 <h4 id="initialize_3">initialize<a class="headerlink" href="#initialize_3" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="s1">'dict[str, Any] | None'</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'None'</span>
 </code></pre></div>
@@ -3948,7 +3970,12 @@ quality degradation, and capacity management. Supports both solid
 <h4 id="set_state_2">set_state<a class="headerlink" href="#set_state_2" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-64-1" name="__codelineno-64-1" href="#__codelineno-64-1"></a><span class="n">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="s1">'dict[str, Any]'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'None'</span>
 </code></pre></div>
-<p>Set component state.</p>
+<p>Restore a state previously taken with :meth:<code>get_state</code>.</p>
+<p><code>state</code> is a report of the attributes a component computes from, so
+assigning the dict alone would leave the component running on its old
+values -- restoring <code>adm1_state</code> has to reach <code>self.adm1_state</code>,
+not just <code>self.state["adm1_state"]</code>. Every key that names an
+existing writable attribute is therefore mirrored back onto it.</p>
 <h4 id="step_3">step<a class="headerlink" href="#step_3" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-65-1" name="__codelineno-65-1" href="#__codelineno-65-1"></a><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="s1">'dict[str, Any]'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'dict[str, Any]'</span>
 </code></pre></div>
@@ -4029,7 +4056,11 @@ capacity limits, and power consumption.</p>
 <h4 id="get_state_3">get_state<a class="headerlink" href="#get_state_3" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-72-1" name="__codelineno-72-1" href="#__codelineno-72-1"></a><span class="n">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'dict[str, Any]'</span>
 </code></pre></div>
-<p>Get current component state.</p>
+<p>Get current component state as an independent snapshot.</p>
+<p>The copy is deep on purpose: <code>state</code> holds references to the live
+containers a component integrates in place (<code>adm1_state</code> above all),
+so a shallow copy would keep mutating with the component and be
+worthless as a snapshot.</p>
 <h4 id="initialize_4">initialize<a class="headerlink" href="#initialize_4" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-73-1" name="__codelineno-73-1" href="#__codelineno-73-1"></a><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">:</span> <span class="s1">'dict[str, Any] | None'</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'None'</span>
 </code></pre></div>
@@ -4044,7 +4075,12 @@ capacity limits, and power consumption.</p>
 <h4 id="set_state_3">set_state<a class="headerlink" href="#set_state_3" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-74-1" name="__codelineno-74-1" href="#__codelineno-74-1"></a><span class="n">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="s1">'dict[str, Any]'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'None'</span>
 </code></pre></div>
-<p>Set component state.</p>
+<p>Restore a state previously taken with :meth:<code>get_state</code>.</p>
+<p><code>state</code> is a report of the attributes a component computes from, so
+assigning the dict alone would leave the component running on its old
+values -- restoring <code>adm1_state</code> has to reach <code>self.adm1_state</code>,
+not just <code>self.state["adm1_state"]</code>. Every key that names an
+existing writable attribute is therefore mirrored back onto it.</p>
 <h4 id="step_4">step<a class="headerlink" href="#step_4" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-75-1" name="__codelineno-75-1" href="#__codelineno-75-1"></a><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="s1">'dict[str, Any]'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'dict[str, Any]'</span>
 </code></pre></div>
