@@ -2,11 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.5.8] - 2026-08-04
+## [0.5.9] - 2026-08-14
 
 ### Features
 
 - Update default temperatures and feedstock handling in ADM1 and related components  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
+## [0.5.8] - 2026-08-04
 
 ### Miscellaneous Tasks
 
@@ -84,15 +90,15 @@ All notable changes to this project will be documented in this file.
 
 ## [0.4.8] - 2026-06-18
 
+### Features
+
+- Add matplotlib as a dependency  
+
 ### Miscellaneous Tasks
 
 - Auto version and badges [skip ci]  
 
 ## [0.4.7] - 2026-06-18
-
-### Features
-
-- Add matplotlib as a dependency  
 
 ### Miscellaneous Tasks
 
@@ -174,15 +180,15 @@ All notable changes to this project will be documented in this file.
 
 ## [0.3.8] - 2026-05-18
 
+### Bug Fixes
+
+- Ensure CHP thermal output is delivered to heaters on first step  
+
 ### Miscellaneous Tasks
 
 - Auto version and badges [skip ci]  
 
 ## [0.3.7] - 2026-05-17
-
-### Bug Fixes
-
-- Ensure CHP thermal output is delivered to heaters on first step  
 
 ### Miscellaneous Tasks
 
