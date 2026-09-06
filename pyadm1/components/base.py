@@ -7,6 +7,7 @@ Base classes for biogas plant components.
 
 from __future__ import annotations
 
+import copy
 from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Any
@@ -130,12 +131,30 @@ class Component(ABC):
         """
 
     def get_state(self) -> dict[str, Any]:
-        """Get current component state."""
-        return self.state.copy()
+        """Get current component state as an independent snapshot.
+
+        The copy is deep on purpose: ``state`` holds references to the live
+        containers a component integrates in place (``adm1_state`` above all),
+        so a shallow copy would keep mutating with the component and be
+        worthless as a snapshot.
+        """
+        return copy.deepcopy(self.state)
 
     def set_state(self, state: dict[str, Any]) -> None:
-        """Set component state."""
-        self.state = state.copy()
+        """Restore a state previously taken with :meth:`get_state`.
+
+        ``state`` is a report of the attributes a component computes from, so
+        assigning the dict alone would leave the component running on its old
+        values -- restoring ``adm1_state`` has to reach ``self.adm1_state``,
+        not just ``self.state["adm1_state"]``. Every key that names an
+        existing writable attribute is therefore mirrored back onto it.
+        """
+        self.state = copy.deepcopy(state)
+        for key, value in self.state.items():
+            if isinstance(getattr(type(self), key, None), property):
+                continue  # computed, has no setter
+            if hasattr(self, key):
+                setattr(self, key, value)
 
     def add_input(self, component_id: str) -> None:
         """Add an input connection."""

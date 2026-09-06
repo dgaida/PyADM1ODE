@@ -86,12 +86,20 @@ Documentation = "https://github.com/dgaida/PyADM1ODE#readme"
 pyadm1-simulate = "pyadm1.cli:main"
 
 [tool.setuptools]
-packages = {find = {}}
+# Ship the library and the bundled data only. Without the include filter,
+# find's default `namespaces = true` turned every directory into a package:
+# the wheel carried benchmark/, output/, scripts/, site/ and tests/ as well
+# (197 files, 56 of them CSVs from output/).
+packages = {find = {include = ["pyadm1*", "data*"]}}
 
 [tool.setuptools.package-data]
 pyadm1 = ["dlls/*.dll", "py.typed"]
-# Include data files in package
-"*" = ["*.xml", "*.csv"]
+# The substrate library is YAML; listing only xml/csv silently shipped a wheel
+# whose SubstrateRegistry found zero substrates. data/ stays a top-level
+# package because SubstrateRegistry resolves it relative to pyadm1's parent.
+# (a wildcard key is not allowed here; "*" applies to every package, which
+# after the include filter above means pyadm1 and data only)
+"*" = ["*.yaml", "*.yml", "*.toml", "*.xml", "*.csv", "*.md"]
 
 [tool.black]
 line-length = 127
