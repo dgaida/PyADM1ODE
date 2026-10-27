@@ -56,8 +56,8 @@ PyADM1ODE ist ein umfassendes Python-Framework für die Modellierung landwirtsch
 
 Für weiterführende Aufgaben wie Parameterkalibrierung und Zustandsschätzung stehen spezialisierte Ökosystem-Erweiterungen zur Verfügung:
 
-- **[PyADM1ODE Calibration](https://dgaida.github.io/PyADM1ODE_calibration/latest/)**: Parameterkalibrierung für Biogasanlagenmodelle. Ermöglicht die Anpassung von ADM1-Parametern an historische Messdaten (Initialkalibrierung) sowie die fortlaufende Online-Rekalibrierung im Betrieb inklusive Sensitivitäts- und Identifizierbarkeitsanalysen.
-- **[PyADM1ODE Estimate](https://dgaida.github.io/PyADM1ODE_estimate/latest/)**: Zustandsschätzung für Biogasanlagen im Live-Betrieb basierend auf laufenden Sensordaten. Nutzt Verfahren wie den Unscented Kalman Filter (UKF), Deep-Learning-Ensembles und Sensor-Fusion, um nicht direkt messbare Anlagenzustände als Grundlage für Regelungen und Fütterungsempfehlungen zu schätzen.
+- **[PyADM1ODE Calibration](https://dgaida.github.io/PyADM1ODE_calibration/latest/)**: Parameterkalibrierung für Biogasanlagenmodelle. Ermöglicht die Anpassung von ADM1-Parametern an historische Messdaten (Initialkalibrierung) sowie die fortlaufende Online-Rekalibrierung im Betrieb inklusive Sensitivitäts- und Identifizierbarkeitsanalysen.  
+- **[PyADM1ODE Estimate](https://dgaida.github.io/PyADM1ODE_estimate/latest/)**: Zustandsschätzung für Biogasanlagen im Live-Betrieb basierend auf laufenden Sensordaten. Nutzt Verfahren wie den Unscented Kalman Filter (UKF), Deep-Learning-Ensembles und Sensor-Fusion, um nicht direkt messbare Anlagenzustände als Grundlage für Regelungen und Fütterungsempfehlungen zu schätzen.  
 
 ## Kurzes Beispiel
 
