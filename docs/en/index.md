@@ -52,6 +52,13 @@ PyADM1ODE is a comprehensive Python framework for agricultural biogas plant mode
 - **Real-world applicability**: Validated with data from operating biogas plants.  
 - **Python ecosystem**: Integrates with NumPy, SciPy, Pandas, and visualization libraries.  
 
+## Toolbox Extensions
+
+Specialized ecosystem extensions are available for advanced tasks such as parameter calibration and state estimation:
+
+- **[PyADM1ODE Calibration](https://dgaida.github.io/PyADM1ODE_calibration/latest/)**: Parameter calibration framework for biogas plant models. Fits ADM1 parameters to historical plant data (initial calibration) and supports continuous online recalibration during operation, along with sensitivity and identifiability analyses.
+- **[PyADM1ODE Estimate](https://dgaida.github.io/PyADM1ODE_estimate/latest/)**: Real-time state estimation for biogas plants using live sensor measurements. Employs methods such as the Unscented Kalman Filter (UKF), deep learning ensembles, and sensor fusion to estimate unmeasurable plant states as input for control algorithms and feeding recommendations.
+
 ## Quick Example
 
 Build and simulate a complete biogas plant in just a few lines:
