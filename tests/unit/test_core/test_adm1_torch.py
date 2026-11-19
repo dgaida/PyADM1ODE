@@ -462,9 +462,9 @@ def test_quasi_steady_species_flows_follow_the_partial_pressures():
     _p_h2, p_ch4, p_co2, pTOTAL = gas_equilibrium_torch(x, params).tolist()
     q_gas, q_ch4, q_co2 = (t.item() for t in calc_gas_quasi_steady_torch(x, params))
 
-    p_gas_wet = pTOTAL + params.p_gas_h2o
-    assert q_ch4 == pytest.approx(q_gas * p_ch4 / p_gas_wet, rel=1e-12)
-    assert q_co2 == pytest.approx(q_gas * p_co2 / p_gas_wet, rel=1e-12)
+    # Dry gas: split by the dry partial pressures, as in the numpy model.
+    assert q_ch4 == pytest.approx(q_gas * p_ch4 / pTOTAL, rel=1e-12)
+    assert q_co2 == pytest.approx(q_gas * p_co2 / pTOTAL, rel=1e-12)
 
 
 def test_quasi_steady_methane_flow_scales_with_dissolved_methane():

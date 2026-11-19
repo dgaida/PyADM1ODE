@@ -18,7 +18,10 @@ class TestHeatingInitialization:
         # 315.15 K (42 °C) matches the Digester/ADM1 default, so a heating
         # system left at its default does not fight the digester it serves.
         assert heating.target_temperature == 315.15
-        assert heating.heat_loss_coefficient == 0.5
+        # No coefficient of its own: a connected digester may supply one, and
+        # 0.5 kW/K applies when none does.
+        assert heating.heat_loss_coefficient is None
+        assert heating.state["heat_loss_coefficient_used"] == 0.5
 
     def test_initialize_sets_state_and_outputs(self) -> None:
         heating = HeatingSystem("heat_1")
@@ -256,7 +259,37 @@ class TestCalcProcessHeatKw:
         full = heating_module._calc_process_heat_kw([5.0, 5.0], fs, 308.15, 288.15)
         assert math.isclose(truncated, full, rel_tol=1e-9)
 
-    def test_step_invokes_calc_with_feedstock_and_t_ambient(self) -> None:
+    def test_each_substrate_starts_at_its_own_temperature(self) -> None:
+        cold, warm = _stub_substrate(), _stub_substrate()
+        cold.Temp, warm.Temp = 5.0, 25.0
+        fs = _stub_feedstock([1000.0, 1000.0], [cold, warm])
+        cp = heating_module._substrate_cp(cold)
+
+        out = heating_module._calc_process_heat_kw([10.0, 10.0], fs, 308.15)
+
+        expected = 10.0 * 1000.0 * cp * (30.0 + 10.0) / 86400.0
+        assert math.isclose(out, expected, rel_tol=1e-9)
+
+    def test_substrate_warmer_than_target_needs_no_heat(self) -> None:
+        hot = _stub_substrate()
+        hot.Temp = 60.0
+        fs = _stub_feedstock([1000.0], [hot])
+        assert heating_module._calc_process_heat_kw([10.0], fs, 308.15) == 0.0
+
+    def test_ambient_temperature_does_not_change_process_heat(self) -> None:
+        s = _stub_substrate()
+        s.Temp = 15.0
+        heating = HeatingSystem(
+            "heat_1", target_temperature=308.15, heat_loss_coefficient=0.0, feedstock=_stub_feedstock([1000.0], [s])
+        )
+
+        mild = heating.step(0.0, 1.0 / 24.0, {"T_ambient": 288.15, "Q_substrates": [10.0]})["P_aux_heat"]
+        frost = heating.step(0.0, 1.0 / 24.0, {"T_ambient": 263.15, "Q_substrates": [10.0]})["P_aux_heat"]
+
+        assert mild > 0.0
+        assert math.isclose(mild, frost, rel_tol=1e-12)
+
+    def test_step_invokes_calc_with_feedstock_and_t_substrate(self) -> None:
         s = _stub_substrate()
         fs = _stub_feedstock([1000.0], [s])
         heating = HeatingSystem(
@@ -270,7 +303,8 @@ class TestCalcProcessHeatKw:
             dt=1.0 / 24.0,
             inputs={
                 "T_digester": 308.15,
-                "T_ambient": 288.15,
+                "T_ambient": 263.15,
+                "T_substrate": 288.15,
                 "P_th_available": 0.0,
                 "Q_substrates": [10.0],
             },

@@ -28,14 +28,12 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Chemistry",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
     "numpy>=1.20.0",
     "pandas>=1.3.0",
@@ -50,17 +48,17 @@ dependencies = [
 dev = [
     "pytest>=7.0",
     "pytest-cov>=3.0",
-    "pytest-asyncio>=0.21.0",
-    "psycopg2-binary>=2.9.0",
     "black>=23.0",
-    "flake8>=6.0",
+    "ruff>=0.5.0",
     "mypy>=1.0",
-    "isort>=5.0",
 ]
 docs = [
-    "sphinx>=5.0",
-    "sphinx-rtd-theme>=1.0",
-    "sphinx-autodoc-typehints>=1.0",
+    "mkdocs-material",
+    "mkdocs-static-i18n",
+    "mkdocstrings[python]",
+    "mkdocs-mermaid2-plugin",
+    "mkdocs-autorefs",
+    "mike",
 ]
 # Differentiable ADM1 backend (pyadm1.core.adm1_torch).
 torch = [
@@ -82,9 +80,6 @@ Repository = "https://github.com/dgaida/PyADM1ODE"
 Documentation = "https://github.com/dgaida/PyADM1ODE#readme"
 "Bug Tracker" = "https://github.com/dgaida/PyADM1ODE/issues"
 
-[project.scripts]
-pyadm1-simulate = "pyadm1.cli:main"
-
 [tool.setuptools]
 # Ship the library and the bundled data only. Without the include filter,
 # find's default `namespaces = true` turned every directory into a package:
@@ -93,7 +88,7 @@ pyadm1-simulate = "pyadm1.cli:main"
 packages = {find = {include = ["pyadm1*", "data*"]}}
 
 [tool.setuptools.package-data]
-pyadm1 = ["dlls/*.dll", "py.typed"]
+pyadm1 = ["py.typed"]
 # The substrate library is YAML; listing only xml/csv silently shipped a wheel
 # whose SubstrateRegistry found zero substrates. data/ stays a top-level
 # package because SubstrateRegistry resolves it relative to pyadm1's parent.
@@ -103,7 +98,7 @@ pyadm1 = ["dlls/*.dll", "py.typed"]
 
 [tool.black]
 line-length = 127
-target-version = ["py38", "py39", "py310", "py311"]
+target-version = ["py310", "py311"]
 include = '\.pyi?$'
 exclude = '''
 /(
@@ -116,13 +111,12 @@ exclude = '''
   | buck-out
   | build
   | dist
-  | dlls
 )/
 '''
 
 [tool.ruff]
 line-length = 127
-target-version = "py38"
+target-version = "py310"
 
 [tool.ruff.lint]
 # Curated strict rule set: modernization, safety and simplification. The noisy
@@ -175,7 +169,7 @@ skip_gitignore = true
 known_first_party = ["pyadm1"]
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
@@ -211,7 +205,6 @@ addopts = [
 source = ["pyadm1"]
 omit = [
     "*/tests/*",
-    "*/dlls/*",
 ]
 
 [tool.interrogate]
@@ -226,7 +219,7 @@ ignore-nested-functions = false
 ignore-nested-classes = false
 ignore-setters = false
 fail-under = 95
-exclude = ["setup.py", "docs", "build", "dist", "tests", "pyadm1/dlls"]
+exclude = ["setup.py", "docs", "build", "dist", "tests"]
 ignore-regex = ["^get$", "^mock_.*", ".*BaseClass.*"]
 verbose = 2
 quiet = false

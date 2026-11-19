@@ -2,11 +2,11 @@
 Acid capacity (TAC) and the charge bookkeeping the ADM1da formula relies on.
 
 The TAC formula of ADM1da (Schlattmann 2011) subtracts the strong-ion
-difference, because the substrate characterisation fixes ``S_cation = 0`` and
-lets ``S_anion`` absorb the charge balance. A pre-inoculated state that carries
-its buffer as strong ions instead of ammonium therefore reported far too little
-acid capacity — negative in long-retention stores, which turned FOS/TAC into a
-division by a value drifting through zero.
+difference ``S_cation - S_anion``, which the substrate characterisation closes
+from the charge balance and splits by sign (both pools non-negative). A
+pre-inoculated state that carried its buffer as strong ions instead of ammonium
+once reported far too little acid capacity — negative in long-retention stores,
+which turned FOS/TAC into a division by a value drifting through zero.
 """
 
 from __future__ import annotations
@@ -35,10 +35,12 @@ def _digester(feedstock, **kwargs):
 
 
 class TestInoculumChargeBookkeeping:
-    def test_cation_follows_the_adm1da_convention(self, feedstock):
-        """``S_cation`` is fixed at zero, exactly as the influent characterisation does."""
+    def test_strong_ions_are_split_by_sign(self, feedstock):
+        """Both strong-ion pools are non-negative and at most one is populated,
+        exactly as the influent characterisation closes the charge balance."""
         state = _digester(feedstock)._build_pre_inoculated_state([20.0, 10.0])
-        assert state[_IDX_S_CATION] == pytest.approx(0.0, abs=1e-12)
+        assert state[_IDX_S_CATION] >= 0.0 and state[_IDX_S_ANION] >= 0.0
+        assert min(state[_IDX_S_CATION], state[_IDX_S_ANION]) == pytest.approx(0.0, abs=1e-12)
 
     def test_tank_without_substrate_still_carries_ammonium(self, feedstock):
         """A post-digester or store is seeded with the reference inoculum, not with zero N."""

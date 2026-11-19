@@ -276,22 +276,22 @@ final = results[-1]
 print("\nFinal results:")
 print(f"Storage level: {final['components']['silo1']['current_level']:.1f} t")
 print(f"Feeder throughput: {final['components']['feed1']['total_mass_fed']:.1f} t")
-print(f"Pump energy: {final['components']['pump1']['energy_consumed']:.1f} kWh")
-print(f"Mixer energy: {final['components']['mix1']['energy_consumed']:.1f} kWh")
+print(f"Pump energy: {pump.state['energy_consumed']:.1f} kWh")
+print(f"Mixer energy: {mixer.state['energy_consumed']:.1f} kWh")
 print(f"Biogas: {final['components']['main_digester']['Q_gas']:.1f} m³/d")
 ```
 
 ### Energy Analysis
 
 ```python
-def calculate_parasitic_load(results):
+def calculate_parasitic_load(plant, results):
     """Compute total parasitic energy consumption."""
     final = results[-1]
     components = final['components']
 
-    # Mechanical components
-    pump_energy = components.get('pump1', {}).get('energy_consumed', 0)
-    mixer_energy = components.get('mix1', {}).get('energy_consumed', 0)
+    # Mechanical components (cumulative energy is kept in the component state)
+    pump_energy = plant.components['pump1'].state['energy_consumed']
+    mixer_energy = plant.components['mix1'].state['energy_consumed']
     feeder_power = components.get('feed1', {}).get('P_consumed', 0)
 
     # CHP production
@@ -309,7 +309,7 @@ def calculate_parasitic_load(results):
         'net_energy': chp_energy - parasitic_total
     }
 
-analysis = calculate_parasitic_load(results)
+analysis = calculate_parasitic_load(plant, results)
 print(f"\nEnergy analysis:")
 print(f"CHP production: {analysis['chp_production']:.0f} kWh")
 print(f"Pump consumption: {analysis['pump_energy']:.0f} kWh")
@@ -327,13 +327,14 @@ print(f"Net production: {analysis['net_energy']:.0f} kWh")
 **Solution:** Check pressure head and speed settings
 
 ```python
+Q_setpoint = 15.0
 result = pump.step(0, 1/24, {
-    'Q_setpoint': 15.0,
+    'Q_setpoint': Q_setpoint,
     'enable_pump': True,
     'pressure_head': 50.0  # Ensure sufficient head
 })
 
-if result['Q_actual'] < 0.5 * result['Q_setpoint']:
+if result['Q_actual'] < 0.5 * Q_setpoint:
     print("Check: pressure head, blockages, power supply")
 ```
 

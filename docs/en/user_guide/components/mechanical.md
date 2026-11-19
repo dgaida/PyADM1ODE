@@ -150,6 +150,42 @@ mixer = Mixer(
 )
 ```
 
+### Coupling to a Digester
+
+`PlantConfigurator.add_mixer` installs a mixer in a digester and takes the tank
+geometry from it, instead of estimating it a second time:
+
+```python
+configurator.add_digester("main_digester", V_liq=3000.0, V_gas=175.0, diameter=20.0)
+mixer = configurator.add_mixer("mixer_main", "main_digester", mixer_type="propeller",
+                               power_installed=15.0)
+# tank_volume = V_liq, tank_diameter = digester.diameter,
+# tank_height = digester.liquid_height
+```
+
+A mixer built on its own assumes a tall tank (`H = 1.5 * D`); for 3000 m³ that
+is 13.7 m diameter where a real agricultural digester has about 20 m.
+
+The two are connected, so the mixer reads `T_digester` and `TS` from the
+digester on every step and updates its apparent viscosity:
+
+```text
+μ = fluid_viscosity · exp(Ea/R · (1/T − 1/T₀)) · exp(b · (TS − ts_reference))
+```
+
+| Parameter                  | Default | Meaning                                                    |
+|----------------------------|---------|------------------------------------------------------------|
+| `fluid_density`            | 1020    | Fluid density [kg/m³]                                      |
+| `fluid_viscosity`          | 0.050   | Apparent viscosity [Pa·s] at 35 °C and `ts_reference`      |
+| `ts_reference`             | 6.0     | Total solids [% FM] at which `fluid_viscosity` holds       |
+| `viscosity_ts_coefficient` | 0.5     | TS sensitivity `b` [1/% TS]; `0` switches the coupling off |
+
+!!! warning "Calibrate the TS sensitivity"
+    The default `b = 0.5` is an order-of-magnitude value for digestate, not a
+    fitted one. Rheology differs strongly between substrates; calibrate it
+    against measured viscosity or measured mixer power. A `fluid_viscosity`
+    step input overrides the model for that step.
+
 ### Mixer Types
 
 | Type | Flow pattern | Best for | Power factor | Typical speed [rpm] |
@@ -189,9 +225,10 @@ mixer = Mixer(
 
 ```python
 {
-    'P_consumed': 12.5,          # Current power [kW]
-    'P_average': 3.1,            # Time-averaged [kW]
-    'is_running': True,          # Operating state
+    'P_consumed': 3.1,           # Mean power over this step [kW]
+    'P_running': 12.5,           # Power while the mixer runs [kW]
+    'P_average': 3.1,            # Long-run average [kW]
+    'is_running': True,          # Ran during this step
     'mixing_quality': 0.85,      # Quality index (0–1)
     'reynolds_number': 15000,    # Flow regime indicator
     'power_number': 0.32,        # Dimensionless power number
@@ -234,6 +271,12 @@ print(f"Mixing time: {result['mixing_time']:.1f} min")
 ```
 
 ### Intermittent Operation
+
+An intermittent mixer cycles once per hour and runs during the first
+`on_time_fraction` of each cycle. `P_consumed` is the mean over the simulation
+step, so energy and operating hours are the same for any step length: 25 %
+on-time gives 6 operating hours per day with five-minute, hourly and daily
+steps alike.
 
 Intermittent mixing reduces energy use:
 
@@ -295,10 +338,10 @@ P_actual = min(P_electrical, power_installed)
 Re = ρ * N * D² / μ
 
 where:
-- ρ = fluid density [kg/m³]
-- N = rotational speed [Hz]
-- D = impeller diameter [m]
-- μ = viscosity [Pa·s]
+- ρ = fluid density [kg/m³]  
+- N = rotational speed [Hz]  
+- D = impeller diameter [m]  
+- μ = viscosity [Pa·s]  
 ```
 
 **Power number (depends on mixer type and Reynolds number):**
@@ -321,11 +364,11 @@ Based on the Nienow correlation:
 θ_mix = C * (D_T/D)^α * (H/D_T)^β / N
 
 where:
-- C, α, β = constants depending on mixer type
-- D_T = tank diameter [m]
-- D = impeller diameter [m]
-- H = tank height [m]
-- N = rotational speed [Hz]
+- C, α, β = constants depending on mixer type  
+- D_T = tank diameter [m]  
+- D = impeller diameter [m]  
+- H = tank height [m]  
+- N = rotational speed [Hz]  
 ```
 
 **Typical constants:**
@@ -361,7 +404,7 @@ feed_pump = Pump(
 plant.add_component(feed_pump)
 
 # 2. Digester
-digester, storage = config.add_digester(
+digester, _ = config.add_digester(
     "main_digester",
     V_liq=2000,
     Q_substrates=[15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -411,19 +454,19 @@ plant.initialize()
 results = plant.simulate(duration=30, dt=1/24, save_interval=1.0)
 
 # Mechanical energy analysis
-def mechanical_energy_analysis(results):
+def mechanical_energy_analysis(plant, results):
     """Analyze mechanical energy consumption."""
     final = results[-1]
     comp = final['components']
 
-    # Pump energy
-    feed_pump_energy = comp['feed_pump']['energy_consumed']
-    recirc_pump_energy = comp['recirc_pump']['energy_consumed']
-    digestate_pump_energy = comp['digestate_pump']['energy_consumed']
+    # Pump energy (cumulative, kept in the component state)
+    feed_pump_energy = plant.components['feed_pump'].state['energy_consumed']
+    recirc_pump_energy = plant.components['recirc_pump'].state['energy_consumed']
+    digestate_pump_energy = plant.components['digestate_pump'].state['energy_consumed']
     total_pump_energy = feed_pump_energy + recirc_pump_energy + digestate_pump_energy
 
     # Mixer energy
-    mixer_energy = comp['main_mixer']['energy_consumed']
+    mixer_energy = plant.components['main_mixer'].state['energy_consumed']
 
     # Total mechanical energy
     total_mech_energy = total_pump_energy + mixer_energy
@@ -446,7 +489,7 @@ def mechanical_energy_analysis(results):
         'net_energy': chp_energy - total_mech_energy
     }
 
-analysis = mechanical_energy_analysis(results)
+analysis = mechanical_energy_analysis(plant, results)
 print("\nMechanical energy analysis:")
 print(f"Feed pump: {analysis['feed_pump']:.0f} kWh")
 print(f"Recirculation pump: {analysis['recirc_pump']:.0f} kWh")

@@ -72,7 +72,7 @@ _DEFAULT_SENSOR_CONFIG: dict[ChemicalSensorType, dict[str, Any]] = {
     },
     ChemicalSensorType.AMMONIA: {
         "signal_key": "ammonia",
-        "candidate_keys": ("ammonia", "NH3", "TAN", "S_nh3", "S_nh4"),
+        "candidate_keys": ("ammonia", "TAN", "NH3", "S_nh3", "S_nh4"),
         "measurement_range": (0.0, 10.0),
         "unit": "g/L",
         "analyzer_method": ChemicalAnalyzerMethod.ION_SELECTIVE.value,
@@ -414,6 +414,7 @@ class ChemicalSensor(AbstractSensor):
             unit=config.get("unit"),
             output_key=config.get("output_key"),
             name=config.get("name"),
+            rng_seed=config.get("rng_seed"),
         )
         cls._restore_io(sensor, config)
         return sensor

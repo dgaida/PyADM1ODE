@@ -69,6 +69,32 @@ class TestADM1ODE:
         assert len(dydt) == STATE_SIZE
         assert all(np.isfinite(d) for d in dydt)
 
+    @pytest.mark.parametrize(("total", "subset"), [(9, 35), (10, 36)])
+    def test_acid_base_reaction_does_not_change_the_total(
+        self, model: ADM1, feedstock: Feedstock, total: int, subset: int
+    ) -> None:
+        """An acid-base reaction only shifts between the forms inside a total.
+
+        ``S_co2`` and ``S_nh4`` are totals, ``S_hco3`` and ``S_nh3`` subsets of
+        them. Switching the acid-base kinetics off changes the derivative of
+        the subset (pH comes from the algebraic charge balance and does not
+        depend on ``k_A_B``), but must leave the total untouched, otherwise
+        carbon and nitrogen leak.
+        """
+        model.set_influent_dataframe(feedstock.get_influent_dataframe(Q=[11.4, 6.1]))
+        model.create_influent([11.4, 6.1], 0)
+        state = [0.01] * STATE_SIZE
+        state[9], state[35] = 0.15, 0.14
+        state[10], state[36] = 0.20, 0.005
+        state[37:41] = [1.0e-5, 0.65, 0.33, 0.65 + 0.33 + 1.0e-5]
+
+        with_reaction = np.asarray(model.ADM_ODE(0.0, state))
+        model._inhib_params = {**model._inhib_params, "k_A_B": 0.0}
+        without_reaction = np.asarray(model.ADM_ODE(0.0, state))
+
+        assert abs(with_reaction[subset] - without_reaction[subset]) > 1.0e-3
+        assert with_reaction[total] == pytest.approx(without_reaction[total], rel=1e-12, abs=1e-15)
+
     def test_calc_gas_returns_five_values(self, model: ADM1) -> None:
         q_gas, q_ch4, q_co2, q_h2o, p_gas = model.calc_gas(1.0e-5, 0.65, 0.33, 0.98 + 1.0e-5)
 
@@ -83,26 +109,45 @@ class TestADM1ODE:
         q_gas, *_ = model.calc_gas(0.0, 0.0, 0.0, 0.0)
         assert q_gas == 0.0
 
-    def test_calc_gas_species_split_follows_the_wet_partial_pressures(self, model: ADM1) -> None:
+    def test_calc_gas_species_split_follows_the_dry_partial_pressures(self, model: ADM1) -> None:
+        """The reported gas is dry: methane, CO2 and hydrogen add up to the total."""
         p_h2, p_ch4, p_co2, pTOTAL = 1.0e-5, 0.65, 0.33, 1.3
         q_gas, q_ch4, q_co2, q_h2o, p_gas = model.calc_gas(p_h2, p_ch4, p_co2, pTOTAL)
 
-        p_gas_wet = p_gas + model._p_gas_h2o
-        assert q_ch4 == pytest.approx(q_gas * p_ch4 / p_gas_wet)
-        assert q_co2 == pytest.approx(q_gas * p_co2 / p_gas_wet)
-        assert q_h2o == pytest.approx(q_gas * model._p_gas_h2o / p_gas_wet)
-        # The H2/H2O remainder means the species never exceed the total flow.
-        assert q_ch4 + q_co2 + q_h2o <= q_gas + 1e-9
+        assert q_ch4 == pytest.approx(q_gas * p_ch4 / p_gas)
+        assert q_co2 == pytest.approx(q_gas * p_co2 / p_gas)
+        assert q_ch4 + q_co2 + q_gas * p_h2 / p_gas == pytest.approx(q_gas)
+        # Water vapour leaves on top of the dry gas.
+        assert q_h2o == pytest.approx(q_gas * model._p_gas_h2o / p_gas)
 
-    def test_calc_gas_species_flows_vanish_for_a_non_positive_wet_pressure(self, model: ADM1) -> None:
-        """Degenerate headspace: negative partial pressures below -p_h2o.
+    def test_calc_gas_reports_the_flow_the_ode_removes(self, model: ADM1) -> None:
+        """Reported methane equals the methane leaving the headspace in the ODE.
+
+        The ODE removes ``p_ch4 / pTOTAL * Rho_T_11`` [bar/d] from the gas
+        phase; converted to moles and to the standard volume this must be
+        ``q_ch4``, otherwise the report and the COD balance drift apart.
+        """
+        p_h2, p_ch4, p_co2 = 1.0e-5, 0.60, 0.37
+        pTOTAL = p_h2 + p_ch4 + p_co2
+        _, q_ch4, _, _, _ = model.calc_gas(p_h2, p_ch4, p_co2, pTOTAL)
+
+        rho_t_11 = model._k_p * (pTOTAL + model._p_gas_h2o - model._p_ext) * model.V_liq / model._V_gas  # bar/d
+        kmol_per_day = p_ch4 / pTOTAL * rho_t_11 * model._V_gas / model._RT
+        assert q_ch4 == pytest.approx(kmol_per_day * 22.414, rel=1e-4)
+
+    def test_gas_volumes_are_given_at_zero_degrees_celsius(self, model: ADM1) -> None:
+        """Same reference as BMP (DIN 1343): one kmol of gas is 22.414 Nm³."""
+        assert model._T_gas_norm == 273.15
+        molar_volume = 1000.0 / model._NQ
+        assert molar_volume == pytest.approx(22.414, rel=1e-4)
+
+    def test_calc_gas_species_flows_vanish_for_a_non_positive_pressure(self, model: ADM1) -> None:
+        """Degenerate headspace: the dry partial pressures sum to a negative value.
 
         The species split would divide by a non-positive number, so all three
         component flows are reported as zero while the (pressure-driven) total
         flow is still returned.
         """
-        assert -0.15 + model._p_gas_h2o < 0.0  # precondition for the branch
-
         q_gas, q_ch4, q_co2, q_h2o, p_gas = model.calc_gas(-0.05, -0.05, -0.05, 1.3)
 
         assert p_gas == pytest.approx(-0.15)

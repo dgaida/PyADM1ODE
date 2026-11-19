@@ -1,33 +1,55 @@
-# ADM1da substrate definition: Maize silage (milk ripeness)
+# Substrate definition: Maize silage (milk ripeness)
 #
-# Model-default constants (densities, COD-conversion factors, methane
-# potentials, acid-base equilibrium constants at 35 °C) are inherited
-# from SubstrateParams; override them here only if substrate-specific
-# values are available.
+# Measured parameters (schema "measured"): names and units as in the
+# substrate user guide. Carbohydrates are split by the cell wall (NDF, ADL);
+# the inert share (D_VS) is fitted to the methane potential BMP.
+#
+# Values: dry-matter composition from the Phyllis database (phyllis.nl,
+# median of the samples named per line) where it holds the material;
+# methane potential from the standard yields of the BiomasseV 2012; storage
+# state (pH, ammonium, acids, buffer, temperature) from published analyses
+# of the material as it is fed; price from the superseded file in legacy/.
+# The source of every value stands behind it. Derivation: substrate user
+# guide, section "Origin of the library values".
+#
+# Fermentation quality (LfL Maissilage 2018): mean of 92 Bavarian farm
+# silages (NH3: n=16).
+#
+# The five hybrids hold 51-73 % cell wall and 8-25 % non-structural
+# carbohydrates: an early, starch-poor harvest, as the name of the file says.
 
 name: Maize silage (milk ripeness)
+schema: measured
 
-# --- Proximate analysis / measured substrate properties -----------------
-TS:   330.0     # kg/t FM    total solids
-NH4:    0.8     # kg N/t FM  ammonia nitrogen
-BGP:  670.0     # Nm³/t VS   biogas potential (reference)
-BMP:  356.8     # Nm³ CH4/t VS  biomethane potential (reference)
+# --- Classification ----------------------------------------------------
+substrate_class: "Mais (GPS) (EK I)" # [BiomasseV 2012]
 
-# --- COD fractionation --------------------------------------------------
-aXI:     0.1029 # particulate inert fraction of degradable COD
-fOTSrf:  0.95   # biodegradable fraction of crude fibre (XF)
-fsOTS:   0.0    # share of degradable VS entering slow pool (XPS)
-ffOTS:   1.0    # share of degradable VS entering fast pool (XPF)
-aSi:     0.0    # dissolved inert fraction of degradable COD
+# --- Dry matter --------------------------------------------------------
+TS:              32.6       # % FM [Phyllis] 100 - moisture, median of n=5, range 28.1-34 (#2603, #2604, #2605, #2606, #2607)
+VS:              94.0       # % TS [Phyllis] 100 - ash, median of n=5, range 92.3-96 (#2603, #2604, #2605, #2606, #2607)
 
-# --- Weender analysis (fractions of TS) ---------------------------------
-fRF:   0.235    # crude fibre
-fRP:   0.09     # crude protein
-fRFe:  0.03     # crude lipid
-fRA:   0.10     # ash
+# --- Weender analysis --------------------------------------------------
+RP:              6.38       # % TS [Phyllis] N x 6.25, n=1 (#2795)
+RL:              3.0        # % TS [previous file] no lipid value in Phyllis
 
-# --- Physical / chemical state ------------------------------------------
-Temp: 20.0      # °C        substrate temperature
-pH:    4.0
-KS43:  0.0      # mol/m³    acid capacity to pH 4.3
-FFS:   5.0      # kg HAc/m³ VFAs as acetic-acid equivalent
+# --- Cell wall (van Soest) ---------------------------------------------
+NDF:             54.6       # % TS [Phyllis] cellulose + hemicellulose + lignin, median of n=5, range 51.3-73.4 (#2603, #2604, #2605, #2606, #2607)
+ADF:             34.2       # % TS [Phyllis] cellulose + lignin, median of n=5, range 30-49.6 (#2603, #2604, #2605, #2606, #2607)
+ADL:             4.6        # % TS [Phyllis] lignin, median of n=5, range 3.6-7.3 (#2603, #2604, #2605, #2606, #2607)
+NDICP:           1.3        # % TS [literature] maize silage, Rossow (UC Davis) after NRC 2001
+
+# --- Degradability -----------------------------------------------------
+BMP:             338.0      # Nm³ CH4/t VS [BiomasseV 2012] 106 m³ CH4/t FM, KTBL standard dry matter 33 % TS, 95 % VS
+
+# --- Storage state -----------------------------------------------------
+pH:              3.9        # - [LfL Maissilage 2018]
+NH4:             0.166      # kg N/m³ [LfL Maissilage 2018] NH3-N 5 % of the total N; N = RP/6.25, per kg FM with TS
+KS43:            0.0        # mol/m³ [definition] no bicarbonate in a silage; the buffer is the lactic/acetic acid system
+Sac:             4.24       # g/l [LfL Maissilage 2018] acetic acid 13 g/kg TS, per kg FM with TS; lactic acid 45 g/kg TS stays in the carbohydrate pools (no ADM1 state)
+Spro:            0.0        # g/l [Kung & Shaver] not reported separately; below 1 g/kg TS in silages
+Sbu:             0.07       # g/l [LfL Maissilage 2018] butyric acid 0.2 g/kg TS, per kg FM with TS
+Sva:             0.0        # g/l [LfL Maissilage 2018] not reported for silages; below detection
+Temp:            9.3        # °C [DWD 1991-2020] mean air temperature of Germany 1991-2020; stored outdoors (silage clamp)
+
+# --- Economics ---------------------------------------------------------
+cost:            40.0       # EUR/t FM [previous file]

@@ -14,7 +14,6 @@ torch>=2.0
 # Optional: Development tools
 # pytest>=7.0
 # pytest-cov>=3.0
-pytest-asyncio
 # black>=23.0
 # ruff>=0.5.0
 # mypy>=1.0

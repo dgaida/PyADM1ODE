@@ -1,47 +1,48 @@
-# ADM1da substrate definition: Onion waste
+# Substrate definition: Onion waste
 #
-# Converted from the legacy substrate_gummersbach.xml library.
-# Fields derived from the legacy schema:
-#   fRF, fRP, fRFe  <- RF, RP, RL  (% TS -> fraction)
-#   fRA             = 1 - VS/100
-#   fOTSrf          = 1 - ADL/RF                (lignin as non-degradable proxy)
-#   fsOTS, ffOTS    = crop-class defaults     (slow / fast disintegration pool split)
-#   aSi             = crop-class default
-#   aXI             = (1 - D_VS) - aSi
-#   BMP             = theoretical_Weender * D_VS = 300.2 Nm^3 CH4/t VS
-#   BGP             = BMP / 0.55                = 545.8 Nm^3 biogas/t VS
-#   NH4             = Snh4 * 14/18              (g NH4/L -> kg N/m^3)
-#   FFS             = Sac + Sbu + Spro + Sva
-#   KS43            = TAC (mmol/L = mol/m^3)
+# Measured parameters (schema "measured"): names and units as in the
+# substrate user guide. Carbohydrates are split by the cell wall (NDF, ADL);
+# the inert share (D_VS) is fitted to the methane potential BMP.
 #
-# Model-default constants (densities, COD-conversion factors, methane
-# potentials, acid-base equilibrium constants at 35 deg C) are inherited
-# from SubstrateParams; override them here only if substrate-specific
-# values are available.
+# Values: dry-matter composition from the Phyllis database (phyllis.nl,
+# median of the samples named per line) where it holds the material;
+# methane potential from the standard yields of the BiomasseV 2012; storage
+# state (pH, ammonium, acids, buffer, temperature) from published analyses
+# of the material as it is fed; price from the superseded file in legacy/.
+# The source of every value stands behind it. Derivation: substrate user
+# guide, section "Origin of the library values".
+#
+# Phyllis holds onion peel (#3068) and ash analyses of onions only.
+# Composition of the whole onion from the USDA food database; fresh bulbs
+# carry neither ammonium nor fermentation acids.
 
 name: Onion waste
+schema: measured
 
-# --- Proximate analysis / measured substrate properties -----------------
-TS:    192.5      # kg/m^3 FM
-NH4:    0.389     # kg N/m^3 FM
-BGP:   545.8      # Nm^3/t VS   biogas potential (theoretical * D_VS)
-BMP:   300.2      # Nm^3 CH4/t VS  biomethane potential
+# --- Classification ----------------------------------------------------
+substrate_class: "Gemüse (aussortiert) (EK 0)" # [BiomasseV 2012]
 
-# --- COD fractionation --------------------------------------------------
-aXI:    0.3000
-fOTSrf: 0.883
-fsOTS:  0.0
-ffOTS:  1.0
-aSi:    0.000
+# --- Dry matter --------------------------------------------------------
+TS:              10.89      # % FM [USDA FoodData Central] onions, raw, 100 - water
+VS:              96.79      # % TS [USDA FoodData Central] onions, raw, 100 - ash
 
-# --- Weender analysis (fractions of TS) ---------------------------------
-fRF:    0.1831
-fRP:    0.0831
-fRFe:   0.0255
-fRA:    0.1000
+# --- Weender analysis --------------------------------------------------
+RP:              10.1       # % TS [USDA FoodData Central] onions, raw
+RL:              0.92       # % TS [USDA FoodData Central] onions, raw
 
-# --- Physical / chemical state ------------------------------------------
-Temp:   11.0    # degC
-pH:     5.00
-KS43:   0.01    # mol/m^3   acid capacity to pH 4.3
-FFS:    1.310     # kg HAc/m^3 VFAs as acetic-acid equivalent
+# --- Cell wall (van Soest) ---------------------------------------------
+NDF:             15.61      # % TS [USDA FoodData Central] onions, raw, total dietary fibre as cell wall
+ADL:             0.0        # % TS [assumption] not measured; the inert share follows from BMP
+
+# --- Degradability -----------------------------------------------------
+BMP:             379.0      # Nm³ CH4/t VS [BiomasseV 2012] 40 m³ CH4/t FM, referred to the substrate itself (10.89 % TS, 96.79 % VS)
+
+# --- Storage state -----------------------------------------------------
+pH:              5.5        # - [FDA pH of foods] raw onions 5.30-5.85 (red, white, yellow)
+NH4:             0.0        # kg N/m³ [assumption] fresh plant tissue; no ammonium reported for onion waste
+KS43:            0.0        # mol/m³ [assumption] no bicarbonate reported for onion waste
+FFS:             0.0        # kg HAc/m³ [FDA pH of foods] fresh bulbs are not acid-fermented (pickled onions reach pH 3.7-4.6); no VFA reported for fresh onion waste
+Temp:            9.3        # °C [DWD 1991-2020] mean air temperature of Germany 1991-2020; stored outdoors
+
+# --- Economics ---------------------------------------------------------
+cost:            5.0        # EUR/t FM [previous file]

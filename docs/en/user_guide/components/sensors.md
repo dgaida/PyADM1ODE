@@ -48,18 +48,17 @@ ph_sensor = PhysicalSensor(
     sensor_type="pH",
     measurement_noise=0.05,    # ±0.05 pH units
     drift_rate=0.01,           # Calibration drift per day
-    response_time=30.0,        # Seconds
-    calibration_interval=7     # Days between calibrations
+    response_time=30 / 86400   # 30 seconds, given in days
 )
 
 # VFA analyzer with measurement delay
 vfa_sensor = ChemicalSensor(
     "vfa1",
     sensor_type="VFA",
-    measurement_delay=5,       # Minutes delay
-    accuracy=0.1,              # ±10% accuracy
-    detection_limit=0.1,       # g/L lower limit
-    sampling_interval=60       # Minutes between samples
+    measurement_delay=5 / 1440,  # 5 minutes delay, given in days
+    accuracy=0.1,                # ±0.1 g/L calibration offset
+    detection_limit=0.1,         # g/L lower limit
+    sample_interval=60 / 1440    # 60 minutes between samples, given in days
 )
 
 # Methane analyzer
@@ -68,7 +67,7 @@ ch4_sensor = GasSensor(
     sensor_type="CH4",
     measurement_range=(0, 100),  # % CH4
     accuracy=0.5,                # ±0.5%
-    drift=0.1,                   # % per week
+    drift_rate=0.1 / 7,          # 0.1 % per week, given per day
     cross_sensitivity={'CO2': 0.01}  # Cross-sensitivity
 )
 ```
@@ -88,6 +87,16 @@ measured_value = (
     drift_accumulated
 )
 ```
+
+Calibration offset and noise come from the sensor's own random generator.
+Without `rng_seed` it is seeded from the component ID, so repeated runs give
+identical readings; a sensor restored with `from_dict()` keeps its offset and
+continues its noise sequence.
+
+Gas sensors measure in percent. Components report the gas composition as a
+volume fraction (`CH4_fraction`, `CO2_fraction`, 0–1); the sensor converts
+these keys to percent. A value under the key `CH4` or `CO2` is taken as
+percent already.
 
 **Typical accuracies:**
 

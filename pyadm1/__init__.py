@@ -34,11 +34,7 @@ Example:
     >>> results = plant.simulate(duration=30, dt=1.0)
 """
 
-try:
-    from importlib.metadata import PackageNotFoundError, version
-except ImportError:  # pragma: no cover
-    # For Python < 3.8
-    from importlib_metadata import PackageNotFoundError, version  # type: ignore
+from importlib.metadata import PackageNotFoundError, version
 
 try:
     __version__ = version("pyadm1")

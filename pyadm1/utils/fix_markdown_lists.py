@@ -24,7 +24,8 @@ def fix_markdown_file(filepath):
         new_lines.append(stripped_line + "\n")
 
     if modified:
-        with open(filepath, "w", encoding="utf-8") as f:
+        # Always write LF: the repository keeps LF, also on Windows.
+        with open(filepath, "w", encoding="utf-8", newline="\n") as f:
             f.writelines(new_lines)
         print(f"Fixed lists in: {filepath}")
 

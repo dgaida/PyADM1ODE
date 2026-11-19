@@ -17,11 +17,75 @@ configurator.add_digester(
     V_gas=300.0,                      # Gas headspace [m³]
     T_ad=308.15,                      # Operating temperature [K]
     name="Main Digester",             # Readable name
-    load_initial_state=True,          # Load steady-state initialization
-    initial_state_file=None,          # Custom initial-state CSV (optional)
-    Q_substrates=[15, 10, 0, ...]    # Substrate feed rates [m³/d]
+    Q_substrates=[15, 10],            # Feed rate per substrate of the feedstock [t FM/d]
+    adm1_state=None,                  # Custom 41-element initial state (optional)
 )
 ```
+
+The initial state is built from the feedstock and the feed rates as a
+pre-inoculated steady-state estimate; `adm1_state` replaces it. With the default
+`Feedstock` convention (`simba_q_convention=True`) the feed rates are tonnes of
+fresh matter per day. `add_digester` returns the digester and a one-line
+description of how the initial state was determined; the gas storage it creates
+is the plant component `<digester_id>_storage`.
+
+### Tank Geometry
+
+Besides the volumes, the digester carries a diameter and a roof type. Only the
+diameter is an input; every height is derived from it and the volumes.
+
+```python
+configurator.add_digester(
+    "main_digester",
+    V_liq=3000.0,
+    V_gas=175.0,
+    diameter=20.0,          # Inner diameter [m]; estimated when omitted
+    roof_type="membrane",   # "membrane", "concrete", "steel" or "open"
+)
+```
+
+When `diameter` is omitted it is estimated from `V_liq + V_gas` as a cylinder
+with `H = 0.4 * D`, and `digester.diameter_estimated` is `True`.
+
+| Roof type           | Gas headspace                    | `height` (wall)               | `roof_height`            |
+|---------------------|----------------------------------|-------------------------------|--------------------------|
+| `membrane`          | In a dome above the wall         | `V_liq / base_area`           | Spherical cap of `V_gas` |
+| `concrete`, `steel` | Inside the cylinder, flat cover  | `(V_liq + V_gas) / base_area` | 0                        |
+| `open`              | None (uncovered digestate store) | `V_liq / base_area`           | 0                        |
+
+Derived read-only properties: `base_area`, `liquid_height`, `height`,
+`roof_height`, `total_height`, `wall_area`, `roof_area`.
+
+### Heat Loss (k-values)
+
+`k_wall`, `k_roof` and `k_ground` are optional heat transfer coefficients
+(U-values) in W/(m²·K): the heat lost per square metre of wall, roof or floor
+slab and per kelvin of temperature difference. Together with the derived
+surfaces they give the overall heat loss coefficient
+
+```text
+UA = (k_wall · wall_area + k_roof · roof_area + k_ground · base_area) / 1000   [kW/K]
+```
+
+available as `digester.heat_loss_coefficient`.
+
+```python
+configurator.add_digester(
+    "main_digester", V_liq=3000.0, V_gas=175.0, diameter=20.0, roof_type="concrete",
+    k_wall=0.4,     # insulated concrete wall
+    k_roof=0.25,    # insulated cover
+    k_ground=1.9,   # uninsulated floor slab
+)   # -> heat_loss_coefficient ≈ 0.93 kW/K
+```
+
+| k-values given | `heat_loss_coefficient`                                           |
+|----------------|-------------------------------------------------------------------|
+| None           | `None` – the heating system keeps its flat default                |
+| All            | Sum over wall, roof and floor (no roof term for `open` tanks)     |
+| Some           | Sum over the given surfaces only, with a `UserWarning` (too low)  |
+
+A heating system picks the value up once it is connected to the digester, see
+[Energy components](energy.md).
 
 ### Sizing Guidelines
 
@@ -86,10 +150,26 @@ cfg.add_digester("F1", V_liq=3325, V_gas=870)     # builds and initializes
 cfg.set_feedstock(feedstock, Q_substrates={"F1": [40, 10]})
 ```
 
-`set_feedstock` wires the influent DataFrame and density through and derives the
+`set_feedstock` attaches the feedstock, sets the feed rates and derives the
 initial state from the new blend — the result is identical to a digester built
 with the feedstock from the start. A plain assignment
-(`digester.feedstock = fs`) is **not** enough.
+(`digester.feedstock = fs`) changes the influent but keeps the old state.
+
+The influent composition is never frozen: on every step it is the flow-weighted
+blend of the substrates at the current `Q_substrates`. Changing the substrate
+mix during a run therefore changes both the flow and the composition of the
+influent.
+
+```python
+plant.step(dt=1.0)                                   # mix from initialisation
+digester.Q_substrates = [25, 0]                      # maize only from now on
+plant.step(dt=1.0)                                   # influent is pure maize
+```
+
+Only an influent set explicitly with `digester.adm1.set_influent_dataframe(df)`
+overrides the blend (measured influent, fixed reference mix). The composition
+then comes from that DataFrame and `Q_substrates` only sets the flow, until
+`digester.adm1.clear_influent_dataframe()` or `set_feedstock` is called.
 
 A digester without a feedstock can be created and initialized but not simulated;
 `step()` then reports clearly:
@@ -108,17 +188,17 @@ outputs = digester.step(t, dt, inputs)
 {
     'Q_out': 25.0,              # Outflow [m³/d]
     'state_out': [...],         # ADM1 state for next digester
-    'Q_gas': 1250.5,           # Biogas production [m³/d]
-    'Q_ch4': 750.3,            # Methane production [m³/d]
-    'Q_co2': 475.2,            # CO2 production [m³/d]
+    'Q_gas': 1250.5,           # Dry biogas [Nm³/d, 0 °C]
+    'Q_ch4': 750.3,            # Methane [Nm³/d]
+    'Q_co2': 475.2,            # CO2 [Nm³/d]
     'pH': 7.32,                # pH value
     'VFA': 2.45,               # Volatile fatty acids [g/L]
     'TAC': 8.50,               # Total alkalinity [g CaCO3/L]
-    'gas_storage': {           # Attached gas storage info
-        'stored_volume_m3': 150.0,
-        'pressure_bar': 1.02,
-        'vented_volume_m3': 0.0
-    }
+    'TS': 9.8,                 # Total solids [% FM]
+    'HRT': 42.0,               # Filtered retention time [d]
+    'CH4_fraction': 0.60,      # Methane share of the biogas [-]
+    'TAN': 2.3,                # Total ammonia nitrogen [g N/L]
+    'pressure_bar': 1.02       # Headspace pressure [bar]
 }
 ```
 
@@ -138,19 +218,12 @@ configurator.connect("hydro", "main", "liquid")
 **Custom initial state:**
 
 ```python
-import pandas as pd
+from pyadm1.core.adm1 import get_state_zero_from_csv
 
-# Create custom state
-initial = pd.DataFrame({
-    'S_su': [0.01], 'S_aa': [0.001], # ... all 41 state variables
-})
-initial.to_csv('custom_state.csv', index=False)
+# 41 values: the 37 liquid-phase states and the four gas-phase pressures
+state = get_state_zero_from_csv("data/initial_states/digester_initial8.csv")
 
-# Use in digester
-configurator.add_digester(
-    "dig1", V_liq=2000,
-    initial_state_file='custom_state.csv'
-)
+configurator.add_digester("dig1", V_liq=2000, adm1_state=state)
 ```
 
 ### Calibration Parameters
@@ -204,7 +277,7 @@ plant = BiogasPlant("Two-Stage Plant")
 config = PlantConfigurator(plant, feedstock)
 
 # Stage 1: Thermophilic hydrolysis
-hydro, hydro_storage = config.add_digester(
+hydro, _ = config.add_digester(
     "hydrolysis",
     V_liq=500,
     V_gas=75,
@@ -213,7 +286,7 @@ hydro, hydro_storage = config.add_digester(
 )
 
 # Stage 2: Mesophilic methanogenesis
-main, main_storage = config.add_digester(
+main, _ = config.add_digester(
     "methanogenesis",
     V_liq=2000,
     V_gas=300,
@@ -253,11 +326,11 @@ print(f"pH main: {final['components']['methanogenesis']['pH']:.2f}")
 ### Key Process Indicators
 
 ```python
-def monitor_digester_health(results):
+def monitor_digester_health(results, digester_id):
     """Monitor digester health via process indicators."""
 
     for result in results:
-        digester_data = result['components']['main_digester']
+        digester_data = result['components'][digester_id]
 
         # Check pH
         pH = digester_data['pH']
@@ -280,7 +353,7 @@ def monitor_digester_health(results):
         if Q_gas < 500:  # example threshold
             print(f"Warning: Low gas production ({Q_gas:.1f} m³/d)")
 
-monitor_digester_health(results)
+monitor_digester_health(results, "methanogenesis")
 ```
 
 ### Optimal Operating Ranges

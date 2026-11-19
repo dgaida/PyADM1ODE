@@ -3,7 +3,7 @@
 """
 PyADM1 basic single-digester simulation — minimal example.
 
-The substrate mix is supplied as a dict ``{substrate_id: Q [m³/d]}`` with no
+The substrate mix is supplied as a dict ``{substrate_id: Q [t FM/d]}`` with no
 upper bound on the substrate count.  The default mix is a co-digestion of
 maize silage, swine manure, and cattle manure.
 
@@ -21,8 +21,8 @@ Usage
 from __future__ import annotations
 
 import sys
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Mapping
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
@@ -30,7 +30,7 @@ if str(REPO_ROOT) not in sys.path:
 
 import numpy as np
 
-# Default substrate mix [m³/d] — maize silage + swine + cattle manure.
+# Default substrate mix [t FM/d] — maize silage + swine + cattle manure.
 DEFAULT_FEED: dict[str, float] = {
     "maize_silage_milk_ripeness": 11.4,
     "swine_manure": 6.1,
@@ -44,11 +44,13 @@ def main(feed: Mapping[str, float] | None = None):
 
     Parameters
     ----------
-    feed : mapping of {substrate_id: Q_m3_per_day}, optional
-        Substrate mix to feed.  Each key is the XML file stem of a substrate
-        in ``data/substrates/`` and the value is its volumetric flow
-        rate in m³/d.  Any number of substrates may be supplied.  Defaults
-        to :data:`DEFAULT_FEED` (maize silage + swine + cattle manure).
+    feed : mapping of {substrate_id: Q_t_per_day}, optional
+        Substrate mix to feed.  Each key is the file stem of a substrate
+        YAML in ``data/substrates/`` and the value is its feed rate in
+        tonnes of fresh matter per day (the default ``simba_q_convention``
+        of :class:`Feedstock`).  Any number of substrates may be supplied.
+        Defaults to :data:`DEFAULT_FEED` (maize silage + swine + cattle
+        manure).
     """
     from pyadm1 import BiogasPlant, Feedstock
     from pyadm1.configurator.plant_configurator import PlantConfigurator
@@ -62,8 +64,8 @@ def main(feed: Mapping[str, float] | None = None):
 
     print("Substrate mix:")
     for sid, q in feed.items():
-        print(f"  {sid:<35s} {q:>6.2f} m³/d")
-    print(f"  {'TOTAL':<35s} {sum(Q_substrates):>6.2f} m³/d\n")
+        print(f"  {sid:<35s} {q:>6.2f} t FM/d")
+    print(f"  {'TOTAL':<35s} {sum(Q_substrates):>6.2f} t FM/d\n")
 
     # --- Build plant ---
     feedstock = Feedstock(substrate_ids, feeding_freq=24, total_simtime=160)
@@ -92,7 +94,8 @@ def main(feed: Mapping[str, float] | None = None):
 
     print(f"{'Day':>5s}  {'Biogas':>10s}  {'Methane':>10s}  {'CH4%':>6s}  {'pH':>6s}")
     print("-" * 50)
-    for day in sorted(set([*list(range(0, int(times[-1]) + 1, 10)), int(times[-1])])):
+    # The first saved result is the end of day 1; then every tenth day and the last.
+    for day in sorted({int(times[0]), *range(10, int(times[-1]) + 1, 10), int(times[-1])}):
         i = int(np.argmin(np.abs(times - day)))
         ch4p = q_ch4[i] / q_gas[i] * 100.0 if q_gas[i] > 0.0 else 0.0
         print(f"{day:>5d}  {q_gas[i]:>10.1f}  {q_ch4[i]:>10.1f}  {ch4p:>6.1f}  {pH[i]:>6.2f}")

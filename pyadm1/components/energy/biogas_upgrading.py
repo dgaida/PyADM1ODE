@@ -49,6 +49,10 @@ class BiogasUpgrading(Component):
         Required CH4 fraction in biomethane product (grid spec) [0..1]. Default 0.97.
     name : str, optional
         Human-readable display name.
+    specific_electricity : float
+        Electricity demand per m³ of raw biogas treated [kWh/m³]. Default 0.25,
+        a mid value: pressure swing adsorption, water scrubbing and membrane
+        units lie around 0.2-0.3, amine scrubbing near 0.1 (plus process heat).
     """
 
     def __init__(
@@ -59,8 +63,13 @@ class BiogasUpgrading(Component):
         ch4_content_in: float = 0.55,
         ch4_content_out: float = 0.97,
         name: str | None = None,
+        specific_electricity: float = 0.25,
     ):
         super().__init__(component_id, ComponentType.UPGRADING, name)
+
+        if float(specific_electricity) < 0.0:
+            raise ValueError(f"BiogasUpgrading '{component_id}': specific_electricity must not be negative")
+        self.specific_electricity = float(specific_electricity)
 
         self.capacity_m3h = float(capacity_m3h)
         self.ch4_recovery = float(ch4_recovery)
@@ -101,12 +110,26 @@ class BiogasUpgrading(Component):
             "Q_offgas_m3_per_day": 0.0,
             "Q_gas_out_m3_per_day": 0.0,
             "utilization": 0.0,
-            "cumulative_gas_in_m3": 0.0,
-            "cumulative_biomethane_m3": 0.0,
-            "cumulative_offgas_m3": 0.0,
-            "cumulative_overflow_m3": 0.0,
+            "cumulative_gas_in_m3": self._cum_gas_in_m3,
+            "cumulative_biomethane_m3": self._cum_biomethane_m3,
+            "cumulative_offgas_m3": self._cum_offgas_m3,
+            "cumulative_overflow_m3": self._cum_overflow_m3,
         }
+        self._sync_state()
         self._initialized = True
+
+    def _sync_state(self) -> None:
+        """Mirror the cumulative totals into ``state``."""
+        self.state = {
+            "cumulative_gas_in_m3": float(self._cum_gas_in_m3),
+            "cumulative_biomethane_m3": float(self._cum_biomethane_m3),
+            "cumulative_offgas_m3": float(self._cum_offgas_m3),
+            "cumulative_overflow_m3": float(self._cum_overflow_m3),
+        }
+
+    def set_state(self, state: dict[str, Any]) -> None:
+        """Restore a snapshot taken with :meth:`get_state`."""
+        self.initialize(state)
 
     def step(self, t: float, dt: float, inputs: dict[str, Any]) -> dict[str, Any]:
         """
@@ -153,7 +176,11 @@ class BiogasUpgrading(Component):
 
         utilization = Q_actual / max(self.capacity_m3_per_day, 1e-9)
 
+        # kWh/m³ * m³/d / 24 h/d = kW
+        P_consumed = self.specific_electricity * Q_actual / 24.0
+
         self.outputs_data = {
+            "P_consumed": float(P_consumed),
             "Q_biomethane_m3_per_day": float(Q_biomethane),
             "Q_offgas_m3_per_day": float(Q_offgas),
             "Q_gas_out_m3_per_day": float(Q_overflow),
@@ -163,6 +190,7 @@ class BiogasUpgrading(Component):
             "cumulative_offgas_m3": float(self._cum_offgas_m3),
             "cumulative_overflow_m3": float(self._cum_overflow_m3),
         }
+        self._sync_state()
         return self.outputs_data
 
     def to_dict(self) -> dict[str, Any]:
@@ -175,6 +203,7 @@ class BiogasUpgrading(Component):
             "ch4_recovery": self.ch4_recovery,
             "ch4_content_in": self.ch4_content_in,
             "ch4_content_out": self.ch4_content_out,
+            "specific_electricity": self.specific_electricity,
             "cumulative_gas_in_m3": self._cum_gas_in_m3,
             "cumulative_biomethane_m3": self._cum_biomethane_m3,
             "cumulative_offgas_m3": self._cum_offgas_m3,
@@ -194,7 +223,10 @@ class BiogasUpgrading(Component):
             ch4_content_in=config.get("ch4_content_in", 0.55),
             ch4_content_out=config.get("ch4_content_out", 0.97),
             name=config.get("name"),
+            specific_electricity=config.get("specific_electricity", 0.25),
         )
+        obj.inputs = config.get("inputs", [])
+        obj.outputs = config.get("outputs", [])
         obj.initialize(
             {
                 "cumulative_gas_in_m3": config.get("cumulative_gas_in_m3", 0.0),

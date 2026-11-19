@@ -1,730 +1,500 @@
 # Zweistufige Biogasanlage Beispiel
+
 [![In Google Colab öffnen](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_02_complex_plant.ipynb)
 
+Das Beispiel [examples/02_two_stage_plant.py](https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py)
+baut eine zweistufige Biogasanlage auf: einen Hydrolyse-Vorbehälter und einen
+Hauptfermenter in Reihe, ein BHKW mit Fackel und je Stufe ein Heizsystem. Es
+simuliert zehn Tage und gibt den Endzustand beider Behälter aus.
 
-Das Beispiel [examples/02_two_stage_plant.py](https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py) zeigt eine komplette zweistufige Biogasanlage mit mechanischen Komponenten, Energieintegration und umfassender Prozessüberwachung.
+Das Colab-Notebook baut dieselbe Anlage mit anderen Komponenten-IDs und einem
+kürzeren Lauf (5 Tage in Tagesschritten) auf; seine Zahlen weichen deshalb von
+denen auf dieser Seite ab.
 
-## Anlagenschema
+## Übersicht
 
-![Anlagenschema](two_stage_plant_schematic.png)
+Das Beispiel zeigt:
+
+- Zwei ADM1-Fermenter in Reihe, verbunden über eine Flüssigkeitsverbindung  
+- Den Gasspeicher, den `add_digester` für jeden Fermenter anlegt  
+- Ein BHKW, das aus beiden Gasspeichern versorgt wird, mit seiner automatisch angelegten Fackel  
+- Je Stufe ein Heizsystem, das an seinen Fermenter gekoppelt ist und Wärme vom BHKW erhält  
+- Das Speichern der Anlage in eine JSON-Datei  
 
 ## Systemarchitektur
 
 ```mermaid
 graph TB
-    %% Substratzulauf
-    Feed[Substratzulauf<br/>Maissilage: 15 m³/d<br/>Rindergülle: 10 m³/d]
+    Feed[Substratzufuhr<br/>Maissilage: 11,4 t/d<br/>Schweinegülle: 6,1 t/d]
+    Hydro[Hydrolyse-Vorbehälter<br/>hydrolysis<br/>V_liq: 500 m³, V_gas: 75 m³<br/>T: 45 °C]
+    Main[Hauptfermenter<br/>main_digester<br/>V_liq: 1000 m³, V_gas: 150 m³<br/>T: 35 °C]
+    Effluent[Gärrest]
+    Storage1[Gasspeicher<br/>hydrolysis_storage<br/>Kapazität: 75 m³]
+    Storage2[Gasspeicher<br/>main_digester_storage<br/>Kapazität: 150 m³]
+    CHP[BHKW<br/>chp_1<br/>500 kW elektrisch, nominal<br/>η_el: 40 %, η_th: 45 %]
+    Flare[Fackel<br/>chp_1_flare]
+    Heating1[Heizung<br/>heating_hydro<br/>Soll: 45 °C]
+    Heating2[Heizung<br/>heating_main<br/>Soll: 35 °C]
 
-    %% Fütterungspumpe
-    Feed -->|25 m³/d| FeedPump[Fütterungspumpe<br/>Exzenterschneckenpumpe<br/>30 m³/h Kapazität]
+    Feed -.-> Hydro
+    Hydro -->|liquid| Main
+    Main -.-> Effluent
+    Hydro -->|gas| Storage1
+    Main -->|gas| Storage2
+    Storage1 -->|gas| CHP
+    Storage2 -->|gas| CHP
+    CHP -->|gas| Flare
+    Hydro -->|control| Heating1
+    Main -->|control| Heating2
+    CHP -->|heat| Heating1
+    CHP -->|heat| Heating2
 
-    %% Erste Stufe - Hydrolyse
-    FeedPump --> Dig1[Fermenter 1 - Hydrolyse<br/>V_liq: 1977 m³, V_gas: 304 m³<br/>T: 45°C thermophil<br/>Verbesserte Hydrolyse]
-
-    %% Rührwerk 1
-    Mixer1[Rührwerk 1<br/>Propeller, 15 kW<br/>Hohe Intensität<br/>25% Einschaltdauer] -.->|Rühren| Dig1
-
-    %% Gasspeicher 1
-    Dig1 -->|Biogas ~850 m³/d| Storage1[Gasspeicher 1<br/>Membran<br/>304 m³ Kapazität]
-
-    %% Heizung 1
-    Heating1[Heizsystem 1<br/>Soll: 45°C<br/>Wärmeverlust: 0.5 kW/K] -.->|Wärme| Dig1
-
-    %% Transferpumpe
-    Dig1 -->|Ablauf 25 m³/d| TransPump[Transferpumpe<br/>Exzenterschneckenpumpe<br/>25 m³/h Kapazität]
-
-    %% Zweite Stufe - Methanogenese
-    TransPump --> Dig2[Fermenter 2 - Methanogenese<br/>V_liq: 1000 m³, V_gas: 150 m³<br/>T: 35°C mesophil<br/>Stabile CH₄-Produktion]
-
-    %% Rührwerk 2
-    Mixer2[Rührwerk 2<br/>Propeller, 10 kW<br/>Mittlere Intensität<br/>25% Einschaltdauer] -.->|Rühren| Dig2
-
-    %% Gasspeicher 2
-    Dig2 -->|Biogas ~400 m³/d| Storage2[Gasspeicher 2<br/>Membran<br/>150 m³ Kapazität]
-
-    %% Heizung 2
-    Heating2[Heizsystem 2<br/>Soll: 35°C<br/>Wärmeverlust: 0.3 kW/K] -.->|Wärme| Dig2
-
-    %% Kombinierter Gasfluss zum BHKW
-    Storage1 -->|Gasversorgung| CHP[BHKW-Einheit<br/>500 kWe nominal<br/>ηe: 40%, ηth: 45%<br/>Gesamt: ~1250 m³/d]
-    Storage2 -->|Gasversorgung| CHP
-
-    %% BHKW-Ausgänge
-    CHP -->|Elektrisch| Power[Stromausgang<br/>~480 kWe]
-    CHP -->|Thermisch ~540 kW| HeatDist[Wärmeverteilung]
-    CHP -->|Überschüssiges Gas| Flare[Fackel<br/>Sicherheitsverbrennung<br/>98% Zerstörung]
-
-    %% Wärmeverteilung
-    HeatDist -->|Wärmeversorgung| Heating1
-    HeatDist -->|Wärmeversorgung| Heating2
-
-    %% Finale Ausgänge
-    Dig2 -->|Gärrest<br/>25 m³/d| Effluent[Gärrestaustrag]
-
-    %% Styling
     classDef processBox fill:#e1f5fe,stroke:#01579b,stroke-width:3px
     classDef storageBox fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef mechanicalBox fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
     classDef energyBox fill:#e8f5e9,stroke:#1b5e20,stroke-width:3px
     classDef inputBox fill:#f1f8e9,stroke:#33691e,stroke-width:2px
     classDef outputBox fill:#fce4ec,stroke:#880e4f,stroke-width:2px
 
-    class Dig1,Dig2 processBox
+    class Hydro,Main processBox
     class Storage1,Storage2 storageBox
-    class FeedPump,TransPump,Mixer1,Mixer2 mechanicalBox
-    class CHP,Heating1,Heating2,HeatDist,Flare energyBox
+    class CHP,Flare,Heating1,Heating2 energyBox
     class Feed inputBox
-    class Power,Effluent outputBox
+    class Effluent outputBox
 ```
 
-## Übersicht
-
-Die zweistufige Anlage demonstriert:  
-- **Temperature-Phased Anaerobic Digestion (TPAD)**: Thermophile Hydrolyse (45°C) gefolgt von mesophiler Methanogenese (35°C)  
-- **Mechanische Komponenten**: Pumpen für den Materialtransport und Rührwerke zur Prozessunterstützung  
-- **Energieintegration**: BHKW zur Stromerzeugung und Abwärmenutzung  
-- **Prozesssteuerung**: Mehrere Heizsysteme für ein präzises Temperaturmanagement  
-- **Gasmanagement**: Dedizierter Speicher für jeden Fermenter mit automatischem Überlaufschutz und zentraler Fackel  
+Das Diagramm zeigt die acht Komponenten und zehn Verbindungen, die die
+Anlagenzusammenfassung in der Ausgabe unten auflistet; die Beschriftungen der
+Pfeile sind die Verbindungstypen. Eine `control`-Verbindung gibt Temperatur und
+Zufuhr eines Fermenters an sein Heizsystem weiter. Die gestrichelten Pfeile
+sind keine Verbindungen: Die Substratzufuhr wird als `Q_substrates` am
+Vorbehälter gesetzt, und der Gärrest ist der Ablauf des Hauptfermenters. Die
+Fackel ist hinter dem BHKW angeschlossen; sie verbrennt das Gas, das die
+Gasspeicher abblasen.
 
 ## Anlagenkonfiguration
 
-### Biologische Komponenten
+### Fermenter
 
-| Komponente | Volumen | Temperatur | Funktion | HRT |
-|------------|---------|------------|----------|-----|
-| **Fermenter 1** | 1977 m³ liq + 304 m³ gas | 45°C (thermophil) | Hydrolyse komplexer Organik | 79 Tage |
-| **Fermenter 2** | 1000 m³ liq + 150 m³ gas | 35°C (mesophil) | Methanogenese (CH₄-Produktion) | 40 Tage |
-| **Gesamt** | 2977 m³ | - | - | 119 Tage |
+| Eigenschaft            | Hydrolyse-Vorbehälter                      | Hauptfermenter                |
+|------------------------|--------------------------------------------|-------------------------------|
+| Komponenten-ID         | `hydrolysis`                               | `main_digester`               |
+| Flüssigvolumen `V_liq` | 500 m³                                     | 1000 m³                       |
+| Gasraum `V_gas`        | 75 m³                                      | 150 m³                        |
+| Temperatur `T_ad`      | 318,15 K (45 °C)                           | 308,15 K (35 °C)              |
+| Substratzufuhr         | 11,4 t/d Maissilage, 6,1 t/d Schweinegülle | Keine                         |
+| Zulauf                 | 16,2 m³/d Substrat                         | 16,2 m³/d aus dem Vorbehälter |
+| Verweilzeit            | 30,9 d                                     | 61,7 d                        |
 
-**Gesamte organische Raumbelastung (OLR)**: 25 m³/d ÷ 2977 m³ ≈ **0,0084 d⁻¹** oder **8,4 kg CSB/(m³·d)**
+Die Fütterungsmengen sind Tonnen Frischmasse pro Tag, zusammen 17,5 t/d. Der
+Feedstock rechnet sie mit der Dichte jedes Substrats in einen Volumenstrom um:
+11,4 t/d Maissilage bei 1129 kg/m³ sind 10,1 m³/d, und Schweinegülle zählt mit
+1000 kg/m³. Zusammen ergibt das 16,2 m³/d (siehe
+[Volumetrische ADM1da-Konvention für Q](../user_guide/adm1_implementation.md#volumetrische-adm1da-konvention-fur-q)).
+Die Verweilzeit ist das Flüssigvolumen geteilt durch diesen Strom. Das Skript
+entnimmt den Strom aus `feedstock.actual_Q` und gibt die gerundeten
+Verweilzeiten, 31 d und 62 d, in seinem Startbanner aus.
 
-### Mechanische Komponenten
+### Gas- und Energiekomponenten
 
-| Komponente | Typ | Kapazität | Leistung | Funktion |
-|------------|-----|-----------|----------|----------|
-| **Fütterungspumpe** | Exzenterschnecke | 30 m³/h | ~5 kW | Substratfütterung in Fermenter 1 |
-| **Transferpumpe** | Exzenterschnecke | 25 m³/h | ~8 kW | Ablauf-Transfer: F1 → F2 |
-| **Rührwerk 1** | Propeller | 15 kW | 15 kW | Hochintensive Durchmischung für Hydrolyse |
-| **Rührwerk 2** | Propeller | 10 kW | 10 kW | Mittlere Durchmischung für Methanogenese |
+| Komponente                  | ID                      | Angelegt durch | Einstellungen                                                           |
+|-----------------------------|-------------------------|----------------|-------------------------------------------------------------------------|
+| Gasspeicher, Vorbehälter    | `hydrolysis_storage`    | `add_digester` | Membranspeicher, Kapazität 75 m³                                        |
+| Gasspeicher, Hauptfermenter | `main_digester_storage` | `add_digester` | Membranspeicher, Kapazität 150 m³                                       |
+| BHKW                        | `chp_1`                 | `add_chp`      | 500 kW elektrisch (nominal), `eta_el=0.40`, `eta_th=0.45`               |
+| Fackel                      | `chp_1_flare`           | `add_chp`      | Zerstörungsgrad 0,98                                                    |
+| Heizung, Vorbehälter        | `heating_hydro`         | `add_heating`  | Soll 318,15 K, gekoppelt an `hydrolysis`, Wärmeverlust 0,5 kW/K         |
+| Heizung, Hauptfermenter     | `heating_main`          | `add_heating`  | Soll 308,15 K, gekoppelt an `main_digester`, Wärmeverlust 0,5 kW/K      |
 
-**Gesamter Eigenverbrauch**: ~20 kW (Rührwerke laufen mit 25 % Einschaltdauer)
-
-### Energiekomponenten
-
-| Komponente | Spezifikation | Wirkungsgrad | Leistung |
-|------------|---------------|--------------|----------|
-| **BHKW-Einheit** | 500 kW$ nominal | η$ = 40 %, ηcat{th}$ = 45 % | 500 kW$ + 562 kWcat{th}$ |
-| **Heizung 1** | Fermenter 1 Heizung | - | Hält 45°C |
-| **Heizung 2** | Fermenter 2 Heizung | - | Hält 35°C |
-| **Fackel** | Sicherheitsverbrennung | 98 % Zerstörung | Entsorgung von Überschussgas |
-
-### Gasmanagement-System
-
-| Komponente | Typ | Kapazität | Funktion |
-|------------|-----|-----------|----------|
-| **Speicher 1** | Membran | 304 m³ | Puffer für Gas aus Fermenter 1 |
-| **Speicher 2** | Membran | 150 m³ | Puffer für Gas aus Fermenter 2 |
-| **BHKW-Fackel** | Verbrennung | Variabel | Sicherheitsentsorgung von Überschussgas |
-
-**Gasfluss-Architektur**:  
-1. Jeder Fermenter produziert Gas → Dedizierter Speicher  
-2. Beide Speicher liefern Gas → Einzelne BHKW-Einheit  
-3. BHKW-Überschuss/Überlauf → Automatische Fackelverbrennung  
+Ein Fermenter speichert selbst kein Gas: `V_gas` ist der Gasraum der
+ADM1-Gasphase, und das Gas, das ihn verlässt, geht in die getrennte
+`GasStorage`-Komponente `<digester_id>_storage`. Die Kapazität dieses Speichers
+ist `V_gas`, mindestens aber 50 m³. Der Zerstörungsgrad der Fackel und der
+Wärmeverlustkoeffizient von 0,5 kW/K sind Standardwerte des Pakets; das Skript
+setzt sie nicht.
 
 ## Code-Durchgang
 
-### 1. Erweiterte Imports
+Die Auszüge stammen aus dem Skript; die meisten `print`-Aufrufe sind
+weggelassen.
+
+### 1. Feedstock und Fütterungsmengen
 
 ```python
-from pyadm1.components.mechanical.mixer import Mixer
-from pyadm1.components.mechanical.pump import Pump
+feedstock = Feedstock(["maize_silage_milk_ripeness", "swine_manure"])
+
+# Substrate feed in t FM/d, one slot per substrate of the feedstock:
+# hydrolysis stage gets fresh substrate, main stage inherits.
+hydro_feed = [11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0]
+main_feed = [0.0] * 10
+
+# The model works with the volume flow of the feed [m³/d]: the feedstock
+# converts the mass flows with the density of each substrate.
+q_feed = sum(feedstock.actual_Q(hydro_feed))
 ```
 
-Diese importieren die mechanischen Komponenten, die im Basisbeispiel nicht verwendet wurden.
+- Die Reihenfolge der Substrat-IDs legt die Plätze der Fütterungslisten fest: Platz 0 ist Maissilage (Milchreife), Platz 1 ist Schweinegülle, die übrigen Plätze bleiben null. Die mitgelieferten Substrate stehen unter [Beispiel-Substrate](../substrates/library.md).  
+- Die Fütterungsmengen sind Tonnen Frischmasse pro Tag.  
+- `main_feed` enthält nur Nullen: Der Hauptfermenter erhält kein eigenes Substrat, nur den Ablauf des Vorbehälters.  
+- `feedstock.actual_Q` gibt den Volumenstrom jedes Substrats zurück. Ihre Summe `q_feed` sind die 16,2 m³/d, mit denen das Modell rechnet.  
 
-### 2. Zweistufige Fermenter-Konfiguration
+### 2. Zwei Fermenter
 
 ```python
-# Fermenter 1: Thermophile Hydrolyse
-configurator.add_digester(
-    digester_id="digester_1",
-    V_liq=1977.0,
-    V_gas=304.0,
-    T_ad=318.15,  # 45°C für verbesserte Hydrolyse
-    Q_substrates=[15, 10, 0, 0, 0, 0, 0, 0, 0, 0],
-)
+plant = BiogasPlant("Two-Stage Plant (ADM1 / SIMBA# biogas)")
+cfg = PlantConfigurator(plant, feedstock)
 
-# Fermenter 2: Mesophile Methanogenese
-configurator.add_digester(
-    digester_id="digester_2",
+# Hydrolysis pre-tank — 45 °C, between the mesophilic and the thermophilic range
+hydro_digester, _ = cfg.add_digester(
+    digester_id="hydrolysis",
+    V_liq=500.0,
+    V_gas=75.0,
+    T_ad=318.15,
+    name="Hydrolysis Pre-Tank",
+    Q_substrates=hydro_feed,
+)
+hrt_hydro = hydro_digester.V_liq / q_feed
+
+# Main methanogenesis fermenter — larger volume, mesophilic.
+# Its inflow is the effluent of the pre-tank, which has the same volume flow.
+main_digester, _ = cfg.add_digester(
+    digester_id="main_digester",
     V_liq=1000.0,
     V_gas=150.0,
-    T_ad=308.15,  # 35°C optimal für Methanogene
-    Q_substrates=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # Empfängt nur Ablauf
+    T_ad=308.15,
+    name="Main Fermenter",
+    Q_substrates=main_feed,
+)
+hrt_main = main_digester.V_liq / q_feed
+```
+
+- Beide Stufen nutzen dieselbe Klasse `Digester`. Ein eigenes Hydrolysemodell gibt es nicht; Volumen, Temperatur und Zufuhr bestimmen, was in einem Behälter abläuft.  
+- Eine Datei mit Anfangszustand ist nicht nötig: `add_digester` leitet den Anfangszustand jedes Behälters aus dem Feedstock und den Fütterungsmengen ab.  
+- Jeder Aufruf legt außerdem den Gasspeicher `<digester_id>_storage` an und verbindet den Fermenter mit ihm.  
+- `add_digester` gibt den Fermenter zurück. Das Skript teilt dessen Flüssigvolumen durch `q_feed` und erhält so die Verweilzeit für das Startbanner.  
+
+### 3. BHKW, Fackel und Heizung
+
+```python
+# CHP + heating. digester_id ties each heating system to its digester, so
+# its heat demand covers the heat loss of the tank and warming the feed.
+cfg.add_chp(chp_id="chp_1", P_el_nom=500.0, eta_el=0.40, eta_th=0.45)
+cfg.add_heating(
+    heating_id="heating_hydro",
+    target_temperature=318.15,
+    name="Hydrolysis Heating",
+    digester_id="hydrolysis",
+)
+cfg.add_heating(
+    heating_id="heating_main",
+    target_temperature=308.15,
+    name="Main Stage Heating",
+    digester_id="main_digester",
 )
 ```
 
-**Design-Überlegungen**:  
-- **Stufe 1 (thermophil)**: Höhere Temperaturen verbessern die Hydrolyse komplexer Substrate (Zellulose, Hemizellulose, Proteine).  
-- **Stufe 2 (mesophil)**: Niedrigere Temperaturen sind stabiler und effizienter für die Methanogenese.  
-- **Nur Ablauf-Fütterung für Stufe 2**: Verhindert Überlastung, erhält vorhydrolysiertes Material.  
+- `add_chp` legt außerdem die Fackel `chp_1_flare` an und schließt sie hinter dem BHKW an.  
+- `digester_id` legt eine `control`-Verbindung vom Fermenter zum Heizsystem an. Das Heizsystem erhält dann Temperatur und Substratzufuhr des Fermenters, und sein Wärmebedarf ist der Wärmeverlust plus die Wärme zum Aufheizen der Zufuhr.  
+- Die Fermenter definieren keine k-Werte, deshalb gilt für den Wärmeverlust der Standardkoeffizient: 0,5 kW/K × (Fermentertemperatur − Außentemperatur).  
+- `target_temperature` eines Heizsystems ist nicht mit `T_ad` des Fermenters gekoppelt; das Skript setzt beide auf denselben Wert.  
 
-**Automatische Gasspeicher-Erstellung**:  
-- `add_digester()` erstellt automatisch:  
-  - `digester_1_storage` (304 m³ Membranspeicher)  
-  - `digester_2_storage` (150 m³ Membranspeicher)  
-- Die Speicher werden automatisch mit ihren Fermentern verbunden.  
-
-### 3. Mechanische Komponenten hinzufügen
-
-#### Fütterungspumpe
-```python
-feed_pump = Pump(
-    component_id="feed_pump",
-    pump_type="progressive_cavity",  # Handhabt dicke Suspensionen
-    Q_nom=30.0,  # m³/h nominal
-    pressure_head=5.0,  # Niedriger Druck
-)
-```
-
-**Exzenterschneckenpumpen** sind ideal für Biogassubstrate, weil sie:  
-- Hohe Feststoffgehalte (>12 % TS) bewältigen  
-- Scherkräfte minimieren (Faserstruktur bleibt erhalten)  
-- Selbstansaugend sind  
-- Einen weiten Viskositätsbereich abdecken  
-
-#### Transferpumpe
-```python
-transfer_pump = Pump(
-    component_id="transfer_pump",
-    pump_type="progressive_cavity",
-    Q_nom=25.0,  # m³/h
-    pressure_head=8.0,  # Höherer Druck für Transfer zwischen Fermentern
-)
-```
-
-Höherer Druck erforderlich für:  
-- Überwindung von Rohrreibungslasten  
-- Höhenunterschiede  
-- Injektion in unter Druck stehenden Fermenter  
-
-#### Rührwerke
-```python
-mixer_1 = Mixer(
-    component_id="mixer_1",
-    mixer_type="propeller",
-    tank_volume=1977.0,
-    mixing_intensity="high",  # Aggressiv für Hydrolyse
-    power_installed=15.0,
-    intermittent=True,
-    on_time_fraction=0.25,  # 6 Stunden an, 18 Stunden aus
-)
-```
-
-**Rührstrategie**:  
-- **Intermittierender Betrieb**: Reduziert den Energieverbrauch um 75 %.  
-- **Hohe Intensität in der Hydrolyse**: Aufbrechen von Schwimmschichten, verbessert den Substratkontakt.  
-- **Mittlere Intensität in der Methanogenese**: Schonendes Rühren verhindert die Hemmung empfindlicher Methanogener.  
-
-**Spezifischer Leistungseintrag**:  
-- Fermenter 1: 15 kW × 0,25 ÷ 1977 m³ = **1,9 W/m³** (hoch)  
-- Fermenter 2: 10 kW × 0,25 ÷ 1000 m³ = **2,5 W/m³** (mittel)  
-
-### 4. Energieintegration mit automatischer Fackel
+### 4. Verbindungen
 
 ```python
-# BHKW hinzufügen (erstellt automatisch Fackel)
-configurator.add_chp(
-    chp_id="chp_1",
-    P_el_nom=500.0,
-    eta_el=0.40,
-    eta_th=0.45,
-    name="Haupt-BHKW",
-)
+cfg.connect("hydrolysis", "main_digester", "liquid")
+cfg.auto_connect_digester_to_chp("hydrolysis", "chp_1")
+cfg.auto_connect_digester_to_chp("main_digester", "chp_1")
+cfg.auto_connect_chp_to_heating("chp_1", "heating_hydro")
+cfg.auto_connect_chp_to_heating("chp_1", "heating_main")
 
-# Automatische Verbindungen handhaben das Gas-Routing
-configurator.auto_connect_digester_to_chp("digester_1", "chp_1")
-configurator.auto_connect_digester_to_chp("digester_2", "chp_1")
-
-# Wärmerückgewinnung für beide Fermenter
-configurator.auto_connect_chp_to_heating("chp_1", "heating_1")
-configurator.auto_connect_chp_to_heating("chp_1", "heating_2")
+plant.initialize()
+print(plant.get_summary())
 ```
 
-**Verbindungskette**:
-```
-Fermenter 1 → Speicher 1 ↘
-                          → BHKW → Fackel (automatisch)
-Fermenter 2 → Speicher 2 ↗      ↓
-                          Wärme → Heizung 1 & 2
-```
+- Die Flüssigkeitsverbindung gibt den Ablauf des Vorbehälters, Menge und Zusammensetzung, an den Hauptfermenter weiter.  
+- `auto_connect_digester_to_chp` verbindet den Gasspeicher des Fermenters mit dem BHKW, nicht den Fermenter selbst.  
+- `auto_connect_chp_to_heating` legt eine Wärmeverbindung an. Die Wärme des BHKW wird gleichmäßig auf die angeschlossenen Heizsysteme aufgeteilt.  
 
-**Automatische Fackelerstellung**:  
-- `add_chp()` erstellt automatisch eine Fackelkomponente.  
-- Fackel-ID: `{chp_id}_flare` (z. B. "chp_1_flare")  
-- Funktion: Sicherheitsverbrennung von Überschussgas (98 % CH₄-Zerstörung)  
-- Automatische Verbindung: BHKW → Fackel  
+### 5. Simulation
 
-### 5. Drei-Pass-Gasfluss-Simulation
-
-Die Simulation erfolgt in drei Durchgängen für ein realistisches Gasmanagement:
-
-**Pass 1 - Gasproduktion**:
 ```python
-# Fermenter produzieren Gas → Speichertanks
-Fermenter 1: Q_gas = 850 m³/d → Speicher 1
-Fermenter 2: Q_gas = 400 m³/d → Speicher 2
+duration = 10.0
+dt = 1.0 / 24.0
+results = plant.simulate(duration=duration, dt=dt, save_interval=1.0)
 ```
 
-**Pass 2 - Speicher-Aktualisierung**:
+Der Lauf umfasst 240 Schritte von einer Stunde. `results` enthält elf Einträge:
+einen nach dem ersten Schritt und einen je vollem Tag. Jeder Eintrag hat die
+Schlüssel `time` und `components`; `components` ordnet jeder Komponenten-ID die
+Ausgaben dieser Komponente zu.
+
+### 6. Endzustand und JSON-Export
+
 ```python
-# Speicher empfangen Gas, aktualisieren Druck und Volumen
-Speicher 1: gespeichertes_volumen += 850 * dt
-Speicher 2: gespeichertes_volumen += 400 * dt
-# Wenn voll: Überschuss an die Atmosphäre ablassen
+final = results[-1]
+h = final["components"]["hydrolysis"]
+m = final["components"]["main_digester"]
+
+total_gas = h["Q_gas"] + m["Q_gas"]
+total_ch4 = h["Q_ch4"] + m["Q_ch4"]
 ```
 
-**Pass 3 - Gasverbrauch**:
+Das Skript gibt `Q_gas`, `Q_ch4`, `pH`, `VFA` und `TAC` beider Fermenter und
+die Summen der beiden Gasströme aus. Danach speichert es die Anlage:
+
 ```python
-# BHKW fordert Gas von den Speichern an
-BHKW-Bedarf: 1150 m³/d Biogas
-Speicher 1 liefert: ~675 m³/d
-Speicher 2 liefert: ~475 m³/d
-# BHKW arbeitet mit tatsächlichem Angebot
-# Überschuss zur Fackel: (Angebot - Verbrauch)
+output_path = REPO_ROOT / "output"
+output_path.mkdir(exist_ok=True)
+plant.to_json(str(output_path / "two_stage_plant_config.json"))
 ```
 
-Dies gewährleistet:  
-- Realistisches Druckmanagement in Speichern  
-- BHKW arbeitet mit verfügbarem Gas, nicht mit idealisiertem Angebot  
-- Automatisches Abblasen verhindert Überdruck  
-- Die Fackel handhabt das gesamte Überschussgas sicher  
+`BiogasPlant.from_json(path, feedstock)` baut die Anlage aus dieser Datei
+wieder auf. Der Feedstock muss erneut übergeben werden, weil die Datei ihn
+nicht enthält.
 
-## Erwartete Ausgabe
+## Gasführung in einem Anlagenschritt
 
-### Anlagenzusammenfassung
-```
-=== Zweistufige Anlage mit mechanischen Komponenten ===
-Simulationszeit: 0.00 Tage
+`plant.simulate` ruft `BiogasPlant.step()` einmal je Zeitschritt auf. Ein
+Schritt rechnet jede Komponente einmal, in dieser Reihenfolge:
 
-Komponenten (12):
-  - Hydrolyse-Fermenter (digester)
-  - Hydrolyse-Fermenter Gasspeicher (storage)
-  - Methanogenese-Fermenter (digester)
-  - Methanogenese-Fermenter Gasspeicher (storage)
-  - Substratfütterungspumpe (pump)
-  - Fermenter Transferpumpe (pump)
-  - Hydrolyse-Rührwerk (mixer)
-  - Methanogenese-Rührwerk (mixer)
-  - Haupt-BHKW (chp)
-  - Haupt-BHKW Fackel (flare)
-  - Hydrolyse-Heizung (heating)
-  - Methanogenese-Heizung (heating)
+1. Die Fermenter: zuerst der Vorbehälter, dann der Hauptfermenter mit dem Ablauf, den der Vorbehälter im selben Schritt erzeugt hat.  
+2. Die Gasspeicher: Jeder Speicher nimmt das Gas auf, das sein Fermenter in diesem Schritt erzeugt hat, versorgt das BHKW und bläst erst danach an die Fackel ab, was über seiner Kapazität liegt.  
+3. Das BHKW mit dem Gas, das die Speicher geliefert haben, danach die Heizsysteme mit der Wärme des BHKW.  
+4. Die Fackel mit dem Gas, das die Speicher abgeblasen haben.  
 
-Verbindungen (10):
-  - Hydrolyse-Fermenter -> Methanogenese-Fermenter (liquid)
-  - Hydrolyse-Fermenter Gasspeicher -> Haupt-BHKW (gas)
-  - Methanogenese-Fermenter Gasspeicher -> Haupt-BHKW (gas)
-  - Haupt-BHKW -> Haupt-BHKW Fackel (gas)
-  - Haupt-BHKW -> Hydrolyse-Heizung (heat)
-  - Haupt-BHKW -> Methanogenese-Heizung (heat)
+Das BHKW fordert das Gas an, das es bei Volllast braucht, und verteilt diesen
+Bedarf gleichmäßig auf die beiden Speicher. Weil Versorgung und Abblasen im
+selben Schritt abgerechnet werden, hängt die abgeblasene Menge nicht von der
+Schrittweite ab. Siehe
+[Gasbilanz in einer Anlage](../user_guide/components/energy.md#gasbilanz-in-einer-anlage).
+
+## Ausgabe
+
+Das Skript wird aus dem Wurzelverzeichnis des Repositorys gestartet:
+
+```bash
+python examples/02_two_stage_plant.py
 ```
 
-### Finale Ergebnisse (Tag 10)
+Es gibt Folgendes aus; nur der absolute Pfad in der letzten Zeile ist zu `...`
+gekürzt:
 
-```
-ERGEBNISANALYSE
+```text
+======================================================================
+PyADM1 Two-Stage Plant Example
 ======================================================================
 
-Finaler Zustand (Tag 10.0):
-----------------------------------------------------------------------
+Building plant components...
+  - Hydrolysis pre-tank: 500 m³ liquid @ 45 °C (HRT about 31 d)  
+  - Main fermenter:   1000 m³ liquid @ 35 °C (HRT about 62 d)  
+  - CHP: 500 kW_el, eta_el=40%, eta_th=45%  
 
-Hydrolyse-Fermenter:
-  Biogasproduktion:        850.3 m³/d
-  Methanproduktion:       493.2 m³/d
-  pH:                         7.15
-  VFA:                        3.82 g/L
-  Temperatur:               45.0 °C
-  Gasspeicher:
-    - Gespeichertes Volumen:  152.1 m³ (50%)
-    - Druck:               1.00 bar
-    - Abgeblasen:                  0.0 m³
+Connecting components...
+=== Two-Stage Plant (ADM1 / SIMBA# biogas) ===
+Simulation time: 0.00 days
 
-Methanogenese-Fermenter:
-  Biogasproduktion:        402.8 m³/d
-  Methanproduktion:       258.7 m³/d
-  pH:                         7.32
-  VFA:                        1.95 g/L
-  Temperatur:               35.0 °C
-  Gasspeicher:
-    - Gespeichertes Volumen:   75.0 m³ (50%)
-    - Druck:               1.00 bar
-    - Abgeblasen:                  0.0 m³
+Components (8):
+  - Hydrolysis Pre-Tank (digester)  
+  - Hydrolysis Pre-Tank Gas Storage (storage)  
+  - Main Fermenter (digester)  
+  - Main Fermenter Gas Storage (storage)  
+  - chp_1 (chp)  
+  - chp_1_flare (flare)  
+  - Hydrolysis Heating (heating)  
+  - Main Stage Heating (heating)  
 
-Gesamtproduktion der Anlage:
-  Gesamtbiogas:            1253.1 m³/d
-  Gesamtmethan:            751.9 m³/d
-  Methangehalt:           60.0 %
+Connections (10):
+  - Hydrolysis Pre-Tank -> Hydrolysis Pre-Tank Gas Storage (gas)  
+  - Main Fermenter -> Main Fermenter Gas Storage (gas)  
+  - chp_1 -> chp_1_flare (gas)  
+  - Hydrolysis Pre-Tank -> Hydrolysis Heating (control)  
+  - Main Fermenter -> Main Stage Heating (control)  
+  - Hydrolysis Pre-Tank -> Main Fermenter (liquid)  
+  - Hydrolysis Pre-Tank Gas Storage -> chp_1 (gas)  
+  - Main Fermenter Gas Storage -> chp_1 (gas)  
+  - chp_1 -> Hydrolysis Heating (heat)  
+  - chp_1 -> Main Stage Heating (heat)  
 
-BHKW-Leistung:
-  Elektrische Leistung:     480.5 kW
-  Thermische Leistung:      540.6 kW
-  Gasverbrauch:            1150.0 m³/d
-  Gas aus Speicher 1:       675.2 m³/d
-  Gas aus Speicher 2:       474.8 m³/d
-  Überschuss zur Fackel:    103.1 m³/d
-  Betriebsstunden:          240.0 h
+Simulating 10 days at dt=1.0 h...
+Simulated 100/240 steps
+Simulated 200/240 steps
 
-Fackel-Leistung:
-  Gas erhalten:             103.1 m³/d
-  CH₄ zerstört:             60.6 m³/d (98% Effizienz)
-  Kumulativ abgeblasen:    1031.0 m³
-
-Hydrolyse-Rührwerk:
-  Leistungsaufnahme:          3.75 kW
-  Mischqualität:             0.92
-  Reynolds-Zahl:         12500
-
-Methanogenese-Rührwerk:
-  Leistungsaufnahme:          2.50 kW
-  Mischqualität:             0.88
-  Reynolds-Zahl:          8300
-```
-
-### Energiebilanz
-
-```
-ENERGIEBILANZ
+======================================================================
+Final state (day 10.0):
 ======================================================================
 
-Energieproduktion:
-  Elektrisch (brutto):      480.5 kW
-  Thermisch:                 540.6 kW
+Hydrolysis pre-tank:
+  Biogas:      1679.0 Nm³/d
+  Methane:      891.1 Nm³/d
+  pH:            7.42
+  VFA:           0.24 g HAc-eq/L
+  TAC:           5.73 g CaCO3/L
 
-Eigenverbrauch:
-  Rührwerk 1:                 3.75 kW
-  Rührwerk 2:                 2.50 kW
-  Pumpen (geschätzt):          2.00 kW
-  Gesamter Eigenverbrauch:    8.25 kW
+Main fermenter:
+  Biogas:       216.6 Nm³/d
+  Methane:      114.0 Nm³/d
+  pH:            7.39
+  VFA:           0.03 g HAc-eq/L
+  TAC:           6.30 g CaCO3/L
 
-Netto-Elektrizitätsleistung: 472.3 kW
-
-Wärmenutzung:
-  Heizbedarf:               125.4 kW
-  BHKW-Wärmeangebot:        540.6 kW
-  Wärmeabdeckung:           431.0 %
-
-Gasmanagement:
-  Gesamtproduktion:        1253.1 m³/d
-  BHKW-Verbrauch:          1150.0 m³/d
-  Zur Fackel:               103.1 m³/d (8.2%)
+Plant total:
+  Biogas:      1895.6 Nm³/d
+  Methane:     1005.1 Nm³/d
+  CH4 frac.:     53.0 %
+Plant configuration saved to .../output/two_stage_plant_config.json
 ```
 
-**Analyse**:  
-- **Netto-Wirkungsgrad**: (472 kW + 125 kW) ÷ (751,9 m³/d × 10 kWh/m³ ÷ 24 h) = **190 %** (exzellente Wärmerückgewinnung)  
-- **Eigenverbrauchsquote**: 8,25 ÷ 480,5 = **1,7 %** (sehr niedrig)  
-- **Überschusswärme**: 540,6 - 125,4 = **415 kW** für externe Nutzung verfügbar  
-- **Fackelnutzung**: 8,2 % der Produktion abgeblasen (typisch bei BHKW-Teillast)  
+## Interpretation
 
-### Prozessstabilität
+### Endzustand an Tag 10
 
-```
-BEWERTUNG DER PROZESSSTABILITÄT
-======================================================================
+| Größe                            | Hydrolyse-Vorbehälter | Hauptfermenter | Anlage |
+|----------------------------------|-----------------------|----------------|--------|
+| Biogas, trocken [Nm³/d]          | 1679,0                | 216,6          | 1895,6 |
+| Methan [Nm³/d]                   | 891,1                 | 114,0          | 1005,1 |
+| Methangehalt des trockenen Gases | 53,1 %                | 52,6 %         | 53,0 % |
+| Anteil am Methan der Anlage      | 88,7 %                | 11,3 %         | 100 %  |
+| pH                               | 7,42                  | 7,39           | –      |
+| VFA [g HAc-eq/L]                 | 0,24                  | 0,03           | –      |
+| TAC [g CaCO3/L]                  | 5,73                  | 6,30           | –      |
+| VFA/TAC                          | 0,04                  | 0,005          | –      |
 
-Fermenter 1 (Hydrolyse):
-  pH-Stabilität:        PRÜFEN (7.15 - etwas niedrig)
-  VFA-Level:            HOCH (3.82 g/L)
-  FOS/TAC-Verhältnis:   0.418 (Beobachten)
-  Speicherstatus:       NORMAL (50% voll)
+**Die Gasströme sind trockenes Gas im Normzustand.** `Q_gas` und `Q_ch4` sind
+in Nm³/d (0 °C, 1,01325 bar) angegeben und enthalten keinen Wasserdampf. Der
+Methangehalt von 53,0 % ist deshalb der des trockenen Gases, wie ihn ein
+Gasanalysator anzeigt. Siehe
+[Gemeldete Gasströme](../user_guide/adm1_implementation.md#gemeldete-gasstrome).
 
-Fermenter 2 (Methanogenese):
-  pH-Stabilität:        GUT (7.32)
-  VFA-Level:            GUT (1.95 g/L)
-  FOS/TAC-Verhältnis:   0.245 (Stabil)
-  Speicherstatus:       NORMAL (50% voll)
-```
+**Der Vorbehälter erzeugt den größten Teil des Gases.** 891,1 der 1005,1 Nm³/d
+Methan (88,7 %) stammen aus dem ersten Behälter. Mit einer Verweilzeit von
+30,9 d, einem pH von 7,42 und 0,24 g HAc-eq/L VFA läuft in ihm die vollständige
+Abbaukette bis zum Methan ab. In dieser Konfiguration ist er keine getrennte
+Versäuerungsstufe. Der Hauptfermenter vergärt den Rest und liefert weitere
+114,0 Nm³/d Methan.
 
-**Interpretation**:  
-- **Fermenter 1**: Höhere VFA-Werte werden in der thermophilen Hydrolysestufe erwartet - Säuren werden in Stufe 2 verbraucht.  
-- **Fermenter 2**: Exzellente Stabilitätsindikatoren - Methanogene verbrauchen VFAs effektiv.  
-- **pH-Gradient**: 7,15 → 7,32 zeigt ordnungsgemäße zweistufige Funktion.  
-- **Gasspeicher**: Beide auf gesundem 50 % Füllstand mit stabilem Druck.  
+**Säuren und Pufferkapazität.** Die VFA liegen bei 0,24 und 0,03 g HAc-eq/L bei
+einem TAC von 5,73 und 6,30 g CaCO3/L; das ergibt VFA/TAC-Verhältnisse von 0,04
+und 0,005. Der pH liegt bei 7,42 und 7,39. Typische Bereiche dieser Kenngrößen
+stehen unter
+[Optimale Betriebsbereiche](../user_guide/components/biological.md#optimale-betriebsbereiche).
 
-## Vorteile des zweistufigen Designs
+**Ertrag je Tonne Zufuhr.** Die 17,5 t/d Frischmasse ergeben je Tonne 108 Nm³
+Biogas und 57 Nm³ Methan an Tag 10.
 
-### 1. Prozessoptimierung
+### Weitere Ergebnisse
 
-| Aspekt | Einstufig | Zweistufig |
-|--------|-----------|------------|
-| **Hydrolyse** | Begrenzt durch mesophile Temp | Verbessert bei 45°C |
-| **Methanogenese** | Muss VFA-Spitzen tolerieren | Stabile, gepufferte Fütterung |
-| **OLR-Kapazität** | 3-4 kg CSB/(m³·d) | 5-8 kg CSB/(m³·d) |
-| **Prozessstabilität** | Moderat | Hoch |
-
-### 2. Substratflexibilität
-
-Das zweistufige System kommt besser mit schwierigen Substraten zurecht:  
-- **Faserreiche Materialien**: Verbesserte Hydrolyse in Stufe 1.  
-- **Proteinreiche Substrate**: Ammoniakpufferung über die Stufen hinweg.  
-- **Variable Zulaufzusammensetzung**: Stufe 2 bietet Pufferkapazität.  
-
-### 3. Operative Vorteile
-
-- **Reduzierte Schaumbildung**: Separate Hydrolysephase.  
-- **Bessere Hygienisierung**: Thermophile Stufe (45°C) tötet Pathogene ab.  
-- **Einfachere Prozesssteuerung**: Überwachung und Steuerung jeder Stufe unabhängig voneinander.  
-- **Erholung von Störungen**: Stufe 2 kann Störungen in Stufe 1 abpuffern.  
-
-## Leistungsvergleich
-
-### Einstufig vs. Zweistufig
-
-| Metrik | Einstufig (2000 m³ @ 35°C) | Zweistufig (1977+1000 m³) | Verbesserung |
-|--------|-----------------------------|---------------------------|--------------|
-| **Biogasertrag** | 1150 m³/d | 1253 m³/d | +9 % |
-| **CH₄-Gehalt** | 58 % | 60 % | +3,4 % |
-| **Spezifischer Ertrag** | 46 m³/m³ Zulauf | 50 m³/m³ Zulauf | +8,7 % |
-| **Prozessstabilität** | Moderat (FOS/TAC: 0,35) | Hoch (FOS/TAC: 0,25) | Besser |
-| **OLR-Kapazität** | 3,5 kg CSB/(m³·d) | 8,4 kg CSB/(m³·d) | +140 % |
-
-**Kosten-Nutzen**:  
-- **Zusatzinvestition**: ~15-20 % (zweiter Fermenter, Pumpen)  
-- **Energiegewinn**: ~9 % mehr Biogas  
-- **Stabilität**: Signifikant reduziertes Risiko von Prozessversagen  
-- **ROI**: Typischerweise 3-5 Jahre bei schwierigen Substraten  
-
-## Leistung mechanischer Komponenten
-
-### Pumpenbetrieb
-
-**Fütterungspumpe**:  
-- **Betriebspunkt**: 25 m³/d ÷ 24 = 1,04 m³/h (3,5 % der Nennkapazität)  
-- **Effizienz bei niedrigem Durchfluss**: Exzenterschneckenpumpen behalten ca. 60 % Wirkungsgrad auch bei 3 % Kapazität bei.  
-- **Jährliche Energie**: 5 kW × 8760 h = 43.800 kWh  
-
-**Transferpumpe**:  
-- **Betriebspunkt**: 25 m³/d ÷ 24 = 1,04 m³/h  
-- **Tatsächliche Leistung**: 8 kW × (1,04/25) × 1,2 (Abschlag für niedrige Effizienz) ≈ **0,4 kW**  
-- **Jährliche Energie**: 0,4 kW × 8760 h = 3.504 kWh  
-
-### Rührwerksleistung
-
-**Hydrolyse-Rührwerk**:  
-- **Mischzeit**: ~15 Minuten (aus Reynolds-Zahl und Geometrie)  
-- **Umfangsgeschwindigkeit**: ~4,5 m/s (turbulenter Bereich)  
-- **Scherrate**: ~50 s⁻¹ (hohe Intensität)  
-- **Leistungsbeiwert**: 0,32 (typisch für Propeller bei Re > 10.000)  
-
-**Methanogenese-Rührwerk**:  
-- **Mischzeit**: ~20 Minuten  
-- **Umfangsgeschwindigkeit**: ~3,8 m/s  
-- **Scherrate**: ~35 s⁻¹ (mittlere Intensität)  
-- **Verhindert Entmischung**, ohne empfindliche Methanogene zu schädigen.  
-
-## Gasspeicher- und Fackelmanagement
-
-### Speicherdynamik
-
-**Speicher 1 (Hydrolyse)**:  
-- Erhält ~850 m³/d (höhere Produktion durch verbesserte Hydrolyse).  
-- Liefert ~675 m³/d an BHKW (proportional zum Gesamtbedarf).  
-- Netto-Akkumulation: +175 m³/d.  
-- Erreicht 50 % Kapazität in ~0,9 Tagen.  
-
-**Speicher 2 (Methanogenese)**:  
-- Erhält ~400 m³/d (niedriger, aber stabiler).  
-- Liefert ~475 m³/d an BHKW.  
-- Netto-Abzug: -75 m³/d (ergänzt Speicher 1).  
-- Bietet Puffer für Produktionsschwankungen.  
-
-### Fackelbetrieb
-
-**Wann wird die Fackel aktiviert?**:  
-1. **Speicherüberlauf**: Wenn einer der Speicher 100 % Kapazität erreicht.  
-2. **BHKW-Teillast**: Wenn das BHKW unter Volllast arbeitet.  
-3. **Wartung**: Wenn das BHKW offline ist, die Fermenter aber weiterlaufen.  
-4. **Anfahren/Abfahren**: Während transienter Betriebszustände.  
-
-**Fackelleistung**:  
-- **Zerstörungsgrad**: 98 % CH₄-Konvertierung zu CO₂.  
-- **Temperatur**: ~1000°C Verbrennungstemperatur.  
-- **Emissionen**: 2 % unverbranntes CH₄ + CO₂ aus der Verbrennung.  
-- **Sicherheit**: Automatische Zündung, Flammenüberwachung.  
-
-## Prozesssteuerungsstrategien
-
-### Temperatursteuerung
+`main()` gibt die Anlage und die Ergebnisliste zurück. Daraus lassen sich die
+Ausgaben der übrigen Komponenten lesen, zum Beispiel:
 
 ```python
-# Heizung 1 hält 45°C für Hydrolyse
-heating_1.target_temperature = 318.15  # K
-heating_1.heat_loss_coefficient = 0.5  # Höher aufgrund von ΔT
+plant, results = main()
+final = results[-1]["components"]
 
-# Heizung 2 hält 35°C für Methanogenese
-heating_2.target_temperature = 308.15  # K
-heating_2.heat_loss_coefficient = 0.3  # Niedrigeres ΔT
+chp = final["chp_1"]
+print(f"CHP electrical power:  {chp['P_el']:6.1f} kW")
+print(f"CHP thermal power:     {chp['P_th']:6.1f} kW")
+print(f"CHP gas consumption:   {chp['Q_gas_consumed']:6.1f} Nm³/d")
+
+for storage_id in ("hydrolysis_storage", "main_digester_storage"):
+    storage = final[storage_id]
+    print(f"{storage_id}: {storage['stored_volume_m3']:.1f} m³ stored, {storage['cumulative_vented_m3']:.1f} m³ vented")
+print(f"chp_1_flare: {final['chp_1_flare']['cumulative_vented_m3']:.1f} m³ burnt")
+
+for heating_id in ("heating_hydro", "heating_main"):
+    heating = final[heating_id]
+    print(f"{heating_id}: {heating['Q_heat_supplied']:.1f} kW supplied, {heating['P_aux_heat']:.1f} kW auxiliary heat")
+
+balance = plant.get_electricity_balance()
+print(f"Net electrical power:  {balance['P_el_net']:6.1f} kW")
 ```
 
-**Berechnung des Wärmebedarfs**:  
-- **Fermenter 1**: Q = 0,5 kW/K × (45 - 15)°C = **15 kW** Basisverlust + **80 kW** Prozessheizung = **95 kW**  
-- **Fermenter 2**: Q = 0,3 kW/K × (35 - 15)°C = **6 kW** Basisverlust + **24 kW** Prozessheizung = **30 kW**  
-- **Gesamt**: **125 kW** (gut abgedeckt durch 541 kW BHKW-Wärmeleistung)  
-
-### Rührwerkssteuerung
-
-**Strategie**: Intermittierendes Rühren mit adaptiver Zeitsteuerung
-```python
-# Hohe Durchmischung bei Fütterung (4× täglich)
-if feeding_event:
-    mixer.on_time_fraction = 0.5  # 50% Einschaltdauer
-else:
-    mixer.on_time_fraction = 0.15  # 15% Basislinie
+```text
+CHP electrical power:   167.5 kW
+CHP thermal power:      188.4 kW
+CHP gas consumption:   1895.6 Nm³/d
+hydrolysis_storage: 0.0 m³ stored, 0.0 m³ vented
+main_digester_storage: 0.0 m³ stored, 0.0 m³ vented
+chp_1_flare: 0.0 m³ burnt
+heating_hydro: 37.6 kW supplied, 0.0 kW auxiliary heat
+heating_main: 10.0 kW supplied, 0.0 kW auxiliary heat
+Net electrical power:   162.5 kW
 ```
 
-### Fütterungssteuerung
+**Das BHKW läuft mit einem Drittel seiner Nennleistung.** 1005,1 Nm³/d Methan
+mit 10 kWh/Nm³ sind 418,8 kW Brennstoffleistung. Mit dem elektrischen
+Wirkungsgrad von 0,40 ergibt das 167,5 kW, 33,5 % der nominalen 500 kW. Die
+thermische Leistung ist 167,5 kW × 0,45 / 0,40 = 188,4 kW. Bei Volllast
+bräuchte das BHKW 3000 Nm³/d Methan, etwa das Dreifache der Produktion.
 
-**Model Predictive Control (MPC)** Ansatz:  
-1. Messen der aktuellen VFA und des pH-Werts.  
-2. Vorhersagen der 48h-Reaktion mit verschiedenen Fütterungsraten.  
-3. Auswählen der Fütterungsrate, die CH₄ optimiert, während pH > 7,0 bleibt.  
+**Die Speicher bleiben leer, und die Fackel wird nicht genutzt.** Das BHKW kann
+mehr Gas verbrennen, als die Fermenter erzeugen, und nimmt deshalb das gesamte
+Gas jedes Schritts ab: Sein Verbrauch von 1895,6 Nm³/d entspricht der
+Produktion. Beide Speicher sind am Ende des Schritts leer, und nichts wird
+abgeblasen.
 
-## Häufige Probleme und Lösungen
+**Der Wärmebedarf ist Wärmeverlust plus Aufheizen der Zufuhr.** Der Vorbehälter
+braucht 37,6 kW: 0,5 kW/K × (45 °C − 15 °C) = 15,0 kW Wärmeverlust und 22,6 kW
+für das Aufheizen der 17,5 t/d Zufuhr auf 45 °C. Die Substrate kommen mit ihrer
+Lagertemperatur an, 9,3 °C bei der Maissilage und 20 °C bei der Schweinegülle.
+Der Hauptfermenter braucht 0,5 kW/K × (35 °C − 15 °C) = 10,0 kW. Er hat keine
+Substratzufuhr, und der Zulauf aus dem Vorbehälter geht nicht in die
+Wärmebilanz ein. 15 °C ist die Standard-Außentemperatur von `BiogasPlant`. Die
+188,4 kW BHKW-Wärme decken die 47,6 kW, Zusatzwärme ist also nicht nötig.
 
-### Problem 1: Hohe VFA in Fermenter 1
+**Nettoleistung.** Das BHKW verbraucht 3 % seiner Leistung für die eigenen
+Nebenaggregate (Standardwert des Pakets). Weitere Stromverbraucher hat die
+Anlage nicht; es bleiben 162,5 kW.
 
-**Symptome**:  
-- VFA > 5 g/L  
-- pH < 7,0  
-- Reduzierte Gasproduktion  
-
-**Lösungen**:
-```python
-# Organische Belastung reduzieren
-Q_substrates = [12, 8, 0, 0, 0, 0, 0, 0, 0, 0]  # Reduzieren von [15, 10, ...]
-
-# Temperatur in Stufe 1 erhöhen (Vorsicht - max. 55°C)
-T_ad_1 = 323.15  # 50°C
-
-# Rühren verstärken, um Akkumulation zu verhindern
-mixer_1.on_time_fraction = 0.35
-```
-
-### Problem 2: Niedriger Methangehalt
-
-**Symptome**:  
-- CH₄ < 55 %  
-- CO₂ erhöht  
-- Niedrige spezifische Gasproduktion  
-
-**Lösungen**:
-```python
-# HRT erhöhen (Fütterung reduzieren)
-Q_substrates = [12, 8, 0, 0, 0, 0, 0, 0, 0, 0]
-
-# Temperatur in Stufe 2 optimieren
-T_ad_2 = 311.15  # 38°C (optimal für viele Methanogene)
-
-# Auf Lufteintritt prüfen (O₂ hemmt Methanogene)
-```
-
-### Problem 3: Schaumbildung in Fermenter 1
-
-**Symptome**:  
-- Gasspeicher zeigt Druckschwankungen  
-- Ablauf enthält übermäßige Gasblasen  
-
-**Lösungen**:
-```python
-# Rührintensität reduzieren
-mixer_1.mixing_intensity = "medium"
-
-# Antischaummittel hinzufügen (Substrat-Index 8)
-Q_substrates = [15, 10, 0, 0, 0, 0, 0, 0, 0.05, 0]  # 50 L/d Antischaum
-
-# Transferrate zu Stufe 2 erhöhen
-# (implementieren eines Timer-basierten periodischen Abzugs)
-```
-
-### Problem 4: Übermäßige Fackelnutzung
-
-**Symptome**:  
-- Fackel läuft kontinuierlich  
-- >20 % der Produktion zur Fackel  
-- Hoher Speicherdruck  
-
-**Ursachen**:  
-- BHKW zu klein für Gasproduktion  
-- BHKW im Teillastbetrieb  
-- Übermäßiger Substratzulauf  
-
-**Lösungen**:
-```python
-# Option 1: Substratzulauf reduzieren
-Q_substrates = [12, 8, 0, 0, 0, 0, 0, 0, 0, 0]
-
-# Option 2: BHKW-Kapazität erhöhen
-configurator.add_chp("chp1", P_el_nom=600, ...)  # Erhöhen von 500
-
-# Option 3: Zweite BHKW-Einheit hinzufügen
-configurator.add_chp("chp2", P_el_nom=200, ...)
-configurator.auto_connect_digester_to_chp("digester_1", "chp2")
-
-# Option 4: Gasspeicherkapazität erhöhen
-# (V_gas beim Hinzufügen von Fermentern anpassen)
-```
-
-## Fortgeschrittene Anwendungen
-
-### 1. Parameter-Sweep zur Optimierung
+Der Verlauf über die zehn Tage zeigt, wie weit die Anlage von einem stationären
+Zustand entfernt ist:
 
 ```python
-from pyadm1.simulation import ParallelSimulator
-
-# Verschiedene Temperaturen für Stufe 1 testen
-parallel = ParallelSimulator(adm1, n_workers=4)
-scenarios = [
-    {"T_ad_1": 313.15, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},  # 40°C
-    {"T_ad_1": 318.15, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},  # 45°C
-    {"T_ad_1": 323.15, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},  # 50°C
-]
-results = parallel.run_scenarios(scenarios, duration=30)
+print("  day  pre-tank     main  CH4 %  CHP kW")
+for r in results:
+    c = r["components"]
+    q_gas = c["hydrolysis"]["Q_gas"] + c["main_digester"]["Q_gas"]
+    q_ch4 = c["hydrolysis"]["Q_ch4"] + c["main_digester"]["Q_ch4"]
+    print(
+        f"{r['time']:5.2f} {c['hydrolysis']['Q_gas']:9.1f} {c['main_digester']['Q_gas']:8.1f}"
+        f" {100 * q_ch4 / q_gas:6.1f} {c['chp_1']['P_el']:7.1f}"
+    )
 ```
 
-### 2. Online-Kalibrierung
-
-```python
-from pyadm1.calibration import Calibrator
-
-# Hydrolyseparameter der Stufe 1 kalibrieren
-calibrator = Calibrator(plant.components["digester_1"])
-params = calibrator.calibrate_initial(
-    measurements=measurement_data,
-    parameters=["k_hyd_ch", "k_hyd_pr", "k_hyd_li"],
-)
+```text
+  day  pre-tank     main  CH4 %  CHP kW
+ 0.04    1814.4   1646.7   22.1   181.6
+ 1.00    1527.1    104.2   49.6   134.9
+ 2.00    1586.6    129.6   51.4   146.9
+...
+ 9.00    1674.0    207.5   53.0   166.2
+10.00    1679.0    216.6   53.0   167.5
 ```
 
-### 3. Modellgestützte prädiktive Regelung (MPC)
+Die Spalten `pre-tank` und `main` sind die Biogasströme in Nm³/d. Die erste
+Zeile ist der Zustand nach der ersten Stunde: Die Behälter starten aus dem
+abgeleiteten Anfangszustand, das Gas enthält nur 22,1 % Methan, und das BHKW
+verbrennt zusätzlich die Anfangsfüllung der Speicher (10 % ihrer Kapazität). Ab
+Tag 1 steigt der Gasstrom des Hauptfermenters von 104,2 auf 216,6 Nm³/d und
+nimmt am letzten Tag noch um 9,1 Nm³/d zu; der Vorbehälter legt an diesem Tag
+5,0 Nm³/d zu. Zehn Tage sind bei Verweilzeiten von 30,9 und 61,7 d eine
+Anfahrphase; der Endzustand oben ist deshalb kein stationärer Zustand.
 
-```python
-# Optimale Fütterung für die nächsten 48 Stunden vorhersagen
-Q_best, Q_ch4_pred = simulator.determine_best_feed_by_n_sims(
-    state_zero=current_state,
-    Q=current_feed,
-    Qch4sp=800,  # Sollwert: 800 m³/d CH4
-    feeding_freq=48,
-    n=20  # Test von 20 Szenarien
-)
-```
+## Beispiel anpassen
+
+- **Zufuhr**: die Mengen in `hydro_feed` ändern (t/d Frischmasse) oder andere Substrat-IDs an `Feedstock` übergeben; siehe [Beispiel-Substrate](../substrates/library.md).  
+- **Größe und Temperatur der Stufen**: `V_liq`, `V_gas` und `T_ad` in `add_digester` ändern. Ein kleineres `V_liq` des Vorbehälters verkürzt seine Verweilzeit. `target_temperature` des zugehörigen Heizsystems auf das neue `T_ad` setzen.  
+- **Simulationsdauer**: `duration` in `plant.simulate` ändern, um die Anlage über die Anfahrphase hinaus zu verfolgen.  
+- **BHKW**: `P_el_nom`, `eta_el` und `eta_th` in `add_chp` ändern.  
+- **Wärmebedarf**: `heat_loss_coefficient` in `add_heating` setzen oder den Fermentern in `add_digester` die k-Werte `k_wall`, `k_roof` und `k_ground` geben, damit der Wärmeverlust den Behälterflächen folgt. Die Außentemperatur ist `T_ambient` von `BiogasPlant`. Siehe [Heizsystem](../user_guide/components/energy.md#heizsystem).  
+- **Weitere Komponenten**: Rührwerke, Substratlager und Dosierer werden mit `add_mixer`, `add_substrate_storage` und `add_feeder` hinzugefügt; siehe [Mechanische Komponenten](../user_guide/components/mechanical.md) und [Fütterungskomponenten](../user_guide/components/feeding.md).  
+- **Viele Szenarien**: siehe [Parallele Simulation](parallel_simulation.md).  
 
 ## Referenzen
 
-- **TPAD Design**: Simeonov, I., Chorukova, E., & Kabaivanova, L. (2025). *Two-stage anaerobic digestion for green energy production: A review*. Processes, 13(2), 294.  
-- **Prozesssteuerung**: Gaida (2014). *Dynamic real-time substrate feed optimization of anaerobic co-digestion plants*. PhD thesis, Leiden University.  
+- **Zweistufige Vergärung**: Simeonov, I., Chorukova, E., & Kabaivanova, L. (2025). *Two-stage anaerobic digestion for green energy production: A review*. Processes, 13(2), 294.  
+- **Modell**: [ADM1-Implementierung](../user_guide/adm1_implementation.md)  
+- **Komponenten**: [Biologische Komponenten](../user_guide/components/biological.md), [Energiekomponenten](../user_guide/components/energy.md)  
 
 ## Ähnliche Beispiele
 
-- [`basic_digester.md`](basic_digester.md): Einfaches einstufiges System  
-- `calibration_workflow.md`: Parameterschätzung aus Messdaten  
-- `substrate_optimization.py`: Optimale Fütterungsstrategie  
-- [`parallel_two_stage_simulation.py`](https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py): Parallele Simulationen  
+- [Basis-Fermenter](basic_digester.md): Einzelner Fermenter mit Gasspeicher  
+- [Parallele Simulation](parallel_simulation.md): Viele Simulationsszenarien parallel rechnen  

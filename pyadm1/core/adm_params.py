@@ -1,7 +1,7 @@
 """
 Parameter definitions for the ADM1da model.
 
-Reference: Schlattmann (2011); SIMBA# biogas 4.2 Tutorial.
+Reference: Schlattmann (2011); SIMBA# biogas (ifak), model file ``adm1da``.
 
 The model implemented in :mod:`pyadm1.core.adm1` is **ADM1da** (Schlattmann
 2011), an agricultural-biogas extension of ADM1.  Compared to the classical
@@ -12,18 +12,53 @@ Batstone et al. (2002) formulation this variant adds:
     XI.
   - Temperature-dependent kinetics (Arrhenius θ-corrections per organism
     group).
-  - Modified inhibition: squared pH inhibition for X_fa/X_c4/X_pro, cubic for
-    X_ac; undissociated acid inhibition (KIHPRO, KIHAC); acetate competitive
-    inhibition; S_IN = S_nh4 + S_nh3 for N limitation.
-  - Doubled decay rate (k_dec = 0.04 d⁻¹) and decay products recycled to X_S
-    fractions per ADM1da decay processes (Schlattmann 2011).
-  - NH3 inhibition constants (K_I_nh3, K_I_nh3_pro) using reference-temperature
-    values.
+  - Modified inhibition: squared pH inhibition for all acidogenic and
+    acetogenic groups, cubic for X_ac and X_h2; inhibition by undissociated
+    propionic and acetic acid (KIHPRO, KIHAC); squared free-ammonia inhibition
+    of X_pro and X_ac with temperature-dependent constants.
+  - Decay products recycled to the X_S fractions; the inert share keeps the
+    composition of the biomass. Decay rate 0.02 d⁻¹, 0.04 d⁻¹ for X_ac.
+  - Ammonia leaving with the biogas and a sludge volume that shrinks with the
+    net volume of the converted organic matter.
 """
 
 from __future__ import annotations
 
 import numpy as np
+
+# Mass-to-COD ratios [kg / kg COD] and densities [kg / m³] of the organic
+# classes, as in the SIMBA# ADM1da model file.
+_M_CH, _RHO_CH = 180.0 / 192.0, 1550.0
+_M_PR, _RHO_PR = 0.7736, 1370.0
+_M_LI, _RHO_LI = 806.0 / 2320.0, 920.0
+_M_VA, _RHO_VA = 102.0 / 208.0, 940.0
+_M_BU, _RHO_BU = 88.0 / 160.0, 960.0
+_M_PRO, _RHO_PRO = 74.0 / 112.0, 990.0
+_M_AC, _RHO_AC = 60.0 / 64.0, 1050.0
+
+# Carbon content [kmol C / kg COD] of the three classes.
+_C_CH, _C_PR, _C_LI = 0.0313, 0.0306, 0.022
+
+# Biomass: 20 % carbohydrate, 70 % protein, 10 % lipid.
+_BM_CH, _BM_PR, _BM_LI = 0.20, 0.70, 0.10
+_M_BAC = _BM_CH * _M_CH + _BM_PR * _M_PR + _BM_LI * _M_LI
+_RHO_BAC = _BM_CH * _RHO_CH + _BM_PR * _RHO_PR + _BM_LI * _RHO_LI
+
+# Shares of the three classes in the decay products of the biomass (sum 1).
+_F_CH_XB = _BM_CH * _M_CH / _M_BAC
+_F_PR_XB = _BM_PR * _M_PR / _M_BAC
+_F_LI_XB = _BM_LI * _M_LI / _M_BAC
+
+# Nitrogen: proteins hold 13.84 % nitrogen by mass.
+_N_AA = _M_PR * 0.1384 / 14.0
+_N_BAC = _BM_PR * _N_AA
+_C_BAC = (_BM_CH * _M_CH * _C_CH + _BM_PR * _M_PR * _C_PR + _BM_LI * _M_LI * _C_LI) / _M_BAC
+
+# Share of the decayed biomass that ends up inert.
+_F_P_BAC = 0.20
+
+# Specific volumes [m³ / kg COD].
+_V_CH, _V_PR, _V_LI = _M_CH / _RHO_CH, _M_PR / _RHO_PR, _M_LI / _RHO_LI
 
 
 class ADMParams:
@@ -33,46 +68,59 @@ class ADMParams:
 
     @staticmethod
     def get_stoichiometric_params() -> dict:
-        """
-        Return carbon/nitrogen content and disintegration/hydrolysis fractions.
+        """Return composition, decay-product and volume constants.
 
-        Returns
-        -------
-        dict
-            Stoichiometric constants (ADM1da defaults; Schlattmann 2011).
+        The inert share of the decay products keeps the composition of the
+        biomass, so ``N_I``, ``C_I_x`` and ``V_I_x`` follow from the protein,
+        carbohydrate and lipid shares of the biomass.
+
+        Returns:
+            dict: Carbon content [kmol C / kg COD], nitrogen content
+                [kmol N / kg COD], product fractions [-] and specific volumes
+                [m³ / kg COD] (ADM1da defaults; SIMBA# model file ``adm1da``).
         """
         return {
             # --- Carbon content [kmol C / kg COD] ---
-            "C_su": 0.0313,
-            "C_aa": 0.03,
+            "C_su": _C_CH,
+            "C_aa": _C_PR,
             "C_fa": 0.0217,
             "C_va": 0.024,
             "C_bu": 0.025,
             "C_pro": 0.0268,
             "C_ac": 0.0313,
             "C_ch4": 0.0156,
-            "C_bac": 0.030381,
-            "C_ch": 0.0313,
-            "C_pr": 0.0306,
-            "C_li": 0.022,
+            "C_bac": _C_BAC,
+            "C_ch": _C_CH,
+            "C_pr": _C_PR,
+            "C_li": _C_LI,
             "C_I_s": 0.03,
-            "C_I_x": 0.03,
+            "C_I_x": _F_CH_XB * _C_CH + _F_PR_XB * _C_PR + _F_LI_XB * _C_LI,
             # --- Nitrogen content [kmol N / kg COD] ---
-            "N_bac": 0.005353,
-            "N_aa": 0.0076,
-            "N_I": 0.06 / 14,
+            "N_bac": _N_BAC,
+            "N_aa": _N_AA,
+            "N_I": _F_PR_XB * _N_AA,
             # --- Lipid hydrolysis fraction ---
             "f_fa_li": 0.95,
             # --- Biomass decay product fractions ---
-            "f_ch_bac": 0.2456 * 0.80,
-            "f_pr_bac": 0.7093 * 0.80,
-            "f_li_bac": 0.0455 * 0.80,
-            "f_p_bac": 0.20,
+            "f_ch_bac": _F_CH_XB * (1.0 - _F_P_BAC),
+            "f_pr_bac": _F_PR_XB * (1.0 - _F_P_BAC),
+            "f_li_bac": _F_LI_XB * (1.0 - _F_P_BAC),
+            "f_p_bac": _F_P_BAC,
             # --- Disintegration inert fractions ---
             "fXI_PS": 0.0,
             "fXI_PF": 0.0,
             # --- Hydrolysis soluble inert fraction ---
             "fSI_hyd": 0.0,
+            # --- Specific volumes [m³ / kg COD] ---
+            "V_ch": _V_CH,
+            "V_pr": _V_PR,
+            "V_li": _V_LI,
+            "V_va": _M_VA / _RHO_VA,
+            "V_bu": _M_BU / _RHO_BU,
+            "V_pro": _M_PRO / _RHO_PRO,
+            "V_ac": _M_AC / _RHO_AC,
+            "V_bac": _M_BAC / _RHO_BAC,
+            "V_I_x": _F_CH_XB * _V_CH + _F_PR_XB * _V_PR + _F_LI_XB * _V_LI,
         }
 
     @staticmethod
@@ -207,7 +255,7 @@ class ADMParams:
             "K_I_h2_pro": 3.5e-6 * np.exp(0.080 * dT_C),
             "K_IH_pro": 8.0e-4,
             "K_IH_ac": 2.417e-3,
-            "K_I_nh3_pro": 0.0019 * np.exp(0.060 * dT_C),
+            "K_I_nh3_pro": 0.0019 * np.exp(0.061 * dT_C),
             "K_S_co2_h2": 5.0e-5,
             "K_I_ac_xfa": 4.0 * np.exp(0.080 * dT_C),
             "K_I_ac_xc4": 4.0 * np.exp(0.080 * dT_C),
@@ -265,15 +313,35 @@ class ADMParams:
         k_p = 1.0e4
         k_L_a = 200.0
 
-        # Henry's law solubility coefficients with van't Hoff T-correction.
-        T_ref_H = 308.15
+        # Henry's law solubility coefficients [kmol m⁻³ bar⁻¹] at 25 °C with
+        # van't Hoff T-correction.
         R_J = 100.0 * R
         dH_co2, dH_ch4, dH_h2 = 19410.0, 14240.0, 4180.0
-        H_co2 = 0.0271 * np.exp(-dH_co2 / R_J * (1.0 / T_ref_H - 1.0 / T_ad))
-        H_ch4 = 0.00116 * np.exp(-dH_ch4 / R_J * (1.0 / T_ref_H - 1.0 / T_ad))
-        H_h2 = 7.38e-4 * np.exp(-dH_h2 / R_J * (1.0 / T_ref_H - 1.0 / T_ad))
+        H_co2 = 0.035 * np.exp(-dH_co2 / R_J * (1.0 / T_base - 1.0 / T_ad))
+        H_ch4 = 0.0014 * np.exp(-dH_ch4 / R_J * (1.0 / T_base - 1.0 / T_ad))
+        H_h2 = 7.8e-4 * np.exp(-dH_h2 / R_J * (1.0 / T_base - 1.0 / T_ad))
         K_H_co2 = 1 / (H_co2 * R * T_ad)
         K_H_ch4 = 1 / (H_ch4 * R * T_ad)
         K_H_h2 = 1 / (H_h2 * R * T_ad)
 
         return p_gas_h2o, k_p, k_L_a, K_H_co2, K_H_ch4, K_H_h2
+
+    @staticmethod
+    def get_nh3_henry_constant(R: float, T_base: float, T_ad: float) -> float:
+        """Return the gas-to-liquid concentration ratio of free ammonia.
+
+        Ammonia is far more soluble than the main biogas components, so its
+        partial pressure follows the dissolved concentration without delay:
+        the gas phase holds ``K_H_nh3 * S_nh3`` kmol N per m³.
+
+        Args:
+            R (float): Gas constant [bar m³ kmol⁻¹ K⁻¹].
+            T_base (float): Reference temperature [K] (298.15).
+            T_ad (float): Digester temperature [K].
+
+        Returns:
+            float: ``K_H_nh3 = 1 / (H_nh3 R T)`` [m³ liquid / m³ gas], with the
+                solubility ``H_nh3`` = 60 kmol m⁻³ bar⁻¹ at 25 °C.
+        """
+        H_nh3 = 60.0 * np.exp(-36584.0 / (100.0 * R) * (1.0 / T_base - 1.0 / T_ad))
+        return 1.0 / (H_nh3 * R * T_ad)

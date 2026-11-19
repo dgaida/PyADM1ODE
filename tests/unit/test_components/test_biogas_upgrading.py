@@ -292,7 +292,10 @@ class TestPlantStepIntegration:
         assert supplied > 0.0
         # Regression guard: without Pass 4 the storage would only ever fill up.
         assert storage.stored_volume_m3 == pytest.approx(before - supplied)
-        assert results["bgaa"]["Q_biomethane_m3_per_day"] == pytest.approx(supplied * 0.55 * 0.98 / 0.97)
+        # The BGAA upgrades the methane the storage actually holds (its 60 %
+        # initial fill), not its own nominal ch4_content_in of 55 %.
+        assert results["stor0"]["CH4_fraction"] == pytest.approx(0.60)
+        assert results["bgaa"]["Q_biomethane_m3_per_day"] == pytest.approx(supplied * 0.60 * 0.98 / 0.97)
 
     def test_demand_is_capped_at_capacity_so_the_flare_stays_idle(self) -> None:
         plant = self._plant(capacity_m3h=10.0)
@@ -311,7 +314,7 @@ class TestPlantStepIntegration:
         s0 = results["stor0"]["Q_gas_supplied_m3_per_day"]
         s1 = results["stor1"]["Q_gas_supplied_m3_per_day"]
         assert s0 == pytest.approx(s1)
-        assert results["bgaa"]["Q_biomethane_m3_per_day"] == pytest.approx((s0 + s1) * 0.55 * 0.98 / 0.97)
+        assert results["bgaa"]["Q_biomethane_m3_per_day"] == pytest.approx((s0 + s1) * 0.60 * 0.98 / 0.97)
 
     def test_an_empty_storage_yields_no_biomethane(self) -> None:
         plant = self._plant(capacity_m3h=10.0, fill=0.0)

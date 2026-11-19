@@ -6,7 +6,7 @@ Diese Anleitung behandelt die Installation von PyADM1ODE auf verschiedenen Betri
 
 ### Mindestanforderungen
 
-- **Python**: 3.8 oder höher (3.10+ empfohlen, benötigt vom [fastmcp](https://github.com/jlowin/fastmcp)-Paket, das im optionalen Paket [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp) verwendet wird)  
+- **Python**: 3.10 oder höher  
 - **Betriebssystem**: Windows, Linux oder macOS  
 - **Arbeitsspeicher**: Mindestens 2 GB RAM (4 GB empfohlen)  
 - **Festplattenspeicher**: 10 MB für die Installation  
@@ -15,13 +15,15 @@ PyADM1ODE ist reines Python ohne native Laufzeitabhängigkeiten — die Installa
 
 ## Installationsmethoden
 
-### Methode 1: Installation über PyPI (Empfohlen, aber noch nicht unterstützt)
+### Methode 1: Installation von GitHub mit pip
 
-Sobald veröffentlicht, installieren Sie über pip:
+Das Paket liegt nicht auf PyPI. pip installiert es direkt aus dem Repository:
 
 ```bash
-pip install pyadm1ode
+pip install git+https://github.com/dgaida/PyADM1ODE.git
 ```
+
+Distribution und Importname heißen beide `pyadm1`.
 
 ### Methode 2: Installation aus dem Quellcode
 
@@ -62,7 +64,7 @@ pip install -e .
 2. **PyADM1 installieren**:  
 
    ```cmd
-   pip install pyadm1ode  # pip noch nicht unterstützt
+   pip install git+https://github.com/dgaida/PyADM1ODE.git
    # oder aus dem Quellcode:
    git clone https://github.com/dgaida/PyADM1ODE.git
    cd PyADM1ODE
@@ -87,7 +89,7 @@ pip install -e .
 2. **PyADM1ODE installieren**:  
 
    ```bash
-   pip install pyadm1ode
+   pip install git+https://github.com/dgaida/PyADM1ODE.git
    # oder aus dem Quellcode:
    git clone https://github.com/dgaida/PyADM1ODE.git
    cd PyADM1ODE

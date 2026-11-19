@@ -106,9 +106,10 @@ _SEPARATOR_DEFAULTS: dict[str, dict[str, float]] = {
     },
 }
 
-# ADM1 state indices of particulate (non-soluble) components [kg COD/m3]
-# Indices 12-24 of the 37-element ADM1 state vector (Batstone et al. 2002)
-_ADM1_PARTICULATE_INDICES = list(range(12, 25))
+# ADM1da state indices of the particulate components [kg COD/m3]: the
+# substrate pools X_PS/X_PF/X_S (12-20), inerts X_I (21) and the seven biomass
+# groups X_su ... X_h2 (22-28).
+_ADM1_PARTICULATE_INDICES = list(range(12, 29))
 _ADM1_PARTICULATE_INDEX_SET = set(_ADM1_PARTICULATE_INDICES)
 
 # Conversion: kg COD -> kg TS
@@ -266,7 +267,18 @@ class Separator(Component):
         Q_in = float(inputs.get("Q_in", inputs.get("Q_out", 0.0)))
 
         if Q_in <= 0.0:
-            return self.outputs_data  # no flow, no separation
+            # No flow, no separation: both fractions stop and the press draws
+            # no power. Returning the previous outputs would keep delivering
+            # the last step's flow downstream.
+            self.outputs_data = {
+                **self.outputs_data,
+                "Q_liquid": 0.0,
+                "Q_solid": 0.0,
+                "Q_out": 0.0,
+                "P_consumed": 0.0,
+                "state_out": None,
+            }
+            return self.outputs_data
 
         # --- resolve total solids ------------------------------------------
         # The plant router renames ``state_out`` to ``state_in`` on liquid
@@ -451,7 +463,7 @@ class Separator(Component):
         """
         Estimate digestate TS from ADM1 state vector.
 
-        Sums particulate COD components (indices 12-24, units kg COD/m3)
+        Sums particulate COD components (indices 12-28, units kg COD/m3)
         and converts to kg TS/m3 using standard stoichiometric factors.
 
         Args:

@@ -18,9 +18,9 @@ from pyadm1.configurator.plant_configurator import PlantConfigurator
 from pyadm1.core.adm1 import ADM1
 
 # ADM1 attributes whose VALUE depends on T_ad -- these must move on a change.
-TEMPERATURE_DEPENDENT = ("_T_ad", "_RT", "_p_ext", "_p_gas_h2o", "_K_H_co2", "_K_H_ch4", "_K_H_h2")
-# Recomputed alongside them, but constant in ADMParams.getADMgasparams.
-TEMPERATURE_INDEPENDENT = ("_k_p", "_k_L_a")
+TEMPERATURE_DEPENDENT = ("_T_ad", "_RT", "_p_gas_h2o", "_K_H_co2", "_K_H_ch4", "_K_H_h2", "_K_H_nh3")
+# Constant: the two gas rate constants and the pressure the headspace vents against.
+TEMPERATURE_INDEPENDENT = ("_k_p", "_k_L_a", "_p_ext")
 DERIVED = TEMPERATURE_DEPENDENT + TEMPERATURE_INDEPENDENT
 
 MESO, THERMO = 313.15, 328.15
@@ -143,7 +143,7 @@ class TestLateFeedstock:
         late.set_feedstock(feedstock, Q_substrates=Q)
 
         assert late.adm1_state == pytest.approx(early.adm1_state)
-        assert late.adm1._influent_df.equals(early.adm1._influent_df)
+        assert late.adm1._influent_df is None and early.adm1._influent_df is None
         assert late.adm1._rho_in == pytest.approx(early.adm1._rho_in)
         assert late.step(0.0, 1.0, {})["Q_gas"] == pytest.approx(early.step(0.0, 1.0, {})["Q_gas"])
 
@@ -165,7 +165,7 @@ class TestLateFeedstock:
         assert cfg.feedstock is feedstock
         assert cfg.plant.components["F1"].Q_substrates == Q
         for cid in ("F1", "F2"):
-            assert cfg.plant.components[cid].adm1._influent_df is not None
+            assert cfg.plant.components[cid].adm1.feedstock is feedstock
 
     def test_configurator_set_feedstock_can_be_restricted(self, feedstock: Feedstock) -> None:
         cfg = PlantConfigurator(BiogasPlant("P"))

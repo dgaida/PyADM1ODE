@@ -27,9 +27,10 @@ differential equations (ODE)**.
    $k_{A,B} = 10^8\,\text{m}^3\,\text{kmol}^{-1}\,\text{d}^{-1}$. They therefore
    track the thermodynamic equilibrium essentially in real time, without an
    algebraic solver having to be invoked inside the ODE step.  
-2. **Kinetic gas-liquid transfer**: $\text{H}_2$, $\text{CH}_4$, $\text{CO}_2$  
-   and $\text{NH}_3$ are transferred to the gas phase via $k_L a$ rates — no
-   algebraic Henry equilibrium constraint.  
+2. **Kinetic gas-liquid transfer**: $\text{H}_2$, $\text{CH}_4$ and  
+   $\text{CO}_2$ are transferred to the gas phase via $k_L a$ rates — no
+   algebraic Henry equilibrium constraint. Free ammonia leaves with the gas at
+   its equilibrium concentration.  
 3. **41 state variables**: the model carries 41 variables in five blocks:  
 
    | Block | Indices | Count | Contents |
@@ -120,6 +121,15 @@ $X_{S,*}$ pools using the COD-basis fractions above. The hydrolysis rate
 $k_{hyd} = 4\,\text{d}^{-1}$ is 100× faster than $k_{dis,PS} = 0{,}04\,\text{d}^{-1}$, so
 decayed biomass re-enters the substrate chain on the hydrolysis timescale.
 
+The inert share keeps the composition of the biomass, so it holds protein in
+the same proportion as the degradable share. Biomass carries
+$N_{XB} = f_{BM,PR} \cdot N_{aa}$ nitrogen, its decay products
+$f_{PR\_XB} \cdot N_{aa}$, with $N_{aa} = 0.00765$ kmol N per kg COD (13.84 %
+nitrogen in protein). Decay therefore binds a little ammonium
+($6.9 \cdot 10^{-5}$ kmol N per kg COD) instead of releasing any. Up to version
+0.6.2 the inert share had a lower nitrogen content; decay then released
+nitrogen and left about 2 % more ammonium in the digester.
+
 ## Temperature-dependent kinetics
 
 The ADM1da variant corrects every kinetic rate against the 35 °C reference
@@ -153,15 +163,14 @@ from Siegrist et al. (2002):
 
 | Inhibition | Standard ADM1 | ADM1da (this implementation) |
 | --- | --- | --- |
-| pH inhibition $X_{fa}/X_{c4}/X_{pro}$ | Hill, $n=1$ | Hill, $n=2$ (sharper cut-off) |
+| pH inhibition $X_{su}/X_{aa}/X_{fa}/X_{c4}/X_{pro}$ | Hill, $n=1$ | Hill, $n=2$ (sharper cut-off) |
 | pH inhibition $X_{ac}$ | Hill, $n=1$ | Hill, $n=3$ |
 | pH inhibition $X_{h2}$ | Hill, $n=1$ | Hill, $n=3$ |
-| N limitation | $S_{NH4}$ alone | $S_{IN} = S_{NH4} + S_{NH3}$ |
 | $\text{NH}_3$ inhibition $X_{ac}$ | linear in $S_{NH3}$ | squared Hill: $K_I^2/(K_I^2 + S_{NH3}^2)$, T-corrected with $\theta=0.086$ |
 | $\text{NH}_3$ inhibition $X_{pro}$ | not present | squared Hill with own $K_{I,nh3,pro}$, T-corrected with $\theta=0.061$ |
 | Undissociated propionate $X_{pro}$ | not present | $K_{IH,pro}/(K_{IH,pro} + S_{pro} - S_{pro^-})$ |
 | Undissociated acetate $X_{ac}$ | not present | $K_{IH,ac}/(K_{IH,ac} + S_{ac} - S_{ac^-})$ |
-| $\text{CO}_2$ limitation $X_{h2}$ | not present | squared Hill saturation: $S_{CO2}^2/(K_S^2 + S_{CO2}^2)$ |
+| $\text{CO}_2$ limitation $X_{h2}$ | not present | squared Hill saturation: $S_{CO2}^2/(K_S^2 + S_{CO2}^2)$ with the dissolved $S_{CO2} = S_{IC} - S_{HCO_3^-}$ |
 
 !!! note "Inhibition scope"
     The ADM1da kinetics as published in Schlattmann (2011) list an acetate /
@@ -189,10 +198,13 @@ $$
 $$
 
 with the same kinetic coupling for $\text{CO}_2 / \text{HCO}_3^-$ and
-$\text{NH}_4^+ / \text{NH}_3$. The reaction-rate constant
-$k_{A,B} = 10^8\,\text{d}^{-1}$ ensures sub-second equilibration. The acid
-dissociation constants are T-corrected against the 35 °C reference using van't
-Hoff with the enthalpies from Batstone 2002:
+$\text{NH}_4^+ / \text{NH}_3$. A pair settles at the rate
+$k_{A,B} \cdot (S_{H^+} + K_a)$. With
+$k_{A,B} = 10^8\,\text{m}^3\,\text{kmol}^{-1}\,\text{d}^{-1}$ and pH 7.4 the
+VFA pairs settle within a minute, $\text{CO}_2 / \text{HCO}_3^-$ within half an
+hour and $\text{NH}_4^+ / \text{NH}_3$ within a few hours, which is fast
+against the biology. The acid dissociation constants are T-corrected against
+the 25 °C reference using van't Hoff with the enthalpies from Batstone 2002:
 
 $$
 K_a(T) = K_a(298\,\text{K}) \cdot
@@ -200,10 +212,18 @@ K_a(T) = K_a(298\,\text{K}) \cdot
 \left(\frac{1}{298} - \frac{1}{T}\right)\right)
 $$
 
+$S_{IC}$ (`S_co2`) and $S_{IN}$ (`S_nh4`) are **totals**: bicarbonate and free
+ammonia are subsets of them, as the term $S_i - S_{i^-}$ of the rate shows. An
+acid-base reaction only shifts between the two forms, so $\rho_A$ appears
+in the balance of the ionised form alone and not in the balance of the total.
+Carbon and nitrogen are conserved this way; up to version 0.6.2 the rate was
+also added to the two totals, which removed about 4 % of the ammonium and
+2 % of the gas carbon from the balance.
+
 ## Gas-liquid transfer (Henry's law with van't Hoff correction)
 
-The four gas-phase species $\text{H}_2$, $\text{CH}_4$, $\text{CO}_2$ and
-$\text{NH}_3$ are transferred between the liquid and gas phases via
+The three gas-phase species $\text{H}_2$, $\text{CH}_4$ and $\text{CO}_2$
+are transferred between the liquid and gas phases via
 
 $$
 r_{F,gas} = k_L a_F \cdot \left( S_F - \frac{p_F}{K_H(T)\,R\,T} \right)
@@ -219,28 +239,84 @@ H_F(T) = H_F(T_{ref}) \cdot
 \left(\frac{1}{T_{ref}} - \frac{1}{T}\right)\right)
 $$
 
-| Gas | $H_{F,35°C}$ [mol/(L·bar)] | $\Delta H^\circ_F$ [J/mol] | $k_L a_F$ [d⁻¹] |
+| Gas | $H_{F,25°C}$ [mol/(L·bar)] | $\Delta H^\circ_F$ [J/mol] | $k_L a_F$ [d⁻¹] |
 | --- | --- | --- | --- |
-| CO₂ | 0.0271 | 19 410 | 200 |
-| CH₄ | 0.00116 | 14 240 | 200 |
-| H₂ | 7.38·10⁻⁴ | 4 180 | 200 |
-| NH₃ | 60 (at 25 °C reference) | 36 584 | 200 |
+| CO₂ | 0.035 | 19 410 | 200 |
+| CH₄ | 0.0014 | 14 240 | 200 |
+| H₂ | 7.8·10⁻⁴ | 4 180 | 200 |
+| NH₃ | 60 | 36 584 | – (see below) |
 
 Sign convention: dissolution is exothermic, so $H_F$ decreases as $T$ rises —
 less gas remains dissolved at higher operating temperature.
 
+### Ammonia in the gas
+
+Ammonia is over a thousand times more soluble than $\text{CO}_2$, so its gas
+concentration follows the liquid without delay: the headspace holds
+$S_{NH_3} / (H_{NH_3}\,R\,T)$ kmol N per m³. This ammonia leaves with the gas
+flow and is taken from $S_{IN}$ and $S_{NH_3}$; there is no separate gas-phase
+state for it. At 42 °C and 115 mg/l of free ammonia nitrogen the dry gas
+carries about 300 ppm, just under 1 % of the inorganic nitrogen of a maize and
+manure digester.
+
+### Headspace pressure
+
+The gas leaves through an outlet at the rate
+$k_p \cdot (p_{dry} + p_{H_2O} - p_{ext})$. The wet headspace therefore settles
+at the pressure $p_{ext}$ it vents against, and the dry gas holds
+$p_{ext} - p_{H_2O}$: 0.93 bar at 42 °C with the default
+$p_{ext} = 1.013$ bar. A gas system with back pressure is set through
+`ADM1.p_ext`.
+
+The dry gas pressure sets the dissolved $\text{CO}_2$ and with it the pH. Up to
+version 0.6.2 the water vapour pressure was subtracted twice, which left the
+dry gas at 0.85 bar and the dissolved $\text{CO}_2$ about 9 % too low.
+
+### Reported gas flows
+
+`Q_gas`, `Q_ch4` and `Q_co2` are **dry gas at standard conditions** (0 °C,
+1.01325 bar; DIN 1343), in Nm³/d:
+
+- The flows are the ones the gas-phase ODE removes from the headspace, split by the dry partial pressures. Methane, carbon dioxide and hydrogen add up to `Q_gas`, and the methane flow closes the COD balance.  
+- The headspace is saturated with water vapour. It adds to the pressure that drives the outflow, but it is not part of `Q_gas`; `ADM1.calc_gas()` returns it separately as `q_h2o`.  
+- The reference volume is the one `BMP` uses (22.414 Nm³ per kmol), so a methane yield and a methane potential can be compared directly.  
+- `Q_ch4 / Q_gas` is the methane content of the dry gas, which is what a gas analyser shows.  
+
+Up to version 0.6.2 the flows were given at 20 °C with the water vapour
+counted inside `Q_gas`. Against those numbers `Q_gas` is about 7 % lower, the
+methane content about 4 percentage points higher and `Q_ch4` about 1 % higher
+(at 40 °C).
+
 ## Sludge-volume balance and HRT
 
 Because a significant fraction of the substrate COD leaves the reactor as gas,
-the sludge volume is not conserved. The dynamic sludge-volume balance follows
-the biochemical-rate variant ("Approach 2") of the ADM1da reactor model
-(Schlattmann 2011):
+the sludge volume is not conserved. Every organic fraction takes up the volume
+$v_i = iM_i / \rho_i$ per kg COD (mass-to-COD ratio over density); hydrogen,
+methane and inorganic carbon take up none. The sludge loses the net volume of
+what the conversions turn over:
 
 $$
 \frac{dV_S}{dt} = \dot{q}_{S,in} - \dot{q}_{S,out} - \dot{q}_{S,loss},
 \quad
-\dot{q}_{S,loss} = V_S \cdot \sum_i r_{hyd,i} \cdot \frac{iM_i}{\rho_i}
+\dot{q}_{S,loss} = -V_S \cdot \sum_j \rho_j \sum_i \nu_{ij} \cdot v_i
 $$
+
+with the rate $\rho_j$ of process $j$ and its stoichiometric coefficients
+$\nu_{ij}$.
+
+| Fraction | $iM$ [kg/kg COD] | $\rho$ [kg/m³] |
+| --- | --- | --- |
+| Carbohydrates, sugars | 0.9375 | 1550 |
+| Proteins, amino acids | 0.7736 | 1370 |
+| Lipids, fatty acids | 0.3474 | 920 |
+| Valerate / butyrate / propionate / acetate | 0.490 / 0.550 / 0.661 / 0.9375 | 940 / 960 / 990 / 1050 |
+| Biomass | 0.7638 | 1361 |
+
+Disintegration and the hydrolysis of carbohydrates and proteins keep the
+volume; most of it is lost where acetate becomes methane. At steady state the
+loss is about 0.59 litres per kg COD of methane formed, the ratio SIMBA#
+determines for its reactors. Up to version 0.6.2 the loss was taken from the
+hydrolysis rates alone, which gave about 10 % more.
 
 The hydraulic retention time follows a first-order lag (Schlattmann 2011):
 
@@ -266,7 +342,8 @@ directly from the mass loss term.
 ## Substrate characterization via Weender analysis
 
 Substrates are defined via common laboratory parameters and stored as
-**YAML files** under `data/substrates/`. An example structure:
+**YAML files** under `data/substrates/`. The standard schema, after SIMBA, has
+this structure (the superseded `legacy/maize_silage_milk_ripeness.yaml`):
 
 ```yaml
 name: Maize silage (milk ripeness)
@@ -297,6 +374,13 @@ The same file may instead be written as XML or TOML; the loader dispatches
 on the extension. See [`data/substrates/examples/`](https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates/examples)
 for parallel examples in all three formats.
 
+A substrate may also be described by measured laboratory values instead of
+the COD fractionation (cell-wall analysis `NDF` / `ADL`, protein bound in the
+cell wall `NDICP`, methane potential `BMP` or degradation level `D_VS`, single
+acids, titrated acid capacity). The bundled substrate files are written this
+way. See
+[Measured parameters](../substrates/parameters.md#measured-parameters).
+
 `load_substrate()` returns a `SubstrateParams` dataclass; the `Feedstock`
 class derives from it the full 38-column ADM1 inflow stream (37 liquid state
 columns + Q):
@@ -310,10 +394,16 @@ columns + Q):
    and $f_{OTSrf}$ (see the table above).  
 4. **Dissociation** at the substrate pH: ionised VFAs, $\text{HCO}_3^-$,  
    $\text{NH}_3$.  
-5. **Charge balance** for the ions. By convention $S_{cation}$ is set to zero  
-   for every substrate type (per the ADM1da substrate-input characterisation,
-   Schlattmann 2011), and $S_{anion}$ is computed from the charge balance —
-   and is allowed to be negative for net-cationic substrates.
+5. **Charge balance** for the ions, closed by the strong ions and split by  
+   sign: a net-anionic material (silage at its own pH) carries the excess as
+   $S_{anion}$, a net-cationic one (slurry, solid manure, where
+   $\text{HCO}_3^-$ and the VFA anions exceed $\text{NH}_4^+$) as $S_{cation}$
+   — the strong-base cations K⁺, Na⁺, Ca²⁺, Mg²⁺ of the material. Both pools
+   stay non-negative. Only the difference $S_{cation} - S_{anion}$ enters pH,
+   speciation and the acid capacity, so the chemistry equals the ADM1da
+   closure (Schlattmann 2011: $S_{cation} \equiv 0$, $S_{anion}$ signed); the
+   split keeps the influent inside the non-negative state box that state
+   estimators clip to.
 
 ### Volumetric ADM1da convention for Q
 
@@ -325,8 +415,8 @@ Q_{actual,i} = Q_{input,i} \cdot \frac{1000}{\rho_{FM,i}}
 $$
 
 is computed. For liquid substrates ($\rho_{FM} \approx 1000$) this is a no-op;
-for maize silage ($\rho_{FM} \approx 1134\,\text{kg/m}^3$) the actual
-volumetric flow shrinks by roughly 12 %. This reproduces the behaviour of
+for maize silage ($\rho_{FM} \approx 1129\,\text{kg/m}^3$) the actual
+volumetric flow shrinks by roughly 11 %. This reproduces the behaviour of
 ADM1da reference results. Setting `simba_q_convention=False` disables the
 scaling — useful when $Q$ should be interpreted directly as the actual reactor
 volume.
@@ -370,15 +460,17 @@ $$
 + F_{AN} - F_{CAT} \Bigr]  
 $$
 
-!!! warning "Convention: the ion term assumes $S_{cation} = 0$"
-    The term $F_{AN} - F_{CAT}$ subtracts the strong-ion difference, because
-    the ADM1da substrate characterisation fixes $S_{cation} \equiv 0$ and
-    derives $S_{anion}$ from the charge balance. A state that carries its
-    buffer as strong cations instead therefore reports too little acid
-    capacity — negative in the extreme. The pre-inoculated initial state
-    follows the same convention, and tanks without a substrate feed of their
-    own (post-digesters, stores) are seeded with the ammonium of the ADM1da
-    reference inoculum rather than with zero nitrogen. Should the formula
+!!! warning "Convention: the ion term is the strong-ion difference"
+    The term $F_{AN} - F_{CAT}$ subtracts the strong-ion difference
+    $S_{cation} - S_{anion}$, which the substrate characterisation closes from
+    the charge balance (split by sign, both pools non-negative — the same
+    chemistry as the ADM1da closure with $S_{cation} \equiv 0$). A state whose
+    strong-ion difference does not match its weak-acid buffer therefore
+    reports too little acid capacity — negative in the extreme. The
+    pre-inoculated initial state is closed the same way, and tanks without a
+    substrate feed of their own (post-digesters, stores) are seeded with the
+    ammonium of the ADM1da reference inoculum rather than with zero nitrogen.
+    Should the formula
     still yield $\text{TAC} \le 0$, PyADM1ODE reports `NaN` and warns once —
     this keeps FOS/TAC from exploding on a denominator drifting through zero.
 
@@ -419,7 +511,26 @@ The whole model is pure Python:
 | `pyadm1.core.adm_params` | Stoichiometry, kinetics, inhibition, $\theta$ corrections |
 | `pyadm1.core.solver` | Wrapper around `scipy.integrate.solve_ivp` (BDF, adaptive) |
 | `pyadm1.substrates.feedstock` | XML parser, sub-fractioning routing, blending |
-| `pyadm1.components.biological.digester` | Component wrapper incl. gas storage, sludge volume, HRT logic |
+| `pyadm1.components.biological.digester` | Component wrapper with sludge volume and HRT logic |
 
 The simulation runs in any standard Python environment and works equally well
 in containers, web notebooks (Colab), and CI pipelines.
+
+### Rate-family hook
+
+`ADM1.rate_hook` lets an outside model rescale the kinetic rates without
+touching balances or stoichiometry. It is `None` by default, which leaves
+`ADM_ODE` unchanged. When set, it is called once per right-hand-side evaluation
+as `rate_hook(state, S_H, q_ad)` and must return 13 factors in the order of
+`pyadm1.core.adm1.RATE_FAMILIES`:
+
+```text
+dis_PS, dis_PF, hyd_ch, hyd_pr, hyd_li, su, aa, fa, c4, pro, ac, h2, dec
+```
+
+Each factor multiplies every rate of its family (for example `c4` scales the
+valerate and the butyrate uptake, `dec` all seven decay rates). The torch
+backend applies the same factors: `adm1da_rhs_torch(x, p, rate_factors)` takes
+a `(…, 13)` tensor and stays differentiable in it, and `make_scipy_rhs` calls the
+hook like the numpy path. Typical uses are sensitivity studies of the rate
+families and hybrid models that correct the kinetics of one plant.

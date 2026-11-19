@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import zlib
 from abc import abstractmethod
+from collections.abc import Mapping
 from enum import Enum
-from typing import Any, Mapping, TypeVar
+from typing import Any, ClassVar, TypeVar
 
 import numpy as np
 
@@ -58,7 +60,10 @@ class AbstractSensor(Component):
         self.unit = unit
         self.output_key = output_key or f"{component_id}_measurement"
 
-        self._rng = np.random.default_rng(rng_seed)
+        # Without a seed the generator is seeded from the component id, so
+        # repeated runs give the same noise and every sensor its own stream.
+        self.rng_seed = zlib.crc32(component_id.encode("utf-8")) if rng_seed is None else int(rng_seed)
+        self._rng = np.random.default_rng(self.rng_seed)
         self.calibration_offset = float(self._rng.uniform(-self.accuracy, self.accuracy)) if self.accuracy > 0 else 0.0
 
         # Common state — properly initialised by each subclass's initialize()
@@ -109,6 +114,12 @@ class AbstractSensor(Component):
             self.last_sample_time = float(initial_state.get("last_sample_time", -np.inf))
             self.is_valid = bool(initial_state.get("is_valid", False))
             self.in_range = bool(initial_state.get("in_range", True))
+            # A restored sensor keeps its calibration offset and continues its
+            # noise sequence instead of drawing both anew.
+            if "calibration_offset" in initial_state:
+                self.calibration_offset = float(initial_state["calibration_offset"])
+            if initial_state.get("rng_state"):
+                self._rng.bit_generator.state = initial_state["rng_state"]
 
         self._initialize_subclass(initial_state)
         self._initialized = True
@@ -136,6 +147,10 @@ class AbstractSensor(Component):
             raise ValueError(f"Unsupported {label} '{value}'")
         return aliases[normalized]
 
+    #: Factor applied to a signal read under a given key, for sources that
+    #: report in another unit than the sensor measures in.
+    _KEY_SCALE: ClassVar[dict[str, float]] = {}
+
     def _advance_drift_and_read(self, dt: float, inputs: dict[str, Any]) -> None:
         """Step preamble: integrate drift over *dt* and refresh ``true_value``."""
         self.drift_offset += self.drift_rate * dt
@@ -148,7 +163,7 @@ class AbstractSensor(Component):
         for key in self._candidate_keys:
             if key in inputs:
                 try:
-                    return float(inputs[key])
+                    return float(inputs[key]) * self._KEY_SCALE.get(key, 1.0)
                 except (TypeError, ValueError):
                     return None
         return None
@@ -199,6 +214,7 @@ class AbstractSensor(Component):
             "last_sample_time": float(self.last_sample_time),
             "is_valid": bool(self.is_valid),
             "in_range": bool(self.in_range),
+            "rng_state": self._rng.bit_generator.state,
         }
 
     def _base_config_dict(self) -> dict[str, Any]:
@@ -208,6 +224,8 @@ class AbstractSensor(Component):
             "component_type": self.component_type.value,
             "name": self.name,
             "signal_key": self.signal_key,
+            "candidate_keys": list(self._candidate_keys),
+            "rng_seed": self.rng_seed,
             "measurement_range": list(self.measurement_range),
             "measurement_noise": self.measurement_noise,
             "accuracy": self.accuracy,
@@ -250,6 +268,10 @@ class AbstractSensor(Component):
     @staticmethod
     def _restore_io(sensor: AbstractSensor, config: dict[str, Any]) -> None:
         """Restore ``state`` and wire ``inputs`` / ``outputs`` from a serialized config."""
+        # ``signal_key`` alone would narrow the sensor to one key; the saved
+        # candidate list keeps the aliases it accepted before.
+        if config.get("candidate_keys"):
+            sensor._candidate_keys = tuple(config["candidate_keys"])
         if "state" in config:
             sensor.initialize(config["state"])
         for input_id in config.get("inputs", []):

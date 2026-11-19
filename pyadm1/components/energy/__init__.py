@@ -21,18 +21,16 @@ Modules:
           control.
 
 Example:
-    >>> from pyadm1.components.energy import CHP, Boiler, GasStorage, Flare
+    >>> from pyadm1.components.energy import CHP, Flare, GasStorage
     >>>
     >>> # CHP unit with 500 kW electrical output
-    >>> chp = CHP("chp1", P_el_nom=500, eta_el=0.40, eta_th=0.45,
-    ...          type="gas_engine")
+    >>> chp = CHP("chp1", P_el_nom=500, eta_el=0.40, eta_th=0.45)
     >>>
-    >>> # Low-pressure gas storage (membrane roof)
-    >>> storage = GasStorage("storage1", volume=1000,
-    ...                     storage_type="membrane", p_max=0.015)
+    >>> # Low-pressure gas storage (membrane roof), 1000 m³
+    >>> storage = GasStorage("storage1", storage_type="membrane", capacity_m3=1000)
     >>>
     >>> # Emergency flare
-    >>> flare = Flare("flare1", capacity=500, destruction_efficiency=0.98)
+    >>> flare = Flare("flare1", destruction_efficiency=0.98)
 """
 
 from .biogas_upgrading import BiogasUpgrading

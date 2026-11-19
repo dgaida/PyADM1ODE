@@ -1,47 +1,51 @@
-# ADM1da substrate definition: Swine manure (Gummersbach plant)
+# Substrate definition: Swine manure (Gummersbach plant)
 #
-# Converted from the legacy substrate_gummersbach.xml library.
-# Fields derived from the legacy schema:
-#   fRF, fRP, fRFe  <- RF, RP, RL  (% TS -> fraction)
-#   fRA             = 1 - VS/100
-#   fOTSrf          = 1 - ADL/RF                (lignin as non-degradable proxy)
-#   fsOTS, ffOTS    = manure-class defaults     (slow / fast disintegration pool split)
-#   aSi             = manure-class default
-#   aXI             = (1 - D_VS) - aSi
-#   BMP             = theoretical_Weender * D_VS = 203.3 Nm^3 CH4/t VS
-#   BGP             = BMP / 0.55                = 369.6 Nm^3 biogas/t VS
-#   NH4             = Snh4 * 14/18              (g NH4/L -> kg N/m^3)
-#   FFS             = Sac + Sbu + Spro + Sva
-#   KS43            = TAC (mmol/L = mol/m^3)
+# Measured parameters (schema "measured"): names and units as in the
+# substrate user guide. Carbohydrates are split by the crude fibre (RF, fOTSrf);
+# the inert share (aXI) is fitted to the methane potential BMP.
 #
-# Model-default constants (densities, COD-conversion factors, methane
-# potentials, acid-base equilibrium constants at 35 deg C) are inherited
-# from SubstrateParams; override them here only if substrate-specific
-# values are available.
+# Values: dry-matter composition from the Phyllis database (phyllis.nl,
+# median of the samples named per line) where it holds the material;
+# methane potential from the standard yields of the BiomasseV 2012; storage
+# state (pH, ammonium, acids, buffer, temperature) from published analyses
+# of the material as it is fed; price from the superseded file in legacy/.
+# The source of every value stands behind it. Derivation: substrate user
+# guide, section "Origin of the library values".
+#
+# Plant-specific file, laboratory values of the plant kept. The degradation
+# level 0.95 of the library had no source and is replaced by the standard
+# methane yield. The acid capacity is now read as the titration value it is:
+# the acid anions titrated along are subtracted from the bicarbonate.
 
 name: Swine manure (Gummersbach plant)
+schema: measured
 
-# --- Proximate analysis / measured substrate properties -----------------
-TS:    61.0      # kg/m^3 FM
-NH4:    3.111     # kg N/m^3 FM
-BGP:   369.6      # Nm^3/t VS   biogas potential (theoretical * D_VS)
-BMP:   203.3      # Nm^3 CH4/t VS  biomethane potential
+# --- Classification ----------------------------------------------------
+substrate_class: "Schweinegülle (EK II)" # [Gummersbach library]
 
-# --- COD fractionation --------------------------------------------------
-aXI:    0.5000
-fOTSrf: 0.722
-fsOTS:  1.0
-ffOTS:  0.0
-aSi:    0.050
+# --- Dry matter --------------------------------------------------------
+TS:              6.1        # % FM [Gummersbach library] plant measurement, entry 'swinemanure'
+VS:              71.6       # % TS [Gummersbach library] plant measurement, entry 'swinemanure'
 
-# --- Weender analysis (fractions of TS) ---------------------------------
-fRF:    0.1135
-fRP:    0.1631
-fRFe:   0.0455
-fRA:    0.2840
+# --- Weender analysis --------------------------------------------------
+RP:              16.31      # % TS [Gummersbach library] plant measurement, entry 'swinemanure'
+RL:              4.55       # % TS [Gummersbach library] plant measurement, entry 'swinemanure'
+RF:              11.35      # % TS [Gummersbach library] plant measurement, entry 'swinemanure'
 
-# --- Physical / chemical state ------------------------------------------
-Temp:   16.4    # degC
-pH:     7.10
-KS43:   212.22    # mol/m^3   acid capacity to pH 4.3
-FFS:    13.230     # kg HAc/m^3 VFAs as acetic-acid equivalent
+# --- Degradability -----------------------------------------------------
+BMP:             250.0      # Nm³ CH4/t VS [BiomasseV 2012] 12 m³ CH4/t FM, KTBL standard dry matter 6 % TS, 80 % VS
+fOTSrf:          0.722      # - [previous file] degradable share of the crude fibre
+aSi:             0.05       # - [previous file] soluble inert share
+
+# --- Storage state -----------------------------------------------------
+pH:              7.1        # - [Gummersbach library] entry 'swinemanure'
+Snh4:            4.0        # g/l [Gummersbach library] entry 'swinemanure', ammonium as NH4
+TAC:             212.22     # mmol/l [Gummersbach library] entry 'swinemanure', titrated acid capacity to pH 4.3
+Sac:             12.43      # g/l [Gummersbach library] entry 'swinemanure'
+Spro:            0.8        # g/l [Gummersbach library] entry 'swinemanure'
+Sbu:             0.0        # g/l [Gummersbach library] entry 'swinemanure'
+Sva:             0.0        # g/l [Gummersbach library] entry 'swinemanure'
+T:               16.37      # °C [Gummersbach library] entry 'swinemanure'
+
+# --- Economics ---------------------------------------------------------
+cost:            2.0        # EUR/t FM [previous file]

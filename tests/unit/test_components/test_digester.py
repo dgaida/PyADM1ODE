@@ -7,7 +7,6 @@ import pytest
 
 from pyadm1 import Feedstock
 from pyadm1.components.biological import Digester
-from pyadm1.components.energy.gas_storage import GasStorage
 from pyadm1.core.adm1 import STATE_SIZE
 
 
@@ -33,11 +32,11 @@ class TestDigesterInitialization:
         assert d.T_ad == 315.15
         assert d.component_type.value == "digester"
 
-    def test_creates_attached_gas_storage(self, feedstock: Feedstock) -> None:
+    def test_has_no_gas_storage_of_its_own(self, feedstock: Feedstock) -> None:
+        """Gas is stored by the plant's GasStorage component, not inside the digester."""
         d = Digester("dig_1", feedstock, V_gas=216.0)
 
-        assert isinstance(d.gas_storage, GasStorage)
-        assert d.gas_storage.component_id == "dig_1_storage"
+        assert not hasattr(d, "gas_storage")
 
     def test_default_name_falls_back_to_component_id(self, feedstock: Feedstock) -> None:
         d = Digester("dig_1", feedstock)
@@ -82,8 +81,7 @@ class TestDigesterStep:
         assert out["Q_ch4"] >= 0.0
         assert out["Q_co2"] >= 0.0
         assert 4.5 < out["pH"] < 9.0
-        assert "gas_storage" in out
-        assert "stored_volume_m3" in out["gas_storage"]
+        assert "gas_storage" not in out
         assert len(out["state_out"]) == STATE_SIZE
 
     def test_step_after_warmup_produces_realistic_methane(self, feedstock: Feedstock) -> None:
@@ -108,21 +106,20 @@ class TestDigesterStep:
 class TestDigesterRobustness:
     """Degraded inputs must not take the whole simulation down."""
 
-    def test_a_corrupt_gas_storage_state_falls_back_to_a_fresh_storage(self, feedstock: Feedstock) -> None:
+    def test_the_retention_time_continues_from_a_restored_state(self, feedstock: Feedstock) -> None:
         d = Digester("dig_1", feedstock, V_liq=1200.0, V_gas=216.0)
 
-        d.initialize({"gas_storage": {"stored_volume_m3": object()}})
+        d.initialize({"HRT": 42.0})
 
-        assert d._initialized
-        assert d.gas_storage.stored_volume_m3 >= 0.0
-        assert d.gas_storage.outputs_data["stored_volume_m3"] >= 0.0
+        assert d.state["HRT"] == pytest.approx(42.0)
 
-    def test_a_valid_gas_storage_state_is_restored(self, feedstock: Feedstock) -> None:
+    def test_calibration_parameters_survive_a_dict_round_trip(self, feedstock: Feedstock) -> None:
         d = Digester("dig_1", feedstock, V_liq=1200.0, V_gas=216.0)
+        d.apply_calibration_parameters({"k_L_a": 50.0})
 
-        d.initialize({"gas_storage": {"stored_volume_m3": 42.0}})
+        restored = Digester.from_dict(d.to_dict(), feedstock=feedstock)
 
-        assert d.gas_storage.stored_volume_m3 == pytest.approx(42.0)
+        assert restored.get_calibration_parameters() == {"k_L_a": 50.0}
 
     def test_a_failing_ph_solve_falls_back_to_neutral(self, feedstock: Feedstock, monkeypatch) -> None:
         """The acid-base Newton solve is numeric; a blow-up must not abort the step."""

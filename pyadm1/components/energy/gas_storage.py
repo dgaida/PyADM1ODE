@@ -11,10 +11,12 @@ Supports:
 - high-pressure storage: 'compressed' (pressure increases strongly with stored fraction)
 Features:
 - capacity accounting (m^3 at STP)
+- gas composition (CH4 / CO2 fraction) of the stored gas, ideally mixed
 - simple pressure model (bar)
 - pressure setpoint handling via inputs['set_pressure'] (bar)
 - safety venting if pressure > p_max (vented volume sent to flare)
-- outputs_data contains stored_volume, pressure, utilization, vented_volume, Q_gas_supplied
+- outputs_data contains stored_volume, pressure, utilization, vented_volume, Q_gas_supplied,
+  CH4_fraction, CO2_fraction, Q_ch4_supplied
 """
 
 from __future__ import annotations
@@ -49,6 +51,13 @@ class GasStorage(Component):
         p_min_bar: minimum operating pressure (bar)
         p_max_bar: maximum safe pressure (bar)
         name: optional human-readable name
+        initial_ch4_fraction: CH4 volume fraction of the initial fill (0-1)
+        initial_co2_fraction: CO2 volume fraction of the initial fill (0-1)
+
+    The stored gas is treated as ideally mixed: inflow is blended into the
+    inventory first, and everything leaving in the same step (supply, overflow,
+    safety vent) carries the blended composition. The remainder
+    ``1 - CH4 - CO2`` is H2, water vapour and trace gases.
     """
 
     def __init__(
@@ -60,6 +69,8 @@ class GasStorage(Component):
         p_max_bar: float = 1.05,
         initial_fill_fraction: float = 0.1,
         name: str | None = None,
+        initial_ch4_fraction: float = 0.60,
+        initial_co2_fraction: float = 0.40,
     ):
         """
 
@@ -71,6 +82,8 @@ class GasStorage(Component):
             p_max_bar: maximum safe pressure (bar)
             initial_fill_fraction: initial stored fraction of capacity (0-1)
             name: optional human-readable name
+            initial_ch4_fraction: CH4 volume fraction of the initial fill (0-1)
+            initial_co2_fraction: CO2 volume fraction of the initial fill (0-1)
         """
         super().__init__(component_id, ComponentType.STORAGE, name)
 
@@ -89,24 +102,45 @@ class GasStorage(Component):
         # cumulative vented (for logging)
         self._cum_vented_m3 = 0.0
 
+        # Composition of the stored gas (volume fractions, ideally mixed)
+        self.ch4_fraction, self.co2_fraction = self._checked_fractions(initial_ch4_fraction, initial_co2_fraction)
+
         # control setpoint (pressure in bar) - None means no active setpoint
         self.pressure_setpoint_bar: float | None = None
 
         # initialize default state
         self.initialize()
 
+    @staticmethod
+    def _checked_fractions(ch4_fraction: float, co2_fraction: float) -> tuple[float, float]:
+        """Validate a CH4/CO2 fraction pair: each in [0, 1], together at most 1."""
+        ch4, co2 = float(ch4_fraction), float(co2_fraction)
+        if not (0.0 <= ch4 <= 1.0 and 0.0 <= co2 <= 1.0) or ch4 + co2 > 1.0 + 1e-9:
+            raise ValueError(f"CH4/CO2 fractions must lie in [0, 1] and sum to at most 1, got {ch4} and {co2}")
+        return ch4, co2
+
     def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
-        """Initialize storage state; initial_state may contain stored_volume_m3, pressure_setpoint_bar."""
+        """
+        Initialize storage state; initial_state may contain stored_volume_m3,
+        pressure_setpoint_bar, ch4_fraction, co2_fraction, cumulative_vented_m3.
+        """
+        cum_vented = 0.0
         if initial_state is not None:
+            if "ch4_fraction" in initial_state or "co2_fraction" in initial_state:
+                self.ch4_fraction, self.co2_fraction = self._checked_fractions(
+                    initial_state.get("ch4_fraction", self.ch4_fraction),
+                    initial_state.get("co2_fraction", self.co2_fraction),
+                )
             if "stored_volume_m3" in initial_state:
                 self.stored_volume_m3 = float(initial_state["stored_volume_m3"])
             if "pressure_setpoint_bar" in initial_state:
                 self.pressure_setpoint_bar = initial_state["pressure_setpoint_bar"]
+            cum_vented = float(initial_state.get("cumulative_vented_m3", 0.0))
 
         # clamp stored volume
         self.stored_volume_m3 = max(0.0, min(self.stored_volume_m3, self.capacity_m3))
 
-        self._cum_vented_m3 = 0.0
+        self._cum_vented_m3 = cum_vented
 
         # outputs_data template
         self.outputs_data = {
@@ -115,9 +149,28 @@ class GasStorage(Component):
             "utilization": self.stored_volume_m3 / max(1e-9, self.capacity_m3),
             "vented_volume_m3": 0.0,
             "Q_gas_supplied_m3_per_day": 0.0,
+            "Q_ch4_supplied_m3_per_day": 0.0,
+            "CH4_fraction": self.ch4_fraction,
+            "CO2_fraction": self.co2_fraction,
+            "cumulative_vented_m3": self._cum_vented_m3,
         }
+        self._sync_state()
 
         self._initialized = True
+
+    def _sync_state(self) -> None:
+        """Mirror everything that carries over between steps into ``state``."""
+        self.state = {
+            "stored_volume_m3": float(self.stored_volume_m3),
+            "ch4_fraction": float(self.ch4_fraction),
+            "co2_fraction": float(self.co2_fraction),
+            "pressure_setpoint_bar": self.pressure_setpoint_bar,
+            "cumulative_vented_m3": float(self._cum_vented_m3),
+        }
+
+    def set_state(self, state: dict[str, Any]) -> None:
+        """Restore a snapshot taken with :meth:`get_state`."""
+        self.initialize(state)
 
     # ------------------------------
     # Internal helpers
@@ -158,6 +211,9 @@ class GasStorage(Component):
             dt:
             inputs: Inputs dictionary may contain:
                 - 'Q_gas_in_m3_per_day'   : gas inflow from digesters/other sources (m^3/day)
+                - 'Q_ch4_in_m3_per_day'   : methane within that inflow (m^3/day) (optional)
+                - 'Q_co2_in_m3_per_day'   : CO2 within that inflow (m^3/day) (optional)
+                  Inflow without a composition is taken to match the stored gas.
                 - 'Q_gas_out_m3_per_day'  : requested gas outflow (demand) (m^3/day)
                 - 'set_pressure'          : desired pressure setpoint (bar)  (optional)
                 - 'vent_to_flare'         : bool, if True allow venting to flare when overpressure (default True)
@@ -169,11 +225,12 @@ class GasStorage(Component):
                 - 'utilization' (0-1)
                 - 'vented_volume_m3' (this timestep)
                 - 'Q_gas_supplied_m3_per_day' (actual supply that was delivered)
+                - 'Q_ch4_supplied_m3_per_day' (methane within that supply)
+                - 'CH4_fraction', 'CO2_fraction' (composition of the stored gas)
         """
         # get flows (units: m^3/day) -> convert to volume for this timestep: m^3 = Q * dt (dt in days)
         Q_in = float(inputs.get("Q_gas_in_m3_per_day", 0.0))
         Q_out_req = float(inputs.get("Q_gas_out_m3_per_day", 0.0))
-        allow_vent = bool(inputs.get("vent_to_flare", True))
 
         # pressure setpoint handling (bar) - if provided, store it for internal control
         if "set_pressure" in inputs:
@@ -191,24 +248,24 @@ class GasStorage(Component):
         vented_this_step = 0.0
         # supplied_this_step = 0.0
 
-        # Inflow: attempt to store incoming gas
-        free_capacity_m3 = self.capacity_m3 - self.stored_volume_m3
-        if vol_in <= free_capacity_m3 + 1e-12:
-            # all incoming stored
-            self.stored_volume_m3 += vol_in
-            overflow = 0.0
-        else:
-            # store what fits, overflow is vented (or forwarded externally)
-            stored = max(0.0, free_capacity_m3)
-            overflow = vol_in - stored
-            self.stored_volume_m3 += stored
-            if allow_vent:
-                vented_this_step += overflow
-                self._cum_vented_m3 += overflow
-            else:
-                # if venting not allowed, assume overflow is rejected (lost) (count as vented for safety)
-                vented_this_step += overflow
-                self._cum_vented_m3 += overflow
+        # Composition: blend the inflow into the inventory before any gas
+        # leaves. Supply, overflow and safety vent below then all carry this
+        # blended composition, so the fractions need no further update.
+        blended_m3 = self.stored_volume_m3 + vol_in
+        if vol_in > 0.0 and blended_m3 > 0.0:
+            ch4_in = inputs.get("Q_ch4_in_m3_per_day")
+            co2_in = inputs.get("Q_co2_in_m3_per_day")
+            ch4_in_frac = self.ch4_fraction if ch4_in is None else min(max(float(ch4_in) / Q_in, 0.0), 1.0)
+            co2_in_frac = self.co2_fraction if co2_in is None else min(max(float(co2_in) / Q_in, 0.0), 1.0 - ch4_in_frac)
+            self.ch4_fraction = (self.stored_volume_m3 * self.ch4_fraction + vol_in * ch4_in_frac) / blended_m3
+            self.co2_fraction = (self.stored_volume_m3 * self.co2_fraction + vol_in * co2_in_frac) / blended_m3
+
+        # Inflow and outflow of one step happen at the same time, so the
+        # inflow is added first and only what is left after the supply can
+        # overflow. Venting before the supply would make the vented volume
+        # depend on the step length (a daily step would vent a full day's
+        # production that the consumers burn in the same step).
+        self.stored_volume_m3 += vol_in
 
         # Supply (outflow): cannot supply more than stored
         # If pressure below p_min, limit supply (simulate pressure control)
@@ -261,43 +318,16 @@ class GasStorage(Component):
         self.stored_volume_m3 -= desired_out_vol
         supplied_this_step_m3_per_day = desired_out_vol / max(dt, 1e-12)  # convert back to m3/day
 
-        # After flows, update pressure and check safety
+        # Overflow: gas beyond the capacity leaves through the safety vent.
+        # ``vent_to_flare`` only says where it goes; the storage cannot hold
+        # it either way, so it is always counted as vented.
+        overflow = self.stored_volume_m3 - self.capacity_m3
+        if overflow > 1e-12:
+            vented_this_step += overflow
+            self._cum_vented_m3 += overflow
+            self.stored_volume_m3 = self.capacity_m3
+
         current_pressure = self._estimate_pressure_bar()
-
-        # Safety: overpressure -> vent to flare
-        if current_pressure > self.p_max_bar:
-            # compute how much volume must be removed to reach p_max
-            # invert our pressure models approximately by reducing stored fraction until p <= p_max
-            # perform simple linear backoff: remove fraction proportional to pressure exceedance
-            if self.storage_type in ("membrane", "dome"):
-                # p = p_atm + frac*(p_max - p_atm), want frac_target = (p_max - p_atm)/(p_max - p_atm) = 1.0
-                # but if p_max_bar is absolute safety we want to bring pressure to p_max_bar.
-                # compute fraction that yields p_max_bar
-                target_frac = max(
-                    0.0,
-                    min(
-                        1.0,
-                        (self.p_max_bar - self.p_atm_bar) / max(1e-9, (self.p_max_bar - self.p_atm_bar)),
-                    ),
-                )
-                # if current fraction > 1.0 (theory), set to 1.0
-                target_frac = min(target_frac, 1.0)
-                target_volume = target_frac * self.capacity_m3
-                vent = self.stored_volume_m3 - target_volume if self.stored_volume_m3 > target_volume else 0.0
-            else:  # compressed
-                # reduce to fraction that yields p_max_bar approx equal to 1.0 fraction
-                # simpler: vent until stored <= capacity * 0.999 (small safety)
-                target_volume = min(self.capacity_m3, self.capacity_m3 * 0.999)
-                vent = max(0.0, self.stored_volume_m3 - target_volume)
-
-            # Vent if allowed (or always vent for safety)
-            if allow_vent and vent > 0.0:
-                vented_this_step += vent
-                self.stored_volume_m3 -= vent
-                self._cum_vented_m3 += vent
-
-            # recompute pressure
-            current_pressure = self._estimate_pressure_bar()
 
         # Clamp stored volume
         self.stored_volume_m3 = max(0.0, min(self.stored_volume_m3, self.capacity_m3))
@@ -309,11 +339,37 @@ class GasStorage(Component):
             "utilization": float(self.stored_volume_m3 / max(1e-9, self.capacity_m3)),
             "vented_volume_m3": float(vented_this_step),
             "Q_gas_supplied_m3_per_day": float(supplied_this_step_m3_per_day),
+            "Q_ch4_supplied_m3_per_day": float(supplied_this_step_m3_per_day * self.ch4_fraction),
+            "CH4_fraction": float(self.ch4_fraction),
+            "CO2_fraction": float(self.co2_fraction),
             "cumulative_vented_m3": float(self._cum_vented_m3),
             "pressure_setpoint_bar": self.pressure_setpoint_bar,
         }
+        self._sync_state()
 
         return self.outputs_data
+
+    def withdraw(self, volume_m3: float) -> float:
+        """
+        Take gas out of the storage outside of :meth:`step`.
+
+        Used by the plant for consumers whose demand is only known after the
+        storage was stepped (the auxiliary boiler). The supply reported for
+        the step is not changed.
+
+        Args:
+            volume_m3 (float): Volume asked for [m³].
+
+        Returns:
+            float: Volume actually taken [m³], limited to what is stored.
+        """
+        taken = min(max(float(volume_m3), 0.0), self.stored_volume_m3)
+        self.stored_volume_m3 -= taken
+        self.outputs_data["stored_volume_m3"] = float(self.stored_volume_m3)
+        self.outputs_data["pressure_bar"] = self._estimate_pressure_bar()
+        self.outputs_data["utilization"] = float(self.stored_volume_m3 / max(1e-9, self.capacity_m3))
+        self._sync_state()
+        return taken
 
     # ------------------------------
     # Serialization
@@ -330,7 +386,10 @@ class GasStorage(Component):
             "p_min_bar": self.p_min_bar,
             "p_max_bar": self.p_max_bar,
             "stored_volume_m3": self.stored_volume_m3,
+            "ch4_fraction": self.ch4_fraction,
+            "co2_fraction": self.co2_fraction,
             "pressure_setpoint_bar": self.pressure_setpoint_bar,
+            "cumulative_vented_m3": self._cum_vented_m3,
             "outputs_data": self.outputs_data,
             "inputs": self.inputs,
             "outputs": self.outputs,
@@ -347,6 +406,8 @@ class GasStorage(Component):
             p_max_bar=config.get("p_max_bar", 1.05),
             initial_fill_fraction=0.0,
             name=config.get("name"),
+            initial_ch4_fraction=config.get("ch4_fraction", 0.60),
+            initial_co2_fraction=config.get("co2_fraction", 0.40),
         )
         # restore state if present
         if "stored_volume_m3" in config:
@@ -362,7 +423,10 @@ class GasStorage(Component):
             {
                 "stored_volume_m3": gs.stored_volume_m3,
                 "pressure_setpoint_bar": gs.pressure_setpoint_bar,
+                "cumulative_vented_m3": config.get("cumulative_vented_m3", 0.0),
             }
         )
+        gs.inputs = config.get("inputs", [])
+        gs.outputs = config.get("outputs", [])
 
         return gs

@@ -113,10 +113,13 @@ class SubstrateStorage(Component):
         storage_type: str = "vertical_silo",
         substrate_type: str = "corn_silage",
         capacity: float = 1000.0,
-        initial_level: float = 0.0,
+        initial_level: float | None = None,
         degradation_rate: float | None = None,
         temperature: float = 288.15,  # 15°C
         name: str | None = None,
+        density: float | None = None,
+        dry_matter: float | None = None,
+        vs_content: float | None = None,
     ):
         """
         Initialize substrate storage component.
@@ -126,12 +129,17 @@ class SubstrateStorage(Component):
             storage_type: Type of storage ("vertical_silo", "tank", etc.)
             substrate_type: Substrate category ("corn_silage", "manure_liquid", etc.)
             capacity: Maximum capacity [t or m³]
-            initial_level: Initial inventory [t or m³]
+            initial_level: Initial inventory [t or m³]. ``None`` (default)
+                makes the stock unlimited: the storage always delivers what is
+                asked, tracks no level, needs no refills and loses nothing to
+                degradation. Use it for long runs where the inventory is not
+                of interest. Pass a number (``0.0`` for an empty storage) to
+                track the stock.
             degradation_rate: Quality degradation rate [1/d] (auto-calculated if None)
             temperature: Storage temperature [K]
             name: Human-readable name
         """
-        super().__init__(component_id, ComponentType.STORAGE, name)
+        super().__init__(component_id, ComponentType.SUBSTRATE_STORAGE, name)
 
         # Configuration
         self.storage_type = StorageType(storage_type.lower())
@@ -139,15 +147,27 @@ class SubstrateStorage(Component):
         self.capacity = float(capacity)
         self.temperature = float(temperature)
 
-        # Inventory
-        self.current_level = float(min(initial_level, capacity))
+        # Inventory. An unlimited storage reports itself as full and is
+        # never drawn down; only the cumulative withdrawals are counted.
+        self.unlimited = initial_level is None
+        self.current_level = float(capacity) if initial_level is None else float(min(initial_level, capacity))
         self.quality_factor = 1.0  # 1.0 = fresh, 0.0 = completely degraded
 
-        # Substrate properties (typical values, can be updated)
+        # Substrate properties: typical values per substrate type, replaced
+        # by the measured ones where given (e.g. from the Feedstock).
         self._set_substrate_properties()
+        if density is not None:
+            self.density = float(density)
+        if dry_matter is not None:
+            self.dry_matter = float(dry_matter)
+        if vs_content is not None:
+            self.vs_content = float(vs_content)
 
-        # Degradation parameters
-        self.degradation_rate = degradation_rate or self._estimate_degradation_rate()
+        # Degradation parameters. A rate given by the user is kept; only an
+        # estimated one follows the storage temperature.
+        self._degradation_rate_given = degradation_rate is not None
+        # An explicit 0.0 means loss-free storage and must not fall back to the estimate.
+        self.degradation_rate = self._estimate_degradation_rate() if degradation_rate is None else float(degradation_rate)
 
         # Storage losses
         self.cumulative_losses = 0.0  # Total mass lost [t or m³]
@@ -228,15 +248,16 @@ class SubstrateStorage(Component):
         # Update temperature if provided
         if "temperature" in inputs:
             self.temperature = float(inputs["temperature"])
-            self.degradation_rate = self._estimate_degradation_rate()
+            if not self._degradation_rate_given:
+                self.degradation_rate = self._estimate_degradation_rate()
 
         # Handle refilling
         refill_amount = float(inputs.get("refill_amount", 0.0))
-        if refill_amount > 0:
+        if refill_amount > 0 and not self.unlimited:
             self._add_substrate(refill_amount, inputs.get("refill_quality", 1.0))
 
-        # Calculate quality degradation
-        losses_this_step = self._calculate_degradation_losses(dt)
+        # Calculate quality degradation (an unlimited stock is always fresh)
+        losses_this_step = 0.0 if self.unlimited else self._calculate_degradation_losses(dt)
 
         # Handle withdrawal
         withdrawal_rate = float(inputs.get("withdrawal_rate", 0.0))
@@ -271,9 +292,44 @@ class SubstrateStorage(Component):
             "storage_time": float(self.storage_time),
             "dry_matter": float(self.dry_matter),
             "vs_content": float(self.vs_content),
+            "unlimited": bool(self.unlimited),
         }
 
         return self.outputs_data
+
+    @property
+    def available_stock(self) -> float:
+        """Stock a feeder may draw from [t or m³]; infinite for an unlimited storage."""
+        return float("inf") if self.unlimited else float(self.current_level)
+
+    def withdraw(self, amount: float) -> float:
+        """
+        Take substrate out of the storage between steps.
+
+        A feeder decides how much it draws only after it has seen the stock, so
+        the plant steps the storage first (losses, refill) and books the
+        feeder's actual withdrawal here, without running the step twice.
+
+        Args:
+            amount: Requested amount [same unit as ``capacity``, tonnes FM in a plant].
+
+        Returns:
+            Amount actually withdrawn, limited by the stock.
+        """
+        actual = self._withdraw_substrate(max(0.0, float(amount)), 1.0)
+
+        self.state.update({"current_level": self.current_level, "cumulative_withdrawals": self.cumulative_withdrawals})
+        self.outputs_data.update(
+            {
+                "current_level": float(self.current_level),
+                "utilization": float(self.current_level / max(1e-6, self.capacity)),
+                "available_mass": float(self.current_level * self.quality_factor),
+                "withdrawn_this_step": float(self.outputs_data.get("withdrawn_this_step", 0.0) + actual),
+                "is_empty": bool(self.current_level < 1e-3),
+                "is_full": bool(self.current_level > 0.95 * self.capacity),
+            }
+        )
+        return actual
 
     def _add_substrate(self, amount: float, quality: float = 1.0) -> None:
         """
@@ -311,6 +367,10 @@ class SubstrateStorage(Component):
             Actual amount withdrawn [t or m³]
         """
         requested = rate * dt
+        if self.unlimited:
+            self.cumulative_withdrawals += requested
+            return requested
+
         actual = min(requested, self.current_level)
 
         self.current_level -= actual
@@ -410,8 +470,11 @@ class SubstrateStorage(Component):
             "storage_type": self.storage_type.value,
             "substrate_type": self.substrate_type.value,
             "capacity": self.capacity,
+            "unlimited": self.unlimited,
             "temperature": self.temperature,
-            "degradation_rate": self.degradation_rate,
+            # An estimated rate is stored as None so it keeps following the
+            # storage temperature after a reload.
+            "degradation_rate": self.degradation_rate if self._degradation_rate_given else None,
             "density": self.density,
             "dry_matter": self.dry_matter,
             "vs_content": self.vs_content,
@@ -428,10 +491,14 @@ class SubstrateStorage(Component):
             storage_type=config.get("storage_type", "vertical_silo"),
             substrate_type=config.get("substrate_type", "corn_silage"),
             capacity=config.get("capacity", 1000.0),
-            initial_level=0.0,
+            # Files written before the flag existed always tracked their stock.
+            initial_level=None if config.get("unlimited", False) else 0.0,
             degradation_rate=config.get("degradation_rate"),
             temperature=config.get("temperature", 288.15),
             name=config.get("name"),
+            density=config.get("density"),
+            dry_matter=config.get("dry_matter"),
+            vs_content=config.get("vs_content"),
         )
 
         # Restore state if present

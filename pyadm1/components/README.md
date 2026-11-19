@@ -125,12 +125,3 @@ class MyComponent(Component):
 
 See `examples/two_stage_digester.py` for a complete two-stage digester
 configuration with CHP and heating systems.
-
-### Integration with C# DLLs
-
-Component calculations can leverage existing C# DLLs:  
-- `plant.dll`: Plant-level calculations  
-- `biogas.dll`: Biogas production and composition  
-- `physchem.dll`: Physical-chemical properties  
-
-Simply add `clr.AddReference()` calls in component methods to access DLL functions.

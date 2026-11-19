@@ -52,7 +52,6 @@ from ...core.adm1 import (
 )
 from ...core.adm_params import ADMParams
 from ..base import Component, ComponentType
-from ..energy import GasStorage
 
 # The 37 liquid-state columns the influent vector carries (Q lives separately on
 # ``ADM1._Q`` because ``_state_input`` indexes 0..36 are the dissolved /
@@ -64,12 +63,24 @@ _N_LIQUID_STATE = 37
 #: carried by ammonium as in real digestate instead of by strong ions.
 _ADM1DA_INOCULUM_S_NH4 = 0.13223400394857032
 
+#: Height-to-diameter ratio used to estimate the tank diameter when none is
+#: given. Agricultural digesters are wide and low (wall height 6-10 m at
+#: 15-30 m diameter), so the enclosed volume ``V_liq + V_gas`` is treated as a
+#: cylinder with ``H = 0.4 * D``.
+_DEFAULT_ASPECT_RATIO = 0.4
+
+#: Supported roof constructions. ``membrane`` is a gas-tight (double) membrane
+#: dome that holds the headspace above the wall; ``concrete`` and ``steel`` are
+#: rigid flat covers with the headspace inside the cylinder; ``open`` is an
+#: uncovered tank (digestate store).
+ROOF_TYPES = ("membrane", "concrete", "steel", "open")
+
 
 class Digester(Component):
     """
     ADM1da digester component (41-state).
 
-    Encapsulates a digester's geometry, attached gas storage, and the
+    Encapsulates a digester's geometry and the
     underlying :class:`pyadm1.core.adm1.ADM1` instance.  The same component
     class is used for hydrolysis pre-tanks, main fermenters and post-digesters
     — the operating temperature and HRT determine the dominant biochemistry.
@@ -88,6 +99,24 @@ class Digester(Component):
         maximum (the overflow-weir setpoint) and the actual sludge volume
         evolves with the mass balance.
     name : str, optional
+    diameter : float, optional
+        Inner tank diameter [m]. When omitted it is estimated from
+        ``V_liq + V_gas`` assuming a cylinder with ``H = 0.4 * D``; the
+        ``diameter_estimated`` attribute records which of the two applies.
+        The heights (``height``, ``liquid_height``, ``roof_height``) are
+        always derived from the diameter and the volumes.
+    roof_type : str, default "membrane"
+        Roof construction, one of :data:`ROOF_TYPES`. Decides where the gas
+        headspace sits: above the wall in a dome (``membrane``) or inside the
+        cylinder under a flat cover (``concrete``, ``steel``). ``open`` tanks
+        have no headspace.
+    k_wall, k_roof, k_ground : float, optional
+        Heat transfer coefficients (U-values) of wall, roof and floor slab
+        [W/(m²·K)]. Together with the surface areas they give
+        :attr:`heat_loss_coefficient`, which a connected
+        :class:`HeatingSystem` uses instead of its flat default. A surface
+        without a value contributes nothing; with all three omitted no
+        coefficient is derived.
     dynamic_volume : bool, default False
         Enable a dynamic sludge-volume balance
         ``dV/dt = Q_in − Q_out − q_S,loss``, with ``Q_out`` from an overflow
@@ -124,11 +153,45 @@ class Digester(Component):
         initial_fill_fraction: float = 1.0,
         outflow_time_constant: float = 1.0,
         backend: str | None = None,
+        diameter: float | None = None,
+        roof_type: str = "membrane",
+        k_wall: float | None = None,
+        k_roof: float | None = None,
+        k_ground: float | None = None,
     ):
         super().__init__(component_id, ComponentType.DIGESTER, name)
 
         self.V_liq = V_liq
         self.V_gas = V_gas
+
+        roof_type = str(roof_type).lower()
+        if roof_type not in ROOF_TYPES:
+            raise ValueError(f"Digester '{component_id}': unknown roof_type '{roof_type}', expected one of {ROOF_TYPES}")
+        self.roof_type = roof_type
+
+        if diameter is not None and float(diameter) <= 0.0:
+            raise ValueError(f"Digester '{component_id}': diameter must be positive, got {diameter}")
+        self.diameter_estimated = diameter is None
+        # An open tank encloses no headspace, so only the sludge counts.
+        V_enclosed = float(V_liq) + (0.0 if roof_type == "open" else float(V_gas))
+        self.diameter = self._estimate_diameter(V_enclosed) if diameter is None else float(diameter)
+
+        for label, k in (("k_wall", k_wall), ("k_roof", k_roof), ("k_ground", k_ground)):
+            if k is not None and float(k) < 0.0:
+                raise ValueError(f"Digester '{component_id}': {label} must not be negative, got {k}")
+        self.k_wall = None if k_wall is None else float(k_wall)
+        self.k_roof = None if k_roof is None else float(k_roof)
+        self.k_ground = None if k_ground is None else float(k_ground)
+        # An open tank has no roof, so its k_roof is never expected.
+        expected = [self.k_wall, self.k_ground] + ([] if roof_type == "open" else [self.k_roof])
+        if any(k is not None for k in expected) and any(k is None for k in expected):
+            warnings.warn(
+                f"Digester '{component_id}': only some of k_wall/k_roof/k_ground are set; "
+                "surfaces without a value are treated as loss-free, so the derived "
+                "heat_loss_coefficient is too low.",
+                UserWarning,
+                stacklevel=2,
+            )
 
         # Built first: ``feedstock`` and ``T_ad`` are properties that read
         # through to the ADM1 instance, so it has to exist before they are set.
@@ -140,18 +203,99 @@ class Digester(Component):
         self._initial_fill_fraction = float(initial_fill_fraction)
         self._tau_out = float(outflow_time_constant)
 
-        self.gas_storage: GasStorage = GasStorage(
-            component_id=f"{self.component_id}_storage",
-            storage_type="membrane",
-            capacity_m3=max(50.0, float(self.V_gas)),
-            p_min_bar=0.95,
-            p_max_bar=1.05,
-            initial_fill_fraction=0.1,
-            name=f"{self.name} Gas Storage",
-        )
-
         self.adm1_state: list[float] = []
         self.Q_substrates: list[float] = [0.0] * 10
+
+    # ------------------------------------------------------------------
+    # Geometry: diameter is given or estimated, every height is derived
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _estimate_diameter(V_enclosed: float) -> float:
+        """Diameter [m] of a cylinder of volume *V_enclosed* with ``H = 0.4 * D``."""
+        return (4.0 * max(V_enclosed, 0.0) / (np.pi * _DEFAULT_ASPECT_RATIO)) ** (1.0 / 3.0)
+
+    @property
+    def base_area(self) -> float:
+        """Tank floor area [m²]."""
+        return np.pi / 4.0 * self.diameter**2
+
+    @property
+    def liquid_height(self) -> float:
+        """Sludge level at the geometric maximum ``V_liq`` [m]."""
+        return self._V_liq_max / self.base_area if self.base_area > 0.0 else 0.0
+
+    @property
+    def height(self) -> float:
+        """
+        Wall (cylinder) height [m].
+
+        Flat covers (``concrete``, ``steel``) keep the headspace inside the
+        cylinder, so the wall spans ``V_liq + V_gas``. Under a ``membrane``
+        dome and in ``open`` tanks the wall ends at the sludge level.
+        """
+        if self.roof_type in ("concrete", "steel") and self.base_area > 0.0:
+            return (self._V_liq_max + float(self.V_gas)) / self.base_area
+        return self.liquid_height
+
+    @property
+    def roof_height(self) -> float:
+        """
+        Rise of the roof above the wall [m]; zero for flat and open tanks.
+
+        A membrane dome is treated as a spherical cap over the full tank
+        width that holds ``V_gas``: ``V = π·h/6 · (3·a² + h²)``.
+        """
+        if self.roof_type != "membrane" or self.V_gas <= 0.0 or self.diameter <= 0.0:
+            return 0.0
+        a = self.diameter / 2.0
+        roots = np.roots([np.pi / 6.0, 0.0, np.pi / 2.0 * a**2, -float(self.V_gas)])
+        return float(next(r.real for r in roots if abs(r.imag) < 1.0e-9 and r.real > 0.0))
+
+    @property
+    def total_height(self) -> float:
+        """Wall height plus roof rise [m]."""
+        return self.height + self.roof_height
+
+    @property
+    def wall_area(self) -> float:
+        """Cylinder wall area [m²]."""
+        return np.pi * self.diameter * self.height
+
+    @property
+    def roof_area(self) -> float:
+        """Roof surface [m²]: spherical cap for ``membrane``, else the tank cross-section."""
+        a = self.diameter / 2.0
+        return np.pi * (a**2 + self.roof_height**2)
+
+    @property
+    def heat_loss_coefficient(self) -> float | None:
+        """
+        Overall heat loss coefficient ``UA = Σ k_i · A_i`` [kW/K].
+
+        Sums wall, roof and floor slab over the surfaces that have a
+        k-value; ``None`` when none is set. An ``open`` tank has no roof term.
+        """
+        terms = [(self.k_wall, self.wall_area), (self.k_ground, self.base_area)]
+        if self.roof_type != "open":
+            terms.append((self.k_roof, self.roof_area))
+        given = [k * area for k, area in terms if k is not None]
+        if not given:
+            return None
+        return float(sum(given)) / 1000.0
+
+    @property
+    def heat_loss_coefficient_ground(self) -> float | None:
+        """
+        Floor-slab share of :attr:`heat_loss_coefficient` [kW/K].
+
+        The slab loses heat to the soil, not to the outside air, so a heating
+        system applies this share against ``T_ground`` instead of ``T_ambient``.
+        ``None`` without ``k_ground``.
+        """
+        if self.k_ground is None:
+            return None
+        return float(self.k_ground * self.base_area) / 1000.0
 
     # ------------------------------------------------------------------
     # Operating point: temperature and feedstock
@@ -208,9 +352,11 @@ class Digester(Component):
         """
         Attach or replace the feedstock and wire the influent through.
 
-        Assigning ``digester.feedstock`` alone is not enough: the ADM1 solver
-        also needs its influent DataFrame and density, and the initial state is
-        derived from the blend. This method does all of it in one step, so a
+        The influent composition is always the blend of the attached
+        feedstock at the current ``Q_substrates``; it is recomputed on every
+        step, so a later change of the substrate mix reaches the model. This
+        method additionally drops an external influent DataFrame, updates the
+        feed rates and re-derives the initial state from the blend, so a
         digester may be created without a feedstock and completed later.
 
         Parameters
@@ -218,7 +364,7 @@ class Digester(Component):
         feedstock : Feedstock
             The feedstock to attach.
         Q_substrates : list of float, optional
-            New substrate feed rates [m³/d]. Keeps the current rates when omitted.
+            New substrate feed rates [t FM/d]. Keeps the current rates when omitted.
         rebuild_state : bool, default True
             Re-derive the pre-inoculated steady state from the new blend.
             Set False to keep the current biological state.
@@ -230,7 +376,9 @@ class Digester(Component):
         from ...substrates.feedstock import Feedstock as _Feedstock
 
         if isinstance(feedstock, _Feedstock):
-            self.adm1.set_influent_dataframe(feedstock.get_influent_dataframe(Q=self.Q_substrates))
+            # The blend itself is not cached: ``ADM1.create_influent`` derives
+            # it from the current feed rates on every step.
+            self.adm1.clear_influent_dataframe()
             self.adm1.set_influent_density(feedstock.blended_density(self.Q_substrates))
             if rebuild_state:
                 self.adm1_state = self._build_pre_inoculated_state(self.Q_substrates)
@@ -245,7 +393,7 @@ class Digester(Component):
 
     def initialize(self, initial_state: dict[str, Any] | None = None) -> None:
         """
-        Initialize the digester state and attached gas storage.
+        Initialize the digester state.
 
         Accepted keys in *initial_state*:
 
@@ -253,15 +401,20 @@ class Digester(Component):
           When omitted and ``Q_substrates`` is supplied with a
           :class:`Feedstock`, a pre-inoculated steady-state vector at pH 7
           is computed automatically from the blended influent.
-        * ``Q_substrates`` : list of substrate feed rates [m³/d].  When
-          supplied with a :class:`Feedstock`, the underlying ADM1 solver's
-          influent DataFrame and density are wired automatically.
-        * ``gas_storage`` : dict forwarded to the attached gas storage.
+        * ``Q_substrates`` : list of substrate feed rates [t FM/d].  These are
+          the starting rates only: the influent composition is blended from
+          the feed rates of each step, so rates passed to :meth:`step` later
+          change both flow and composition.
+        * ``HRT`` : filtered hydraulic retention time [d] to continue from.
         """
         if initial_state is None:
             initial_state = {}
 
-        # --- Substrate feed: auto-wire the influent DataFrame/density ---
+        # --- Substrate feed ---
+        # Only the rates are stored. The influent composition is deliberately
+        # not cached: ``ADM1.create_influent`` blends it from the feed rates of
+        # every step, otherwise a later change of the mix would change only
+        # the flow.
         Q_substrates = initial_state.get("Q_substrates")
         if Q_substrates is not None:
             self.Q_substrates = list(Q_substrates)
@@ -269,7 +422,6 @@ class Digester(Component):
             from ...substrates.feedstock import Feedstock as _Feedstock
 
             if isinstance(self.feedstock, _Feedstock):
-                self.adm1.set_influent_dataframe(self.feedstock.get_influent_dataframe(Q=self.Q_substrates))
                 self.adm1.set_influent_density(self.feedstock.blended_density(self.Q_substrates))
 
         # --- Biological state vector ---
@@ -305,17 +457,11 @@ class Digester(Component):
             # Filtered hydraulic retention time tracked via the first-order
             # lag dHRT/dt + HRT*(Q_in/V_S) = 1, so the reported value rises
             # from start-up toward V_S/Q_in with time constant HRT_ss itself.
-            "HRT": 0.0,
+            "HRT": float(initial_state.get("HRT", 0.0)),
             # Current sludge volume [m³]. Equals self.V_liq; kept in
             # self.state so it round-trips through to_dict / from_dict.
             "V_liq": self.V_liq,
         }
-
-        gs_state = initial_state.get("gas_storage")
-        try:
-            self.gas_storage.initialize(gs_state)
-        except Exception:  # noqa: BLE001 - state restore is best-effort; start fresh on any failure
-            self.gas_storage.initialize()
 
         self._initialized = True
 
@@ -369,22 +515,20 @@ class Digester(Component):
 
         vfa_kmol_0 = S_ac_ion_0 / 64.0 + S_pro_ion_0 / 112.0 + S_bu_ion_0 / 160.0 + S_va_ion_0 / 208.0
 
-        # Charge balance, closed the way the ADM1da substrate characterisation
-        # does it (Schlattmann 2011): ``S_cation`` is fixed at zero and
-        # ``S_anion`` absorbs the balance — it may go negative for net-cationic
-        # material. Closing it the other way round (solving for S_cation) left
-        # the state with 0.10-0.15 kmol/m3 of strong cations, up to four times
-        # the ADM1da reference state, and a tank without its own substrate feed
-        # ended up with strong cations but no ammonium at all. The TAC formula
-        # subtracts the strong-ion difference, so those states reported an acid
-        # capacity far too low — negative in long-retention stores.
-        #
-        # Only the DIFFERENCE ``S_cation - S_anion`` enters pH and speciation,
-        # and that difference is unchanged here: the chemistry of the initial
-        # state is identical, only the bookkeeping now follows the convention
-        # the influent already uses.
-        S_cation_0 = 0.0
-        S_anion_0 = S_nh4_0 - S_nh3_0 + S_H_0 - S_hco3_0 - vfa_kmol_0 - K_w / S_H_0
+        # Charge balance, closed by the strong ions exactly as the influent
+        # characterisation does it (``Feedstock._calc_concentrations``): the
+        # closure is split by sign, a net-anionic state carries the excess as
+        # strong-acid anions, a net-cationic one as strong-base cations, and
+        # both pools stay non-negative. Only the DIFFERENCE
+        # ``S_cation - S_anion`` enters pH, speciation and the TAC formula, so
+        # the chemistry of the initial state is the same as with the ADM1da
+        # closure (Schlattmann 2011: S_cation = 0, S_anion signed). A closure
+        # that solved for S_cation on top of a non-zero S_anion once left tanks
+        # without their own feed with strong cations but no ammonium; the
+        # ammonium seeding below takes care of that case.
+        closure_0 = S_nh4_0 - S_nh3_0 + S_H_0 - S_hco3_0 - vfa_kmol_0 - K_w / S_H_0
+        S_anion_0 = max(closure_0, 0.0)
+        S_cation_0 = max(-closure_0, 0.0)
 
         # --- Particulate pools at retention-factor steady state ---
         D = Q_total / V_liq if V_liq > 0.0 else 0.0
@@ -403,10 +547,12 @@ class Digester(Component):
         X_PS_pr_ss = conc.get("X_PS_pr", 0.0) * ret_PS
         X_PS_li_ss = conc.get("X_PS_li", 0.0) * ret_PS
 
+        # Hydrolysable pools: fed by disintegration and, for substrates with a
+        # measured filtrate COD, directly by the influent.
         denom_hyd = D + k_hyd
-        X_S_ch_0 = (k_dis_PF * X_PF_ch_ss + k_dis_PS * X_PS_ch_ss) / denom_hyd
-        X_S_pr_0 = (k_dis_PF * X_PF_pr_ss + k_dis_PS * X_PS_pr_ss) / denom_hyd
-        X_S_li_0 = (k_dis_PF * X_PF_li_ss + k_dis_PS * X_PS_li_ss) / denom_hyd
+        X_S_ch_0 = (k_dis_PF * X_PF_ch_ss + k_dis_PS * X_PS_ch_ss + D * conc.get("X_S_ch", 0.0)) / denom_hyd
+        X_S_pr_0 = (k_dis_PF * X_PF_pr_ss + k_dis_PS * X_PS_pr_ss + D * conc.get("X_S_pr", 0.0)) / denom_hyd
+        X_S_li_0 = (k_dis_PF * X_PF_li_ss + k_dis_PS * X_PS_li_ss + D * conc.get("X_S_li", 0.0)) / denom_hyd
 
         X_I_0 = conc.get("X_I", 0.0)
 
@@ -507,7 +653,7 @@ class Digester(Component):
         a_bu = inhib["K_a_bu"] / (H_pH5 + inhib["K_a_bu"])
         a_va = inhib["K_a_va"] / (H_pH5 + inhib["K_a_va"])
 
-        total_N = float(st[_IDX_S_NH4]) + float(st[_IDX_S_NH3])
+        total_N = float(st[_IDX_S_NH4])
         total_IC = float(st[_IDX_S_CO2])
         total_ac_mol = float(st[_IDX_S_AC]) / COD_AC
         total_pro_mol = float(st[_IDX_S_PRO]) / COD_PRO
@@ -532,9 +678,10 @@ class Digester(Component):
 
         if tac <= 0.0:
             # An acid capacity of zero or less is chemically impossible for a
-            # digestate at neutral pH: it means the state's strong-ion split
-            # does not follow the ADM1da convention (S_cation = 0), so the
-            # ion term of the TAC formula over-subtracts. Reporting NaN keeps
+            # digestate at neutral pH: it means the state's strong-ion
+            # difference does not match its weak-acid buffer (a state not built
+            # by this library), so the ion term of the TAC formula
+            # over-subtracts. Reporting NaN keeps
             # the artefact out of FOS/TAC ratios — dividing by a value drifting
             # through zero produced numbers in the 1e9 range — and makes the
             # broken state visible instead of silently plausible.
@@ -564,12 +711,13 @@ class Digester(Component):
         Integrate the ADM1 ODE by *dt* days and return outputs.
 
         Inputs may include:
-          - ``Q_substrates`` : fresh substrate feed rates [m³/d]
+          - ``Q_substrates`` : fresh substrate feed rates [t FM/d]; flow and
+            composition of the influent both follow these rates
           - ``Q_in``         : effluent flow from an upstream digester [m³/d]
           - ``state_in``     : 41-element state from upstream digester
 
         Returns a dict with ``Q_out``, ``state_out``, ``Q_gas``, ``Q_ch4``,
-        ``Q_co2``, ``pH``, ``VFA``, ``TAC``, ``gas_storage``.
+        ``Q_co2``, ``pH``, ``VFA``, ``TAC``, ``TS``, ``HRT``.
         """
         if "Q_substrates" in inputs:
             self.Q_substrates = inputs["Q_substrates"]
@@ -669,17 +817,6 @@ class Digester(Component):
             hrt_new = hrt_prev + dt
         self.state["HRT"] = hrt_new
 
-        gs_outputs = self.gas_storage.step(
-            t=t,
-            dt=dt,
-            inputs={
-                "Q_gas_in_m3_per_day": float(q_gas),
-                "Q_gas_out_m3_per_day": 0.0,
-                "vent_to_flare": True,
-            },
-        )
-        self.gas_storage.outputs_data["Q_gas_in_m3_per_day"] = float(q_gas)
-
         self.outputs_data = {
             "Q_out": Q_out,
             "state_out": self.adm1_state,
@@ -693,14 +830,23 @@ class Digester(Component):
             "HRT": float(hrt_new),
             "V_liq": float(self.V_liq),
             "Q_gas_to_storage_m3_per_day": float(q_gas),
-            "gas_storage": {
-                "component_id": self.gas_storage.component_id,
-                "stored_volume_m3": gs_outputs["stored_volume_m3"],
-                "pressure_bar": gs_outputs["pressure_bar"],
-                "vented_volume_m3": gs_outputs["vented_volume_m3"],
-                "Q_gas_supplied_m3_per_day": gs_outputs["Q_gas_supplied_m3_per_day"],
-            },
+            # Signals for a connected HeatingSystem. The feed is published as
+            # ``Q_substrates_fed`` because a plain ``Q_substrates`` would
+            # overwrite the feed of any downstream digester that reads it.
+            "T_digester": float(self.T_ad),
+            "Q_substrates_fed": list(self.Q_substrates),
+            # Signals for connected sensors.
+            "CH4_fraction": float(q_ch4 / q_gas) if q_gas > 0.0 else 0.0,
+            "CO2_fraction": float(q_co2 / q_gas) if q_gas > 0.0 else 0.0,
+            # Total ammonia nitrogen and its ammonium share [g N/L]
+            "TAN": float(self.adm1_state[_IDX_S_NH4]) * 14.0,
+            "NH4_N": float(self.adm1_state[_IDX_S_NH4] - self.adm1_state[_IDX_S_NH3]) * 14.0e3,  # mg N/L
+            # Headspace pressure including water vapour [bar]
+            "pressure_bar": float(self.adm1_state[_IDX_P_TOTAL]) + float(self.adm1._p_gas_h2o),
         }
+        if self.heat_loss_coefficient is not None:
+            self.outputs_data["heat_loss_coefficient"] = self.heat_loss_coefficient
+            self.outputs_data["heat_loss_coefficient_ground"] = self.heat_loss_coefficient_ground or 0.0
         return self.outputs_data
 
     # ------------------------------------------------------------------
@@ -732,10 +878,18 @@ class Digester(Component):
             "V_liq": self._V_liq_max,
             "V_gas": self.V_gas,
             "T_ad": self.T_ad,
+            # An estimated diameter is stored as None so it is re-estimated on
+            # load instead of being frozen as if it had been measured.
+            "diameter": None if self.diameter_estimated else self.diameter,
+            "roof_type": self.roof_type,
+            "k_wall": self.k_wall,
+            "k_roof": self.k_roof,
+            "k_ground": self.k_ground,
             "dynamic_volume": self._dynamic_volume,
             "initial_fill_fraction": self._initial_fill_fraction,
             "outflow_time_constant": self._tau_out,
             "adm1_backend": self.adm1.backend,
+            "calibration_parameters": self.get_calibration_parameters(),
             "inputs": self.inputs,
             "outputs": self.outputs,
             "state": self.state,
@@ -755,9 +909,16 @@ class Digester(Component):
             initial_fill_fraction=config.get("initial_fill_fraction", 1.0),
             outflow_time_constant=config.get("outflow_time_constant", 1.0),
             backend=config.get("adm1_backend"),
+            diameter=config.get("diameter"),
+            roof_type=config.get("roof_type", "membrane"),
+            k_wall=config.get("k_wall"),
+            k_roof=config.get("k_roof"),
+            k_ground=config.get("k_ground"),
         )
         digester.inputs = config.get("inputs", [])
         digester.outputs = config.get("outputs", [])
+        if config.get("calibration_parameters"):
+            digester.apply_calibration_parameters(config["calibration_parameters"])
         if "state" in config:
             digester.initialize(config["state"])
             # Restore the live sludge volume after initialize() applied the

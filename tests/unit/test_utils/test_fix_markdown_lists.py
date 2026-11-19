@@ -25,6 +25,16 @@ def test_fix_markdown_file_appends_two_spaces_to_dash_bullet(tmp_path, capsys):
     assert f"Fixed lists in: {md}" in capsys.readouterr().out
 
 
+def test_fix_markdown_file_writes_unix_line_endings_on_every_platform(tmp_path):
+    """The repository keeps LF; a file with Windows endings comes back with LF."""
+    md = tmp_path / "doc.md"
+    md.write_bytes(b"- first item\r\ntext\r\n")
+
+    fix_markdown_file(str(md))
+
+    assert md.read_bytes() == b"- first item  \ntext\n"
+
+
 @pytest.mark.parametrize("marker", ["-", "*", "+"])
 def test_fix_markdown_file_handles_all_bullet_markers(tmp_path, marker):
     md = tmp_path / "doc.md"

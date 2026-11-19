@@ -19,9 +19,9 @@ Reference: Schlattmann (2011); SIMBA# biogas 4.2 Tutorial.
 from __future__ import annotations
 
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass, fields
+from collections.abc import Sequence
+from dataclasses import dataclass, fields, replace
 from pathlib import Path
-from typing import Sequence, Union
 
 import numpy as np
 import pandas as pd
@@ -101,6 +101,59 @@ class SubstrateParams:
     pH   : pH [-]
     KS43 : Acid capacity to pH 4.3 [mol/m³]
     FFS  : Volatile fatty acids as acetic-acid equivalent [kg HAc/m³]
+
+    Economics
+    ---------
+    cost : Substrate cost free plant [EUR/t FM]. Optional, default 0.
+
+    Optional measured parameters
+    ----------------------------
+    The COD fractionation above (``aXI``, ``fOTSrf``, ``fsOTS``, ``ffOTS``,
+    ``aSi``) is not measured directly. The parameters below are, and each one
+    replaces part of that fractionation when given. They are the parameters of
+    the legacy Gummersbach substrate library; see
+    :mod:`pyadm1.substrates.gummersbach` for its units and file schema.
+
+    NDF, ADL : Cell wall and lignin after van Soest [fraction of TS]. When
+        both are given, the carbohydrates are split by the cell wall instead
+        of the crude fibre: structural carbohydrates (``NDF - ADL``) enter the
+        slow pool, non-fibre carbohydrates the fast pool, lignin is inert.
+        ``fOTSrf`` is then not used and ``fsOTS`` / ``ffOTS`` only split
+        protein and lipids.
+    ADF  : Acid detergent fibre [fraction of TS]. Stored, not used.
+    D_VS : Degradation level of the volatile solids [-]. With ``NDF`` and
+        ``ADL`` it sets the degradable share of the structural carbohydrates
+        (Koch et al. 2010); ``aXI`` and ``aSi`` are then not used.
+    Sac, Spro, Sbu, Sva : Acetic, propionic, butyric and valeric acid
+        [kg/m³]. When at least one is given they replace ``FFS``.
+    TAC  : Titrated acid capacity to pH 4.3 [mol/m³]. Replaces ``KS43``; the
+        acid anions titrated along with the bicarbonate are subtracted.
+    COD_S : COD of the filtrate [kgCOD/m³]. What exceeds the acids and the
+        soluble inerts is already disintegrated and enters the hydrolysable
+        pools ``X_S_*``.
+    SIin : Soluble inert COD [kgCOD/m³]. Replaces the ``aSi`` share and is
+        taken out of the inert COD.
+    X_bac, X_meth : Living bacteria and methanogens [kgCOD/m³]. Taken out of
+        the disintegration pools, so the total COD is unchanged.
+    NDICP : Neutral detergent insoluble crude protein [fraction of TS]: the
+        protein bound in the cell wall (Licitra et al. 1996). Needs ``NDF``
+        and ``ADL``. It enters the slow pool, the remaining protein the fast
+        pool, and it is taken out of the structural carbohydrates, as in the
+        non-fibre carbohydrates of NRC (2001). ``fsOTS`` / ``ffOTS`` then only
+        split the lipids.
+
+    Inert share from a measured methane potential
+    ---------------------------------------------
+    ``aXI`` (or ``D_VS``) can be fitted to a methane potential measured in a
+    batch test with :func:`fit_degradability_to_bmp`; the substrate loaders do
+    so when a file gives ``BMP`` but neither ``aXI`` nor ``D_VS``.
+
+    Classification
+    --------------
+    substrate_class : Remuneration class of the substrate as free text, e.g.
+        ``"Mais (GPS) (EK I)"`` after the German EEG 2012 / BiomasseV. Not used
+        by the model; a manure class selects the manure defaults of the
+        measured schema. Optional.
     """
 
     name: str
@@ -169,25 +222,216 @@ class SubstrateParams:
     Kaco2_35: float = 4.4668359215096349e-07
     Kain_35: float = 5.623413251903491e-10
 
+    # Economics
+    cost: float = 0.0
+
+    # Optional measured parameters; ``None`` means "not measured".
+    NDF: float | None = None
+    ADF: float | None = None
+    ADL: float | None = None
+    D_VS: float | None = None
+    Sac: float | None = None
+    Spro: float | None = None
+    Sbu: float | None = None
+    Sva: float | None = None
+    TAC: float | None = None
+    COD_S: float | None = None
+    SIin: float | None = None
+    X_bac: float = 0.0
+    X_meth: float = 0.0
+
+    # Lignin C10.92 H14.24 O5.76 [kg mass / kg COD], as in the legacy model.
+    M_Xlig: float = 0.63965517241379311
+
+    # Protein bound in the cell wall [fraction of TS]; ``None`` means "not measured".
+    NDICP: float | None = None
+
+    # Remuneration class (free text); not used by the model.
+    substrate_class: str | None = None
+
+    def __post_init__(self) -> None:
+        """Reject parameters that are out of range or given in the wrong unit."""
+        if not 0.0 <= self.TS <= 1000.0:
+            raise ValueError(f"Substrate '{self.name}': TS={self.TS} must lie between 0 and 1000 g/kg fresh matter.")
+        if not 0.0 <= self.pH <= 14.0:
+            raise ValueError(f"Substrate '{self.name}': pH={self.pH} must lie between 0 and 14.")
+        weender = {"fRF": self.fRF, "fRP": self.fRP, "fRFe": self.fRFe, "fRA": self.fRA}
+        for key, value in weender.items():
+            if not 0.0 <= value <= 1.0:
+                raise ValueError(f"Substrate '{self.name}': {key}={value} must be a fraction of TS between 0 and 1.")
+        if sum(weender.values()) > 1.0 + 1.0e-6:
+            raise ValueError(
+                f"Substrate '{self.name}': crude fibre, protein, lipids and ash add up to "
+                f"{sum(weender.values()):.3f} of TS, more than the dry matter holds."
+            )
+        for key in ("aXI", "aSi", "fOTSrf", "fsOTS", "ffOTS"):
+            value = getattr(self, key)
+            if not 0.0 <= value <= 1.0:
+                raise ValueError(f"Substrate '{self.name}': {key}={value} must lie between 0 and 1.")
+        for key in ("NH4", "KS43", "FFS", "cost"):
+            value = getattr(self, key)
+            if value < 0.0:
+                raise ValueError(f"Substrate '{self.name}': {key}={value} must not be negative.")
+        for key in ("NDF", "ADF", "ADL", "NDICP"):
+            value = getattr(self, key)
+            if value is not None and not 0.0 <= value <= 1.0:
+                raise ValueError(
+                    f"Substrate '{self.name}': {key}={value} must be a fraction of TS between 0 and 1 "
+                    "(the Gummersbach schema takes % TS instead)."
+                )
+        if self.D_VS is not None and not 0.0 <= self.D_VS <= 1.0:
+            raise ValueError(f"Substrate '{self.name}': D_VS={self.D_VS} must lie between 0 and 1.")
+        if (self.NDF is None) != (self.ADL is None):
+            raise ValueError(f"Substrate '{self.name}': NDF and ADL must be given together.")
+        if self.NDICP is not None and self.NDF is None:
+            raise ValueError(f"Substrate '{self.name}': NDICP is part of the cell wall and needs NDF and ADL.")
+        for key in ("Sac", "Spro", "Sbu", "Sva", "TAC", "COD_S", "SIin", "X_bac", "X_meth"):
+            value = getattr(self, key)
+            if value is not None and value < 0.0:
+                raise ValueError(f"Substrate '{self.name}': {key}={value} must not be negative.")
+
+    @property
+    def uses_cell_wall_analysis(self) -> bool:
+        """True when the carbohydrates are split by ``NDF`` / ``ADL`` instead of the crude fibre."""
+        return self.NDF is not None and self.ADL is not None
+
+    @property
+    def vfa_masses(self) -> tuple[float, float, float, float]:
+        """Acetic, propionic, butyric and valeric acid [kg/m³]; ``FFS`` counts as acetic acid."""
+        singles = (self.Sac, self.Spro, self.Sbu, self.Sva)
+        if all(value is None for value in singles):
+            return (self.FFS, 0.0, 0.0, 0.0)
+        return tuple(0.0 if value is None else float(value) for value in singles)  # type: ignore[return-value]
+
+    @property
+    def vfa_mass(self) -> float:
+        """Total volatile fatty acids [kg/m³]."""
+        return float(sum(self.vfa_masses))
+
 
 # ---------------------------------------------------------------------------
 # Substrate loaders (XML, YAML, TOML)
 # ---------------------------------------------------------------------------
 
+#: Key that selects the parameter set of a substrate file. Without it the file
+#: uses the :class:`SubstrateParams` names and units.
+_SCHEMA_KEY = "schema"
+
+#: Fields of :class:`SubstrateParams` that hold text instead of a number.
+_TEXT_FIELDS = ("substrate_class",)
+
+#: Key of a substrate file: share of the degradable COD that a batch test
+#: recovers as methane. See :func:`fit_degradability_to_bmp`.
+_BMP_RECOVERY_KEY = "BMP_recovery"
+
+#: Default of that share: the model potential is matched to the measured one.
+#: Two effects of opposite sign are left out by this. A batch test recovers
+#: about 5 % less than the degradable COD holds, because biomass grows
+#: (Weißbach 2009). The model counts carbohydrates as glucose, which is about
+#: 10 % below the COD of starch and cellulose. A value below 1 accounts for the
+#: first effect alone.
+DEFAULT_BMP_RECOVERY = 1.0
+
+
+def fit_degradability_to_bmp(
+    params: SubstrateParams, bmp: float | None = None, recovery: float = DEFAULT_BMP_RECOVERY
+) -> SubstrateParams:
+    """
+    Fit the inert share of a substrate to a measured methane potential.
+
+    The model potential :meth:`Feedstock.bmp_theoretical` is matched to
+    ``bmp / recovery``. A batch test (VDI 4630) yields less methane than the
+    degradable COD holds, because part of it becomes biomass; *recovery* is
+    that share. With a cell-wall analysis (``NDF``, ``ADL``) the
+    degradation level ``D_VS`` is fitted, otherwise the inert share ``aXI``;
+    both change the potential monotonically, so bisection finds the value.
+
+    Args:
+        params: Substrate whose other parameters are final.
+        bmp: Measured potential [Nm³ CH4/t VS]; defaults to ``params.BMP``.
+        recovery: Share of the degradable COD recovered as methane in the
+            batch test, 0 < recovery <= 1.
+
+    Returns:
+        A copy of *params* with the fitted ``D_VS`` or ``aXI``.
+
+    Raises:
+        ValueError: *bmp* or *recovery* is out of range, or *bmp* exceeds what
+            the composition of the substrate can yield.
+    """
+    target_bmp = float(params.BMP if bmp is None else bmp)
+    if not 0.0 < recovery <= 1.0:
+        raise ValueError(f"Substrate '{params.name}': BMP recovery must lie in (0, 1], got {recovery}.")
+    if target_bmp <= 0.0:
+        raise ValueError(f"Substrate '{params.name}': a measured BMP must be positive, got {target_bmp}.")
+    target = target_bmp / recovery
+
+    by_cell_wall = params.uses_cell_wall_analysis
+
+    def with_degradable_share(share: float) -> SubstrateParams:
+        if by_cell_wall:
+            return replace(params, D_VS=share)
+        return replace(params, aXI=max(1.0 - params.aSi - share, 0.0))
+
+    def potential(share: float) -> float:
+        return Feedstock(with_degradable_share(share)).bmp_theoretical()
+
+    upper = 1.0 if by_cell_wall else max(1.0 - params.aSi, 0.0)
+    lowest, highest = potential(0.0), potential(upper)
+    if not lowest <= target <= highest:
+        raise ValueError(
+            f"Substrate '{params.name}': a BMP of {target_bmp:.0f} Nm³ CH4/t VS (recovery {recovery:.2f}) needs a "
+            f"model potential of {target:.0f}, but the composition allows {lowest:.0f} to {highest:.0f} only."
+        )
+
+    low, high = 0.0, upper
+    for _ in range(60):
+        middle = 0.5 * (low + high)
+        if potential(middle) < target:
+            low = middle
+        else:
+            high = middle
+    return with_degradable_share(0.5 * (low + high))
+
 
 def _build_substrate_params(substrate_name: str, raw: dict[str, object], source: Path) -> SubstrateParams:
     """Common dict -> SubstrateParams construction used by all loaders."""
+    schema = raw.get(_SCHEMA_KEY)
+    if schema is not None:
+        from .gummersbach import SCHEMA_NAMES, params_from_measured
+
+        if str(schema).strip().lower() not in SCHEMA_NAMES:
+            raise ValueError(f"Unknown substrate schema '{schema}' in {source.name}; supported: {list(SCHEMA_NAMES)}.")
+        measured = {key: value for key, value in raw.items() if key != _SCHEMA_KEY}
+        return params_from_measured(substrate_name, measured, source=source.name)
+
+    # A misspelt key (``aXi`` for ``aXI``) would otherwise be dropped silently
+    # and the default or the BMP fit would take its place.
+    known = {f.name for f in fields(SubstrateParams)} | {_SCHEMA_KEY, _BMP_RECOVERY_KEY}
+    unknown = sorted(set(raw) - known)
+    if unknown:
+        raise ValueError(f"Unknown parameter(s) {unknown} in substrate {source.name}.")
+
+    # Without aXI the inert share is fitted to the methane potential of the file.
+    fit_to_bmp = raw.get("aXI") is None and raw.get("D_VS") is None and raw.get("BMP") is not None
+
     kwargs: dict = {"name": substrate_name}
     for f in fields(SubstrateParams):
         if f.name == "name":
             continue
-        if f.name in raw:
-            kwargs[f.name] = float(raw[f.name])
+        if raw.get(f.name) is not None:
+            kwargs[f.name] = str(raw[f.name]) if f.name in _TEXT_FIELDS else float(raw[f.name])
         elif f.default.__class__.__name__ != "_MISSING_TYPE":
             kwargs[f.name] = f.default
+        elif f.name == "aXI" and fit_to_bmp:
+            kwargs[f.name] = 0.0
         else:
             raise ValueError(f"Required parameter '{f.name}' not found in {source.name}")
-    return SubstrateParams(**kwargs)
+    params = SubstrateParams(**kwargs)
+    if fit_to_bmp:
+        recovery = raw.get(_BMP_RECOVERY_KEY)
+        params = fit_degradability_to_bmp(params, recovery=DEFAULT_BMP_RECOVERY if recovery is None else float(recovery))
+    return params
 
 
 def load_substrate_xml(path: str | Path) -> SubstrateParams:
@@ -195,7 +439,9 @@ def load_substrate_xml(path: str | Path) -> SubstrateParams:
     Load a substrate definition from an XML file.
 
     Schema: ``<substrate name="...">`` root with ``<param name="..."
-    value="..."/>`` children.
+    value="..."/>`` children. ``<substrate schema="gummersbach" ...>``
+    selects the measured parameter set of
+    :mod:`pyadm1.substrates.gummersbach`.
     """
     path = Path(path)
     if not path.exists():
@@ -205,6 +451,8 @@ def load_substrate_xml(path: str | Path) -> SubstrateParams:
     substrate_name = root.get("name", path.stem)
 
     raw: dict[str, str] = {}
+    if root.get(_SCHEMA_KEY) is not None:
+        raw[_SCHEMA_KEY] = root.get(_SCHEMA_KEY)
     for elem in root.findall("param"):
         pname = elem.get("name")
         pvalue = elem.get("value")
@@ -219,7 +467,9 @@ def load_substrate_yaml(path: str | Path) -> SubstrateParams:
     Load a substrate definition from a YAML file.
 
     Schema: a flat top-level mapping of parameter name -> value, with one
-    optional ``name`` key for the human-readable substrate label.
+    optional ``name`` key for the human-readable substrate label. A
+    ``schema: gummersbach`` key selects the measured parameter set of
+    :mod:`pyadm1.substrates.gummersbach`.
     """
     try:
         import yaml  # type: ignore
@@ -244,7 +494,8 @@ def load_substrate_toml(path: str | Path) -> SubstrateParams:
     Load a substrate definition from a TOML file.
 
     Schema: top-level table with ``name = "..."`` plus one ``key = value``
-    per substrate parameter.
+    per substrate parameter. ``schema = "gummersbach"`` selects the measured
+    parameter set of :mod:`pyadm1.substrates.gummersbach`.
     """
     try:
         import tomllib  # Python 3.11+
@@ -364,7 +615,33 @@ class SubstrateRegistry:
 # ---------------------------------------------------------------------------
 
 
-_SubstrateInput = Union[SubstrateParams, str, Path]
+_SubstrateInput = SubstrateParams | str | Path
+
+#: Prefix of substrate IDs that refer to the bundled legacy Gummersbach library.
+_LEGACY_LIBRARY_PREFIX = "gummersbach:"
+
+#: Prefix of substrate IDs that refer to the superseded substrate files in
+#: ``data/substrates/legacy/``, e.g. ``"legacy:cattle_manure"``.
+_LEGACY_FILE_PREFIX = "legacy:"
+_LEGACY_FILE_DIR = _DEFAULT_DATA_DIR / "legacy"
+
+#: Disintegration pools, by substrate class (carbohydrates, proteins, lipids).
+_DISINTEGRATION_POOLS = {
+    "ch": ("X_PS_ch", "X_PF_ch"),
+    "pr": ("X_PS_pr", "X_PF_pr"),
+    "li": ("X_PS_li", "X_PF_li"),
+}
+
+#: Split of substrate-borne biomass over the ADM1 groups. Same ratios as the
+#: pre-inoculated initial state of the digester.
+_BACTERIA_SPLIT = {"X_su": 0.25, "X_aa": 0.25, "X_fa": 0.15, "X_c4": 0.20, "X_pro": 0.15}
+_METHANOGEN_SPLIT = {"X_ac": 0.80, "X_h2": 0.20}
+
+#: COD per kmol of the volatile fatty acids [kgCOD/kmol].
+_VFA_COD_PER_KMOL = {"S_ac": 64.0, "S_pro": 112.0, "S_bu": 160.0, "S_va": 208.0}
+
+#: End point of the acid-capacity titration.
+_PH_TITRATION_END = 4.3
 
 
 class Feedstock:
@@ -450,7 +727,7 @@ class Feedstock:
         # rebuilding the feedstock in a fresh process) where the human-readable
         # ``SubstrateParams.name`` may not match the XML file stem.
         self._raw_inputs = list(raw_subs)
-        self._substrate_ids: list[str] = [self._raw_input_id(item) for item in raw_subs]
+        self._substrate_ids: list[str] = self._unique_ids([self._raw_input_id(item) for item in raw_subs])
 
         self._subs: list[SubstrateParams] = [self._resolve_substrate(item) for item in raw_subs]
         self._simtime = np.arange(0, total_simtime, float(feeding_freq) / 24.0)
@@ -538,6 +815,70 @@ class Feedstock:
         return self._validate_Q(Q).tolist()
 
     @property
+    def substrate_costs(self) -> dict[str, float]:
+        """Cost of each configured substrate [EUR/t FM], keyed by substrate ID."""
+        return {sid: float(s.cost) for sid, s in zip(self._substrate_ids, self._subs)}
+
+    def set_substrate_costs(self, costs: dict[str, float]) -> None:
+        """
+        Set or override substrate costs [EUR/t FM].
+
+        Costs may also be given as ``cost:`` in the substrate definition file;
+        this overrides them for this feedstock only.
+
+        Parameters
+        ----------
+        costs : dict
+            ``{substrate_id: cost}``. Substrates not listed keep their cost.
+        """
+        unknown = set(costs) - set(self._substrate_ids)
+        if unknown:
+            raise ValueError(f"Unknown substrate(s) {sorted(unknown)}; configured are {self._substrate_ids}.")
+        for index, sid in enumerate(self._substrate_ids):
+            if sid in costs:
+                if float(costs[sid]) < 0.0:
+                    raise ValueError(f"Cost of '{sid}' must not be negative, got {costs[sid]}")
+                # Replace rather than mutate: the parameter object may be shared.
+                self._subs[index] = replace(self._subs[index], cost=float(costs[sid]))
+
+    def mass_flows(self, Q: float | Sequence[float]) -> list[float]:
+        """Per-substrate fresh-matter mass flows [t/d] for feed rates *Q*."""
+        return [q * rho / 1000.0 for q, rho in zip(self._validate_Q(Q), self._densities)]
+
+    def calc_substrate_costs(self, Q: float | Sequence[float] | Sequence[Sequence[float]], dt: float = 1.0) -> dict:
+        """
+        Substrate costs for a given feed.
+
+        Works on any feed record: the configured rates, a feed log, a measured
+        flow from a sensor or an estimate. For the costs of a simulated plant
+        see :meth:`BiogasPlant.get_substrate_costs`, which applies this to the
+        feed the digesters actually received.
+
+        Parameters
+        ----------
+        Q : sequence of float, or sequence of such sequences
+            Feed rates per substrate, in the unit of ``Q_substrates``. Either
+            one set of rates held for ``dt`` days, or a time series with one
+            row per interval of ``dt`` days.
+        dt : float, default 1.0
+            Length of the interval each set of rates applies to [d].
+
+        Returns
+        -------
+        dict
+            ``total`` [EUR], ``by_substrate`` ({id: EUR}) and ``mass_t``
+            ({id: t FM fed}).
+        """
+        rows = np.atleast_2d(np.asarray(Q, dtype=float))
+        mass = np.zeros(len(self._subs))
+        for row in rows:
+            mass += np.asarray(self.mass_flows(row)) * float(dt)
+
+        mass_t = {sid: float(m) for sid, m in zip(self._substrate_ids, mass)}
+        by_substrate = {sid: mass_t[sid] * float(s.cost) for sid, s in zip(self._substrate_ids, self._subs)}
+        return {"total": float(sum(by_substrate.values())), "by_substrate": by_substrate, "mass_t": mass_t}
+
+    @property
     def q_conversion_factors(self) -> list[float]:
         """Per-substrate ADM1da Q-conversion factors [-]."""
         return list(self._q_factors)
@@ -556,24 +897,23 @@ class Feedstock:
     def total_cod(self, index: int = 0) -> float:
         """Total COD concentration of the i-th substrate [kg COD/m³]."""
         c = self._conc_list[index]
-        return (
-            c["X_PS_ch"]
-            + c["X_PS_pr"]
-            + c["X_PS_li"]
-            + c["X_PF_ch"]
-            + c["X_PF_pr"]
-            + c["X_PF_li"]
-            + c["X_I"]
-            + c["S_ac"]
-            + c["S_I"]
-        )
+        return self._degradable_cod(c) + c["X_I"] + c["S_I"]
+
+    @staticmethod
+    def _degradable_cod(c: dict) -> float:
+        """Degradable COD of one substrate [kg COD/m³]: particulate pools, acids and biomass."""
+        keys = [pool for pools in _DISINTEGRATION_POOLS.values() for pool in pools]
+        keys += ["X_S_ch", "X_S_pr", "X_S_li"]
+        keys += list(_VFA_COD_PER_KMOL)
+        keys += list(_BACTERIA_SPLIT) + list(_METHANOGEN_SPLIT)
+        return float(sum(c[key] for key in keys))
 
     def bmp_theoretical(self, index: int = 0) -> float:
         """Theoretical biomethane potential of the i-th substrate [Nm³ CH₄/t VS]."""
         c = self._conc_list[index]
         s = self._subs[index]
         th_yield = s.V_m / (s.CH4_cod_2_mol / 1000.0)
-        degradable_cod = c["X_PS_ch"] + c["X_PS_pr"] + c["X_PS_li"] + c["X_PF_ch"] + c["X_PF_pr"] + c["X_PF_li"] + c["S_ac"]
+        degradable_cod = self._degradable_cod(c)
         vs = self.vs_content(index)
         if vs <= 0.0:
             return 0.0
@@ -622,10 +962,34 @@ class Feedstock:
         return self._feeding_freq
 
     @staticmethod
+    def _unique_ids(ids: list[str]) -> list[str]:
+        """
+        Make substrate IDs unique by numbering repeats (``maize``, ``maize_2``).
+
+        Costs and masses are reported per ID, so two substrates sharing one
+        (the same file twice, or two paths with the same stem) would
+        otherwise be merged into a single entry.
+
+        Args:
+            ids (List[str]): IDs in feedstock order.
+
+        Returns:
+            List[str]: The IDs with a ``_<n>`` suffix on every repeat.
+        """
+        seen: dict[str, int] = {}
+        unique: list[str] = []
+        for sid in ids:
+            seen[sid] = seen.get(sid, 0) + 1
+            unique.append(sid if seen[sid] == 1 else f"{sid}_{seen[sid]}")
+        return unique
+
+    @staticmethod
     def _raw_input_id(item: _SubstrateInput) -> str:
         """Return a stable identifier for a substrate input item."""
         if isinstance(item, SubstrateParams):
             return item.name
+        if isinstance(item, str) and item.startswith((_LEGACY_LIBRARY_PREFIX, _LEGACY_FILE_PREFIX)):
+            return item
         return Path(item).stem
 
     @staticmethod
@@ -633,10 +997,24 @@ class Feedstock:
         """
         Accept a params object, a filesystem path, or a bare substrate ID
         (file stem in the default ``data/substrates/`` directory).
-        Any supported format (.yaml/.yml/.xml/.toml) is recognised.
+        Any supported format (.yaml/.yml/.xml/.toml) is recognised. An ID of
+        the form ``gummersbach:<id>`` selects a substrate of the bundled
+        legacy Gummersbach library, ``legacy:<id>`` a superseded substrate
+        file in ``data/substrates/legacy/``.
         """
         if isinstance(item, SubstrateParams):
             return item
+        if isinstance(item, str) and item.startswith(_LEGACY_LIBRARY_PREFIX):
+            from .gummersbach import gummersbach_substrate
+
+            return gummersbach_substrate(item[len(_LEGACY_LIBRARY_PREFIX) :])
+        if isinstance(item, str) and item.startswith(_LEGACY_FILE_PREFIX):
+            stem = item[len(_LEGACY_FILE_PREFIX) :]
+            for ext in _SUBSTRATE_EXTENSIONS:
+                legacy_path = _LEGACY_FILE_DIR / f"{stem}{ext}"
+                if legacy_path.exists():
+                    return load_substrate(legacy_path)
+            raise FileNotFoundError(f"Legacy substrate '{stem}' not found in {_LEGACY_FILE_DIR}")
         p = Path(item)
         if p.exists():
             return load_substrate(p)
@@ -668,6 +1046,9 @@ class Feedstock:
                     f"the {n_subs} configured substrates: {list(extras)}"
                 )
             Q_arr = Q_arr[:n_subs]
+
+        if not np.all(np.isfinite(Q_arr)) or np.any(Q_arr < 0.0):
+            raise ValueError(f"Feed rates must be finite and not negative, got {list(Q_arr)}")
 
         factors = np.asarray(self._q_factors, dtype=float)
         return Q_arr * factors
@@ -702,7 +1083,7 @@ class Feedstock:
         f_NFE = fTS - f_fiber_total - f_protein - f_lipid - f_ash
         f_CH = f_fiber_total + f_NFE
 
-        f_AC = s.FFS / 1000.0
+        f_AC = s.vfa_mass / 1000.0
         f_H2O = max(0.0, 1.0 - fTS - f_AC)
 
         v_spec = (
@@ -718,6 +1099,118 @@ class Feedstock:
     @staticmethod
     def _calc_concentrations(s: SubstrateParams, rho: float) -> dict:
         """Compute all ADM1 influent concentrations per m³ of fresh substrate."""
+        pools = Feedstock._calc_organic_pools(s, rho)
+
+        # A measured soluble inert replaces the aSi share. It is taken out of
+        # the inert COD, so the total COD does not change.
+        if s.SIin is not None:
+            inert = pools["X_I"] + pools["S_I"]
+            pools["S_I"] = min(float(s.SIin), inert)
+            pools["X_I"] = inert - pools["S_I"]
+
+        m_ac, m_pro, m_bu, m_va = s.vfa_masses
+        acids = {
+            "S_ac": m_ac / s.M_Sac,
+            "S_pro": m_pro / s.M_Spro,
+            "S_bu": m_bu / s.M_Sbu,
+            "S_va": m_va / s.M_Sva,
+        }
+
+        hydrolysable, biomass = Feedstock._split_off_filtrate_and_biomass(s, pools, sum(acids.values()))
+
+        S_nh4 = s.NH4 / 14.0
+
+        S_H = 10.0 ** (-s.pH)
+        alpha = {
+            "S_ac": s.Kaac / (s.Kaac + S_H),
+            "S_pro": s.Kapro / (s.Kapro + S_H),
+            "S_bu": s.Kabu / (s.Kabu + S_H),
+            "S_va": s.Kava / (s.Kava + S_H),
+        }
+        alpha_IN = s.Kain_35 / (s.Kain_35 + S_H)
+
+        S_hco3 = Feedstock._calc_bicarbonate(s, acids, alpha)
+        S_co2 = max(S_hco3, 0.0)
+
+        ions = {key: alpha[key] * acids[key] for key in acids}
+        S_nh3 = alpha_IN * S_nh4
+
+        # Charge balance, closed by the strong ions. The closure is split by
+        # sign so that both pools stay non-negative: a net-anionic material
+        # (silage at its own pH) carries the excess as strong-acid anions, a
+        # net-cationic one (slurry, solid manure: HCO3- and VFA- exceed NH4+)
+        # as strong-base cations (K+, Na+, Ca2+, Mg2+). Only the difference
+        # S_cation - S_anion enters pH, speciation and the acid capacity, so
+        # the chemistry equals the ADM1da closure that fixes S_cation = 0 and
+        # lets S_anion go negative (Schlattmann 2011); the split keeps the
+        # influent inside the non-negative state box that state estimators
+        # and the benchmark truth are clipped to.
+        vfa_kmol = (
+            ions["S_ac"] / _VFA_COD_PER_KMOL["S_ac"]
+            + ions["S_pro"] / _VFA_COD_PER_KMOL["S_pro"]
+            + ions["S_bu"] / _VFA_COD_PER_KMOL["S_bu"]
+            + ions["S_va"] / _VFA_COD_PER_KMOL["S_va"]
+        )
+        closure = S_H + (S_nh4 - S_nh3) - S_hco3 - vfa_kmol - s.Kw_35 / (S_H + 1.0e-30)
+        S_anion = max(closure, 0.0)
+        S_cation = max(-closure, 0.0)
+
+        return {
+            "S_su": 0.0,
+            "S_aa": 0.0,
+            "S_fa": 0.0,
+            "S_va": acids["S_va"],
+            "S_bu": acids["S_bu"],
+            "S_pro": acids["S_pro"],
+            "S_ac": acids["S_ac"],
+            "S_h2": 0.0,
+            "S_ch4": 0.0,
+            "S_co2": S_co2,
+            "S_nh4": S_nh4,
+            "S_I": pools["S_I"],
+            "X_PS_ch": pools["X_PS_ch"],
+            "X_PS_pr": pools["X_PS_pr"],
+            "X_PS_li": pools["X_PS_li"],
+            "X_PF_ch": pools["X_PF_ch"],
+            "X_PF_pr": pools["X_PF_pr"],
+            "X_PF_li": pools["X_PF_li"],
+            "X_S_ch": hydrolysable["ch"],
+            "X_S_pr": hydrolysable["pr"],
+            "X_S_li": hydrolysable["li"],
+            "X_I": pools["X_I"],
+            "X_su": biomass["X_su"],
+            "X_aa": biomass["X_aa"],
+            "X_fa": biomass["X_fa"],
+            "X_c4": biomass["X_c4"],
+            "X_pro": biomass["X_pro"],
+            "X_ac": biomass["X_ac"],
+            "X_h2": biomass["X_h2"],
+            "S_cation": S_cation,
+            "S_anion": S_anion,
+            "S_va_ion": ions["S_va"],
+            "S_bu_ion": ions["S_bu"],
+            "S_pro_ion": ions["S_pro"],
+            "S_ac_ion": ions["S_ac"],
+            "S_hco3_ion": S_hco3,
+            "S_nh3": S_nh3,
+        }
+
+    @staticmethod
+    def _calc_organic_pools(s: SubstrateParams, rho: float) -> dict:
+        """Disintegration pools and inerts [kgCOD/m³], by crude fibre or by cell wall."""
+        if s.uses_cell_wall_analysis:
+            return Feedstock._pools_from_cell_wall(s, rho)
+        return Feedstock._pools_from_crude_fibre(s, rho)
+
+    @staticmethod
+    def _pools_from_crude_fibre(s: SubstrateParams, rho: float) -> dict:
+        """
+        ADM1da fractionation from the Weender analysis.
+
+        The degradable crude fibre enters the slow pool; nitrogen-free
+        extracts, protein and lipids are split by ``fsOTS`` / ``ffOTS``;
+        ``aXI`` and ``aSi`` of the organic COD are inert.
+        """
         fTS = s.TS / 1000.0
 
         f_fiber_deg = fTS * s.fRF * s.fOTSrf
@@ -731,79 +1224,142 @@ class Feedstock:
         X_li_raw = f_lipid * rho / s.M_Xli
         X_org_raw = X_ch_raw + X_pr_raw + X_li_raw
 
-        X_I = X_org_raw * s.aXI
-        S_I = X_org_raw * s.aSi
         f_deg = max(1.0 - s.aXI - s.aSi, 0.0)
 
         X_ch_raw_NFE = f_NFE * rho / s.M_Xch
         X_ch_raw_fiber = f_fiber_deg * rho / s.M_Xch
-        X_PS_ch = (X_ch_raw_fiber + X_ch_raw_NFE * s.fsOTS) * f_deg
-        X_PS_pr = X_pr_raw * f_deg * s.fsOTS
-        X_PS_li = X_li_raw * f_deg * s.fsOTS
-        X_PF_ch = X_ch_raw_NFE * f_deg * s.ffOTS
-        X_PF_pr = X_pr_raw * f_deg * s.ffOTS
-        X_PF_li = X_li_raw * f_deg * s.ffOTS
+        return {
+            "X_PS_ch": (X_ch_raw_fiber + X_ch_raw_NFE * s.fsOTS) * f_deg,
+            "X_PS_pr": X_pr_raw * f_deg * s.fsOTS,
+            "X_PS_li": X_li_raw * f_deg * s.fsOTS,
+            "X_PF_ch": X_ch_raw_NFE * f_deg * s.ffOTS,
+            "X_PF_pr": X_pr_raw * f_deg * s.ffOTS,
+            "X_PF_li": X_li_raw * f_deg * s.ffOTS,
+            "X_I": X_org_raw * s.aXI,
+            "S_I": X_org_raw * s.aSi,
+        }
 
-        S_ac = s.FFS / s.M_Sac
-        S_nh4 = s.NH4 / 14.0
+    @staticmethod
+    def _pools_from_cell_wall(s: SubstrateParams, rho: float) -> dict:
+        """
+        Fractionation from the van Soest cell-wall analysis (``NDF``, ``ADL``).
 
-        S_hco3 = s.KS43 * 1.0e-3
-        S_co2 = max(S_hco3, 0.0)
+        Structural carbohydrates (``NDF - ADL``) enter the slow pool,
+        non-fibre carbohydrates the fast pool, lignin is inert. Protein and
+        lipids are split by ``fsOTS`` / ``ffOTS``.
 
-        S_H = 10.0 ** (-s.pH)
-        alpha_ac = s.Kaac / (s.Kaac + S_H)
-        alpha_pro = s.Kapro / (s.Kapro + S_H)
-        alpha_bu = s.Kabu / (s.Kabu + S_H)
-        alpha_va = s.Kava / (s.Kava + S_H)
-        alpha_IN = s.Kain_35 / (s.Kain_35 + S_H)
+        With ``NDICP`` the protein bound in the cell wall enters the slow
+        pool and the remaining protein the fast pool; ``fsOTS`` / ``ffOTS``
+        then only split the lipids. The bound protein is part of the measured
+        ``NDF`` and is taken out of the structural carbohydrates.
 
-        S_ac_ion = alpha_ac * S_ac
-        S_pro_ion = alpha_pro * 0.0
-        S_bu_ion = alpha_bu * 0.0
-        S_va_ion = alpha_va * 0.0
-        S_nh3 = alpha_IN * S_nh4
+        With ``D_VS`` the non-degradable volatile solids ``VS * (1 - D_VS)``
+        are assigned to the cell wall, lignin first (Koch et al. 2010,
+        Bioresource Technology 101, 8158-8165). ``aXI`` and ``aSi`` are not
+        used. Without ``D_VS`` the structural carbohydrates count as
+        degradable and ``aXI`` / ``aSi`` apply to all organics except lignin.
+        """
+        m_ts = s.TS / 1000.0 * rho  # kg TS per m³ fresh matter
 
-        # Charge balance
-        vfa_kmol = S_ac_ion / 64.0 + S_pro_ion / 112.0 + S_bu_ion / 160.0 + S_va_ion / 208.0
-        S_cation = 0.0
-        S_anion = S_cation + S_H + (S_nh4 - S_nh3) - S_hco3 - vfa_kmol - s.Kw_35 / (S_H + 1.0e-30)
+        f_carb = max(1.0 - s.fRA - s.fRP - s.fRFe, 0.0)  # all carbohydrates, lignin included
+        # Protein bound in the cell wall is weighed with the NDF but is no carbohydrate.
+        f_bound_pr = min(float(s.NDICP), s.fRP, float(s.NDF)) if s.NDICP is not None else 0.0
+        f_ndf = min(float(s.NDF) - f_bound_pr, f_carb)
+        f_lignin = min(float(s.ADL), f_ndf)
+        f_struct = f_ndf - f_lignin
+        f_nfc = f_carb - f_ndf
+        f_other = f_nfc + s.fRP + s.fRFe  # cell contents
+
+        if s.D_VS is not None:
+            # Non-degradable VS: lignin first, then structural carbohydrates.
+            # Only what exceeds the whole cell wall reaches the cell contents.
+            f_nondeg = (1.0 - s.fRA) * (1.0 - s.D_VS)
+            f_struct_inert = min(max(f_nondeg - f_lignin, 0.0), f_struct)
+            f_rest = max(f_nondeg - f_lignin - f_struct, 0.0)
+            xi_struct = f_struct_inert / f_struct if f_struct > 0.0 else 0.0
+            xi_other = min(f_rest / f_other, 1.0) if f_other > 0.0 else 0.0
+            si_struct = si_other = 0.0
+        else:
+            xi_struct = xi_other = s.aXI
+            si_struct = si_other = s.aSi
+
+        deg_struct = max(1.0 - xi_struct - si_struct, 0.0)
+        deg_other = max(1.0 - xi_other - si_other, 0.0)
+
+        X_struct = f_struct * m_ts / s.M_Xch
+        X_nfc = f_nfc * m_ts / s.M_Xch
+        X_pr = s.fRP * m_ts / s.M_Xpr
+        X_li = s.fRFe * m_ts / s.M_Xli
+        X_lignin = f_lignin * m_ts / s.M_Xlig
+        X_other = X_nfc + X_pr + X_li
+
+        if s.NDICP is not None:
+            slow_pr = f_bound_pr / s.fRP if s.fRP > 0.0 else 0.0
+            fast_pr = 1.0 - slow_pr
+        else:
+            slow_pr, fast_pr = s.fsOTS, s.ffOTS
 
         return {
-            "S_su": 0.0,
-            "S_aa": 0.0,
-            "S_fa": 0.0,
-            "S_va": 0.0,
-            "S_bu": 0.0,
-            "S_pro": 0.0,
-            "S_ac": S_ac,
-            "S_h2": 0.0,
-            "S_ch4": 0.0,
-            "S_co2": S_co2,
-            "S_nh4": S_nh4,
-            "S_I": S_I,
-            "X_PS_ch": X_PS_ch,
-            "X_PS_pr": X_PS_pr,
-            "X_PS_li": X_PS_li,
-            "X_PF_ch": X_PF_ch,
-            "X_PF_pr": X_PF_pr,
-            "X_PF_li": X_PF_li,
-            "X_S_ch": 0.0,
-            "X_S_pr": 0.0,
-            "X_S_li": 0.0,
-            "X_I": X_I,
-            "X_su": 0.0,
-            "X_aa": 0.0,
-            "X_fa": 0.0,
-            "X_c4": 0.0,
-            "X_pro": 0.0,
-            "X_ac": 0.0,
-            "X_h2": 0.0,
-            "S_cation": S_cation,
-            "S_anion": S_anion,
-            "S_va_ion": S_va_ion,
-            "S_bu_ion": S_bu_ion,
-            "S_pro_ion": S_pro_ion,
-            "S_ac_ion": S_ac_ion,
-            "S_hco3_ion": S_hco3,
-            "S_nh3": S_nh3,
+            "X_PS_ch": X_struct * deg_struct,
+            "X_PS_pr": X_pr * deg_other * slow_pr,
+            "X_PS_li": X_li * deg_other * s.fsOTS,
+            "X_PF_ch": X_nfc * deg_other,
+            "X_PF_pr": X_pr * deg_other * fast_pr,
+            "X_PF_li": X_li * deg_other * s.ffOTS,
+            "X_I": X_lignin + X_struct * xi_struct + X_other * xi_other,
+            "S_I": X_struct * si_struct + X_other * si_other,
         }
+
+    @staticmethod
+    def _split_off_filtrate_and_biomass(s: SubstrateParams, pools: dict, acid_cod: float) -> tuple[dict, dict]:
+        """
+        Move filtrate COD and living biomass out of the disintegration pools.
+
+        Filtrate COD beyond the acids and the soluble inerts is particulate
+        matter that is already disintegrated; it enters the hydrolysable pools
+        ``X_S_*``. Biomass is part of the measured volatile solids as well.
+        Both are taken from all six disintegration pools in proportion, so the
+        total COD stays the same. *pools* is updated in place.
+
+        Returns:
+            The hydrolysable COD by substrate class and the biomass by ADM1 group.
+        """
+        class_cod = {cls: sum(pools[key] for key in keys) for cls, keys in _DISINTEGRATION_POOLS.items()}
+        total = sum(class_cod.values())
+
+        filtrate = max(float(s.COD_S) - acid_cod - pools["S_I"], 0.0) if s.COD_S is not None else 0.0
+        bacteria, methanogens = float(s.X_bac), float(s.X_meth)
+        moved = filtrate + bacteria + methanogens
+
+        scale = 0.0
+        if moved > 0.0 and total > 0.0:
+            scale = min(total / moved, 1.0)  # never move more than the pools hold
+            remaining = 1.0 - scale * moved / total
+            for keys in _DISINTEGRATION_POOLS.values():
+                for key in keys:
+                    pools[key] *= remaining
+
+        hydrolysable = {cls: scale * filtrate * (cod / total if total > 0.0 else 0.0) for cls, cod in class_cod.items()}
+        biomass = {key: scale * bacteria * share for key, share in _BACTERIA_SPLIT.items()}
+        biomass.update({key: scale * methanogens * share for key, share in _METHANOGEN_SPLIT.items()})
+        return hydrolysable, biomass
+
+    @staticmethod
+    def _calc_bicarbonate(s: SubstrateParams, acids: dict, alpha: dict) -> float:
+        """
+        Bicarbonate of the substrate [kmol/m³].
+
+        ``KS43`` is taken as bicarbonate directly. A titrated acid capacity
+        ``TAC`` also contains the acid anions that are protonated on the way
+        from the substrate pH down to pH 4.3; they are subtracted.
+        """
+        if s.TAC is None:
+            return s.KS43 * 1.0e-3
+
+        S_H_end = 10.0 ** (-_PH_TITRATION_END)
+        K_a = {"S_ac": s.Kaac, "S_pro": s.Kapro, "S_bu": s.Kabu, "S_va": s.Kava}
+        titrated = 0.0
+        for key, cod in acids.items():
+            alpha_end = K_a[key] / (K_a[key] + S_H_end)
+            titrated += cod / _VFA_COD_PER_KMOL[key] * max(alpha[key] - alpha_end, 0.0)
+        return max(float(s.TAC) * 1.0e-3 - titrated, 0.0)

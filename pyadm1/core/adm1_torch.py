@@ -33,8 +33,9 @@ Reference: identical formulation to :meth:`ADM1.ADM_ODE`; see
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import numpy as np
 import torch
@@ -130,6 +131,9 @@ class Adm1TorchParams:
     q_ad: float
     s_in: list[float] = field(default_factory=lambda: [0.0] * _N_INFLUENT)
     Q_out_override: float | None = None
+    # Gas-to-liquid concentration ratio of free ammonia; 0 switches the
+    # ammonia loss with the gas off.
+    K_H_nh3: float = 0.0
 
     def with_q_ad(self, q_ad: float) -> Adm1TorchParams:
         """Return a copy with the total influent flow ``q_ad`` replaced.
@@ -183,6 +187,7 @@ class Adm1TorchParams:
             q_ad=q_ad,
             s_in=s_in,
             Q_out_override=(None if adm1._Q_out_override is None else float(adm1._Q_out_override)),
+            K_H_nh3=float(adm1._K_H_nh3),
         )
 
 
@@ -216,15 +221,37 @@ def _calc_ph(
     return torch.clamp(S_H, min=1.0e-14)
 
 
-def adm1da_rhs_torch(x: torch.Tensor, p: Adm1TorchParams) -> torch.Tensor:
+def adm1da_rhs_torch(x: torch.Tensor, p: Adm1TorchParams, rate_factors: torch.Tensor | None = None) -> torch.Tensor:
     """Compute ``dx/dt`` for the 41-state ADM1da vector in PyTorch.
 
     Args:
+        rate_factors: optional multiplicative factors for the process rates,
+            shape ``(..., 13)`` or ``(13,)`` in the order of
+            :data:`pyadm1.core.adm1.RATE_FAMILIES`; ``None``
+            keeps the nominal kinetics.
         x: State tensor shaped ``(41,)`` or ``(B, 41)``.
         p: Parameter snapshot (see :class:`Adm1TorchParams`).
 
     Returns:
         Tensor of the same shape as ``x`` holding the state derivatives.
+    """
+    return _rhs_and_volume_loss(x, p, rate_factors)[0]
+
+
+def _rhs_and_volume_loss(
+    x: torch.Tensor, p: Adm1TorchParams, rate_factors: torch.Tensor | None = None
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Compute ``dx/dt`` and the sludge volume loss in one pass.
+
+    Args:
+        x: State tensor shaped ``(41,)`` or ``(B, 41)``.
+        p: Parameter snapshot (see :class:`Adm1TorchParams`).
+        rate_factors: Optional process-rate factors, see :func:`adm1da_rhs_torch`.
+
+    Returns:
+        The state derivatives (shape of ``x``) and the sludge volume loss
+        [m³/d] (shape of ``x[..., 0]``), the value :meth:`ADM1.ADM_ODE` caches
+        in ``_q_S_loss_last``.
     """
     # ---- Unpack state ------------------------------------------------
     S_su = x[..., _IDX_S_SU]
@@ -315,10 +342,11 @@ def adm1da_rhs_torch(x: torch.Tensor, p: Adm1TorchParams) -> torch.Tensor:
     )
 
     # ---- Inhibition factors ------------------------------------------
-    S_IN = S_nh4 + S_nh3
+    # S_nh4 is the total inorganic nitrogen, S_nh3 a part of it.
+    S_IN = S_nh4
     I_IN = S_IN / (ip["K_S_IN"] + S_IN + 1.0e-20)
 
-    I_pH_aa = _ph_inhib(S_H, ip["K_pH_aa"], n=1)
+    I_pH_aa = _ph_inhib(S_H, ip["K_pH_aa"], n=2)
     I_pH_fa = _ph_inhib(S_H, ip["K_pH_aa"], n=2)
     I_pH_c4 = _ph_inhib(S_H, ip["K_pH_aa"], n=2)
     I_pH_pro = _ph_inhib(S_H, ip["K_pH_aa"], n=2)
@@ -335,8 +363,10 @@ def adm1da_rhs_torch(x: torch.Tensor, p: Adm1TorchParams) -> torch.Tensor:
     I_nh3 = K_nh3_ac_sq / (K_nh3_ac_sq + S_nh3_sq)
     I_nh3_pro = K_nh3_pro_sq / (K_nh3_pro_sq + S_nh3_sq)
 
+    # Hydrogenotrophs take up dissolved CO2, the part of S_co2 that is not bicarbonate.
+    S_co2_free = torch.clamp(S_co2 - S_hco3, min=0.0)
     K_co2_h2_sq = ip["K_S_co2_h2"] * ip["K_S_co2_h2"]
-    S_co2_sq = S_co2 * S_co2
+    S_co2_sq = S_co2_free * S_co2_free
     I_co2_h2 = S_co2_sq / (K_co2_h2_sq + S_co2_sq + 1.0e-30)
 
     Ka_pro = ip["K_a_pro"]
@@ -386,6 +416,26 @@ def adm1da_rhs_torch(x: torch.Tensor, p: Adm1TorchParams) -> torch.Tensor:
     Rho_dec_pro = k["k_dec_pro"] * X_pro
     Rho_dec_ac = k["k_dec_ac"] * X_ac
     Rho_dec_h2 = k["k_dec_h2"] * X_h2
+
+    if rate_factors is not None:
+        rf = torch.as_tensor(rate_factors, dtype=x.dtype, device=x.device)
+        f = [rf[..., i] for i in range(13)]
+        Rho_dis_PS_ch, Rho_dis_PS_pr, Rho_dis_PS_li = Rho_dis_PS_ch * f[0], Rho_dis_PS_pr * f[0], Rho_dis_PS_li * f[0]
+        Rho_dis_PF_ch, Rho_dis_PF_pr, Rho_dis_PF_li = Rho_dis_PF_ch * f[1], Rho_dis_PF_pr * f[1], Rho_dis_PF_li * f[1]
+        Rho_hyd_ch, Rho_hyd_pr, Rho_hyd_li = Rho_hyd_ch * f[2], Rho_hyd_pr * f[3], Rho_hyd_li * f[4]
+        Rho_su, Rho_aa, Rho_fa = Rho_su * f[5], Rho_aa * f[6], Rho_fa * f[7]
+        Rho_c4_va, Rho_c4_bu = Rho_c4_va * f[8], Rho_c4_bu * f[8]
+        Rho_pro, Rho_ac, Rho_h2 = Rho_pro * f[9], Rho_ac * f[10], Rho_h2 * f[11]
+        Rho_dec_su, Rho_dec_aa, Rho_dec_fa, Rho_dec_c4, Rho_dec_pro, Rho_dec_ac, Rho_dec_h2 = (
+            Rho_dec_su * f[12],
+            Rho_dec_aa * f[12],
+            Rho_dec_fa * f[12],
+            Rho_dec_c4 * f[12],
+            Rho_dec_pro * f[12],
+            Rho_dec_ac * f[12],
+            Rho_dec_h2 * f[12],
+        )
+
     sum_decay = Rho_dec_su + Rho_dec_aa + Rho_dec_fa + Rho_dec_c4 + Rho_dec_pro + Rho_dec_ac + Rho_dec_h2
 
     # ---- Acid-base rates --------------------------------------------
@@ -401,7 +451,6 @@ def adm1da_rhs_torch(x: torch.Tensor, p: Adm1TorchParams) -> torch.Tensor:
     k_L_a = p.k_L_a
     Rho_T_h2 = k_L_a * (S_h2 - 16.0 * p_gas_h2 / (p.RT * p.K_H_h2)) * (p.V_liq / p.V_gas)
     Rho_T_ch4 = k_L_a * (S_ch4 - 64.0 * p_gas_ch4 / (p.RT * p.K_H_ch4)) * (p.V_liq / p.V_gas)
-    S_co2_free = torch.clamp(S_co2 - S_hco3, min=0.0)
     Rho_T_co2 = k_L_a * (S_co2_free - p_gas_co2 / (p.RT * p.K_H_co2)) * (p.V_liq / p.V_gas)
 
     k_p = p.k_p
@@ -409,6 +458,11 @@ def adm1da_rhs_torch(x: torch.Tensor, p: Adm1TorchParams) -> torch.Tensor:
         k_p * (pTOTAL + p.p_gas_h2o - p.p_ext) * (p.V_liq / p.V_gas),
         min=0.0,
     )
+
+    # Free ammonia leaves with the gas [kmol N per m³ liquid and day]; the gas
+    # leaves at ``Rho_T_11 * V_gas / pTOTAL`` m³/d. Without outflow the factor
+    # is zero, whatever pTOTAL is.
+    Rho_T_nh3 = Rho_T_11 * p.V_gas / (torch.clamp(pTOTAL, min=1.0e-30) * p.V_liq) * p.K_H_nh3 * S_nh3
 
     # ---- Carbon stoichiometry coefficients for S_co2 balance --------
     C = st
@@ -453,8 +507,39 @@ def adm1da_rhs_torch(x: torch.Tensor, p: Adm1TorchParams) -> torch.Tensor:
     # ---- Differential equations -------------------------------------
     D_in = q_ad / p.V_liq
 
-    # Sludge volume loss (hydrolysis-rate volume balance, after Schlattmann 2011).
-    _q_S_loss = p.V_liq * (Rho_hyd_ch * (0.9375 / 1550.0) + Rho_hyd_pr * (0.6125 / 1370.0) + Rho_hyd_li * (0.3474 / 920.0))
+    # Sludge volume loss: net volume of the organic matter converted (see ADM1.ADM_ODE).
+    V = st
+    v_hyd_li = -V["V_li"] + (1.0 - fSI) * (f_fa_li * V["V_li"] + (1.0 - f_fa_li) * V["V_ch"]) + fSI * V["V_li"]
+    v_su = (
+        -V["V_ch"]
+        + (1.0 - Y_su) * (fr["f_bu_su"] * V["V_bu"] + fr["f_pro_su"] * V["V_pro"] + fr["f_ac_su"] * V["V_ac"])
+        + Y_su * V["V_bac"]
+    )
+    v_aa = (
+        -V["V_pr"]
+        + (1.0 - Y_aa)
+        * (fr["f_va_aa"] * V["V_va"] + fr["f_bu_aa"] * V["V_bu"] + fr["f_pro_aa"] * V["V_pro"] + fr["f_ac_aa"] * V["V_ac"])
+        + Y_aa * V["V_bac"]
+    )
+    v_fa = -V["V_li"] + (1.0 - Y_fa) * 0.7 * V["V_ac"] + Y_fa * V["V_bac"]
+    v_c4_va = -V["V_va"] + (1.0 - Y_c4) * (0.54 * V["V_pro"] + 0.31 * V["V_ac"]) + Y_c4 * V["V_bac"]
+    v_c4_bu = -V["V_bu"] + (1.0 - Y_c4) * 0.8 * V["V_ac"] + Y_c4 * V["V_bac"]
+    v_pro = -V["V_pro"] + (1.0 - Y_pro) * 0.57 * V["V_ac"] + Y_pro * V["V_bac"]
+    v_ac = -V["V_ac"] + Y_ac * V["V_bac"]
+    v_h2 = Y_h2 * V["V_bac"]
+    v_dec = -V["V_bac"] + f_ch_bac * V["V_ch"] + f_pr_bac * V["V_pr"] + f_li_bac * V["V_li"] + f_p_bac * V["V_I_x"]
+    _q_S_loss = -p.V_liq * (
+        v_hyd_li * Rho_hyd_li
+        + v_su * Rho_su
+        + v_aa * Rho_aa
+        + v_fa * Rho_fa
+        + v_c4_va * Rho_c4_va
+        + v_c4_bu * Rho_c4_bu
+        + v_pro * Rho_pro
+        + v_ac * Rho_ac
+        + v_h2 * Rho_h2
+        + v_dec * sum_decay
+    )
 
     if p.Q_out_override is not None:
         _Q_out = max(float(p.Q_out_override), 0.0)
@@ -507,7 +592,7 @@ def adm1da_rhs_torch(x: torch.Tensor, p: Adm1TorchParams) -> torch.Tensor:
         - p.V_gas / p.V_liq * Rho_T_h2
     )
     diff_S_ch4 = D_in * s_in[8] - D_out * S_ch4 + (1.0 - Y_ac) * Rho_ac + (1.0 - Y_h2) * Rho_h2 - p.V_gas / p.V_liq * Rho_T_ch4
-    diff_S_co2 = D_in * s_in[9] - D_out * S_co2 - Sigma - p.V_gas / p.V_liq * Rho_T_co2 + Rho_A_co2
+    diff_S_co2 = D_in * s_in[9] - D_out * S_co2 - Sigma - p.V_gas / p.V_liq * Rho_T_co2
 
     N_bac = st["N_bac"]
     N_aa = st["N_aa"]
@@ -524,7 +609,7 @@ def adm1da_rhs_torch(x: torch.Tensor, p: Adm1TorchParams) -> torch.Tensor:
         - Y_ac * N_bac * Rho_ac
         - Y_h2 * N_bac * Rho_h2
         + (N_bac - f_pr_bac * N_aa - f_p_bac * N_I) * sum_decay
-        + Rho_A_IN
+        - Rho_T_nh3
     )
     diff_S_I = D_in * s_in[11] - D_out * S_I + fSI * (Rho_hyd_ch + Rho_hyd_pr + Rho_hyd_li)
 
@@ -584,7 +669,7 @@ def adm1da_rhs_torch(x: torch.Tensor, p: Adm1TorchParams) -> torch.Tensor:
     diff_S_pro_ion = D_in * s_in[33] - D_out * S_pro_ion - Rho_A_pro
     diff_S_ac_ion = D_in * s_in[34] - D_out * S_ac_ion - Rho_A_ac
     diff_S_hco3 = D_in * s_in[35] - D_out * S_hco3 - Rho_A_co2
-    diff_S_nh3 = D_in * s_in[36] - D_out * S_nh3 - Rho_A_IN
+    diff_S_nh3 = D_in * s_in[36] - D_out * S_nh3 - Rho_A_IN - Rho_T_nh3
 
     # --- Gas phase (37-40) ---
     diff_p_h2 = Rho_T_h2 * p.RT / 16.0 - p_gas_h2 / pTOTAL * Rho_T_11
@@ -592,51 +677,54 @@ def adm1da_rhs_torch(x: torch.Tensor, p: Adm1TorchParams) -> torch.Tensor:
     diff_p_co2 = Rho_T_co2 * p.RT - p_gas_co2 / pTOTAL * Rho_T_11
     diff_pTOT = p.RT / 16.0 * Rho_T_h2 + p.RT / 64.0 * Rho_T_ch4 + p.RT * Rho_T_co2 - Rho_T_11
 
-    return torch.stack(
-        [
-            diff_S_su,
-            diff_S_aa,
-            diff_S_fa,
-            diff_S_va,
-            diff_S_bu,
-            diff_S_pro,
-            diff_S_ac,
-            diff_S_h2,
-            diff_S_ch4,
-            diff_S_co2,
-            diff_S_nh4,
-            diff_S_I,
-            diff_X_PS_ch,
-            diff_X_PS_pr,
-            diff_X_PS_li,
-            diff_X_PF_ch,
-            diff_X_PF_pr,
-            diff_X_PF_li,
-            diff_X_S_ch,
-            diff_X_S_pr,
-            diff_X_S_li,
-            diff_X_I,
-            diff_X_su,
-            diff_X_aa,
-            diff_X_fa,
-            diff_X_c4,
-            diff_X_pro,
-            diff_X_ac,
-            diff_X_h2,
-            diff_S_cation,
-            diff_S_anion,
-            diff_S_va_ion,
-            diff_S_bu_ion,
-            diff_S_pro_ion,
-            diff_S_ac_ion,
-            diff_S_hco3,
-            diff_S_nh3,
-            diff_p_h2,
-            diff_p_ch4,
-            diff_p_co2,
-            diff_pTOT,
-        ],
-        dim=-1,
+    return (
+        torch.stack(
+            [
+                diff_S_su,
+                diff_S_aa,
+                diff_S_fa,
+                diff_S_va,
+                diff_S_bu,
+                diff_S_pro,
+                diff_S_ac,
+                diff_S_h2,
+                diff_S_ch4,
+                diff_S_co2,
+                diff_S_nh4,
+                diff_S_I,
+                diff_X_PS_ch,
+                diff_X_PS_pr,
+                diff_X_PS_li,
+                diff_X_PF_ch,
+                diff_X_PF_pr,
+                diff_X_PF_li,
+                diff_X_S_ch,
+                diff_X_S_pr,
+                diff_X_S_li,
+                diff_X_I,
+                diff_X_su,
+                diff_X_aa,
+                diff_X_fa,
+                diff_X_c4,
+                diff_X_pro,
+                diff_X_ac,
+                diff_X_h2,
+                diff_S_cation,
+                diff_S_anion,
+                diff_S_va_ion,
+                diff_S_bu_ion,
+                diff_S_pro_ion,
+                diff_S_ac_ion,
+                diff_S_hco3,
+                diff_S_nh3,
+                diff_p_h2,
+                diff_p_ch4,
+                diff_p_co2,
+                diff_pTOT,
+            ],
+            dim=-1,
+        ),
+        _q_S_loss,
     )
 
 
@@ -650,23 +738,20 @@ def make_scipy_rhs(adm1: ADM1) -> Callable[[float, np.ndarray], np.ndarray]:
     that :meth:`ADM1.ADM_ODE` writes for the external dynamic-volume balance.
     """
     params = Adm1TorchParams.from_adm1(adm1)
-    k_hyd_ch = params.kinetic["k_hyd_ch"]
-    k_hyd_pr = params.kinetic["k_hyd_pr"]
-    k_hyd_li = params.kinetic["k_hyd_li"]
-    V_liq = params.V_liq
 
     def fun(t: float, y: np.ndarray) -> np.ndarray:
         x = torch.as_tensor(np.asarray(y, dtype=np.float64), dtype=torch.float64)
-        dxdt = adm1da_rhs_torch(x, params)
-        # Mirror ADM_ODE's cached sludge-volume loss (Rho_hyd = k_hyd * X_S).
-        adm1._q_S_loss_last = float(
-            V_liq
-            * (
-                k_hyd_ch * y[_IDX_X_S_CH] * (0.9375 / 1550.0)
-                + k_hyd_pr * y[_IDX_X_S_PR] * (0.6125 / 1370.0)
-                + k_hyd_li * y[_IDX_X_S_LI] * (0.3474 / 920.0)
+        factors = None
+        if adm1.rate_hook is not None:
+            # Same contract as the numpy path: the hook sees the proton
+            # concentration and the total feed next to the state.
+            S_H = 10.0 ** (-float(ph_torch(x, params)))
+            factors = torch.as_tensor(
+                np.asarray(adm1.rate_hook(np.asarray(y, dtype=np.float64), S_H, params.q_ad), dtype=np.float64)
             )
-        )
+        dxdt, q_s_loss = _rhs_and_volume_loss(x, params, factors)
+        # Mirror ADM_ODE's cached sludge-volume loss.
+        adm1._q_S_loss_last = float(q_s_loss)
         return dxdt.detach().numpy()
 
     return fun
@@ -682,7 +767,7 @@ def _leaky_floor(z: torch.Tensor) -> torch.Tensor:
 
 
 def calc_gas_torch(x: torch.Tensor, p: Adm1TorchParams, soft: bool = False):
-    """Biogas / methane / CO2 volumetric flows [m^3/d] from the gas-phase state.
+    """Dry biogas / methane / CO2 flows [Nm^3/d at 0 °C, 1.01325 bar] from the gas-phase state.
 
     Mirrors :meth:`ADM1.calc_gas`. Returns ``(q_gas, q_ch4, q_co2)``, each the
     same batch shape as ``x[..., 0]``.
@@ -703,9 +788,9 @@ def calc_gas_torch(x: torch.Tensor, p: Adm1TorchParams, soft: bool = False):
     p_total_wet = pTOTAL + p.p_gas_h2o
     q_gas_raw = p.k_p * (p_total_wet - p.p_ext) / (p.RT / 1000.0 * p.NQ) * p.V_liq
 
+    # Split by the dry partial pressures, as the gas-phase ODE does.
     p_gas = p_h2 + p_ch4 + p_co2
-    p_gas_wet = p_gas + p.p_gas_h2o
-    safe = torch.clamp(p_gas_wet, min=1.0e-30)
+    safe = torch.clamp(p_gas, min=1.0e-30)
 
     if soft:
         q_gas = _leaky_floor(q_gas_raw)
@@ -714,7 +799,7 @@ def calc_gas_torch(x: torch.Tensor, p: Adm1TorchParams, soft: bool = False):
     else:
         q_gas = torch.clamp(q_gas_raw, min=0.0)
         zeros = torch.zeros_like(q_gas)
-        pos = p_gas_wet > 0.0
+        pos = p_gas > 0.0
         q_ch4 = torch.where(pos, torch.clamp(q_gas * (p_ch4 / safe), min=0.0), zeros)
         q_co2 = torch.where(pos, torch.clamp(q_gas * (p_co2 / safe), min=0.0), zeros)
     return q_gas, q_ch4, q_co2
@@ -796,9 +881,9 @@ def _solve_gas_phase_torch(x: torch.Tensor, p: Adm1TorchParams, n_iter: int = 25
 
     rho_11 = B * pTOTAL  # total transfer to headspace = Rho_T_11
     q_gas = rho_11 * p.V_gas / (RT / 1000.0 * p.NQ)
-    p_gas_wet = torch.clamp(pTOTAL + p.p_gas_h2o, min=1.0e-30)
-    q_ch4 = q_gas * (p_ch4 / p_gas_wet)
-    q_co2 = q_gas * (p_co2 / p_gas_wet)
+    p_gas_dry = torch.clamp(pTOTAL, min=1.0e-30)
+    q_ch4 = q_gas * (p_ch4 / p_gas_dry)
+    q_co2 = q_gas * (p_co2 / p_gas_dry)
     return p_h2, p_ch4, p_co2, pTOTAL, q_gas, q_ch4, q_co2
 
 
@@ -857,7 +942,7 @@ def tac_torch(x: torch.Tensor, p: Adm1TorchParams) -> torch.Tensor:
     a_bu = ip["K_a_bu"] / (H_pH5 + ip["K_a_bu"])
     a_va = ip["K_a_va"] / (H_pH5 + ip["K_a_va"])
 
-    total_N = x[..., _IDX_S_NH4] + x[..., _IDX_S_NH3]
+    total_N = x[..., _IDX_S_NH4]
     total_IC = x[..., _IDX_S_CO2]
     tac_mol = (
         (x[..., _IDX_S_NH3] - a_nh4 * total_N)

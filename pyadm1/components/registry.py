@@ -123,6 +123,34 @@ class ComponentRegistry:
         except ImportError:
             pass
 
+        try:
+            from pyadm1.components.mechanical.mixer import Mixer
+
+            self._registry["Mixer"] = Mixer
+        except ImportError:
+            pass
+
+        try:
+            from pyadm1.components.mechanical.pump import Pump
+
+            self._registry["Pump"] = Pump
+        except ImportError:
+            pass
+
+        try:
+            from pyadm1.components.feeding.feeder import Feeder
+
+            self._registry["Feeder"] = Feeder
+        except ImportError:
+            pass
+
+        try:
+            from pyadm1.components.feeding.substrate_storage import SubstrateStorage
+
+            self._registry["SubstrateStorage"] = SubstrateStorage
+        except ImportError:
+            pass
+
     def register(self, name: str, component_class: type[Component]) -> None:
         """
         Register a component class with a given name.
@@ -175,7 +203,7 @@ class ComponentRegistry:
             ...                            feedstock=feedstock, V_liq=2000)
         """
         if name not in self._registry:
-            raise KeyError(f"Component '{name}' is not registered. " f"Available components: {list(self._registry.keys())}")
+            raise KeyError(f"Component '{name}' is not registered. Available components: {list(self._registry.keys())}")
 
         component_class = self._registry[name]
         return component_class(component_id=component_id, **kwargs)

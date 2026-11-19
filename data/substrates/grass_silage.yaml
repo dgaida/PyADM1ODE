@@ -1,47 +1,51 @@
-# ADM1da substrate definition: Grass silage
+# Substrate definition: Grass silage
 #
-# Converted from the legacy substrate_gummersbach.xml library.
-# Fields derived from the legacy schema:
-#   fRF, fRP, fRFe  <- RF, RP, RL  (% TS -> fraction)
-#   fRA             = 1 - VS/100
-#   fOTSrf          = 1 - ADL/RF                (lignin as non-degradable proxy)
-#   fsOTS, ffOTS    = crop-class defaults     (slow / fast disintegration pool split)
-#   aSi             = crop-class default
-#   aXI             = (1 - D_VS) - aSi
-#   BMP             = theoretical_Weender * D_VS = 337.9 Nm^3 CH4/t VS
-#   BGP             = BMP / 0.55                = 614.3 Nm^3 biogas/t VS
-#   NH4             = Snh4 * 14/18              (g NH4/L -> kg N/m^3)
-#   FFS             = Sac + Sbu + Spro + Sva
-#   KS43            = TAC (mmol/L = mol/m^3)
+# Measured parameters (schema "measured"): names and units as in the
+# substrate user guide. Carbohydrates are split by the cell wall (NDF, ADL);
+# the inert share (D_VS) is fitted to the methane potential BMP.
 #
-# Model-default constants (densities, COD-conversion factors, methane
-# potentials, acid-base equilibrium constants at 35 deg C) are inherited
-# from SubstrateParams; override them here only if substrate-specific
-# values are available.
+# Values: dry-matter composition from the Phyllis database (phyllis.nl,
+# median of the samples named per line) where it holds the material;
+# methane potential from the standard yields of the BiomasseV 2012; storage
+# state (pH, ammonium, acids, buffer, temperature) from published analyses
+# of the material as it is fed; price from the superseded file in legacy/.
+# The source of every value stands behind it. Derivation: substrate user
+# guide, section "Origin of the library values".
+#
+# Fermentation quality (LfL Grassilage 2018): mean of 82 Bavarian first-cut
+# farm silages (NH3: n=14).
 
 name: Grass silage
+schema: measured
 
-# --- Proximate analysis / measured substrate properties -----------------
-TS:    341.0      # kg/m^3 FM
-NH4:    1.167     # kg N/m^3 FM
-BGP:   614.3      # Nm^3/t VS   biogas potential (theoretical * D_VS)
-BMP:   337.9      # Nm^3 CH4/t VS  biomethane potential
+# --- Classification ----------------------------------------------------
+substrate_class: "Gras/Ackergras (EK I)" # [BiomasseV 2012]
 
-# --- COD fractionation --------------------------------------------------
-aXI:    0.2500
-fOTSrf: 0.800
-fsOTS:  0.0
-ffOTS:  1.0
-aSi:    0.000
+# --- Dry matter --------------------------------------------------------
+TS:              35.0       # % FM [KTBL standard] the Phyllis grass samples were dried; the dry matter of a silage follows from wilting
+VS:              90.48      # % TS [Phyllis] 100 - ash, median of n=9, range 88.9-91.57 (#613, #614, #615, #616, #617, #1699, #3193, #3197, #3286)
 
-# --- Weender analysis (fractions of TS) ---------------------------------
-fRF:    0.2650
-fRP:    0.1750
-fRFe:   0.0660
-fRA:    0.1540
+# --- Weender analysis --------------------------------------------------
+RP:              13.44      # % TS [Phyllis] N x 6.25, median of n=9, range 8.31-22.44 (#613, #614, #615, #616, #617, #1699, #3193, #3197, #3286)
+RL:              6.6        # % TS [previous file] no lipid value in Phyllis
 
-# --- Physical / chemical state ------------------------------------------
-Temp:   10.0    # degC
-pH:     4.10
-KS43:   7.01    # mol/m^3   acid capacity to pH 4.3
-FFS:    1.530     # kg HAc/m^3 VFAs as acetic-acid equivalent
+# --- Cell wall (van Soest) ---------------------------------------------
+NDF:             50.0       # % TS [Phyllis] cellulose + hemicellulose + lignin, median of n=2, range 49.1-50.9 (#1038, #2377)
+ADF:             33.05      # % TS [Phyllis] cellulose + lignin, median of n=2, range 31.4-34.7 (#1038, #2377)
+ADL:             3.05       # % TS [Phyllis] lignin, median of n=2, range 1.4-4.7 (#1038, #2377)
+
+# --- Degradability -----------------------------------------------------
+BMP:             317.0      # Nm³ CH4/t VS [BiomasseV 2012] 100 m³ CH4/t FM, KTBL standard dry matter 35 % TS, 90 % VS
+
+# --- Storage state -----------------------------------------------------
+pH:              4.6        # - [LfL Grassilage 2018]
+NH4:             0.376      # kg N/m³ [LfL Grassilage 2018] NH3-N 5 % of the total N; N = RP/6.25, per kg FM with TS
+KS43:            0.0        # mol/m³ [definition] no bicarbonate in a silage; the buffer is the lactic/acetic acid system
+Sac:             6.3        # g/l [LfL Grassilage 2018] acetic acid 18 g/kg TS, per kg FM with TS; lactic acid 59 g/kg TS stays in the carbohydrate pools (no ADM1 state)
+Spro:            0.0        # g/l [Kung & Shaver] not reported separately; below 1 g/kg TS in silages
+Sbu:             1.85       # g/l [LfL Grassilage 2018] butyric acid 5.3 g/kg TS, per kg FM with TS
+Sva:             0.0        # g/l [LfL Grassilage 2018] not reported for silages; below detection
+Temp:            9.3        # °C [DWD 1991-2020] mean air temperature of Germany 1991-2020; stored outdoors (silage clamp)
+
+# --- Economics ---------------------------------------------------------
+cost:            33.0       # EUR/t FM [previous file]

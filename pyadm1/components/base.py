@@ -26,6 +26,9 @@ class ComponentType(Enum):
     SENSOR = "sensor"
     FLARE = "flare"
     UPGRADING = "upgrading"
+    PUMP = "pump"
+    FEEDER = "feeder"
+    SUBSTRATE_STORAGE = "substrate_storage"
 
 
 class Component(ABC):

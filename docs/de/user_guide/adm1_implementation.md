@@ -30,9 +30,10 @@ System gewöhnlicher Differentialgleichungen (ODE)**.
    Dadurch verfolgen sie das thermodynamische Gleichgewicht praktisch direkt,
    ohne dass innerhalb des ODE-Schritts ein algebraischer Solver aufgerufen
    werden muss.  
-2. **Kinetischer Gas-Flüssig-Transfer**: $\text{H}_2$, $\text{CH}_4$,  
-   $\text{CO}_2$ und $\text{NH}_3$ werden über $k_L a$-Raten in die Gasphase
-   überführt — keine algebraische Henry-Gleichgewichtsbedingung.  
+2. **Kinetischer Gas-Flüssig-Transfer**: $\text{H}_2$, $\text{CH}_4$ und  
+   $\text{CO}_2$ werden über $k_L a$-Raten in die Gasphase überführt — keine
+   algebraische Henry-Gleichgewichtsbedingung. Freies Ammoniak verlässt den
+   Fermenter mit dem Gas in seiner Gleichgewichtskonzentration.  
 3. **41 Zustandsvariablen**: Das Modell führt 41 Variablen in fünf Blöcken:  
 
    | Block | Indizes | Anzahl | Inhalt |
@@ -126,6 +127,16 @@ verteilt. Die Hydrolyserate $k_{hyd} = 4\,\text{d}^{-1}$ ist 100× schneller als
 $k_{dis,PS} = 0{,}04\,\text{d}^{-1}$, sodass zerfallene Biomasse auf der
 Hydrolyse-Zeitskala wieder in die Substratkette eintritt.
 
+Der inerte Anteil behält die Zusammensetzung der Biomasse und enthält damit
+Protein im selben Verhältnis wie der abbaubare Anteil. Die Biomasse trägt
+$N_{XB} = f_{BM,PR} \cdot N_{aa}$ Stickstoff, ihre Zerfallsprodukte
+$f_{PR\_XB} \cdot N_{aa}$, mit $N_{aa} = 0{,}00765$ kmol N je kg COD (13,84 %
+Stickstoff im Protein). Der Zerfall bindet deshalb etwas Ammonium
+($6{,}9 \cdot 10^{-5}$ kmol N je kg COD), statt welches freizusetzen. Bis
+Version 0.6.2 hatte der inerte Anteil einen niedrigeren Stickstoffgehalt; der
+Zerfall setzte dann Stickstoff frei und ließ rund 2 % mehr Ammonium im
+Fermenter.
+
 ## Temperaturabhängige Kinetiken
 
 Die ADM1da-Variante korrigiert sämtliche kinetischen Raten gegenüber der
@@ -159,15 +170,14 @@ alle in `ADM1.ADM_ODE` umgesetzt und folgen den ADM1da-Aufnahme-Prozessraten
 
 | Inhibition | Standard-ADM1 | ADM1da (diese Implementierung) |
 | --- | --- | --- |
-| pH-Inhibition $X_{fa}/X_{c4}/X_{pro}$ | Hill, $n=1$ | Hill, $n=2$ (steilerer Cut-Off) |
+| pH-Inhibition $X_{su}/X_{aa}/X_{fa}/X_{c4}/X_{pro}$ | Hill, $n=1$ | Hill, $n=2$ (steilerer Cut-Off) |
 | pH-Inhibition $X_{ac}$ | Hill, $n=1$ | Hill, $n=3$ |
 | pH-Inhibition $X_{h2}$ | Hill, $n=1$ | Hill, $n=3$ |
-| N-Limitation | $S_{NH4}$ allein | $S_{IN} = S_{NH4} + S_{NH3}$ |
 | $\text{NH}_3$-Inhibition $X_{ac}$ | linear in $S_{NH3}$ | quadratischer Hill: $K_I^2/(K_I^2 + S_{NH3}^2)$, T-korrigiert mit $\theta=0{,}086$ |
 | $\text{NH}_3$-Inhibition $X_{pro}$ | nicht enthalten | quadratischer Hill mit eigenem $K_{I,nh3,pro}$, T-korrigiert mit $\theta=0{,}061$ |
 | Undissoziiertes Propionat $X_{pro}$ | nicht enthalten | $K_{IH,pro}/(K_{IH,pro} + S_{pro} - S_{pro^-})$ |
 | Undissoziiertes Acetat $X_{ac}$ | nicht enthalten | $K_{IH,ac}/(K_{IH,ac} + S_{ac} - S_{ac^-})$ |
-| $\text{CO}_2$-Limitation $X_{h2}$ | nicht enthalten | quadratische Hill-Sättigung: $S_{CO2}^2/(K_S^2 + S_{CO2}^2)$ |
+| $\text{CO}_2$-Limitation $X_{h2}$ | nicht enthalten | quadratische Hill-Sättigung: $S_{CO2}^2/(K_S^2 + S_{CO2}^2)$ mit dem gelösten $S_{CO2} = S_{IC} - S_{HCO_3^-}$ |
 
 !!! note "Anwendungsbereich der Inhibition"
     Die ADM1da-Kinetik in Schlattmann (2011) führt zusätzlich eine Inhibition
@@ -194,10 +204,14 @@ $$
 $$
 
 mit derselben kinetischen Kopplung für $\text{CO}_2 / \text{HCO}_3^-$ und
-$\text{NH}_4^+ / \text{NH}_3$. Die Reaktionsratenkonstante
-$k_{A,B} = 10^8\,\text{d}^{-1}$ sorgt für eine Sub-Sekunden-Equilibrierung. Die
-Säuredissoziationskonstanten werden gegenüber der 35 °C-Referenz mittels
-van't Hoff mit den Enthalpien aus Batstone 2002 T-korrigiert:
+$\text{NH}_4^+ / \text{NH}_3$. Ein Paar stellt sich mit der Rate
+$k_{A,B} \cdot (S_{H^+} + K_a)$ ein. Mit
+$k_{A,B} = 10^8\,\text{m}^3\,\text{kmol}^{-1}\,\text{d}^{-1}$ und pH 7,4
+brauchen die VFA-Paare weniger als eine Minute, $\text{CO}_2 / \text{HCO}_3^-$
+eine halbe Stunde und $\text{NH}_4^+ / \text{NH}_3$ einige Stunden; das ist
+schnell gegenüber der Biologie. Die Säuredissoziationskonstanten werden
+gegenüber der 25 °C-Referenz mittels van't Hoff mit den Enthalpien aus
+Batstone 2002 T-korrigiert:
 
 $$
 K_a(T) = K_a(298\,\text{K}) \cdot
@@ -205,10 +219,18 @@ K_a(T) = K_a(298\,\text{K}) \cdot
 \left(\frac{1}{298} - \frac{1}{T}\right)\right)
 $$
 
+$S_{IC}$ (`S_co2`) und $S_{IN}$ (`S_nh4`) sind **Gesamtmengen**: Hydrogencarbonat
+und freies Ammoniak sind Teilmengen davon, wie der Term $S_i - S_{i^-}$ der Rate
+zeigt. Eine Säure-Base-Reaktion verschiebt nur zwischen den beiden Formen;
+$\rho_A$ steht deshalb allein in der Bilanz der ionisierten Form und nicht in
+der Bilanz der Gesamtmenge. So bleiben Kohlenstoff und Stickstoff erhalten; bis
+Version 0.6.2 wurde die Rate auch den beiden Gesamtmengen zugeschlagen, was rund
+4 % des Ammoniums und 2 % des Gaskohlenstoffs aus der Bilanz nahm.
+
 ## Gas-Flüssig-Transfer (Henry-Gesetz mit van't Hoff-Korrektur)
 
-Die vier Gasphasenspezies $\text{H}_2$, $\text{CH}_4$, $\text{CO}_2$ und
-$\text{NH}_3$ werden zwischen Flüssig- und Gasphase über
+Die drei Gasphasenspezies $\text{H}_2$, $\text{CH}_4$ und $\text{CO}_2$
+werden zwischen Flüssig- und Gasphase über
 
 $$
 r_{F,gas} = k_L a_F \cdot \left( S_F - \frac{p_F}{K_H(T)\,R\,T} \right)
@@ -224,29 +246,86 @@ H_F(T) = H_F(T_{ref}) \cdot
 \left(\frac{1}{T_{ref}} - \frac{1}{T}\right)\right)
 $$
 
-| Gas | $H_{F,35°C}$ [mol/(L·bar)] | $\Delta H^\circ_F$ [J/mol] | $k_L a_F$ [d⁻¹] |
+| Gas | $H_{F,25°C}$ [mol/(L·bar)] | $\Delta H^\circ_F$ [J/mol] | $k_L a_F$ [d⁻¹] |
 | --- | --- | --- | --- |
-| CO₂ | 0,0271 | 19 410 | 200 |
-| CH₄ | 0,00116 | 14 240 | 200 |
-| H₂ | 7,38·10⁻⁴ | 4 180 | 200 |
-| NH₃ | 60 (bei 25 °C Referenz) | 36 584 | 200 |
+| CO₂ | 0,035 | 19 410 | 200 |
+| CH₄ | 0,0014 | 14 240 | 200 |
+| H₂ | 7,8·10⁻⁴ | 4 180 | 200 |
+| NH₃ | 60 | 36 584 | – (siehe unten) |
 
 Vorzeichenkonvention: Die Lösung ist exotherm, daher sinkt $H_F$ mit
 steigender Temperatur — bei höherer Betriebstemperatur bleibt weniger Gas
 gelöst.
 
+### Ammoniak im Gas
+
+Ammoniak ist über tausendmal löslicher als $\text{CO}_2$; seine Konzentration
+im Gas folgt der Flüssigkeit deshalb ohne Verzögerung: Der Gasraum enthält
+$S_{NH_3} / (H_{NH_3}\,R\,T)$ kmol N je m³. Dieses Ammoniak verlässt den
+Fermenter mit dem Gasstrom und wird $S_{IN}$ und $S_{NH_3}$ entnommen; einen
+eigenen Gasphasenzustand gibt es dafür nicht. Bei 42 °C und 115 mg/l freiem
+Ammoniakstickstoff enthält das trockene Gas rund 300 ppm, knapp 1 % des
+anorganischen Stickstoffs eines Mais-Gülle-Fermenters.
+
+### Druck im Gasraum
+
+Das Gas strömt über einen Auslass mit der Rate
+$k_p \cdot (p_{trocken} + p_{H_2O} - p_{ext})$ ab. Der feuchte Gasraum stellt
+sich deshalb auf den Druck $p_{ext}$ ein, gegen den er abströmt, und das
+trockene Gas hält $p_{ext} - p_{H_2O}$: 0,93 bar bei 42 °C mit dem Standardwert
+$p_{ext} = 1{,}013$ bar. Ein Gassystem mit Gegendruck wird über `ADM1.p_ext`
+eingestellt.
+
+Der trockene Gasdruck bestimmt das gelöste $\text{CO}_2$ und damit den pH. Bis
+Version 0.6.2 wurde der Wasserdampfdruck doppelt abgezogen; das trockene Gas
+lag dadurch bei 0,85 bar und das gelöste $\text{CO}_2$ rund 9 % zu niedrig.
+
+### Gemeldete Gasströme
+
+`Q_gas`, `Q_ch4` und `Q_co2` sind **trockenes Gas im Normzustand** (0 °C,
+1,01325 bar; DIN 1343), in Nm³/d:
+
+- Die Ströme sind die, die die Gasphasen-ODE aus dem Gasraum entfernt, aufgeteilt nach den trockenen Partialdrücken. Methan, Kohlendioxid und Wasserstoff ergeben zusammen `Q_gas`, und der Methanstrom schließt die CSB-Bilanz.  
+- Der Gasraum ist mit Wasserdampf gesättigt. Er trägt zum Druck bei, der den Abstrom treibt, gehört aber nicht zu `Q_gas`; `ADM1.calc_gas()` gibt ihn getrennt als `q_h2o` zurück.  
+- Das Bezugsvolumen ist dasselbe wie bei `BMP` (22,414 Nm³ je kmol); Methanertrag und Methanpotenzial sind damit direkt vergleichbar.  
+- `Q_ch4 / Q_gas` ist der Methangehalt des trockenen Gases, wie ihn ein Gasanalysator anzeigt.  
+
+Bis Version 0.6.2 galten die Ströme bei 20 °C, und der Wasserdampf war in
+`Q_gas` enthalten. Gegenüber diesen Zahlen liegt `Q_gas` rund 7 % niedriger,
+der Methangehalt rund 4 Prozentpunkte höher und `Q_ch4` rund 1 % höher
+(bei 40 °C).
+
 ## Schlammvolumenbilanz und HRT
 
 Da ein erheblicher Anteil der Substrat-COD den Reaktor als Gas verlässt, ist
-das Schlammvolumen nicht erhalten. Die dynamische Schlammvolumenbilanz folgt
-der biochemisch-ratenbasierten Variante ("Ansatz 2") des ADM1da-Reaktormodells
-(Schlattmann 2011):
+das Schlammvolumen nicht erhalten. Jede organische Fraktion nimmt je kg COD das
+Volumen $v_i = iM_i / \rho_i$ ein (Masse-COD-Verhältnis durch Dichte);
+Wasserstoff, Methan und anorganischer Kohlenstoff nehmen keines ein. Der
+Schlamm verliert das Nettovolumen dessen, was die Umsetzungen umwandeln:
 
 $$
 \frac{dV_S}{dt} = \dot{q}_{S,in} - \dot{q}_{S,out} - \dot{q}_{S,loss},
 \quad
-\dot{q}_{S,loss} = V_S \cdot \sum_i r_{hyd,i} \cdot \frac{iM_i}{\rho_i}
+\dot{q}_{S,loss} = -V_S \cdot \sum_j \rho_j \sum_i \nu_{ij} \cdot v_i
 $$
+
+mit der Rate $\rho_j$ des Prozesses $j$ und seinen stöchiometrischen
+Koeffizienten $\nu_{ij}$.
+
+| Fraktion | $iM$ [kg/kg COD] | $\rho$ [kg/m³] |
+| --- | --- | --- |
+| Kohlenhydrate, Zucker | 0,9375 | 1550 |
+| Proteine, Aminosäuren | 0,7736 | 1370 |
+| Lipide, Fettsäuren | 0,3474 | 920 |
+| Valerat / Butyrat / Propionat / Acetat | 0,490 / 0,550 / 0,661 / 0,9375 | 940 / 960 / 990 / 1050 |
+| Biomasse | 0,7638 | 1361 |
+
+Desintegration und die Hydrolyse von Kohlenhydraten und Proteinen erhalten das
+Volumen; der größte Teil geht dort verloren, wo Acetat zu Methan wird. Im
+Gleichgewicht beträgt der Verlust rund 0,59 Liter je kg COD gebildetem Methan,
+das Verhältnis, das SIMBA# für seine Reaktoren ermittelt. Bis Version 0.6.2
+wurde der Verlust allein aus den Hydrolyseraten gebildet, was rund 10 % mehr
+ergab.
 
 Die hydraulische Verweilzeit folgt einer Verzögerung erster Ordnung
 (Schlattmann 2011):
@@ -273,7 +352,8 @@ direkt aus dem Massenverlustterm berechnet.
 ## Substratcharakterisierung via Weender-Analyse
 
 Substrate werden über praxisübliche Laborparameter definiert und als
-**YAML-Dateien** unter `data/substrates/` gespeichert. Eine Beispielstruktur:
+**YAML-Dateien** unter `data/substrates/` gespeichert. Das Standardschema nach
+SIMBA hat diese Struktur (die abgelöste `legacy/maize_silage_milk_ripeness.yaml`):
 
 ```yaml
 name: Maissilage (Milchreife)
@@ -305,6 +385,13 @@ Loader wählt das Format anhand der Endung. Side-by-Side-Beispiele in allen
 drei Formaten finden sich in
 [`data/substrates/examples/`](https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates/examples).
 
+Ein Substrat kann statt über die COD-Fraktionierung auch über gemessene
+Laborwerte beschrieben werden (Zellwandanalyse `NDF` / `ADL`, in der Zellwand
+gebundenes Protein `NDICP`, Methanpotenzial `BMP` oder Abbaugrad `D_VS`,
+Einzelsäuren, titrierte Säurekapazität). Die mitgelieferten Substratdateien
+sind so geschrieben. Siehe
+[Messwert-Parameter](../substrates/parameters.md#messwert-parameter).
+
 `load_substrate()` liefert eine `SubstrateParams`-Dataclass; die
 `Feedstock`-Klasse berechnet daraus den vollständigen 38-spaltigen ADM1-
 Zulaufstrom (37 flüssige Zustandsspalten + Q):
@@ -318,10 +405,17 @@ Zulaufstrom (37 flüssige Zustandsspalten + Q):
    und $f_{OTSrf}$ (siehe Tabelle oben).  
 4. **Dissoziation** beim Substrat-pH: ionisierte VFA, $\text{HCO}_3^-$,  
    $\text{NH}_3$.  
-5. **Ladungsbilanz** für die Ionen. Konventionsgemäß wird $S_{cation}$ für  
-   jeden Substrattyp auf null gesetzt (gemäß der ADM1da-Substrat­charakterisierung,
-   Schlattmann 2011), und $S_{anion}$ ergibt sich aus der Ladungsbilanz —
-   wobei es für nettokationische Substrate auch negativ werden darf.
+5. **Ladungsbilanz** für die Ionen, geschlossen über die starken Ionen und  
+   nach Vorzeichen aufgeteilt: ein netto-anionisches Material (Silage bei
+   ihrem eigenen pH) trägt den Überschuss als $S_{anion}$, ein
+   netto-kationisches (Gülle, Festmist, wo $\text{HCO}_3^-$ und die
+   VFA-Anionen $\text{NH}_4^+$ übersteigen) als $S_{cation}$ — die starken
+   Kationen K⁺, Na⁺, Ca²⁺, Mg²⁺ des Materials. Beide Pools bleiben
+   nicht-negativ. In pH, Speziation und Säurekapazität geht nur die Differenz
+   $S_{cation} - S_{anion}$ ein, die Chemie entspricht also dem
+   ADM1da-Abschluss (Schlattmann 2011: $S_{cation} \equiv 0$, $S_{anion}$
+   vorzeichenbehaftet); die Aufteilung hält den Zulauf in der nicht-negativen
+   Zustandsbox, auf die Zustandsschätzer begrenzen.
 
 ### Volumetrische ADM1da-Konvention für Q
 
@@ -333,8 +427,8 @@ Q_{actual,i} = Q_{input,i} \cdot \frac{1000}{\rho_{FM,i}}
 $$
 
 berechnet. Für flüssige Substrate ($\rho_{FM} \approx 1000$) ist das ein
-No-Op; für Maissilage ($\rho_{FM} \approx 1134\,\text{kg/m}^3$) reduziert
-sich der tatsächliche Volumenstrom etwa um 12 %. Damit ist Parität zu
+No-Op; für Maissilage ($\rho_{FM} \approx 1129\,\text{kg/m}^3$) reduziert
+sich der tatsächliche Volumenstrom etwa um 11 %. Damit ist Parität zu
 ADM1da-Referenzergebnissen gegeben. Über `simba_q_convention=False` lässt
 sich diese Skalierung abschalten, falls $Q$ direkt als tatsächliches Reaktor­
 volumen interpretiert werden soll.
@@ -378,13 +472,15 @@ $$
 + F_{AN} - F_{CAT} \Bigr]  
 $$
 
-!!! warning "Konvention: der Ionenterm setzt $S_{cation} = 0$ voraus"
-    Der Term $F_{AN} - F_{CAT}$ zieht die Starkionen-Differenz ab, weil die
-    ADM1da-Substratcharakterisierung $S_{cation} \equiv 0$ setzt und $S_{anion}$
-    aus der Ladungsbilanz ableitet. Ein Zustand, der seinen Puffer stattdessen
-    über starke Kationen trägt, meldet dadurch zu wenig Säurekapazität — im
-    Extremfall negativ. Der vorinokulierte Startzustand folgt deshalb derselben
-    Konvention, und Behälter ohne eigenen Substratzulauf (Nachgärer, Lager)
+!!! warning "Konvention: der Ionenterm ist die Starkionen-Differenz"
+    Der Term $F_{AN} - F_{CAT}$ zieht die Starkionen-Differenz
+    $S_{cation} - S_{anion}$ ab, die die Substratcharakterisierung aus der
+    Ladungsbilanz schließt (nach Vorzeichen aufgeteilt, beide Pools
+    nicht-negativ — dieselbe Chemie wie der ADM1da-Abschluss mit
+    $S_{cation} \equiv 0$). Ein Zustand, dessen Starkionen-Differenz nicht zu
+    seinem Schwachsäure-Puffer passt, meldet dadurch zu wenig Säurekapazität —
+    im Extremfall negativ. Der vorinokulierte Startzustand wird genauso
+    geschlossen, und Behälter ohne eigenen Substratzulauf (Nachgärer, Lager)
     werden mit dem Ammonium des ADM1da-Referenzinokulums initialisiert statt mit
     null Stickstoff. Ergibt die Formel dennoch $\text{TAC} \le 0$, liefert
     PyADM1ODE `NaN` und warnt einmalig — das verhindert FOS/TAC-Werte, die durch
@@ -428,7 +524,27 @@ Das gesamte Modell ist pure Python:
 | `pyadm1.core.adm_params` | Stöchiometrie, Kinetiken, Inhibition, $\theta$-Korrekturen |
 | `pyadm1.core.solver` | Wrapper um `scipy.integrate.solve_ivp` (BDF, adaptive) |
 | `pyadm1.substrates.feedstock` | XML-Parser, Sub-Fraktionierungs-Routing, Mischung |
-| `pyadm1.components.biological.digester` | Komponenten-Wrapper inkl. Gasspeicher, Schlammvolumen und HRT-Logik |
+| `pyadm1.components.biological.digester` | Komponenten-Wrapper mit Schlammvolumen und HRT-Logik |
 
 Damit läuft die Simulation in jeder Standard-Python-Umgebung und auch in
 Containern, Web-Notebooks (Colab) und CI-Pipelines problemlos.
+
+### Ratenfamilien-Haken
+
+`ADM1.rate_hook` erlaubt einem externen Modell, die kinetischen Raten zu
+skalieren, ohne Bilanzen oder Stöchiometrie anzufassen. Standardmäßig ist er
+`None`, dann bleibt `ADM_ODE` unverändert. Ist er gesetzt, wird er einmal je
+Auswertung der rechten Seite als `rate_hook(state, S_H, q_ad)` aufgerufen und muss
+13 Faktoren in der Reihenfolge von `pyadm1.core.adm1.RATE_FAMILIES` liefern:
+
+```text
+dis_PS, dis_PF, hyd_ch, hyd_pr, hyd_li, su, aa, fa, c4, pro, ac, h2, dec
+```
+
+Jeder Faktor multipliziert alle Raten seiner Familie (zum Beispiel skaliert `c4`
+die Valerat- und die Butyrat-Aufnahme, `dec` alle sieben Zerfallsraten). Das
+Torch-Backend wendet dieselben Faktoren an: `adm1da_rhs_torch(x, p, rate_factors)`
+nimmt einen `(…, 13)`-Tensor und bleibt darin differenzierbar, und
+`make_scipy_rhs` ruft den Haken wie der NumPy-Pfad auf. Typische Anwendungen sind
+Sensitivitätsstudien der Ratenfamilien und hybride Modelle, die die Kinetik
+einer Anlage korrigieren.

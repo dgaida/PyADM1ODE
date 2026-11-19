@@ -5,7 +5,7 @@ This guide covers the installation of PyADM1ODE on different operating systems.
 ## System Requirements
 
 ### Minimum Requirements  
-- **Python**: 3.8 or higher (3.10+ recommended, needed by [fastmcp](https://github.com/jlowin/fastmcp) package, used in the optional package [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp))  
+- **Python**: 3.10 or higher  
 - **Operating System**: Windows, Linux, or macOS  
 - **Memory**: 2 GB RAM minimum (4 GB recommended)  
 - **Disk Space**: 10 MB for installation  
@@ -14,13 +14,15 @@ PyADM1ODE is pure Python with no native runtime dependencies — installing the 
 
 ## Installation Methods
 
-### Method 1: Install from PyPI (Recommended, but not yet supported)
+### Method 1: Install from GitHub with pip
 
-Once released, install via pip:
+The package is not on PyPI. pip installs it straight from the repository:
 
 ```bash
-pip install pyadm1ode
+pip install git+https://github.com/dgaida/PyADM1ODE.git
 ```
+
+The distribution and the import name are both `pyadm1`.
 
 ### Method 2: Install from Source
 
@@ -60,7 +62,7 @@ pip install -e .
 
 2. **Install PyADM1**:  
    ```cmd
-   pip install pyadm1ode  # pip not yet supported
+   pip install git+https://github.com/dgaida/PyADM1ODE.git
    # or from source:
    git clone https://github.com/dgaida/PyADM1ODE.git
    cd PyADM1ODE
@@ -82,7 +84,7 @@ pip install -e .
 
 2. **Install PyADM1ODE**:  
    ```bash
-   pip install pyadm1ode
+   pip install git+https://github.com/dgaida/PyADM1ODE.git
    # or from source:
    git clone https://github.com/dgaida/PyADM1ODE.git
    cd PyADM1ODE
@@ -265,7 +267,7 @@ pip install -e . --upgrade
 
 ## Optional Packages
 
-### [PyADM1ODE_mcp]([PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp)) - Model Context Protocol Server
+### [PyADM1ODE_mcp](https://github.com/dgaida/PyADM1ODE_mcp) - Model Context Protocol Server
 
 For LLM-driven biogas plant modeling with natural language interface:
 

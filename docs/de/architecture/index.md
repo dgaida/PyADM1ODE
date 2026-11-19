@@ -38,37 +38,45 @@ graph LR
     Storage -- Überdruck --> Flare[Sicherheitsfackel]
 ```
 
-## Drei-Pass-Simulationsprozess
+## Simulationsschritt in vier Durchläufen
 
-Um Gasflussabhängigkeiten korrekt zu behandeln, verwendet die Simulation ein Drei-Pass-Modell für jeden Zeitschritt:
+Gasverbraucher hängen davon ab, was die Speicher liefern können, und
+Heizsysteme von der Wärme des BHKW. `BiogasPlant.step` führt deshalb jeden
+Zeitschritt in vier Durchläufen aus; jede Komponente wird genau einmal
+berechnet.
 
 ```mermaid
 sequenceDiagram
-    participant S as Simulator
-    participant D as Fermenter
+    participant S as BiogasPlant.step
+    participant D as Fermenter und Fütterung
     participant G as Gasspeicher
-    participant C as BHKW / Verbraucher
+    participant C as BHKW / Aufbereitung / Heizung
+    participant F as Fackeln
 
-    Note over S,G: Zeitschritt (t -> t + dt)
+    Note over S,F: Zeitschritt (t -> t + dt)
 
     rect rgb(200, 220, 240)
-    Note right of S: Pass 1: Produktion
+    Note right of S: Durchlauf 1: Produktion
     S->>D: step()
-    D->>G: Produziertes Gas hinzufügen
+    D->>G: Produziertes Gas
     end
 
     rect rgb(220, 240, 200)
-    Note right of S: Pass 2: Speicher-Update
-    S->>G: step()
-    G->>G: Druck & Volumen aktualisieren
-    Note right of G: Abblasen falls voll
+    Note right of S: Durchlauf 2: Speicher
+    C->>G: Gasbedarf
+    S->>G: step() mit Produktion und Bedarf
+    Note right of G: Gas über der Kapazität wird abgelassen
     end
 
     rect rgb(240, 220, 200)
-    Note right of S: Pass 3: Verbrauch
-    S->>C: step()
-    C->>G: Gas anfordern
-    G-->>C: Tatsächlich verfügbares Gas liefern
-    C->>C: Neu ausführen mit tatsächlichem Angebot
+    Note right of S: Durchlauf 3: Verbraucher
+    G-->>C: Tatsächlich geliefertes Gas
+    S->>C: step(), Heizung nach dem BHKW
+    end
+
+    rect rgb(240, 230, 210)
+    Note right of S: Durchlauf 4: Fackeln
+    G-->>F: Abgelassenes Gas
+    S->>F: step()
     end
 ```

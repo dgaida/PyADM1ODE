@@ -118,7 +118,7 @@ class Connection:
 
     def __repr__(self) -> str:
         """String representation of connection."""
-        return f"Connection(from='{self.from_component}', " f"to='{self.to_component}', type='{self.connection_type}')"
+        return f"Connection(from='{self.from_component}', to='{self.to_component}', type='{self.connection_type}')"
 
 
 class ConnectionManager:
@@ -347,9 +347,9 @@ class ConnectionManager:
         # Check for invalid component references
         for conn in self.connections:
             if conn.from_component not in component_ids:
-                errors.append(f"Connection references non-existent source component: " f"{conn.from_component}")
+                errors.append(f"Connection references non-existent source component: {conn.from_component}")
             if conn.to_component not in component_ids:
-                errors.append(f"Connection references non-existent target component: " f"{conn.to_component}")
+                errors.append(f"Connection references non-existent target component: {conn.to_component}")
 
         # Check for circular dependencies
         if self.has_circular_dependency(component_ids):

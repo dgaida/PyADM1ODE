@@ -182,26 +182,36 @@ def test_gas_storage_membrane_safety_overpressure_branch_can_compute_zero_vent(
     assert out["stored_volume_m3"] == pytest.approx(100.0)
 
 
-def test_gas_storage_compressed_safety_overpressure_branch_can_vent(
-    monkeypatch: pytest.MonkeyPatch,
-):
-    gs = GasStorage(
-        "safety_comp",
-        storage_type="compressed",
-        capacity_m3=100.0,
-        p_min_bar=5.0,
-        p_max_bar=200.0,
-        initial_fill_fraction=0.0,
-    )
-    gs.stored_volume_m3 = 100.0
+def test_gas_storage_serves_demand_before_venting_overflow():
+    """Inflow and demand of one step act together: only the surplus is vented."""
+    gs = GasStorage("simultaneous", capacity_m3=300.0, initial_fill_fraction=0.0)
 
-    pressures = iter([10.0, gs.p_max_bar + 1.0, gs.p_max_bar])
-    monkeypatch.setattr(gs, "_estimate_pressure_bar", lambda: next(pressures))
+    out = gs.step(t=0.0, dt=1.0, inputs={"Q_gas_in_m3_per_day": 2400.0, "Q_gas_out_m3_per_day": 2000.0})
 
-    out = gs.step(t=0.0, dt=1.0, inputs={"Q_gas_in_m3_per_day": 0.0})
+    assert out["Q_gas_supplied_m3_per_day"] == pytest.approx(2000.0)
+    assert out["stored_volume_m3"] == pytest.approx(300.0)
+    assert out["vented_volume_m3"] == pytest.approx(100.0)
 
-    assert out["vented_volume_m3"] == pytest.approx(0.1)
-    assert out["stored_volume_m3"] == pytest.approx(99.9)
+
+def test_gas_storage_state_snapshot_round_trip():
+    gs = GasStorage("snap", capacity_m3=100.0, initial_fill_fraction=0.5)
+    gs.step(t=0.0, dt=1.0, inputs={"Q_gas_in_m3_per_day": 80.0, "Q_ch4_in_m3_per_day": 40.0})
+    snapshot = gs.get_state()
+
+    gs.step(t=1.0, dt=1.0, inputs={"Q_gas_out_m3_per_day": 60.0})
+    gs.set_state(snapshot)
+
+    assert gs.stored_volume_m3 == pytest.approx(100.0)
+    assert gs.get_state() == snapshot
+    assert snapshot["cumulative_vented_m3"] == pytest.approx(30.0)
+
+
+def test_gas_storage_withdraw_is_limited_to_the_stock():
+    gs = GasStorage("draw", capacity_m3=100.0, initial_fill_fraction=0.2)
+
+    assert gs.withdraw(5.0) == pytest.approx(5.0)
+    assert gs.withdraw(50.0) == pytest.approx(15.0)
+    assert gs.outputs_data["stored_volume_m3"] == 0.0
 
 
 def test_gas_storage_to_dict_includes_state_and_connections():

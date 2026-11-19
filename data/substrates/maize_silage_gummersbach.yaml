@@ -1,47 +1,53 @@
-# ADM1da substrate definition: Maize silage (Gummersbach plant)
+# Substrate definition: Maize silage (Gummersbach plant)
 #
-# Converted from the legacy substrate_gummersbach.xml library.
-# Fields derived from the legacy schema:
-#   fRF, fRP, fRFe  <- RF, RP, RL  (% TS -> fraction)
-#   fRA             = 1 - VS/100
-#   fOTSrf          = 1 - ADL/RF                (lignin as non-degradable proxy)
-#   fsOTS, ffOTS    = crop-class defaults     (slow / fast disintegration pool split)
-#   aSi             = crop-class default
-#   aXI             = (1 - D_VS) - aSi
-#   BMP             = theoretical_Weender * D_VS = 348.0 Nm^3 CH4/t VS
-#   BGP             = BMP / 0.55                = 632.7 Nm^3 biogas/t VS
-#   NH4             = Snh4 * 14/18              (g NH4/L -> kg N/m^3)
-#   FFS             = Sac + Sbu + Spro + Sva
-#   KS43            = TAC (mmol/L = mol/m^3)
+# Measured parameters (schema "measured"): names and units as in the
+# substrate user guide. Carbohydrates are split by the cell wall (NDF, ADL);
+# the inert share (D_VS) is fitted to the methane potential BMP.
 #
-# Model-default constants (densities, COD-conversion factors, methane
-# potentials, acid-base equilibrium constants at 35 deg C) are inherited
-# from SubstrateParams; override them here only if substrate-specific
-# values are available.
+# Values: dry-matter composition from the Phyllis database (phyllis.nl,
+# median of the samples named per line) where it holds the material;
+# methane potential from the standard yields of the BiomasseV 2012; storage
+# state (pH, ammonium, acids, buffer, temperature) from published analyses
+# of the material as it is fed; price from the superseded file in legacy/.
+# The source of every value stands behind it. Derivation: substrate user
+# guide, section "Origin of the library values".
+#
+# Plant-specific file: Phyllis cannot describe the silage of one plant. The
+# laboratory values of the plant are kept; only the degradation level, which
+# had no source, is replaced by the standard methane yield.
 
 name: Maize silage (Gummersbach plant)
+schema: measured
 
-# --- Proximate analysis / measured substrate properties -----------------
-TS:    319.7      # kg/m^3 FM
-NH4:    0.513     # kg N/m^3 FM
-BGP:   632.7      # Nm^3/t VS   biogas potential (theoretical * D_VS)
-BMP:   348.0      # Nm^3 CH4/t VS  biomethane potential
+# --- Classification ----------------------------------------------------
+substrate_class: "Mais (GPS) (EK I)" # [Gummersbach library]
 
-# --- COD fractionation --------------------------------------------------
-aXI:    0.2000
-fOTSrf: 0.898
-fsOTS:  0.0
-ffOTS:  1.0
-aSi:    0.000
+# --- Dry matter --------------------------------------------------------
+TS:              31.97      # % FM [Gummersbach library] plant measurement, entry 'maize'
+VS:              96.25      # % TS [Gummersbach library] plant measurement, entry 'maize'
 
-# --- Weender analysis (fractions of TS) ---------------------------------
-fRF:    0.2107
-fRP:    0.0869
-fRFe:   0.0368
-fRA:    0.0375
+# --- Weender analysis --------------------------------------------------
+RP:              8.69       # % TS [Gummersbach library] plant measurement, entry 'maize'
+RL:              3.68       # % TS [Gummersbach library] plant measurement, entry 'maize'
 
-# --- Physical / chemical state ------------------------------------------
-Temp:   13.0    # degC
-pH:     3.93
-KS43:   6.00    # mol/m^3   acid capacity to pH 4.3
-FFS:    1.180     # kg HAc/m^3 VFAs as acetic-acid equivalent
+# --- Cell wall (van Soest) ---------------------------------------------
+NDF:             43.64      # % TS [Gummersbach library] literature mean for maize silage (2003), entry 'maize'
+ADF:             21.86      # % TS [Gummersbach library] literature mean for maize silage (2003), entry 'maize'
+ADL:             2.15       # % TS [Gummersbach library] literature mean for maize silage (2003), entry 'maize'
+NDICP:           1.3        # % TS [literature] maize silage, Rossow (UC Davis) after NRC 2001
+
+# --- Degradability -----------------------------------------------------
+BMP:             338.0      # Nm³ CH4/t VS [BiomasseV 2012] 106 m³ CH4/t FM, KTBL standard dry matter 33 % TS, 95 % VS
+
+# --- Storage state -----------------------------------------------------
+pH:              3.93       # - [Gummersbach library] entry 'maize'
+Snh4:            0.66       # g/l [Gummersbach library] entry 'maize', ammonium as NH4
+TAC:             6.0        # mmol/l [Gummersbach library] entry 'maize', titrated acid capacity to pH 4.3
+Sac:             1.18       # g/l [Gummersbach library] entry 'maize'
+Spro:            0.0        # g/l [Gummersbach library] entry 'maize'
+Sbu:             0.0        # g/l [Gummersbach library] entry 'maize'
+Sva:             0.0        # g/l [Gummersbach library] entry 'maize'
+T:               13.0       # °C [Gummersbach library] entry 'maize'
+
+# --- Economics ---------------------------------------------------------
+cost:            40.0       # EUR/t FM [previous file]

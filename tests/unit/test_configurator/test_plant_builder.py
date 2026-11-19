@@ -373,7 +373,7 @@ class TestFromJson:
         )
         monkeypatch.setattr(get_registry(), "get_registered_components", dict)
 
-        with pytest.raises(ValueError, match="No registered class for component type"):
+        with pytest.raises(ValueError, match="No registered class 'CHP' for component type"):
             BiogasPlant.from_json(str(path))
 
 

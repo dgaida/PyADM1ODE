@@ -38,12 +38,6 @@ jobs:
           pip install -e ".[dev,docs]"
           pip install mkdocs-material mkdocs-static-i18n "mkdocstrings[python]" mkdocs-mermaid2-plugin mike mkdocs-autorefs interrogate git-cliff
 
-      - name: Install Mono (Linux)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y mono-complete
-          mono --version
-
       - name: Check API Doc Coverage
         run: |
           interrogate pyadm1

@@ -1,50 +1,47 @@
-# ADM1da substrate definition: Cattle manure (solid)
+# Substrate definition: Cattle manure (solid)
 #
-# Converted from the legacy substrate_gummersbach.xml library.
-# Fields derived from the legacy schema:
-#   fRF, fRP, fRFe  <- RF, RP, RL  (% TS -> fraction)
-#   fRA             = 1 - VS/100
-#   fOTSrf          = 1 - ADL/RF                (lignin as non-degradable proxy)
-#   fsOTS, ffOTS    = manure-class defaults     (slow / fast disintegration pool split)
-#   aSi             = manure-class default
-#   aXI             = (1 - D_VS) - aSi
-#   BMP             = theoretical_Weender * D_VS = 281.5 Nm^3 CH4/t VS
-#   BGP             = BMP / 0.55                = 511.7 Nm^3 biogas/t VS
-#   NH4             = Snh4 * 14/18              (g NH4/L -> kg N/m^3)
-#   FFS             = Sac + Sbu + Spro + Sva
-#   KS43            = TAC (mmol/L = mol/m^3)
+# Measured parameters (schema "measured"): names and units as in the
+# substrate user guide. Carbohydrates are split by the crude fibre (RF, fOTSrf);
+# the inert share (aXI) is fitted to the methane potential BMP.
 #
-# Model-default constants (densities, COD-conversion factors, methane
-# potentials, acid-base equilibrium constants at 35 deg C) are inherited
-# from SubstrateParams; override them here only if substrate-specific
-# values are available.
+# Values: dry-matter composition from the Phyllis database (phyllis.nl,
+# median of the samples named per line) where it holds the material;
+# methane potential from the standard yields of the BiomasseV 2012; storage
+# state (pH, ammonium, acids, buffer, temperature) from published analyses
+# of the material as it is fed; price from the superseded file in legacy/.
+# The source of every value stands behind it. Derivation: substrate user
+# guide, section "Origin of the library values".
+#
+# The cattle-manure fibre values of Phyllis are unusable: #1105 adds up to
+# 127 % with its ash, #1083 lacks the hemicellulose. The file therefore keeps
+# the crude-fibre route; the inert share aXI is fitted to BMP.
 
 name: Cattle manure (solid)
+schema: measured
 
-# --- Proximate analysis / measured substrate properties -----------------
-# Stackable farmyard manure (Rinderfestmist) at ~25 % TS, calibrated to
-# the BiomasseV standard methane yield of 53 Nm^3 CH4/t FM. Realized
-# model yield = (TS/1000)*(1-fRA)*BMP = 0.250 * 0.82 * 258.5 ≈ 53.
-TS:    250.0      # kg/t FM   (~25 % TS, stackable farmyard manure)
-NH4:    1.556     # kg N/m^3 FM
-BGP:   470.0      # Nm^3/t VS   biogas potential (BMP / 0.55)
-BMP:   258.5      # Nm^3 CH4/t VS  biomethane potential -> 53 Nm^3/t FM
+# --- Classification ----------------------------------------------------
+substrate_class: "Rinderfestmist (EK II)" # [BiomasseV 2012]
 
-# --- COD fractionation --------------------------------------------------
-aXI:    0.2500
-fOTSrf: 0.391
-fsOTS:  1.0
-ffOTS:  0.0
-aSi:    0.050
+# --- Dry matter --------------------------------------------------------
+TS:              25.0       # % FM [KTBL standard] Phyllis holds fresh excreta and dried manure, not the stored material
+VS:              84.13      # % TS [Phyllis] 100 - ash, median of n=3, range 72.9-91.04 (#1882, #2782, #1528)
 
-# --- Weender analysis (fractions of TS) ---------------------------------
-fRF:    0.1831
-fRP:    0.1831
-fRFe:   0.0355
-fRA:    0.1800
+# --- Weender analysis --------------------------------------------------
+RP:              12.56      # % TS [Phyllis] N x 6.25 of the dried sample, median of n=3, range 6-12.81 (#1882, #2782, #1528)
+RL:              3.8        # % TS [Phyllis] faeces, n=1 (#1391)
+RF:              18.31      # % TS [previous file] no usable cell-wall analysis in Phyllis
 
-# --- Physical / chemical state ------------------------------------------
-Temp:   12.0    # degC
-pH:     7.00
-KS43:   100.00    # mol/m^3   acid capacity to pH 4.3
-FFS:    0.000     # kg HAc/m^3 VFAs as acetic-acid equivalent
+# --- Degradability -----------------------------------------------------
+BMP:             249.0      # Nm³ CH4/t VS [BiomasseV 2012] 53 m³ CH4/t FM, KTBL standard dry matter 25 % TS, 85 % VS
+fOTSrf:          0.391      # - [previous file] degradable share of the crude fibre
+aSi:             0.05       # - [previous file] soluble inert share
+
+# --- Storage state -----------------------------------------------------
+pH:              7.85       # - [Mahato et al. 2020] 7.58 and 8.13 for two batches of straw-bedded dairy manure
+NH4:             1.59       # kg N/m³ [Mahato et al. 2020] NH3-N 1389 and 1795 mg/kg; the LfL Basisdaten 2024 give 0.41 kg/t for Rindermist (23 % TM) after storage losses, as a fertiliser convention (10 % of N)
+TAC:             250.0      # mmol/l [Mahato et al. 2020] total alkalinity 13.9 and 11.1 g CaCO3/kg, i.e. 279 and 222 meq/kg; the acid anions titrated along are subtracted by the loader
+FFS:             6.7        # kg HAc/m³ [Mahato et al. 2020] total VFA 6973 and 6499 mg/kg as acetic acid
+Temp:            9.3        # °C [DWD 1991-2020] mean air temperature of Germany 1991-2020; stored outdoors (manure heap)
+
+# --- Economics ---------------------------------------------------------
+cost:            8.0        # EUR/t FM [previous file]

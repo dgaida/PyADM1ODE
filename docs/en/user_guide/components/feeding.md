@@ -196,6 +196,12 @@ Real feeders have variance around the setpoint:
 feeder = Feeder("feed1", Q_max=20, dosing_accuracy=0.05)
 ```
 
+The noise comes from the feeder's own random generator. Without a `seed` it is
+seeded from the component ID, so repeated runs give identical flows and every
+feeder has its own sequence; pass `seed=...` to choose another one. The dosed
+flow never exceeds what the connected storage holds, and `dosing_accuracy=0.0`
+gives an exact feeder.
+
 ### Power Requirements
 
 Power depends on substrate type:
@@ -278,6 +284,43 @@ print(f"Total blockages: {feeder.state['n_blockages']}")
 
 ## Complete Feeding Chain
 
+### Storage, Feeder and Digester in a Plant
+
+`PlantConfigurator` wires the chain storage → feeder → digester:
+
+```python
+configurator.add_digester("main", V_liq=2000, Q_substrates=[15, 10, 0, 0, 0, 0, 0, 0, 0, 0])
+
+configurator.add_substrate_storage("silo", "maize_silage_milk_ripeness", capacity=1500.0)
+configurator.add_feeder("feeder_maize", "main", "maize_silage_milk_ripeness",
+                        storage_id="silo", specific_energy=0.92)   # kWh/t FM
+```
+
+- **Storage.** Density, dry matter and volatile solids come from the substrate  
+  definition of the feedstock, not from the storage's typical-value table. The
+  inventory is kept in tonnes of fresh matter.
+- **Stock is optional.** Without `initial_level` the stock is unlimited: the  
+  feeder always gets what it asks for, no refills are needed and nothing
+  degrades — the right choice for runs over months where the inventory is not
+  of interest. Only the cumulative withdrawals are counted. Pass
+  `initial_level` (`0.0` for an empty storage) to track the stock; then an
+  empty storage stops the feeding until it is refilled via `refill_amount`.
+- **Feeder.** `Q_setpoint` defaults to the rate configured for that substrate  
+  slot on the digester. The feeder is limited by the stock of its storage, and
+  the storage is drawn down by what the feeder actually doses.
+- **Digester.** The substrate slot served by a feeder follows the dosed flow —  
+  including dosing noise, blockages and an empty storage — instead of the
+  configured rate. Slots without a feeder keep their configured rate.
+
+Units: with the default `Feedstock` convention (`simba_q_convention=True`) the
+entries of `Q_substrates` are tonnes per day, so feeder flow and storage
+inventory share one unit. With `simba_q_convention=False` they are m³/d and the
+feeder converts through `flow_to_mass_factor = density / 1000`, which
+`add_feeder` sets automatically.
+
+`specific_energy` [kWh/t FM] replaces the load-curve estimate from
+`power_installed` when it is set.
+
 ### Integrated System
 
 ```python
@@ -337,7 +380,7 @@ mix_pump = Pump(
 plant.add_component(mix_pump)
 
 # 4. Digester
-digester, storage = config.add_digester(
+digester, _ = config.add_digester(
     "main_digester",
     V_liq=2000,
     Q_substrates=[15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -361,7 +404,7 @@ plant.initialize()
 results = plant.simulate(duration=30, dt=1/24, save_interval=1.0)
 
 # Feeding analysis
-def feeding_system_analysis(results):
+def feeding_system_analysis(plant, results):
     """Analyze feeding-system performance."""
     final = results[-1]
     comp = final['components']
@@ -378,10 +421,10 @@ def feeding_system_analysis(results):
     corn_fed = comp['corn_feeder']['total_mass_fed']
     manure_fed = comp['manure_feeder']['total_mass_fed']
 
-    # Energy consumption
-    corn_feeder_energy = comp['corn_feeder'].get('energy_consumed', 0)
-    manure_feeder_energy = comp['manure_feeder'].get('energy_consumed', 0)
-    pump_energy = comp['mix_pump']['energy_consumed']
+    # Energy consumption (cumulative, kept in the component state)
+    corn_feeder_energy = plant.components['corn_feeder'].state['energy_consumed']
+    manure_feeder_energy = plant.components['manure_feeder'].state['energy_consumed']
+    pump_energy = plant.components['mix_pump'].state['energy_consumed']
 
     total_feed_energy = corn_feeder_energy + manure_feeder_energy + pump_energy
 
@@ -395,7 +438,7 @@ def feeding_system_analysis(results):
         'feeding_energy': total_feed_energy
     }
 
-analysis = feeding_system_analysis(results)
+analysis = feeding_system_analysis(plant, results)
 print("\nFeeding-system analysis:")
 print(f"Corn remaining: {analysis['corn_remaining']:.0f} t (quality: {analysis['corn_quality']:.1%})")
 print(f"Manure remaining: {analysis['manure_remaining']:.0f} m³ (quality: {analysis['manure_quality']:.1%})")
@@ -572,7 +615,7 @@ if feeder.state['n_blockages'] > 5:
 **Diagnosis:**
 
 ```python
-dosing_errors = [r['components']['feed1']['dosing_error']
+dosing_errors = [r['components']['corn_feeder']['dosing_error']
                 for r in results]
 avg_error = sum(dosing_errors) / len(dosing_errors)
 

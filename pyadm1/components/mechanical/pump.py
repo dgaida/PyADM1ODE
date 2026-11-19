@@ -109,7 +109,7 @@ class Pump(Component):
             speed_control: Enable variable speed drive
             name: Human-readable name
         """
-        super().__init__(component_id, ComponentType.MIXER, name)  # Use MIXER as closest type
+        super().__init__(component_id, ComponentType.PUMP, name)
 
         # Pump configuration
         self.pump_type = PumpType(pump_type.lower())
@@ -188,6 +188,8 @@ class Pump(Component):
                   If provided, overrides setpoint-based calculation and is used
                   directly for power consumption.
                 - 'Q_out': Actual effluent flow from an upstream digester [m³/d].
+                - 'Q_in': Flow handed over by the plant on a liquid connection [m³/d].
+                - 'state_in': ADM1 state of that stream; passed on as 'state_out'.
                   Used when the pump is connected between digesters.
                 - 'enable_pump': Enable/disable pump
                 - 'fluid_density': Fluid density [kg/m³]
@@ -214,7 +216,10 @@ class Pump(Component):
 
         # Use connected upstream flow when the pump sits between a feeder/storage and
         # a digester or between two digesters.
-        Q_from_connection = inputs.get("Q_actual")
+        # ``Q_in`` is what the plant hands over on a liquid connection.
+        Q_from_connection = inputs.get("Q_in")
+        if Q_from_connection is None:
+            Q_from_connection = inputs.get("Q_actual")
         if Q_from_connection is None:
             Q_from_connection = inputs.get("Q_out")
 
@@ -272,7 +277,7 @@ class Pump(Component):
                 "operating_hours": self.operating_hours,
                 "energy_consumed": self.energy_consumed,
                 "total_volume_pumped": self.total_volume_pumped,
-                "efficiency": self.actual_efficiency,
+                "actual_efficiency": self.actual_efficiency,
                 "speed_fraction": self.speed_fraction,
             }
         )
@@ -287,6 +292,10 @@ class Pump(Component):
             "speed_fraction": float(self.speed_fraction),
             # P [kW] / (Q [m³/d] / 24 [h/d]) = kWh/m³
             "specific_energy": float(P_consumed * 24.0 / max(self.current_flow, 1e-6)),  # kWh/m³
+            # A pump in a liquid line passes the stream on unchanged; these
+            # are the keys the plant's liquid cascade transports.
+            "Q_out": float(self.current_flow),
+            "state_out": inputs.get("state_in", inputs.get("state_out")),
         }
 
         return self.outputs_data

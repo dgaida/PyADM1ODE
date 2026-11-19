@@ -24,6 +24,10 @@ class _DummyADM1Config:
     _T_ad = 315.15
     feedstock = None  # _serialize_adm1 handles this gracefully
 
+    @staticmethod
+    def get_calibration_parameters() -> dict:
+        return {}
+
 
 def _fake_worker(scenario_data, **kwargs):
     scenario_id, parameters = scenario_data
@@ -186,6 +190,11 @@ def test_compute_scenario_metrics_returns_gas_metrics():
     assert "Q_ch4" in metrics
     assert "pH" in metrics
     assert "HRT" in metrics
+    # The feed is entered in tonnes; maize silage is denser than water, so the
+    # volume flow is smaller and the retention time longer than V_liq / 17.5.
+    assert metrics["Q_total"] == pytest.approx(17.5)
+    assert metrics["HRT"] == pytest.approx(1200.0 / sum(fs.actual_Q([11.4, 6.1])))
+    assert metrics["HRT"] > 1200.0 / 17.5
 
 
 def test_compute_scenario_metrics_handles_invalid_input():

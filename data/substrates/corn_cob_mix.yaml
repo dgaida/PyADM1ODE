@@ -1,47 +1,56 @@
-# ADM1da substrate definition: Corn-cob mix (CCM)
+# Substrate definition: Corn-cob mix (CCM)
 #
-# Converted from the legacy substrate_gummersbach.xml library.
-# Fields derived from the legacy schema:
-#   fRF, fRP, fRFe  <- RF, RP, RL  (% TS -> fraction)
-#   fRA             = 1 - VS/100
-#   fOTSrf          = 1 - ADL/RF                (lignin as non-degradable proxy)
-#   fsOTS, ffOTS    = crop-class defaults     (slow / fast disintegration pool split)
-#   aSi             = crop-class default
-#   aXI             = (1 - D_VS) - aSi
-#   BMP             = theoretical_Weender * D_VS = 426.2 Nm^3 CH4/t VS
-#   BGP             = BMP / 0.55                = 774.9 Nm^3 biogas/t VS
-#   NH4             = Snh4 * 14/18              (g NH4/L -> kg N/m^3)
-#   FFS             = Sac + Sbu + Spro + Sva
-#   KS43            = TAC (mmol/L = mol/m^3)
+# Measured parameters (schema "measured"): names and units as in the
+# substrate user guide. Carbohydrates are split by the cell wall (NDF, ADL);
+# the inert share (D_VS) is fitted to the methane potential BMP.
 #
-# Model-default constants (densities, COD-conversion factors, methane
-# potentials, acid-base equilibrium constants at 35 deg C) are inherited
-# from SubstrateParams; override them here only if substrate-specific
-# values are available.
+# Values: dry-matter composition from the Phyllis database (phyllis.nl,
+# median of the samples named per line) where it holds the material;
+# methane potential from the standard yields of the BiomasseV 2012; storage
+# state (pH, ammonium, acids, buffer, temperature) from published analyses
+# of the material as it is fed; price from the superseded file in legacy/.
+# The source of every value stands behind it. Derivation: substrate user
+# guide, section "Origin of the library values".
+#
+# Fermentation quality (Li et al. 2023): proxy: untreated high-moisture ear
+# corn, 62.9 % DM; within the typical ranges of Kung & Shaver.
+#
+# Phyllis holds grain and spindle separately. The spindle share of 10 % of
+# the dry matter is an assumption; BiomasseV speaks of 'varying spindle
+# shares'.
 
 name: Corn-cob mix (CCM)
+schema: measured
 
-# --- Proximate analysis / measured substrate properties -----------------
-TS:    676.0      # kg/m^3 FM
-NH4:    0.428     # kg N/m^3 FM
-BGP:   774.9      # Nm^3/t VS   biogas potential (theoretical * D_VS)
-BMP:   426.2      # Nm^3 CH4/t VS  biomethane potential
+# --- Classification ----------------------------------------------------
+substrate_class: "Corn-Cob-Mix (CCM) (EK I)" # [BiomasseV 2012]
 
-# --- COD fractionation --------------------------------------------------
-aXI:    0.0500
-fOTSrf: 0.000
-fsOTS:  0.0
-ffOTS:  1.0
-aSi:    0.000
+# --- Dry matter --------------------------------------------------------
+TS:              65.0       # % FM [KTBL standard] the Phyllis grain samples were dried
+VS:              98.46      # % TS [Phyllis] 100 - ash, 90 % grain (#1033) + 10 % spindle; grain n=1 (#1973), spindle median of n=7, range 1-3.6 (#979, #1037, #1240, #1454, #2068, #2302, #2791)
 
-# --- Weender analysis (fractions of TS) ---------------------------------
-fRF:    0.0180
-fRP:    0.1054
-fRFe:   0.0530
-fRA:    0.0650
+# --- Weender analysis --------------------------------------------------
+RP:              8.84       # % TS [Phyllis] 90 % grain (#1033) + 10 % spindle; spindle N x 6.25, median of n=5, range 0.88-9.81 (#979, #1240, #2068, #2302, #2791)
+RL:              3.87       # % TS [Phyllis] 90 % grain (#1033) + 10 % spindle; spindle without lipids
 
-# --- Physical / chemical state ------------------------------------------
-Temp:   10.0    # degC
-pH:     4.00
-KS43:   5.69    # mol/m^3   acid capacity to pH 4.3
-FFS:    4.100     # kg HAc/m^3 VFAs as acetic-acid equivalent
+# --- Cell wall (van Soest) ---------------------------------------------
+NDF:             16.53      # % TS [Phyllis] 90 % grain (#1033) + 10 % spindle (median of n=4, range 67.8-99 (#979, #1035, #1037, #2068))
+ADF:             7.9        # % TS [Phyllis] 90 % grain (#1033) + 10 % spindle (median of n=4, range 42.6-67 (#979, #1035, #1037, #2068))
+ADL:             1.57       # % TS [Phyllis] 90 % grain (#1033) + 10 % spindle (median of n=4, range 6-16.6 (#979, #1035, #1037, #2068))
+NDICP:           0.63       # % TS [literature] maize grain 0.7 % TS, Rossow (UC Davis) after NRC 2001
+
+# --- Degradability -----------------------------------------------------
+BMP:             380.0      # Nm³ CH4/t VS [BiomasseV 2012] 242 m³ CH4/t FM, KTBL standard dry matter 65 % TS, 98 % VS
+
+# --- Storage state -----------------------------------------------------
+pH:              4.42       # - [Li et al. 2023]
+NH4:             1.235      # kg N/m³ [Li et al. 2023] NH3-N 13.43 % of the total N; N = RP/6.25, per kg FM with TS
+KS43:            0.0        # mol/m³ [definition] no bicarbonate in a silage; the buffer is the lactic/acetic acid system
+Sac:             1.49       # g/l [Li et al. 2023] acetic acid 2.3 g/kg TS, per kg FM with TS; lactic acid 15.6 g/kg TS stays in the carbohydrate pools (no ADM1 state)
+Spro:            0.26       # g/l [Li et al. 2023] propionic acid 0.4 g/kg TS, per kg FM with TS
+Sbu:             0.0        # g/l [Li et al. 2023] butyric acid 0 g/kg TS, per kg FM with TS
+Sva:             0.0        # g/l [Li et al. 2023] not reported for silages; below detection
+Temp:            9.3        # °C [DWD 1991-2020] mean air temperature of Germany 1991-2020; stored outdoors (silage clamp)
+
+# --- Economics ---------------------------------------------------------
+cost:            125.0      # EUR/t FM [previous file]

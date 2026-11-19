@@ -1,37 +1,50 @@
-# ADM1da substrate definition: Cattle manure
+# Substrate definition: Cattle manure
 #
-# TS and NH4 are given per m³ of fresh substrate (liquid manure). Since
-# density ≈ 1000 kg/m³ this is numerically equal to kg/t FM and the same
-# calculation path is used as for solid substrates.
+# Measured parameters (schema "measured"): names and units as in the
+# substrate user guide. Carbohydrates are split by the crude fibre (RF, fOTSrf);
+# the inert share (aXI) is fitted to the methane potential BMP.
 #
-# Model-default constants (densities, COD-conversion factors, methane
-# potentials, acid-base equilibrium constants at 35 °C) are inherited
-# from SubstrateParams; override them here only if substrate-specific
-# values are available.
+# Values: dry-matter composition from the Phyllis database (phyllis.nl,
+# median of the samples named per line) where it holds the material;
+# methane potential from the standard yields of the BiomasseV 2012; storage
+# state (pH, ammonium, acids, buffer, temperature) from published analyses
+# of the material as it is fed; price from the superseded file in legacy/.
+# The source of every value stands behind it. Derivation: substrate user
+# guide, section "Origin of the library values".
+#
+# The cattle-manure fibre values of Phyllis are unusable: #1105 adds up to
+# 127 % with its ash, #1083 lacks the hemicellulose. The file therefore keeps
+# the crude-fibre route; the inert share aXI is fitted to BMP.
 
 name: Cattle manure
+schema: measured
 
-# --- Proximate analysis / measured substrate properties -----------------
-TS:    80.0     # kg/m³ FM   total solids
-NH4:    2.0     # kg N/m³ FM ammonia nitrogen
-BGP:  260.0     # Nm³/t VS   biogas potential (reference)
-BMP:  136.7     # Nm³ CH4/t VS  biomethane potential (reference)
+# --- Classification ----------------------------------------------------
+substrate_class: "Rindergülle (EK II)" # [BiomasseV 2012]
 
-# --- COD fractionation --------------------------------------------------
-aXI:     0.628  # particulate inert fraction of degradable COD
-fOTSrf:  0.7    # biodegradable fraction of crude fibre (XF)
-fsOTS:   1.0    # share of degradable VS entering slow pool (XPS)
-ffOTS:   0.0    # share of degradable VS entering fast pool (XPF)
-aSi:     0.05   # dissolved inert fraction of degradable COD
+# --- Dry matter --------------------------------------------------------
+TS:              10.0       # % FM [KTBL standard] Phyllis holds fresh excreta and dried manure, not the stored material
+VS:              84.13      # % TS [Phyllis] 100 - ash, median of n=3, range 72.9-91.04 (#1882, #2782, #1528)
 
-# --- Weender analysis (fractions of TS) ---------------------------------
-fRF:   0.18     # crude fibre
-fRP:   0.14     # crude protein
-fRFe:  0.035    # crude lipid
-fRA:   0.10     # ash
+# --- Weender analysis --------------------------------------------------
+RP:              12.56      # % TS [Phyllis] N x 6.25 of the dried sample, median of n=3, range 6-12.81 (#1882, #2782, #1528)
+RL:              3.8        # % TS [Phyllis] faeces, n=1 (#1391)
+RF:              18.0       # % TS [previous file] no usable cell-wall analysis in Phyllis
 
-# --- Physical / chemical state ------------------------------------------
-Temp: 20.0      # °C        substrate temperature
-pH:    7.1
-KS43: 80.0      # mol/m³    acid capacity to pH 4.3
-FFS:   5.0      # kg HAc/m³ VFAs as acetic-acid equivalent
+# --- Degradability -----------------------------------------------------
+BMP:             212.0      # Nm³ CH4/t VS [BiomasseV 2012] 17 m³ CH4/t FM, KTBL standard dry matter 10 % TS, 80 % VS
+fOTSrf:          0.7        # - [previous file] degradable share of the crude fibre
+aSi:             0.05       # - [previous file] soluble inert share
+
+# --- Storage state -----------------------------------------------------
+pH:              7.4        # - [LfU Biogashandbuch 2022] fresh cattle slurry 10 % TS: 7.42; 7.2 for 39 in-house slurries (Petersen et al. 2016), 7.74 fresh (Overmeyer et al. 2020)
+NH4:             2.42       # kg N/m³ [Overmeyer et al. 2020] NH4-N of fresh dairy-cow slurry, 9.8 % DM; LfL Basisdaten 2024: 2.05 (Milchviehgülle 7.5 % TM)
+KS43:            109.0      # mol/m³ [Overmeyer et al. 2020] bicarbonate share of the total inorganic carbon 1.43 kg C/m³ (119 mmol/l) at pH 7.4
+Sac:             6.2        # g/l [Overmeyer et al. 2020] acetic acid of fresh dairy-cow slurry
+Spro:            1.2        # g/l [Overmeyer et al. 2020] propionic acid
+Sbu:             0.63       # g/l [Overmeyer et al. 2020] n-butyric 0.51 + iso-butyric 0.12
+Sva:             0.13       # g/l [Overmeyer et al. 2020] n-valeric 0.05 + iso-valeric 0.08
+Temp:            10.0       # °C [Petersen et al. 2016] slurry in Danish cattle houses 5.5-12.3 °C; annual mean of outdoor storage in Northern Europe ~10 °C (Ma et al. 2023)
+
+# --- Economics ---------------------------------------------------------
+cost:            2.0        # EUR/t FM [previous file]

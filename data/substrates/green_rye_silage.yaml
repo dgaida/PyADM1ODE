@@ -1,47 +1,55 @@
-# ADM1da substrate definition: Green rye silage
+# Substrate definition: Green rye silage
 #
-# Converted from the legacy substrate_gummersbach.xml library.
-# Fields derived from the legacy schema:
-#   fRF, fRP, fRFe  <- RF, RP, RL  (% TS -> fraction)
-#   fRA             = 1 - VS/100
-#   fOTSrf          = 1 - ADL/RF                (lignin as non-degradable proxy)
-#   fsOTS, ffOTS    = crop-class defaults     (slow / fast disintegration pool split)
-#   aSi             = crop-class default
-#   aXI             = (1 - D_VS) - aSi
-#   BMP             = theoretical_Weender * D_VS = 321.6 Nm^3 CH4/t VS
-#   BGP             = BMP / 0.55                = 584.8 Nm^3 biogas/t VS
-#   NH4             = Snh4 * 14/18              (g NH4/L -> kg N/m^3)
-#   FFS             = Sac + Sbu + Spro + Sva
-#   KS43            = TAC (mmol/L = mol/m^3)
+# Measured parameters (schema "measured"): names and units as in the
+# substrate user guide. Carbohydrates are split by the cell wall (NDF, ADL);
+# the inert share (D_VS) is fitted to the methane potential BMP.
 #
-# Model-default constants (densities, COD-conversion factors, methane
-# potentials, acid-base equilibrium constants at 35 deg C) are inherited
-# from SubstrateParams; override them here only if substrate-specific
-# values are available.
+# Values: dry-matter composition from the Phyllis database (phyllis.nl,
+# median of the samples named per line) where it holds the material;
+# methane potential from the standard yields of the BiomasseV 2012; storage
+# state (pH, ammonium, acids, buffer, temperature) from published analyses
+# of the material as it is fed; price from the superseded file in legacy/.
+# The source of every value stands behind it. Derivation: substrate user
+# guide, section "Origin of the library values".
+#
+# Fermentation quality (Zhao et al. 2021): proxy: Korean forage rye cut at
+# heading, 16-28 % DM; no German data set could be opened.
+#
+# No Phyllis sample. Dry-matter composition from grass as an analogue; the
+# fermentation quality is that of Korean forage rye cut at heading, the only
+# whole-crop rye silage with open data. The weakest file of the library.
 
 name: Green rye silage
+schema: measured
 
-# --- Proximate analysis / measured substrate properties -----------------
-TS:    192.5      # kg/m^3 FM
-NH4:    0.389     # kg N/m^3 FM
-BGP:   584.8      # Nm^3/t VS   biogas potential (theoretical * D_VS)
-BMP:   321.6      # Nm^3 CH4/t VS  biomethane potential
+# --- Classification ----------------------------------------------------
+substrate_class: "Grünroggen (GPS) (EK I)" # [BiomasseV 2012]
 
-# --- COD fractionation --------------------------------------------------
-aXI:    0.2500
-fOTSrf: 0.883
-fsOTS:  0.0
-ffOTS:  1.0
-aSi:    0.000
+# --- Dry matter --------------------------------------------------------
+TS:              25.0       # % FM [KTBL standard]
+VS:              90.48      # % TS [Phyllis] Phyllis has no green rye; grass taken as the closest material, 100 - ash, median of n=9, range 88.9-91.57 (#613, #614, #615, #616, #617, #1699, #3193, #3197, #3286)
 
-# --- Weender analysis (fractions of TS) ---------------------------------
-fRF:    0.1831
-fRP:    0.0831
-fRFe:   0.0255
-fRA:    0.1000
+# --- Weender analysis --------------------------------------------------
+RP:              13.44      # % TS [Phyllis] Phyllis has no green rye; grass taken as the closest material, N x 6.25, median of n=9, range 8.31-22.44 (#613, #614, #615, #616, #617, #1699, #3193, #3197, #3286)
+RL:              2.55       # % TS [previous file] placeholder of the legacy library
 
-# --- Physical / chemical state ------------------------------------------
-Temp:   11.0    # degC
-pH:     5.00
-KS43:   0.01    # mol/m^3   acid capacity to pH 4.3
-FFS:    1.310     # kg HAc/m^3 VFAs as acetic-acid equivalent
+# --- Cell wall (van Soest) ---------------------------------------------
+NDF:             50.0       # % TS [Phyllis] Phyllis has no green rye; grass taken as the closest material, median of n=2, range 49.1-50.9 (#1038, #2377)
+ADF:             33.05      # % TS [Phyllis] Phyllis has no green rye; grass taken as the closest material, median of n=2, range 31.4-34.7 (#1038, #2377)
+ADL:             3.05       # % TS [Phyllis] Phyllis has no green rye; grass taken as the closest material, median of n=2, range 1.4-4.7 (#1038, #2377)
+
+# --- Degradability -----------------------------------------------------
+BMP:             320.0      # Nm³ CH4/t VS [BiomasseV 2012] 72 m³ CH4/t FM, KTBL standard dry matter 25 % TS, 90 % VS
+
+# --- Storage state -----------------------------------------------------
+pH:              4.45       # - [Zhao et al. 2021]
+NH4:             0.79       # kg N/m³ [Zhao et al. 2021] NH3-N 14.7 % of the total N; N = RP/6.25, per kg FM with TS
+KS43:            0.0        # mol/m³ [definition] no bicarbonate in a silage; the buffer is the lactic/acetic acid system
+Sac:             1.0        # g/l [Zhao et al. 2021] acetic acid 4.02 g/kg TS, per kg FM with TS; lactic acid 9.7 g/kg TS stays in the carbohydrate pools (no ADM1 state)
+Spro:            0.21       # g/l [Zhao et al. 2021] propionic acid 0.83 g/kg TS, per kg FM with TS
+Sbu:             0.0        # g/l [Zhao et al. 2021] butyric acid 0 g/kg TS, per kg FM with TS
+Sva:             0.0        # g/l [Zhao et al. 2021] not reported for silages; below detection
+Temp:            9.3        # °C [DWD 1991-2020] mean air temperature of Germany 1991-2020; stored outdoors (silage clamp)
+
+# --- Economics ---------------------------------------------------------
+cost:            22.0       # EUR/t FM [previous file]

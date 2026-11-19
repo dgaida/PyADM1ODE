@@ -89,13 +89,30 @@ class TestSeparatorSerialization:
 class TestSeparatorEdgeCases:
     """Edge branches: zero flow, missing TS, ADM1-state estimation."""
 
-    def test_zero_flow_returns_unchanged_outputs(self) -> None:
+    def test_zero_flow_stops_both_fractions(self) -> None:
+        """A separator whose feed stops must not keep delivering the last flow."""
         separator = Separator("sep_1")
-        baseline = dict(separator.outputs_data)
+        state = [1.0] * 41
+        running = separator.step(t=0.0, dt=1.0, inputs={"Q_in": 50.0, "state_in": state})
+        assert running["Q_out"] > 0.0
 
-        result = separator.step(t=0.0, dt=1.0, inputs={"Q_in": 0.0})
+        result = separator.step(t=1.0, dt=1.0, inputs={"Q_in": 0.0})
 
-        assert result == baseline
+        assert result["Q_liquid"] == 0.0
+        assert result["Q_solid"] == 0.0
+        assert result["Q_out"] == 0.0
+        assert result["P_consumed"] == 0.0
+        assert result["state_out"] is None
+
+    def test_all_biomass_groups_are_separated(self) -> None:
+        """Every particulate state (12-28) is depleted, dissolved states are not."""
+        separator = Separator("sep_1")
+        state = [1.0] * 41
+
+        out = separator.step(t=0.0, dt=1.0, inputs={"Q_in": 50.0, "state_in": state})["state_out"]
+
+        assert all(out[i] < 1.0 for i in range(12, 29))
+        assert all(out[i] == 1.0 for i in list(range(12)) + list(range(29, 41)))
 
     def test_missing_ts_with_adm1_state_uses_estimate(self) -> None:
         # Provide a 41-element ADM1 state with non-zero particulate pools so

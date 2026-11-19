@@ -39,6 +39,9 @@
   <param name="KS43"   value="80.0"  unit="mol/m3"        description="Acid capacity to pH 4.3"/>
   <param name="FFS"    value="5.0"   unit="kg_HAc/m3"     description="VFAs as acetic-acid equivalent"/>
 
+  <!-- Economics (optional) -->
+  <param name="cost"   value="2.0"   unit="EUR/t_FM"      description="Price free plant (default 0.0)"/>
+
   <!--
        Optional model-default overrides
        Uncomment any of the <param/> elements below to override a

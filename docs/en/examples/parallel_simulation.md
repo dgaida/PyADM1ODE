@@ -1,26 +1,29 @@
 # Parallel Simulation Example
 
-The [examples/05_parallel_two_stage_simulation.py](https://github.com/dgaida/PyADM1ODE/blob/master/examples/05_parallel_two_stage_simulation.py) example demonstrates efficient parallel execution of multiple biogas plant simulation scenarios for parameter optimization, sensitivity analysis, and uncertainty quantification.
+The [examples/05_parallel_two_stage_simulation.py](https://github.com/dgaida/PyADM1ODE/blob/master/examples/05_parallel_two_stage_simulation.py) example runs many simulations of one digester side by side: a comparison of four feed rates, a sweep over one kinetic parameter and a Monte Carlo analysis. All three use `ParallelSimulator` from `pyadm1.simulation.parallel`.
+
+Despite its file name, the script simulates a single digester (one `ADM1` model), not a two-stage plant.
 
 ## Overview
 
-This example demonstrates:  
-- **Parallel Scenario Execution**: Running multiple simulations concurrently across CPU cores  
-- **Parameter Sweeps**: Systematic exploration of single and multiple parameter variations  
-- **Monte Carlo Analysis**: Uncertainty quantification with parameter distributions  
-- **Statistical Analysis**: Result aggregation and comparative statistics  
-- **Performance Metrics**: Speedup and parallel efficiency measurement  
+The example shows:
+
+- **Base model**: one `ADM1` model with two substrates that serves as the template for every scenario  
+- **Parallel scenarios**: four feed rates, simulated in four worker processes  
+- **Parameter sweep**: five values of the maximum acetate uptake rate `k_m_ac`, given as factors of the rate the model uses  
+- **Monte Carlo analysis**: 50 random draws of `k_m_ac` from a normal distribution around that rate  
+- **Summary statistics**: mean, standard deviation, minimum, maximum and median over the draws  
 
 ## Architecture
 
 ```mermaid
 graph TB
     subgraph "Main Process"
-        Config[Configuration]
-        Results[Result Collection]
+        Config[Scenario list]
+        Results[Result list]
     end
 
-    subgraph "Worker Pool (4 cores)"
+    subgraph "Worker Pool (4 processes)"
         W1[Worker 1]
         W2[Worker 2]
         W3[Worker 3]
@@ -45,704 +48,337 @@ graph TB
     style W4 fill:#fff3e0
 ```
 
-## Key Components
+`run_scenarios` first checks the keys of every scenario and then starts a pool of `n_workers` processes. The base model object itself is not sent to the workers. The simulator sends its configuration instead:
 
-### 1. ParallelSimulator
+- liquid volume, gas volume and temperature (`V_liq`, `V_gas`, `T_ad`)  
+- the substrate parameters of the feedstock, its feeding frequency and its `Q` convention  
+- the calibration parameters that are set on the base model  
 
-The `ParallelSimulator` class orchestrates concurrent execution:
+Each worker builds its own `Feedstock` and `ADM1` from this configuration, applies the scenario on top, simulates `duration` days and returns a `ScenarioResult`. The results come back in the order of the scenario list.
 
-```python
-from pyadm1.simulation.parallel import ParallelSimulator
+## Running the Example
 
-# Create parallel simulator with 4 worker processes
-parallel = ParallelSimulator(adm1_model, n_workers=4, verbose=True)
-
-# Define scenarios
-scenarios = [
-    {"k_dis": 0.5, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
-    {"k_dis": 0.6, "Q": [20, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
-    {"k_dis": 0.7, "Q": [15, 15, 0, 0, 0, 0, 0, 0, 0, 0]},
-]
-
-# Run parallel simulations
-results = parallel.run_scenarios(
-    scenarios=scenarios,
-    duration=10.0,  # 10 days
-    initial_state=adm1_state,
-    compute_metrics=True
-)
+```bash
+python examples/05_parallel_two_stage_simulation.py
 ```
 
-**Key Features**:  
-- **Multiprocessing**: Uses Python's `multiprocessing.Pool` for true parallelism  
-- **Automatic Workload Distribution**: Scenarios distributed evenly across workers  
-- **Progress Tracking**: Real-time progress reporting for long-running analyses  
-- **Error Isolation**: Individual scenario failures don't crash entire execution  
+The script takes no arguments, prints its results to the console and writes no files.
 
-### 2. ScenarioResult
+## Units
 
-Each simulation returns a `ScenarioResult` object:
+- **Feed rates** are tonnes of fresh matter per day [t FM/d] under the default `Feedstock` convention (`simba_q_convention=True`). The model converts them to volume flows with the density of each substrate: 11.4 t FM/d of maize silage are 10.1 m³/d at 1129 kg/m³, and 6.1 t FM/d of swine manure (1000 kg/m³) are 6.1 m³/d. See the section "Volumetric ADM1da convention for Q" in [ADM1 Implementation](../user_guide/adm1_implementation.md).  
+- **Gas flows** (`Q_gas`, `Q_ch4`, `Q_co2`) are dry gas at standard conditions (0 °C, 1.01325 bar) in Nm³/d. See the section "Reported gas flows" on the same page.  
+
+## Code Walkthrough
+
+### 1. Base Model
 
 ```python
-@dataclass
-class ScenarioResult:
-    scenario_id: int                          # Unique identifier
-    parameters: Dict[str, Any]                # Parameter values used
-    success: bool                             # Completion status
-    duration: float                           # Simulation duration [days]
-    final_state: Optional[List[float]]        # Final ADM1 state vector
-    time_series: Optional[Dict[str, List]]    # Optional time series data
-    metrics: Dict[str, float]                 # Performance metrics
-    error: Optional[str]                      # Error message if failed
-    execution_time: float                     # Wall clock time [seconds]
+duration = 30.0  # days
+
+feedstock = Feedstock(["maize_silage_milk_ripeness", "swine_manure"])
+base_feed = [11.4, 6.1]  # t FM/d: maize silage, swine manure
+
+adm1 = ADM1(feedstock, V_liq=1200.0, V_gas=216.0, T_ad=315.15)
+
+initial_state = get_state_zero_from_csv(str(REPO_ROOT / "data" / "initial_states" / "digester_initial8.csv"))
+
+# The workers rebuild the model from the configuration of this base model.
+# The feed is not part of it: every scenario brings its own "Q".
+parallel = ParallelSimulator(adm1, n_workers=4, verbose=True)
 ```
 
-**Computed Metrics** (when `compute_metrics=True`):  
-- `Q_gas`: Total biogas production [m³/d]  
-- `Q_ch4`: Methane production [m³/d]  
-- `Q_co2`: CO2 production [m³/d]  
-- `CH4_content`: Methane fraction [0-1]  
-- `pH`: pH value [-]  
-- `VFA`: Volatile fatty acids [g/L]  
-- `TAC`: Total alkalinity [g CaCO3/L]  
-- `FOS_TAC`: VFA/TA ratio [-]  
-- `HRT`: Hydraulic retention time [days]  
-- `specific_gas_production`: Biogas yield [m³/m³ feed]  
+- `Feedstock`: maize silage and swine manure from the [substrate library](../substrates/library.md). A feed vector has one entry per substrate, in the order of this list.  
+- `ADM1`: a digester with 1200 m³ liquid volume and 216 m³ gas volume at 315.15 K (42 °C).  
+- `initial_state`: the 41 state variables from `data/initial_states/digester_initial8.csv`. Every scenario starts from this state.  
+- `ParallelSimulator`: four worker processes. Without `n_workers` the simulator uses the number of CPU cores minus one. `verbose=True` prints the progress lines shown under [Output](#output).  
 
-## Simulation Types
-
-### Basic Parallel Scenarios
-
-Run multiple independent scenarios with different configurations:
+### 2. Feed-Rate Comparison
 
 ```python
-# Define feed rate scenarios
 feed_scenarios = [
-    {"name": "Low Feed", "Q_digester_1": [10, 8, 0, 0, 0, 0, 0, 0, 0, 0]},
-    {"name": "Base Feed", "Q_digester_1": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
-    {"name": "High Feed", "Q_digester_1": [20, 12, 0, 0, 0, 0, 0, 0, 0, 0]},
+    ("Low Feed", [8.0, 4.0]),
+    ("Base Feed", base_feed),
+    ("High Feed", [15.0, 8.0]),
+    ("Very High Feed", [20.0, 10.0]),
 ]
-
-scenarios = [{"Q": s["Q_digester_1"]} for s in feed_scenarios]
+scenarios = [{"Q": Q} for _, Q in feed_scenarios]
 
 results = parallel.run_scenarios(
     scenarios=scenarios,
-    duration=10.0,
-    initial_state=adm1_state,
-    dt=1.0/24.0,  # 1 hour time step
-    compute_metrics=True,
-    save_time_series=False  # Set True for detailed time series
+    duration=duration,
+    initial_state=initial_state,
 )
 ```
 
-**Use Cases**:  
-- Comparing different operational strategies  
-- Testing substrate composition variations  
-- Evaluating design alternatives  
+A scenario is a dictionary. These keys are allowed:
 
-### Single-Parameter Sweep
+| Key | Meaning |
+|-----|---------|
+| `Q` | Feed rates per substrate [t FM/d] |
+| `T_ad` | Digester temperature [K]; replaces the temperature of the base model for this scenario |
+| `k_dis_PS`, `k_dis_PF`, `k_hyd_ch`, `k_hyd_pr`, `k_hyd_li` | Disintegration and hydrolysis rates |
+| `k_m_su`, `k_m_aa`, `k_m_fa`, `k_m_c4`, `k_m_pro`, `k_m_ac`, `k_m_h2` | Maximum uptake rates |
+| `k_p`, `k_L_a`, `K_H_co2`, `K_H_ch4`, `K_H_h2` | Gas outlet, gas-liquid transfer and Henry constants |
 
-Systematic exploration of one parameter:
+Any other key, for example `k_dis` or `Y_su`, raises a `ValueError` before a simulation starts. A misspelt name would otherwise be ignored, and every scenario of a sweep would return the same result.
+
+Scenarios do not inherit a feed from the base model. A scenario without `Q` is simulated without feed, which is why the sweep and the Monte Carlo analysis below pass `Q` as a fixed parameter.
+
+The other arguments of `run_scenarios`:
+
+- `duration`: simulated time per scenario [d], here 30 days  
+- `initial_state`: start state of every scenario  
+- `compute_metrics`: computes the values listed under [Result Objects](#result-objects) from the final state (default `True`)  
+
+### 3. Parameter Sweep
+
+A rate given in a scenario replaces the rate of the model as it is. The model keeps `k_m_ac` at 8.0 d⁻¹ for 35 °C and corrects it to the operating temperature, which gives 11.76 d⁻¹ at the 42 °C of this example. The simulator applies no such correction to a scenario value. The script therefore reads the rate the model uses and builds the sweep from factors of it:
 
 ```python
-from pyadm1.simulation.parallel import ParameterSweepConfig
+K_M_AC_SWEEP_FACTORS = [0.15, 0.3, 0.5, 1.0, 1.5]
+```
 
-# Sweep disintegration rate
+```python
+k_m_ac_nominal = nominal_rate(adm1, "k_m_ac")
+print(f"   k_m_ac of the model at {adm1.T_ad - 273.15:.0f} °C: {k_m_ac_nominal:.2f} 1/d")
+
 sweep_config = ParameterSweepConfig(
-    parameter_name="k_dis",
-    values=[0.10, 0.14, 0.18, 0.22, 0.26, 0.30],
-    other_params={"Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]}
+    parameter_name="k_m_ac",
+    values=[factor * k_m_ac_nominal for factor in K_M_AC_SWEEP_FACTORS],
+    other_params={"Q": base_feed},
 )
 
-results = parallel.parameter_sweep(
+sweep_results = parallel.parameter_sweep(
     config=sweep_config,
-    duration=10.0,
-    initial_state=adm1_state,
-    compute_metrics=True
+    duration=duration,
+    initial_state=initial_state,
 )
-
-# Find optimal value
-ch4_productions = [r.metrics.get('Q_ch4', 0) for r in results if r.success]
-best_idx = np.argmax(ch4_productions)
-optimal_k_dis = sweep_config.values[best_idx]
 ```
 
-**Common Parameters to Sweep**:  
-- **Kinetic parameters**: `k_dis`, `k_hyd_ch`, `k_hyd_pr`, `k_hyd_li`  
-- **Yield parameters**: `Y_su`, `Y_aa`, `Y_fa`, `Y_c4`, `Y_pro`, `Y_ac`, `Y_h2`  
-- **Uptake rates**: `k_m_su`, `k_m_aa`, `k_m_fa`, `k_m_c4`, `k_m_pro`, `k_m_ac`  
-- **Operational parameters**: Feed rates, temperatures, retention times  
-
-### Multi-Parameter Sweep
-
-Full factorial design exploring parameter interactions:
+`nominal_rate` is a small helper of the script. It returns a calibration value if one is set on the base model, and otherwise the rate corrected to the temperature of the base model:
 
 ```python
-parameter_configs = {
-    "k_dis": [0.14, 0.18, 0.22],
-    "Y_su": [0.09, 0.10, 0.11],
-    "Q_substrate_0": [12, 15, 18]  # Corn silage feed rate
-}
-
-results = parallel.multi_parameter_sweep(
-    parameter_configs=parameter_configs,
-    duration=10.0,
-    initial_state=adm1_state,
-    fixed_params={"Q_substrate_1": 10}  # Manure fixed at 10 m³/d
+calibration = adm1.get_calibration_parameters()
+if name in calibration:
+    return float(calibration[name])
+rates = ADMParams.apply_temperature_corrections(
+    ADMParams.get_kinetic_params(),
+    ADMParams.get_temperature_factors(),
+    adm1.T_ad,
 )
-
-# Total combinations: 3 × 3 × 3 = 27 scenarios
+return float(rates[name])
 ```
 
-**Analysis**:
-```python
-# Find best combination
-best_result = max(
-    (r for r in results if r.success),
-    key=lambda r: r.metrics.get('Q_ch4', 0)
-)
+`parameter_sweep` creates one scenario per value: a copy of `other_params` plus the swept parameter. Further keyword arguments are passed on to `run_scenarios`. The script then prints one row per successful scenario and names the one with the highest methane flow.
 
-print(f"Optimal parameters:")
-print(f"  k_dis = {best_result.parameters['k_dis']:.2f}")
-print(f"  Y_su = {best_result.parameters['Y_su']:.2f}")
-print(f"  Q_substrate_0 = {best_result.parameters['Q_substrate_0']:.1f} m³/d")
-print(f"  Methane production = {best_result.metrics['Q_ch4']:.1f} m³/d")
+### 4. Monte Carlo Analysis
+
+```python
+K_M_AC_REL_STD = 0.10
 ```
 
-### Monte Carlo Simulation
-
-Uncertainty quantification with parameter distributions:
-
 ```python
-from pyadm1.simulation.parallel import MonteCarloConfig
-
 mc_config = MonteCarloConfig(
-    n_samples=100,
-    parameter_distributions={
-        "k_dis": (0.18, 0.03),      # mean=0.18, std=0.03
-        "Y_su": (0.10, 0.01),       # mean=0.10, std=0.01
-        "k_hyd_ch": (10.0, 1.5)     # mean=10.0, std=1.5
-    },
-    fixed_params={"Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
-    seed=42  # For reproducibility
+    n_samples=50,
+    parameter_distributions={"k_m_ac": (k_m_ac_nominal, K_M_AC_REL_STD * k_m_ac_nominal)},
+    fixed_params={"Q": base_feed},
+    seed=42,
 )
 
-results = parallel.monte_carlo(
+mc_results = parallel.monte_carlo(
     config=mc_config,
-    duration=30.0,
-    initial_state=adm1_state,
-    compute_metrics=True
+    duration=duration,
+    initial_state=initial_state,
 )
-
-# Summarize uncertainty
-summary = parallel.summarize_results(results)
-
-print(f"Methane production [m³/d]:")
-print(f"  Mean: {summary['metrics']['Q_ch4']['mean']:.1f}")
-print(f"  Std:  {summary['metrics']['Q_ch4']['std']:.1f}")
-print(f"  95% CI: [{summary['metrics']['Q_ch4']['q25']:.1f}, "
-      f"{summary['metrics']['Q_ch4']['q75']:.1f}]")
+summary = parallel.summarize_results(mc_results)
 ```
 
-**Probability Distribution Selection**:  
-- **Normal**: Most kinetic parameters (symmetric uncertainty)  
-- **Log-normal**: Always-positive parameters with multiplicative uncertainty  
-- **Uniform**: When only bounds are known  
-- **Triangular**: Expert judgment with most likely value  
+- `parameter_distributions`: mean and standard deviation of a normal distribution per parameter, here the rate of the model and 10 % of it. Other distributions are not available, and the draws are not truncated, so choose mean and standard deviation such that the values stay physically meaningful.  
+- `fixed_params`: keys that are the same in every sample  
+- `seed`: seeds the random generator of NumPy, so every run draws the same 50 values  
+- `summarize_results`: returns `n_scenarios`, `n_successful`, `n_failed` and `success_rate`, and under `metrics` the statistics `mean`, `std`, `min`, `max`, `median`, `q25` and `q75` for every metric over the successful scenarios. `std` is the population standard deviation (`np.std`).  
 
-## Expected Output
+## Result Objects
 
-### Basic Scenario Comparison
+Every scenario returns a `ScenarioResult`:
 
-```
-================================================================================
-SCENARIO COMPARISON RESULTS
-================================================================================
+| Field | Content |
+|-------|---------|
+| `scenario_id` | Position in the scenario list, starting at 0 |
+| `parameters` | The scenario dictionary |
+| `success` | `True` if the simulation finished |
+| `duration` | Simulated time [d] |
+| `final_state` | State vector at the end (41 values) |
+| `time_series` | Only with `save_time_series=True`: the last ten values of `Q_gas`, `Q_ch4` and `pH` (pH rounded to one decimal), stored once per `dt` step |
+| `metrics` | Values computed from the final state, see below |
+| `error` | Exception type, message and traceback of a failed scenario |
+| `execution_time` | Wall-clock time of the scenario in its worker [s] |
 
-Low Feed:
-  Feed Rate: 18.0 m³/d
-  Biogas:    723.5 m³/d
-  Methane:   434.1 m³/d
-  CH4 %:     60.0%
-  pH:        7.28
-  VFA:       1.85 g/L
-  FOS/TAC:   0.228
-  HRT:       109.8 days
-  Exec Time: 2.34 seconds
+`metrics` holds these values:
 
-Base Feed:
-  Feed Rate: 25.0 m³/d
-  Biogas:    1005.2 m³/d
-  Methane:   603.1 m³/d
-  CH4 %:     60.0%
-  pH:        7.20
-  VFA:       2.45 g/L
-  FOS/TAC:   0.289
-  HRT:       79.1 days
-  Exec Time: 2.41 seconds
+| Key | Unit | Meaning |
+|-----|------|---------|
+| `Q_gas` | Nm³/d | Dry biogas |
+| `Q_ch4` | Nm³/d | Methane |
+| `Q_co2` | Nm³/d | Carbon dioxide |
+| `p_gas` | bar | Sum of the dry partial pressures of hydrogen, methane and carbon dioxide |
+| `CH4_content` | - | `Q_ch4 / Q_gas`, the methane fraction of the dry gas |
+| `pH` | - | pH from the charge balance |
+| `Q_total` | t FM/d | Sum of the feed rates of the scenario as entered |
+| `specific_gas_production` | Nm³/t FM | `Q_gas / Q_total` |
+| `specific_ch4_production` | Nm³/t FM | `Q_ch4 / Q_total` |
+| `HRT` | d | `V_liq` divided by the volume flow the model uses for this feed |
 
-High Feed:
-  Feed Rate: 32.0 m³/d
-  Biogas:    1265.8 m³/d
-  Methane:   759.5 m³/d
-  CH4 %:     60.0%
-  pH:        7.15
-  VFA:       3.12 g/L
-  FOS/TAC:   0.341
-  HRT:       61.8 days
-  Exec Time: 2.38 seconds
-```
+The units of `Q_total` and of the specific yields hold for the default `Feedstock` convention. The metrics contain no VFA, TAC or FOS/TAC values.
 
-**Interpretation**:  
-- **Biogas production scales linearly** with feed rate (expected for stable operation)  
-- **pH decreases** with higher loading (more VFA production)  
-- **FOS/TAC increases** but remains below critical threshold (0.4)  
-- **Execution time is similar** across scenarios (same computational complexity)  
+## Output
 
-### Parameter Sweep Results
+The blocks below are the output of one run; `...` marks omitted lines. The `Total time` lines are from that run on one PC and differ between machines and runs. The simulated values repeat from run to run, because the Monte Carlo draws are fixed by `seed=42`.
 
-```
-================================================================================
-4. Running parameter sweep (Disintegration Rate k_dis)
-================================================================================
+### Feed-Rate Comparison
 
-   Testing 6 different k_dis values...
+```text
+======================================================================
+PyADM1 Parallel Simulation Example
+======================================================================
 
-   Parameter Sweep Results:
-   ------------------------------------------------------------
-      k_dis |      Q_gas |      Q_ch4 |     pH |      VFA
-   ------------------------------------------------------------
-       0.10 |      865.3 |      519.2 |   7.35 |     1.52
-       0.14 |      925.8 |      555.5 |   7.28 |     1.85
-       0.18 |      982.4 |      589.4 |   7.22 |     2.18
-       0.22 |     1005.2 |      603.1 |   7.20 |     2.45
-       0.26 |     1015.6 |      609.4 |   7.18 |     2.68
-       0.30 |     1018.2 |      610.9 |   7.17 |     2.85
+1. Building base ADM1 model...  
 
-   ✓ Optimal k_dis = 0.30 (CH4 = 610.9 m³/d)
+2. Running feed-rate comparison...  
+Starting parallel simulation with 4 scenarios
+Using 4 worker processes
+  Completed 4/4 scenarios
+
+Simulation complete:
+  Total scenarios: 4
+  Successful: 4
+  Failed: 0
+  Total time: 3.6 seconds
+  Average time per scenario: 0.90 seconds
+
+   Feed-rate results (feed in t FM/d, gas flows in Nm³/d, HRT in d):
+   ------------------------------------------------------------------
+   Scenario           Feed     Q_gas     Q_ch4   CH4 %     pH     HRT
+   Low Feed           12.0    1396.8     739.3    52.9   7.44   108.3
+   Base Feed          17.5    1893.0    1003.7    53.0   7.44    74.1
+   High Feed          23.0    2393.3    1270.0    53.1   7.43    56.4
+   Very High Feed     30.0    3053.0    1620.1    53.1   7.42    43.3
 ```
 
-**Observations**:  
-- **Methane production increases** with k_dis (faster disintegration)  
-- **Diminishing returns** above k_dis = 0.26 (only 1.5 m³/d increase)  
-- **pH decreases slightly** due to faster organic acid production  
-- **Trade-off**: Higher k_dis → more gas but lower pH stability  
+- The gas flow rises with the feed, but less than proportionally: 2.5 times the feed (12.0 to 30.0 t FM/d) gives 2.19 times the gas, and the gas per tonne of fresh matter (`Q_gas / Q_total`) falls from 116.4 to 101.8 Nm³.  
+- The methane content of the dry gas stays at about 53 % in all four scenarios, and the pH moves only from 7.44 to 7.42.  
+- The retention time is longer than `V_liq` divided by the feed in tonnes, because the silage takes less than 1 m³ per tonne: the Base Feed of 17.5 t FM/d is a volume flow of 16.2 m³/d, which gives 74.1 d.  
+- The values describe day 30, not a steady state. All scenarios start from the same initial state, and 30 days are shorter than every retention time in the table.  
 
-### Monte Carlo Statistics
+### Parameter Sweep
 
-```
-================================================================================
-6. Running Monte Carlo uncertainty analysis
-================================================================================
+```text
+3. Parameter sweep over k_m_ac...  
+   k_m_ac of the model at 42 °C: 11.76 1/d
+Parameter sweep: k_m_ac
+  Values: [1.7635371857293733, 3.5270743714587467, 5.878457285764578, 11.756914571529157, 17.635371857293734]
+Starting parallel simulation with 5 scenarios
+Using 4 worker processes
+  Completed 5/5 scenarios
 
-   Running 50 Monte Carlo samples...
+Simulation complete:
+  Total scenarios: 5
+  Successful: 5
+  Failed: 0
+  Total time: 2.6 seconds
+  Average time per scenario: 0.51 seconds
 
-   Monte Carlo Summary Statistics:
-   ------------------------------------------------------------
+   Sweep results (k_m_ac in 1/d, gas flows in Nm³/d):
+   ------------------------------------------------------------------
+   Factor   k_m_ac     Q_gas     Q_ch4   CH4 %     pH
+     0.15     1.76    1009.4       9.1     0.9   4.50
+     0.30     3.53    1855.3     968.7    52.2   7.13
+     0.50     5.88    1873.4     985.2    52.6   7.36
+     1.00    11.76    1893.0    1003.7    53.0   7.44
+     1.50    17.64    1894.3    1005.0    53.1   7.44
 
-   Q_gas:
-      Mean:      1002.45
-      Std:         58.32
-      Min:        885.20
-      Max:       1125.80
-      Median:     998.60
-      Q25:        965.15
-      Q75:       1038.22
-
-   Q_ch4:
-      Mean:       601.47
-      Std:         35.00
-      Min:        531.12
-      Max:        675.48
-      Median:     599.16
-      Q25:        579.09
-      Q75:        622.93
-
-   pH:
-      Mean:          7.21
-      Std:           0.08
-      Min:           7.05
-      Max:           7.38
-      Median:        7.20
-      Q25:           7.15
-      Q75:           7.26
-
-   Success Rate: 100.0%
+   Highest methane flow: 1005.0 Nm³/d at k_m_ac = 17.64 1/d (factor 1.50)
 ```
 
-**Uncertainty Analysis**:  
-- **Coefficient of variation (CV)**:  
-  - Biogas: 58.32 / 1002.45 = 5.8% (moderate uncertainty)  
-  - Methane: 35.00 / 601.47 = 5.8% (same relative uncertainty)  
-  - pH: 0.08 / 7.21 = 1.1% (very stable)  
-- **95% Confidence Interval** (≈ Q25 to Q75):  
-  - Biogas: 965–1038 m³/d (±3.7% from median)  
-  - Methane: 579–623 m³/d (±3.7% from median)  
-- **Interpretation**: Parameter uncertainty has moderate impact on gas production predictions  
+- At factor 0.15 (1.76 d⁻¹) the digester has acidified after 30 days: the pH is 4.50, and methane makes up only 9.1 of the 1009.4 Nm³/d of gas (0.9 %).  
+- From factor 0.30 to factor 1.00 the methane flow rises by 3.6 %, from 968.7 to 1003.7 Nm³/d, and the pH from 7.13 to 7.44.  
+- Factor 1.00 is the rate of the model, so its row equals the Base Feed row of the feed-rate comparison.  
+- Above the rate of the model little changes: factor 1.50 adds 1.3 Nm³/d. The highest methane flow is therefore the upper end of the sweep, not an optimum inside it.  
 
-## Performance Analysis
+### Monte Carlo Analysis
 
-### Parallel Efficiency
+```text
+4. Monte Carlo uncertainty (50 samples)...  
+Monte Carlo simulation:
+  Samples: 50
+  Parameters with uncertainty:
+    k_m_ac: N(11.756914571529157, 1.1756914571529158²)
+Starting parallel simulation with 50 scenarios
+Using 4 worker processes
+  Completed 10/50 scenarios
+...
+  Completed 50/50 scenarios
 
-```
-================================================================================
-SIMULATION SUMMARY
-================================================================================
+Simulation complete:
+  Total scenarios: 50
+  Successful: 50
+  Failed: 0
+  Total time: 5.0 seconds
+  Average time per scenario: 0.10 seconds
 
-Total execution time: 125.3 seconds
-Average time per simulation: 1.05 seconds
+   Success rate: 100.0%
+   k_m_ac draws [1/d]: 9.45 to 13.93
 
-Parallel efficiency:
-  Workers used: 4
-  Theoretical sequential time: 475.8 seconds
-  Speedup: 3.80x
-  Parallel efficiency: 95.0%
-```
+   Methane production [Nm³/d]:
+     mean ± std : 1003.4 ± 0.7
+     min  / max : 1001.7 / 1004.4
+     median     : 1003.6
 
-**Performance Metrics**:  
-- **Speedup**: 475.8 / 125.3 = 3.80×  
-- **Efficiency**: 3.80 / 4 = 95.0%  
-- **Overhead**: 5% due to:  
-  - Process creation/destruction  
-  - Data serialization/deserialization  
-  - Result aggregation  
-
-**Optimal Worker Count**:
-```python
-import multiprocessing as mp
-
-# Rule of thumb: n_workers = CPU_count - 1
-optimal_workers = max(1, mp.cpu_count() - 1)
-
-parallel = ParallelSimulator(adm1, n_workers=optimal_workers)
+======================================================================
+Parallel demonstration completed successfully!
+======================================================================
 ```
 
-**Scalability**:  
-- **Linear speedup**: Up to CPU core count (ideal: 95%+ efficiency)  
-- **Diminishing returns**: Beyond core count (hyperthreading limited)  
-- **Overhead dominates**: Very short simulations (<1 second)  
+- The 50 draws of `k_m_ac` lie between 9.45 and 13.93 d⁻¹. All 50 scenarios finished.  
+- The methane flow is 1003.4 ± 0.7 Nm³/d and lies between 1001.7 and 1004.4 Nm³/d.  
+- The standard deviation of the parameter is 10 % of its mean, that of the methane flow 0.07 % (0.7 / 1003.4). Around the rate of the model the methane flow after 30 days reacts only weakly to `k_m_ac`, which matches the flat upper part of the sweep.  
+- The script prints the statistics of `Q_ch4` only. `summary["metrics"]` holds the same statistics, and the quartiles `q25` and `q75`, for every metric.  
 
-### Memory Considerations
+## Adapting the Example
 
-Each worker process creates a **full copy** of the ADM1 model:
+- **Other parameters**: every key of the table in [step 2](#2-feed-rate-comparison) can be used in a scenario, as `parameter_name` of a sweep or in `parameter_distributions`. `nominal_rate` returns the rate of the model for the `k_dis_*`, `k_hyd_*` and `k_m_*` keys.  
+- **Temperature**: add `T_ad` in kelvin to a scenario, for example `{"Q": base_feed, "T_ad": 311.15}`. All scenarios of one call can have different temperatures.  
+- **Time series**: pass `save_time_series=True` and a step `dt` in days to `run_scenarios`, `parameter_sweep` or `monte_carlo`. Each result then carries the last ten stored values of `Q_gas`, `Q_ch4` and `pH`. Without `save_time_series=True`, `dt` has no effect.  
+- **Calibrated base model**: parameters set with `adm1.set_calibration_parameters({...})` on the base model apply to every scenario. A scenario value for the same parameter takes precedence.  
+- **Substrates and digester size**: change the substrate list of `Feedstock` and the arguments of `ADM1`. The feed vectors follow the order of the substrate list.  
+- **Number of workers**: set `n_workers`. Every call of `run_scenarios` starts its own pool. With `n_workers=1` or a single scenario the simulator runs in the main process and starts no pool.  
+- **Failed scenarios**: a scenario that raises an exception does not stop the others. Its result has `success=False` and the reason in `error`.  
+
+Several parameters can be varied at once with `multi_parameter_sweep`, which the script does not use. It simulates every combination of the given values:
 
 ```python
-# Memory per worker ≈ 50-100 MB (depends on model complexity)
-# Total memory = n_workers × memory_per_worker + overhead
-
-# For 100 scenarios on 4 cores:
-# Memory usage ≈ 4 × 75 MB ≈ 300 MB (manageable)
-
-# For very large parameter sweeps:
-if n_scenarios > 1000:
-    # Use batching to limit memory
-    batch_size = 100
-    all_results = []
-
-    for i in range(0, len(scenarios), batch_size):
-        batch = scenarios[i:i+batch_size]
-        results = parallel.run_scenarios(batch, duration=30, ...)
-        all_results.extend(results)
-```
-
-## Advanced Usage
-
-### Custom Result Processing
-
-```python
-def analyze_stability(results):
-    """Classify scenarios by process stability."""
-    stable = []
-    unstable = []
-
-    for r in results:
-        if not r.success:
-            continue
-
-        fos_tac = r.metrics.get('FOS_TAC', 0)
-        pH = r.metrics.get('pH', 0)
-
-        # Stability criteria
-        is_stable = (
-            0.2 <= fos_tac <= 0.4 and
-            6.8 <= pH <= 7.5
-        )
-
-        if is_stable:
-            stable.append(r)
-        else:
-            unstable.append(r)
-
-    return stable, unstable
-
-stable, unstable = analyze_stability(results)
-print(f"Stable scenarios: {len(stable)}/{len(results)}")
-```
-
-### Sensitivity Analysis
-
-```python
-def calculate_sensitivity(param_name, sweep_results):
-    """Calculate parameter sensitivity coefficient."""
-    params = [r.parameters[param_name] for r in sweep_results if r.success]
-    ch4 = [r.metrics['Q_ch4'] for r in sweep_results if r.success]
-
-    # Linear regression: ΔCH4/Δparam
-    from numpy.polynomial import Polynomial
-
-    p = Polynomial.fit(params, ch4, deg=1)
-    sensitivity = p.convert().coef[1]  # Slope
-
-    return sensitivity
-
-# Compare sensitivities
-k_dis_sens = calculate_sensitivity('k_dis', sweep_results_1)
-Y_su_sens = calculate_sensitivity('Y_su', sweep_results_2)
-
-print(f"Sensitivity of CH4 production:")
-print(f"  k_dis: {k_dis_sens:.1f} m³/d per unit")
-print(f"  Y_su:  {Y_su_sens:.1f} m³/d per unit")
-```
-
-### Response Surface Modeling
-
-For multi-parameter sweeps, fit response surfaces:
-
-```python
-from sklearn.gaussian_process import GaussianProcessRegressor
-from sklearn.gaussian_process.kernels import RBF, ConstantKernel
-
-# Extract training data
-X = []  # Parameter combinations
-y = []  # Methane production
-
-for r in multi_results:
-    if r.success:
-        X.append([r.parameters['k_dis'], r.parameters['Y_su']])
-        y.append(r.metrics['Q_ch4'])
-
-X = np.array(X)
-y = np.array(y)
-
-# Fit Gaussian Process
-kernel = ConstantKernel(1.0) * RBF(length_scale=1.0)
-gp = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=10)
-gp.fit(X, y)
-
-# Predict at new points
-k_dis_new = np.linspace(0.10, 0.30, 50)
-Y_su_new = np.linspace(0.08, 0.12, 50)
-K, Y = np.meshgrid(k_dis_new, Y_su_new)
-
-X_pred = np.c_[K.ravel(), Y.ravel()]
-ch4_pred, ch4_std = gp.predict(X_pred, return_std=True)
-
-# Find optimum
-opt_idx = np.argmax(ch4_pred)
-opt_k_dis = X_pred[opt_idx, 0]
-opt_Y_su = X_pred[opt_idx, 1]
-opt_ch4 = ch4_pred[opt_idx]
-
-print(f"Predicted optimum:")
-print(f"  k_dis = {opt_k_dis:.3f}")
-print(f"  Y_su = {opt_Y_su:.3f}")
-print(f"  CH4 = {opt_ch4:.1f} ± {ch4_std[opt_idx]:.1f} m³/d")
-```
-
-## Best Practices
-
-### 1. Choose Appropriate Number of Workers
-
-```python
-import multiprocessing as mp
-
-# Rule of thumb
-n_workers = max(1, mp.cpu_count() - 1)  # Leave one core for OS
-
-# For I/O-bound tasks (rare in biogas simulation)
-n_workers = 2 * mp.cpu_count()
-
-# For memory-limited systems
-available_memory_gb = 16  # Your system RAM
-memory_per_worker_gb = 0.1
-n_workers = min(n_workers, int(available_memory_gb / memory_per_worker_gb))
-```
-
-### 2. Balance Simulation Duration and Number of Scenarios
-
-```python
-# Short simulations (< 1 second): Overhead dominates
-# → Increase duration or use sequential execution
-
-# Medium simulations (1-10 seconds): Good parallelization
-# → Ideal for parameter sweeps
-
-# Long simulations (> 60 seconds): Memory intensive
-# → Consider reducing n_workers or using batching
-```
-
-### 3. Save Results Incrementally
-
-```python
-import pickle
-from pathlib import Path
-
-results_dir = Path("results/parallel_sweep")
-results_dir.mkdir(parents=True, exist_ok=True)
-
-# Run in batches
-batch_size = 50
-for batch_id, i in enumerate(range(0, len(scenarios), batch_size)):
-    batch = scenarios[i:i+batch_size]
-
-    results = parallel.run_scenarios(
-        batch, duration=30, initial_state=adm1_state
-    )
-
-    # Save batch results
-    with open(results_dir / f"batch_{batch_id:03d}.pkl", "wb") as f:
-        pickle.dump(results, f)
-
-    print(f"Saved batch {batch_id}")
-
-# Load all results later
-all_results = []
-for batch_file in sorted(results_dir.glob("batch_*.pkl")):
-    with open(batch_file, "rb") as f:
-        all_results.extend(pickle.load(f))
-```
-
-### 4. Handle Failed Scenarios Gracefully
-
-```python
-# Check for failures
-failed = [r for r in results if not r.success]
-
-if failed:
-    print(f"Warning: {len(failed)} scenarios failed")
-
-    # Log failures
-    with open("failed_scenarios.log", "w") as f:
-        for r in failed:
-            f.write(f"\nScenario {r.scenario_id}:\n")
-            f.write(f"Parameters: {r.parameters}\n")
-            f.write(f"Error: {r.error}\n")
-
-    # Retry with tighter tolerances
-    retry_scenarios = [r.parameters for r in failed]
-
-    # Create new simulator with stricter settings
-    from pyadm1.core.solver import create_solver
-
-    strict_solver = create_solver(method='BDF', rtol=1e-8, atol=1e-10)
-    retry_results = parallel.run_scenarios(retry_scenarios, ...)
-```
-
-### 5. Validate Results
-
-```python
-def validate_results(results):
-    """Check for physically unrealistic results."""
-    issues = []
-
-    for r in results:
-        if not r.success:
-            continue
-
-        # Check for unrealistic values
-        if r.metrics.get('Q_ch4', 0) < 0:
-            issues.append(f"Scenario {r.scenario_id}: Negative methane")
-
-        if r.metrics.get('pH', 7) < 5 or r.metrics.get('pH', 7) > 9:
-            issues.append(f"Scenario {r.scenario_id}: pH out of range")
-
-        if r.metrics.get('CH4_content', 0) > 1 or r.metrics.get('CH4_content', 0) < 0:
-            issues.append(f"Scenario {r.scenario_id}: Invalid CH4 fraction")
-
-    return issues
-
-issues = validate_results(results)
-if issues:
-    print("Validation warnings:")
-    for issue in issues:
-        print(f"  - {issue}")
-```
-
-## Troubleshooting
-
-### Common Issues
-
-**Issue**: "Pool workers hanging, no progress"
-```python
-# Solution: Reduce complexity or increase timeout
-parallel = ParallelSimulator(adm1, n_workers=2)  # Fewer workers
-results = parallel.run_scenarios(scenarios, duration=10, ...)  # Shorter duration
-```
-
-**Issue**: "MemoryError during parallel execution"
-```python
-# Solution: Use batching
-batch_size = min(50, len(scenarios))
-all_results = []
-
-for i in range(0, len(scenarios), batch_size):
-    batch = scenarios[i:i+batch_size]
-    results = parallel.run_scenarios(batch, ...)
-    all_results.extend(results)
-
-    # Force garbage collection
-    import gc
-    gc.collect()
-```
-
-**Issue**: "Inconsistent results across runs"
-```python
-# Solution: Set random seeds for Monte Carlo
-mc_config = MonteCarloConfig(
-    n_samples=100,
-    parameter_distributions={...},
-    seed=42  # Fixed seed for reproducibility
+results = parallel.multi_parameter_sweep(
+    parameter_configs={"k_m_ac": [3.5, 8.0], "T_ad": [311.15, 315.15]},
+    duration=duration,
+    initial_state=initial_state,
+    fixed_params={"Q": base_feed},
 )
 ```
 
-**Issue**: "Low parallel efficiency (< 70%)"
-```python
-# Possible causes:
-# 1. Simulations too short (overhead dominates)
-# 2. Too many workers for available cores
-# 3. I/O bottleneck (disk access)
+This gives 2 × 2 = 4 scenarios. In the result list the last parameter changes fastest: `(3.5, 311.15)`, `(3.5, 315.15)`, `(8.0, 311.15)`, `(8.0, 315.15)`.
 
-# Solutions:
-# 1. Increase simulation duration
-parallel = ParallelSimulator(adm1, n_workers=mp.cpu_count() - 1)
-
-# 2. Disable time series saving
-results = parallel.run_scenarios(..., save_time_series=False)
-
-# 3. Batch processing instead of parallel
-```
+In your own scripts, keep the call inside a `main()` function behind `if __name__ == "__main__":`, as the example does. The workers are started with the `spawn` method (`forkserver` on Linux), which imports the main module again in every worker; see the Python documentation on [multiprocessing](https://docs.python.org/3/library/multiprocessing.html). The environment variable `PYADM1_MP_START_METHOD` selects another start method.
 
 ## Related Examples
 
 - [`basic_digester.md`](basic_digester.md): Single digester simulation basics  
 - [`two_stage_plant.md`](two_stage_plant.md): Two-stage plant configuration  
-- `calibration_workflow.md`: Parameter calibration using parallel optimization  
-
-## References
-
-- **Multiprocessing**: Python documentation on `multiprocessing` module  
-- **Parallel Computing**: Pacheco, P. (2011). *An Introduction to Parallel Programming*  
-- **Design of Experiments**: Montgomery, D.C. (2017). *Design and Analysis of Experiments*  
-- **Uncertainty Quantification**: Sullivan, T.J. (2015). *Introduction to Uncertainty Quantification*  
+- [examples/06_parallel_operation_studies.py](https://github.com/dgaida/PyADM1ODE/blob/master/examples/06_parallel_operation_studies.py): Three larger studies with the same simulator and three substrates (maize silage, cattle manure, grass silage): a grid of 54 feed scenarios over retention time and organic loading rate, 66 substrate mixes at a constant total feed, and ten temperatures through the scenario key `T_ad`. It saves one figure per study to `output/`.  
+- [Simulation API](../api/simulation.md): Reference of `ParallelSimulator`, `ScenarioResult`, `ParameterSweepConfig` and `MonteCarloConfig`  
 
 ## Summary
 
-The parallel simulation example demonstrates:
-
-1. **Efficient Parameter Exploration**: Test multiple scenarios 3-4× faster using parallel execution  
-2. **Systematic Optimization**: Parameter sweeps identify optimal operating conditions  
-3. **Uncertainty Quantification**: Monte Carlo analysis quantifies prediction uncertainty  
-4. **Scalable Architecture**: Handle 100s of scenarios with proper batching and error handling  
-5. **Statistical Analysis**: Comprehensive result aggregation and comparative statistics  
-
-**Key Takeaway**: Parallel simulation enables rapid exploration of the design and operating space, making it feasible to perform comprehensive sensitivity analysis, optimization, and uncertainty quantification that would be impractical with sequential execution.
+1. **One base model, many scenarios**: `ParallelSimulator` sends the configuration of the base model to worker processes, and every scenario changes the feed, the temperature or calibration parameters on top of it.  
+2. **Three ways to build scenarios**: an explicit list (`run_scenarios`), one parameter over several values (`parameter_sweep`) and random draws from normal distributions (`monte_carlo`).  
+3. **Results as numbers**: every scenario returns its final state and metrics such as dry gas flows in Nm³/d, methane content and pH; `summarize_results` condenses them into statistics.  

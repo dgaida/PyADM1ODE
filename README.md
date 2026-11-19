@@ -12,7 +12,7 @@
 [![Version](https://img.shields.io/github/v/tag/dgaida/PyADM1ODE?label=version)](https://github.com/dgaida/PyADM1ODE/tags)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/dgaida/PyADM1ODE/graphs/commit-activity)
 ![Last commit](https://img.shields.io/github/last-commit/dgaida/PyADM1ODE)
-[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://dgaida.github.io/PyADM1ODE/)
 
 PyADM1ODE ist ein Python-Framework zur Modellierung, Simulation und Optimierung von landwirtschaftlichen Biogasanlagen basierend auf dem Anaerobic Digestion Model No. 1 (ADM1).
@@ -28,7 +28,6 @@ PyADM1ODE/
 │   ├── components/          # Anlagenkomponenten (Fermenter, BHKW, etc.)
 │   ├── configurator/        # Anlagenbau und Konfiguration
 │   ├── core/                # ADM1-Kern (Gleichungen, Solver, Parameter)
-│   ├── dlls/                # Integrierte C#-DLLs für Physico-Chemicals
 │   ├── simulation/          # Simulations-Engine und Parallelisierung
 │   └── substrates/          # Substratmanagement und Feedstock-Berechnung
 ├── tests/                   # Unit- und Integrationstests
@@ -41,7 +40,7 @@ PyADM1ODE/
 - **Modulare Architektur**: Komponentenbasierter Aufbau von Biogasanlagen (Fermenter, BHKW, Pumpen, Rührwerke, etc.).  
 - **Wissenschaftlich fundiert**: Implementierung des ADM1da-Modells für realistische Simulationen landwirtschaftlicher Anlagen.  
 - **Einfache Konfiguration**: Programmatische Konfiguration oder über JSON-Dateien.  
-- **Drei-Pass-Simulation**: Realistische Modellierung von Gasflüssen und Pufferspeichern.  
+- **Gasstrecke in vier Durchläufen**: Speicher, Verbraucher und Fackeln werden in jedem Zeitschritt mit dem Gas berechnet, das tatsächlich ankommt.  
 - **Bilingualität**: Vollständige Dokumentation in Deutsch und Englisch.  
 
 ## Dokumentation

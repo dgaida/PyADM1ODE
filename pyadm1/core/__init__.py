@@ -12,7 +12,6 @@ Example:
     >>> from pyadm1 import Feedstock
     >>> fs = Feedstock(["maize_silage_milk_ripeness", "swine_manure"], feeding_freq=24)
     >>> adm = ADM1(fs, V_liq=1200, V_gas=216, T_ad=315.15)
-    >>> adm.set_influent_dataframe(fs.get_influent_dataframe(Q=[11.4, 6.1]))
     >>> adm.create_influent(Q=[11.4, 6.1], i=0)
 """
 

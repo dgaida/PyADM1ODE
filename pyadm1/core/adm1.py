@@ -250,6 +250,27 @@ def get_state_zero_from_csv(csv_file: str) -> list[float]:
     return state
 
 
+#: Rate families a :attr:`ADM1.rate_hook` can scale, in the order of the factor
+#: vector it returns. Each entry multiplies every process rate of that family:
+#: the two disintegration constants (all three ch/pr/li fractions each), the
+#: three hydrolysis constants, the seven uptake rates and all seven decay rates.
+RATE_FAMILIES: tuple[str, ...] = (
+    "dis_PS",
+    "dis_PF",
+    "hyd_ch",
+    "hyd_pr",
+    "hyd_li",
+    "su",
+    "aa",
+    "fa",
+    "c4",
+    "pro",
+    "ac",
+    "h2",
+    "dec",
+)
+
+
 class ADM1:
     """
     ADM1da – 41-state ODE system.
@@ -263,7 +284,6 @@ class ADM1:
     >>> from pyadm1 import Feedstock
     >>> fs = Feedstock([...], feeding_freq=24)
     >>> adm = ADM1(fs, V_liq=1200, V_gas=216, T_ad=315.15)
-    >>> adm.set_influent_dataframe(fs.get_influent_dataframe(Q=[11.4, 6.1]))
     >>> adm.create_influent(Q=[11.4, 6.1], i=0)
     >>> state0 = [0.01] * STATE_SIZE
     >>> dydt = adm.ADM_ODE(0.0, state0)
@@ -315,6 +335,9 @@ class ADM1:
         self._R = 0.08314  # bar·m³·kmol⁻¹·K⁻¹
         self._T_base = 298.15  # 25 °C reference
         self._p_atm = 1.013
+        # Pressure the headspace vents against [bar]. The wet headspace (dry
+        # gas plus water vapour) settles at this value.
+        self._p_ext = self._p_atm
 
         # --- Feedstock / influent ---
         self._feedstock = feedstock
@@ -347,15 +370,19 @@ class ADM1:
         # a later temperature change can never drift apart.
         self._apply_temperature(T_ad)
 
-        # Gas volume reference conditions (theta = 20 °C, 1 atm) — ADM1da convention
-        self._T_gas_norm = 293.15
+        # Gas volumes are reported at standard conditions after DIN 1343
+        # (0 °C, 1.01325 bar), the same reference the methane potential uses.
+        self._T_gas_norm = 273.15
         self._P_gas_norm = 1.01325
         self._NQ = 1000.0 * self._P_gas_norm / (self._R * self._T_gas_norm)
 
         # Pressure threshold for linearised gas-outlet pipe formula [bar].
         self._dP_min_pipe = 1.0e-3
 
-        # Optional external influent DataFrame.
+        # Optional external influent DataFrame. Only an explicit
+        # ``set_influent_dataframe`` call sets it; the feedstock blend is never
+        # cached here, otherwise a later change of the substrate mix would
+        # only change the flow.
         self._influent_df: pd.DataFrame | None = None
 
         # Influent / sludge densities (used by ``create_influent`` only).
@@ -370,6 +397,12 @@ class ADM1:
         self._Q_out_override: float | None = None
         self._q_S_loss_last: float = 0.0
 
+        # Optional scaling of the process rates by family. A callable
+        # ``rate_hook(state, S_H, q_ad) -> factors`` returning one multiplicative
+        # factor per entry of :data:`RATE_FAMILIES`; ``None`` leaves the nominal
+        # kinetics untouched. Both backends honour it.
+        self.rate_hook = None
+
     # ------------------------------------------------------------------
     # Temperature
     # ------------------------------------------------------------------
@@ -378,9 +411,9 @@ class ADM1:
         """
         Set ``T_ad`` and recompute every quantity derived from it.
 
-        Ten constants depend on the operating temperature: ``_RT``, ``_p_ext``,
-        the temperature-corrected kinetics, the inhibition parameters and the
-        six gas parameters. Recomputing them anywhere but here is how the
+        These depend on the operating temperature: ``_RT``, the
+        temperature-corrected kinetics, the inhibition parameters and the
+        gas parameters. Recomputing them anywhere but here is how the
         object ends up reporting one temperature while simulating another --
         therefore ``__init__`` and the ``T_ad`` setter both route through this
         method.
@@ -389,10 +422,13 @@ class ADM1:
         relative to the temperature-corrected defaults, and those defaults have
         just moved.
         """
+        if not 273.15 < float(T_ad) < 373.15:
+            raise ValueError(
+                f"T_ad={T_ad} is outside 273.15-373.15 K. The temperature is given in Kelvin (e.g. 315.15 for 42 °C)."
+            )
         self._T_ad = float(T_ad)
 
         self._RT = self._R * self._T_ad
-        self._p_ext = self._p_atm - 0.0084147 * np.exp(0.054 * (self._T_ad - 273.15))
 
         base_kinetic = ADMParams.get_kinetic_params()
         theta = ADMParams.get_temperature_factors()
@@ -413,6 +449,7 @@ class ADM1:
         self._K_H_co2_default = K_H_co2
         self._K_H_ch4_default = K_H_ch4
         self._K_H_h2_default = K_H_h2
+        self._K_H_nh3 = ADMParams.get_nh3_henry_constant(self._R, self._T_base, self._T_ad)
 
         if self._calibration_params:
             self.set_calibration_parameters(dict(self._calibration_params))
@@ -425,6 +462,31 @@ class ADM1:
     def model_name(self) -> str:
         """Short identifier for this model variant."""
         return "ADM1"
+
+    @property
+    def p_ext(self) -> float:
+        """Pressure the headspace vents against [bar].
+
+        The wet headspace settles at this pressure; the dry gas therefore
+        holds ``p_ext`` minus the water vapour pressure. The default is the
+        atmospheric pressure; a gas system with back pressure raises it.
+        """
+        return self._p_ext
+
+    @p_ext.setter
+    def p_ext(self, value: float) -> None:
+        """Set the pressure the headspace vents against [bar].
+
+        Args:
+            value (float): Absolute pressure [bar], above the water vapour
+                pressure at the operating temperature.
+
+        Raises:
+            ValueError: If ``value`` leaves no room for dry gas.
+        """
+        if not float(value) > self._p_gas_h2o:
+            raise ValueError(f"p_ext={value} bar is not above the water vapour pressure ({self._p_gas_h2o:.4f} bar).")
+        self._p_ext = float(value)
 
     @property
     def T_ad(self) -> float:
@@ -453,9 +515,11 @@ class ADM1:
         """
         Attach or replace the feedstock.
 
-        Note that the influent DataFrame and density are **not** re-derived
-        here -- callers that want the full wiring should use
-        :meth:`Digester.set_feedstock`.
+        The influent blend is derived from the feedstock on every
+        ``create_influent()`` call, so the new feedstock takes effect on the
+        next step.  An external influent DataFrame, if one was set, keeps
+        precedence; :meth:`Digester.set_feedstock` clears it and can also
+        rebuild the initial state.
         """
         self._feedstock = value
 
@@ -562,17 +626,32 @@ class ADM1:
         pTOTAL: float,
     ) -> tuple[float, float, float, float, float]:
         """
-        Calculate biogas production rates, normalised to standard reference
-        conditions (theta = 20 °C, P = 1.01325 bar; ADM1da convention).
+        Dry biogas flows at standard conditions (0 °C, 1.01325 bar; DIN 1343).
 
-        Returns
-        -------
-        q_gas, q_ch4, q_co2, q_h2o, p_gas
+        The flows are those the gas-phase ODE removes from the headspace, so
+        they close the COD balance: the outflow is split by the dry partial
+        pressures, and methane, carbon dioxide and hydrogen add up to
+        ``q_gas``. This is the gas a dried sample in an analyser shows, and
+        the reference volume is the one ``BMP`` is given in.
+
+        Args:
+            pi_Sh2 (float): Partial pressure of hydrogen [bar].
+            pi_Sch4 (float): Partial pressure of methane [bar].
+            pi_Sco2 (float): Partial pressure of carbon dioxide [bar].
+            pTOTAL (float): Total pressure of the dry gas [bar].
+
+        Returns:
+            Tuple[float, float, float, float, float]: ``q_gas`` (dry biogas),
+                ``q_ch4``, ``q_co2`` [Nm³/d], ``q_h2o`` (water vapour that
+                leaves with the saturated gas, in addition to ``q_gas``)
+                [Nm³/d] and ``p_gas`` (sum of the dry partial pressures) [bar].
         """
         k_p = self._k_p
         if self._calibration_params.get("k_p") is not None:
             k_p = float(self._calibration_params["k_p"])
 
+        # The headspace is saturated with water vapour, which adds to the
+        # pressure that drives the outflow.
         p_total_wet = pTOTAL + self._p_gas_h2o
         q_gas = max(
             k_p * (p_total_wet - self._p_ext) / (self._RT / 1000.0 * self._NQ) * self.V_liq,
@@ -580,11 +659,10 @@ class ADM1:
         )
 
         p_gas = pi_Sh2 + pi_Sch4 + pi_Sco2
-        p_gas_wet = p_gas + self._p_gas_h2o
-        if p_gas_wet > 0.0:
-            q_ch4 = max(q_gas * (pi_Sch4 / p_gas_wet), 0.0)
-            q_co2 = max(q_gas * (pi_Sco2 / p_gas_wet), 0.0)
-            q_h2o = max(q_gas * (self._p_gas_h2o / p_gas_wet), 0.0)
+        if p_gas > 0.0:
+            q_ch4 = max(q_gas * (pi_Sch4 / p_gas), 0.0)
+            q_co2 = max(q_gas * (pi_Sco2 / p_gas), 0.0)
+            q_h2o = max(q_gas * (self._p_gas_h2o / p_gas), 0.0)
         else:
             q_ch4 = 0.0
             q_co2 = 0.0
@@ -601,13 +679,25 @@ class ADM1:
         Store an external ADM1 influent DataFrame.
 
         The DataFrame must have columns matching ``INFLUENT_COLUMNS`` (37
-        liquid-state columns + Q).  Once set, ``create_influent()`` reads
-        from this DataFrame instead of deriving values from the feedstock.
+        liquid-state columns + Q).  Once set, ``create_influent()`` reads the
+        influent *composition* from this DataFrame instead of blending it from
+        the feedstock, so the composition no longer follows the ``Q`` passed
+        to ``create_influent()`` -- only the flow does.
+
+        Use this for an influent that does not come from the substrate
+        library (measured influent, a time series, a fixed reference mix).
+        With a :class:`Feedstock` attached there is no need to call it: the
+        blend is derived from the current ``Q`` on every step.  Call
+        :meth:`clear_influent_dataframe` to return to that behaviour.
         """
         missing = [c for c in INFLUENT_COLUMNS if c not in df.columns]
         if missing:
             raise ValueError(f"Influent DataFrame missing columns: {missing}")
         self._influent_df = df.reset_index(drop=True)
+
+    def clear_influent_dataframe(self) -> None:
+        """Drop an external influent DataFrame; the feedstock blend applies again."""
+        self._influent_df = None
 
     def set_influent_density(self, rho_in: float, rho_sludge: float = 1000.0) -> None:
         """Retained for API compatibility; stored but no longer affects Q_out."""
@@ -623,36 +713,53 @@ class ADM1:
         """
         Build the influent vector for time step *i*.
 
-        If an external influent DataFrame has been set via
-        ``set_influent_dataframe()``, that DataFrame is used.  Otherwise
-        the feedstock object is used to derive the influent.
+        With a :class:`Feedstock` attached, the influent composition is the
+        flow-weighted blend of the substrates at the given ``Q``, recomputed
+        on every call: a changed substrate mix changes the composition, not
+        only the flow.
 
-        Raises
-        ------
-        RuntimeError
-            When neither a feedstock nor an influent DataFrame is available.
+        An external influent DataFrame set via ``set_influent_dataframe()``
+        takes precedence; row ``min(i, last)`` then supplies the composition
+        and ``Q`` only supplies the flow.
+
+        Args:
+            Q: Feed rates per substrate, in the unit of ``Q_substrates``.
+            i: Time-step index; selects the row of an external DataFrame.
+            rho: Per-substrate densities [kg/m³] to derive the influent
+                density from; defaults to the feedstock's own densities.
+
+        Raises:
+            RuntimeError: When neither a feedstock nor an influent DataFrame
+                is available.
         """
         if self._feedstock is None and self._influent_df is None:
             raise RuntimeError(
                 "ADM1 has no influent source: attach a Feedstock (Digester.set_feedstock / "
                 "PlantConfigurator.set_feedstock) or provide one via set_influent_dataframe()."
             )
+        has_feedstock_blend = hasattr(self._feedstock, "blended_concentrations")
         Q_actual = self._feedstock.actual_Q(Q) if hasattr(self._feedstock, "actual_Q") else list(Q)
         self._Q = Q_actual
+        q_total = sum(Q_actual)
         if rho is not None and len(rho) == len(Q_actual):
-            q_total = sum(Q_actual)
             if q_total > 0.0:
                 self._rho_in = sum(q * r for q, r in zip(Q_actual, rho)) / q_total
+        elif has_feedstock_blend and q_total > 0.0 and self._influent_df is None:
+            self._rho_in = float(self._feedstock.blended_density(Q))
 
+        keys = INFLUENT_COLUMNS[:-1]
         if self._influent_df is not None:
             max_i = len(self._influent_df) - 1
             row = self._influent_df.iloc[min(i, max_i)]
-            self._state_input = row[INFLUENT_COLUMNS[:-1]].tolist()
+            self._state_input = row[keys].tolist()
+        elif has_feedstock_blend:
+            blend = self._feedstock.blended_concentrations(Q)
+            self._state_input = [float(blend[k]) for k in keys]
         else:
             df = self._feedstock.get_influent_dataframe(Q)
             max_i = len(df) - 1
             row = df.iloc[min(i, max_i)]
-            self._state_input = row[INFLUENT_COLUMNS[:-1]].tolist()
+            self._state_input = row[keys].tolist()
 
     # ------------------------------------------------------------------
     # ODE system
@@ -777,10 +884,11 @@ class ADM1:
         S_H = max(S_H, 1.0e-14)
 
         # ---- Inhibition factors ------------------------------------------
-        S_IN = S_nh4 + S_nh3
+        # S_nh4 is the total inorganic nitrogen, S_nh3 a part of it.
+        S_IN = S_nh4
         I_IN = S_IN / (ip["K_S_IN"] + S_IN + 1.0e-20)
 
-        I_pH_aa = self._pH_inhib(S_H, ip["K_pH_aa"], n=1)
+        I_pH_aa = self._pH_inhib(S_H, ip["K_pH_aa"], n=2)
         I_pH_fa = self._pH_inhib(S_H, ip["K_pH_aa"], n=2)
         I_pH_c4 = self._pH_inhib(S_H, ip["K_pH_aa"], n=2)
         I_pH_pro = self._pH_inhib(S_H, ip["K_pH_aa"], n=2)
@@ -797,8 +905,10 @@ class ADM1:
         I_nh3 = K_nh3_ac_sq / (K_nh3_ac_sq + S_nh3_sq)
         I_nh3_pro = K_nh3_pro_sq / (K_nh3_pro_sq + S_nh3_sq)
 
+        # Hydrogenotrophs take up dissolved CO2, the part of S_co2 that is not bicarbonate.
+        S_co2_free = max(S_co2 - S_hco3, 0.0)
         K_co2_h2_sq = ip["K_S_co2_h2"] * ip["K_S_co2_h2"]
-        S_co2_sq = S_co2 * S_co2
+        S_co2_sq = S_co2_free * S_co2_free
         I_co2_h2 = S_co2_sq / (K_co2_h2_sq + S_co2_sq + 1.0e-30)
 
         Ka_pro = ip["K_a_pro"]
@@ -848,6 +958,33 @@ class ADM1:
         Rho_dec_pro = k["k_dec_pro"] * X_pro
         Rho_dec_ac = k["k_dec_ac"] * X_ac
         Rho_dec_h2 = k["k_dec_h2"] * X_h2
+
+        if self.rate_hook is not None:
+            rf = self.rate_hook(state, S_H, q_ad)
+            Rho_dis_PS_ch, Rho_dis_PS_pr, Rho_dis_PS_li = (
+                Rho_dis_PS_ch * rf[0],
+                Rho_dis_PS_pr * rf[0],
+                Rho_dis_PS_li * rf[0],
+            )
+            Rho_dis_PF_ch, Rho_dis_PF_pr, Rho_dis_PF_li = (
+                Rho_dis_PF_ch * rf[1],
+                Rho_dis_PF_pr * rf[1],
+                Rho_dis_PF_li * rf[1],
+            )
+            Rho_hyd_ch, Rho_hyd_pr, Rho_hyd_li = Rho_hyd_ch * rf[2], Rho_hyd_pr * rf[3], Rho_hyd_li * rf[4]
+            Rho_su, Rho_aa, Rho_fa = Rho_su * rf[5], Rho_aa * rf[6], Rho_fa * rf[7]
+            Rho_c4_va, Rho_c4_bu = Rho_c4_va * rf[8], Rho_c4_bu * rf[8]
+            Rho_pro, Rho_ac, Rho_h2 = Rho_pro * rf[9], Rho_ac * rf[10], Rho_h2 * rf[11]
+            Rho_dec_su, Rho_dec_aa, Rho_dec_fa, Rho_dec_c4, Rho_dec_pro, Rho_dec_ac, Rho_dec_h2 = (
+                Rho_dec_su * rf[12],
+                Rho_dec_aa * rf[12],
+                Rho_dec_fa * rf[12],
+                Rho_dec_c4 * rf[12],
+                Rho_dec_pro * rf[12],
+                Rho_dec_ac * rf[12],
+                Rho_dec_h2 * rf[12],
+            )
+
         sum_decay = Rho_dec_su + Rho_dec_aa + Rho_dec_fa + Rho_dec_c4 + Rho_dec_pro + Rho_dec_ac + Rho_dec_h2
 
         # ---- Acid-base rates --------------------------------------------
@@ -866,7 +1003,6 @@ class ADM1:
 
         Rho_T_h2 = k_L_a * (S_h2 - 16.0 * p_gas_h2 / (self._RT * self._K_H_h2)) * (self.V_liq / self._V_gas)
         Rho_T_ch4 = k_L_a * (S_ch4 - 64.0 * p_gas_ch4 / (self._RT * self._K_H_ch4)) * (self.V_liq / self._V_gas)
-        S_co2_free = max(S_co2 - S_hco3, 0.0)
         Rho_T_co2 = k_L_a * (S_co2_free - p_gas_co2 / (self._RT * self._K_H_co2)) * (self.V_liq / self._V_gas)
 
         k_p = self._k_p
@@ -876,6 +1012,11 @@ class ADM1:
             k_p * (pTOTAL + self._p_gas_h2o - self._p_ext) * (self.V_liq / self._V_gas),
             0.0,
         )
+
+        # Free ammonia leaves with the gas [kmol N per m³ liquid and day]. Its
+        # gas concentration follows the liquid without delay, and the gas
+        # leaves at ``Rho_T_11 * V_gas / pTOTAL`` m³/d.
+        Rho_T_nh3 = Rho_T_11 * self._V_gas / (pTOTAL * self.V_liq) * self._K_H_nh3 * S_nh3 if Rho_T_11 > 0.0 else 0.0
 
         # ---- Carbon stoichiometry coefficients for S_co2 balance --------
         C = st
@@ -920,9 +1061,41 @@ class ADM1:
         # ---- Differential equations -------------------------------------
         D_in = q_ad / self.V_liq
 
-        # Sludge volume loss (hydrolysis-rate volume balance, after Schlattmann 2011).
-        _q_S_loss = self.V_liq * (
-            Rho_hyd_ch * (0.9375 / 1550.0) + Rho_hyd_pr * (0.6125 / 1370.0) + Rho_hyd_li * (0.3474 / 920.0)
+        # Sludge volume loss: net volume of the organic matter converted. Each
+        # coefficient is the volume a process forms per kg COD it turns over;
+        # hydrogen, methane and inorganic carbon take up none. Disintegration
+        # and the hydrolysis of carbohydrates and proteins keep the volume.
+        V = st
+        v_hyd_li = -V["V_li"] + (1.0 - fSI) * (f_fa_li * V["V_li"] + (1.0 - f_fa_li) * V["V_ch"]) + fSI * V["V_li"]
+        v_su = (
+            -V["V_ch"]
+            + (1.0 - Y_su) * (fr["f_bu_su"] * V["V_bu"] + fr["f_pro_su"] * V["V_pro"] + fr["f_ac_su"] * V["V_ac"])
+            + Y_su * V["V_bac"]
+        )
+        v_aa = (
+            -V["V_pr"]
+            + (1.0 - Y_aa)
+            * (fr["f_va_aa"] * V["V_va"] + fr["f_bu_aa"] * V["V_bu"] + fr["f_pro_aa"] * V["V_pro"] + fr["f_ac_aa"] * V["V_ac"])
+            + Y_aa * V["V_bac"]
+        )
+        v_fa = -V["V_li"] + (1.0 - Y_fa) * 0.7 * V["V_ac"] + Y_fa * V["V_bac"]
+        v_c4_va = -V["V_va"] + (1.0 - Y_c4) * (0.54 * V["V_pro"] + 0.31 * V["V_ac"]) + Y_c4 * V["V_bac"]
+        v_c4_bu = -V["V_bu"] + (1.0 - Y_c4) * 0.8 * V["V_ac"] + Y_c4 * V["V_bac"]
+        v_pro = -V["V_pro"] + (1.0 - Y_pro) * 0.57 * V["V_ac"] + Y_pro * V["V_bac"]
+        v_ac = -V["V_ac"] + Y_ac * V["V_bac"]
+        v_h2 = Y_h2 * V["V_bac"]
+        v_dec = -V["V_bac"] + f_ch_bac * V["V_ch"] + f_pr_bac * V["V_pr"] + f_li_bac * V["V_li"] + f_p_bac * V["V_I_x"]
+        _q_S_loss = -self.V_liq * (
+            v_hyd_li * Rho_hyd_li
+            + v_su * Rho_su
+            + v_aa * Rho_aa
+            + v_fa * Rho_fa
+            + v_c4_va * Rho_c4_va
+            + v_c4_bu * Rho_c4_bu
+            + v_pro * Rho_pro
+            + v_ac * Rho_ac
+            + v_h2 * Rho_h2
+            + v_dec * sum_decay
         )
         self._q_S_loss_last = float(_q_S_loss)
 
@@ -984,7 +1157,7 @@ class ADM1:
             + (1.0 - Y_h2) * Rho_h2
             - self._V_gas / self.V_liq * Rho_T_ch4
         )
-        diff_S_co2 = D_in * s_in[9] - D_out * S_co2 - Sigma - self._V_gas / self.V_liq * Rho_T_co2 + Rho_A_co2
+        diff_S_co2 = D_in * s_in[9] - D_out * S_co2 - Sigma - self._V_gas / self.V_liq * Rho_T_co2
 
         N_bac = st["N_bac"]
         N_aa = st["N_aa"]
@@ -1001,7 +1174,7 @@ class ADM1:
             - Y_ac * N_bac * Rho_ac
             - Y_h2 * N_bac * Rho_h2
             + (N_bac - f_pr_bac * N_aa - f_p_bac * N_I) * sum_decay
-            + Rho_A_IN
+            - Rho_T_nh3
         )
         diff_S_I = D_in * s_in[11] - D_out * S_I + fSI * (Rho_hyd_ch + Rho_hyd_pr + Rho_hyd_li)
 
@@ -1061,7 +1234,7 @@ class ADM1:
         diff_S_pro_ion = D_in * s_in[33] - D_out * S_pro_ion - Rho_A_pro
         diff_S_ac_ion = D_in * s_in[34] - D_out * S_ac_ion - Rho_A_ac
         diff_S_hco3 = D_in * s_in[35] - D_out * S_hco3 - Rho_A_co2
-        diff_S_nh3 = D_in * s_in[36] - D_out * S_nh3 - Rho_A_IN
+        diff_S_nh3 = D_in * s_in[36] - D_out * S_nh3 - Rho_A_IN - Rho_T_nh3
 
         # --- Gas phase (37–40) ---
         diff_p_h2 = Rho_T_h2 * self._RT / 16.0 - p_gas_h2 / pTOTAL * Rho_T_11

@@ -21,9 +21,17 @@ Welcome to PyADM1ODE - A Python framework for modeling, simulating, and optimizi
 
     ---
 
-    Learn about the components, substrates, and applications
+    Learn about the components and applications
 
     [:octicons-arrow-right-24: User Guide](user_guide/components/index.md)
+
+-   :material-sprout:{ .lg .middle } __Substrates__  
+
+    ---
+
+    Example substrates, meaning and influence of the values, their origin
+
+    [:octicons-arrow-right-24: Substrates](substrates/index.md)
 
 -   :material-chart-bell-curve-cumulative:{ .lg .middle } __Model & Theory__  
 

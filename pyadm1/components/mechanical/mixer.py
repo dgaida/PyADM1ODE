@@ -50,6 +50,9 @@ from ..base import Component, ComponentType
 # Account for motor efficiency (typical 85-95%)
 MOTOR_EFFICIENCY = 0.9
 
+#: Length of one on/off cycle of an intermittent mixer [days] (one hour).
+INTERMITTENT_CYCLE_DAYS = 1.0 / 24.0
+
 
 class MixerType(str, Enum):
     """Enumeration of mixer types."""
@@ -111,6 +114,10 @@ class Mixer(Component):
         intermittent: bool = True,
         on_time_fraction: float = 0.25,
         name: str | None = None,
+        fluid_density: float = 1020.0,
+        fluid_viscosity: float = 0.050,
+        ts_reference: float = 6.0,
+        viscosity_ts_coefficient: float = 0.5,
     ):
         """
         Initialize mixer component.
@@ -128,6 +135,15 @@ class Mixer(Component):
             intermittent: Enable intermittent operation
             on_time_fraction: Fraction of time mixer is on (0-1)
             name: Human-readable name
+            fluid_density: Fluid density [kg/m³]
+            fluid_viscosity: Apparent viscosity [Pa·s] at the reference state
+                (35 °C, ``ts_reference``). 0.050 is typical for biogas substrate.
+            ts_reference: Total solids [% FM] at which ``fluid_viscosity`` holds.
+            viscosity_ts_coefficient: Exponential TS sensitivity ``b`` [1/% TS]
+                in ``μ ∝ exp(b · (TS − ts_reference))``; 0 switches the TS
+                coupling off. The default 0.5 (about a factor 10 per 4.6 % TS)
+                is an order-of-magnitude value for digestate, not a fitted
+                one. TODO: source needs verification; calibrate per plant.
         """
         super().__init__(component_id, ComponentType.MIXER, name)
 
@@ -147,9 +163,16 @@ class Mixer(Component):
         self.operating_speed = operating_speed or self._estimate_operating_speed()
         self.power_installed = power_installed or self._estimate_power_requirement()
 
-        # Fluid properties (typical biogas substrate)
-        self.fluid_density = 1020.0  # kg/m³
-        self.fluid_viscosity = 0.050  # Pa·s (50 mPa·s, typical for biogas substrate)
+        # Fluid properties. ``fluid_viscosity`` is the live value; the
+        # reference value it is derived from stays fixed so repeated
+        # temperature / TS updates do not compound.
+        self.fluid_density = float(fluid_density)  # kg/m³
+        self.viscosity_reference = float(fluid_viscosity)  # Pa·s at 35 °C, ts_reference
+        self.fluid_viscosity = self.viscosity_reference
+        self.ts_reference = float(ts_reference)  # % FM
+        self.viscosity_ts_coefficient = float(viscosity_ts_coefficient)  # 1/% TS
+        self._fluid_temperature = 308.15  # K
+        self._fluid_ts: float | None = None  # % FM
 
         # Operating state
         self.is_running = True
@@ -213,39 +236,49 @@ class Mixer(Component):
             inputs: Input data with optional keys:
                 - 'speed_setpoint': Desired speed fraction (0-1)
                 - 'enable_mixing': Enable/disable mixer
-                - 'fluid_viscosity': Fluid viscosity [Pa·s]
-                - 'temperature': Fluid temperature [K]
+                - 'fluid_viscosity': Fluid viscosity [Pa·s]; overrides the
+                  temperature / TS model for this step
+                - 'temperature' or 'T_digester': Fluid temperature [K]
+                - 'TS': Total solids of the tank content [% FM], as reported by
+                  a connected digester
 
         Returns:
             Dict with keys:
-                - 'P_consumed': Power consumption [kW]
-                - 'P_average': Time-averaged power [kW]
-                - 'is_running': Current running state
+                - 'P_consumed': Power consumption, mean over this step [kW]
+                - 'P_running': Power while the mixer runs [kW]
+                - 'P_average': Long-run average power [kW]
+                - 'is_running': True when the mixer ran during this step
                 - 'mixing_quality': Mixing quality index (0-1)
                 - 'reynolds_number': Reynolds number
                 - 'power_number': Power number
                 - 'mixing_time': Mixing time [min]
                 - 'shear_rate': Average shear rate [1/s]
         """
-        # Update fluid properties if provided
+        # Update fluid properties if provided. A connected digester reports
+        # ``T_digester`` and ``TS``; an explicit viscosity wins over the model.
+        temperature = inputs.get("temperature", inputs.get("T_digester"))
+        ts = inputs.get("TS")
+        if temperature is not None or ts is not None:
+            self._update_fluid_properties(temperature, ts)
+
         if "fluid_viscosity" in inputs:
             self.fluid_viscosity = inputs["fluid_viscosity"]
-
-        if "temperature" in inputs:
-            self._update_fluid_properties(inputs["temperature"])
 
         # Update operating state
         enable_mixing = inputs.get("enable_mixing", True)
         speed_setpoint = inputs.get("speed_setpoint", 1.0)
 
-        # Intermittent operation logic
-        if self.intermittent:
-            # Simple on/off cycling based on on_time_fraction
-            cycle_time = 1.0  # 1 hour cycle
-            time_in_cycle = (t % cycle_time) / cycle_time
-            self.is_running = time_in_cycle < self.on_time_fraction and enable_mixing
+        # Share of this step during which the mixer runs. An intermittent
+        # mixer cycles once per ``INTERMITTENT_CYCLE_DAYS``; integrating the
+        # duty cycle over the step keeps energy and operating hours right for
+        # any step length, including steps longer than one cycle.
+        if not enable_mixing:
+            on_share = 0.0
+        elif self.intermittent:
+            on_share = self._on_share(t, dt)
         else:
-            self.is_running = enable_mixing
+            on_share = 1.0
+        self.is_running = on_share > 0.0
 
         # Update speed
         # take max of speed_setpoint, 0.0 - to avoid wrong calculations if accidently a negative setpoint is given
@@ -254,11 +287,13 @@ class Mixer(Component):
         # Calculate mixing parameters
         self._calculate_mixing_parameters()
 
-        # Calculate power consumption
-        P_consumed = self._calculate_power_consumption()
+        # Power while running, and its mean over this step. ``P_consumed`` is
+        # the step mean because the plant integrates it over the step.
+        P_running = self._calculate_power_consumption()
+        P_consumed = P_running * on_share
 
-        # Calculate time-averaged power (accounting for intermittent operation)
-        P_average = P_consumed * self.on_time_fraction if self.intermittent else P_consumed
+        # Long-run average power (accounting for intermittent operation)
+        P_average = P_running * self.on_time_fraction if self.intermittent else P_running
 
         # Calculate mixing quality
         mixing_quality = self._calculate_mixing_quality()
@@ -268,8 +303,7 @@ class Mixer(Component):
 
         # Update cumulative values
         dt_hours = dt * 24.0
-        if self.is_running:
-            self.operating_hours += dt_hours
+        self.operating_hours += dt_hours * on_share
         self.energy_consumed += P_consumed * dt_hours
 
         # Update state
@@ -288,6 +322,7 @@ class Mixer(Component):
         # Prepare outputs
         self.outputs_data = {
             "P_consumed": float(P_consumed),
+            "P_running": float(P_running),
             "P_average": float(P_average),
             "is_running": bool(self.is_running),
             "mixing_quality": float(mixing_quality),
@@ -295,11 +330,36 @@ class Mixer(Component):
             "power_number": float(self.power_number),
             "mixing_time": float(self.mixing_time),
             "shear_rate": float(shear_rate),
-            "specific_power": float(P_consumed / self.tank_volume),  # kW/m³
+            "specific_power": float(P_running / self.tank_volume),  # kW/m³ while running
             "tip_speed": float(self._calculate_tip_speed()),  # m/s
         }
 
         return self.outputs_data
+
+    def _on_share(self, t: float, dt: float) -> float:
+        """
+        Share of the step ``[t, t + dt]`` an intermittent mixer is switched on.
+
+        The mixer runs during the first ``on_time_fraction`` of every cycle of
+        ``INTERMITTENT_CYCLE_DAYS``.
+
+        Args:
+            t (float): Start of the step [days].
+            dt (float): Step length [days].
+
+        Returns:
+            float: On-time divided by step length, 0..1.
+        """
+        if dt <= 0.0:
+            return 1.0 if (t % INTERMITTENT_CYCLE_DAYS) < self.on_time_fraction * INTERMITTENT_CYCLE_DAYS else 0.0
+
+        def on_time_until(time: float) -> float:
+            cycles, rest = divmod(time, INTERMITTENT_CYCLE_DAYS)
+            on_per_cycle = self.on_time_fraction * INTERMITTENT_CYCLE_DAYS
+            return cycles * on_per_cycle + min(rest, on_per_cycle)
+
+        share = (on_time_until(t + dt) - on_time_until(t)) / dt
+        return min(max(share, 0.0), 1.0)
 
     def _calculate_mixing_parameters(self) -> None:
         """Calculate mixing performance parameters."""
@@ -474,20 +534,33 @@ class Mixer(Component):
 
         return tip_speed
 
-    def _update_fluid_properties(self, temperature: float) -> None:
+    def _update_fluid_properties(self, temperature: float | None = None, ts: float | None = None) -> None:
         """
-        Update fluid properties based on temperature.
+        Update the apparent viscosity from temperature and total solids.
+
+        ``μ = μ_ref · exp(Ea/R · (1/T − 1/T₀)) · exp(b · (TS − TS_ref))``
+
+        Either argument may be omitted; the last known value is kept.
 
         Args:
             temperature: Fluid temperature [K]
+            ts: Total solids of the tank content [% FM]
         """
-        # Viscosity temperature dependence (Arrhenius-type)
-        # μ(T) = μ₀ * exp(Ea/R * (1/T - 1/T₀))
-        T_0 = 308.15  # Reference temperature (35°C)
-        mu_0 = 0.050  # Reference viscosity [Pa·s]
-        Ea_R = 2000.0  # Activation energy / gas constant [K]
+        if temperature is not None and float(temperature) > 0.0:
+            self._fluid_temperature = float(temperature)
+        if ts is not None and float(ts) > 0.0:
+            self._fluid_ts = float(ts)
 
-        self.fluid_viscosity = mu_0 * np.exp(Ea_R * (1 / temperature - 1 / T_0))
+        # Viscosity temperature dependence (Arrhenius-type)
+        T_0 = 308.15  # Reference temperature (35°C)
+        Ea_R = 2000.0  # Activation energy / gas constant [K]
+        viscosity = self.viscosity_reference * np.exp(Ea_R * (1 / self._fluid_temperature - 1 / T_0))
+
+        # Solids dependence: digestate thickens roughly exponentially with TS.
+        if self._fluid_ts is not None:
+            viscosity *= np.exp(self.viscosity_ts_coefficient * (self._fluid_ts - self.ts_reference))
+
+        self.fluid_viscosity = float(viscosity)
 
     @staticmethod
     def _estimate_tank_diameter(volume: float) -> float:
@@ -613,7 +686,9 @@ class Mixer(Component):
             "intermittent": self.intermittent,
             "on_time_fraction": self.on_time_fraction,
             "fluid_density": self.fluid_density,
-            "fluid_viscosity": self.fluid_viscosity,
+            "fluid_viscosity": self.viscosity_reference,
+            "ts_reference": self.ts_reference,
+            "viscosity_ts_coefficient": self.viscosity_ts_coefficient,
             "state": self.state,
             "inputs": self.inputs,
             "outputs": self.outputs,
@@ -643,6 +718,10 @@ class Mixer(Component):
             intermittent=config.get("intermittent", True),
             on_time_fraction=config.get("on_time_fraction", 0.25),
             name=config.get("name"),
+            fluid_density=config.get("fluid_density", 1020.0),
+            fluid_viscosity=config.get("fluid_viscosity", 0.050),
+            ts_reference=config.get("ts_reference", 6.0),
+            viscosity_ts_coefficient=config.get("viscosity_ts_coefficient", 0.5),
         )
 
         # Restore state if present

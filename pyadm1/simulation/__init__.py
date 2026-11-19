@@ -37,7 +37,6 @@ Example:
     >>> # Create model
     >>> fs = Feedstock(["maize_silage_milk_ripeness"], feeding_freq=24)
     >>> adm1 = ADM1(fs, V_liq=1200, V_gas=216, T_ad=315.15)
-    >>> adm1.set_influent_dataframe(fs.get_influent_dataframe(Q=15.0))
     >>> adm1.create_influent([15.0], 0)
     >>>
     >>> # Single simulation

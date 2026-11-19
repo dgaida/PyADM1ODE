@@ -52,7 +52,6 @@ chp_large = configurator.add_chp(
     'P_el': 450.0,              # Elektrische Leistung [kW]
     'P_th': 506.3,              # Thermische Leistung [kW]
     'Q_gas_consumed': 2700.0,   # Gasverbrauch [m³/d]
-    'load_factor': 0.90         # Betriebspunkt (0-1)
 }
 ```
 
@@ -86,7 +85,37 @@ P_th = P_el * eta_th / eta_el
 
 # Gasverbrauch
 Q_ch4_consumed = P_el / eta_el * 24.0 / E_ch4  # m³/d
+Q_gas_consumed = Q_ch4_consumed / CH4_fraction # m³/d Biogas
 ```
+
+#### Methangehalt des Gases
+
+Das BHKW verbrennt das Gas mit seinem tatsächlichen Methangehalt; mageres Gas
+bedeutet mehr Biogas für dieselbe Leistung. Der Gehalt wird in dieser
+Reihenfolge bestimmt:
+
+1. `Q_ch4_supplied_m3_per_day` / `Q_gas_supplied_m3_per_day` aus dem Gasspeicher,  
+2. ein Eingang `CH4_fraction`,  
+3. `Q_ch4` / `Q_gas` eines direkt verbundenen Fermenters,  
+4. `ch4_content_default` (Konstruktorargument, Standard 0,60), wenn die Quelle  
+   gar keine Zusammensetzung liefert.
+
+`BiogasPlant.step` bemisst den Gasbedarf an jedem Speicher nach dem
+Methananteil, den dieser Speicher aktuell enthält. Der verwendete Anteil steht
+als `CH4_fraction` in den BHKW-Ausgaben.
+
+Der Heizwert von Methan ist das Konstruktorargument `lhv_ch4`
+(Standard 10,0 kWh/m³) von `CHP` und `Boiler`.
+
+Kessel und Fackel verbrennen dasselbe Gas:
+
+- `Boiler` verwendet `lhv_ch4 * CH4_fraction` als Biogas-Heizwert, wenn seine  
+  Gasversorgung einen `CH4_fraction` meldet; der pauschale `lhv_biogas`
+  (6,0 kWh/m³ bei 60 % CH4) gilt nur ohne Zusammensetzung. Der verwendete Wert
+  steht als `lhv_biogas_actual` in den Ausgaben.
+- `Flare` übernimmt `CH4_fraction` aus dem Eingang, sonst ihren  
+  `ch4_fraction_default` (0,6), und gibt das unverbrannte Methan als
+  `CH4_slip_m3` neben `CH4_destroyed_m3` aus.
 
 ## Heizsystem
 
@@ -98,10 +127,21 @@ Hält Fermentertemperatur mittels BHKW-Abwärme und Zusatzheizung.
 configurator.add_heating(
     heating_id="heating_main",
     target_temperature=308.15,      # Zieltemperatur [K]
-    heat_loss_coefficient=0.5,      # Wärmeverlustkoeffizient [kW/K]
-    name="Hauptfermenter-Heizung"
+    heat_loss_coefficient=None,     # UA [kW/K]; None = vom Fermenter, sonst 0.5
+    name="Hauptfermenter-Heizung",
+    digester_id="main_digester",    # Fermenter, den dieses System beheizt (optional)
 )
 ```
+
+`digester_id` verbindet den Fermenter mit dem Heizsystem. Erst dann erhält die
+Heizung die Fermentertemperatur, die Substratzufuhr (nötig für den
+Prozesswärmeterm) und den `heat_loss_coefficient` des Fermenters. Ohne die
+Verbindung wird nur der pauschale Wärmeverlustterm berechnet. Der
+Wärmeverlustkoeffizient wird in dieser Reihenfolge bestimmt:
+
+1. `heat_loss_coefficient`, der dem Heizsystem übergeben wurde,  
+2. der Wert, den der verbundene Fermenter aus seinen k-Werten ableitet,  
+3. 0,5 kW/K.  
 
 ### Wärmeverlustkoeffizienten
 
@@ -125,9 +165,9 @@ configurator.add_heating(
 
 ```python
 # Wärmebedarf = Wärmeverlust + Prozesswärme
-Q_loss = k * (T_target - T_ambient)  # [kW]
-Q_process = Q_feed * c_p * ΔT        # [kW]
-Q_total = Q_loss + Q_process         # [kW]
+Q_loss = UA * (T_digester - T_ambient)                          # [kW]
+Q_process = Σ_i Q_i * ρ_i * c_p,i * (T_target - T_substrate,i)  # [kW]
+Q_total = Q_loss + Q_process                                    # [kW]
 
 # Nutze zuerst BHKW-Wärme, dann Zusatzheizung
 if Q_total <= P_th_available:
@@ -135,6 +175,51 @@ if Q_total <= P_th_available:
 else:
     P_aux = Q_total - P_th_available
 ```
+
+### Außentemperatur
+
+`T_ambient` ist eine Einstellung auf Anlagenebene. `BiogasPlant` übergibt den
+Wert in jedem Schritt an alle Heizsysteme. Er geht nur in den Wärmeverlustterm
+ein.
+
+```python
+plant = BiogasPlant("My Plant", T_ambient=278.15)  # 5 °C; Standard 288.15 (15 °C)
+
+plant.T_ambient = 268.15   # kann zwischen Schritten geändert werden, z. B. aus Wetterdaten
+```
+
+Ein `HeatingSystem`, das ohne Anlage einzeln gerechnet wird, fällt weiterhin auf
+15 °C zurück, sofern `T_ambient` nicht in den Step-Eingängen übergeben wird.
+
+### Bodentemperatur
+
+Die Bodenplatte verliert Wärme an das Erdreich, nicht an die Außenluft.
+`T_ground` ist die zweite Temperatur auf Anlagenebene, mit einem Standardwert
+von 283,15 K (10 °C) — unter der Bodenplatte über das Jahr etwa konstant.
+
+```python
+plant = BiogasPlant("My Plant", T_ambient=268.15, T_ground=281.15)
+```
+
+Sie wirkt nur, wenn der Wärmeverlustkoeffizient aus den k-Werten des
+Fermenters stammt, denn nur dann ist der Bodenanteil
+(`digester.heat_loss_coefficient_ground`) bekannt:
+
+```python
+Q_loss = (UA - UA_ground) * (T_digester - T_ambient) + UA_ground * (T_digester - T_ground)
+```
+
+Ein pauschaler `heat_loss_coefficient` (dem Heizsystem übergeben oder der
+Standardwert 0,5 kW/K) wirkt als Ganzes gegen `T_ambient`.
+
+### Substrattemperatur
+
+Der Prozesswärmeterm ist unabhängig von der Außentemperatur: Gülle aus dem
+Stall oder Silage aus dem Fahrsilo folgt nicht der Außenluft. Jedes Substrat
+wird von seiner eigenen Lagertemperatur aus aufgeheizt, dem Feld `Temp` (°C)
+seiner Substratdefinition; Substrate ohne Angabe starten bei 15 °C. Mit
+`T_substrate` [K] in den Step-Eingängen lässt sich die Eintrittstemperatur für
+alle Substrate überschreiben.
 
 ### Beispiel: Mehrstufige Heizung
 
@@ -219,9 +304,34 @@ storage_compressed = GasStorage(
     'pressure_bar': 1.01,            # Aktueller Druck [bar]
     'utilization': 0.45,             # Füllstand (0-1)
     'vented_volume_m3': 0.0,         # Abgefackeltes Gas dieses Schritts [m³]
-    'Q_gas_supplied_m3_per_day': 2700.0  # Bereitgestelltes Gas [m³/d]
+    'Q_gas_supplied_m3_per_day': 2700.0, # Bereitgestelltes Gas [m³/d]
+    'Q_ch4_supplied_m3_per_day': 1458.0, # Methan in dieser Menge [m³/d]
+    'CH4_fraction': 0.54,            # CH4-Anteil des gespeicherten Gases (0-1)
+    'CO2_fraction': 0.44             # CO2-Anteil des gespeicherten Gases (0-1)
 }
 ```
+
+### Gaszusammensetzung
+
+Der Speicher führt den CH4- und CO2-Volumenanteil seines Inhalts; der Rest ist
+H2, Wasserdampf und Spurengase. Das Gas gilt als ideal durchmischt: Der Zufluss
+wird zuerst eingemischt, und alles, was im selben Schritt den Speicher verlässt
+(Entnahme, Überlauf, Sicherheitsabblasung), hat die gemischte Zusammensetzung.
+
+```python
+storage = GasStorage("storage", capacity_m3=1000.0,
+                     initial_ch4_fraction=0.60, initial_co2_fraction=0.40)
+
+storage.step(t, dt, {
+    "Q_gas_in_m3_per_day": 2500.0,
+    "Q_ch4_in_m3_per_day": 1350.0,   # optional; ohne Angabe gilt der Zufluss
+    "Q_co2_in_m3_per_day": 1100.0,   # als gleich zusammengesetzt wie der Inhalt
+})
+```
+
+Innerhalb einer Anlage werden `Q_ch4` und `Q_co2` des Fermenters automatisch
+durchgereicht, und sowohl das BHKW als auch die Biogasaufbereitung erhalten den
+tatsächlichen Methangehalt statt einer festen Annahme.
 
 ### Druckmodell
 
@@ -241,16 +351,28 @@ p = p_min + frac^α * (p_max - p_min)  # α > 1 für nichtlinearen Anstieg
 
 ### Sicherheitsventing
 
-Bei Überdruck wird Gas automatisch zur Fackel geleitet:
+Zufluss und Bedarf eines Schritts wirken gemeinsam auf den Speicher. Abgeblasen
+wird nur, was nach der Versorgung der Verbraucher über der Kapazität liegt:
 
 ```python
-# Speicher überwacht Druck
-if pressure > p_max:
-    # Berechne zu entfernendes Volumen
-    vent = stored_volume - target_volume
-    # Leite zur Fackel
-    vented_volume += vent
+stored = stored + inflow - supplied
+vented = max(0.0, stored - capacity)
 ```
+
+Die abgeblasene Menge hängt deshalb nicht von der Schrittweite ab: Ein Speicher
+mit 300 m³, der 2400 m³/d erhält und 2000 m³/d abgibt, bläst mit Stunden- und
+mit Tagesschritten dieselbe Menge ab.
+
+### Gasbilanz in einer Anlage
+
+`BiogasPlant.step()` rechnet jeden Gasspeicher einmal je Anlagenschritt:
+
+- **Produktion** aller Fermenter, die über eine Gasverbindung angeschlossen sind, fließt zu.  
+- **Bedarf** aller BHKW und Aufbereitungen am Speicher wird addiert. Reicht der Speicher nicht, erhält jeder Verbraucher einen Anteil im Verhältnis zu seinem Bedarf.  
+- **Abgeblasenes Gas** geht an die Fackel des Speichers. Eine direkt am Speicher angeschlossene Fackel hat Vorrang; sonst wird die Fackel hinter dem ersten Verbraucher genutzt (`add_chp()` und `add_bgaa()` legen diese an). Ohne Fackel entweicht das Gas unverbrannt.  
+- Ein **Heizkessel** an einem Speicher verbrennt Gas, das nach den Hauptverbrauchern übrig ist. Er deckt die Zusatzwärme (`P_aux_heat`) der angeschlossenen Heizungen und meldet den nicht gedeckten Rest als `P_th_unmet`.  
+
+Über jeden Zeitraum gilt: erzeugt = verbrannt + abgeblasen + Änderung des Speicherinhalts.
 
 ## Fackel
 
@@ -272,16 +394,19 @@ flare = Flare(
 {
     'vented_volume_m3': 0.0,         # Verbranntes Volumen dieses Schritts [m³]
     'cumulative_vented_m3': 125.5,   # Kumulativ verbranntes Volumen [m³]
-    'CH4_destroyed_m3': 0.0          # Zerstörtes CH4 dieses Schritts [m³]
+    'CH4_destroyed_m3': 0.0,         # Zerstörtes CH4 dieses Schritts [m³]
+    'CH4_slip_m3': 0.0               # Unverbrannt durchgehendes CH4 dieses Schritts [m³]
 }
 ```
 
 ### Fackelsteuerung
 
-Die Fackel wird automatisch aktiviert, wenn:  
-- Gasspeicher Überdruck erreicht  
-- BHKW weniger Gas verbraucht als produziert  
-- Notabschaltung erforderlich ist  
+In einer Anlage erhält die Fackel das Gas, das ihr Speicher abbläst, und das
+Gas, das eine Aufbereitung nicht aufnehmen kann. Sie brennt, wenn:
+- der Gasspeicher voll ist und die Produktion den Bedarf übersteigt  
+- das BHKW weniger Gas verbraucht, als produziert wird  
+
+Einzeln betrieben wird die Fackel über ihre Eingänge angesteuert:
 
 ```python
 # Gas vom Speicher zur Fackel
@@ -293,6 +418,35 @@ flare_inputs = {
 result = flare.step(t, dt, flare_inputs)
 print(f"Zerstörtes CH4: {result['CH4_destroyed_m3']:.2f} m³")
 ```
+
+## Strombilanz
+
+Eigenstrom ist der Strom, den die Anlage selbst verbraucht. Jeder Verbraucher
+meldet ihn als `P_consumed` [kW]:
+
+| Komponente        | Quelle von `P_consumed`                                             |
+|-------------------|---------------------------------------------------------------------|
+| `Mixer`, `Pump`   | Hydraulik- bzw. Rührleistungsmodell                                 |
+| `Feeder`          | `specific_energy` [kWh/t FM], sonst Kurve aus `power_installed`     |
+| `Separator`       | `specific_energy` [kWh/t FM]                                        |
+| `BiogasUpgrading` | `specific_electricity` [kWh/m³ Rohgas], Standard 0,25               |
+| `CHP`             | `own_consumption_fraction` der Bruttoleistung `P_el`, Standard 0,03 |
+
+Das BHKW behält `P_el` als Bruttoleistung und ergänzt `P_el_net`. Die Anlage
+summiert alles:
+
+```python
+plant.step(dt)
+balance = plant.get_electricity_balance()
+# {'P_el_produced': 500.0, 'P_el_consumed': 41.3, 'P_el_net': 458.7,
+#  'own_consumption_fraction': 0.083, 'consumers': {'chp': 15.0, 'mixer_main': 11.2, ...},
+#  'energy_produced_kwh': ..., 'energy_consumed_kwh': ..., 'energy_net_kwh': ...}
+```
+
+Die kumulierten Energien laufen mit jedem `step()` mit und werden mit der
+Anlage gespeichert. Die Standardwerte für die BHKW-Nebenaggregate und die
+Aufbereitung sind typische Werte; setze sie aus dem Datenblatt des
+tatsächlichen Aggregats.
 
 ## Vollständiges Energiesystem
 
@@ -308,7 +462,7 @@ plant = BiogasPlant("Energieoptimierte Anlage")
 config = PlantConfigurator(plant, feedstock)
 
 # Fermenter
-digester, storage = config.add_digester(
+digester, _ = config.add_digester(
     "main_digester",
     V_liq=2000,
     V_gas=300,
@@ -463,7 +617,7 @@ load_adjustment = manage_gas_storage(storage.outputs_data, chp_demand)
 ### BHKW-Verfügbarkeit
 
 ```python
-def calculate_chp_availability(results):
+def calculate_chp_availability(results, P_el_nom):
     """Berechne BHKW-Verfügbarkeit und Nutzung"""
 
     total_hours = len(results) / 24  # Tage * 24 h
@@ -471,8 +625,8 @@ def calculate_chp_availability(results):
 
     availability = running_hours / total_hours
 
-    # Lastfaktor
-    load_factors = [r['components']['chp1']['load_factor'] for r in results]
+    # Lastfaktor: elektrische Leistung bezogen auf die Nennleistung
+    load_factors = [r['components']['chp1']['P_el'] / P_el_nom for r in results]
     avg_load = sum(load_factors) / len(load_factors)
 
     return {
@@ -482,7 +636,7 @@ def calculate_chp_availability(results):
         'full_load_hours': running_hours * avg_load
     }
 
-metrics = calculate_chp_availability(results)
+metrics = calculate_chp_availability(results, P_el_nom=500)
 print(f"BHKW-Verfügbarkeit: {metrics['availability']:.1%}")
 print(f"Betriebsstunden: {metrics['running_hours']:.0f} h")
 print(f"Durchschn. Last: {metrics['avg_load']:.1%}")

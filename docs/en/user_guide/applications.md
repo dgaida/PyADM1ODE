@@ -46,6 +46,20 @@ for name, Q in mixes.items():
 Analyze the net energy production and parasitic loads of your plant.
 
 ```python
+from pyadm1.components.mechanical import Pump
+
+# Plant with a CHP, a mixer and a pump
+plant = BiogasPlant("Energy_Balance")
+configurator = PlantConfigurator(plant, Feedstock())
+configurator.add_digester("dig1", V_liq=2000, Q_substrates=[15, 10, 0, 0, 0, 0, 0, 0, 0, 0])
+configurator.add_chp("chp_main", P_el_nom=500)
+configurator.auto_connect_digester_to_chp("dig1", "chp_main")
+configurator.add_mixer("mixer_1", "dig1")
+plant.add_component(Pump("pump_1", Q_nom=25.0))
+
+plant.initialize()
+results = plant.simulate(duration=30, dt=1/24)
+
 # Calculate net energy production
 chp_power = results[-1]["components"]["chp_main"]["P_el"]
 mixer_power = results[-1]["components"]["mixer_1"]["P_consumed"]

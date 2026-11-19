@@ -7,8 +7,10 @@ Demonstrates:
     - Two digesters in series (hydrolysis pre-tank → main methanogenesis)
     - Auto gas storage attached to each fermenter
     - CHP unit consuming biogas, with safety flare
-    - Heating systems for both stages
+    - Heating system tied to each stage (heat loss and feed warming)
     - Plant JSON serialisation
+
+Gas flows are dry gas at standard conditions (Nm³/d at 0 °C and 1.01325 bar).
 
 Usage:
     python examples/02_two_stage_plant.py
@@ -33,15 +35,16 @@ def main():
     # ------------------------------------------------------------------
     # Step 1: Feedstock
     # ------------------------------------------------------------------
-    feedstock = Feedstock(
-        ["maize_silage_milk_ripeness", "swine_manure"],
-        feeding_freq=24,
-        total_simtime=30,
-    )
+    feedstock = Feedstock(["maize_silage_milk_ripeness", "swine_manure"])
 
-    # Substrate feed: hydrolysis stage gets fresh substrate, main stage inherits.
+    # Substrate feed in t FM/d, one slot per substrate of the feedstock:
+    # hydrolysis stage gets fresh substrate, main stage inherits.
     hydro_feed = [11.4, 6.1, 0, 0, 0, 0, 0, 0, 0, 0]
     main_feed = [0.0] * 10
+
+    # The model works with the volume flow of the feed [m³/d]: the feedstock
+    # converts the mass flows with the density of each substrate.
+    q_feed = sum(feedstock.actual_Q(hydro_feed))
 
     # ------------------------------------------------------------------
     # Step 2: Build plant
@@ -50,9 +53,8 @@ def main():
     plant = BiogasPlant("Two-Stage Plant (ADM1 / SIMBA# biogas)")
     cfg = PlantConfigurator(plant, feedstock)
 
-    # Hydrolysis pre-tank — short HRT, slightly thermophilic
-    print("  - Hydrolysis pre-tank: 500 m³ liquid @ 45 °C (HRT ≈ 28 d)")
-    cfg.add_digester(
+    # Hydrolysis pre-tank — 45 °C, between the mesophilic and the thermophilic range
+    hydro_digester, _ = cfg.add_digester(
         digester_id="hydrolysis",
         V_liq=500.0,
         V_gas=75.0,
@@ -60,10 +62,12 @@ def main():
         name="Hydrolysis Pre-Tank",
         Q_substrates=hydro_feed,
     )
+    hrt_hydro = hydro_digester.V_liq / q_feed
+    print(f"  - Hydrolysis pre-tank: {hydro_digester.V_liq:.0f} m³ liquid @ 45 °C (HRT about {hrt_hydro:.0f} d)")
 
-    # Main methanogenesis fermenter — larger volume, mesophilic
-    print("  - Main fermenter:   1000 m³ liquid @ 35 °C")
-    cfg.add_digester(
+    # Main methanogenesis fermenter — larger volume, mesophilic.
+    # Its inflow is the effluent of the pre-tank, which has the same volume flow.
+    main_digester, _ = cfg.add_digester(
         digester_id="main_digester",
         V_liq=1000.0,
         V_gas=150.0,
@@ -71,12 +75,25 @@ def main():
         name="Main Fermenter",
         Q_substrates=main_feed,
     )
+    hrt_main = main_digester.V_liq / q_feed
+    print(f"  - Main fermenter:   {main_digester.V_liq:.0f} m³ liquid @ 35 °C (HRT about {hrt_main:.0f} d)")
 
-    # CHP + heating
-    print("  - CHP: 500 kW_el, η_el=40%, η_th=45%")
+    # CHP + heating. digester_id ties each heating system to its digester, so
+    # its heat demand covers the heat loss of the tank and warming the feed.
+    print("  - CHP: 500 kW_el, eta_el=40%, eta_th=45%")
     cfg.add_chp(chp_id="chp_1", P_el_nom=500.0, eta_el=0.40, eta_th=0.45)
-    cfg.add_heating(heating_id="heating_hydro", target_temperature=318.15, name="Hydrolysis Heating")
-    cfg.add_heating(heating_id="heating_main", target_temperature=308.15, name="Main Stage Heating")
+    cfg.add_heating(
+        heating_id="heating_hydro",
+        target_temperature=318.15,
+        name="Hydrolysis Heating",
+        digester_id="hydrolysis",
+    )
+    cfg.add_heating(
+        heating_id="heating_main",
+        target_temperature=308.15,
+        name="Main Stage Heating",
+        digester_id="main_digester",
+    )
 
     # ------------------------------------------------------------------
     # Step 3: Connect components
@@ -100,7 +117,7 @@ def main():
     results = plant.simulate(duration=duration, dt=dt, save_interval=1.0)
 
     # ------------------------------------------------------------------
-    # Step 5: Report final state
+    # Step 5: Report final state (gas flows: dry gas at standard conditions)
     # ------------------------------------------------------------------
     final = results[-1]
     h = final["components"]["hydrolysis"]
@@ -110,15 +127,15 @@ def main():
     print(f"Final state (day {final['time']:.1f}):")
     print("=" * 70)
     print("\nHydrolysis pre-tank:")
-    print(f"  Biogas:    {h['Q_gas']:>8.1f} m³/d")
-    print(f"  Methane:   {h['Q_ch4']:>8.1f} m³/d")
+    print(f"  Biogas:    {h['Q_gas']:>8.1f} Nm³/d")
+    print(f"  Methane:   {h['Q_ch4']:>8.1f} Nm³/d")
     print(f"  pH:        {h['pH']:>8.2f}")
     print(f"  VFA:       {h['VFA']:>8.2f} g HAc-eq/L")
     print(f"  TAC:       {h['TAC']:>8.2f} g CaCO3/L")
 
     print("\nMain fermenter:")
-    print(f"  Biogas:    {m['Q_gas']:>8.1f} m³/d")
-    print(f"  Methane:   {m['Q_ch4']:>8.1f} m³/d")
+    print(f"  Biogas:    {m['Q_gas']:>8.1f} Nm³/d")
+    print(f"  Methane:   {m['Q_ch4']:>8.1f} Nm³/d")
     print(f"  pH:        {m['pH']:>8.2f}")
     print(f"  VFA:       {m['VFA']:>8.2f} g HAc-eq/L")
     print(f"  TAC:       {m['TAC']:>8.2f} g CaCO3/L")
@@ -126,8 +143,8 @@ def main():
     total_gas = h["Q_gas"] + m["Q_gas"]
     total_ch4 = h["Q_ch4"] + m["Q_ch4"]
     print("\nPlant total:")
-    print(f"  Biogas:    {total_gas:>8.1f} m³/d")
-    print(f"  Methane:   {total_ch4:>8.1f} m³/d")
+    print(f"  Biogas:    {total_gas:>8.1f} Nm³/d")
+    print(f"  Methane:   {total_ch4:>8.1f} Nm³/d")
     if total_gas > 0:
         print(f"  CH4 frac.: {100 * total_ch4 / total_gas:>8.1f} %")
 

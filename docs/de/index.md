@@ -21,9 +21,17 @@ Willkommen bei PyADM1ODE - Einem Python-Framework zur Modellierung, Simulation u
 
     ---
 
-    Erfahren Sie mehr über die Komponenten, Substrate und Anwendungen
+    Erfahren Sie mehr über die Komponenten und Anwendungen
 
     [:octicons-arrow-right-24: Handbuch](user_guide/components/index.md)
+
+-   :material-sprout:{ .lg .middle } __Substrate__  
+
+    ---
+
+    Beispiel-Substrate, Bedeutung und Einfluss der Werte, ihre Herkunft
+
+    [:octicons-arrow-right-24: Substrate](substrates/index.md)
 
 -   :material-chart-bell-curve-cumulative:{ .lg .middle } __Modell & Theorie__  
 

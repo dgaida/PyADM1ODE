@@ -423,8 +423,8 @@ add_digester(self, digester_id: 'str', V_liq: 'float' = 1050.0, V_gas: 'float' =
 
 Add an ADM1da digester to the plant.
 
-The digester's influent DataFrame, density, and steady-state initial
-state are wired automatically from the attached :class:`Feedstock`.
+The digester's steady-state initial state is derived from the attached
+:class:`Feedstock`; the influent is blended from the feed rates of every step.
 A gas storage is auto-created and connected.
 
 When no feedstock is available (neither here nor on the configurator),

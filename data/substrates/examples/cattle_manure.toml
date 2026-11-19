@@ -36,6 +36,9 @@ pH   =  7.1
 KS43 = 80.0     # mol/m³    acid capacity to pH 4.3
 FFS  =  5.0     # kg HAc/m³ VFAs as acetic-acid equivalent
 
+# --- Economics (optional) -----------------------------------------------
+cost =  2.0     # EUR/t FM  price free plant (default 0.0)
+
 # --- Optional model-default overrides -----------------------------------
 # Uncomment any of the lines below to override a SubstrateParams default
 # for this substrate.  Values shown are illustrative, not measurements.

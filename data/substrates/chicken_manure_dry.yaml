@@ -1,31 +1,45 @@
-# Calibrated to the BiomasseV standard methane yield of 82 Nm³ CH4/t FM.
-# The realized model yield follows
-#   CH4 [Nm³/t FM] = (TS/1000) * (1 - fRA) * BMP
-#                  = 0.450 * 0.75 * 243 ≈ 82 Nm³ CH4/t FM.
+# Substrate definition: Chicken manure dry (HTK)
+#
+# Measured parameters (schema "measured"): names and units as in the
+# substrate user guide. Carbohydrates are split by the cell wall (NDF, ADL);
+# the inert share (D_VS) is fitted to the methane potential BMP.
+#
+# Values: dry-matter composition from the Phyllis database (phyllis.nl,
+# median of the samples named per line) where it holds the material;
+# methane potential from the standard yields of the BiomasseV 2012; storage
+# state (pH, ammonium, acids, buffer, temperature) from published analyses
+# of the material as it is fed; price from the superseded file in legacy/.
+# The source of every value stands behind it. Derivation: substrate user
+# guide, section "Origin of the library values".
 
 name: Chicken manure dry (HTK)
+schema: measured
 
-# --- Proximate analysis / measured substrate properties -----------------
-TS:    450.0     # kg/t FM   (~45 % TS per feed log)
-NH4:    4.0      # kg N/m³ FM
-BGP:   442.0     # Nm³/t VS   biogas potential (BMP / 0.55)
-BMP:   243.0     # Nm³ CH4/t VS  biomethane potential -> 82 Nm³/t FM
+# --- Classification ----------------------------------------------------
+substrate_class: "Geflügelmist, Geflügeltrockenkot (EK II)" # [BiomasseV 2012]
 
-# --- COD fractionation --------------------------------------------------
-aXI:    0.2500
-fOTSrf: 0.391
-fsOTS:  1.0
-ffOTS:  0.0
-aSi:    0.050
+# --- Dry matter --------------------------------------------------------
+TS:              45.0       # % FM [previous file] dry chicken manure is defined by its dry matter; Phyllis ranges from 16 to 96 %
+VS:              78.0       # % TS [Phyllis] 100 - ash, median of n=19, range 57.94-86.48 (#957, #967, #968, #969, #1719, #1746, #1747, #1748, #1749, #1872, #2240, #2311, #2380, #2727, #2774, #3195, #3196, #3501, #3621)
 
-# --- Weender analysis (fractions of TS) ---------------------------------
-fRF:    0.1200
-fRP:    0.2500
-fRFe:   0.0300
-fRA:    0.2500
+# --- Weender analysis --------------------------------------------------
+RP:              29.81      # % TS [Phyllis] N x 6.25 of the dried sample, uric acid included, median of n=23, range 17.38-42.62 (#963, #964, #965, #966, #967, #968, #969, #970, #1719, #1746, #1747, #1748, #1749, #1872, #2240, #2380, #2727, #2774, #3046, #3195, #3196, #3501, #3621)
+RL:              2.64       # % TS [Phyllis] n=1 (#957)
 
-# --- Physical / chemical state ------------------------------------------
-Temp:   12.0    # degC
-pH:     7.20
-KS43:   100.00    # mol/m^3   acid capacity to pH 4.3
-FFS:    0.000     # kg HAc/m^3 VFAs as acetic-acid equivalent
+# --- Cell wall (van Soest) ---------------------------------------------
+NDF:             38.0       # % TS [Phyllis] cellulose + hemicellulose + lignin, n=1 (#2380)
+ADF:             14.0       # % TS [Phyllis] cellulose + lignin, n=1 (#2380)
+ADL:             2.0        # % TS [Phyllis] lignin, n=1 (#2380)
+
+# --- Degradability -----------------------------------------------------
+BMP:             273.0      # Nm³ CH4/t VS [BiomasseV 2012] 82 m³ CH4/t FM, KTBL standard dry matter 40 % TS, 75 % VS
+
+# --- Storage state -----------------------------------------------------
+pH:              7.7        # - [Zhang et al. 2019] raw chicken manure 33 % TS: 7.71; broiler manure 56 % TS: 8.26 (Farrow 2016)
+NH4:             3.04       # kg N/m³ [Zhang et al. 2019] TAN 2.24 g N/kg at 33.2 % TS, scaled to 45 % TS; the LfL Basisdaten 2024 give 9.27 kg/t for Hühnerkot (59 % TM) as the fertiliser convention of 45 % of N, uric acid included
+TAC:             170.0      # mmol/l [Zhang et al. 2019] total alkalinity 6270 mg CaCO3/l at 33.2 % TS, scaled to 45 % TS
+FFS:             0.0        # kg HAc/m³ [assumption] no published VFA of dry layer manure was found; set to zero
+Temp:            9.3        # °C [DWD 1991-2020] mean air temperature of Germany 1991-2020; stored outdoors (manure store)
+
+# --- Economics ---------------------------------------------------------
+cost:            30.0       # EUR/t FM [previous file]

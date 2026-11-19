@@ -1,0 +1,61 @@
+# Substrate definition by measured parameters (schema "measured")
+#
+# This file describes a substrate by laboratory values, in the names and units
+# of the legacy Gummersbach substrate library. The COD fractionation of the
+# standard schema (aXI, fOTSrf, fsOTS, ffOTS, aSi) is derived from them:
+#
+#   slow pool   = d * (NDF - ADL)          structural carbohydrates
+#   fast pool   = VS - RP - RL - NDF       non-fibre carbohydrates
+#                 + RP + RL                protein and lipids
+#   inert       = ADL + (1 - d) * (NDF - ADL)
+#   d           = (NDF - VS * (1 - D_VS)) / (NDF - ADL)      Koch et al. (2010)
+#
+# Values: maize silage of the Gummersbach plant (legacy library, id "maize").
+# The same substrate is available without a file as "gummersbach:maize".
+
+name: Maize silage (measured parameters)
+schema: measured        # older spelling: gummersbach
+substrate_class: "Mais (GPS) (EK I)"   # optional remuneration class, not used by the model
+
+# --- Dry matter ------------------------------------------------------------
+TS:    31.97    # % FM   total solids
+VS:    96.25    # % TS   volatile solids
+
+# --- Weender analysis ------------------------------------------------------
+RF:    21.07    # % TS   crude fibre (optional when NDF and ADL are given)
+RP:     8.69    # % TS   crude protein
+RL:     3.68    # % TS   crude lipids
+
+# --- van Soest analysis ----------------------------------------------------
+NDF:   43.64    # % TS   neutral detergent fibre: whole cell wall
+ADF:   21.86    # % TS   acid detergent fibre (stored, not used)
+ADL:    2.15    # % TS   acid detergent lignin
+# NDICP:  1.3   # % TS   protein bound in the cell wall: enters the slow pool
+
+# --- Degradability ---------------------------------------------------------
+# One of three keys sets the inert share: D_VS, aXI, or a measured BMP to
+# which the degradation level is fitted (e.g. "BMP: 338", Nm^3 CH4/t VS).
+D_VS:   0.80    # -      degradation level of the volatile solids
+
+# --- Physical / chemical state ---------------------------------------------
+T:     13.0     # degC   storage temperature
+pH:     3.93
+TAC:    6.0     # mmol/l titrated acid capacity to pH 4.3
+Snh4:   0.66    # g/l    ammonium, as NH4
+
+# --- Volatile fatty acids (each one optional) -------------------------------
+Sac:    1.18    # g/l    acetic acid
+Spro:   0.0     # g/l    propionic acid
+Sbu:    0.0     # g/l    butyric acid
+Sva:    0.0     # g/l    valeric acid
+
+# --- Optional ---------------------------------------------------------------
+# COD_S:  15.97  # gCOD/l  COD of the filtrate
+# SIin:   13.03  # gCOD/l  soluble inert COD
+# X_bac:   0.0   # kgCOD/m^3  living bacteria (manure)
+# X_meth:  0.0   # kgCOD/m^3  living methanogens (manure)
+# fsOTS:   0.0   # -  share of protein and lipids in the slow pool
+# ffOTS:   1.0   # -  share of protein and lipids in the fast pool
+
+# --- Economics ---------------------------------------------------------------
+cost:   40.0    # EUR/t FM

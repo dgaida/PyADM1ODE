@@ -39,7 +39,7 @@ References (default measurement parameters):
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any
+from typing import Any, ClassVar
 
 import numpy as np
 
@@ -255,6 +255,17 @@ class GasSensor(AbstractSensor):
         rng_seed: Optional random seed for deterministic runs.
         name: Human-readable component name.
     """
+
+    #: Components report gas composition as volume fractions (0-1); the
+    #: sensor measures in percent.
+    _KEY_SCALE: ClassVar[dict[str, float]] = {
+        "CH4_fraction": 100.0,
+        "methane_fraction": 100.0,
+        "CO2_fraction": 100.0,
+        "co2_fraction": 100.0,
+        "O2_fraction": 100.0,
+        "oxygen_fraction": 100.0,
+    }
 
     def __init__(
         self,
@@ -516,6 +527,7 @@ class GasSensor(AbstractSensor):
             unit=config.get("unit"),
             output_key=config.get("output_key"),
             name=config.get("name"),
+            rng_seed=config.get("rng_seed"),
         )
         cls._restore_io(sensor, config)
         return sensor

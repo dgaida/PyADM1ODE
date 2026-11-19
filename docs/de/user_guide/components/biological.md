@@ -17,11 +17,77 @@ configurator.add_digester(
     V_gas=300.0,                      # Gasraum [m³]
     T_ad=308.15,                      # Betriebstemperatur [K]
     name="Hauptfermenter",            # Lesbarer Name
-    load_initial_state=True,          # Lade Steady-State-Initialisierung
-    initial_state_file=None,          # Benutzerdefinierter Anfangszustand CSV (optional)
-    Q_substrates=[15, 10, 0, ...]    # Substrat-Fütterungsraten [m³/d]
+    Q_substrates=[15, 10],            # Fütterungsmenge je Substrat des Feedstocks [t FM/d]
+    adm1_state=None,                  # Eigener Anfangszustand mit 41 Werten (optional)
 )
 ```
+
+Der Anfangszustand wird aus dem Feedstock und den Fütterungsmengen als
+vorgeimpfte Schätzung des stationären Zustands gebildet; `adm1_state` ersetzt
+ihn. Mit der Standardkonvention des `Feedstock` (`simba_q_convention=True`)
+sind die Fütterungsmengen Tonnen Frischmasse pro Tag. `add_digester` gibt den
+Fermenter und eine einzeilige Beschreibung zurück, wie der Anfangszustand
+bestimmt wurde; der dabei angelegte Gasspeicher ist die Anlagenkomponente
+`<digester_id>_storage`.
+
+### Behältergeometrie
+
+Neben den Volumina kennt der Fermenter einen Durchmesser und einen Dachtyp. Nur
+der Durchmesser ist eine Eingabe; alle Höhen werden daraus und aus den Volumina
+abgeleitet.
+
+```python
+configurator.add_digester(
+    "main_digester",
+    V_liq=3000.0,
+    V_gas=175.0,
+    diameter=20.0,          # Innendurchmesser [m]; wird geschätzt, falls nicht angegeben
+    roof_type="membrane",   # "membrane", "concrete", "steel" oder "open"
+)
+```
+
+Fehlt `diameter`, wird er aus `V_liq + V_gas` als Zylinder mit `H = 0.4 * D`
+geschätzt, und `digester.diameter_estimated` ist `True`.
+
+| Dachtyp             | Gasraum                                | `height` (Wand)               | `roof_height`            |
+|---------------------|----------------------------------------|-------------------------------|--------------------------|
+| `membrane`          | In einer Kuppel über der Wand          | `V_liq / base_area`           | Kugelkappe mit `V_gas`   |
+| `concrete`, `steel` | Im Zylinder unter einer flachen Decke  | `(V_liq + V_gas) / base_area` | 0                        |
+| `open`              | Keiner (offenes Gärrestlager)          | `V_liq / base_area`           | 0                        |
+
+Abgeleitete, nur lesbare Eigenschaften: `base_area`, `liquid_height`, `height`,
+`roof_height`, `total_height`, `wall_area`, `roof_area`.
+
+### Wärmeverlust (k-Werte)
+
+`k_wall`, `k_roof` und `k_ground` sind optionale Wärmedurchgangskoeffizienten
+(U-Werte) in W/(m²·K): der Wärmeverlust pro Quadratmeter Wand, Dach bzw.
+Bodenplatte und pro Kelvin Temperaturdifferenz. Zusammen mit den abgeleiteten
+Flächen ergeben sie den Gesamt-Wärmeverlustkoeffizienten
+
+```text
+UA = (k_wall · wall_area + k_roof · roof_area + k_ground · base_area) / 1000   [kW/K]
+```
+
+abrufbar als `digester.heat_loss_coefficient`.
+
+```python
+configurator.add_digester(
+    "main_digester", V_liq=3000.0, V_gas=175.0, diameter=20.0, roof_type="concrete",
+    k_wall=0.4,     # gedämmte Betonwand
+    k_roof=0.25,    # gedämmte Decke
+    k_ground=1.9,   # ungedämmte Bodenplatte
+)   # -> heat_loss_coefficient ≈ 0.93 kW/K
+```
+
+| Angegebene k-Werte | `heat_loss_coefficient`                                              |
+|--------------------|----------------------------------------------------------------------|
+| Keine              | `None` – das Heizsystem behält seinen pauschalen Standardwert        |
+| Alle               | Summe über Wand, Dach und Boden (kein Dachterm bei `open`)           |
+| Einige             | Summe nur über die angegebenen Flächen, mit `UserWarning` (zu klein) |
+
+Ein Heizsystem übernimmt den Wert, sobald es mit dem Fermenter verbunden ist,
+siehe [Energiekomponenten](energy.md).
 
 ### Dimensionierungsrichtlinien
 
@@ -87,10 +153,27 @@ cfg.add_digester("F1", V_liq=3325, V_gas=870)     # baut und initialisiert
 cfg.set_feedstock(feedstock, Q_substrates={"F1": [40, 10]})
 ```
 
-`set_feedstock` verdrahtet Influent-DataFrame und -Dichte und leitet den
+`set_feedstock` hängt den Feedstock an, setzt die Fütterungsraten und leitet den
 Startzustand aus der neuen Mischung ab — das Ergebnis ist identisch zu einem von
 Anfang an mit Feedstock gebauten Fermenter. Eine einfache Zuweisung
-(`digester.feedstock = fs`) reicht dafür **nicht**.
+(`digester.feedstock = fs`) ändert den Zulauf, behält aber den alten Zustand.
+
+Die Zulaufzusammensetzung wird nie eingefroren: In jedem Schritt ist sie die
+durchflussgewichtete Mischung der Substrate bei den aktuellen `Q_substrates`.
+Eine geänderte Substratmischung ändert während eines Laufs also Durchfluss und
+Zusammensetzung des Zulaufs.
+
+```python
+plant.step(dt=1.0)                                   # Mischung der Initialisierung
+digester.Q_substrates = [25, 0]                      # ab jetzt nur Mais
+plant.step(dt=1.0)                                   # Zulauf ist reiner Mais
+```
+
+Nur ein ausdrücklich mit `digester.adm1.set_influent_dataframe(df)` gesetzter
+Zulauf überschreibt die Mischung (gemessener Zulauf, feste Referenzmischung).
+Die Zusammensetzung kommt dann aus diesem DataFrame und `Q_substrates` bestimmt
+nur den Durchfluss, bis `digester.adm1.clear_influent_dataframe()` oder
+`set_feedstock` aufgerufen wird.
 
 Ein Fermenter ohne Feedstock lässt sich anlegen und initialisieren, aber nicht
 simulieren; `step()` meldet dann klar:
@@ -109,17 +192,17 @@ outputs = digester.step(t, dt, inputs)
 {
     'Q_out': 25.0,              # Auslaufdurchfluss [m³/d]
     'state_out': [...],         # ADM1-Zustand für nächsten Fermenter
-    'Q_gas': 1250.5,           # Biogasproduktion [m³/d]
-    'Q_ch4': 750.3,            # Methanproduktion [m³/d]
-    'Q_co2': 475.2,            # CO2-Produktion [m³/d]
+    'Q_gas': 1250.5,           # Trockenes Biogas [Nm³/d, 0 °C]
+    'Q_ch4': 750.3,            # Methan [Nm³/d]
+    'Q_co2': 475.2,            # CO2 [Nm³/d]
     'pH': 7.32,                # pH-Wert
     'VFA': 2.45,               # Flüchtige Fettsäuren [g/L]
     'TAC': 8.50,               # Gesamtalkalinität [g CaCO3/L]
-    'gas_storage': {           # Angeschlossene Gasspeicherinfo
-        'stored_volume_m3': 150.0,
-        'pressure_bar': 1.02,
-        'vented_volume_m3': 0.0
-    }
+    'TS': 9.8,                 # Trockensubstanz [% FM]
+    'HRT': 42.0,               # Gefilterte Verweilzeit [d]
+    'CH4_fraction': 0.60,      # Methananteil des Biogases [-]
+    'TAN': 2.3,                # Gesamt-Ammoniumstickstoff [g N/L]
+    'pressure_bar': 1.02       # Druck im Gasraum [bar]
 }
 ```
 
@@ -139,19 +222,12 @@ configurator.connect("hydro", "main", "liquid")
 **Benutzerdefinierter Anfangszustand:**
 
 ```python
-import pandas as pd
+from pyadm1.core.adm1 import get_state_zero_from_csv
 
-# Erstelle benutzerdefinierten Zustand
-initial = pd.DataFrame({
-    'S_su': [0.01], 'S_aa': [0.001], # ... alle 41 Zustandsvariablen
-})
-initial.to_csv('custom_state.csv', index=False)
+# 41 Werte: die 37 Zustände der Flüssigphase und die vier Drücke der Gasphase
+state = get_state_zero_from_csv("data/initial_states/digester_initial8.csv")
 
-# Verwende im Fermenter
-configurator.add_digester(
-    "dig1", V_liq=2000,
-    initial_state_file='custom_state.csv'
-)
+configurator.add_digester("dig1", V_liq=2000, adm1_state=state)
 ```
 
 ### Kalibrierungsparameter
@@ -205,7 +281,7 @@ plant = BiogasPlant("Zweistufige Anlage")
 config = PlantConfigurator(plant, feedstock)
 
 # Stufe 1: Thermophile Hydrolyse
-hydro, hydro_storage = config.add_digester(
+hydro, _ = config.add_digester(
     "hydrolysis",
     V_liq=500,
     V_gas=75,
@@ -214,7 +290,7 @@ hydro, hydro_storage = config.add_digester(
 )
 
 # Stufe 2: Mesophile Methanogenese
-main, main_storage = config.add_digester(
+main, _ = config.add_digester(
     "methanogenesis",
     V_liq=2000,
     V_gas=300,
@@ -254,11 +330,11 @@ print(f"pH Haupt: {final['components']['methanogenesis']['pH']:.2f}")
 ### Wichtige Prozessindikatoren
 
 ```python
-def monitor_digester_health(results):
+def monitor_digester_health(results, digester_id):
     """Überwache Fermentergesundheit anhand von Prozessindikatoren"""
 
     for result in results:
-        digester_data = result['components']['main_digester']
+        digester_data = result['components'][digester_id]
 
         # pH-Wert prüfen
         pH = digester_data['pH']
@@ -282,7 +358,7 @@ def monitor_digester_health(results):
         if Q_gas < 500:  # Beispielschwelle
             print(f"Warnung: Niedrige Gasproduktion ({Q_gas:.1f} m³/d)")
 
-monitor_digester_health(results)
+monitor_digester_health(results, "methanogenesis")
 ```
 
 ### Optimale Betriebsbereiche

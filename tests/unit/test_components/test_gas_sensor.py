@@ -28,10 +28,10 @@ class TestGasSensorStep:
     def test_methane_sensor_reads_fraction_without_noise(self) -> None:
         sensor = GasSensor("ch4_1", sensor_type="CH4", measurement_noise=0.0, accuracy=0.0)
 
-        result = sensor.step(t=0.0, dt=1.0 / 24.0, inputs={"methane_fraction": 57.5})
+        result = sensor.step(t=0.0, dt=1.0 / 24.0, inputs={"methane_fraction": 0.575})
 
-        assert result["measurement"] == 57.5
-        assert result["true_value"] == 57.5
+        assert result["measurement"] == pytest.approx(57.5)
+        assert result["true_value"] == pytest.approx(57.5)
 
     def test_h2s_sensor_applies_detection_limit(self) -> None:
         sensor = GasSensor(
@@ -153,7 +153,7 @@ class TestGasSensorValidity:
         sensor.step(t=0.0, dt=1.0 / 24.0, inputs={})
         assert sensor.is_valid is False
 
-        sensor.step(t=1.0 / 24.0, dt=1.0 / 24.0, inputs={"methane_fraction": 55.0})
+        sensor.step(t=1.0 / 24.0, dt=1.0 / 24.0, inputs={"methane_fraction": 0.55})
         assert sensor.is_valid is True
         assert sensor.measured_value > 0.0
 
@@ -185,7 +185,7 @@ class TestGasSensorValidity:
             response_time=0.0,
         )
 
-        sensor.step(t=0.0, dt=1.0 / 24.0, inputs={"methane_fraction": 55.0})
+        sensor.step(t=0.0, dt=1.0 / 24.0, inputs={"methane_fraction": 0.55})
         assert sensor.is_valid is True
 
         # Not due yet -> the invalid branch must not fire.

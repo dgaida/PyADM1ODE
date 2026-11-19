@@ -150,7 +150,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - GitHub: [@dgaida](https://github.com/dgaida)  
 
 ---
-
-**Note**: This implementation requires C# DLLs for substrate characterization. Ensure the `dlls/` directory exists and contains the required DLLs.
-
-Source code to create the DLL files can be found at [matlab_toolboxes](https://github.com/dgaida/matlab_toolboxes).

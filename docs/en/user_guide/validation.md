@@ -1,83 +1,117 @@
 # Validation
 
-PyADM1ODE has been validated against the reference simulator **SIMBA# biogas 4.2**
+PyADM1ODE has been validated against the reference simulator **SIMBA# biogas**
 (ifak Magdeburg) and against measurement data from real agricultural biogas
-plants. This page summarises the validation strategy and the headline results.
+plants. This page describes the comparison with SIMBA# and gives its results.
 
 ## Reference simulator
 
-SIMBA# biogas 4.2 is the de-facto industry reference for the ADM1da agricultural
-extension. The validation runs use SIMBA#'s ADM1da implementation (the kinetic
-acid-base variant, *not* ADM1daph) with identical reactor geometry, temperature,
-$k_L a$ value, substrate composition, and initial state. SIMBA# CSV exports
-provide the reference state trajectories.
+SIMBA# biogas is the de-facto industry reference for the ADM1da agricultural
+extension. The reference run uses SIMBA#'s ADM1da model (the kinetic acid-base
+variant, *not* ADM1daph) in SIMBA# 5.0.57. PyADM1ODE repeats the run with the
+same reactor, the same start state and **the same influent**: the influent is
+the one SIMBA# computes from its own substrate blocks. The comparison therefore
+tests the digestion model alone and does not depend on the substrate library.
 
-## Validation scenarios
+## Reference run
 
-### 30-day single-substrate run (swine manure)
+A 600-day co-digestion of maize silage and cattle manure with a substrate
+switch:
 
-20 m³/d swine manure, $V_{liq} = 1050\,\text{m}^3$, $V_{gas} = 150\,\text{m}^3$,
-$T = 42\,°\text{C}$. Used to verify the basic process kinetics and the
-initial-state extraction logic.
+- **Phase 1** (0–300 d): 11.4 t/d maize silage + 6.1 m³/d cattle manure (16.2 m³/d).  
+- **Phase 2** (300–600 d): 10.0 t/d maize silage + 8.0 m³/d cattle manure (16.8 m³/d).  
 
-### 150-day co-digestion run (maize silage + swine manure)
+The reactor holds 1050 m³ of sludge and 150 m³ of gas at 42 °C, with
+$k_L a = 200\,\text{d}^{-1}$ and a retention time of 62 to 65 days. The
+operating point is a demanding one: 3.6 to 4.1 g/l of volatile fatty acids and
+115 mg/l of free ammonia nitrogen keep the acetate degraders close to their
+inhibition limit. Acetate then reacts about ten times stronger to any model
+difference than the other quantities, which makes it a sensitive indicator.
 
-11.4 m³/d maize silage + 6.1 m³/d swine manure, same reactor geometry.
-Validates the multi-substrate blending logic and the `simba_q_convention`
-volumetric correction.
+The reference data (start state, influent of both phases, SIMBA# states at
+300 d and 600 d and a coarse trajectory) are stored in
+`tests/integration/data/simba_adm1da_cattle_600d.json`. The test
+`tests/integration/test_simba_reference.py` repeats the run through the
+`Digester` component and is part of the test suite.
 
-### 600-day co-digestion run with substrate switch (maize silage + cattle manure)
+### Headspace
 
-The most comprehensive scenario:
+SIMBA# holds its headspace at 1.017 bar with about 80 % relative humidity,
+because it humidifies the gas at a finite rate. The dry gas then has 0.951 bar.
+PyADM1ODE keeps the headspace saturated. The comparison fixes the dry gas
+pressure of the SIMBA# run (`ADM1.p_ext = 1.033` bar); the effect of the
+default headspace is listed separately below.
 
-- **Phase 1** (0–300 d): 11.4 m³/d maize silage + 6.1 m³/d cattle manure.  
-- **Phase 2** (300–600 d): 10.0 m³/d maize silage + 8.0 m³/d cattle manure.  
+## Results
 
-The dynamic sludge volume is enabled (`dynamic_volume=True`,
-`outflow_time_constant=0.05 d`) so that $V_{liq}$ tracks SIMBA#'s essentially-
-instantaneous overflow weir within ~1 m³ of the setpoint.
+Deviation of PyADM1ODE from SIMBA# at the end of each phase:
 
-## Headline results
+| Quantity | Day 300 | Day 600 |
+| --- | --- | --- |
+| pH | +0.001 | +0.001 |
+| Volatile fatty acids (VFA) | −0.4 % | −0.9 % |
+| TAC | +0.1 % | +0.2 % |
+| Methane flow | 0.0 % | 0.0 % |
+| CO₂ flow | 0.0 % | 0.0 % |
+| Methane content of the dry gas | +0.02 points | +0.02 points |
+| Inorganic nitrogen, free ammonia | 0.0 % | 0.0 % |
+| Inorganic carbon, bicarbonate | +0.2 % | +0.4 % |
+| Acetate | −0.4 % | −0.9 % |
+| Propionate, butyrate, valerate, sugars, amino acids, fatty acids | within 0.1 % | within 0.1 % |
+| Particulate pools ($X_{PS}, X_{PF}, X_S$, $X_I$) | within 0.05 % | within 0.05 % |
+| All seven biomass populations | within 0.05 % | within 0.05 % |
 
-At the end of each phase (t = 300 d and t = 600 d snapshots):
+Over the whole run, from day 10 on:
 
-| Quantity                                                | Tolerance                                        | Status    |
-| ------------------------------------------------------- | ------------------------------------------------ | --------- |
-| $Q_{gas},\,Q_{CH_4},\,Q_{CO_2}$                         | 1–3 %                                            | ✓ matches |
-| $pH$                                                    | within 0.01 units                                | ✓ matches |
-| $HRT$                                                   | within 0.2 % (via dynamic sludge-volume balance) | ✓ matches |
-| $OLR$                                                   | within 3 %                                       | ✓ matches |
-| All seven biomass populations $X_*$                     | 1–4 %                                            | ✓ matches |
-| All particulate substrate pools ($X_{PS}, X_{PF}, X_S$) | 1–4 %                                            | ✓ matches |
-| Soluble substrates $S_{su},\,S_{aa},\,S_{fa}$           | within 1 %                                       | ✓ matches |
-| VFA species $S_{va},\,S_{bu},\,S_{pro}$ (and ions)      | within 1 %                                       | ✓ matches |
-| Substrate-switch transient at $t = 300\,\text{d}$       | same characteristic timescale                    | ✓ matches |
+| Quantity | Largest deviation |
+| --- | --- |
+| pH | 0.002 |
+| TAC | 0.2 % |
+| Inorganic nitrogen | 0.01 % |
+| Methane flow | 0.11 % (the day after the substrate switch) |
+| CO₂ flow | 0.02 % |
+| Volatile fatty acids | 2.0 % (at day 10; 1 % or less from day 75 on) |
 
-Two residual offsets persist at the validation operating point:
+The ammonia content of the gas agrees as well: about 320 ppm in the dry gas in
+both models.
 
-- **$S_{ac}$ (and aggregate VFA) is +19–21 % higher** than SIMBA#. This is a  
-  saturation-amplification artefact: at $S_{ac} \gg K_{S,ac} = 0.15$ the
-  acetoclastic Monod kinetics are saturated and the acetate concentration is
-  set by the slow dilution channel rather than by Monod feedback. A small
-  upstream input-side discrepancy (~1.1 % in the effective $Q$, traced to a
-  density-convention difference for maize silage) is amplified by a factor of
-  ~20 into the observed S_ac offset. Under non-saturated operating conditions
-  the amplifier disappears.  
-- **TAC is −6 %**, traceable to the same biomass excess: 2–3 % more biomass  
-  sequesters ~0.013 kmol C/m³ of inorganic carbon inside the biomass
-  particulates, reducing the dissolved $S_{HCO_3^-}$ pool that dominates the TAC
-  formula.
+### Default headspace
 
-Both offsets are stable across the substrate switch at t = 300 d, confirming
-they are steady-state characteristics rather than divergent integration errors.
+With the default headspace (saturated, 1.013 bar) the dry gas has 0.932 bar,
+2 % less than in the SIMBA# run. Dissolved CO₂ and bicarbonate follow by the
+same 2 %, and acetate rises to keep the pH:
+
+| Quantity | Day 300 | Day 600 |
+| --- | --- | --- |
+| Acetate, VFA | +3.2 % | +3.4 % |
+| TAC | −0.8 % | −0.7 % |
+| Inorganic carbon | −1.9 % | −1.6 % |
+| pH | 0.000 | +0.001 |
+| Inorganic nitrogen, methane and CO₂ flow | within 0.1 % | within 0.1 % |
+
+## Scope
+
+- **Substrates:** The influent comes from SIMBA#. How PyADM1ODE derives an influent from a substrate file is not part of this comparison.  
+- **Gas report:** SIMBA# reports wet gas (6.4 to 6.5 % water vapour in this run). Its methane and CO₂ flows compare directly with `Q_ch4` and `Q_co2`; its total gas flow and methane content have to be reduced to the dry gas first.  
+- **Fast dynamics:** SIMBA# couples the acid-base pairs through the carbonate system, PyADM1ODE through the proton concentration. Both settle on the same equilibrium; the time they take differs, which only matters on the scale of hours.  
+- **Earlier runs:** A 30-day run with swine manure and a 150-day run with maize silage and swine manure were compared with version 0.6. They have not been repeated, because the SIMBA# settings of those runs are no longer available.  
+
+## Changes since version 0.6.2
+
+Up to version 0.6.2 the same run gave acetate 20 to 30 % above SIMBA#, TAC 5
+to 6 % below and the CO₂ flow 2 to 4 % below. Four deviations from the SIMBA#
+model caused this, and all four are corrected:
+
+- **Headspace pressure:** the water vapour pressure was subtracted twice, which left the dissolved CO₂ about 10 % too low.  
+- **Acid-base terms:** the acid-base rates were added to the totals of inorganic carbon and nitrogen, which removed carbon from the gas.  
+- **Nitrogen:** decay released nitrogen instead of binding a little, and ammonia did not leave with the gas; together about 3 % too much inorganic nitrogen.  
+- **Sludge volume:** the volume loss was about 10 % too high, which raised all concentrations by about 1 %.  
+
+The details are on the [ADM1 implementation](adm1_implementation.md) page.
 
 ## Conclusion
 
-PyADM1ODE is considered validated as a drop-in replacement for SIMBA# biogas 4.2
-in gas-yield forecasting, OLR and HRT analysis, and pH-based monitoring. The
-two residuals on the acetate pool and TAC are documented and traceable to the
-known density-convention difference between the two simulators.
-
-A full report of the 600-day cattle-manure comparison, including all themed
-time-series plots and the snapshot tables, is available in the
-`Report/` directory of the repository.
+Given the same influent, PyADM1ODE reproduces SIMBA#'s ADM1da model within
+0.2 % for pH, TAC, nitrogen, the particulate pools, the biomass and the gas
+flows, and within 2 % for acetate, including the transient after a substrate
+switch.

@@ -276,22 +276,22 @@ final = results[-1]
 print("\nEndergebnisse:")
 print(f"Speicherstand: {final['components']['silo1']['current_level']:.1f} t")
 print(f"Dosierer-Durchsatz: {final['components']['feed1']['total_mass_fed']:.1f} t")
-print(f"Pumpenenergie: {final['components']['pump1']['energy_consumed']:.1f} kWh")
-print(f"Rührwerkenergie: {final['components']['mix1']['energy_consumed']:.1f} kWh")
+print(f"Pumpenenergie: {pump.state['energy_consumed']:.1f} kWh")
+print(f"Rührwerkenergie: {mixer.state['energy_consumed']:.1f} kWh")
 print(f"Biogas: {final['components']['main_digester']['Q_gas']:.1f} m³/d")
 ```
 
 ### Energieanalyse
 
 ```python
-def calculate_parasitic_load(results):
+def calculate_parasitic_load(plant, results):
     """Berechne gesamten parasitären Energieverbrauch"""
     final = results[-1]
     components = final['components']
 
-    # Mechanische Komponenten
-    pump_energy = components.get('pump1', {}).get('energy_consumed', 0)
-    mixer_energy = components.get('mix1', {}).get('energy_consumed', 0)
+    # Mechanische Komponenten (kumulierte Energie wird im Zustand der Komponente geführt)
+    pump_energy = plant.components['pump1'].state['energy_consumed']
+    mixer_energy = plant.components['mix1'].state['energy_consumed']
     feeder_power = components.get('feed1', {}).get('P_consumed', 0)
 
     # BHKW-Produktion
@@ -309,7 +309,7 @@ def calculate_parasitic_load(results):
         'net_energy': chp_energy - parasitic_total
     }
 
-analysis = calculate_parasitic_load(results)
+analysis = calculate_parasitic_load(plant, results)
 print(f"\nEnergieanalyse:")
 print(f"BHKW-Produktion: {analysis['chp_production']:.0f} kWh")
 print(f"Pumpenverbrauch: {analysis['pump_energy']:.0f} kWh")
@@ -327,13 +327,14 @@ print(f"Nettoproduktion: {analysis['net_energy']:.0f} kWh")
 **Lösung**: Prüfe Druckhöhe und Drehzahleinstellungen
 
 ```python
+Q_setpoint = 15.0
 result = pump.step(0, 1/24, {
-    'Q_setpoint': 15.0,
+    'Q_setpoint': Q_setpoint,
     'enable_pump': True,
     'pressure_head': 50.0  # Stelle ausreichende Druckhöhe sicher
 })
 
-if result['Q_actual'] < 0.5 * result['Q_setpoint']:
+if result['Q_actual'] < 0.5 * Q_setpoint:
     print("Prüfe: Druckhöhe, Blockaden, Stromversorgung")
 ```
 

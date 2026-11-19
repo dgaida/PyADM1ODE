@@ -52,7 +52,6 @@ chp_large = configurator.add_chp(
     'P_el': 450.0,              # Electrical power [kW]
     'P_th': 506.3,              # Thermal power [kW]
     'Q_gas_consumed': 2700.0,   # Gas consumption [m³/d]
-    'load_factor': 0.90         # Operating point (0–1)
 }
 ```
 
@@ -86,7 +85,36 @@ P_th = P_el * eta_th / eta_el
 
 # Gas consumption
 Q_ch4_consumed = P_el / eta_el * 24.0 / E_ch4  # m³/d
+Q_gas_consumed = Q_ch4_consumed / CH4_fraction # m³/d biogas
 ```
+
+#### Methane content of the gas
+
+The CHP burns the gas with its actual methane content; lean gas means more
+biogas for the same power. The content is taken from, in this order:
+
+1. `Q_ch4_supplied_m3_per_day` / `Q_gas_supplied_m3_per_day` from the gas storage,  
+2. a `CH4_fraction` input,  
+3. `Q_ch4` / `Q_gas` of a directly connected digester,  
+4. `ch4_content_default` (constructor argument, default 0.60) when the source  
+   carries no composition at all.
+
+`BiogasPlant.step` sizes the gas demand on each storage from the methane
+fraction that storage currently holds. The fraction used is reported as
+`CH4_fraction` in the CHP outputs.
+
+The heating value of methane is the constructor argument `lhv_ch4`
+(default 10.0 kWh/m³) of both `CHP` and `Boiler`.
+
+The boiler and the flare burn the same gas:
+
+- `Boiler` uses `lhv_ch4 * CH4_fraction` as the biogas heating value when its  
+  gas supply reports a `CH4_fraction`; the flat `lhv_biogas` (6.0 kWh/m³ at
+  60 % CH4) applies only without a composition. The value used is reported as
+  `lhv_biogas_actual`.
+- `Flare` takes `CH4_fraction` from its input, falling back to its  
+  `ch4_fraction_default` (0.6), and reports the unburnt methane as
+  `CH4_slip_m3` next to `CH4_destroyed_m3`.
 
 ## Heating System
 
@@ -98,10 +126,21 @@ Maintains digester temperature using CHP waste heat and auxiliary heating.
 configurator.add_heating(
     heating_id="heating_main",
     target_temperature=308.15,      # Target temperature [K]
-    heat_loss_coefficient=0.5,      # Heat-loss coefficient [kW/K]
-    name="Main Digester Heating"
+    heat_loss_coefficient=None,     # UA [kW/K]; None = from the digester, else 0.5
+    name="Main Digester Heating",
+    digester_id="main_digester",    # Digester this system heats (optional)
 )
 ```
+
+`digester_id` connects the digester to the heating system. Only then does the
+heating receive the digester temperature, the substrate feed (needed for the
+process-heat term) and the digester's `heat_loss_coefficient`. Without the
+connection only the flat heat-loss term is computed. The heat loss coefficient
+is resolved in this order:
+
+1. `heat_loss_coefficient` given to the heating system,  
+2. the value the connected digester derives from its k-values,  
+3. 0.5 kW/K.  
 
 ### Heat-Loss Coefficients
 
@@ -125,9 +164,9 @@ configurator.add_heating(
 
 ```python
 # Heat demand = heat loss + process heat
-Q_loss = k * (T_target - T_ambient)  # [kW]
-Q_process = Q_feed * c_p * ΔT        # [kW]
-Q_total = Q_loss + Q_process         # [kW]
+Q_loss = UA * (T_digester - T_ambient)                          # [kW]
+Q_process = Σ_i Q_i * ρ_i * c_p,i * (T_target - T_substrate,i)  # [kW]
+Q_total = Q_loss + Q_process                                    # [kW]
 
 # Use CHP heat first, then auxiliary
 if Q_total <= P_th_available:
@@ -135,6 +174,50 @@ if Q_total <= P_th_available:
 else:
     P_aux = Q_total - P_th_available
 ```
+
+### Ambient Temperature
+
+`T_ambient` is a plant-level setting. `BiogasPlant` hands it to every heating
+system on each step. It enters the heat-loss term only.
+
+```python
+plant = BiogasPlant("My Plant", T_ambient=278.15)  # 5 °C; default 288.15 (15 °C)
+
+plant.T_ambient = 268.15   # may be changed between steps, e.g. from weather data
+```
+
+A `HeatingSystem` stepped on its own, without a plant, still falls back to
+15 °C unless `T_ambient` is passed in its step inputs.
+
+### Ground Temperature
+
+The floor slab loses heat to the soil, not to the outside air. `T_ground` is
+the second plant-level temperature, with a default of 283.15 K (10 °C) —
+roughly constant over the year below the slab.
+
+```python
+plant = BiogasPlant("My Plant", T_ambient=268.15, T_ground=281.15)
+```
+
+It applies only when the heat loss coefficient comes from the digester's
+k-values, because only then is the floor share
+(`digester.heat_loss_coefficient_ground`) known:
+
+```python
+Q_loss = (UA - UA_ground) * (T_digester - T_ambient) + UA_ground * (T_digester - T_ground)
+```
+
+A flat `heat_loss_coefficient` (given to the heating system, or the 0.5 kW/K
+default) acts against `T_ambient` as a whole.
+
+### Substrate Temperature
+
+The process-heat term is independent of the ambient temperature: manure from
+the barn or silage from the clamp does not follow the outside air. Each
+substrate is heated from its own storage temperature, the `Temp` field (°C) of
+its substrate definition; substrates without one start at 15 °C. Pass
+`T_substrate` [K] in the step inputs to override the inlet temperature for all
+substrates.
 
 ### Example: Multi-Stage Heating
 
@@ -219,9 +302,34 @@ storage_compressed = GasStorage(
     'pressure_bar': 1.01,            # Current pressure [bar]
     'utilization': 0.45,             # Fill level (0–1)
     'vented_volume_m3': 0.0,         # Gas flared this step [m³]
-    'Q_gas_supplied_m3_per_day': 2700.0  # Gas supplied [m³/d]
+    'Q_gas_supplied_m3_per_day': 2700.0, # Gas supplied [m³/d]
+    'Q_ch4_supplied_m3_per_day': 1458.0, # Methane within that supply [m³/d]
+    'CH4_fraction': 0.54,            # CH4 fraction of the stored gas (0–1)
+    'CO2_fraction': 0.44             # CO2 fraction of the stored gas (0–1)
 }
 ```
+
+### Gas Composition
+
+The storage keeps the CH4 and CO2 volume fraction of its inventory; the
+remainder is H2, water vapour and trace gases. The gas is treated as ideally
+mixed: inflow is blended in first, and everything leaving in the same step
+(supply, overflow, safety vent) carries the blended composition.
+
+```python
+storage = GasStorage("storage", capacity_m3=1000.0,
+                     initial_ch4_fraction=0.60, initial_co2_fraction=0.40)
+
+storage.step(t, dt, {
+    "Q_gas_in_m3_per_day": 2500.0,
+    "Q_ch4_in_m3_per_day": 1350.0,   # optional; without it the inflow
+    "Q_co2_in_m3_per_day": 1100.0,   # is taken to match the stored gas
+})
+```
+
+Inside a plant the digester's `Q_ch4` and `Q_co2` are routed in automatically,
+and both the CHP and the biogas upgrading unit receive the actual methane
+content instead of a fixed assumption.
 
 ### Pressure Model
 
@@ -241,16 +349,28 @@ p = p_min + frac^α * (p_max - p_min)  # α > 1 for non-linear rise
 
 ### Safety Venting
 
-In an overpressure condition, gas is automatically routed to the flare:
+Inflow and demand of one step act on the storage together. Only what is left
+above the capacity after the consumers were served is vented:
 
 ```python
-# Storage monitors pressure
-if pressure > p_max:
-    # Compute volume to remove
-    vent = stored_volume - target_volume
-    # Route to flare
-    vented_volume += vent
+stored = stored + inflow - supplied
+vented = max(0.0, stored - capacity)
 ```
+
+The vented volume therefore does not depend on the step length: a storage of
+300 m³ fed with 2400 m³/d and drawn at 2000 m³/d vents the same amount with
+hourly and with daily steps.
+
+### Gas Balance in a Plant
+
+`BiogasPlant.step()` steps every gas storage once per plant step:
+
+- **Production** of all digesters connected by a gas connection flows in.  
+- **Demand** of all CHPs and upgrading units on the storage is added up. If the storage cannot cover it, each consumer gets a share in proportion to its demand.  
+- **Vented gas** goes to the flare of the storage. A flare connected to the storage itself takes precedence; otherwise the flare behind the first consumer is used (`add_chp()` and `add_bgaa()` create that one). Without a flare the gas is released unburnt.  
+- A **boiler** connected to a storage burns gas left after the main consumers. It covers the auxiliary heat (`P_aux_heat`) of the heating systems connected to it and reports what it could not cover as `P_th_unmet`.  
+
+Over any period: produced = burnt + vented + change of the stored volume.
 
 ## Flare
 
@@ -272,16 +392,19 @@ flare = Flare(
 {
     'vented_volume_m3': 0.0,         # Volume combusted this step [m³]
     'cumulative_vented_m3': 125.5,   # Cumulative combusted volume [m³]
-    'CH4_destroyed_m3': 0.0          # CH4 destroyed this step [m³]
+    'CH4_destroyed_m3': 0.0,         # CH4 destroyed this step [m³]
+    'CH4_slip_m3': 0.0               # CH4 passing the flame unburnt this step [m³]
 }
 ```
 
 ### Flare Control
 
-The flare activates automatically when:  
-- Gas storage reaches overpressure  
+Inside a plant the flare receives the gas its storage vents and the gas an
+upgrading unit cannot take. It burns whenever:
+- The gas storage is full and production exceeds demand  
 - The CHP consumes less gas than is being produced  
-- Emergency shutdown is required  
+
+Standalone, the flare is driven through its inputs:
 
 ```python
 # Gas from storage to flare
@@ -293,6 +416,34 @@ flare_inputs = {
 result = flare.step(t, dt, flare_inputs)
 print(f"CH4 destroyed: {result['CH4_destroyed_m3']:.2f} m³")
 ```
+
+## Electricity Balance
+
+Own consumption is the electricity the plant uses itself. Every consumer
+reports it as `P_consumed` [kW]:
+
+| Component         | Source of `P_consumed`                                          |
+|-------------------|-----------------------------------------------------------------|
+| `Mixer`, `Pump`   | Hydraulic / mixing power model                                  |
+| `Feeder`          | `specific_energy` [kWh/t FM], else the `power_installed` curve  |
+| `Separator`       | `specific_energy` [kWh/t FM]                                    |
+| `BiogasUpgrading` | `specific_electricity` [kWh/m³ raw gas], default 0.25           |
+| `CHP`             | `own_consumption_fraction` of the gross `P_el`, default 0.03    |
+
+The CHP keeps `P_el` as gross output and adds `P_el_net`. The plant sums
+everything:
+
+```python
+plant.step(dt)
+balance = plant.get_electricity_balance()
+# {'P_el_produced': 500.0, 'P_el_consumed': 41.3, 'P_el_net': 458.7,
+#  'own_consumption_fraction': 0.083, 'consumers': {'chp': 15.0, 'mixer_main': 11.2, ...},
+#  'energy_produced_kwh': ..., 'energy_consumed_kwh': ..., 'energy_net_kwh': ...}
+```
+
+The cumulative energies advance on every `step()` and are saved with the plant.
+The defaults for the CHP auxiliaries and the upgrading unit are typical values;
+set them from the data sheet of the actual unit.
 
 ## Complete Energy System
 
@@ -308,7 +459,7 @@ plant = BiogasPlant("Energy-Optimized Plant")
 config = PlantConfigurator(plant, feedstock)
 
 # Digester
-digester, storage = config.add_digester(
+digester, _ = config.add_digester(
     "main_digester",
     V_liq=2000,
     V_gas=300,
@@ -463,7 +614,7 @@ load_adjustment = manage_gas_storage(storage.outputs_data, chp_demand)
 ### CHP Availability
 
 ```python
-def calculate_chp_availability(results):
+def calculate_chp_availability(results, P_el_nom):
     """Compute CHP availability and utilization."""
 
     total_hours = len(results) / 24  # days * 24 h
@@ -471,8 +622,8 @@ def calculate_chp_availability(results):
 
     availability = running_hours / total_hours
 
-    # Load factor
-    load_factors = [r['components']['chp1']['load_factor'] for r in results]
+    # Load factor: electrical power relative to the nominal power
+    load_factors = [r['components']['chp1']['P_el'] / P_el_nom for r in results]
     avg_load = sum(load_factors) / len(load_factors)
 
     return {
@@ -482,7 +633,7 @@ def calculate_chp_availability(results):
         'full_load_hours': running_hours * avg_load
     }
 
-metrics = calculate_chp_availability(results)
+metrics = calculate_chp_availability(results, P_el_nom=500)
 print(f"CHP availability: {metrics['availability']:.1%}")
 print(f"Operating hours: {metrics['running_hours']:.0f} h")
 print(f"Average load: {metrics['avg_load']:.1%}")

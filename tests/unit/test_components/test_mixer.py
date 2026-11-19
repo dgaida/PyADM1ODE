@@ -7,6 +7,7 @@ for maintaining homogeneity in anaerobic digesters.
 """
 
 import numpy as np
+import pytest
 
 from pyadm1.components.mechanical.mixer import Mixer, MixerType, MixingIntensity
 
@@ -230,7 +231,16 @@ class TestMixerStep:
         mixer.step(t=0.0, dt=dt, inputs=inputs)
 
         assert mixer.operating_hours > initial_hours, "Operating hours should increase"
-        assert abs(mixer.operating_hours - (initial_hours + 1.0)) < 0.01, "Should increase by 1 hour"
+        # The default mixer is intermittent with 25 % on-time: 15 min per hour.
+        assert mixer.operating_hours == pytest.approx(initial_hours + 0.25), "Should increase by 15 minutes"
+
+    def test_step_updates_operating_hours_continuous(self) -> None:
+        """A continuous mixer runs for the whole step."""
+        mixer = Mixer("mixer_1", intermittent=False)
+
+        mixer.step(t=0.0, dt=1.0 / 24.0, inputs={})
+
+        assert mixer.operating_hours == pytest.approx(1.0)
 
     def test_step_updates_energy_consumed(self) -> None:
         """Test that step updates energy consumption."""
@@ -255,14 +265,16 @@ class TestMixerStep:
 
         # Run multiple steps and check that mixer cycles on/off
         running_count = 0
-        for i in range(10):
-            result = mixer.step(t=i / 24.0, dt=1.0 / 24.0, inputs=inputs)
+        # Five-minute steps resolve the one-hour cycle (15 min on, 45 min off).
+        dt = 1.0 / 288.0
+        for i in range(12):
+            result = mixer.step(t=i * dt, dt=dt, inputs=inputs)
             if result["is_running"]:
                 running_count += 1
 
         # Should be running approximately 25% of the time
         assert running_count > 0, "Mixer should run at least once"
-        assert running_count < 10, "Mixer should not run all the time"
+        assert running_count == 3, "Mixer should run 3 of 12 five-minute steps"
 
     def test_step_calculates_mixing_quality(self) -> None:
         """Test that step calculates mixing quality."""
@@ -847,7 +859,7 @@ class TestMixerEdgeCases:
             assert result["P_consumed"] >= 0.0
 
         # Operating hours should accumulate: 25% of 24 h = 6 h
-        assert mixer.operating_hours == 6.0
+        assert mixer.operating_hours == pytest.approx(6.0)
 
     def test_mixer_start_stop_cycle(self) -> None:
         """Test mixer start/stop cycling."""

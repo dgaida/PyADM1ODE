@@ -12,9 +12,9 @@ from pyadm1.simulation import ParallelSimulator
 # Parameterstudie
 parallel = ParallelSimulator(adm1, n_workers=4)
 scenarios = [
-    {"k_dis": 0.5, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
-    {"k_dis": 0.6, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
-    {"k_dis": 0.7, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]}
+    {"k_dis_PF": 0.5, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
+    {"k_dis_PF": 0.6, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]},
+    {"k_dis_PF": 0.7, "Q": [15, 10, 0, 0, 0, 0, 0, 0, 0, 0]}
 ]
 
 results = parallel.run_scenarios(scenarios, duration=30, initial_state=state)

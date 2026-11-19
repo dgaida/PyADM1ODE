@@ -48,18 +48,17 @@ ph_sensor = PhysicalSensor(
     sensor_type="pH",
     measurement_noise=0.05,    # ±0.05 pH-Einheiten
     drift_rate=0.01,           # Kalibrierungsdrift pro Tag
-    response_time=30.0,        # Sekunden
-    calibration_interval=7     # Tage zwischen Kalibrierungen
+    response_time=30 / 86400   # 30 Sekunden, angegeben in Tagen
 )
 
 # VFA-Analysator mit Messungsverzögerung
 vfa_sensor = ChemicalSensor(
     "vfa1",
     sensor_type="VFA",
-    measurement_delay=5,       # Minuten Verzögerung
-    accuracy=0.1,              # ±10% Genauigkeit
-    detection_limit=0.1,       # g/L untere Grenze
-    sampling_interval=60       # Minuten zwischen Proben
+    measurement_delay=5 / 1440,  # 5 Minuten Verzögerung, angegeben in Tagen
+    accuracy=0.1,                # ±0.1 g/L Kalibrierversatz
+    detection_limit=0.1,         # g/L untere Grenze
+    sample_interval=60 / 1440    # 60 Minuten zwischen Proben, angegeben in Tagen
 )
 
 # Methan-Analysator
@@ -68,7 +67,7 @@ ch4_sensor = GasSensor(
     sensor_type="CH4",
     measurement_range=(0, 100),  # % CH4
     accuracy=0.5,                # ±0.5%
-    drift=0.1,                   # % pro Woche
+    drift_rate=0.1 / 7,          # 0.1 % pro Woche, angegeben pro Tag
     cross_sensitivity={'CO2': 0.01}  # Kreuzempfindlichkeit
 )
 ```
@@ -88,6 +87,16 @@ measured_value = (
     drift_accumulated
 )
 ```
+
+Kalibrieroffset und Rauschen stammen aus einem eigenen Zufallsgenerator des
+Sensors. Ohne `rng_seed` wird er aus der Komponenten-ID abgeleitet: Wiederholte
+Läufe liefern dieselben Messwerte, und ein mit `from_dict()` wiederhergestellter
+Sensor behält seinen Offset und setzt seine Rauschfolge fort.
+
+Gassensoren messen in Prozent. Komponenten melden die Gaszusammensetzung als
+Volumenanteil (`CH4_fraction`, `CO2_fraction`, 0–1); der Sensor rechnet diese
+Schlüssel in Prozent um. Ein Wert unter dem Schlüssel `CH4` oder `CO2` gilt
+bereits als Prozent.
 
 **Typische Genauigkeiten:**
 

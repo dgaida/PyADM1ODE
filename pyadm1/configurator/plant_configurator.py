@@ -19,6 +19,9 @@ from pyadm1.components.energy.chp import CHP
 from pyadm1.components.energy.flare import Flare
 from pyadm1.components.energy.gas_storage import GasStorage
 from pyadm1.components.energy.heating import HeatingSystem
+from pyadm1.components.feeding.feeder import Feeder
+from pyadm1.components.feeding.substrate_storage import SubstrateStorage
+from pyadm1.components.mechanical.mixer import Mixer
 from pyadm1.configurator.connection_manager import Connection
 from pyadm1.configurator.plant_builder import BiogasPlant
 from pyadm1.substrates.feedstock import Feedstock
@@ -112,12 +115,17 @@ class PlantConfigurator:
         outflow_time_constant: float = 1.0,
         backend: str | None = None,
         feedstock: Feedstock | None = None,
+        diameter: float | None = None,
+        roof_type: str = "membrane",
+        k_wall: float | None = None,
+        k_roof: float | None = None,
+        k_ground: float | None = None,
     ) -> tuple[Digester, str]:
         """
         Add an ADM1da digester to the plant.
 
-        The digester's influent DataFrame, density, and steady-state initial
-        state are wired automatically from the attached :class:`Feedstock`.
+        The digester's steady-state initial state is derived from the attached
+        :class:`Feedstock`; the influent is blended from the feed rates of every step.
         A gas storage is auto-created and connected.
 
         When no feedstock is available (neither here nor on the configurator),
@@ -137,8 +145,10 @@ class PlantConfigurator:
             Operating temperature [K] (default 315.15 = 42 °C).
         name : str, optional
         Q_substrates : list of float, optional
-            Substrate feed rates [m³/d], one entry per substrate slot
-            (up to 10 slots).
+            Substrate feed rates, one entry per substrate of the feedstock.
+            With the feedstock's default ``simba_q_convention=True`` the
+            values are tonnes of fresh matter per day [t FM/d]; otherwise
+            they are volume flows [m³/d].
         k_L_a : float, optional
             Override of the gas–liquid mass-transfer coefficient [1/d].
         adm1_state : list of float, optional
@@ -163,6 +173,16 @@ class PlantConfigurator:
         feedstock : Feedstock, optional
             Per-digester feedstock. Falls back to the configurator's feedstock,
             which may itself be ``None``.
+        diameter : float, optional
+            Inner tank diameter [m]. Estimated from ``V_liq + V_gas`` when
+            omitted; the tank heights are always derived from it.
+        roof_type : str, default "membrane"
+            Roof construction: ``"membrane"``, ``"concrete"``, ``"steel"`` or
+            ``"open"``.
+        k_wall, k_roof, k_ground : float, optional
+            U-values of wall, roof and floor slab [W/(m²·K)]. When set, the
+            digester derives its heat loss coefficient from them; a heating
+            system attached via ``add_heating(..., digester_id=...)`` uses it.
 
         Returns
         -------
@@ -183,6 +203,11 @@ class PlantConfigurator:
             initial_fill_fraction=initial_fill_fraction,
             outflow_time_constant=outflow_time_constant,
             backend=backend,
+            diameter=diameter,
+            roof_type=roof_type,
+            k_wall=k_wall,
+            k_roof=k_roof,
+            k_ground=k_ground,
         )
 
         if k_L_a is not None:
@@ -250,8 +275,9 @@ class PlantConfigurator:
         self,
         heating_id: str,
         target_temperature: float = 315.15,
-        heat_loss_coefficient: float = 0.5,
+        heat_loss_coefficient: float | None = None,
         name: str | None = None,
+        digester_id: str | None = None,
     ) -> HeatingSystem:
         """
         Add a heating system to the plant.
@@ -264,9 +290,16 @@ class PlantConfigurator:
             Setpoint [K] (default 315.15 = 42 °C, matching the ``T_ad`` default
             of :meth:`add_digester`). Pass it explicitly whenever the digester
             runs at a different temperature -- the two are not linked.
-        heat_loss_coefficient : float
-            Heat loss coefficient [kW/K] (default 0.5).
+        heat_loss_coefficient : float, optional
+            Heat loss coefficient (UA) [kW/K]. An explicit value always wins.
+            When omitted, the value the connected digester derives from its
+            k-values is used, else 0.5 kW/K.
         name : str, optional
+        digester_id : str, optional
+            Digester this system heats. Connects the two so the heating
+            receives the digester's temperature, substrate feed (for the
+            process-heat term) and heat loss coefficient. Without it only
+            the flat heat-loss term is computed.
         """
         heating = HeatingSystem(
             component_id=heating_id,
@@ -278,7 +311,210 @@ class PlantConfigurator:
 
         self.plant.add_component(heating)
 
+        if digester_id is not None:
+            self.auto_connect_digester_to_heating(digester_id, heating_id)
+
         return heating
+
+    def _substrate_slot(self, substrate: int | str, feedstock: Feedstock | None) -> tuple[int, Feedstock]:
+        """Resolve a substrate given by slot index or by ID against the feedstock."""
+        fs = feedstock if feedstock is not None else self.feedstock
+        if fs is None:
+            raise ValueError("A feedstock is required to resolve the substrate; pass one or set it on the configurator.")
+        ids = list(fs._substrate_ids)
+        if isinstance(substrate, str):
+            if substrate not in ids:
+                raise ValueError(f"Substrate '{substrate}' is not part of the feedstock {ids}.")
+            return ids.index(substrate), fs
+        if not 0 <= int(substrate) < len(ids):
+            raise ValueError(f"Substrate index {substrate} is outside the feedstock's {len(ids)} substrates.")
+        return int(substrate), fs
+
+    def add_substrate_storage(
+        self,
+        storage_id: str,
+        substrate: int | str,
+        capacity: float = 1000.0,
+        initial_level: float | None = None,
+        storage_type: str = "bunker_silo",
+        substrate_type: str = "corn_silage",
+        name: str | None = None,
+        feedstock: Feedstock | None = None,
+        **storage_kwargs: Any,
+    ) -> SubstrateStorage:
+        """
+        Add a storage for one substrate of the feedstock.
+
+        Density, dry matter and volatile solids come from the substrate
+        definition instead of the storage's typical-value table. The inventory
+        is kept in tonnes of fresh matter.
+
+        Parameters
+        ----------
+        storage_id : str
+            Unique identifier for this storage.
+        substrate : int or str
+            Slot index or substrate ID within the feedstock.
+        capacity : float
+            Capacity [t FM] (default 1000).
+        initial_level : float, optional
+            Starting stock [t FM]. When omitted the stock is unlimited: the
+            feeder always gets what it asks for and no refills are needed.
+            Give a number to track the inventory.
+        storage_type : str
+            ``"bunker_silo"``, ``"vertical_silo"``, ``"clamp"``,
+            ``"above_ground_tank"``, ...
+        substrate_type : str
+            Category of the storage's loss model (``"corn_silage"``,
+            ``"manure_liquid"``, ...); it no longer decides density or solids.
+        name : str, optional
+        feedstock : Feedstock, optional
+            Falls back to the configurator's feedstock.
+        **storage_kwargs
+            Further :class:`SubstrateStorage` arguments (``degradation_rate``,
+            ``temperature``).
+        """
+        index, fs = self._substrate_slot(substrate, feedstock)
+        params = fs._subs[index]
+
+        storage = SubstrateStorage(
+            component_id=storage_id,
+            storage_type=storage_type,
+            substrate_type=substrate_type,
+            capacity=capacity,
+            initial_level=initial_level,
+            name=name or storage_id,
+            density=fs._densities[index],
+            dry_matter=params.TS / 10.0,  # kg/t FM -> % FM
+            vs_content=(1.0 - params.fRA) * 100.0,  # % of TS
+            **storage_kwargs,
+        )
+        self.plant.add_component(storage)
+        return storage
+
+    def add_feeder(
+        self,
+        feeder_id: str,
+        digester_id: str,
+        substrate: int | str,
+        storage_id: str | None = None,
+        Q_setpoint: float | None = None,
+        name: str | None = None,
+        feedstock: Feedstock | None = None,
+        **feeder_kwargs: Any,
+    ) -> Feeder:
+        """
+        Add a feeder that doses one substrate into a digester.
+
+        Closes the chain storage -> feeder -> digester: the feeder is limited
+        by the stock of its storage, the storage is drawn down by what the
+        feeder actually doses, and the digester's substrate slot follows that
+        dosed flow (including dosing noise and blockages) instead of the
+        configured rate.
+
+        Parameters
+        ----------
+        feeder_id : str
+            Unique identifier for this feeder.
+        digester_id : str
+            Digester that is fed.
+        substrate : int or str
+            Slot index or substrate ID within the feedstock.
+        storage_id : str, optional
+            Substrate storage the feeder draws from. Without one the supply
+            is unlimited.
+        Q_setpoint : float, optional
+            Feed rate, in the unit of the digester's ``Q_substrates``.
+            Defaults to the rate configured for that slot on the digester.
+        name : str, optional
+        feedstock : Feedstock, optional
+            Falls back to the digester's, then the configurator's feedstock.
+        **feeder_kwargs
+            Further :class:`Feeder` arguments (``feeder_type``, ``Q_max``,
+            ``specific_energy``, ``enable_dosing_noise``, ...).
+        """
+        digester = self.plant.components.get(digester_id)
+        if not isinstance(digester, Digester):
+            raise ValueError(f"Digester '{digester_id}' not found; add it before its feeder.")
+        if storage_id is not None and not isinstance(self.plant.components.get(storage_id), SubstrateStorage):
+            raise ValueError(f"Substrate storage '{storage_id}' not found; add it before its feeder.")
+
+        index, fs = self._substrate_slot(substrate, feedstock if feedstock is not None else digester.feedstock)
+        if Q_setpoint is None:
+            Q_setpoint = float(digester.Q_substrates[index]) if index < len(digester.Q_substrates) else 0.0
+        feeder_kwargs.setdefault("Q_max", max(20.0, 1.5 * Q_setpoint))
+
+        feeder = Feeder(
+            component_id=feeder_id,
+            name=name or feeder_id,
+            Q_setpoint=Q_setpoint,
+            substrate_index=index,
+            # Tonnes per unit of Q: 1 with the ADM1da mass convention, rho/1000 for m³.
+            flow_to_mass_factor=fs.q_conversion_factors[index] * fs._densities[index] / 1000.0,
+            **feeder_kwargs,
+        )
+        self.plant.add_component(feeder)
+
+        if storage_id is not None:
+            self.connect(storage_id, feeder_id, "feed")
+        self.connect(feeder_id, digester_id, "feed")
+        return feeder
+
+    def add_mixer(
+        self,
+        mixer_id: str,
+        digester_id: str,
+        mixer_type: str = "propeller",
+        mixing_intensity: str = "medium",
+        name: str | None = None,
+        **mixer_kwargs: Any,
+    ) -> Mixer:
+        """
+        Add a mixer to a digester.
+
+        The tank geometry is taken from the digester instead of being
+        estimated a second time: ``tank_volume`` is its liquid volume,
+        ``tank_diameter`` its diameter and ``tank_height`` its sludge level.
+        The two are connected, so the mixer follows the digester's
+        temperature and total solids on every step (both change the
+        viscosity, and with it the mixing power).
+
+        Parameters
+        ----------
+        mixer_id : str
+            Unique identifier for this mixer.
+        digester_id : str
+            Digester the mixer is installed in.
+        mixer_type : str
+            ``"propeller"``, ``"paddle"`` or ``"jet"``.
+        mixing_intensity : str
+            ``"low"``, ``"medium"`` or ``"high"``.
+        name : str, optional
+        **mixer_kwargs
+            Further :class:`Mixer` arguments (``power_installed``,
+            ``impeller_diameter``, ``on_time_fraction``, ``fluid_viscosity``,
+            ...). The three tank arguments may not be overridden.
+        """
+        digester = self.plant.components.get(digester_id)
+        if not isinstance(digester, Digester):
+            raise ValueError(f"Digester '{digester_id}' not found; add it before its mixer.")
+        overridden = {"tank_volume", "tank_diameter", "tank_height"} & set(mixer_kwargs)
+        if overridden:
+            raise ValueError(f"{sorted(overridden)} come from digester '{digester_id}' and cannot be set here.")
+
+        mixer = Mixer(
+            component_id=mixer_id,
+            mixer_type=mixer_type,
+            tank_volume=digester._V_liq_max,
+            tank_diameter=digester.diameter,
+            tank_height=digester.liquid_height,
+            mixing_intensity=mixing_intensity,
+            name=name or mixer_id,
+            **mixer_kwargs,
+        )
+        self.plant.add_component(mixer)
+        self.connect(digester_id, mixer_id, "control")
+        return mixer
 
     def connect(
         self,
@@ -310,6 +546,10 @@ class PlantConfigurator:
             )
 
         self.connect(storage_id, chp_id, "gas")
+
+    def auto_connect_digester_to_heating(self, digester_id: str, heating_id: str) -> None:
+        """Connect digester → heating so temperature, feed and UA reach the heating."""
+        self.connect(digester_id, heating_id, "control")
 
     def auto_connect_chp_to_heating(self, chp_id: str, heating_id: str) -> None:
         """Connect CHP → heating with heat flow."""

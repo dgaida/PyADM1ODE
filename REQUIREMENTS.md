@@ -108,14 +108,14 @@ PyADM1ODE ist ein modulares, wissenschaftlich fundiertes Python-Framework zur Mo
   Ungültige physikalische Parameter (z.B. negative Fütterungsmengen, Temperaturen außerhalb realistischer Bereiche) müssen von den Komponenten und Validierungsprüfungen abgefangen und mit aussagekräftigen Ausnahmen (`ValueError`) quittiert werden.
 
 ### 3.3 Interoperabilität und Plattformkompatibilität (NFA-3)  
-- **NFA-3.1: .NET C#-Integration via pythonnet**  
-  Das Framework nutzt hochoptimierte, in C# geschriebene Physico-Chemicals-DLLs (`biogas.dll`). Die Kommunikation über `pythonnet` muss stabil und typsicher erfolgen. Zur Gewährleistung der Dimensionalität müssen 1D-Python-Listen nativer Floats für Methoden wie `calcPHOfADMstate` genutzt werden.  
+- **NFA-3.1: Reines Python**  
+  Das Framework kommt ohne native Laufzeitabhängigkeiten aus. Die frühere Anbindung von C#-DLLs über `pythonnet` ist entfallen; Substratcharakterisierung und pH-Berechnung sind in Python umgesetzt.  
 - **NFA-3.2: Plattformübergreifende Portabilität**  
-  Das System muss nativ unter Windows und Linux (Debian, Ubuntu) lauffähig sein. Unter Linux-Systemen und CI/CD-Pipelines muss die Ausführung durch automatische Erkennung und Nutzung einer Mono-Laufzeitumgebung (`mono-complete`) sichergestellt sein.  
+  Das System muss nativ unter Windows, Linux und macOS lauffähig sein, ohne zusätzliche Laufzeitumgebung.  
 - **NFA-3.3: Docker-Unterstützung**  
-  Ein optimiertes Dockerfile basierend auf `python:3.11-slim` mit vorinstallierter Mono-Laufzeit muss bereitgestellt werden, um eine reproduzierbare Container-Umgebung bereitzustellen.  
+  Ein Dockerfile basierend auf `python:3.11-slim` muss bereitgestellt werden, um eine reproduzierbare Container-Umgebung bereitzustellen.  
 - **NFA-3.4: Cloud-Kompatibilität (Google Colab)**  
-  Das Framework und alle Beispiele müssen nahtlos in Google Colab ausführbar sein, indem externe Abhängigkeiten (Mono) und das Python-Paket dynamisch installiert werden können.
+  Das Framework und alle Beispiele müssen nahtlos in Google Colab ausführbar sein, indem das Python-Paket dynamisch installiert wird.
 
 ### 3.4 Usability und Dokumentation (NFA-4)  
 - **NFA-4.1: Bilingualität (DE/EN)**  

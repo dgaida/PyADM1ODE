@@ -1,47 +1,51 @@
-# ADM1da substrate definition: Wheat whole-plant silage
+# Substrate definition: Wheat whole-plant silage
 #
-# Converted from the legacy substrate_gummersbach.xml library.
-# Fields derived from the legacy schema:
-#   fRF, fRP, fRFe  <- RF, RP, RL  (% TS -> fraction)
-#   fRA             = 1 - VS/100
-#   fOTSrf          = 1 - ADL/RF                (lignin as non-degradable proxy)
-#   fsOTS, ffOTS    = crop-class defaults     (slow / fast disintegration pool split)
-#   aSi             = crop-class default
-#   aXI             = (1 - D_VS) - aSi
-#   BMP             = theoretical_Weender * D_VS = 297.5 Nm^3 CH4/t VS
-#   BGP             = BMP / 0.55                = 540.9 Nm^3 biogas/t VS
-#   NH4             = Snh4 * 14/18              (g NH4/L -> kg N/m^3)
-#   FFS             = Sac + Sbu + Spro + Sva
-#   KS43            = TAC (mmol/L = mol/m^3)
+# Measured parameters (schema "measured"): names and units as in the
+# substrate user guide. Carbohydrates are split by the cell wall (NDF, ADL);
+# the inert share (D_VS) is fitted to the methane potential BMP.
 #
-# Model-default constants (densities, COD-conversion factors, methane
-# potentials, acid-base equilibrium constants at 35 deg C) are inherited
-# from SubstrateParams; override them here only if substrate-specific
-# values are available.
+# Values: dry-matter composition from the Phyllis database (phyllis.nl,
+# median of the samples named per line) where it holds the material;
+# methane potential from the standard yields of the BiomasseV 2012; storage
+# state (pH, ammonium, acids, buffer, temperature) from published analyses
+# of the material as it is fed; price from the superseded file in legacy/.
+# The source of every value stands behind it. Derivation: substrate user
+# guide, section "Origin of the library values".
+#
+# Fermentation quality (Leisen 2011): mean of 20 cereal whole-crop silages
+# (LUFA NRW, 1999-2010).
 
 name: Wheat whole-plant silage
+schema: measured
 
-# --- Proximate analysis / measured substrate properties -----------------
-TS:    302.3      # kg/m^3 FM
-NH4:    0.459     # kg N/m^3 FM
-BGP:   540.9      # Nm^3/t VS   biogas potential (theoretical * D_VS)
-BMP:   297.5      # Nm^3 CH4/t VS  biomethane potential
+# --- Classification ----------------------------------------------------
+substrate_class: "Getreide (GPS) (EK I)" # [BiomasseV 2012]
 
-# --- COD fractionation --------------------------------------------------
-aXI:    0.2500
-fOTSrf: 0.767
-fsOTS:  0.0
-ffOTS:  1.0
-aSi:    0.000
+# --- Dry matter --------------------------------------------------------
+TS:              36.8       # % FM [Phyllis] 100 - moisture, median of n=6, range 35.7-39.5 (#2648, #2649, #2650, #2651, #2652, #2653)
+VS:              93.3       # % TS [Phyllis] 100 - ash, median of n=6, range 90.3-93.7 (#2648, #2649, #2650, #2651, #2652, #2653)
 
-# --- Weender analysis (fractions of TS) ---------------------------------
-fRF:    0.3600
-fRP:    0.1030
-fRFe:   0.0160
-fRA:    0.0564
+# --- Weender analysis --------------------------------------------------
+RP:              6.45       # % TS [Phyllis] protein measured, median of n=6, range 5.6-7.3 (#2648, #2649, #2650, #2651, #2652, #2653)
+RL:              1.6        # % TS [previous file] no lipid value in Phyllis
 
-# --- Physical / chemical state ------------------------------------------
-Temp:   10.0    # degC
-pH:     4.40
-KS43:   0.00    # mol/m^3   acid capacity to pH 4.3
-FFS:    0.500     # kg HAc/m^3 VFAs as acetic-acid equivalent
+# --- Cell wall (van Soest) ---------------------------------------------
+NDF:             53.8       # % TS [Phyllis] cellulose + hemicellulose + lignin, median of n=6, range 44.3-57 (#2648, #2649, #2650, #2651, #2652, #2653)
+ADF:             37.5       # % TS [Phyllis] cellulose + lignin, median of n=6, range 27.7-41.2 (#2648, #2649, #2650, #2651, #2652, #2653)
+ADL:             9.55       # % TS [Phyllis] lignin, median of n=6, range 7.5-10.2 (#2648, #2649, #2650, #2651, #2652, #2653)
+
+# --- Degradability -----------------------------------------------------
+BMP:             329.0      # Nm³ CH4/t VS [BiomasseV 2012] 103 m³ CH4/t FM, KTBL standard dry matter 33 % TS, 95 % VS
+
+# --- Storage state -----------------------------------------------------
+pH:              4.0        # - [Leisen 2011]
+NH4:             0.384      # kg N/m³ [Leisen 2011] NH3-N 10.1 % of the total N; N = RP/6.25, per kg FM with TS
+KS43:            0.0        # mol/m³ [definition] no bicarbonate in a silage; the buffer is the lactic/acetic acid system
+Sac:             6.99       # g/l [Leisen 2011] acetic acid 19 g/kg TS, per kg FM with TS
+Spro:            0.0        # g/l [Kung & Shaver] not reported separately; below 1 g/kg TS in silages
+Sbu:             0.44       # g/l [Leisen 2011] butyric acid 1.2 g/kg TS, per kg FM with TS
+Sva:             0.0        # g/l [Leisen 2011] not reported for silages; below detection
+Temp:            9.3        # °C [DWD 1991-2020] mean air temperature of Germany 1991-2020; stored outdoors (silage clamp)
+
+# --- Economics ---------------------------------------------------------
+cost:            35.0       # EUR/t FM [previous file]

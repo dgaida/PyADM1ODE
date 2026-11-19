@@ -13,33 +13,23 @@ Modules:
                        (liquid, gas, heat, power), flow validation, and dependency
                        resolution for correct simulation order.
 
-    validation: Model validation checking for physical consistency (mass/energy balance),
-               completeness (all required connections), and parameter validity with
-               detailed error messages for debugging.
-
 Subpackages:
-    templates: Pre-defined plant configurations for common biogas plant layouts
-              (single-stage, two-stage, plug-flow, CSTR) serving as starting
-              points for customization or examples for learning.
+    templates: Placeholder for ready-made layouts; the layouts that exist are the
+              ``create_*_plant`` methods of ``PlantConfigurator``.
 
 Example:
-    >>> from pyadm1.configurator import BiogasPlant, ConnectionManager
-    >>> from pyadm1.components.biological import Digester
+    >>> from pyadm1 import Feedstock
+    >>> from pyadm1.configurator import BiogasPlant, PlantConfigurator
     >>>
-    >>> # Build plant programmatically
+    >>> feedstock = Feedstock(["maize_silage_milk_ripeness", "cattle_manure"])
     >>> plant = BiogasPlant("My Plant")
-    >>> plant.add_component(Digester("dig1", feedstock, V_liq=2000))
-    >>> plant.validate()
+    >>> configurator = PlantConfigurator(plant, feedstock)
+    >>> configurator.add_digester("dig1", V_liq=2000, Q_substrates=[15, 10])
     >>>
     >>> # Save configuration
     >>> plant.to_json("my_plant.json")
-    >>>
-    >>> # Load from template
-    >>> from pyadm1.configurator.templates import TwoStageTemplate
-    >>> plant = TwoStageTemplate.create(feedstock=feedstock)
 """
 
-# from pyadm1.configurator.validation import PlantValidator
 # Import templates
 from . import templates
 from .connection_manager import (

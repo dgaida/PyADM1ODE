@@ -150,6 +150,44 @@ mixer = Mixer(
 )
 ```
 
+### Kopplung an einen Fermenter
+
+`PlantConfigurator.add_mixer` baut ein Rührwerk in einen Fermenter ein und
+übernimmt dessen Behältergeometrie, statt sie ein zweites Mal zu schätzen:
+
+```python
+configurator.add_digester("main_digester", V_liq=3000.0, V_gas=175.0, diameter=20.0)
+mixer = configurator.add_mixer("mixer_main", "main_digester", mixer_type="propeller",
+                               power_installed=15.0)
+# tank_volume = V_liq, tank_diameter = digester.diameter,
+# tank_height = digester.liquid_height
+```
+
+Ein einzeln erzeugtes Rührwerk nimmt einen hohen Behälter an (`H = 1.5 * D`);
+für 3000 m³ sind das 13,7 m Durchmesser, wo ein realer landwirtschaftlicher
+Fermenter etwa 20 m hat.
+
+Beide sind verbunden, das Rührwerk liest also in jedem Schritt `T_digester` und
+`TS` des Fermenters und aktualisiert seine scheinbare Viskosität:
+
+```text
+μ = fluid_viscosity · exp(Ea/R · (1/T − 1/T₀)) · exp(b · (TS − ts_reference))
+```
+
+| Parameter                  | Standard | Bedeutung                                                     |
+|----------------------------|----------|---------------------------------------------------------------|
+| `fluid_density`            | 1020     | Fluiddichte [kg/m³]                                           |
+| `fluid_viscosity`          | 0.050    | Scheinbare Viskosität [Pa·s] bei 35 °C und `ts_reference`     |
+| `ts_reference`             | 6.0      | TS-Gehalt [% FM], bei dem `fluid_viscosity` gilt              |
+| `viscosity_ts_coefficient` | 0.5      | TS-Empfindlichkeit `b` [1/% TS]; `0` schaltet die Kopplung ab |
+
+!!! warning "TS-Empfindlichkeit kalibrieren"
+    Der Standardwert `b = 0.5` ist ein Größenordnungswert für Gärsubstrat, kein
+    angepasster Wert. Die Rheologie unterscheidet sich stark zwischen
+    Substraten; kalibriere ihn gegen gemessene Viskosität oder gemessene
+    Rührwerksleistung. Ein Step-Eingang `fluid_viscosity` überschreibt das
+    Modell für diesen Schritt.
+
 ### Rührwerkstypen
 
 | Typ | Strömungsmuster | Beste Anwendung | Leistungsfaktor | Typische Drehzahl [rpm] |
@@ -189,9 +227,10 @@ mixer = Mixer(
 
 ```python
 {
-    'P_consumed': 12.5,          # Aktuelle Leistung [kW]
-    'P_average': 3.1,            # Zeitgemittelt [kW]
-    'is_running': True,          # Betriebszustand
+    'P_consumed': 3.1,           # Mittlere Leistung über diesen Schritt [kW]
+    'P_running': 12.5,           # Leistung, während das Rührwerk läuft [kW]
+    'P_average': 3.1,            # Langzeitmittel [kW]
+    'is_running': True,          # Lief in diesem Schritt
     'mixing_quality': 0.85,      # Qualitätsindex (0-1)
     'reynolds_number': 15000,    # Strömungsregime-Indikator
     'power_number': 0.32,        # Dimensionslose Leistungszahl
@@ -295,10 +334,10 @@ P_actual = min(P_electrical, power_installed)
 Re = ρ * N * D² / μ
 
 wobei:
-- ρ = Fluiddichte [kg/m³]
-- N = Drehzahl [Hz]
-- D = Rührblattdurchmesser [m]
-- μ = Viskosität [Pa·s]
+- ρ = Fluiddichte [kg/m³]  
+- N = Drehzahl [Hz]  
+- D = Rührblattdurchmesser [m]  
+- μ = Viskosität [Pa·s]  
 ```
 
 **Leistungszahl (abhängig von Rührwerkstyp und Reynolds-Zahl):**
@@ -321,11 +360,11 @@ Basierend auf Nienow-Korrelation:
 θ_mix = C * (D_T/D)^α * (H/D_T)^β / N
 
 wobei:
-- C, α, β = konstanten abhängig vom Rührwerkstyp
-- D_T = Tankdurchmesser [m]
-- D = Rührblattdurchmesser [m]
-- H = Tankhöhe [m]
-- N = Drehzahl [Hz]
+- C, α, β = konstanten abhängig vom Rührwerkstyp  
+- D_T = Tankdurchmesser [m]  
+- D = Rührblattdurchmesser [m]  
+- H = Tankhöhe [m]  
+- N = Drehzahl [Hz]  
 ```
 
 **Typische Konstanten:**
@@ -361,7 +400,7 @@ feed_pump = Pump(
 plant.add_component(feed_pump)
 
 # 2. Fermenter
-digester, storage = config.add_digester(
+digester, _ = config.add_digester(
     "main_digester",
     V_liq=2000,
     Q_substrates=[15, 10, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -411,19 +450,19 @@ plant.initialize()
 results = plant.simulate(duration=30, dt=1/24, save_interval=1.0)
 
 # Mechanische Energieanalyse
-def mechanical_energy_analysis(results):
+def mechanical_energy_analysis(plant, results):
     """Analysiere mechanischen Energieverbrauch"""
     final = results[-1]
     comp = final['components']
 
-    # Pumpenenergie
-    feed_pump_energy = comp['feed_pump']['energy_consumed']
-    recirc_pump_energy = comp['recirc_pump']['energy_consumed']
-    digestate_pump_energy = comp['digestate_pump']['energy_consumed']
+    # Pumpenenergie (kumuliert, im Zustand der Komponente geführt)
+    feed_pump_energy = plant.components['feed_pump'].state['energy_consumed']
+    recirc_pump_energy = plant.components['recirc_pump'].state['energy_consumed']
+    digestate_pump_energy = plant.components['digestate_pump'].state['energy_consumed']
     total_pump_energy = feed_pump_energy + recirc_pump_energy + digestate_pump_energy
 
     # Rührwerkenergie
-    mixer_energy = comp['main_mixer']['energy_consumed']
+    mixer_energy = plant.components['main_mixer'].state['energy_consumed']
 
     # Gesamtmechanische Energie
     total_mech_energy = total_pump_energy + mixer_energy
@@ -446,7 +485,7 @@ def mechanical_energy_analysis(results):
         'net_energy': chp_energy - total_mech_energy
     }
 
-analysis = mechanical_energy_analysis(results)
+analysis = mechanical_energy_analysis(plant, results)
 print("\nMechanische Energieanalyse:")
 print(f"Förderpumpe: {analysis['feed_pump']:.0f} kWh")
 print(f"Rezirkulationspumpe: {analysis['recirc_pump']:.0f} kWh")

@@ -160,19 +160,19 @@ class TestPlantBuilderJsonRoundTrip:
         with pytest.raises(ValueError, match="Feedstock required"):
             BiogasPlant.from_json(str(path), feedstock=None)
 
-    def test_from_json_raises_for_unknown_component_type(self, tmp_path: Path) -> None:
+    def test_from_json_raises_for_a_type_that_does_not_identify_the_class(self, tmp_path: Path) -> None:
         path = tmp_path / "plant.json"
         path.write_text(
             json.dumps(
                 {
                     "plant_name": "Bogus",
                     "components": [
-                        # ``mixer`` is a valid ComponentType but plant_builder.from_json
-                        # only knows DIGESTER / CHP / HEATING — it should reject anything else.
+                        # All three sensor classes share the ``sensor`` type, so a
+                        # file without ``component_class`` cannot be resolved.
                         {
-                            "component_type": "mixer",
-                            "component_id": "mx1",
-                            "name": "Mixer",
+                            "component_type": "sensor",
+                            "component_id": "s1",
+                            "name": "Sensor",
                         }
                     ],
                     "connections": [],
@@ -180,7 +180,7 @@ class TestPlantBuilderJsonRoundTrip:
             )
         )
 
-        with pytest.raises(ValueError, match="Unknown component type"):
+        with pytest.raises(ValueError, match="does not identify the class"):
             BiogasPlant.from_json(str(path), feedstock=None)
 
 
@@ -368,6 +368,10 @@ class _StubADM1:
     _T_ad = 315.15
     feedstock = None
 
+    @staticmethod
+    def get_calibration_parameters() -> dict:
+        return {}
+
 
 class TestParallelSimulatorInit:
     def test_default_workers_is_cpu_count_minus_one(self) -> None:
@@ -426,7 +430,10 @@ class TestComputeScenarioMetrics:
 
         assert metrics["Q_total"] == 10.0
         assert metrics["specific_gas_production"] >= 0.0
-        assert metrics["HRT"] == pytest.approx(120.0)
+        # 10 t/d of maize silage take up less than 10 m³/d, so the retention
+        # time is longer than V_liq / Q_total.
+        assert metrics["HRT"] == pytest.approx(1200.0 / fs.actual_Q([10.0])[0])
+        assert metrics["HRT"] > 120.0
 
 
 # ---------------------------------------------------------------------------

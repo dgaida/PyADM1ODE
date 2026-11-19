@@ -49,6 +49,7 @@ from ..base import Component, ComponentType
 # Lower heating values [kWh/m3] at standard conditions
 _LHV_BIOGAS = 6.0  # KTBL 2013, 60% CH4
 _LHV_NATURAL_GAS = 10.0  # DVGW G 260, H-gas
+_LHV_CH4 = 10.0  # methane; _LHV_BIOGAS corresponds to 60 % of it
 
 # Relative efficiency penalty at part load (VDI 4631 simplified)
 _PART_LOAD_PENALTY = 0.05
@@ -87,6 +88,7 @@ class Boiler(Component):
         lhv_biogas: float = _LHV_BIOGAS,
         lhv_natural_gas: float = _LHV_NATURAL_GAS,
         name: str | None = None,
+        lhv_ch4: float = _LHV_CH4,
     ):
         """
         Initialize boiler.
@@ -99,10 +101,14 @@ class Boiler(Component):
                              or ``"dual"`` (biogas first, then natural gas).
                              Default ``"dual"``.
             lhv_biogas:      Lower heating value of biogas [kWh/m3].
-                             Default 6.0 (KTBL 2013 at 60% CH4).
+                             Default 6.0 (KTBL 2013 at 60% CH4). Used only
+                             when the gas supply reports no ``CH4_fraction``.
             lhv_natural_gas: Lower heating value of natural gas [kWh/m3].
                              Default 10.0 (DVGW G 260 H-gas).
             name:            Human-readable display name.
+            lhv_ch4:         Lower heating value of methane [kWh/m3]. With a
+                             ``CH4_fraction`` input the biogas heating value
+                             is ``lhv_ch4 * CH4_fraction``. Default 10.0.
         """
         super().__init__(component_id, ComponentType.BOILER, name)
 
@@ -116,6 +122,7 @@ class Boiler(Component):
 
         self.lhv_biogas = float(lhv_biogas)
         self.lhv_natural_gas = float(lhv_natural_gas)
+        self.lhv_ch4 = float(lhv_ch4)
 
         # Cumulative tracking
         self.energy_supplied = 0.0  # kWh
@@ -161,6 +168,7 @@ class Boiler(Component):
             "is_running": False,
             "load_fraction": 0.0,
             "efficiency_actual": self.efficiency,
+            "P_th_unmet": 0.0,
         }
 
         self._initialized = True
@@ -202,12 +210,22 @@ class Boiler(Component):
                     Current output as fraction of nominal (0-1).
                 - ``efficiency_actual`` [float]:
                     Effective efficiency at this load point.
+                - ``P_th_unmet`` [kW]:
+                    Demand the boiler could not cover (above nominal output
+                    or above the available biogas).
         """
         enable = bool(inputs.get("enable", True))
 
         # Accept both P_th_demand and P_aux_heat (HeatingSystem output key)
         P_demand = float(inputs.get("P_th_demand", inputs.get("P_aux_heat", 0.0)))
         Q_gas_avail = float(inputs.get("Q_gas_available_m3_per_day", 0.0))
+
+        # Heating value of the biogas actually supplied. A gas storage reports
+        # its methane fraction; the flat ``lhv_biogas`` (60 % CH4) only applies
+        # when the supply carries no composition.
+        ch4_fraction = float(inputs.get("CH4_fraction", 0.0))
+        lhv_biogas = self.lhv_ch4 * ch4_fraction if ch4_fraction > 0.0 else self.lhv_biogas
+        self._lhv_biogas_actual = lhv_biogas
 
         if not enable or P_demand <= 0.0:
             self._update_outputs(0.0, 0.0, 0.0, dt)
@@ -230,12 +248,17 @@ class Boiler(Component):
             Q_ng_consumed = P_th_supplied * 24.0 / (eta_actual * self.lhv_natural_gas)
 
         elif self.fuel_type == "biogas":
-            # Burn biogas only (even if unavailable — caller must manage supply)
-            Q_gas_consumed = P_th_supplied * 24.0 / (eta_actual * self.lhv_biogas)
+            # Burn biogas only. When the caller states how much gas is
+            # available the output is limited to it; without that input the
+            # supply is taken as unlimited.
+            Q_gas_consumed = P_th_supplied * 24.0 / (eta_actual * lhv_biogas)
+            if "Q_gas_available_m3_per_day" in inputs and Q_gas_consumed > Q_gas_avail:
+                Q_gas_consumed = max(Q_gas_avail, 0.0)
+                P_th_supplied = Q_gas_consumed * eta_actual * lhv_biogas / 24.0
 
         else:  # dual fuel: biogas first, natural gas for remainder
             # Maximum biogas combustion that would cover the demand
-            Q_gas_needed_total = P_th_supplied * 24.0 / (eta_actual * self.lhv_biogas)
+            Q_gas_needed_total = P_th_supplied * 24.0 / (eta_actual * lhv_biogas)
 
             if Q_gas_avail >= Q_gas_needed_total:
                 # Sufficient biogas: no natural gas needed
@@ -243,11 +266,13 @@ class Boiler(Component):
             else:
                 # Burn all available biogas, supplement with natural gas
                 Q_gas_consumed = Q_gas_avail
-                P_from_biogas = Q_gas_consumed * eta_actual * self.lhv_biogas / 24.0
+                P_from_biogas = Q_gas_consumed * eta_actual * lhv_biogas / 24.0
                 P_from_ng = P_th_supplied - P_from_biogas
                 Q_ng_consumed = P_from_ng * 24.0 / (eta_actual * self.lhv_natural_gas)
 
         self._update_outputs(P_th_supplied, Q_gas_consumed, Q_ng_consumed, dt)
+        # Demand above the nominal output (or above the gas supply) stays uncovered.
+        self.outputs_data["P_th_unmet"] = float(max(P_demand - P_th_supplied, 0.0))
         return self.outputs_data
 
     # ------------------------------------------------------------------
@@ -265,6 +290,7 @@ class Boiler(Component):
             "fuel_type": self.fuel_type,
             "lhv_biogas": self.lhv_biogas,
             "lhv_natural_gas": self.lhv_natural_gas,
+            "lhv_ch4": self.lhv_ch4,
             "inputs": self.inputs,
             "outputs": self.outputs,
             "state": self.state,
@@ -289,6 +315,7 @@ class Boiler(Component):
             lhv_biogas=config.get("lhv_biogas", _LHV_BIOGAS),
             lhv_natural_gas=config.get("lhv_natural_gas", _LHV_NATURAL_GAS),
             name=config.get("name"),
+            lhv_ch4=config.get("lhv_ch4", _LHV_CH4),
         )
 
         boiler.inputs = config.get("inputs", [])
@@ -339,6 +366,8 @@ class Boiler(Component):
             "is_running": bool(is_running),
             "load_fraction": float(load_fraction),
             "efficiency_actual": float(eta_actual),
+            "P_th_unmet": 0.0,
+            "lhv_biogas_actual": float(getattr(self, "_lhv_biogas_actual", self.lhv_biogas)),
             # Cumulative
             "energy_supplied_kwh": float(self.energy_supplied),
             "gas_consumed_total_m3": float(self.gas_consumed_total),

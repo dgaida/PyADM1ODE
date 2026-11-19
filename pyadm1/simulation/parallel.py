@@ -25,12 +25,16 @@ import time
 import traceback
 from dataclasses import dataclass, field
 from functools import partial
+from itertools import pairwise
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
 if TYPE_CHECKING:
     from pyadm1.core.adm1 import ADM1
+
+#: Scenario keys that are not calibration parameters.
+_SCENARIO_KEYS = frozenset(("Q", "T_ad"))
 
 _CALIBRATION_PARAM_KEYS = frozenset(
     (
@@ -135,7 +139,36 @@ class ParallelSimulator:
         compute_metrics: bool = True,
         save_time_series: bool = False,
     ) -> list[ScenarioResult]:
-        """Run multiple scenarios in parallel."""
+        """
+        Run multiple scenarios in parallel.
+
+        Args:
+            scenarios (List[Dict[str, Any]]): One parameter dict per scenario.
+                Allowed keys are ``Q`` (feed rates), ``T_ad`` [K] and the
+                calibration parameters in ``_CALIBRATION_PARAM_KEYS``; they
+                are applied on top of the base model's own calibration.
+            duration (float): Simulated time per scenario [days].
+            initial_state (List[float]): Start state (41 elements).
+            dt (float): Resolution of the saved time series [days]. Only used
+                with ``save_time_series=True``; the final state does not
+                depend on it.
+            compute_metrics (bool): Compute gas, pH and loading metrics.
+            save_time_series (bool): Keep the last ten points of gas and pH.
+
+        Returns:
+            List[ScenarioResult]: One result per scenario, in input order.
+
+        Raises:
+            ValueError: A scenario carries a key that is not a known
+                parameter. A misspelt name would otherwise be ignored and
+                every scenario of a sweep would return the same result.
+        """
+        allowed = _SCENARIO_KEYS | _CALIBRATION_PARAM_KEYS
+        for index, scenario in enumerate(scenarios):
+            unknown = sorted(set(scenario) - allowed)
+            if unknown:
+                raise ValueError(f"Scenario {index}: unknown parameter(s) {unknown}; allowed are {sorted(allowed)}.")
+
         if self.verbose:
             print(f"Starting parallel simulation with {len(scenarios)} scenarios")
             print(f"Using {self.n_workers} worker processes")
@@ -309,10 +342,13 @@ class ParallelSimulator:
     def _serialize_adm1(self) -> dict[str, Any]:
         """Serialize ADM1 model configuration for the worker pool."""
         feedstock = self.adm1.feedstock
-        substrate_ids: list[str] = []
+        substrate_ids: list[Any] = []
         feeding_freq = 24
         if feedstock is not None:
-            substrate_ids = list(getattr(feedstock, "substrate_ids", []))
+            # The parameter objects travel to the workers, not the IDs: an ID
+            # is only a file stem, so a substrate loaded from a user path
+            # would be replaced by the library file of the same name.
+            substrate_ids = list(getattr(feedstock, "substrates", None) or getattr(feedstock, "substrate_ids", []))
             feeding_freq = int(getattr(feedstock, "feeding_freq", 24))
 
         return {
@@ -321,6 +357,8 @@ class ParallelSimulator:
             "T_ad": self.adm1._T_ad,
             "feedstock_substrates": substrate_ids,
             "feeding_freq": feeding_freq,
+            "simba_q_convention": bool(getattr(feedstock, "_simba_q_convention", True)),
+            "calibration": dict(self.adm1.get_calibration_parameters()),
         }
 
     @staticmethod
@@ -363,6 +401,7 @@ def _run_single_scenario(
                 substrate_ids,
                 feeding_freq=feeding_freq,
                 total_simtime=int(duration) + 1,
+                simba_q_convention=adm1_config.get("simba_q_convention", True),
             )
         else:
             feedstock = None
@@ -380,11 +419,11 @@ def _run_single_scenario(
             T_ad=T_ad,
         )
 
-        if not verbose:
-            adm1.print_params_at_current_state = lambda _state: None
-
         Q = parameters.get("Q", [0.0] * 10)
-        calibration_params = {key: value for key, value in parameters.items() if key in _CALIBRATION_PARAM_KEYS}
+        # The base model's calibration applies to every scenario; a scenario
+        # value for the same parameter wins.
+        calibration_params = dict(adm1_config.get("calibration") or {})
+        calibration_params.update({key: value for key, value in parameters.items() if key in _CALIBRATION_PARAM_KEYS})
         if calibration_params:
             adm1.set_calibration_parameters(calibration_params)
 
@@ -392,14 +431,24 @@ def _run_single_scenario(
         # ``create_influent`` would dereference the absent feedstock. ADM_ODE
         # treats a missing influent as an autonomous run (q_ad = 0, s_in = 0).
         if feedstock is not None:
-            adm1.set_influent_dataframe(feedstock.get_influent_dataframe(Q=Q))
             adm1.create_influent(Q, 0)
 
         if len(initial_state) != STATE_SIZE:
             raise ValueError(f"initial_state must have {STATE_SIZE} elements; got {len(initial_state)}")
 
         simulator = Simulator(adm1)
-        final_state = simulator.simulate_AD_plant([0.0, duration], list(initial_state))
+        if save_time_series and 0.0 < dt < duration:
+            # One solver call per ``dt`` so the tracked gas and pH series get
+            # one point per step.
+            n_full = int(duration / dt + 1.0e-9)
+            edges = [i * dt for i in range(n_full + 1)]
+            if duration - edges[-1] > 1.0e-9:
+                edges.append(duration)
+            final_state = list(initial_state)
+            for t_start, t_end in pairwise(edges):
+                final_state = simulator.simulate_AD_plant([t_start, t_end], final_state)
+        else:
+            final_state = simulator.simulate_AD_plant([0.0, duration], list(initial_state))
 
         metrics = {}
         if compute_metrics:
@@ -473,12 +522,18 @@ def _compute_scenario_metrics(adm1: ADM1, final_state: list[float], Q: list[floa
         if 0.0 < ph < 14.0:
             metrics["pH"] = ph
 
+        # ``Q_total`` and the specific yields refer to the feed rates as entered
+        # (tonnes of fresh matter per day under the default Feedstock
+        # convention); the retention time needs the volume flow the model uses.
         Q_total = float(np.sum(Q))
         if Q_total > 0:
             metrics["Q_total"] = Q_total
             metrics["specific_gas_production"] = float(q_gas / Q_total)
             metrics["specific_ch4_production"] = float(q_ch4 / Q_total)
-            metrics["HRT"] = float(adm1.V_liq / Q_total)
+            feedstock = getattr(adm1, "feedstock", None)
+            q_volume = float(np.sum(feedstock.actual_Q(Q))) if hasattr(feedstock, "actual_Q") else Q_total
+            if q_volume > 0:
+                metrics["HRT"] = float(adm1.V_liq / q_volume)
 
     except Exception as e:  # noqa: BLE001 - capture any metric-computation error into the result
         metrics["error"] = str(e)

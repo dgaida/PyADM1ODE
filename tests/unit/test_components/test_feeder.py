@@ -451,44 +451,21 @@ class TestFeederPerformance:
 class TestFeederBlockage:
     """Test suite for feeder blockage detection."""
 
-    def test_blockage_detection_occurs_randomly(self) -> None:
-        """Test that blockage can occur (probabilistically)."""
-        feeder = Feeder("feeder_1", Q_max=20.0)
-        feeder.initialize()
+    def test_blockage_reduces_the_flow_and_is_counted(self) -> None:
+        """A blockage (forced through the feeder's random generator) cuts the flow to 10 %."""
 
-        # Run many steps - blockage should occur at least once
-        blockage_occurred = False
-        i = 0
+        class _AlwaysBlocked:
+            def random(self) -> float:
+                return 0.0
 
-        while (not blockage_occurred) or (i > 2000):
-            i = i + 1  # just for safety, if the method never sets blockage_detected, because of a bug
-            result = feeder.step(t=0.0, dt=1.0 / 24.0, inputs={"Q_setpoint": 15.0})
-            if result["blockage_detected"]:
-                blockage_occurred = True
-                break
+        feeder = Feeder("feeder_1", Q_max=20.0, enable_dosing_noise=False)
+        feeder._rng = _AlwaysBlocked()
 
-        # Note: This is probabilistic, but with 1000 steps it's very likely
-        assert feeder.n_blockages >= 0, "Blockage counter should exist"
+        result = feeder.step(t=0.0, dt=1.0 / 24.0, inputs={"Q_setpoint": 15.0})
 
-    # TODO: this test cannot work, because in the step method the variabel blockage_detected is set if random number
-    #  passes a threshold, otherwise it is set to False, thus overwriting the variable set here.
-    # def test_blockage_reduces_flow(self) -> None:
-    #     """Test that blockage reduces flow rate."""
-    #     feeder = Feeder("feeder_1", Q_max=20.0, enable_dosing_noise=False)
-    #     feeder.initialize()
-    #
-    #     # Manually trigger blockage for testing
-    #     feeder.blockage_detected = True
-    #     inputs = {"Q_setpoint": 15.0}
-    #
-    #     # Simulate with blockage
-    #     feeder.blockage_detected = True
-    #     feeder.current_flow = 15.0 * 0.1  # Reduced flow
-    #
-    #     result = feeder.step(t=0.0, dt=1.0 / 24.0, inputs=inputs)
-    #
-    #     # Flow should be significantly reduced
-    #     assert result["Q_actual"] < 15.0 * 0.5, "Blockage should reduce flow"
+        assert result["blockage_detected"] is True
+        assert result["Q_actual"] == pytest.approx(1.5)
+        assert feeder.n_blockages == 1
 
 
 class TestFeederSerialization:

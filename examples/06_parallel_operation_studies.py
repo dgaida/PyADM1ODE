@@ -6,25 +6,30 @@ Parallel design studies for a 3-substrate ADM1 biogas plant.
 Substrates: maize silage (energy crop), cattle manure (buffering /
 alkalinity), and grass silage (fibre diversity).
 
-Three plant-operator questions, each answered with a parallel sweep
+Three plant-operator questions, each examined with a parallel sweep
 on top of :class:`pyadm1.simulation.parallel.ParallelSimulator`:
 
   1. HRT × OLR envelope   — "Which (HRT, OLR) combinations stay stable?"
-  2. Substrate mix        — "Best maize / cattle / grass mix at constant Q_in?"
-  3. Temperature regime   — "Mesophilic (37 °C) vs thermophilic (55 °C)?"
+  2. Substrate mix        — "Best maize / cattle / grass mix at constant feed?"
+  3. Temperature regime   — "How does the methane flow change from 35 to 58 °C?"
 
-Each section runs an ensemble of simulations and saves one summary
-figure to ``output/``. Section 2 deliberately runs at high load
-(``Q_in = 40 m³/d``) so that pure-maize feeding hits the alkalinity
-limit and a balanced mix wins over any single substrate — swap the
-substrate list at the top of the file if you want to see how the
-optimum shifts with a different feedstock palette.
+Each section runs an ensemble of simulations, prints its result and saves
+one summary figure to ``output/``. "Stable" combines the pH of the model
+with an assumed ceiling on the organic loading rate (``OLR_MAX``); see the
+constants below. Section 2 runs at a high total feed (40 t FM/d), and
+Section 3 uses the best mix of Section 2. The results depend on the
+substrates: swap the substrate list at the top of the file to see how
+they shift.
+
+Units:
+    - Feed rates are tonnes of fresh matter per day [t FM/d] under the default
+      Feedstock convention (``simba_q_convention=True``).
+    - Gas flows are dry gas at standard conditions (0 °C, 1.01325 bar) [Nm³/d].
 
 Usage:
     python examples/06_parallel_operation_studies.py
 """
 
-import contextlib
 import sys
 import time
 from pathlib import Path
@@ -32,9 +37,6 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
-
-with contextlib.suppress(Exception):
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -52,14 +54,13 @@ T_AD_MESO = 315.15  # K   42 °C — reference temperature
 SUBSTRATES = ["maize_silage_milk_ripeness", "cattle_manure", "grass_silage"]
 I_MAIZE, I_CATTLE, I_GRASS = 0, 1, 2
 
-# Engineering-side stability envelope, applied on top of the model's own
-# pH check. ADM1 (in this configuration) is more forgiving than a real
-# wet-AD reactor — it happily reports pH > 7 at OLR > 20 kg VS / m³ d,
-# whereas real plants destabilise above ~6–8. We therefore overlay the
-# practical engineering limit so the picker can't recommend an operating
-# point that no operator would actually run.
-OLR_MAX = 6.0  # kg VS / m³ d — safe upper limit for wet AD
-PH_STABLE_MIN = 7.0  # tighter than the model's washout edge (~6.5)
+# Stability envelope used by the studies. The model alone is forgiving: in
+# Section 1 it still reports a pH above 7 at the highest loading rates. The
+# studies therefore add a ceiling on the organic loading rate. Both limits
+# are assumptions of this example, not model results; adjust them to the
+# plant at hand.
+OLR_MAX = 6.0  # kg VS / m³ d — assumed upper limit for wet digestion
+PH_STABLE_MIN = 7.0  # lowest pH counted as stable
 
 
 def _make_base_adm1(T_ad=T_AD_MESO, duration_days=30):
@@ -72,21 +73,44 @@ def _make_base_adm1(T_ad=T_AD_MESO, duration_days=30):
     return adm1, fs
 
 
-# Reference flow used to seed every scenario. An even three-way split at
-# 20 m³/d sits comfortably above the X_ac washout threshold and adapts
-# quickly to the actual flow / mix of each parallel scenario.
+def _olr(fs, Q):
+    """Return the organic loading rate of a feed.
+
+    Args:
+        fs (Feedstock): Feedstock that defines the substrates.
+        Q (Sequence[float]): Feed rates per substrate [t FM/d].
+
+    Returns:
+        float: Volatile solids fed per day and m³ of liquid volume
+            [kg VS / m³ d].
+    """
+    # blended_vs_content is given per m³ of feed, so it is multiplied by the
+    # volume flow the model uses, not by the feed in t FM/d.
+    return float(np.sum(fs.actual_Q(Q))) * fs.blended_vs_content(Q) / V_LIQ
+
+
+# Reference feed [t FM/d] the start state of Sections 1 and 2 is built for:
+# a roughly even three-way split at 20 t FM/d. Every scenario then moves
+# from this state towards its own feed and mix.
 _Q_INOCULUM = [7.0, 7.0, 6.0, 0, 0, 0, 0, 0, 0, 0]
 
 
 def _inoculum_state(fs, T_ad=T_AD_MESO, Q_ref=None):
-    """
-    Build an active-biomass initial state from the feedstock blend.
+    """Build a start state with active biomass from the feedstock blend.
 
-    A cold start ``[0.01]*41`` works for low-load manure-only feeds but
-    crashes the digester on maize-heavy scenarios (acidic feed pH 4.0,
-    zero alkalinity) before the biomass has time to grow. The
-    pre-inoculation puts X_ac at 1.2 kg/m³ — well above the 0.20
-    washout threshold — and dimensions the X_PS / X_PF pools to *Q_ref*.
+    The state comes from the pre-inoculation of the ``Digester`` component:
+    particulate pools sized for the reference feed, dissolved species of a
+    digester at pH 7 and active biomass, so that methane forms from the
+    first day.
+
+    Args:
+        fs (Feedstock): Feedstock that defines the substrates.
+        T_ad (float): Temperature the state is built for [K].
+        Q_ref (Sequence[float] | None): Reference feed [t FM/d]; defaults to
+            ``_Q_INOCULUM``.
+
+    Returns:
+        list[float]: ADM1 state vector (41 values).
     """
     from pyadm1.components.biological.digester import Digester
 
@@ -100,15 +124,21 @@ def _inoculum_state(fs, T_ad=T_AD_MESO, Q_ref=None):
 
 
 def study_hrt_olr_envelope(n_workers, duration=60.0):
-    """
-    2-D parameter sweep over (Q_total, energy-crop fraction).
+    """Run a 2-D sweep over the total feed and the energy-crop fraction.
 
-    HRT is set by Q_total alone (V_liq is fixed). OLR follows from the
-    mix: the energy crops (maize + grass) carry roughly 4–5× the VS per
-    m³ that cattle manure does, so a high `ec_frac` raises OLR at the
-    same HRT.  Within the energy-crop slice the maize : grass split is
-    held 50:50 — the substrate-mix optimisation in Section 2 explores
-    that axis explicitly.
+    The retention time follows mainly from the total feed, because the
+    liquid volume is fixed. The loading rate also follows from the mix: per
+    tonne, the energy crops (maize + grass) carry several times the volatile
+    solids of cattle manure, so a high ``ec_frac`` raises the OLR at the
+    same total feed. Within the energy-crop share the maize : grass split is
+    held 50:50; Section 2 explores that axis.
+
+    A scenario counts as stable when its pH is at least ``PH_STABLE_MIN``,
+    its gas holds more than 30 % methane and its OLR is at most ``OLR_MAX``.
+
+    Args:
+        n_workers (int): Number of worker processes.
+        duration (float): Simulated time per scenario [d].
     """
     from pyadm1.simulation.parallel import ParallelSimulator
 
@@ -159,14 +189,8 @@ def study_hrt_olr_envelope(n_workers, duration=60.0):
         q_ch4[i, j] = m.get("Q_ch4", np.nan)
         spec_ch4[i, j] = m.get("specific_ch4_production", np.nan)
         ph[i, j] = m.get("pH", np.nan)
-        # OLR [kg VS / m³ d] derived from the feedstock VS content for this mix.
-        Q_tot = Q_total_list[i]
-        ec = ec_frac_list[j]
-        Q_arr = np.array(_mix_Q(Q_tot, ec)[:3])
-        vs_blend = fs.blended_vs_content(Q_arr)
-        olr[i, j] = Q_tot * vs_blend / V_LIQ
-        # Stability = (model check) AND (engineering OLR ceiling). The model
-        # check alone calls OLR > 20 stable, so we overlay OLR_MAX.
+        olr[i, j] = _olr(fs, _mix_Q(Q_total_list[i], ec_frac_list[j]))
+        # Stability = (model check) AND (assumed OLR ceiling).
         stable[i, j] = (
             ph[i, j] >= PH_STABLE_MIN
             and m.get("CH4_content", 0.0) > 0.30
@@ -182,7 +206,7 @@ def study_hrt_olr_envelope(n_workers, duration=60.0):
     sc = ax.scatter(
         hrt.flatten(), olr.flatten(), c=spec_ch4.flatten(), s=140, cmap="viridis", edgecolors="black", linewidths=0.4
     )
-    plt.colorbar(sc, ax=ax, label="Spec. CH₄ yield [m³ CH₄ / m³ feed]")
+    plt.colorbar(sc, ax=ax, label="Spec. CH₄ yield [Nm³ CH₄ / t FM]")
     ax.set_xlabel("HRT [d]")
     ax.set_ylabel("OLR [kg VS / m³ d]")
     ax.set_title("Methane yield over the HRT × OLR plane")
@@ -204,9 +228,8 @@ def study_hrt_olr_envelope(n_workers, duration=60.0):
     fig.tight_layout()
     _savefig(fig, "06_section1_hrt_olr.png")
 
-    print(
-        f"\n  {'Q_tot':>6s} {'ec_frac':>7s} {'HRT':>6s} {'OLR':>6s} " f"{'Q_CH4':>8s} {'spec':>6s} {'pH':>5s} {'stable':>7s}"
-    )
+    print("\n  Q_tot in t FM/d, HRT in d, OLR in kg VS / m³ d, Q_CH4 in Nm³/d, spec in Nm³ CH4 / t FM")
+    print(f"  {'Q_tot':>6s} {'ec_frac':>7s} {'HRT':>6s} {'OLR':>6s} " f"{'Q_CH4':>8s} {'spec':>6s} {'pH':>5s} {'stable':>7s}")
     for i, Q_tot in enumerate(Q_total_list):
         for j, ec in enumerate(ec_frac_list):
             print(
@@ -223,20 +246,23 @@ def study_hrt_olr_envelope(n_workers, duration=60.0):
 
 
 def study_substrate_mix(n_workers, duration=90.0):
-    """
-    2-D ternary sweep over (maize fraction, grass fraction) with the
-    cattle-manure fraction set to the remainder.
+    """Sweep the substrate mix at a constant total feed.
 
-    ``Q_total`` is held constant at a *high* load. The "best mix" is the
-    one with the highest ``Q_CH₄`` that also respects **both** stability
-    constraints: the model's own pH check (pH ≥ PH_STABLE_MIN) **and**
-    the engineering OLR ceiling (OLR ≤ OLR_MAX kg VS / m³ d). The OLR
-    ceiling is the decisive constraint: without it, ADM1 happily reports
-    pure maize as stable at OLR > 10, which no real wet-AD operator
-    would run. With it, cattle manure becomes essential to dilute the
-    VS load down to a safe envelope, and the optimum genuinely is a
-    *mix* — typically ~40–50 % maize / 50–60 % manure for our default
-    feedstock palette.
+    The maize and grass fractions vary in steps of 0.1; cattle manure takes
+    the remainder. The total feed is held at a high 40 t FM/d. The best mix
+    is the one with the highest methane flow among the mixes that meet both
+    limits: pH of the model at least ``PH_STABLE_MIN`` and OLR at most
+    ``OLR_MAX``. Which limit decides and which mix wins depends on the
+    substrates; the function prints both.
+
+    Args:
+        n_workers (int): Number of worker processes.
+        duration (float): Simulated time per mix [d].
+
+    Returns:
+        dict | None: Fractions, total feed, methane flow, methane content,
+            pH and OLR of the best mix, or ``None`` if no mix meets both
+            limits.
     """
     from pyadm1.simulation.parallel import ParallelSimulator
 
@@ -244,7 +270,7 @@ def study_substrate_mix(n_workers, duration=90.0):
     print("Section 2 — Optimal mix (maize × grass × cattle) at high load")
     print("=" * 72)
 
-    Q_total = 40.0  # m³/d held constant (high load)
+    Q_total = 40.0  # t FM/d, held constant (high load)
     fracs = np.linspace(0.0, 1.0, 11)  # 11 steps per axis
 
     grid_combos = []  # (i, j, mf, gf, cf)
@@ -284,9 +310,8 @@ def study_substrate_mix(n_workers, duration=90.0):
 
     for combo, r in zip(grid_combos, results):
         i, j, mf, gf, cf = combo
-        # OLR from this cell's actual mix.
-        Q_arr = np.array([Q_total * mf, Q_total * cf, Q_total * gf])
-        olr[i, j] = Q_total * fs.blended_vs_content(Q_arr) / V_LIQ
+        # OLR of this mix; the order is maize, cattle manure, grass.
+        olr[i, j] = _olr(fs, [Q_total * mf, Q_total * cf, Q_total * gf])
         if not r.success:
             continue
         m = r.metrics
@@ -296,6 +321,10 @@ def study_substrate_mix(n_workers, duration=90.0):
         ph[i, j] = m.get("pH", np.nan)
 
     stable = (ph >= PH_STABLE_MIN) & (olr <= OLR_MAX)
+    print(
+        f"\n  Range over all mixes: pH {np.nanmin(ph):.2f} to {np.nanmax(ph):.2f}, "
+        f"OLR {np.nanmin(olr):.2f} to {np.nanmax(olr):.2f} kg VS / m³ d"
+    )
     best_mix = None
     if stable.any():
         q_stable = np.where(stable, q_ch4, -np.inf)
@@ -311,12 +340,12 @@ def study_substrate_mix(n_workers, duration=90.0):
             "pH": float(ph[bi, bj]),
             "OLR": float(olr[bi, bj]),
         }
-        print(f"\n  Best mix @ Q_in = {Q_total:.0f} m³/d " f"(within pH ≥ {PH_STABLE_MIN:.1f} and OLR ≤ {OLR_MAX:.0f}):")
+        print(f"\n  Best mix @ Q_in = {Q_total:.0f} t FM/d " f"(within pH ≥ {PH_STABLE_MIN:.1f} and OLR ≤ {OLR_MAX:.0f}):")
         print(f"    maize  = {best_mix['maize_frac']:.2f}")
         print(f"    cattle = {best_mix['cattle_frac']:.2f}")
         print(f"    grass  = {best_mix['grass_frac']:.2f}")
         print(
-            f"    -> Q_CH4 = {best_mix['Q_ch4']:.1f} m³/d, "
+            f"    -> Q_CH4 = {best_mix['Q_ch4']:.1f} Nm³/d, "
             f"CH4 = {best_mix['ch4_pct']:.1f} %, "
             f"pH = {best_mix['pH']:.2f}, "
             f"OLR = {best_mix['OLR']:.2f}"
@@ -337,7 +366,7 @@ def study_substrate_mix(n_workers, duration=90.0):
 
     ax = axes[0]
     im = ax.imshow(q_ch4.T, origin="lower", extent=(fracs[0], fracs[-1], fracs[0], fracs[-1]), cmap="viridis", aspect="auto")
-    plt.colorbar(im, ax=ax, label="Q_CH₄ [m³/d]")
+    plt.colorbar(im, ax=ax, label="Q_CH₄ [Nm³/d]")
     ax.plot([0, 1], [1, 0], color="white", linestyle="--", alpha=0.6, label="feasibility edge (cattle = 0)")
     if best_mix is not None:
         ax.scatter(
@@ -356,7 +385,7 @@ def study_substrate_mix(n_workers, duration=90.0):
     ax.legend(loc="upper right", fontsize=8)
 
     ax = axes[1]
-    # pH stability map; non-feasible cells stay white.
+    # pH map; non-feasible cells stay white.
     im2 = ax.imshow(
         ph.T,
         origin="lower",
@@ -370,9 +399,9 @@ def study_substrate_mix(n_workers, duration=90.0):
     ax.plot([0, 1], [1, 0], color="black", linestyle="--", alpha=0.6)
     ax.set_xlabel("maize fraction [-]")
     ax.set_ylabel("grass fraction [-]")
-    ax.set_title("Reactor pH (green = stable, red = washout)")
+    ax.set_title("Reactor pH")
 
-    fig.suptitle(f"Substrate mix at Q_in = {Q_total:.0f} m³/d, " f"V_liq = {V_LIQ:.0f} m³ @ 42 °C")
+    fig.suptitle(f"Substrate mix at Q_in = {Q_total:.0f} t FM/d, " f"V_liq = {V_LIQ:.0f} m³ @ 42 °C")
     fig.tight_layout()
     _savefig(fig, "06_section2_substrate_mix.png")
 
@@ -385,24 +414,27 @@ def study_substrate_mix(n_workers, duration=90.0):
 
 
 def study_temperature_sweep(n_workers, duration=30.0, Q=None):
-    """
-    Compare steady-state operation at different reactor temperatures,
-    holding the substrate feed fixed.
+    """Compare digester temperatures at a fixed substrate feed.
 
-    The feed ``Q`` is normally Section 2's best mix (passed in by
-    :func:`main`). If ``Q`` is ``None``, a balanced 40/40/20
-    maize / cattle / grass mix at 20 m³/d is used as a sensible default.
+    The feed ``Q`` is normally the best mix of Section 2 (passed in by
+    :func:`main`). If ``Q`` is ``None``, a 40/40/20 maize / cattle / grass
+    mix at 20 t FM/d is used.
 
-    All temperatures are dispatched to a single :class:`ParallelSimulator`
-    via the per-scenario ``T_ad`` parameter — no per-T sub-pool needed.
+    All temperatures go to a single :class:`ParallelSimulator` through the
+    per-scenario ``T_ad`` key. Every scenario starts from the same state,
+    built for 42 °C, and runs ``duration`` days at its own temperature. The
+    values are the state after that time, not steady states.
 
-    Note on the *transition* question: ramping a digester from
-    mesophilic (~37 °C) to thermophilic (~55 °C) should not be done in
-    one step. Real plants limit the change to ~1 °C/d to give the
-    methanogenic community time to adapt; an abrupt jump typically
-    crashes Q_CH₄ and stalls X_ac for weeks. The steady-state values
-    shown here are the *upper bound* of what each operating temperature
-    can deliver, not the trajectory of a poorly-managed switch.
+    The model corrects its rates and equilibrium constants with the
+    temperature. It does not describe how the microbial community adapts to
+    a temperature change, and its rate corrections rise without an upper
+    limit. The sweep shows this model response; it is no recommendation to
+    switch a plant to another temperature.
+
+    Args:
+        n_workers (int): Number of worker processes.
+        duration (float): Simulated time per temperature [d].
+        Q (Sequence[float] | None): Feed rates per substrate [t FM/d].
     """
     from pyadm1.simulation.parallel import ParallelSimulator
 
@@ -411,7 +443,7 @@ def study_temperature_sweep(n_workers, duration=30.0, Q=None):
     print("=" * 72)
 
     if Q is None:
-        # Fallback: 20 m³/d balanced 3-substrate mix.
+        # Fallback: 3-substrate mix at 20 t FM/d.
         Q = [0.0] * 10
         Q[I_MAIZE] = 8.0
         Q[I_CATTLE] = 8.0
@@ -419,7 +451,9 @@ def study_temperature_sweep(n_workers, duration=30.0, Q=None):
     T_celsius = [35.0, 37.0, 40.0, 42.0, 45.0, 48.0, 50.0, 52.0, 55.0, 58.0]
     T_K = [T + 273.15 for T in T_celsius]
 
-    print(f"Feed = {Q[I_MAIZE]:.2f} maize + {Q[I_CATTLE]:.2f} cattle " f"+ {Q[I_GRASS]:.2f} grass  =  {sum(Q):.2f} m³/d total")
+    print(
+        f"Feed = {Q[I_MAIZE]:.2f} maize + {Q[I_CATTLE]:.2f} cattle " f"+ {Q[I_GRASS]:.2f} grass  =  {sum(Q):.2f} t FM/d total"
+    )
 
     # One base ADM1 + one ParallelSimulator handles every T_ad now that
     # the parallel API takes T_ad as a per-scenario parameter.
@@ -447,7 +481,7 @@ def study_temperature_sweep(n_workers, duration=30.0, Q=None):
     for ax, y, ylabel, title, colour in zip(
         axes,
         [q_ch4, ch4_pct, ph],
-        ["Q_CH₄ [m³/d]", "CH₄ content [%]", "pH [-]"],
+        ["Q_CH₄ [Nm³/d]", "CH₄ content [%]", "pH [-]"],
         ["Daily methane production", "Methane content in biogas", "Reactor pH"],
         ["tab:blue", "tab:green", "tab:red"],
     ):
@@ -459,11 +493,12 @@ def study_temperature_sweep(n_workers, duration=30.0, Q=None):
         ax.set_title(title)
         ax.grid(True, alpha=0.3)
     axes[0].legend(loc="best", fontsize=9)
-    fig.suptitle(f"Temperature sweep at Q_in = {sum(Q):.0f} m³/d, V_liq = {V_LIQ:.0f} m³")
+    fig.suptitle(f"Temperature sweep at Q_in = {sum(Q):.0f} t FM/d, V_liq = {V_LIQ:.0f} m³")
     fig.tight_layout()
     _savefig(fig, "06_section3_temperature_sweep.png")
 
-    print(f"\n  {'T [°C]':>8s} {'Q_CH4':>8s} {'CH4 %':>7s} {'pH':>5s}")
+    print("\n  Q_CH4 in Nm³/d")
+    print(f"  {'T [°C]':>8s} {'Q_CH4':>8s} {'CH4 %':>7s} {'pH':>5s}")
     for T, Q_ch4, pct, ph_v in zip(T_celsius, q_ch4, ch4_pct, ph):
         print(f"  {T:>8.1f} {Q_ch4:>8.1f} {pct:>7.1f} {ph_v:>5.2f}")
 
@@ -506,4 +541,9 @@ def main(n_workers=4):
 
 
 if __name__ == "__main__":
+    # The report uses symbols (CH₄, ≥, ↔) that a Windows console code page may
+    # not have; write UTF-8 so they survive a redirect, and a replacement
+    # character where the console cannot show them.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     main()

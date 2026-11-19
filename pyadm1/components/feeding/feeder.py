@@ -44,6 +44,7 @@ Example:
 
 from __future__ import annotations
 
+import zlib
 from enum import Enum
 from typing import Any, ClassVar
 
@@ -110,6 +111,11 @@ class Feeder(Component):
         power_installed: float | None = None,
         enable_dosing_noise: bool = True,
         name: str | None = None,
+        Q_setpoint: float | None = None,
+        substrate_index: int | None = None,
+        flow_to_mass_factor: float = 1.0,
+        specific_energy: float | None = None,
+        seed: int | None = None,
     ):
         """
         Initialize feeder component.
@@ -123,8 +129,25 @@ class Feeder(Component):
             power_installed: Installed power [kW] (auto-calculated if None)
             enable_dosing_noise: Add realistic dosing variance
             name: Human-readable name
+            Q_setpoint: Standing flow setpoint, in the unit of the digester's
+                ``Q_substrates``. Used whenever the step inputs carry no
+                ``Q_setpoint``; ``None`` leaves the feeder idle until one arrives.
+            substrate_index: Slot of the digester's ``Q_substrates`` this
+                feeder delivers into. Required to feed a digester in a plant.
+            flow_to_mass_factor: Tonnes of fresh matter per unit of flow
+                [t per flow unit]. 1.0 when the flow is in t/d (the default
+                ``Feedstock`` convention); ``density / 1000`` when it is in m³/d.
+                Converts the flow for the storage balance and for
+                ``specific_energy``.
+            specific_energy: Electricity demand per tonne fed [kWh/t FM]. When
+                set it replaces the load-curve estimate from
+                ``power_installed``; a blockage still multiplies it by 1.5.
+            seed: Seed of the feeder's own random generator (dosing noise,
+                blockages). ``None`` derives it from ``component_id``, so
+                every feeder has its own stream and repeated runs give the
+                same results.
         """
-        super().__init__(component_id, ComponentType.MIXER, name)  # Use MIXER as closest type
+        super().__init__(component_id, ComponentType.FEEDER, name)
 
         if substrate_type is None:
             substrate_type = "solid" if feeder_type is None else self._default_substrate_for_feeder_type(feeder_type)
@@ -139,10 +162,20 @@ class Feeder(Component):
         self._validate_feeder_substrate_compatibility()
         self.Q_max = float(Q_max)
         self.enable_dosing_noise = enable_dosing_noise
+        self.Q_setpoint = None if Q_setpoint is None else float(Q_setpoint)
+        self.substrate_index = None if substrate_index is None else int(substrate_index)
+        if float(flow_to_mass_factor) <= 0.0:
+            raise ValueError(f"Feeder '{component_id}': flow_to_mass_factor must be positive, got {flow_to_mass_factor}")
+        self.flow_to_mass_factor = float(flow_to_mass_factor)
+        self.specific_energy = None if specific_energy is None else float(specific_energy)
 
         # Dosing characteristics
-        self.dosing_accuracy = dosing_accuracy or self._estimate_dosing_accuracy()
+        # An explicit 0.0 means exact dosing and must not fall back to the estimate.
+        self.dosing_accuracy = self._estimate_dosing_accuracy() if dosing_accuracy is None else float(dosing_accuracy)
         self.power_installed = power_installed or self._estimate_power_requirement()
+
+        self.seed = zlib.crc32(component_id.encode("utf-8")) if seed is None else int(seed)
+        self._rng = np.random.default_rng(self.seed)
 
         # Operating state
         self.current_flow = 0.0
@@ -213,6 +246,7 @@ class Feeder(Component):
                 - 'operating_hours': Cumulative operating hours
                 - 'energy_consumed': Cumulative energy [kWh]
                 - 'total_mass_fed': Cumulative mass [t or m³]
+                - 'n_starts', 'n_blockages': Event counters
         """
         if initial_state:
             self.is_running = initial_state.get("is_running", False)
@@ -220,6 +254,8 @@ class Feeder(Component):
             self.operating_hours = float(initial_state.get("operating_hours", 0.0))
             self.energy_consumed = float(initial_state.get("energy_consumed", 0.0))
             self.total_mass_fed = float(initial_state.get("total_mass_fed", 0.0))
+            self.n_starts = int(initial_state.get("n_starts", 0))
+            self.n_blockages = int(initial_state.get("n_blockages", 0))
 
         self.state = {
             "is_running": self.is_running,
@@ -250,7 +286,8 @@ class Feeder(Component):
             t: Current time [days]
             dt: Time step [days]
             inputs: Input data with optional keys:
-                - 'Q_setpoint': Desired flow rate [m³/d or t/d]
+                - 'Q_setpoint': Desired flow rate [m³/d or t/d]; falls back to
+                  the ``Q_setpoint`` given to the constructor
                 - 'enable_feeding': Enable/disable feeder
                 - 'substrate_available': Amount available in storage [t or m³]
                 - 'speed_setpoint': Desired speed fraction (0-1)
@@ -267,7 +304,7 @@ class Feeder(Component):
         """
         # Get control inputs
         enable_feeding = inputs.get("enable_feeding", True)
-        Q_setpoint = float(inputs.get("Q_setpoint", 0.0))
+        Q_setpoint = float(inputs.get("Q_setpoint", self.Q_setpoint or 0.0))
         substrate_available = float(inputs.get("substrate_available", float("inf")))
         speed_setpoint = float(inputs.get("speed_setpoint", 1.0))
 
@@ -296,21 +333,22 @@ class Feeder(Component):
             # Calculate target flow
             Q_target = min(Q_setpoint, self.Q_max * self.speed_fraction)
 
-            # Check substrate availability
-            max_available = substrate_available / dt  # Convert to daily rate
-            Q_target = min(Q_target, max_available)
-
             # Apply dosing noise (realistic variance)
             if self.enable_dosing_noise and Q_target > 0:
-                noise = np.random.normal(0, self.dosing_accuracy * Q_target)
+                noise = self._rng.normal(0, self.dosing_accuracy * Q_target)
                 Q_actual = max(0.0, Q_target + noise)
             else:
                 Q_actual = Q_target
 
+            # Substrate availability limits the dosed flow, noise included:
+            # the feeder cannot deliver more than the storage holds.
+            max_available = substrate_available / dt  # Convert to daily rate
+            Q_actual = min(Q_actual, max_available)
+
             self.current_flow = Q_actual
 
             # Random blockage simulation (very low probability)
-            if np.random.random() < 0.0001 * dt:  # ~0.01% per day
+            if self._rng.random() < 0.0001 * dt:  # ~0.01% per day
                 self.blockage_detected = True
                 self.n_blockages += 1
                 self.current_flow *= 0.1  # Reduced flow during blockage
@@ -359,7 +397,10 @@ class Feeder(Component):
             "speed_fraction": float(self.speed_fraction),
             "dosing_accuracy": float(self.dosing_accuracy),
             "total_mass_fed": float(self.total_mass_fed),
+            "mass_flow_t_per_day": float(self.current_flow * self.flow_to_mass_factor),
         }
+        if self.substrate_index is not None:
+            self.outputs_data["substrate_index"] = self.substrate_index
 
         return self.outputs_data
 
@@ -372,6 +413,11 @@ class Feeder(Component):
         """
         if not self.is_running or self.current_flow < 1e-6:
             return 0.0
+
+        if self.specific_energy is not None:
+            # kWh/t * t/d / 24 h/d = kW
+            P_specific = self.specific_energy * self.current_flow * self.flow_to_mass_factor / 24.0
+            return P_specific * 1.5 if self.blockage_detected else P_specific
 
         # Base power (idling)
         P_base = self.power_installed * 0.2
@@ -460,6 +506,11 @@ class Feeder(Component):
             "dosing_accuracy": self.dosing_accuracy,
             "power_installed": self.power_installed,
             "enable_dosing_noise": self.enable_dosing_noise,
+            "Q_setpoint": self.Q_setpoint,
+            "substrate_index": self.substrate_index,
+            "flow_to_mass_factor": self.flow_to_mass_factor,
+            "specific_energy": self.specific_energy,
+            "seed": self.seed,
             "state": self.state,
             "inputs": self.inputs,
             "outputs": self.outputs,
@@ -477,6 +528,11 @@ class Feeder(Component):
             power_installed=config.get("power_installed"),
             enable_dosing_noise=config.get("enable_dosing_noise", True),
             name=config.get("name"),
+            Q_setpoint=config.get("Q_setpoint"),
+            substrate_index=config.get("substrate_index"),
+            flow_to_mass_factor=config.get("flow_to_mass_factor", 1.0),
+            specific_energy=config.get("specific_energy"),
+            seed=config.get("seed"),
         )
 
         # Restore state if present

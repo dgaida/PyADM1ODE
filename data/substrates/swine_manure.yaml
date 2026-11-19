@@ -1,37 +1,46 @@
-# ADM1da substrate definition: Swine manure
+# Substrate definition: Swine manure
 #
-# TS and NH4 are given per m³ of fresh substrate (liquid manure). Since
-# density ≈ 1000 kg/m³ this is numerically equal to kg/t FM and the same
-# calculation path is used as for solid substrates.
+# Measured parameters (schema "measured"): names and units as in the
+# substrate user guide. Carbohydrates are split by the crude fibre (RF, fOTSrf);
+# the inert share (aXI) is fitted to the methane potential BMP.
 #
-# Model-default constants (densities, COD-conversion factors, methane
-# potentials, acid-base equilibrium constants at 35 °C) are inherited
-# from SubstrateParams; override them here only if substrate-specific
-# values are available.
+# Values: dry-matter composition from the Phyllis database (phyllis.nl,
+# median of the samples named per line) where it holds the material;
+# methane potential from the standard yields of the BiomasseV 2012; storage
+# state (pH, ammonium, acids, buffer, temperature) from published analyses
+# of the material as it is fed; price from the superseded file in legacy/.
+# The source of every value stands behind it. Derivation: substrate user
+# guide, section "Origin of the library values".
 
 name: Swine manure
+schema: measured
 
-# --- Proximate analysis / measured substrate properties -----------------
-TS:    80.0     # kg/m³ FM   total solids
-NH4:    2.0     # kg N/m³ FM ammonia nitrogen
-BGP:  260.0     # Nm³/t VS   biogas potential (reference)
-BMP:  148.7     # Nm³ CH4/t VS  biomethane potential (reference)
+# --- Classification ----------------------------------------------------
+substrate_class: "Schweinegülle (EK II)" # [BiomasseV 2012]
 
-# --- COD fractionation --------------------------------------------------
-aXI:     0.6409 # particulate inert fraction of degradable COD
-fOTSrf:  0.7    # biodegradable fraction of crude fibre (XF)
-fsOTS:   1.0    # share of degradable VS entering slow pool (XPS)
-ffOTS:   0.0    # share of degradable VS entering fast pool (XPF)
-aSi:     0.05   # dissolved inert fraction of degradable COD
+# --- Dry matter --------------------------------------------------------
+TS:              7.9        # % FM [Phyllis] 100 - moisture, n=1 (#1366)
+VS:              84.8       # % TS [Phyllis] 100 - ash, median of n=3, range 64.6-87.85 (#1366, #1715, #3069)
 
-# --- Weender analysis (fractions of TS) ---------------------------------
-fRF:   0.17     # crude fibre
-fRP:   0.24     # crude protein
-fRFe:  0.09     # crude lipid
-fRA:   0.10     # ash
+# --- Weender analysis --------------------------------------------------
+RP:              16.44      # % TS [Phyllis] N x 6.25 of the dried sample, median of n=4, range 15.31-21.56 (#1366, #1715, #2246, #3069)
+RL:              9.0        # % TS [previous file] no lipid value in Phyllis
+RF:              17.0       # % TS [previous file] no usable cell-wall analysis in Phyllis
 
-# --- Physical / chemical state ------------------------------------------
-Temp: 20.0      # °C        substrate temperature
-pH:    7.0
-KS43: 80.0      # mol/m³    acid capacity to pH 4.3
-FFS:   5.0      # kg HAc/m³ VFAs as acetic-acid equivalent
+# --- Degradability -----------------------------------------------------
+BMP:             250.0      # Nm³ CH4/t VS [BiomasseV 2012] 12 m³ CH4/t FM, KTBL standard dry matter 6 % TS, 80 % VS
+fOTSrf:          0.7        # - [previous file] degradable share of the crude fibre
+aSi:             0.05       # - [previous file] soluble inert share
+
+# --- Storage state -----------------------------------------------------
+pH:              7.34       # - [Overmeyer et al. 2020] fresh fattening-pig slurry; in-house slurry 6.5-7.0 (Ma et al. 2023), surveys 7.2-8.1
+NH4:             2.88       # kg N/m³ [Overmeyer et al. 2020] NH4-N of fresh fattening-pig slurry, 8.3 % DM; LfL Basisdaten 2024: 3.42 (Mastschweinegülle 5 % TM); fresh in-house 2.2-3.0 (Ma et al. 2023)
+KS43:            112.0      # mol/m³ [Overmeyer et al. 2020] bicarbonate share of the total inorganic carbon 1.48 kg C/m³ (123 mmol/l) at pH 7.34
+Sac:             7.0        # g/l [Overmeyer et al. 2020] acetic acid of fresh fattening-pig slurry; total VFA 12.9-14.1 g/kg in-house (Ma et al. 2023)
+Spro:            1.6        # g/l [Overmeyer et al. 2020] propionic acid
+Sbu:             1.17       # g/l [Overmeyer et al. 2020] n-butyric 0.82 + iso-butyric 0.35
+Sva:             0.44       # g/l [Overmeyer et al. 2020] n-valeric 0.06 + iso-valeric 0.38
+Temp:            20.0       # °C [Ma et al. 2023] pig slurry in housing facilities ~20 °C (after Aarnink & Elzing 1998); in Danish pig houses 14.8-22.3 °C (Petersen et al. 2016)
+
+# --- Economics ---------------------------------------------------------
+cost:            2.0        # EUR/t FM [previous file]

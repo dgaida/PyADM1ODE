@@ -84,6 +84,13 @@ class TestComponentRegistryInitialization:
                 "GasSensor",
                 type("GasSensor", (), {}),
             ),
+            "pyadm1.components.mechanical.mixer": ("Mixer", type("Mixer", (), {})),
+            "pyadm1.components.mechanical.pump": ("Pump", type("Pump", (), {})),
+            "pyadm1.components.feeding.feeder": ("Feeder", type("Feeder", (), {})),
+            "pyadm1.components.feeding.substrate_storage": (
+                "SubstrateStorage",
+                type("SubstrateStorage", (), {}),
+            ),
         }
         real_import = builtins.__import__
 
@@ -113,6 +120,10 @@ class TestComponentRegistryInitialization:
             "PhysicalSensor",
             "ChemicalSensor",
             "GasSensor",
+            "Mixer",
+            "Pump",
+            "Feeder",
+            "SubstrateStorage",
         }
 
     def test_auto_register_components_skips_import_errors(self, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -130,6 +141,10 @@ class TestComponentRegistryInitialization:
             "pyadm1.components.sensors.physical",
             "pyadm1.components.sensors.chemical",
             "pyadm1.components.sensors.gas",
+            "pyadm1.components.mechanical.mixer",
+            "pyadm1.components.mechanical.pump",
+            "pyadm1.components.feeding.feeder",
+            "pyadm1.components.feeding.substrate_storage",
         )
         real_import = builtins.__import__
 

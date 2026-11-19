@@ -38,37 +38,44 @@ graph LR
     Storage -- Overpressure --> Flare[Safety Flare]
 ```
 
-## Three-Pass Simulation Process
+## Four-Pass Simulation Step
 
-To handle gas flow dependencies correctly, the simulation uses a three-pass model for each time step:
+Gas consumers depend on what the storages can supply, and heating systems on the
+heat of the CHP. `BiogasPlant.step` therefore runs every time step in four
+passes; each component is stepped exactly once.
 
 ```mermaid
 sequenceDiagram
-    participant S as Simulator
-    participant D as Digesters
-    participant G as Gas Storage
-    participant C as CHP / Consumers
+    participant S as BiogasPlant.step
+    participant D as Digesters and feed chain
+    participant G as Gas storages
+    participant C as CHP / upgrading / heating
+    participant F as Flares
 
-    Note over S,C: Time Step (t -> t + dt)
+    Note over S,F: Time Step (t -> t + dt)
 
     rect rgb(200, 220, 240)
     Note right of S: Pass 1: Production
     S->>D: step()
-    D->>G: Add produced gas
+    D->>G: Produced gas
     end
 
     rect rgb(220, 240, 200)
-    Note right of S: Pass 2: Storage Update
-    S->>G: step()
-    G->>G: Update pressure & volume
-    Note right of G: Vent if full
+    Note right of S: Pass 2: Storages
+    C->>G: Gas demand
+    S->>G: step() with production and demand
+    Note right of G: Gas beyond capacity is vented
     end
 
     rect rgb(240, 220, 200)
-    Note right of S: Pass 3: Consumption
-    S->>C: step()
-    C->>G: Request gas
-    G-->>C: Supply actual available
-    C->>C: Re-execute with actual supply
+    Note right of S: Pass 3: Consumers
+    G-->>C: Gas actually supplied
+    S->>C: step(), heating after the CHP
+    end
+
+    rect rgb(240, 230, 210)
+    Note right of S: Pass 4: Flares
+    G-->>F: Vented gas
+    S->>F: step()
     end
 ```

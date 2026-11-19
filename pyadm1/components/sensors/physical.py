@@ -297,6 +297,7 @@ class PhysicalSensor(AbstractSensor):
             unit=config.get("unit"),
             output_key=config.get("output_key"),
             name=config.get("name"),
+            rng_seed=config.get("rng_seed"),
             temperature_signal_key=config.get("temperature_signal_key"),
             temperature_reference=config.get("temperature_reference", 298.15),
             pH_isopotential=config.get("pH_isopotential", 7.0),

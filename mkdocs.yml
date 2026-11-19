@@ -67,6 +67,10 @@ plugins:
             Mechanisch: Mechanical
             Sensoren: Sensors
             Substrate: Substrates
+            Beispiel-Substrate: Example Substrates
+            Parameter & Wertebereiche: Parameters & Ranges
+            Einfluss der Werte: Influence of the Values
+            Herkunft der Werte: Origin of the Values
             Anwendungen: Applications
             Fortgeschrittene Funktionen: Advanced Features
             Fehlerbehebung: Troubleshooting
@@ -145,11 +149,16 @@ nav:
           - Fütterung: user_guide/components/feeding.md
           - Mechanisch: user_guide/components/mechanical.md
           - Sensoren: user_guide/components/sensors.md
-      - Substrate: user_guide/substrates.md
       - Anwendungen: user_guide/applications.md
       - Fortgeschrittene Funktionen: user_guide/advanced_features.md
       - Fehlerbehebung: user_guide/troubleshooting.md
       - API für LLM: user_guide/llm_api.md
+  - Substrate:
+      - Übersicht: substrates/index.md
+      - Beispiel-Substrate: substrates/library.md
+      - Parameter & Wertebereiche: substrates/parameters.md
+      - Einfluss der Werte: substrates/influence.md
+      - Herkunft der Werte: substrates/sources.md
   - Modell & Theorie:
       - ADM1-Implementierung: user_guide/adm1_implementation.md
       - Architektur: architecture/index.md

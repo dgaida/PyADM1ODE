@@ -6,10 +6,10 @@ If you use PyADM1ODE in your research, please cite:
 
 ```bibtex
 @software{pyadm1,
-  author = {Gaida, Daniel},
-  title = {PyADM1: Advanced Biogas Plant Simulation Framework},
+  author = {Nordhoff, Tim Yago and Gaida, Daniel},
+  title = {PyADM1ODE: Advanced Biogas Plant Simulation Framework},
   year = {2026},
-  url = {https://github.com/dgaida/PyADM1}
+  url = {https://github.com/dgaida/PyADM1ODE}
 }
 
 @phdthesis{gaida2014dynamic,
