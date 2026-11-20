@@ -3518,7 +3518,7 @@ fraction that storage currently holds. The fraction used is reported as
 <li><code>Boiler</code> uses <code>lhv_ch4 * CH4_fraction</code> as the biogas heating value when its<br />
   gas supply reports a <code>CH4_fraction</code>; the flat <code>lhv_biogas</code> (6.0 kWh/m³ at
   60 % CH4) applies only without a composition. The value used is reported as
-  <code>lhv_biogas_actual</code>.</li>
+  <code>lhv_biogas_actual</code>.  </li>
 <li><code>Flare</code> takes <code>CH4_fraction</code> from its input, falling back to its<br />
 <code>ch4_fraction_default</code> (0.6), and reports the unburnt methane as
   <code>CH4_slip_m3</code> next to <code>CH4_destroyed_m3</code>.</li>
@@ -3761,7 +3761,7 @@ hourly and with daily steps.</p>
 </code></pre></div>
 <h3 id="flare-control">Flare Control<a class="headerlink" href="#flare-control" title="Permanent link">&para;</a></h3>
 <p>Inside a plant the flare receives the gas its storage vents and the gas an
-upgrading unit cannot take. It burns whenever:
+upgrading unit cannot take. It burns whenever:<br />
 - The gas storage is full and production exceeds demand<br />
 - The CHP consumes less gas than is being produced  </p>
 <p>Standalone, the flare is driven through its inputs:</p>

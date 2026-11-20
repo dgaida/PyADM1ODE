@@ -3517,7 +3517,7 @@ als <code>CH4_fraction</code> in den BHKW-Ausgaben.</p>
 <li><code>Boiler</code> verwendet <code>lhv_ch4 * CH4_fraction</code> als Biogas-Heizwert, wenn seine<br />
   Gasversorgung einen <code>CH4_fraction</code> meldet; der pauschale <code>lhv_biogas</code>
   (6,0 kWh/m³ bei 60 % CH4) gilt nur ohne Zusammensetzung. Der verwendete Wert
-  steht als <code>lhv_biogas_actual</code> in den Ausgaben.</li>
+  steht als <code>lhv_biogas_actual</code> in den Ausgaben.  </li>
 <li><code>Flare</code> übernimmt <code>CH4_fraction</code> aus dem Eingang, sonst ihren<br />
 <code>ch4_fraction_default</code> (0,6), und gibt das unverbrannte Methan als
   <code>CH4_slip_m3</code> neben <code>CH4_destroyed_m3</code> aus.</li>
@@ -3761,7 +3761,7 @@ mit Tagesschritten dieselbe Menge ab.</p>
 </code></pre></div>
 <h3 id="fackelsteuerung">Fackelsteuerung<a class="headerlink" href="#fackelsteuerung" title="Permanent link">&para;</a></h3>
 <p>In einer Anlage erhält die Fackel das Gas, das ihr Speicher abbläst, und das
-Gas, das eine Aufbereitung nicht aufnehmen kann. Sie brennt, wenn:
+Gas, das eine Aufbereitung nicht aufnehmen kann. Sie brennt, wenn:<br />
 - der Gasspeicher voll ist und die Produktion den Bedarf übersteigt<br />
 - das BHKW weniger Gas verbraucht, als produziert wird  </p>
 <p>Einzeln betrieben wird die Fackel über ihre Eingänge angesteuert:</p>

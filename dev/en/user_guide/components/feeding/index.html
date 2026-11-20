@@ -3501,16 +3501,16 @@ gives an exact feeder.</p>
 <ul>
 <li><strong>Storage.</strong> Density, dry matter and volatile solids come from the substrate<br />
   definition of the feedstock, not from the storage's typical-value table. The
-  inventory is kept in tonnes of fresh matter.</li>
+  inventory is kept in tonnes of fresh matter.  </li>
 <li><strong>Stock is optional.</strong> Without <code>initial_level</code> the stock is unlimited: the<br />
   feeder always gets what it asks for, no refills are needed and nothing
   degrades — the right choice for runs over months where the inventory is not
   of interest. Only the cumulative withdrawals are counted. Pass
   <code>initial_level</code> (<code>0.0</code> for an empty storage) to track the stock; then an
-  empty storage stops the feeding until it is refilled via <code>refill_amount</code>.</li>
+  empty storage stops the feeding until it is refilled via <code>refill_amount</code>.  </li>
 <li><strong>Feeder.</strong> <code>Q_setpoint</code> defaults to the rate configured for that substrate<br />
   slot on the digester. The feeder is limited by the stock of its storage, and
-  the storage is drawn down by what the feeder actually doses.</li>
+  the storage is drawn down by what the feeder actually doses.  </li>
 <li><strong>Digester.</strong> The substrate slot served by a feeder follows the dosed flow —<br />
   including dosing noise, blockages and an empty storage — instead of the
   configured rate. Slots without a feeder keep their configured rate.</li>
