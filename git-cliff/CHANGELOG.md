@@ -4,9 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Styling
+
+- Merge nested ifs reported by ruff 0.17 (SIM102)  
+
+## [0.6.3] - 2026-11-20
+
 ### Features
 
 - SIMBA-audited ADM1da revision, measured substrate library, Python 3.10  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.6.2] - 2026-10-27
 
