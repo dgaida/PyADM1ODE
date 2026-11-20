@@ -111,7 +111,7 @@ The boiler and the flare burn the same gas:
 - `Boiler` uses `lhv_ch4 * CH4_fraction` as the biogas heating value when its  
   gas supply reports a `CH4_fraction`; the flat `lhv_biogas` (6.0 kWh/m³ at
   60 % CH4) applies only without a composition. The value used is reported as
-  `lhv_biogas_actual`.
+  `lhv_biogas_actual`.  
 - `Flare` takes `CH4_fraction` from its input, falling back to its  
   `ch4_fraction_default` (0.6), and reports the unburnt methane as
   `CH4_slip_m3` next to `CH4_destroyed_m3`.
@@ -400,7 +400,7 @@ flare = Flare(
 ### Flare Control
 
 Inside a plant the flare receives the gas its storage vents and the gas an
-upgrading unit cannot take. It burns whenever:
+upgrading unit cannot take. It burns whenever:  
 - The gas storage is full and production exceeds demand  
 - The CHP consumes less gas than is being produced  
 

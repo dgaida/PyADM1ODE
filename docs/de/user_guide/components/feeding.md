@@ -298,18 +298,18 @@ configurator.add_feeder("feeder_maize", "main", "maize_silage_milk_ripeness",
 
 - **Lager.** Dichte, Trockensubstanz und organische Trockensubstanz stammen aus  
   der Substratdefinition des Feedstocks, nicht aus der Tabelle mit typischen
-  Werten. Der Bestand wird in Tonnen Frischmasse geführt.
+  Werten. Der Bestand wird in Tonnen Frischmasse geführt.  
 - **Der Bestand ist optional.** Ohne `initial_level` ist der Vorrat unbegrenzt:  
   Der Dosierer bekommt immer, was er anfordert, Nachfüllen ist nicht nötig, und
   nichts verdirbt — die richtige Wahl für Läufe über Monate, bei denen der
   Bestand nicht interessiert. Gezählt wird nur die kumulierte Entnahme. Mit
   `initial_level` (`0.0` für ein leeres Lager) wird der Bestand verfolgt; dann
   stoppt ein leeres Lager die Fütterung, bis über `refill_amount` nachgefüllt
-  wird.
+  wird.  
 - **Dosierer.** `Q_setpoint` ist standardmäßig die Rate, die am Fermenter für  
   diesen Substrat-Slot eingestellt ist. Der Dosierer ist durch den Bestand
   seines Lagers begrenzt, und das Lager wird um die tatsächlich dosierte Menge
-  verringert.
+  verringert.  
 - **Fermenter.** Der von einem Dosierer bediente Substrat-Slot folgt dem  
   dosierten Strom — einschließlich Dosierrauschen, Blockaden und leerem Lager —
   statt der eingestellten Rate. Slots ohne Dosierer behalten ihre Rate.

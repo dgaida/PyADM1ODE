@@ -298,16 +298,16 @@ configurator.add_feeder("feeder_maize", "main", "maize_silage_milk_ripeness",
 
 - **Storage.** Density, dry matter and volatile solids come from the substrate  
   definition of the feedstock, not from the storage's typical-value table. The
-  inventory is kept in tonnes of fresh matter.
+  inventory is kept in tonnes of fresh matter.  
 - **Stock is optional.** Without `initial_level` the stock is unlimited: the  
   feeder always gets what it asks for, no refills are needed and nothing
   degrades — the right choice for runs over months where the inventory is not
   of interest. Only the cumulative withdrawals are counted. Pass
   `initial_level` (`0.0` for an empty storage) to track the stock; then an
-  empty storage stops the feeding until it is refilled via `refill_amount`.
+  empty storage stops the feeding until it is refilled via `refill_amount`.  
 - **Feeder.** `Q_setpoint` defaults to the rate configured for that substrate  
   slot on the digester. The feeder is limited by the stock of its storage, and
-  the storage is drawn down by what the feeder actually doses.
+  the storage is drawn down by what the feeder actually doses.  
 - **Digester.** The substrate slot served by a feeder follows the dosed flow —  
   including dosing noise, blockages and an empty storage — instead of the
   configured rate. Slots without a feeder keep their configured rate.

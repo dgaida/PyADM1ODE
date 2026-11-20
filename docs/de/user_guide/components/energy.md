@@ -112,7 +112,7 @@ Kessel und Fackel verbrennen dasselbe Gas:
 - `Boiler` verwendet `lhv_ch4 * CH4_fraction` als Biogas-Heizwert, wenn seine  
   Gasversorgung einen `CH4_fraction` meldet; der pauschale `lhv_biogas`
   (6,0 kWh/m³ bei 60 % CH4) gilt nur ohne Zusammensetzung. Der verwendete Wert
-  steht als `lhv_biogas_actual` in den Ausgaben.
+  steht als `lhv_biogas_actual` in den Ausgaben.  
 - `Flare` übernimmt `CH4_fraction` aus dem Eingang, sonst ihren  
   `ch4_fraction_default` (0,6), und gibt das unverbrannte Methan als
   `CH4_slip_m3` neben `CH4_destroyed_m3` aus.
@@ -402,7 +402,7 @@ flare = Flare(
 ### Fackelsteuerung
 
 In einer Anlage erhält die Fackel das Gas, das ihr Speicher abbläst, und das
-Gas, das eine Aufbereitung nicht aufnehmen kann. Sie brennt, wenn:
+Gas, das eine Aufbereitung nicht aufnehmen kann. Sie brennt, wenn:  
 - der Gasspeicher voll ist und die Produktion den Bedarf übersteigt  
 - das BHKW weniger Gas verbraucht, als produziert wird  
 

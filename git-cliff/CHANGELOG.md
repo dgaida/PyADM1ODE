@@ -4,9 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- SIMBA-audited ADM1da revision, measured substrate library, Python 3.10  
+
+## [0.6.2] - 2026-10-27
+
 ### Documentation
 
 - Add toolbox extensions section to landing pages and README  
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
 
 ## [0.6.1] - 2026-09-06
 
