@@ -13,7 +13,7 @@
 <link href="../../../examples/two_stage_plant/" hreflang="de" rel="alternate"/>
 <link href="./" hreflang="en" rel="alternate"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.8.0" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.8.2" name="generator"/>
 <title>Two-Stage Plant - PyADM1ODE</title>
 <link href="../../../assets/stylesheets/main.57a0d79d.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.fb2fffe2.min.css" rel="stylesheet"/>
@@ -164,6 +164,15 @@
   
   
   User Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../substrates/">
+          
+  
+  
+  Substrates
 
         </a>
 </li>
@@ -433,18 +442,6 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../user_guide/substrates/">
-<span class="md-ellipsis">
-    
-  
-    Substrates
-  
-
-    
-  </span>
-</a>
-</li>
-<li class="md-nav__item">
 <a class="md-nav__link" href="../../user_guide/applications/">
 <span class="md-ellipsis">
     
@@ -501,7 +498,7 @@
 <span class="md-ellipsis">
     
   
-    Model &amp; Theory
+    Substrates
   
 
     
@@ -510,6 +507,92 @@
 </label>
 <nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
 <label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Substrates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/library/">
+<span class="md-ellipsis">
+    
+  
+    Example Substrates
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/parameters/">
+<span class="md-ellipsis">
+    
+  
+    Parameters &amp; Ranges
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/influence/">
+<span class="md-ellipsis">
+    
+  
+    Influence of the Values
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/sources/">
+<span class="md-ellipsis">
+    
+  
+    Origin of the Values
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Model &amp; Theory
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -570,8 +653,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
-<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
 <span class="md-ellipsis">
     
   
@@ -582,8 +665,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="true" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_5">
+<nav aria-expanded="true" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -634,10 +717,10 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#plant-schematic">
+<a class="md-nav__link" href="#overview">
 <span class="md-ellipsis">
       
-        Plant Schematic
+        Overview
       
     </span>
 </a>
@@ -647,15 +730,6 @@
 <span class="md-ellipsis">
       
         System Architecture
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#overview">
-<span class="md-ellipsis">
-      
-        Overview
       
     </span>
 </a>
@@ -671,37 +745,19 @@
 <nav aria-label="Plant Configuration" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#biological-components">
+<a class="md-nav__link" href="#digesters">
 <span class="md-ellipsis">
       
-        Biological Components
+        Digesters
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#mechanical-components">
+<a class="md-nav__link" href="#gas-and-energy-components">
 <span class="md-ellipsis">
       
-        Mechanical Components
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#energy-components">
-<span class="md-ellipsis">
-      
-        Energy Components
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#gas-management-system">
-<span class="md-ellipsis">
-      
-        Gas Management System
+        Gas and Energy Components
       
     </span>
 </a>
@@ -720,56 +776,104 @@
 <nav aria-label="Code Walkthrough" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#1-enhanced-imports">
+<a class="md-nav__link" href="#1-feedstock-and-feed-rates">
 <span class="md-ellipsis">
       
-        1. Enhanced Imports
+        1. Feedstock and Feed Rates
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#2-two-stage-digester-configuration">
+<a class="md-nav__link" href="#2-two-digesters">
 <span class="md-ellipsis">
       
-        2. Two-Stage Digester Configuration
+        2. Two Digesters
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#3-adding-mechanical-components">
+<a class="md-nav__link" href="#3-chp-flare-and-heating">
 <span class="md-ellipsis">
       
-        3. Adding Mechanical Components
+        3. CHP, Flare and Heating
       
     </span>
 </a>
-<nav aria-label="3. Adding Mechanical Components" class="md-nav">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-connections">
+<span class="md-ellipsis">
+      
+        4. Connections
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-simulation">
+<span class="md-ellipsis">
+      
+        5. Simulation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-final-state-and-json-export">
+<span class="md-ellipsis">
+      
+        6. Final State and JSON Export
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gas-handling-in-one-plant-step">
+<span class="md-ellipsis">
+      
+        Gas Handling in One Plant Step
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#output">
+<span class="md-ellipsis">
+      
+        Output
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#interpretation">
+<span class="md-ellipsis">
+      
+        Interpretation
+      
+    </span>
+</a>
+<nav aria-label="Interpretation" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#feed-pump">
+<a class="md-nav__link" href="#final-state-on-day-10">
 <span class="md-ellipsis">
       
-        Feed Pump
+        Final State on Day 10
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#transfer-pump">
+<a class="md-nav__link" href="#further-results">
 <span class="md-ellipsis">
       
-        Transfer Pump
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#mixers">
-<span class="md-ellipsis">
-      
-        Mixers
+        Further Results
       
     </span>
 </a>
@@ -778,327 +882,13 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#4-energy-integration-with-automatic-flare">
+<a class="md-nav__link" href="#adapting-the-example">
 <span class="md-ellipsis">
       
-        4. Energy Integration with Automatic Flare
+        Adapting the Example
       
     </span>
 </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#5-three-pass-gas-flow-simulation">
-<span class="md-ellipsis">
-      
-        5. Three-Pass Gas Flow Simulation
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#expected-output">
-<span class="md-ellipsis">
-      
-        Expected Output
-      
-    </span>
-</a>
-<nav aria-label="Expected Output" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#plant-summary">
-<span class="md-ellipsis">
-      
-        Plant Summary
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#final-results-day-10">
-<span class="md-ellipsis">
-      
-        Final Results (Day 10)
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#energy-balance">
-<span class="md-ellipsis">
-      
-        Energy Balance
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#process-stability">
-<span class="md-ellipsis">
-      
-        Process Stability
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#advantages-of-two-stage-design">
-<span class="md-ellipsis">
-      
-        Advantages of Two-Stage Design
-      
-    </span>
-</a>
-<nav aria-label="Advantages of Two-Stage Design" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#1-process-optimization">
-<span class="md-ellipsis">
-      
-        1. Process Optimization
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#2-substrate-flexibility">
-<span class="md-ellipsis">
-      
-        2. Substrate Flexibility
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#3-operational-benefits">
-<span class="md-ellipsis">
-      
-        3. Operational Benefits
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#performance-comparison">
-<span class="md-ellipsis">
-      
-        Performance Comparison
-      
-    </span>
-</a>
-<nav aria-label="Performance Comparison" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#single-stage-vs-two-stage">
-<span class="md-ellipsis">
-      
-        Single-Stage vs Two-Stage
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#mechanical-component-performance">
-<span class="md-ellipsis">
-      
-        Mechanical Component Performance
-      
-    </span>
-</a>
-<nav aria-label="Mechanical Component Performance" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#pump-operation">
-<span class="md-ellipsis">
-      
-        Pump Operation
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#mixer-performance">
-<span class="md-ellipsis">
-      
-        Mixer Performance
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#gas-storage-and-flare-management">
-<span class="md-ellipsis">
-      
-        Gas Storage and Flare Management
-      
-    </span>
-</a>
-<nav aria-label="Gas Storage and Flare Management" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#storage-dynamics">
-<span class="md-ellipsis">
-      
-        Storage Dynamics
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#flare-operation">
-<span class="md-ellipsis">
-      
-        Flare Operation
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#process-control-strategies">
-<span class="md-ellipsis">
-      
-        Process Control Strategies
-      
-    </span>
-</a>
-<nav aria-label="Process Control Strategies" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#temperature-control">
-<span class="md-ellipsis">
-      
-        Temperature Control
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#mixing-control">
-<span class="md-ellipsis">
-      
-        Mixing Control
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#feed-control">
-<span class="md-ellipsis">
-      
-        Feed Control
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#common-issues-and-solutions">
-<span class="md-ellipsis">
-      
-        Common Issues and Solutions
-      
-    </span>
-</a>
-<nav aria-label="Common Issues and Solutions" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-1-high-vfa-in-digester-1">
-<span class="md-ellipsis">
-      
-        Issue 1: High VFA in Digester 1
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-2-low-methane-content">
-<span class="md-ellipsis">
-      
-        Issue 2: Low Methane Content
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-3-foaming-in-digester-1">
-<span class="md-ellipsis">
-      
-        Issue 3: Foaming in Digester 1
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-4-excessive-flare-usage">
-<span class="md-ellipsis">
-      
-        Issue 4: Excessive Flare Usage
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#advanced-applications">
-<span class="md-ellipsis">
-      
-        Advanced Applications
-      
-    </span>
-</a>
-<nav aria-label="Advanced Applications" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#1-parameter-sweep-for-optimization">
-<span class="md-ellipsis">
-      
-        1. Parameter Sweep for Optimization
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#2-online-calibration">
-<span class="md-ellipsis">
-      
-        2. Online Calibration
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#3-model-predictive-control">
-<span class="md-ellipsis">
-      
-        3. Model Predictive Control
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#references">
@@ -1137,8 +927,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_6" type="checkbox"/>
-<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
 <span class="md-ellipsis">
     
   
@@ -1149,8 +939,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_6">
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -1247,8 +1037,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
-<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
 <span class="md-ellipsis">
     
   
@@ -1259,8 +1049,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_7">
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -1297,8 +1087,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
-<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
 <span class="md-ellipsis">
     
   
@@ -1309,8 +1099,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_8">
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -1457,10 +1247,10 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#plant-schematic">
+<a class="md-nav__link" href="#overview">
 <span class="md-ellipsis">
       
-        Plant Schematic
+        Overview
       
     </span>
 </a>
@@ -1470,15 +1260,6 @@
 <span class="md-ellipsis">
       
         System Architecture
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#overview">
-<span class="md-ellipsis">
-      
-        Overview
       
     </span>
 </a>
@@ -1494,37 +1275,19 @@
 <nav aria-label="Plant Configuration" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#biological-components">
+<a class="md-nav__link" href="#digesters">
 <span class="md-ellipsis">
       
-        Biological Components
+        Digesters
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#mechanical-components">
+<a class="md-nav__link" href="#gas-and-energy-components">
 <span class="md-ellipsis">
       
-        Mechanical Components
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#energy-components">
-<span class="md-ellipsis">
-      
-        Energy Components
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#gas-management-system">
-<span class="md-ellipsis">
-      
-        Gas Management System
+        Gas and Energy Components
       
     </span>
 </a>
@@ -1543,56 +1306,104 @@
 <nav aria-label="Code Walkthrough" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#1-enhanced-imports">
+<a class="md-nav__link" href="#1-feedstock-and-feed-rates">
 <span class="md-ellipsis">
       
-        1. Enhanced Imports
+        1. Feedstock and Feed Rates
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#2-two-stage-digester-configuration">
+<a class="md-nav__link" href="#2-two-digesters">
 <span class="md-ellipsis">
       
-        2. Two-Stage Digester Configuration
+        2. Two Digesters
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#3-adding-mechanical-components">
+<a class="md-nav__link" href="#3-chp-flare-and-heating">
 <span class="md-ellipsis">
       
-        3. Adding Mechanical Components
+        3. CHP, Flare and Heating
       
     </span>
 </a>
-<nav aria-label="3. Adding Mechanical Components" class="md-nav">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-connections">
+<span class="md-ellipsis">
+      
+        4. Connections
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-simulation">
+<span class="md-ellipsis">
+      
+        5. Simulation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-final-state-and-json-export">
+<span class="md-ellipsis">
+      
+        6. Final State and JSON Export
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gas-handling-in-one-plant-step">
+<span class="md-ellipsis">
+      
+        Gas Handling in One Plant Step
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#output">
+<span class="md-ellipsis">
+      
+        Output
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#interpretation">
+<span class="md-ellipsis">
+      
+        Interpretation
+      
+    </span>
+</a>
+<nav aria-label="Interpretation" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#feed-pump">
+<a class="md-nav__link" href="#final-state-on-day-10">
 <span class="md-ellipsis">
       
-        Feed Pump
+        Final State on Day 10
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#transfer-pump">
+<a class="md-nav__link" href="#further-results">
 <span class="md-ellipsis">
       
-        Transfer Pump
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#mixers">
-<span class="md-ellipsis">
-      
-        Mixers
+        Further Results
       
     </span>
 </a>
@@ -1601,327 +1412,13 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#4-energy-integration-with-automatic-flare">
+<a class="md-nav__link" href="#adapting-the-example">
 <span class="md-ellipsis">
       
-        4. Energy Integration with Automatic Flare
+        Adapting the Example
       
     </span>
 </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#5-three-pass-gas-flow-simulation">
-<span class="md-ellipsis">
-      
-        5. Three-Pass Gas Flow Simulation
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#expected-output">
-<span class="md-ellipsis">
-      
-        Expected Output
-      
-    </span>
-</a>
-<nav aria-label="Expected Output" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#plant-summary">
-<span class="md-ellipsis">
-      
-        Plant Summary
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#final-results-day-10">
-<span class="md-ellipsis">
-      
-        Final Results (Day 10)
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#energy-balance">
-<span class="md-ellipsis">
-      
-        Energy Balance
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#process-stability">
-<span class="md-ellipsis">
-      
-        Process Stability
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#advantages-of-two-stage-design">
-<span class="md-ellipsis">
-      
-        Advantages of Two-Stage Design
-      
-    </span>
-</a>
-<nav aria-label="Advantages of Two-Stage Design" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#1-process-optimization">
-<span class="md-ellipsis">
-      
-        1. Process Optimization
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#2-substrate-flexibility">
-<span class="md-ellipsis">
-      
-        2. Substrate Flexibility
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#3-operational-benefits">
-<span class="md-ellipsis">
-      
-        3. Operational Benefits
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#performance-comparison">
-<span class="md-ellipsis">
-      
-        Performance Comparison
-      
-    </span>
-</a>
-<nav aria-label="Performance Comparison" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#single-stage-vs-two-stage">
-<span class="md-ellipsis">
-      
-        Single-Stage vs Two-Stage
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#mechanical-component-performance">
-<span class="md-ellipsis">
-      
-        Mechanical Component Performance
-      
-    </span>
-</a>
-<nav aria-label="Mechanical Component Performance" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#pump-operation">
-<span class="md-ellipsis">
-      
-        Pump Operation
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#mixer-performance">
-<span class="md-ellipsis">
-      
-        Mixer Performance
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#gas-storage-and-flare-management">
-<span class="md-ellipsis">
-      
-        Gas Storage and Flare Management
-      
-    </span>
-</a>
-<nav aria-label="Gas Storage and Flare Management" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#storage-dynamics">
-<span class="md-ellipsis">
-      
-        Storage Dynamics
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#flare-operation">
-<span class="md-ellipsis">
-      
-        Flare Operation
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#process-control-strategies">
-<span class="md-ellipsis">
-      
-        Process Control Strategies
-      
-    </span>
-</a>
-<nav aria-label="Process Control Strategies" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#temperature-control">
-<span class="md-ellipsis">
-      
-        Temperature Control
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#mixing-control">
-<span class="md-ellipsis">
-      
-        Mixing Control
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#feed-control">
-<span class="md-ellipsis">
-      
-        Feed Control
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#common-issues-and-solutions">
-<span class="md-ellipsis">
-      
-        Common Issues and Solutions
-      
-    </span>
-</a>
-<nav aria-label="Common Issues and Solutions" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-1-high-vfa-in-digester-1">
-<span class="md-ellipsis">
-      
-        Issue 1: High VFA in Digester 1
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-2-low-methane-content">
-<span class="md-ellipsis">
-      
-        Issue 2: Low Methane Content
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-3-foaming-in-digester-1">
-<span class="md-ellipsis">
-      
-        Issue 3: Foaming in Digester 1
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-4-excessive-flare-usage">
-<span class="md-ellipsis">
-      
-        Issue 4: Excessive Flare Usage
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#advanced-applications">
-<span class="md-ellipsis">
-      
-        Advanced Applications
-      
-    </span>
-</a>
-<nav aria-label="Advanced Applications" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#1-parameter-sweep-for-optimization">
-<span class="md-ellipsis">
-      
-        1. Parameter Sweep for Optimization
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#2-online-calibration">
-<span class="md-ellipsis">
-      
-        2. Online Calibration
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#3-model-predictive-control">
-<span class="md-ellipsis">
-      
-        3. Model Predictive Control
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#references">
@@ -1950,779 +1447,549 @@
 <article class="md-content__inner md-typeset">
 <h1 id="two-stage-biogas-plant-example">Two-Stage Biogas Plant Example<a class="headerlink" href="#two-stage-biogas-plant-example" title="Permanent link">¶</a></h1>
 <p><a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_02_complex_plant.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
-<p>The <a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py">examples/two_stage_plant.py</a> example demonstrates a complete two-stage biogas plant with mechanical components, energy integration, and comprehensive process monitoring.</p>
-<h2 id="plant-schematic">Plant Schematic<a class="headerlink" href="#plant-schematic" title="Permanent link">¶</a></h2>
-<p><img alt="Plant Schematic" src="../two_stage_plant_schematic.png"/></p>
+<p>The <a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/02_two_stage_plant.py">examples/02_two_stage_plant.py</a>
+example builds a two-stage biogas plant: a hydrolysis pre-tank and a main
+fermenter in series, one CHP unit with a flare, and one heating system per
+stage. It simulates ten days and prints the final state of both tanks.</p>
+<p>The Colab notebook builds the same plant with other component IDs and a shorter
+run (5 days in daily steps), so its numbers differ from the ones on this page.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<p>The example shows:</p>
+<ul>
+<li>Two ADM1 digesters in series, joined by a liquid connection  </li>
+<li>The gas storage that <code>add_digester</code> creates for each digester  </li>
+<li>One CHP unit fed from both gas storages, with its automatically created flare  </li>
+<li>One heating system per stage, tied to its digester and supplied with heat from the CHP  </li>
+<li>Saving the plant to a JSON file  </li>
+</ul>
 <h2 id="system-architecture">System Architecture<a class="headerlink" href="#system-architecture" title="Permanent link">¶</a></h2>
 <pre class="mermaid"><code>graph TB
-    %% Substrate feed
-    Feed[Substrate Feed&lt;br/&gt;Corn silage: 15 m³/d&lt;br/&gt;Cattle manure: 10 m³/d]
+    Feed[Substrate feed&lt;br/&gt;Maize silage: 11.4 t/d&lt;br/&gt;Swine manure: 6.1 t/d]
+    Hydro[Hydrolysis Pre-Tank&lt;br/&gt;hydrolysis&lt;br/&gt;V_liq: 500 m³, V_gas: 75 m³&lt;br/&gt;T: 45 °C]
+    Main[Main Fermenter&lt;br/&gt;main_digester&lt;br/&gt;V_liq: 1000 m³, V_gas: 150 m³&lt;br/&gt;T: 35 °C]
+    Effluent[Digestate]
+    Storage1[Gas storage&lt;br/&gt;hydrolysis_storage&lt;br/&gt;Capacity: 75 m³]
+    Storage2[Gas storage&lt;br/&gt;main_digester_storage&lt;br/&gt;Capacity: 150 m³]
+    CHP[CHP&lt;br/&gt;chp_1&lt;br/&gt;500 kW electrical, nominal&lt;br/&gt;η_el: 40 %, η_th: 45 %]
+    Flare[Flare&lt;br/&gt;chp_1_flare]
+    Heating1[Heating&lt;br/&gt;heating_hydro&lt;br/&gt;Target: 45 °C]
+    Heating2[Heating&lt;br/&gt;heating_main&lt;br/&gt;Target: 35 °C]
 
-    %% Feed pump
-    Feed --&gt;|25 m³/d| FeedPump[Feed Pump&lt;br/&gt;Progressive Cavity&lt;br/&gt;30 m³/h capacity]
+    Feed -.-&gt; Hydro
+    Hydro --&gt;|liquid| Main
+    Main -.-&gt; Effluent
+    Hydro --&gt;|gas| Storage1
+    Main --&gt;|gas| Storage2
+    Storage1 --&gt;|gas| CHP
+    Storage2 --&gt;|gas| CHP
+    CHP --&gt;|gas| Flare
+    Hydro --&gt;|control| Heating1
+    Main --&gt;|control| Heating2
+    CHP --&gt;|heat| Heating1
+    CHP --&gt;|heat| Heating2
 
-    %% First stage - Hydrolysis
-    FeedPump --&gt; Dig1[Digester 1 - Hydrolysis&lt;br/&gt;V_liq: 1977 m³, V_gas: 304 m³&lt;br/&gt;T: 45°C thermophilic&lt;br/&gt;Enhanced hydrolysis]
-
-    %% Mixer 1
-    Mixer1[Mixer 1&lt;br/&gt;Propeller, 15 kW&lt;br/&gt;High intensity&lt;br/&gt;25% duty cycle] -.-&gt;|Mixing| Dig1
-
-    %% Gas storage 1
-    Dig1 --&gt;|Biogas ~850 m³/d| Storage1[Gas Storage 1&lt;br/&gt;Membrane&lt;br/&gt;304 m³ capacity]
-
-    %% Heating 1
-    Heating1[Heating System 1&lt;br/&gt;Target: 45°C&lt;br/&gt;Heat loss: 0.5 kW/K] -.-&gt;|Heat| Dig1
-
-    %% Transfer pump
-    Dig1 --&gt;|Effluent 25 m³/d| TransPump[Transfer Pump&lt;br/&gt;Progressive Cavity&lt;br/&gt;25 m³/h capacity]
-
-    %% Second stage - Methanogenesis
-    TransPump --&gt; Dig2[Digester 2 - Methanogenesis&lt;br/&gt;V_liq: 1000 m³, V_gas: 150 m³&lt;br/&gt;T: 35°C mesophilic&lt;br/&gt;Stable CH₄ production]
-
-    %% Mixer 2
-    Mixer2[Mixer 2&lt;br/&gt;Propeller, 10 kW&lt;br/&gt;Medium intensity&lt;br/&gt;25% duty cycle] -.-&gt;|Mixing| Dig2
-
-    %% Gas storage 2
-    Dig2 --&gt;|Biogas ~400 m³/d| Storage2[Gas Storage 2&lt;br/&gt;Membrane&lt;br/&gt;150 m³ capacity]
-
-    %% Heating 2
-    Heating2[Heating System 2&lt;br/&gt;Target: 35°C&lt;br/&gt;Heat loss: 0.3 kW/K] -.-&gt;|Heat| Dig2
-
-    %% Combined gas flow to CHP
-    Storage1 --&gt;|Gas supply| CHP[CHP Unit&lt;br/&gt;500 kWe nominal&lt;br/&gt;ηe: 40%, ηth: 45%&lt;br/&gt;Total: ~1250 m³/d]
-    Storage2 --&gt;|Gas supply| CHP
-
-    %% CHP outputs
-    CHP --&gt;|Electrical| Power[Power Output&lt;br/&gt;~480 kWe]
-    CHP --&gt;|Thermal ~540 kW| HeatDist[Heat Distribution]
-    CHP --&gt;|Excess gas| Flare[Flare&lt;br/&gt;Safety combustion&lt;br/&gt;98% destruction]
-
-    %% Heat distribution
-    HeatDist --&gt;|Heat supply| Heating1
-    HeatDist --&gt;|Heat supply| Heating2
-
-    %% Final outputs
-    Dig2 --&gt;|Digestate&lt;br/&gt;25 m³/d| Effluent[Digestate Output]
-
-    %% Styling
     classDef processBox fill:#e1f5fe,stroke:#01579b,stroke-width:3px
     classDef storageBox fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef mechanicalBox fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
     classDef energyBox fill:#e8f5e9,stroke:#1b5e20,stroke-width:3px
     classDef inputBox fill:#f1f8e9,stroke:#33691e,stroke-width:2px
     classDef outputBox fill:#fce4ec,stroke:#880e4f,stroke-width:2px
 
-    class Dig1,Dig2 processBox
+    class Hydro,Main processBox
     class Storage1,Storage2 storageBox
-    class FeedPump,TransPump,Mixer1,Mixer2 mechanicalBox
-    class CHP,Heating1,Heating2,HeatDist,Flare energyBox
+    class CHP,Flare,Heating1,Heating2 energyBox
     class Feed inputBox
-    class Power,Effluent outputBox</code></pre>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
-<p>The two-stage plant demonstrates:<br/>
-- <strong>Temperature-Phased Anaerobic Digestion (TPAD)</strong>: Thermophilic hydrolysis (45°C) followed by mesophilic methanogenesis (35°C)<br/>
-- <strong>Mechanical Components</strong>: Pumps for material transport and mixers for process enhancement<br/>
-- <strong>Energy Integration</strong>: CHP for power generation and waste heat recovery<br/>
-- <strong>Process Control</strong>: Multiple heating systems for precise temperature management<br/>
-- <strong>Gas Management</strong>: Dedicated storage for each digester with automatic overflow protection and centralized flare  </p>
+    class Effluent outputBox</code></pre>
+<p>The diagram shows the eight components and ten connections that the plant
+summary in the output below lists; the arrow labels are the connection types.
+A <code>control</code> connection hands the temperature and the feed of a digester to its
+heating system. The dashed arrows are not connections: the substrate feed is
+set as <code>Q_substrates</code> on the pre-tank, and the digestate is the effluent of the
+main fermenter. The flare is connected behind the CHP; it burns the gas that
+the gas storages vent.</p>
 <h2 id="plant-configuration">Plant Configuration<a class="headerlink" href="#plant-configuration" title="Permanent link">¶</a></h2>
-<h3 id="biological-components">Biological Components<a class="headerlink" href="#biological-components" title="Permanent link">¶</a></h3>
+<h3 id="digesters">Digesters<a class="headerlink" href="#digesters" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
-<th>Component</th>
-<th>Volume</th>
-<th>Temperature</th>
-<th>Function</th>
-<th>HRT</th>
+<th>Property</th>
+<th>Hydrolysis pre-tank</th>
+<th>Main fermenter</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Digester 1</strong></td>
-<td>1977 m³ liq + 304 m³ gas</td>
-<td>45°C (thermophilic)</td>
-<td>Hydrolysis of complex organics</td>
-<td>79 days</td>
+<td>Component ID</td>
+<td><code>hydrolysis</code></td>
+<td><code>main_digester</code></td>
 </tr>
 <tr>
-<td><strong>Digester 2</strong></td>
-<td>1000 m³ liq + 150 m³ gas</td>
-<td>35°C (mesophilic)</td>
-<td>Methanogenesis (CH₄ production)</td>
-<td>40 days</td>
+<td>Liquid volume <code>V_liq</code></td>
+<td>500 m³</td>
+<td>1000 m³</td>
 </tr>
 <tr>
-<td><strong>Total</strong></td>
-<td>2977 m³</td>
-<td>-</td>
-<td>-</td>
-<td>119 days</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Total Organic Loading Rate (OLR)</strong>: 25 m³/d ÷ 2977 m³ ≈ <strong>0.0084 d⁻¹</strong> or <strong>8.4 kg COD/(m³·d)</strong></p>
-<h3 id="mechanical-components">Mechanical Components<a class="headerlink" href="#mechanical-components" title="Permanent link">¶</a></h3>
-<table>
-<thead>
-<tr>
-<th>Component</th>
-<th>Type</th>
-<th>Capacity</th>
-<th>Power</th>
-<th>Function</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Feed Pump</strong></td>
-<td>Progressive cavity</td>
-<td>30 m³/h</td>
-<td>~5 kW</td>
-<td>Substrate feeding into Digester 1</td>
-</tr>
-<tr>
-<td><strong>Transfer Pump</strong></td>
-<td>Progressive cavity</td>
-<td>25 m³/h</td>
-<td>~8 kW</td>
-<td>Effluent transfer: D1 → D2</td>
-</tr>
-<tr>
-<td><strong>Mixer 1</strong></td>
-<td>Propeller</td>
-<td>15 kW</td>
-<td>15 kW</td>
-<td>High-intensity mixing for hydrolysis</td>
-</tr>
-<tr>
-<td><strong>Mixer 2</strong></td>
-<td>Propeller</td>
-<td>10 kW</td>
-<td>10 kW</td>
-<td>Medium mixing for methanogenesis</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Total Parasitic Load</strong>: ~20 kW (mixers run 25% duty cycle)</p>
-<h3 id="energy-components">Energy Components<a class="headerlink" href="#energy-components" title="Permanent link">¶</a></h3>
-<table>
-<thead>
-<tr>
-<th>Component</th>
-<th>Specification</th>
-<th>Efficiency</th>
-<th>Output</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>CHP Unit</strong></td>
-<td>500 kW<span class="arithmatex">\(_e\)</span> nominal</td>
-<td>η<span class="arithmatex">\(_e\)</span> = 40%, η<span class="arithmatex">\(_{th}\)</span> = 45%</td>
-<td>500 kW<span class="arithmatex">\(_e\)</span> + 562 kW<span class="arithmatex">\(_{th}\)</span></td>
-</tr>
-<tr>
-<td><strong>Heating 1</strong></td>
-<td>Digester 1 heating</td>
-<td>-</td>
-<td>Maintains 45°C</td>
-</tr>
-<tr>
-<td><strong>Heating 2</strong></td>
-<td>Digester 2 heating</td>
-<td>-</td>
-<td>Maintains 35°C</td>
-</tr>
-<tr>
-<td><strong>Flare</strong></td>
-<td>Safety combustion</td>
-<td>98% destruction</td>
-<td>Excess gas disposal</td>
-</tr>
-</tbody>
-</table>
-<h3 id="gas-management-system">Gas Management System<a class="headerlink" href="#gas-management-system" title="Permanent link">¶</a></h3>
-<table>
-<thead>
-<tr>
-<th>Component</th>
-<th>Type</th>
-<th>Capacity</th>
-<th>Function</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Storage 1</strong></td>
-<td>Membrane</td>
-<td>304 m³</td>
-<td>Buffer for Digester 1 gas</td>
-</tr>
-<tr>
-<td><strong>Storage 2</strong></td>
-<td>Membrane</td>
+<td>Gas headspace <code>V_gas</code></td>
+<td>75 m³</td>
 <td>150 m³</td>
-<td>Buffer for Digester 2 gas</td>
 </tr>
 <tr>
-<td><strong>CHP Flare</strong></td>
-<td>Combustion</td>
-<td>Variable</td>
-<td>Safety disposal of excess gas</td>
+<td>Temperature <code>T_ad</code></td>
+<td>318.15 K (45 °C)</td>
+<td>308.15 K (35 °C)</td>
+</tr>
+<tr>
+<td>Substrate feed</td>
+<td>11.4 t/d maize silage, 6.1 t/d swine manure</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Inflow</td>
+<td>16.2 m³/d of substrate</td>
+<td>16.2 m³/d from the pre-tank</td>
+</tr>
+<tr>
+<td>Retention time</td>
+<td>30.9 d</td>
+<td>61.7 d</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Gas Flow Architecture</strong>:<br/>
-1. Each digester produces gas → Dedicated storage<br/>
-2. Both storages supply gas → Single CHP unit<br/>
-3. CHP excess/overflow → Automatic flare combustion  </p>
+<p>The feed rates are tonnes of fresh matter per day, 17.5 t/d in total. The
+feedstock converts them to a volume flow with the density of each substrate:
+11.4 t/d of maize silage at 1129 kg/m³ are 10.1 m³/d, and swine manure counts
+with 1000 kg/m³. Together this gives 16.2 m³/d (see
+<a href="../../user_guide/adm1_implementation/#volumetric-adm1da-convention-for-q">Volumetric ADM1da convention for Q</a>).
+The retention time is the liquid volume divided by this flow. The script takes
+the flow from <code>feedstock.actual_Q</code> and prints the rounded retention times, 31 d
+and 62 d, in its start banner.</p>
+<h3 id="gas-and-energy-components">Gas and Energy Components<a class="headerlink" href="#gas-and-energy-components" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>ID</th>
+<th>Created by</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gas storage, pre-tank</td>
+<td><code>hydrolysis_storage</code></td>
+<td><code>add_digester</code></td>
+<td>Membrane storage, capacity 75 m³</td>
+</tr>
+<tr>
+<td>Gas storage, main fermenter</td>
+<td><code>main_digester_storage</code></td>
+<td><code>add_digester</code></td>
+<td>Membrane storage, capacity 150 m³</td>
+</tr>
+<tr>
+<td>CHP</td>
+<td><code>chp_1</code></td>
+<td><code>add_chp</code></td>
+<td>500 kW electrical (nominal), <code>eta_el=0.40</code>, <code>eta_th=0.45</code></td>
+</tr>
+<tr>
+<td>Flare</td>
+<td><code>chp_1_flare</code></td>
+<td><code>add_chp</code></td>
+<td>Destruction efficiency 0.98</td>
+</tr>
+<tr>
+<td>Heating, pre-tank</td>
+<td><code>heating_hydro</code></td>
+<td><code>add_heating</code></td>
+<td>Target 318.15 K, tied to <code>hydrolysis</code>, 0.5 kW/K heat loss</td>
+</tr>
+<tr>
+<td>Heating, main fermenter</td>
+<td><code>heating_main</code></td>
+<td><code>add_heating</code></td>
+<td>Target 308.15 K, tied to <code>main_digester</code>, 0.5 kW/K heat loss</td>
+</tr>
+</tbody>
+</table>
+<p>A digester holds no gas itself: <code>V_gas</code> is the headspace of the ADM1 gas phase,
+and the gas that leaves it goes into the separate <code>GasStorage</code> component
+<code>&lt;digester_id&gt;_storage</code>. The capacity of that storage is <code>V_gas</code>, but at least
+50 m³. The destruction efficiency of the flare and the heat loss coefficient of
+0.5 kW/K are package defaults; the script does not set them.</p>
 <h2 id="code-walkthrough">Code Walkthrough<a class="headerlink" href="#code-walkthrough" title="Permanent link">¶</a></h2>
-<h3 id="1-enhanced-imports">1. Enhanced Imports<a class="headerlink" href="#1-enhanced-imports" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.components.mechanical.mixer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mixer</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.components.mechanical.pump</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pump</span>
+<p>The excerpts are taken from the script; most <code>print</code> calls are left out.</p>
+<h3 id="1-feedstock-and-feed-rates">1. Feedstock and Feed Rates<a class="headerlink" href="#1-feedstock-and-feed-rates" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">([</span><span class="s2">"maize_silage_milk_ripeness"</span><span class="p">,</span> <span class="s2">"swine_manure"</span><span class="p">])</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="c1"># Substrate feed in t FM/d, one slot per substrate of the feedstock:</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1"># hydrolysis stage gets fresh substrate, main stage inherits.</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="n">hydro_feed</span> <span class="o">=</span> <span class="p">[</span><span class="mf">11.4</span><span class="p">,</span> <span class="mf">6.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="n">main_feed</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="c1"># The model works with the volume flow of the feed [m³/d]: the feedstock</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="c1"># converts the mass flows with the density of each substrate.</span>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="n">q_feed</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">feedstock</span><span class="o">.</span><span class="n">actual_Q</span><span class="p">(</span><span class="n">hydro_feed</span><span class="p">))</span>
 </code></pre></div>
-<p>These import the mechanical components that weren't used in the basic example.</p>
-<h3 id="2-two-stage-digester-configuration">2. Two-Stage Digester Configuration<a class="headerlink" href="#2-two-stage-digester-configuration" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Digester 1: Thermophilic hydrolysis</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_digester</span><span class="p">(</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="n">digester_id</span><span class="o">=</span><span class="s2">"digester_1"</span><span class="p">,</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="n">V_liq</span><span class="o">=</span><span class="mf">1977.0</span><span class="p">,</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    <span class="n">V_gas</span><span class="o">=</span><span class="mf">304.0</span><span class="p">,</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="n">T_ad</span><span class="o">=</span><span class="mf">318.15</span><span class="p">,</span>  <span class="c1"># 45°C for enhanced hydrolysis</span>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    <span class="n">Q_substrates</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="p">)</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="c1"># Digester 2: Mesophilic methanogenesis</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_digester</span><span class="p">(</span>
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    <span class="n">digester_id</span><span class="o">=</span><span class="s2">"digester_2"</span><span class="p">,</span>
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    <span class="n">V_liq</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span>
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    <span class="n">V_gas</span><span class="o">=</span><span class="mf">150.0</span><span class="p">,</span>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    <span class="n">T_ad</span><span class="o">=</span><span class="mf">308.15</span><span class="p">,</span>  <span class="c1"># 35°C optimal for methanogens</span>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    <span class="n">Q_substrates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c1"># Only receives effluent</span>
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="p">)</span>
-</code></pre></div>
-<p><strong>Design Rationale</strong>:<br/>
-- <strong>Stage 1 (Thermophilic)</strong>: Higher temperature enhances hydrolysis of complex substrates (cellulose, hemicellulose, proteins)<br/>
-- <strong>Stage 2 (Mesophilic)</strong>: Lower temperature is more stable and efficient for methanogenesis<br/>
-- <strong>Effluent-only feed to Stage 2</strong>: Prevents overloading, receives pre-hydrolyzed material  </p>
-<p><strong>Automatic Gas Storage Creation</strong>:<br/>
-- <code>add_digester()</code> automatically creates:<br/>
-  - <code>digester_1_storage</code> (304 m³ membrane storage)<br/>
-  - <code>digester_2_storage</code> (150 m³ membrane storage)<br/>
-- Storages are automatically connected to their digesters  </p>
-<h3 id="3-adding-mechanical-components">3. Adding Mechanical Components<a class="headerlink" href="#3-adding-mechanical-components" title="Permanent link">¶</a></h3>
-<h4 id="feed-pump">Feed Pump<a class="headerlink" href="#feed-pump" title="Permanent link">¶</a></h4>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">feed_pump</span> <span class="o">=</span> <span class="n">Pump</span><span class="p">(</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="n">component_id</span><span class="o">=</span><span class="s2">"feed_pump"</span><span class="p">,</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="n">pump_type</span><span class="o">=</span><span class="s2">"progressive_cavity"</span><span class="p">,</span>  <span class="c1"># Handles thick slurries</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="n">Q_nom</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>  <span class="c1"># m³/h nominal</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="n">pressure_head</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>  <span class="c1"># Low pressure (gravity assist)</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="p">)</span>
-</code></pre></div>
-<p><strong>Progressive Cavity Pumps</strong> are ideal for biogas substrates because:<br/>
-- Handle high solids content (&gt;12% TS)<br/>
-- Low shear (preserves fiber structure)<br/>
-- Self-priming capability<br/>
-- Wide viscosity range  </p>
-<h4 id="transfer-pump">Transfer Pump<a class="headerlink" href="#transfer-pump" title="Permanent link">¶</a></h4>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">transfer_pump</span> <span class="o">=</span> <span class="n">Pump</span><span class="p">(</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>    <span class="n">component_id</span><span class="o">=</span><span class="s2">"transfer_pump"</span><span class="p">,</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    <span class="n">pump_type</span><span class="o">=</span><span class="s2">"progressive_cavity"</span><span class="p">,</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    <span class="n">Q_nom</span><span class="o">=</span><span class="mf">25.0</span><span class="p">,</span>  <span class="c1"># m³/h</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="n">pressure_head</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span>  <span class="c1"># Higher head for inter-digester transfer</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="p">)</span>
-</code></pre></div>
-<p>Higher pressure head needed for:<br/>
-- Overcoming pipe friction losses<br/>
-- Elevation differences<br/>
-- Injection into pressurized digester  </p>
-<h4 id="mixers">Mixers<a class="headerlink" href="#mixers" title="Permanent link">¶</a></h4>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">mixer_1</span> <span class="o">=</span> <span class="n">Mixer</span><span class="p">(</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    <span class="n">component_id</span><span class="o">=</span><span class="s2">"mixer_1"</span><span class="p">,</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="n">mixer_type</span><span class="o">=</span><span class="s2">"propeller"</span><span class="p">,</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="n">tank_volume</span><span class="o">=</span><span class="mf">1977.0</span><span class="p">,</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="n">mixing_intensity</span><span class="o">=</span><span class="s2">"high"</span><span class="p">,</span>  <span class="c1"># Aggressive for hydrolysis</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    <span class="n">power_installed</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="n">intermittent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="n">on_time_fraction</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>  <span class="c1"># 6 hours on, 18 hours off</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="p">)</span>
-</code></pre></div>
-<p><strong>Mixing Strategy</strong>:<br/>
-- <strong>Intermittent operation</strong>: Reduces energy consumption by 75%<br/>
-- <strong>High intensity in hydrolysis</strong>: Breaks up floating layers, enhances substrate contact<br/>
-- <strong>Medium intensity in methanogenesis</strong>: Gentle mixing prevents inhibition of sensitive methanogens  </p>
-<p><strong>Specific Power Input</strong>:<br/>
-- Digester 1: 15 kW × 0.25 ÷ 1977 m³ = <strong>1.9 W/m³</strong> (high)<br/>
-- Digester 2: 10 kW × 0.25 ÷ 1000 m³ = <strong>2.5 W/m³</strong> (medium)  </p>
-<h3 id="4-energy-integration-with-automatic-flare">4. Energy Integration with Automatic Flare<a class="headerlink" href="#4-energy-integration-with-automatic-flare" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Add CHP (automatically creates flare)</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_chp</span><span class="p">(</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    <span class="n">chp_id</span><span class="o">=</span><span class="s2">"chp_1"</span><span class="p">,</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="n">P_el_nom</span><span class="o">=</span><span class="mf">500.0</span><span class="p">,</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">eta_el</span><span class="o">=</span><span class="mf">0.40</span><span class="p">,</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="n">eta_th</span><span class="o">=</span><span class="mf">0.45</span><span class="p">,</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"Main CHP Unit"</span><span class="p">,</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="p">)</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="c1"># Automatic connections handle gas routing</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_digester_to_chp</span><span class="p">(</span><span class="s2">"digester_1"</span><span class="p">,</span> <span class="s2">"chp_1"</span><span class="p">)</span>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_digester_to_chp</span><span class="p">(</span><span class="s2">"digester_2"</span><span class="p">,</span> <span class="s2">"chp_1"</span><span class="p">)</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="c1"># Heat recovery for both digesters</span>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_chp_to_heating</span><span class="p">(</span><span class="s2">"chp_1"</span><span class="p">,</span> <span class="s2">"heating_1"</span><span class="p">)</span>
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_chp_to_heating</span><span class="p">(</span><span class="s2">"chp_1"</span><span class="p">,</span> <span class="s2">"heating_2"</span><span class="p">)</span>
-</code></pre></div>
-<p><strong>Connection Chain</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>Digester 1 → Storage 1 ↘
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>                        → CHP → Flare (automatic)
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>Digester 2 → Storage 2 ↗      ↓
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>                          Heat → Heating 1 &amp; 2
-</code></pre></div></p>
-<p><strong>Automatic Flare Creation</strong>:<br/>
-- <code>add_chp()</code> automatically creates a flare component<br/>
-- Flare ID: <code>{chp_id}_flare</code> (e.g., "chp_1_flare")<br/>
-- Function: Safety combustion of excess gas (98% CH₄ destruction)<br/>
-- Automatic connection: CHP → Flare  </p>
-<h3 id="5-three-pass-gas-flow-simulation">5. Three-Pass Gas Flow Simulation<a class="headerlink" href="#5-three-pass-gas-flow-simulation" title="Permanent link">¶</a></h3>
-<p>The simulation executes in three passes for realistic gas management:</p>
-<p><strong>Pass 1 - Gas Production</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Digesters produce gas → Storage tanks</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="n">Digester</span> <span class="mi">1</span><span class="p">:</span> <span class="n">Q_gas</span> <span class="o">=</span> <span class="mi">850</span> <span class="n">m</span><span class="err">³</span><span class="o">/</span><span class="n">d</span> <span class="err">→</span> <span class="n">Storage</span> <span class="mi">1</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="n">Digester</span> <span class="mi">2</span><span class="p">:</span> <span class="n">Q_gas</span> <span class="o">=</span> <span class="mi">400</span> <span class="n">m</span><span class="err">³</span><span class="o">/</span><span class="n">d</span> <span class="err">→</span> <span class="n">Storage</span> <span class="mi">2</span>
-</code></pre></div></p>
-<p><strong>Pass 2 - Storage Update</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1"># Storages receive gas, update pressure and volume</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="n">Storage</span> <span class="mi">1</span><span class="p">:</span> <span class="n">stored_volume</span> <span class="o">+=</span> <span class="mi">850</span> <span class="o">*</span> <span class="n">dt</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="n">Storage</span> <span class="mi">2</span><span class="p">:</span> <span class="n">stored_volume</span> <span class="o">+=</span> <span class="mi">400</span> <span class="o">*</span> <span class="n">dt</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="c1"># If full: vent excess to atmosphere</span>
-</code></pre></div></p>
-<p><strong>Pass 3 - Gas Consumption</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># CHP requests gas from storages</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="n">CHP</span> <span class="n">demand</span><span class="p">:</span> <span class="mi">1150</span> <span class="n">m</span><span class="err">³</span><span class="o">/</span><span class="n">d</span> <span class="n">biogas</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="n">Storage</span> <span class="mi">1</span> <span class="n">supplies</span><span class="p">:</span> <span class="o">~</span><span class="mi">675</span> <span class="n">m</span><span class="err">³</span><span class="o">/</span><span class="n">d</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="n">Storage</span> <span class="mi">2</span> <span class="n">supplies</span><span class="p">:</span> <span class="o">~</span><span class="mi">475</span> <span class="n">m</span><span class="err">³</span><span class="o">/</span><span class="n">d</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="c1"># CHP operates with actual supply</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="c1"># Excess to flare: (supply - consumption)</span>
-</code></pre></div></p>
-<p>This ensures:<br/>
-- Realistic pressure management in storages<br/>
-- CHP operates with available gas, not idealized supply<br/>
-- Automatic venting prevents overpressure<br/>
-- Flare handles all excess gas safely  </p>
-<h2 id="expected-output">Expected Output<a class="headerlink" href="#expected-output" title="Permanent link">¶</a></h2>
-<h3 id="plant-summary">Plant Summary<a class="headerlink" href="#plant-summary" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>=== Two-Stage Plant with Mechanical Components ===
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>Simulation time: 0.00 days
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>Components (12):
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>  - Hydrolysis Digester (digester)  
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>  - Hydrolysis Digester Gas Storage (storage)  
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>  - Methanogenesis Digester (digester)  
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>  - Methanogenesis Digester Gas Storage (storage)  
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>  - Substrate Feed Pump (pump)  
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>  - Digester Transfer Pump (pump)  
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>  - Hydrolysis Mixer (mixer)  
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>  - Methanogenesis Mixer (mixer)  
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>  - Main CHP Unit (chp)  
-<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>  - Main CHP Unit Flare (flare)  
-<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>  - Hydrolysis Heating (heating)  
-<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>  - Methanogenesis Heating (heating)  
-<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>
-<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>Connections (10):
-<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>  - Hydrolysis Digester -&gt; Methanogenesis Digester (liquid)  
-<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>  - Hydrolysis Digester Gas Storage -&gt; Main CHP Unit (gas)  
-<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a>  - Methanogenesis Digester Gas Storage -&gt; Main CHP Unit (gas)  
-<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a>  - Main CHP Unit -&gt; Main CHP Unit Flare (gas)  
-<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a>  - Main CHP Unit -&gt; Hydrolysis Heating (heat)  
-<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a>  - Main CHP Unit -&gt; Methanogenesis Heating (heat)  
-</code></pre></div>
-<h3 id="final-results-day-10">Final Results (Day 10)<a class="headerlink" href="#final-results-day-10" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>RESULTS ANALYSIS
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>======================================================================
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>Final State (Day 10.0):
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>----------------------------------------------------------------------
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>Hydrolysis Digester:
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>  Biogas production:        850.3 m³/d
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>  Methane production:       493.2 m³/d
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>  pH:                         7.15
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>  VFA:                        3.82 g/L
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>  Temperature:               45.0 °C
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>  Gas Storage:
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>    - Stored volume:         152.1 m³ (50%)  
-<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>    - Pressure:               1.00 bar  
-<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>    - Vented:                  0.0 m³  
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>
-<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>Methanogenesis Digester:
-<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>  Biogas production:        402.8 m³/d
-<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>  Methane production:       258.7 m³/d
-<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a>  pH:                         7.32
-<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a>  VFA:                        1.95 g/L
-<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a>  Temperature:               35.0 °C
-<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a>  Gas Storage:
-<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a>    - Stored volume:          75.0 m³ (50%)  
-<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a>    - Pressure:               1.00 bar  
-<a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a>    - Vented:                  0.0 m³  
-<a href="#__codelineno-11-28" id="__codelineno-11-28" name="__codelineno-11-28"></a>
-<a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a>Total Plant Production:
-<a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a>  Total biogas:            1253.1 m³/d
-<a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a>  Total methane:            751.9 m³/d
-<a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a>  Methane content:           60.0 %
-<a href="#__codelineno-11-33" id="__codelineno-11-33" name="__codelineno-11-33"></a>
-<a href="#__codelineno-11-34" id="__codelineno-11-34" name="__codelineno-11-34"></a>CHP Performance:
-<a href="#__codelineno-11-35" id="__codelineno-11-35" name="__codelineno-11-35"></a>  Electrical output:        480.5 kW
-<a href="#__codelineno-11-36" id="__codelineno-11-36" name="__codelineno-11-36"></a>  Thermal output:           540.6 kW
-<a href="#__codelineno-11-37" id="__codelineno-11-37" name="__codelineno-11-37"></a>  Gas consumption:         1150.0 m³/d
-<a href="#__codelineno-11-38" id="__codelineno-11-38" name="__codelineno-11-38"></a>  Gas from Storage 1:       675.2 m³/d
-<a href="#__codelineno-11-39" id="__codelineno-11-39" name="__codelineno-11-39"></a>  Gas from Storage 2:       474.8 m³/d
-<a href="#__codelineno-11-40" id="__codelineno-11-40" name="__codelineno-11-40"></a>  Excess to flare:          103.1 m³/d
-<a href="#__codelineno-11-41" id="__codelineno-11-41" name="__codelineno-11-41"></a>  Operating hours:          240.0 h
-<a href="#__codelineno-11-42" id="__codelineno-11-42" name="__codelineno-11-42"></a>
-<a href="#__codelineno-11-43" id="__codelineno-11-43" name="__codelineno-11-43"></a>Flare Performance:
-<a href="#__codelineno-11-44" id="__codelineno-11-44" name="__codelineno-11-44"></a>  Gas received:             103.1 m³/d
-<a href="#__codelineno-11-45" id="__codelineno-11-45" name="__codelineno-11-45"></a>  CH₄ destroyed:             60.6 m³/d (98% efficiency)
-<a href="#__codelineno-11-46" id="__codelineno-11-46" name="__codelineno-11-46"></a>  Cumulative vented:       1031.0 m³
-<a href="#__codelineno-11-47" id="__codelineno-11-47" name="__codelineno-11-47"></a>
-<a href="#__codelineno-11-48" id="__codelineno-11-48" name="__codelineno-11-48"></a>Hydrolysis Mixer:
-<a href="#__codelineno-11-49" id="__codelineno-11-49" name="__codelineno-11-49"></a>  Power consumption:          3.75 kW
-<a href="#__codelineno-11-50" id="__codelineno-11-50" name="__codelineno-11-50"></a>  Mixing quality:             0.92
-<a href="#__codelineno-11-51" id="__codelineno-11-51" name="__codelineno-11-51"></a>  Reynolds number:         12500
-<a href="#__codelineno-11-52" id="__codelineno-11-52" name="__codelineno-11-52"></a>
-<a href="#__codelineno-11-53" id="__codelineno-11-53" name="__codelineno-11-53"></a>Methanogenesis Mixer:
-<a href="#__codelineno-11-54" id="__codelineno-11-54" name="__codelineno-11-54"></a>  Power consumption:          2.50 kW
-<a href="#__codelineno-11-55" id="__codelineno-11-55" name="__codelineno-11-55"></a>  Mixing quality:             0.88
-<a href="#__codelineno-11-56" id="__codelineno-11-56" name="__codelineno-11-56"></a>  Reynolds number:          8300
-</code></pre></div>
-<h3 id="energy-balance">Energy Balance<a class="headerlink" href="#energy-balance" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>ENERGY BALANCE
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>======================================================================
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>Energy Production:
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>  Electrical (gross):       480.5 kW
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>  Thermal:                  540.6 kW
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>Parasitic Load:
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>  Mixer 1:                    3.75 kW
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>  Mixer 2:                    2.50 kW
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>  Pumps (estimated):          2.00 kW
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>  Total parasitic:            8.25 kW
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>
-<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>Net Electrical Output:      472.3 kW
-<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>
-<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>Heat Utilization:
-<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>  Heating demand:           125.4 kW
-<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>  CHP thermal supply:       540.6 kW
-<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a>  Heat coverage:            431.0 %
-<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a>
-<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a>Gas Management:
-<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a>  Total production:        1253.1 m³/d
-<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a>  CHP consumption:         1150.0 m³/d
-<a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a>  To flare:                 103.1 m³/d (8.2%)
-</code></pre></div>
-<p><strong>Analysis</strong>:<br/>
-- <strong>Net efficiency</strong>: (472 kW + 125 kW) ÷ (751.9 m³/d × 10 kWh/m³ ÷ 24 h) = <strong>190%</strong> (excellent heat recovery)<br/>
-- <strong>Parasitic ratio</strong>: 8.25 ÷ 480.5 = <strong>1.7%</strong> (very low)<br/>
-- <strong>Excess heat</strong>: 540.6 - 125.4 = <strong>415 kW</strong> available for external use<br/>
-- <strong>Flare usage</strong>: 8.2% of production vented (typical when CHP at part load)  </p>
-<h3 id="process-stability">Process Stability<a class="headerlink" href="#process-stability" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>PROCESS STABILITY ASSESSMENT
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>======================================================================
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>Digester 1 (Hydrolysis):
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>  pH stability:         CHECK (7.15 - slightly low)
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>  VFA level:            HIGH (3.82 g/L)
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>  FOS/TAC ratio:        0.418 (Monitor)
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>  Storage status:       NORMAL (50% full)
-<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>
-<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>Digester 2 (Methanogenesis):
-<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>  pH stability:         GOOD (7.32)
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>  VFA level:            GOOD (1.95 g/L)
-<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>  FOS/TAC ratio:        0.245 (Stable)
-<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>  Storage status:       NORMAL (50% full)
-</code></pre></div>
-<p><strong>Interpretation</strong>:<br/>
-- <strong>Digester 1</strong>: Higher VFA is expected in thermophilic hydrolysis stage - acids are consumed in stage 2<br/>
-- <strong>Digester 2</strong>: Excellent stability indicators - methanogens effectively consume VFAs<br/>
-- <strong>pH gradient</strong>: 7.15 → 7.32 shows proper two-stage function<br/>
-- <strong>Gas storages</strong>: Both at healthy 50% fill level with stable pressure  </p>
-<h2 id="advantages-of-two-stage-design">Advantages of Two-Stage Design<a class="headerlink" href="#advantages-of-two-stage-design" title="Permanent link">¶</a></h2>
-<h3 id="1-process-optimization">1. Process Optimization<a class="headerlink" href="#1-process-optimization" title="Permanent link">¶</a></h3>
-<table>
-<thead>
-<tr>
-<th>Aspect</th>
-<th>Single-Stage</th>
-<th>Two-Stage</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Hydrolysis</strong></td>
-<td>Limited by mesophilic temp</td>
-<td>Enhanced at 45°C</td>
-</tr>
-<tr>
-<td><strong>Methanogenesis</strong></td>
-<td>Must tolerate VFA spikes</td>
-<td>Stable, pre-buffered feed</td>
-</tr>
-<tr>
-<td><strong>OLR capacity</strong></td>
-<td>3-4 kg COD/(m³·d)</td>
-<td>5-8 kg COD/(m³·d)</td>
-</tr>
-<tr>
-<td><strong>Process stability</strong></td>
-<td>Moderate</td>
-<td>High</td>
-</tr>
-</tbody>
-</table>
-<h3 id="2-substrate-flexibility">2. Substrate Flexibility<a class="headerlink" href="#2-substrate-flexibility" title="Permanent link">¶</a></h3>
-<p>The two-stage system handles difficult substrates better:<br/>
-- <strong>High-fiber materials</strong>: Enhanced hydrolysis in Stage 1<br/>
-- <strong>High-protein substrates</strong>: Ammonia buffering across stages<br/>
-- <strong>Variable feed composition</strong>: Stage 2 provides buffer capacity  </p>
-<h3 id="3-operational-benefits">3. Operational Benefits<a class="headerlink" href="#3-operational-benefits" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong>Reduced foaming</strong>: Separate hydrolysis phase  </li>
-<li><strong>Better pathogen reduction</strong>: Thermophilic stage (45°C) kills pathogens  </li>
-<li><strong>Easier process control</strong>: Monitor and control each stage independently  </li>
-<li><strong>Recovery from upsets</strong>: Stage 2 can buffer Stage 1 disturbances  </li>
+<li>The order of the substrate IDs defines the slots of the feed lists: slot 0 is maize silage (milk ripeness), slot 1 is swine manure, the other slots stay at zero. The bundled substrates are listed under <a href="../../substrates/library/">Example Substrates</a>.  </li>
+<li>The feed rates are tonnes of fresh matter per day.  </li>
+<li><code>main_feed</code> holds only zeros: the main fermenter gets no substrate of its own, only the effluent of the pre-tank.  </li>
+<li><code>feedstock.actual_Q</code> returns the volume flow of each substrate. Their sum <code>q_feed</code> is the 16.2 m³/d the model works with.  </li>
 </ul>
-<h2 id="performance-comparison">Performance Comparison<a class="headerlink" href="#performance-comparison" title="Permanent link">¶</a></h2>
-<h3 id="single-stage-vs-two-stage">Single-Stage vs Two-Stage<a class="headerlink" href="#single-stage-vs-two-stage" title="Permanent link">¶</a></h3>
+<h3 id="2-two-digesters">2. Two Digesters<a class="headerlink" href="#2-two-digesters" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">plant</span> <span class="o">=</span> <span class="n">BiogasPlant</span><span class="p">(</span><span class="s2">"Two-Stage Plant (ADM1 / SIMBA# biogas)"</span><span class="p">)</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">PlantConfigurator</span><span class="p">(</span><span class="n">plant</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">)</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="c1"># Hydrolysis pre-tank — 45 °C, between the mesophilic and the thermophilic range</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="n">hydro_digester</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">add_digester</span><span class="p">(</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="n">digester_id</span><span class="o">=</span><span class="s2">"hydrolysis"</span><span class="p">,</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    <span class="n">V_liq</span><span class="o">=</span><span class="mf">500.0</span><span class="p">,</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    <span class="n">V_gas</span><span class="o">=</span><span class="mf">75.0</span><span class="p">,</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    <span class="n">T_ad</span><span class="o">=</span><span class="mf">318.15</span><span class="p">,</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"Hydrolysis Pre-Tank"</span><span class="p">,</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="n">Q_substrates</span><span class="o">=</span><span class="n">hydro_feed</span><span class="p">,</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="p">)</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="n">hrt_hydro</span> <span class="o">=</span> <span class="n">hydro_digester</span><span class="o">.</span><span class="n">V_liq</span> <span class="o">/</span> <span class="n">q_feed</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="c1"># Main methanogenesis fermenter — larger volume, mesophilic.</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="c1"># Its inflow is the effluent of the pre-tank, which has the same volume flow.</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="n">main_digester</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">add_digester</span><span class="p">(</span>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>    <span class="n">digester_id</span><span class="o">=</span><span class="s2">"main_digester"</span><span class="p">,</span>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    <span class="n">V_liq</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    <span class="n">V_gas</span><span class="o">=</span><span class="mf">150.0</span><span class="p">,</span>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    <span class="n">T_ad</span><span class="o">=</span><span class="mf">308.15</span><span class="p">,</span>
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"Main Fermenter"</span><span class="p">,</span>
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>    <span class="n">Q_substrates</span><span class="o">=</span><span class="n">main_feed</span><span class="p">,</span>
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="p">)</span>
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a><span class="n">hrt_main</span> <span class="o">=</span> <span class="n">main_digester</span><span class="o">.</span><span class="n">V_liq</span> <span class="o">/</span> <span class="n">q_feed</span>
+</code></pre></div>
+<ul>
+<li>Both stages use the same <code>Digester</code> class. There is no separate hydrolysis model; volume, temperature and feed decide what happens in a tank.  </li>
+<li>No initial-state file is needed: <code>add_digester</code> derives the initial state of each tank from the feedstock and the feed rates.  </li>
+<li>Each call also creates the gas storage <code>&lt;digester_id&gt;_storage</code> and connects the digester to it.  </li>
+<li><code>add_digester</code> returns the digester. The script divides its liquid volume by <code>q_feed</code> to get the retention time for the start banner.  </li>
+</ul>
+<h3 id="3-chp-flare-and-heating">3. CHP, Flare and Heating<a class="headerlink" href="#3-chp-flare-and-heating" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># CHP + heating. digester_id ties each heating system to its digester, so</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="c1"># its heat demand covers the heat loss of the tank and warming the feed.</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="n">cfg</span><span class="o">.</span><span class="n">add_chp</span><span class="p">(</span><span class="n">chp_id</span><span class="o">=</span><span class="s2">"chp_1"</span><span class="p">,</span> <span class="n">P_el_nom</span><span class="o">=</span><span class="mf">500.0</span><span class="p">,</span> <span class="n">eta_el</span><span class="o">=</span><span class="mf">0.40</span><span class="p">,</span> <span class="n">eta_th</span><span class="o">=</span><span class="mf">0.45</span><span class="p">)</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="n">cfg</span><span class="o">.</span><span class="n">add_heating</span><span class="p">(</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="n">heating_id</span><span class="o">=</span><span class="s2">"heating_hydro"</span><span class="p">,</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="n">target_temperature</span><span class="o">=</span><span class="mf">318.15</span><span class="p">,</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"Hydrolysis Heating"</span><span class="p">,</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    <span class="n">digester_id</span><span class="o">=</span><span class="s2">"hydrolysis"</span><span class="p">,</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="p">)</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="n">cfg</span><span class="o">.</span><span class="n">add_heating</span><span class="p">(</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    <span class="n">heating_id</span><span class="o">=</span><span class="s2">"heating_main"</span><span class="p">,</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="n">target_temperature</span><span class="o">=</span><span class="mf">308.15</span><span class="p">,</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"Main Stage Heating"</span><span class="p">,</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>    <span class="n">digester_id</span><span class="o">=</span><span class="s2">"main_digester"</span><span class="p">,</span>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li><code>add_chp</code> also creates the flare <code>chp_1_flare</code> and connects it behind the CHP.  </li>
+<li><code>digester_id</code> adds a <code>control</code> connection from the digester to the heating system. The heating system then receives the temperature and the substrate feed of the digester, and its heat demand is the heat loss plus the heat for warming the feed.  </li>
+<li>The digesters define no k-values, so the heat loss uses the default coefficient: 0.5 kW/K × (digester temperature − ambient temperature).  </li>
+<li><code>target_temperature</code> of a heating system is not linked to <code>T_ad</code> of the digester; the script sets both to the same value.  </li>
+</ul>
+<h3 id="4-connections">4. Connections<a class="headerlink" href="#4-connections" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">cfg</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"hydrolysis"</span><span class="p">,</span> <span class="s2">"main_digester"</span><span class="p">,</span> <span class="s2">"liquid"</span><span class="p">)</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="n">cfg</span><span class="o">.</span><span class="n">auto_connect_digester_to_chp</span><span class="p">(</span><span class="s2">"hydrolysis"</span><span class="p">,</span> <span class="s2">"chp_1"</span><span class="p">)</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="n">cfg</span><span class="o">.</span><span class="n">auto_connect_digester_to_chp</span><span class="p">(</span><span class="s2">"main_digester"</span><span class="p">,</span> <span class="s2">"chp_1"</span><span class="p">)</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="n">cfg</span><span class="o">.</span><span class="n">auto_connect_chp_to_heating</span><span class="p">(</span><span class="s2">"chp_1"</span><span class="p">,</span> <span class="s2">"heating_hydro"</span><span class="p">)</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="n">cfg</span><span class="o">.</span><span class="n">auto_connect_chp_to_heating</span><span class="p">(</span><span class="s2">"chp_1"</span><span class="p">,</span> <span class="s2">"heating_main"</span><span class="p">)</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="n">plant</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="nb">print</span><span class="p">(</span><span class="n">plant</span><span class="o">.</span><span class="n">get_summary</span><span class="p">())</span>
+</code></pre></div>
+<ul>
+<li>The liquid connection passes the effluent of the pre-tank, flow and composition, to the main fermenter.  </li>
+<li><code>auto_connect_digester_to_chp</code> connects the gas storage of the digester to the CHP, not the digester itself.  </li>
+<li><code>auto_connect_chp_to_heating</code> adds a heat connection. The heat of the CHP is split equally between the heating systems connected to it.  </li>
+</ul>
+<h3 id="5-simulation">5. Simulation<a class="headerlink" href="#5-simulation" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">duration</span> <span class="o">=</span> <span class="mf">10.0</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="n">dt</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">24.0</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="n">results</span> <span class="o">=</span> <span class="n">plant</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">save_interval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+</code></pre></div>
+<p>The run takes 240 steps of one hour. <code>results</code> holds eleven entries: one after
+the first step and one per full day. Each entry has the keys <code>time</code> and
+<code>components</code>; <code>components</code> maps every component ID to the outputs of that
+component.</p>
+<h3 id="6-final-state-and-json-export">6. Final State and JSON Export<a class="headerlink" href="#6-final-state-and-json-export" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="n">final</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">h</span> <span class="o">=</span> <span class="n">final</span><span class="p">[</span><span class="s2">"components"</span><span class="p">][</span><span class="s2">"hydrolysis"</span><span class="p">]</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="n">m</span> <span class="o">=</span> <span class="n">final</span><span class="p">[</span><span class="s2">"components"</span><span class="p">][</span><span class="s2">"main_digester"</span><span class="p">]</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="n">total_gas</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="s2">"Q_gas"</span><span class="p">]</span> <span class="o">+</span> <span class="n">m</span><span class="p">[</span><span class="s2">"Q_gas"</span><span class="p">]</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="n">total_ch4</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="s2">"Q_ch4"</span><span class="p">]</span> <span class="o">+</span> <span class="n">m</span><span class="p">[</span><span class="s2">"Q_ch4"</span><span class="p">]</span>
+</code></pre></div>
+<p>The script prints <code>Q_gas</code>, <code>Q_ch4</code>, <code>pH</code>, <code>VFA</code> and <code>TAC</code> of both digesters and
+the sums of the two gas flows. It then saves the plant:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="n">output_path</span> <span class="o">=</span> <span class="n">REPO_ROOT</span> <span class="o">/</span> <span class="s2">"output"</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="n">output_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="n">plant</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">output_path</span> <span class="o">/</span> <span class="s2">"two_stage_plant_config.json"</span><span class="p">))</span>
+</code></pre></div>
+<p><code>BiogasPlant.from_json(path, feedstock)</code> rebuilds the plant from this file. The
+feedstock has to be passed again because the file does not contain it.</p>
+<h2 id="gas-handling-in-one-plant-step">Gas Handling in One Plant Step<a class="headerlink" href="#gas-handling-in-one-plant-step" title="Permanent link">¶</a></h2>
+<p><code>plant.simulate</code> calls <code>BiogasPlant.step()</code> once per time step. A step runs
+every component once, in this order:</p>
+<ol>
+<li>The digesters: first the pre-tank, then the main fermenter with the effluent the pre-tank produced in the same step.  </li>
+<li>The gas storages: each storage takes in the gas its digester produced in this step, supplies the CHP, and only then vents what exceeds its capacity to the flare.  </li>
+<li>The CHP with the gas the storages supplied, then the heating systems with the heat of the CHP.  </li>
+<li>The flare with the gas the storages vented.  </li>
+</ol>
+<p>The CHP asks for the gas it needs at full load and spreads this demand equally
+over the two storages. Because supply and venting are settled within the same
+step, the vented volume does not depend on the step length. See
+<a href="../../user_guide/components/energy/#gas-balance-in-a-plant">Gas Balance in a Plant</a>.</p>
+<h2 id="output">Output<a class="headerlink" href="#output" title="Permanent link">¶</a></h2>
+<p>Run the script from the repository root:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>python<span class="w"> </span>examples/02_two_stage_plant.py
+</code></pre></div>
+<p>It prints the following; only the absolute path in the last line is shortened
+to <code>...</code>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>======================================================================
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>PyADM1 Two-Stage Plant Example
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>======================================================================
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>Building plant components...
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>  - Hydrolysis pre-tank: 500 m³ liquid @ 45 °C (HRT about 31 d)  
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>  - Main fermenter:   1000 m³ liquid @ 35 °C (HRT about 62 d)  
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>  - CHP: 500 kW_el, eta_el=40%, eta_th=45%  
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>Connecting components...
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>=== Two-Stage Plant (ADM1 / SIMBA# biogas) ===
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>Simulation time: 0.00 days
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>Components (8):
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>  - Hydrolysis Pre-Tank (digester)  
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>  - Hydrolysis Pre-Tank Gas Storage (storage)  
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>  - Main Fermenter (digester)  
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>  - Main Fermenter Gas Storage (storage)  
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>  - chp_1 (chp)  
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>  - chp_1_flare (flare)  
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a>  - Hydrolysis Heating (heating)  
+<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a>  - Main Stage Heating (heating)  
+<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>
+<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a>Connections (10):
+<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a>  - Hydrolysis Pre-Tank -&gt; Hydrolysis Pre-Tank Gas Storage (gas)  
+<a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a>  - Main Fermenter -&gt; Main Fermenter Gas Storage (gas)  
+<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a>  - chp_1 -&gt; chp_1_flare (gas)  
+<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a>  - Hydrolysis Pre-Tank -&gt; Hydrolysis Heating (control)  
+<a href="#__codelineno-8-29" id="__codelineno-8-29" name="__codelineno-8-29"></a>  - Main Fermenter -&gt; Main Stage Heating (control)  
+<a href="#__codelineno-8-30" id="__codelineno-8-30" name="__codelineno-8-30"></a>  - Hydrolysis Pre-Tank -&gt; Main Fermenter (liquid)  
+<a href="#__codelineno-8-31" id="__codelineno-8-31" name="__codelineno-8-31"></a>  - Hydrolysis Pre-Tank Gas Storage -&gt; chp_1 (gas)  
+<a href="#__codelineno-8-32" id="__codelineno-8-32" name="__codelineno-8-32"></a>  - Main Fermenter Gas Storage -&gt; chp_1 (gas)  
+<a href="#__codelineno-8-33" id="__codelineno-8-33" name="__codelineno-8-33"></a>  - chp_1 -&gt; Hydrolysis Heating (heat)  
+<a href="#__codelineno-8-34" id="__codelineno-8-34" name="__codelineno-8-34"></a>  - chp_1 -&gt; Main Stage Heating (heat)  
+<a href="#__codelineno-8-35" id="__codelineno-8-35" name="__codelineno-8-35"></a>
+<a href="#__codelineno-8-36" id="__codelineno-8-36" name="__codelineno-8-36"></a>Simulating 10 days at dt=1.0 h...
+<a href="#__codelineno-8-37" id="__codelineno-8-37" name="__codelineno-8-37"></a>Simulated 100/240 steps
+<a href="#__codelineno-8-38" id="__codelineno-8-38" name="__codelineno-8-38"></a>Simulated 200/240 steps
+<a href="#__codelineno-8-39" id="__codelineno-8-39" name="__codelineno-8-39"></a>
+<a href="#__codelineno-8-40" id="__codelineno-8-40" name="__codelineno-8-40"></a>======================================================================
+<a href="#__codelineno-8-41" id="__codelineno-8-41" name="__codelineno-8-41"></a>Final state (day 10.0):
+<a href="#__codelineno-8-42" id="__codelineno-8-42" name="__codelineno-8-42"></a>======================================================================
+<a href="#__codelineno-8-43" id="__codelineno-8-43" name="__codelineno-8-43"></a>
+<a href="#__codelineno-8-44" id="__codelineno-8-44" name="__codelineno-8-44"></a>Hydrolysis pre-tank:
+<a href="#__codelineno-8-45" id="__codelineno-8-45" name="__codelineno-8-45"></a>  Biogas:      1679.0 Nm³/d
+<a href="#__codelineno-8-46" id="__codelineno-8-46" name="__codelineno-8-46"></a>  Methane:      891.1 Nm³/d
+<a href="#__codelineno-8-47" id="__codelineno-8-47" name="__codelineno-8-47"></a>  pH:            7.42
+<a href="#__codelineno-8-48" id="__codelineno-8-48" name="__codelineno-8-48"></a>  VFA:           0.24 g HAc-eq/L
+<a href="#__codelineno-8-49" id="__codelineno-8-49" name="__codelineno-8-49"></a>  TAC:           5.73 g CaCO3/L
+<a href="#__codelineno-8-50" id="__codelineno-8-50" name="__codelineno-8-50"></a>
+<a href="#__codelineno-8-51" id="__codelineno-8-51" name="__codelineno-8-51"></a>Main fermenter:
+<a href="#__codelineno-8-52" id="__codelineno-8-52" name="__codelineno-8-52"></a>  Biogas:       216.6 Nm³/d
+<a href="#__codelineno-8-53" id="__codelineno-8-53" name="__codelineno-8-53"></a>  Methane:      114.0 Nm³/d
+<a href="#__codelineno-8-54" id="__codelineno-8-54" name="__codelineno-8-54"></a>  pH:            7.39
+<a href="#__codelineno-8-55" id="__codelineno-8-55" name="__codelineno-8-55"></a>  VFA:           0.03 g HAc-eq/L
+<a href="#__codelineno-8-56" id="__codelineno-8-56" name="__codelineno-8-56"></a>  TAC:           6.30 g CaCO3/L
+<a href="#__codelineno-8-57" id="__codelineno-8-57" name="__codelineno-8-57"></a>
+<a href="#__codelineno-8-58" id="__codelineno-8-58" name="__codelineno-8-58"></a>Plant total:
+<a href="#__codelineno-8-59" id="__codelineno-8-59" name="__codelineno-8-59"></a>  Biogas:      1895.6 Nm³/d
+<a href="#__codelineno-8-60" id="__codelineno-8-60" name="__codelineno-8-60"></a>  Methane:     1005.1 Nm³/d
+<a href="#__codelineno-8-61" id="__codelineno-8-61" name="__codelineno-8-61"></a>  CH4 frac.:     53.0 %
+<a href="#__codelineno-8-62" id="__codelineno-8-62" name="__codelineno-8-62"></a>Plant configuration saved to .../output/two_stage_plant_config.json
+</code></pre></div>
+<h2 id="interpretation">Interpretation<a class="headerlink" href="#interpretation" title="Permanent link">¶</a></h2>
+<h3 id="final-state-on-day-10">Final State on Day 10<a class="headerlink" href="#final-state-on-day-10" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
-<th>Metric</th>
-<th>Single-Stage (2000 m³ @ 35°C)</th>
-<th>Two-Stage (1977+1000 m³)</th>
-<th>Improvement</th>
+<th>Quantity</th>
+<th>Hydrolysis pre-tank</th>
+<th>Main fermenter</th>
+<th>Plant</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Biogas yield</strong></td>
-<td>1150 m³/d</td>
-<td>1253 m³/d</td>
-<td>+9%</td>
+<td>Biogas, dry [Nm³/d]</td>
+<td>1679.0</td>
+<td>216.6</td>
+<td>1895.6</td>
 </tr>
 <tr>
-<td><strong>CH₄ content</strong></td>
-<td>58%</td>
-<td>60%</td>
-<td>+3.4%</td>
+<td>Methane [Nm³/d]</td>
+<td>891.1</td>
+<td>114.0</td>
+<td>1005.1</td>
 </tr>
 <tr>
-<td><strong>Specific yield</strong></td>
-<td>46 m³/m³ feed</td>
-<td>50 m³/m³ feed</td>
-<td>+8.7%</td>
+<td>Methane content of the dry gas</td>
+<td>53.1 %</td>
+<td>52.6 %</td>
+<td>53.0 %</td>
 </tr>
 <tr>
-<td><strong>Process stability</strong></td>
-<td>Moderate (FOS/TAC: 0.35)</td>
-<td>High (FOS/TAC: 0.25)</td>
-<td>Better</td>
+<td>Share of the plant's methane</td>
+<td>88.7 %</td>
+<td>11.3 %</td>
+<td>100 %</td>
 </tr>
 <tr>
-<td><strong>OLR capacity</strong></td>
-<td>3.5 kg COD/(m³·d)</td>
-<td>8.4 kg COD/(m³·d)</td>
-<td>+140%</td>
+<td>pH</td>
+<td>7.42</td>
+<td>7.39</td>
+<td>–</td>
+</tr>
+<tr>
+<td>VFA [g HAc-eq/L]</td>
+<td>0.24</td>
+<td>0.03</td>
+<td>–</td>
+</tr>
+<tr>
+<td>TAC [g CaCO3/L]</td>
+<td>5.73</td>
+<td>6.30</td>
+<td>–</td>
+</tr>
+<tr>
+<td>VFA/TAC</td>
+<td>0.04</td>
+<td>0.005</td>
+<td>–</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Cost-Benefit</strong>:<br/>
-- <strong>Additional investment</strong>: ~15-20% (second digester, pumps)<br/>
-- <strong>Energy gain</strong>: ~9% more biogas<br/>
-- <strong>Stability</strong>: Significantly reduced risk of process failure<br/>
-- <strong>ROI</strong>: Typically 3-5 years for difficult substrates  </p>
-<h2 id="mechanical-component-performance">Mechanical Component Performance<a class="headerlink" href="#mechanical-component-performance" title="Permanent link">¶</a></h2>
-<h3 id="pump-operation">Pump Operation<a class="headerlink" href="#pump-operation" title="Permanent link">¶</a></h3>
-<p><strong>Feed Pump</strong>:<br/>
-- <strong>Operating point</strong>: 25 m³/d ÷ 24 = 1.04 m³/h (3.5% of nominal capacity)<br/>
-- <strong>Efficiency at low flow</strong>: Progressive cavity pumps maintain ~60% efficiency even at 3% capacity<br/>
-- <strong>Annual energy</strong>: 5 kW × 8760 h = 43,800 kWh  </p>
-<p><strong>Transfer Pump</strong>:<br/>
-- <strong>Operating point</strong>: 25 m³/d ÷ 24 = 1.04 m³/h<br/>
-- <strong>Actual power</strong>: 8 kW × (1.04/25) × 1.2 (low efficiency penalty) ≈ <strong>0.4 kW</strong><br/>
-- <strong>Annual energy</strong>: 0.4 kW × 8760 h = 3,504 kWh  </p>
-<h3 id="mixer-performance">Mixer Performance<a class="headerlink" href="#mixer-performance" title="Permanent link">¶</a></h3>
-<p><strong>Hydrolysis Mixer</strong>:<br/>
-- <strong>Mixing time</strong>: ~15 minutes (from Reynolds number and geometry)<br/>
-- <strong>Tip speed</strong>: ~4.5 m/s (turbulent regime)<br/>
-- <strong>Shear rate</strong>: ~50 s⁻¹ (high intensity)<br/>
-- <strong>Power number</strong>: 0.32 (typical for propeller at Re &gt; 10,000)  </p>
-<p><strong>Methanogenesis Mixer</strong>:<br/>
-- <strong>Mixing time</strong>: ~20 minutes<br/>
-- <strong>Tip speed</strong>: ~3.8 m/s<br/>
-- <strong>Shear rate</strong>: ~35 s⁻¹ (medium intensity)<br/>
-- <strong>Prevents stratification</strong> without damaging sensitive methanogens  </p>
-<h2 id="gas-storage-and-flare-management">Gas Storage and Flare Management<a class="headerlink" href="#gas-storage-and-flare-management" title="Permanent link">¶</a></h2>
-<h3 id="storage-dynamics">Storage Dynamics<a class="headerlink" href="#storage-dynamics" title="Permanent link">¶</a></h3>
-<p><strong>Storage 1 (Hydrolysis)</strong>:<br/>
-- Receives ~850 m³/d (higher production due to enhanced hydrolysis)<br/>
-- Supplies ~675 m³/d to CHP (proportional to total demand)<br/>
-- Net accumulation: +175 m³/d<br/>
-- Reaches 50% capacity in ~0.9 days  </p>
-<p><strong>Storage 2 (Methanogenesis)</strong>:<br/>
-- Receives ~400 m³/d (lower but more stable)<br/>
-- Supplies ~475 m³/d to CHP<br/>
-- Net draw: -75 m³/d (supplements Storage 1)<br/>
-- Provides buffer for production variations  </p>
-<h3 id="flare-operation">Flare Operation<a class="headerlink" href="#flare-operation" title="Permanent link">¶</a></h3>
-<p><strong>When does the flare activate?</strong>:<br/>
-1. <strong>Storage overflow</strong>: When either storage reaches 100% capacity<br/>
-2. <strong>CHP part-load</strong>: When CHP operates below full capacity<br/>
-3. <strong>Maintenance</strong>: When CHP is offline but digesters continue<br/>
-4. <strong>Start-up/shutdown</strong>: During transient operations  </p>
-<p><strong>Flare performance</strong>:<br/>
-- <strong>Destruction efficiency</strong>: 98% CH₄ conversion to CO₂<br/>
-- <strong>Temperature</strong>: ~1000°C combustion temperature<br/>
-- <strong>Emissions</strong>: 2% uncombusted CH₄ + CO₂ from combustion<br/>
-- <strong>Safety</strong>: Automatic ignition, flame detection  </p>
-<h2 id="process-control-strategies">Process Control Strategies<a class="headerlink" href="#process-control-strategies" title="Permanent link">¶</a></h2>
-<h3 id="temperature-control">Temperature Control<a class="headerlink" href="#temperature-control" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># Heating 1 maintains 45°C for hydrolysis</span>
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="n">heating_1</span><span class="o">.</span><span class="n">target_temperature</span> <span class="o">=</span> <span class="mf">318.15</span>  <span class="c1"># K</span>
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="n">heating_1</span><span class="o">.</span><span class="n">heat_loss_coefficient</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># Higher due to ΔT</span>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="c1"># Heating 2 maintains 35°C for methanogenesis</span>
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="n">heating_2</span><span class="o">.</span><span class="n">target_temperature</span> <span class="o">=</span> <span class="mf">308.15</span>  <span class="c1"># K</span>
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="n">heating_2</span><span class="o">.</span><span class="n">heat_loss_coefficient</span> <span class="o">=</span> <span class="mf">0.3</span>  <span class="c1"># Lower ΔT</span>
+<p><strong>Gas flows are dry gas at standard conditions.</strong> <code>Q_gas</code> and <code>Q_ch4</code> are given
+in Nm³/d (0 °C, 1.01325 bar) and contain no water vapour. The methane content
+of 53.0 % is therefore that of the dry gas, which is what a gas analyser shows.
+See <a href="../../user_guide/adm1_implementation/#reported-gas-flows">Reported gas flows</a>.</p>
+<p><strong>The pre-tank produces most of the gas.</strong> 891.1 of the 1005.1 Nm³/d of methane
+(88.7 %) come from the first tank. With a retention time of 30.9 d, a pH of
+7.42 and 0.24 g HAc-eq/L of VFA it runs the complete degradation chain down to
+methane. In this configuration it is not a separate acidification stage. The
+main fermenter digests what is left and adds 114.0 Nm³/d of methane.</p>
+<p><strong>Acids and buffer capacity.</strong> The VFA are 0.24 and 0.03 g HAc-eq/L at a TAC of
+5.73 and 6.30 g CaCO3/L, which gives VFA/TAC ratios of 0.04 and 0.005. The pH
+is 7.42 and 7.39. Typical ranges of these indicators are listed under
+<a href="../../user_guide/components/biological/#optimal-operating-ranges">Optimal Operating Ranges</a>.</p>
+<p><strong>Yield per tonne of feed.</strong> The 17.5 t/d of fresh matter give 108 Nm³ of
+biogas and 57 Nm³ of methane per tonne on day 10.</p>
+<h3 id="further-results">Further Results<a class="headerlink" href="#further-results" title="Permanent link">¶</a></h3>
+<p><code>main()</code> returns the plant and the result list. The outputs of the other
+components can be read from them, for example:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="n">plant</span><span class="p">,</span> <span class="n">results</span> <span class="o">=</span> <span class="n">main</span><span class="p">()</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="n">final</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">"components"</span><span class="p">]</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="n">chp</span> <span class="o">=</span> <span class="n">final</span><span class="p">[</span><span class="s2">"chp_1"</span><span class="p">]</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"CHP electrical power:  </span><span class="si">{</span><span class="n">chp</span><span class="p">[</span><span class="s1">'P_el'</span><span class="p">]</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2"> kW"</span><span class="p">)</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"CHP thermal power:     </span><span class="si">{</span><span class="n">chp</span><span class="p">[</span><span class="s1">'P_th'</span><span class="p">]</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2"> kW"</span><span class="p">)</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"CHP gas consumption:   </span><span class="si">{</span><span class="n">chp</span><span class="p">[</span><span class="s1">'Q_gas_consumed'</span><span class="p">]</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2"> Nm³/d"</span><span class="p">)</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="k">for</span> <span class="n">storage_id</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"hydrolysis_storage"</span><span class="p">,</span> <span class="s2">"main_digester_storage"</span><span class="p">):</span>
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>    <span class="n">storage</span> <span class="o">=</span> <span class="n">final</span><span class="p">[</span><span class="n">storage_id</span><span class="p">]</span>
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">storage_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">storage</span><span class="p">[</span><span class="s1">'stored_volume_m3'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m³ stored, </span><span class="si">{</span><span class="n">storage</span><span class="p">[</span><span class="s1">'cumulative_vented_m3'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m³ vented"</span><span class="p">)</span>
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"chp_1_flare: </span><span class="si">{</span><span class="n">final</span><span class="p">[</span><span class="s1">'chp_1_flare'</span><span class="p">][</span><span class="s1">'cumulative_vented_m3'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m³ burnt"</span><span class="p">)</span>
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a><span class="k">for</span> <span class="n">heating_id</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"heating_hydro"</span><span class="p">,</span> <span class="s2">"heating_main"</span><span class="p">):</span>
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>    <span class="n">heating</span> <span class="o">=</span> <span class="n">final</span><span class="p">[</span><span class="n">heating_id</span><span class="p">]</span>
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">heating_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">heating</span><span class="p">[</span><span class="s1">'Q_heat_supplied'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> kW supplied, </span><span class="si">{</span><span class="n">heating</span><span class="p">[</span><span class="s1">'P_aux_heat'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> kW auxiliary heat"</span><span class="p">)</span>
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a><span class="n">balance</span> <span class="o">=</span> <span class="n">plant</span><span class="o">.</span><span class="n">get_electricity_balance</span><span class="p">()</span>
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Net electrical power:  </span><span class="si">{</span><span class="n">balance</span><span class="p">[</span><span class="s1">'P_el_net'</span><span class="p">]</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2"> kW"</span><span class="p">)</span>
 </code></pre></div>
-<p><strong>Heat Demand Calculation</strong>:<br/>
-- <strong>Digester 1</strong>: Q = 0.5 kW/K × (45 - 15)°C = <strong>15 kW</strong> base loss + <strong>80 kW</strong> process heating = <strong>95 kW</strong><br/>
-- <strong>Digester 2</strong>: Q = 0.3 kW/K × (35 - 15)°C = <strong>6 kW</strong> base loss + <strong>24 kW</strong> process = <strong>30 kW</strong><br/>
-- <strong>Total</strong>: <strong>125 kW</strong> (well covered by 541 kW CHP thermal output)  </p>
-<h3 id="mixing-control">Mixing Control<a class="headerlink" href="#mixing-control" title="Permanent link">¶</a></h3>
-<p><strong>Strategy</strong>: Intermittent mixing with adaptive timing
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># High mixing when feeding (4× daily)</span>
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="k">if</span> <span class="n">feeding_event</span><span class="p">:</span>
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>    <span class="n">mixer</span><span class="o">.</span><span class="n">on_time_fraction</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># 50% duty cycle</span>
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>    <span class="n">mixer</span><span class="o">.</span><span class="n">on_time_fraction</span> <span class="o">=</span> <span class="mf">0.15</span>  <span class="c1"># 15% baseline</span>
-</code></pre></div></p>
-<h3 id="feed-control">Feed Control<a class="headerlink" href="#feed-control" title="Permanent link">¶</a></h3>
-<p><strong>Model Predictive Control (MPC)</strong> approach:<br/>
-1. Measure current VFA and pH<br/>
-2. Predict 48h response with different feed rates<br/>
-3. Select feed rate optimizing CH₄ while maintaining pH &gt; 7.0  </p>
-<h2 id="common-issues-and-solutions">Common Issues and Solutions<a class="headerlink" href="#common-issues-and-solutions" title="Permanent link">¶</a></h2>
-<h3 id="issue-1-high-vfa-in-digester-1">Issue 1: High VFA in Digester 1<a class="headerlink" href="#issue-1-high-vfa-in-digester-1" title="Permanent link">¶</a></h3>
-<p><strong>Symptoms</strong>:<br/>
-- VFA &gt; 5 g/L<br/>
-- pH &lt; 7.0<br/>
-- Reduced gas production  </p>
-<p><strong>Solutions</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># Reduce organic loading</span>
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Reduce from [15, 10, ...]</span>
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="c1"># Increase Stage 1 temperature (careful - max 55°C)</span>
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="n">T_ad_1</span> <span class="o">=</span> <span class="mf">323.15</span>  <span class="c1"># 50°C</span>
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="c1"># Increase mixing to prevent accumulation</span>
-<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="n">mixer_1</span><span class="o">.</span><span class="n">on_time_fraction</span> <span class="o">=</span> <span class="mf">0.35</span>
-</code></pre></div></p>
-<h3 id="issue-2-low-methane-content">Issue 2: Low Methane Content<a class="headerlink" href="#issue-2-low-methane-content" title="Permanent link">¶</a></h3>
-<p><strong>Symptoms</strong>:<br/>
-- CH₄ &lt; 55%<br/>
-- CO₂ elevated<br/>
-- Low specific gas production  </p>
-<p><strong>Solutions</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># Increase HRT (reduce feed)</span>
-<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="c1"># Optimize Stage 2 temperature</span>
-<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="n">T_ad_2</span> <span class="o">=</span> <span class="mf">311.15</span>  <span class="c1"># 38°C (optimal for many methanogens)</span>
-<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="c1"># Check for air leaks (O₂ inhibits methanogens)</span>
-</code></pre></div></p>
-<h3 id="issue-3-foaming-in-digester-1">Issue 3: Foaming in Digester 1<a class="headerlink" href="#issue-3-foaming-in-digester-1" title="Permanent link">¶</a></h3>
-<p><strong>Symptoms</strong>:<br/>
-- Gas storage shows pressure fluctuations<br/>
-- Effluent contains excessive gas bubbles  </p>
-<p><strong>Solutions</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># Reduce mixing intensity</span>
-<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="n">mixer_1</span><span class="o">.</span><span class="n">mixing_intensity</span> <span class="o">=</span> <span class="s2">"medium"</span>
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>
-<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a><span class="c1"># Add antifoaming agent (substrate index 8)</span>
-<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># 50 L/d antifoam</span>
-<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>
-<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a><span class="c1"># Increase transfer rate to Stage 2</span>
-<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="c1"># (implement timer-based periodic drawdown)</span>
-</code></pre></div></p>
-<h3 id="issue-4-excessive-flare-usage">Issue 4: Excessive Flare Usage<a class="headerlink" href="#issue-4-excessive-flare-usage" title="Permanent link">¶</a></h3>
-<p><strong>Symptoms</strong>:<br/>
-- Flare operates continuously<br/>
-- &gt;20% of production to flare<br/>
-- High storage pressure  </p>
-<p><strong>Causes</strong>:<br/>
-- CHP undersized for gas production<br/>
-- CHP in part-load operation<br/>
-- Excess substrate feed  </p>
-<p><strong>Solutions</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># Option 1: Reduce substrate feed</span>
-<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>
-<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="c1"># Option 2: Increase CHP capacity</span>
-<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_chp</span><span class="p">(</span><span class="s2">"chp1"</span><span class="p">,</span> <span class="n">P_el_nom</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>  <span class="c1"># Increase from 500</span>
-<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a>
-<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a><span class="c1"># Option 3: Add second CHP unit</span>
-<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_chp</span><span class="p">(</span><span class="s2">"chp2"</span><span class="p">,</span> <span class="n">P_el_nom</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a><span class="n">configurator</span><span class="o">.</span><span class="n">auto_connect_digester_to_chp</span><span class="p">(</span><span class="s2">"digester_1"</span><span class="p">,</span> <span class="s2">"chp2"</span><span class="p">)</span>
-<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a>
-<a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a><span class="c1"># Option 4: Increase gas storage capacity</span>
-<a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a><span class="c1"># (modify V_gas when adding digesters)</span>
-</code></pre></div></p>
-<h2 id="advanced-applications">Advanced Applications<a class="headerlink" href="#advanced-applications" title="Permanent link">¶</a></h2>
-<h3 id="1-parameter-sweep-for-optimization">1. Parameter Sweep for Optimization<a class="headerlink" href="#1-parameter-sweep-for-optimization" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParallelSimulator</span>
-<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a>
-<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a><span class="c1"># Test different Stage 1 temperatures</span>
-<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="n">parallel</span> <span class="o">=</span> <span class="n">ParallelSimulator</span><span class="p">(</span><span class="n">adm1</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a><span class="n">scenarios</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a>    <span class="p">{</span><span class="s2">"T_ad_1"</span><span class="p">:</span> <span class="mf">313.15</span><span class="p">,</span> <span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>  <span class="c1"># 40°C</span>
-<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a>    <span class="p">{</span><span class="s2">"T_ad_1"</span><span class="p">:</span> <span class="mf">318.15</span><span class="p">,</span> <span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>  <span class="c1"># 45°C</span>
-<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a>    <span class="p">{</span><span class="s2">"T_ad_1"</span><span class="p">:</span> <span class="mf">323.15</span><span class="p">,</span> <span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>  <span class="c1"># 50°C</span>
-<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a><span class="p">]</span>
-<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span><span class="n">scenarios</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>CHP electrical power:   167.5 kW
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>CHP thermal power:      188.4 kW
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>CHP gas consumption:   1895.6 Nm³/d
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>hydrolysis_storage: 0.0 m³ stored, 0.0 m³ vented
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>main_digester_storage: 0.0 m³ stored, 0.0 m³ vented
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>chp_1_flare: 0.0 m³ burnt
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>heating_hydro: 37.6 kW supplied, 0.0 kW auxiliary heat
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>heating_main: 10.0 kW supplied, 0.0 kW auxiliary heat
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>Net electrical power:   162.5 kW
 </code></pre></div>
-<h3 id="2-online-calibration">2. Online Calibration<a class="headerlink" href="#2-online-calibration" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.calibration</span><span class="w"> </span><span class="kn">import</span> <span class="n">Calibrator</span>
-<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a>
-<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="c1"># Calibrate Stage 1 hydrolysis parameters</span>
-<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="n">calibrator</span> <span class="o">=</span> <span class="n">Calibrator</span><span class="p">(</span><span class="n">plant</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s2">"digester_1"</span><span class="p">])</span>
-<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a><span class="n">params</span> <span class="o">=</span> <span class="n">calibrator</span><span class="o">.</span><span class="n">calibrate_initial</span><span class="p">(</span>
-<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a>    <span class="n">measurements</span><span class="o">=</span><span class="n">measurement_data</span><span class="p">,</span>
-<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a>    <span class="n">parameters</span><span class="o">=</span><span class="p">[</span><span class="s2">"k_hyd_ch"</span><span class="p">,</span> <span class="s2">"k_hyd_pr"</span><span class="p">,</span> <span class="s2">"k_hyd_li"</span><span class="p">],</span>
-<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a><span class="p">)</span>
+<p><strong>The CHP runs at one third of its nominal power.</strong> 1005.1 Nm³/d of methane at
+10 kWh/Nm³ are 418.8 kW of fuel power. With the electrical efficiency of 0.40
+this gives 167.5 kW, 33.5 % of the nominal 500 kW. The thermal power is
+167.5 kW × 0.45 / 0.40 = 188.4 kW. At full load the CHP would need 3000 Nm³/d
+of methane, about three times the production.</p>
+<p><strong>The storages stay empty and the flare is not used.</strong> The CHP can burn more
+gas than the digesters produce, so it takes all the gas of every step: its
+consumption of 1895.6 Nm³/d equals the production. Both storages are empty at
+the end of the step, and nothing is vented.</p>
+<p><strong>The heat demand is heat loss plus feed warming.</strong> The pre-tank needs 37.6 kW:
+0.5 kW/K × (45 °C − 15 °C) = 15.0 kW of heat loss and 22.6 kW for warming the
+17.5 t/d of feed to 45 °C. The substrates enter at their storage temperatures,
+9.3 °C for the maize silage and 20 °C for the swine manure. The main fermenter
+needs 0.5 kW/K × (35 °C − 15 °C) = 10.0 kW. It has no substrate feed, and the
+inflow from the pre-tank is not part of the heat balance. 15 °C is the default
+ambient temperature of <code>BiogasPlant</code>. The 188.4 kW of CHP heat cover the
+47.6 kW, so no auxiliary heat is needed.</p>
+<p><strong>Net power.</strong> The CHP uses 3 % of its output for its own auxiliaries (package
+default). The plant has no other electricity consumers, which leaves 162.5 kW.</p>
+<p>The course over the ten days shows how far the plant is from a steady state:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"  day  pre-tank     main  CH4 %  CHP kW"</span><span class="p">)</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>    <span class="n">c</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s2">"components"</span><span class="p">]</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>    <span class="n">q_gas</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="s2">"hydrolysis"</span><span class="p">][</span><span class="s2">"Q_gas"</span><span class="p">]</span> <span class="o">+</span> <span class="n">c</span><span class="p">[</span><span class="s2">"main_digester"</span><span class="p">][</span><span class="s2">"Q_gas"</span><span class="p">]</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>    <span class="n">q_ch4</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="s2">"hydrolysis"</span><span class="p">][</span><span class="s2">"Q_ch4"</span><span class="p">]</span> <span class="o">+</span> <span class="n">c</span><span class="p">[</span><span class="s2">"main_digester"</span><span class="p">][</span><span class="s2">"Q_ch4"</span><span class="p">]</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>    <span class="nb">print</span><span class="p">(</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">r</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="si">:</span><span class="s2">5.2f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'hydrolysis'</span><span class="p">][</span><span class="s1">'Q_gas'</span><span class="p">]</span><span class="si">:</span><span class="s2">9.1f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'main_digester'</span><span class="p">][</span><span class="s1">'Q_gas'</span><span class="p">]</span><span class="si">:</span><span class="s2">8.1f</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>        <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">q_ch4</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">q_gas</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'chp_1'</span><span class="p">][</span><span class="s1">'P_el'</span><span class="p">]</span><span class="si">:</span><span class="s2">7.1f</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>    <span class="p">)</span>
 </code></pre></div>
-<h3 id="3-model-predictive-control">3. Model Predictive Control<a class="headerlink" href="#3-model-predictive-control" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="c1"># Predict optimal feed for next 48 hours</span>
-<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="n">Q_best</span><span class="p">,</span> <span class="n">Q_ch4_pred</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">determine_best_feed_by_n_sims</span><span class="p">(</span>
-<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a>    <span class="n">state_zero</span><span class="o">=</span><span class="n">current_state</span><span class="p">,</span>
-<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a>    <span class="n">Q</span><span class="o">=</span><span class="n">current_feed</span><span class="p">,</span>
-<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a>    <span class="n">Qch4sp</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>  <span class="c1"># Setpoint: 800 m³/d CH4</span>
-<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a>    <span class="n">feeding_freq</span><span class="o">=</span><span class="mi">48</span><span class="p">,</span>
-<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a>    <span class="n">n</span><span class="o">=</span><span class="mi">20</span>  <span class="c1"># Test 20 scenarios</span>
-<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>  day  pre-tank     main  CH4 %  CHP kW
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a> 0.04    1814.4   1646.7   22.1   181.6
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a> 1.00    1527.1    104.2   49.6   134.9
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> 2.00    1586.6    129.6   51.4   146.9
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>...
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> 9.00    1674.0    207.5   53.0   166.2
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>10.00    1679.0    216.6   53.0   167.5
 </code></pre></div>
+<p>The columns <code>pre-tank</code> and <code>main</code> are the biogas flows in Nm³/d. The first row
+is the state after the first hour: the tanks start from the derived initial
+state, the gas holds only 22.1 % methane, and the CHP also burns the initial
+filling of the storages (10 % of their capacity). From day 1 on the gas flow of
+the main fermenter rises from 104.2 to 216.6 Nm³/d and still gains 9.1 Nm³/d on
+the last day; the pre-tank gains 5.0 Nm³/d on that day. Ten days are a start-up
+phase at retention times of 30.9 and 61.7 d, so the final state above is not a
+steady state.</p>
+<h2 id="adapting-the-example">Adapting the Example<a class="headerlink" href="#adapting-the-example" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>Feed</strong>: change the rates in <code>hydro_feed</code> (t/d of fresh matter) or pass other substrate IDs to <code>Feedstock</code>; see <a href="../../substrates/library/">Example Substrates</a>.  </li>
+<li><strong>Stage sizes and temperatures</strong>: change <code>V_liq</code>, <code>V_gas</code> and <code>T_ad</code> in <code>add_digester</code>. A smaller <code>V_liq</code> of the pre-tank shortens its retention time. Set <code>target_temperature</code> of the matching heating system to the new <code>T_ad</code>.  </li>
+<li><strong>Simulation length</strong>: change <code>duration</code> in <code>plant.simulate</code> to follow the plant beyond the start-up phase.  </li>
+<li><strong>CHP</strong>: change <code>P_el_nom</code>, <code>eta_el</code> and <code>eta_th</code> in <code>add_chp</code>.  </li>
+<li><strong>Heat demand</strong>: set <code>heat_loss_coefficient</code> in <code>add_heating</code>, or give the digesters the k-values <code>k_wall</code>, <code>k_roof</code> and <code>k_ground</code> in <code>add_digester</code> so that the heat loss follows the tank surfaces. The ambient temperature is <code>T_ambient</code> of <code>BiogasPlant</code>. See <a href="../../user_guide/components/energy/#heating-system">Heating System</a>.  </li>
+<li><strong>More components</strong>: mixers, substrate storages and feeders are added with <code>add_mixer</code>, <code>add_substrate_storage</code> and <code>add_feeder</code>; see <a href="../../user_guide/components/mechanical/">Mechanical Components</a> and <a href="../../user_guide/components/feeding/">Feeding Components</a>.  </li>
+<li><strong>Many scenarios</strong>: see <a href="../parallel_simulation/">Parallel Simulation</a>.  </li>
+</ul>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>TPAD Design</strong>: Simeonov, I., Chorukova, E., &amp; Kabaivanova, L. (2025). <em>Two-stage anaerobic digestion for green energy production: A review</em>. Processes, 13(2), 294.  </li>
-<li><strong>Process Control</strong>: Gaida (2014). <em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants</em>. PhD thesis, Leiden University.  </li>
+<li><strong>Two-stage digestion</strong>: Simeonov, I., Chorukova, E., &amp; Kabaivanova, L. (2025). <em>Two-stage anaerobic digestion for green energy production: A review</em>. Processes, 13(2), 294.  </li>
+<li><strong>Model</strong>: <a href="../../user_guide/adm1_implementation/">ADM1 Implementation</a> </li>
+<li><strong>Components</strong>: <a href="../../user_guide/components/biological/">Biological Components</a>, <a href="../../user_guide/components/energy/">Energy Components</a> </li>
 </ul>
 <h2 id="related-examples">Related Examples<a class="headerlink" href="#related-examples" title="Permanent link">¶</a></h2>
 <ul>
-<li><a href="../basic_digester/"><code>basic_digester.md</code></a>: Simple single-stage system  </li>
-<li><code>calibration_workflow.md</code>(calibration_workflow.md): Parameter estimation from measurement data  </li>
-<li><code>substrate_optimization.py</code>: Optimal feed strategy  </li>
-<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py"><code>parallel_two_stage_simulation.py</code></a>: Parallel simulations  </li>
+<li><a href="../basic_digester/">Basic Digester</a>: Single digester with gas storage  </li>
+<li><a href="../parallel_simulation/">Parallel Simulation</a>: Running many simulation scenarios in parallel  </li>
 </ul>
 </article>
 </div>
@@ -2764,7 +2031,7 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "navigation.tracking", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.c21346df.min.js"></script>
+<script src="../../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
 <script src="../../../assets/mathjax-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>

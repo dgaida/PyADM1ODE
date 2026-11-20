@@ -13,7 +13,7 @@
 <link href="./" hreflang="de" rel="alternate"/>
 <link href="../../en/examples/parallel_simulation/" hreflang="en" rel="alternate"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.8.0" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.8.2" name="generator"/>
 <title>Parallele Simulation - PyADM1ODE</title>
 <link href="../../assets/stylesheets/main.57a0d79d.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.fb2fffe2.min.css" rel="stylesheet"/>
@@ -163,6 +163,15 @@
   
   
   Handbuch
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../substrates/">
+          
+  
+  
+  Substrate
 
         </a>
 </li>
@@ -432,18 +441,6 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../user_guide/substrates/">
-<span class="md-ellipsis">
-    
-  
-    Substrate
-  
-
-    
-  </span>
-</a>
-</li>
-<li class="md-nav__item">
 <a class="md-nav__link" href="../../user_guide/applications/">
 <span class="md-ellipsis">
     
@@ -500,7 +497,7 @@
 <span class="md-ellipsis">
     
   
-    Modell &amp; Theorie
+    Substrate
   
 
     
@@ -509,6 +506,92 @@
 </label>
 <nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
 <label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Substrate
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/">
+<span class="md-ellipsis">
+    
+  
+    Übersicht
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/library/">
+<span class="md-ellipsis">
+    
+  
+    Beispiel-Substrate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/parameters/">
+<span class="md-ellipsis">
+    
+  
+    Parameter &amp; Wertebereiche
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/influence/">
+<span class="md-ellipsis">
+    
+  
+    Einfluss der Werte
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/sources/">
+<span class="md-ellipsis">
+    
+  
+    Herkunft der Werte
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Modell &amp; Theorie
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -569,8 +652,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
-<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
 <span class="md-ellipsis">
     
   
@@ -581,8 +664,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="true" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_5">
+<nav aria-expanded="true" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -663,29 +746,65 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#wichtige-komponenten">
+<a class="md-nav__link" href="#beispiel-ausfuhren">
 <span class="md-ellipsis">
       
-        Wichtige Komponenten
-      
-    </span>
-</a>
-<nav aria-label="Wichtige Komponenten" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#1-parallelsimulator">
-<span class="md-ellipsis">
-      
-        1. ParallelSimulator
+        Beispiel ausführen
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#2-scenarioresult">
+<a class="md-nav__link" href="#einheiten">
 <span class="md-ellipsis">
       
-        2. ScenarioResult
+        Einheiten
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-durchgang">
+<span class="md-ellipsis">
+      
+        Code-Durchgang
+      
+    </span>
+</a>
+<nav aria-label="Code-Durchgang" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-basismodell">
+<span class="md-ellipsis">
+      
+        1. Basismodell
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-vergleich-der-futtermengen">
+<span class="md-ellipsis">
+      
+        2. Vergleich der Futtermengen
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-parameterstudie">
+<span class="md-ellipsis">
+      
+        3. Parameterstudie
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-monte-carlo-analyse">
+<span class="md-ellipsis">
+      
+        4. Monte-Carlo-Analyse
       
     </span>
 </a>
@@ -694,47 +813,47 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#simulationstypen">
+<a class="md-nav__link" href="#ergebnisobjekte">
 <span class="md-ellipsis">
       
-        Simulationstypen
+        Ergebnisobjekte
       
     </span>
 </a>
-<nav aria-label="Simulationstypen" class="md-nav">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ausgabe">
+<span class="md-ellipsis">
+      
+        Ausgabe
+      
+    </span>
+</a>
+<nav aria-label="Ausgabe" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#einfache-parallele-szenarien">
+<a class="md-nav__link" href="#vergleich-der-futtermengen">
 <span class="md-ellipsis">
       
-        Einfache parallele Szenarien
+        Vergleich der Futtermengen
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#einzelparameter-sweep">
+<a class="md-nav__link" href="#parameterstudie">
 <span class="md-ellipsis">
       
-        Einzelparameter-Sweep
+        Parameterstudie
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#multiparameter-sweep">
+<a class="md-nav__link" href="#monte-carlo-analyse">
 <span class="md-ellipsis">
       
-        Multiparameter-Sweep
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#monte-carlo-simulation">
-<span class="md-ellipsis">
-      
-        Monte-Carlo-Simulation
+        Monte-Carlo-Analyse
       
     </span>
 </a>
@@ -743,97 +862,13 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#erwartete-ausgabe">
+<a class="md-nav__link" href="#beispiel-anpassen">
 <span class="md-ellipsis">
       
-        Erwartete Ausgabe
+        Beispiel anpassen
       
     </span>
 </a>
-<nav aria-label="Erwartete Ausgabe" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#vergleich-der-basisszenarien">
-<span class="md-ellipsis">
-      
-        Vergleich der Basisszenarien
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#parameter-sweep-ergebnisse">
-<span class="md-ellipsis">
-      
-        Parameter-Sweep Ergebnisse
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#monte-carlo-statistiken">
-<span class="md-ellipsis">
-      
-        Monte-Carlo-Statistiken
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#performance-analyse">
-<span class="md-ellipsis">
-      
-        Performance-Analyse
-      
-    </span>
-</a>
-<nav aria-label="Performance-Analyse" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#parallele-effizienz">
-<span class="md-ellipsis">
-      
-        Parallele Effizienz
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#best-practices">
-<span class="md-ellipsis">
-      
-        Best Practices
-      
-    </span>
-</a>
-<nav aria-label="Best Practices" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#1-wahl-der-anzahl-der-worker">
-<span class="md-ellipsis">
-      
-        1. Wahl der Anzahl der Worker
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#2-balance-zwischen-simulationsdauer-und-anzahl-der-szenarien">
-<span class="md-ellipsis">
-      
-        2. Balance zwischen Simulationsdauer und Anzahl der Szenarien
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#ahnliche-beispiele">
@@ -860,8 +895,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_6" type="checkbox"/>
-<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
 <span class="md-ellipsis">
     
   
@@ -872,8 +907,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_6">
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -970,8 +1005,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
-<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
 <span class="md-ellipsis">
     
   
@@ -982,8 +1017,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_7">
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -1020,8 +1055,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
-<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
 <span class="md-ellipsis">
     
   
@@ -1032,8 +1067,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_8">
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -1198,29 +1233,65 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#wichtige-komponenten">
+<a class="md-nav__link" href="#beispiel-ausfuhren">
 <span class="md-ellipsis">
       
-        Wichtige Komponenten
-      
-    </span>
-</a>
-<nav aria-label="Wichtige Komponenten" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#1-parallelsimulator">
-<span class="md-ellipsis">
-      
-        1. ParallelSimulator
+        Beispiel ausführen
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#2-scenarioresult">
+<a class="md-nav__link" href="#einheiten">
 <span class="md-ellipsis">
       
-        2. ScenarioResult
+        Einheiten
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-durchgang">
+<span class="md-ellipsis">
+      
+        Code-Durchgang
+      
+    </span>
+</a>
+<nav aria-label="Code-Durchgang" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-basismodell">
+<span class="md-ellipsis">
+      
+        1. Basismodell
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-vergleich-der-futtermengen">
+<span class="md-ellipsis">
+      
+        2. Vergleich der Futtermengen
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-parameterstudie">
+<span class="md-ellipsis">
+      
+        3. Parameterstudie
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-monte-carlo-analyse">
+<span class="md-ellipsis">
+      
+        4. Monte-Carlo-Analyse
       
     </span>
 </a>
@@ -1229,47 +1300,47 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#simulationstypen">
+<a class="md-nav__link" href="#ergebnisobjekte">
 <span class="md-ellipsis">
       
-        Simulationstypen
+        Ergebnisobjekte
       
     </span>
 </a>
-<nav aria-label="Simulationstypen" class="md-nav">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ausgabe">
+<span class="md-ellipsis">
+      
+        Ausgabe
+      
+    </span>
+</a>
+<nav aria-label="Ausgabe" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#einfache-parallele-szenarien">
+<a class="md-nav__link" href="#vergleich-der-futtermengen">
 <span class="md-ellipsis">
       
-        Einfache parallele Szenarien
+        Vergleich der Futtermengen
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#einzelparameter-sweep">
+<a class="md-nav__link" href="#parameterstudie">
 <span class="md-ellipsis">
       
-        Einzelparameter-Sweep
+        Parameterstudie
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#multiparameter-sweep">
+<a class="md-nav__link" href="#monte-carlo-analyse">
 <span class="md-ellipsis">
       
-        Multiparameter-Sweep
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#monte-carlo-simulation">
-<span class="md-ellipsis">
-      
-        Monte-Carlo-Simulation
+        Monte-Carlo-Analyse
       
     </span>
 </a>
@@ -1278,97 +1349,13 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#erwartete-ausgabe">
+<a class="md-nav__link" href="#beispiel-anpassen">
 <span class="md-ellipsis">
       
-        Erwartete Ausgabe
+        Beispiel anpassen
       
     </span>
 </a>
-<nav aria-label="Erwartete Ausgabe" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#vergleich-der-basisszenarien">
-<span class="md-ellipsis">
-      
-        Vergleich der Basisszenarien
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#parameter-sweep-ergebnisse">
-<span class="md-ellipsis">
-      
-        Parameter-Sweep Ergebnisse
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#monte-carlo-statistiken">
-<span class="md-ellipsis">
-      
-        Monte-Carlo-Statistiken
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#performance-analyse">
-<span class="md-ellipsis">
-      
-        Performance-Analyse
-      
-    </span>
-</a>
-<nav aria-label="Performance-Analyse" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#parallele-effizienz">
-<span class="md-ellipsis">
-      
-        Parallele Effizienz
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#best-practices">
-<span class="md-ellipsis">
-      
-        Best Practices
-      
-    </span>
-</a>
-<nav aria-label="Best Practices" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#1-wahl-der-anzahl-der-worker">
-<span class="md-ellipsis">
-      
-        1. Wahl der Anzahl der Worker
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#2-balance-zwischen-simulationsdauer-und-anzahl-der-szenarien">
-<span class="md-ellipsis">
-      
-        2. Balance zwischen Simulationsdauer und Anzahl der Szenarien
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#ahnliche-beispiele">
@@ -1396,22 +1383,25 @@
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
 <h1 id="beispiel-fur-parallele-simulation">Beispiel für parallele Simulation<a class="headerlink" href="#beispiel-fur-parallele-simulation" title="Permanent link">¶</a></h1>
-<p>Das Beispiel <a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/05_parallel_two_stage_simulation.py">examples/05_parallel_two_stage_simulation.py</a> zeigt die effiziente parallele Ausführung mehrerer Szenarien von Biogasanlagen zur Parameteroptimierung, Sensitivitätsanalyse und Unsicherheitsquantifizierung.</p>
+<p>Das Beispiel <a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/05_parallel_two_stage_simulation.py">examples/05_parallel_two_stage_simulation.py</a> rechnet viele Simulationen eines Fermenters nebeneinander: einen Vergleich von vier Futtermengen, eine Parameterstudie über einen kinetischen Parameter und eine Monte-Carlo-Analyse. Alle drei nutzen den <code>ParallelSimulator</code> aus <code>pyadm1.simulation.parallel</code>.</p>
+<p>Anders als der Dateiname vermuten lässt, simuliert das Skript einen einzelnen Fermenter (ein <code>ADM1</code>-Modell) und keine zweistufige Anlage.</p>
 <h2 id="ubersicht">Übersicht<a class="headerlink" href="#ubersicht" title="Permanent link">¶</a></h2>
-<p>Dieses Beispiel demonstriert:<br/>
-- <strong>Parallele Szenarienausführung</strong>: Gleichzeitiges Ausführen mehrerer Simulationen auf verschiedenen CPU-Kernen.<br/>
-- <strong>Parameterstudien (Parameter Sweeps)</strong>: Systematische Untersuchung einzelner und mehrerer Parametervariationen.<br/>
-- <strong>Monte-Carlo-Analyse</strong>: Unsicherheitsquantifizierung mit Parameterverteilungen.<br/>
-- <strong>Statistische Analyse</strong>: Aggregation von Ergebnissen und vergleichende Statistiken.<br/>
-- <strong>Leistungsmetriken</strong>: Messung von Speedup und paralleler Effizienz.  </p>
+<p>Das Beispiel zeigt:</p>
+<ul>
+<li><strong>Basismodell</strong>: ein <code>ADM1</code>-Modell mit zwei Substraten, das als Vorlage für jedes Szenario dient  </li>
+<li><strong>Parallele Szenarien</strong>: vier Futtermengen, simuliert in vier Worker-Prozessen  </li>
+<li><strong>Parameterstudie (Sweep)</strong>: fünf Werte der maximalen Acetat-Aufnahmerate <code>k_m_ac</code>, angegeben als Faktoren der Rate, mit der das Modell rechnet  </li>
+<li><strong>Monte-Carlo-Analyse</strong>: 50 Zufallsziehungen von <code>k_m_ac</code> aus einer Normalverteilung um diese Rate  </li>
+<li><strong>Zusammenfassende Statistik</strong>: Mittelwert, Standardabweichung, Minimum, Maximum und Median über die Ziehungen  </li>
+</ul>
 <h2 id="architektur">Architektur<a class="headerlink" href="#architektur" title="Permanent link">¶</a></h2>
 <pre class="mermaid"><code>graph TB
     subgraph "Hauptprozess"
-        Config[Konfiguration]
-        Results[Ergebnissammlung]
+        Config[Szenarienliste]
+        Results[Ergebnisliste]
     end
 
-    subgraph "Worker-Pool (4 Kerne)"
+    subgraph "Worker-Pool (4 Prozesse)"
         W1[Worker 1]
         W2[Worker 2]
         W3[Worker 3]
@@ -1434,319 +1424,399 @@
     style W2 fill:#fff3e0
     style W3 fill:#fff3e0
     style W4 fill:#fff3e0</code></pre>
-<h2 id="wichtige-komponenten">Wichtige Komponenten<a class="headerlink" href="#wichtige-komponenten" title="Permanent link">¶</a></h2>
-<h3 id="1-parallelsimulator">1. ParallelSimulator<a class="headerlink" href="#1-parallelsimulator" title="Permanent link">¶</a></h3>
-<p>Die Klasse <code>ParallelSimulator</code> orchestriert die gleichzeitige Ausführung:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.simulation.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParallelSimulator</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="c1"># Erstellen des parallelen Simulators mit 4 Worker-Prozessen</span>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="n">parallel</span> <span class="o">=</span> <span class="n">ParallelSimulator</span><span class="p">(</span><span class="n">adm1_model</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="c1"># Szenarien definieren</span>
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="n">scenarios</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="p">{</span><span class="s2">"k_dis"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="p">{</span><span class="s2">"k_dis"</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> <span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    <span class="p">{</span><span class="s2">"k_dis"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="p">]</span>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="c1"># Parallele Simulationen ausführen</span>
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span>
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    <span class="n">scenarios</span><span class="o">=</span><span class="n">scenarios</span><span class="p">,</span>
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    <span class="n">duration</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>  <span class="c1"># 10 Tage</span>
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">adm1_state</span><span class="p">,</span>
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>    <span class="n">compute_metrics</span><span class="o">=</span><span class="kc">True</span>
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="p">)</span>
-</code></pre></div>
-<p><strong>Hauptmerkmale</strong>:<br/>
-- <strong>Multiprocessing</strong>: Nutzt Pythons <code>multiprocessing.Pool</code> für echte Parallelität.<br/>
-- <strong>Automatische Lastverteilung</strong>: Szenarien werden gleichmäßig auf die Worker verteilt.<br/>
-- <strong>Fortschrittsanzeige</strong>: Echtzeit-Bericht über den Fortschritt bei langlaufenden Analysen.<br/>
-- <strong>Fehlerisolierung</strong>: Fehler in einzelnen Szenarien führen nicht zum Abbruch der gesamten Ausführung.  </p>
-<h3 id="2-scenarioresult">2. ScenarioResult<a class="headerlink" href="#2-scenarioresult" title="Permanent link">¶</a></h3>
-<p>Jede Simulation gibt ein <code>ScenarioResult</code>-Objekt zurück:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nd">@dataclass</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">ScenarioResult</span><span class="p">:</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="n">scenario_id</span><span class="p">:</span> <span class="nb">int</span>                          <span class="c1"># Eindeutige ID</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>                <span class="c1"># Verwendete Parameterwerte</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    <span class="n">success</span><span class="p">:</span> <span class="nb">bool</span>                             <span class="c1"># Abschlussstatus</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span>                           <span class="c1"># Simulationsdauer [Tage]</span>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    <span class="n">final_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>        <span class="c1"># Finaler ADM1-Zustandsvektor</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    <span class="n">time_series</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">]]</span>    <span class="c1"># Optionale Zeitreihendaten</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    <span class="n">metrics</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>                 <span class="c1"># Leistungsmetriken</span>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    <span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>                      <span class="c1"># Fehlermeldung bei Fehlschlag</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="n">execution_time</span><span class="p">:</span> <span class="nb">float</span>                     <span class="c1"># Reale Laufzeit [Sekunden]</span>
-</code></pre></div>
-<p><strong>Berechnete Metriken</strong> (wenn <code>compute_metrics=True</code>):<br/>
-- <code>Q_gas</code>: Gesamtbiogasproduktion [m³/d]<br/>
-- <code>Q_ch4</code>: Methanproduktion [m³/d]<br/>
-- <code>Q_co2</code>: CO2-Produktion [m³/d]<br/>
-- <code>CH4_content</code>: Methananteil [0-1]<br/>
-- <code>pH</code>: pH-Wert [-]<br/>
-- <code>VFA</code>: Flüchtige Fettsäuren [g/L]<br/>
-- <code>TAC</code>: Gesamte Alkalinität [g CaCO3/L]<br/>
-- <code>FOS_TAC</code>: VFA/TA-Verhältnis [-]<br/>
-- <code>HRT</code>: Hydraulische Verweilzeit [Tage]<br/>
-- <code>specific_gas_production</code>: Biogasertrag [m³/m³ Zulauf]  </p>
-<h2 id="simulationstypen">Simulationstypen<a class="headerlink" href="#simulationstypen" title="Permanent link">¶</a></h2>
-<h3 id="einfache-parallele-szenarien">Einfache parallele Szenarien<a class="headerlink" href="#einfache-parallele-szenarien" title="Permanent link">¶</a></h3>
-<p>Ausführen mehrerer unabhängiger Szenarien mit unterschiedlichen Konfigurationen:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Fütterungsszenarien definieren</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="n">feed_scenarios</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Niedrige Fütterung"</span><span class="p">,</span> <span class="s2">"Q_digester_1"</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Basis-Fütterung"</span><span class="p">,</span> <span class="s2">"Q_digester_1"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Hohe Fütterung"</span><span class="p">,</span> <span class="s2">"Q_digester_1"</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="p">]</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="n">scenarios</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"Q"</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="s2">"Q_digester_1"</span><span class="p">]}</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">feed_scenarios</span><span class="p">]</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    <span class="n">scenarios</span><span class="o">=</span><span class="n">scenarios</span><span class="p">,</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="n">duration</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">adm1_state</span><span class="p">,</span>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>    <span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">24.0</span><span class="p">,</span>  <span class="c1"># Zeitschritt 1 Stunde</span>
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>    <span class="n">compute_metrics</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>    <span class="n">save_time_series</span><span class="o">=</span><span class="kc">False</span>  <span class="c1"># Auf True setzen für detaillierte Zeitreihen</span>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="p">)</span>
-</code></pre></div>
-<p><strong>Anwendungsfälle</strong>:<br/>
-- Vergleich verschiedener Betriebsstrategien.<br/>
-- Testen von Variationen in der Substratzusammensetzung.<br/>
-- Bewertung von Designalternativen.  </p>
-<h3 id="einzelparameter-sweep">Einzelparameter-Sweep<a class="headerlink" href="#einzelparameter-sweep" title="Permanent link">¶</a></h3>
-<p>Systematische Untersuchung eines Parameters:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.simulation.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterSweepConfig</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="c1"># Zerfallsrate (k_dis) untersuchen</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="n">sweep_config</span> <span class="o">=</span> <span class="n">ParameterSweepConfig</span><span class="p">(</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="n">parameter_name</span><span class="o">=</span><span class="s2">"k_dis"</span><span class="p">,</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.14</span><span class="p">,</span> <span class="mf">0.18</span><span class="p">,</span> <span class="mf">0.22</span><span class="p">,</span> <span class="mf">0.26</span><span class="p">,</span> <span class="mf">0.30</span><span class="p">],</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="n">other_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]}</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="p">)</span>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">parameter_sweep</span><span class="p">(</span>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    <span class="n">config</span><span class="o">=</span><span class="n">sweep_config</span><span class="p">,</span>
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    <span class="n">duration</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">adm1_state</span><span class="p">,</span>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="n">compute_metrics</span><span class="o">=</span><span class="kc">True</span>
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="p">)</span>
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="c1"># Optimalen Wert finden</span>
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="n">ch4_productions</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'Q_ch4'</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">success</span><span class="p">]</span>
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="n">best_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ch4_productions</span><span class="p">)</span>
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="n">optimal_k_dis</span> <span class="o">=</span> <span class="n">sweep_config</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">best_idx</span><span class="p">]</span>
-</code></pre></div>
-<p><strong>Häufig untersuchte Parameter</strong>:<br/>
-- <strong>Kinetische Parameter</strong>: <code>k_dis</code>, <code>k_hyd_ch</code>, <code>k_hyd_pr</code>, <code>k_hyd_li</code><br/>
-- <strong>Ertragskoeffizienten</strong>: <code>Y_su</code>, <code>Y_aa</code>, <code>Y_fa</code>, <code>Y_c4</code>, <code>Y_pro</code>, <code>Y_ac</code>, <code>Y_h2</code><br/>
-- <strong>Aufnahmeraten</strong>: <code>k_m_su</code>, <code>k_m_aa</code>, <code>k_m_fa</code>, <code>k_m_c4</code>, <code>k_m_pro</code>, <code>k_m_ac</code><br/>
-- <strong>Betriebsparameter</strong>: Fütterungsraten, Temperaturen, Verweilzeiten.  </p>
-<h3 id="multiparameter-sweep">Multiparameter-Sweep<a class="headerlink" href="#multiparameter-sweep" title="Permanent link">¶</a></h3>
-<p>Vollfaktorielles Design zur Untersuchung von Parameterinteraktionen:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">parameter_configs</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    <span class="s2">"k_dis"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.14</span><span class="p">,</span> <span class="mf">0.18</span><span class="p">,</span> <span class="mf">0.22</span><span class="p">],</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="s2">"Y_su"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.09</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.11</span><span class="p">],</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="s2">"Q_substrate_0"</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">18</span><span class="p">]</span>  <span class="c1"># Fütterung Maissilage</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="p">}</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">multi_parameter_sweep</span><span class="p">(</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="n">parameter_configs</span><span class="o">=</span><span class="n">parameter_configs</span><span class="p">,</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>    <span class="n">duration</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">adm1_state</span><span class="p">,</span>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    <span class="n">fixed_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"Q_substrate_1"</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>  <span class="c1"># Gülle fixiert auf 10 m³/d</span>
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="p">)</span>
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="c1"># Gesamtkombinationen: 3 × 3 × 3 = 27 Szenarien</span>
-</code></pre></div>
-<h3 id="monte-carlo-simulation">Monte-Carlo-Simulation<a class="headerlink" href="#monte-carlo-simulation" title="Permanent link">¶</a></h3>
-<p>Unsicherheitsquantifizierung mit Parameterverteilungen:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.simulation.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">MonteCarloConfig</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="n">mc_config</span> <span class="o">=</span> <span class="n">MonteCarloConfig</span><span class="p">(</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">parameter_distributions</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>        <span class="s2">"k_dis"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.18</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">),</span>      <span class="c1"># Mittelwert=0.18, Std=0.03</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>        <span class="s2">"Y_su"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>       <span class="c1"># Mittelwert=0.10, Std=0.01</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>        <span class="s2">"k_hyd_ch"</span><span class="p">:</span> <span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>     <span class="c1"># Mittelwert=10.0, Std=1.5</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>    <span class="p">},</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>    <span class="n">fixed_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>  <span class="c1"># Für Reproduzierbarkeit</span>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="p">)</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">monte_carlo</span><span class="p">(</span>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>    <span class="n">config</span><span class="o">=</span><span class="n">mc_config</span><span class="p">,</span>
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>    <span class="n">duration</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">adm1_state</span><span class="p">,</span>
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>    <span class="n">compute_metrics</span><span class="o">=</span><span class="kc">True</span>
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="p">)</span>
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a><span class="c1"># Unsicherheit zusammenfassen</span>
-<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="n">summary</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">summarize_results</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>
-<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Methanproduktion [m³/d]:"</span><span class="p">)</span>
-<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Mittelwert: </span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'metrics'</span><span class="p">][</span><span class="s1">'Q_ch4'</span><span class="p">][</span><span class="s1">'mean'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Std:         </span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'metrics'</span><span class="p">][</span><span class="s1">'Q_ch4'</span><span class="p">][</span><span class="s1">'std'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  95% KI:     [</span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'metrics'</span><span class="p">][</span><span class="s1">'Q_ch4'</span><span class="p">][</span><span class="s1">'q25'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, "</span>
-<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a>      <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'metrics'</span><span class="p">][</span><span class="s1">'Q_ch4'</span><span class="p">][</span><span class="s1">'q75'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
-</code></pre></div>
-<h2 id="erwartete-ausgabe">Erwartete Ausgabe<a class="headerlink" href="#erwartete-ausgabe" title="Permanent link">¶</a></h2>
-<h3 id="vergleich-der-basisszenarien">Vergleich der Basisszenarien<a class="headerlink" href="#vergleich-der-basisszenarien" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>================================================================================
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>ERGEBNISSE DES SZENARIENVERGLEICHS
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>================================================================================
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>Niedrige Fütterung:
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>  Fütterungsrate: 18.0 m³/d
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>  Biogas:         723.5 m³/d
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>  Methan:         434.1 m³/d
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>  CH4 %:          60.0%
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>  pH:             7.28
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>  VFA:            1.85 g/L
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>  FOS/TAC:        0.228
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>  HRT:            109.8 Tage
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>  Laufzeit:       2.34 Sekunden
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>Basis-Fütterung:
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>  Fütterungsrate: 25.0 m³/d
-<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>  Biogas:         1005.2 m³/d
-<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>  Methan:         603.1 m³/d
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>  CH4 %:          60.0%
-<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>  pH:             7.20
-<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>  VFA:            2.45 g/L
-<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a>  FOS/TAC:        0.289
-<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a>  HRT:            79.1 Tage
-<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a>  Laufzeit:       2.41 Sekunden
-<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a>
-<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a>Hohe Fütterung:
-<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a>  Fütterungsrate: 32.0 m³/d
-<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a>  Biogas:         1265.8 m³/d
-<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a>  Methan:         759.5 m³/d
-<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a>  CH4 %:          60.0%
-<a href="#__codelineno-6-32" id="__codelineno-6-32" name="__codelineno-6-32"></a>  pH:             7.15
-<a href="#__codelineno-6-33" id="__codelineno-6-33" name="__codelineno-6-33"></a>  VFA:            3.12 g/L
-<a href="#__codelineno-6-34" id="__codelineno-6-34" name="__codelineno-6-34"></a>  FOS/TAC:        0.341
-<a href="#__codelineno-6-35" id="__codelineno-6-35" name="__codelineno-6-35"></a>  HRT:            61.8 Tage
-<a href="#__codelineno-6-36" id="__codelineno-6-36" name="__codelineno-6-36"></a>  Laufzeit:       2.38 Sekunden
-</code></pre></div>
-<p><strong>Interpretation</strong>:<br/>
-- <strong>Die Biogasproduktion skaliert linear</strong> mit der Fütterungsrate (erwartet bei stabilem Betrieb).<br/>
-- <strong>Der pH-Wert sinkt</strong> bei höherer Belastung (mehr VFA-Produktion).<br/>
-- <strong>FOS/TAC steigt</strong>, bleibt aber unter dem kritischen Schwellenwert (0,4).<br/>
-- <strong>Die Laufzeit ist ähnlich</strong> über alle Szenarien (gleiche Rechenkomplexität).  </p>
-<h3 id="parameter-sweep-ergebnisse">Parameter-Sweep Ergebnisse<a class="headerlink" href="#parameter-sweep-ergebnisse" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>================================================================================
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>4. Ausführen des Parameter-Sweeps (Zerfallsrate k_dis)  
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>================================================================================
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>   Testen von 6 verschiedenen k_dis-Werten...
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>   Ergebnisse des Parameter-Sweeps:
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>   ------------------------------------------------------------
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>      k_dis |      Q_gas |      Q_ch4 |     pH |      VFA
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>   ------------------------------------------------------------
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>       0.10 |      865.3 |      519.2 |   7.35 |     1.52
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>       0.14 |      925.8 |      555.5 |   7.28 |     1.85
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>       0.18 |      982.4 |      589.4 |   7.22 |     2.18
-<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>       0.22 |     1005.2 |      603.1 |   7.20 |     2.45
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>       0.26 |     1015.6 |      609.4 |   7.18 |     2.68
-<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>       0.30 |     1018.2 |      610.9 |   7.17 |     2.85
-<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a>
-<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>   ✓ Optimales k_dis = 0.30 (CH4 = 610.9 m³/d)
-</code></pre></div>
-<p><strong>Beobachtungen</strong>:<br/>
-- <strong>Die Methanproduktion steigt</strong> mit k_dis (schnellerer Zerfall).<br/>
-- <strong>Abnehmender Grenznutzen</strong> oberhalb von k_dis = 0,26 (nur 1,5 m³/d Steigerung).<br/>
-- <strong>Der pH-Wert sinkt leicht</strong> aufgrund der schnelleren Produktion organischer Säuren.<br/>
-- <strong>Zielkonflikt</strong>: Höheres k_dis → mehr Gas, aber geringere pH-Stabilität.  </p>
-<h3 id="monte-carlo-statistiken">Monte-Carlo-Statistiken<a class="headerlink" href="#monte-carlo-statistiken" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>================================================================================
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>6. Ausführen der Monte-Carlo-Unsicherheitsanalyse  
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>================================================================================
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>   Ausführen von 50 Monte-Carlo-Stichproben...
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>   Zusammenfassende Monte-Carlo-Statistiken:
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>   ------------------------------------------------------------
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>   Q_gas:
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>      Mittelwert: 1002.45
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>      Std:          58.32
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>      Min:         885.20
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>      Max:        1125.80
-<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>      Median:      998.60
-<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>      Q25:         965.15
-<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>      Q75:        1038.22
-<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>
-<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>   Q_ch4:
-<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>      Mittelwert:  601.47
-<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a>      Std:          35.00
-<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a>      Min:         531.12
-<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>      Max:         675.48
-<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a>      Median:      599.16
-<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a>      Q25:         579.09
-<a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a>      Q75:         622.93
-<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a>
-<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a>   pH:
-<a href="#__codelineno-8-29" id="__codelineno-8-29" name="__codelineno-8-29"></a>      Mittelwert:    7.21
-<a href="#__codelineno-8-30" id="__codelineno-8-30" name="__codelineno-8-30"></a>      Std:           0.08
-<a href="#__codelineno-8-31" id="__codelineno-8-31" name="__codelineno-8-31"></a>      Min:           7.05
-<a href="#__codelineno-8-32" id="__codelineno-8-32" name="__codelineno-8-32"></a>      Max:           7.38
-<a href="#__codelineno-8-33" id="__codelineno-8-33" name="__codelineno-8-33"></a>      Median:        7.20
-<a href="#__codelineno-8-34" id="__codelineno-8-34" name="__codelineno-8-34"></a>      Q25:           7.15
-<a href="#__codelineno-8-35" id="__codelineno-8-35" name="__codelineno-8-35"></a>      Q75:           7.26
-<a href="#__codelineno-8-36" id="__codelineno-8-36" name="__codelineno-8-36"></a>
-<a href="#__codelineno-8-37" id="__codelineno-8-37" name="__codelineno-8-37"></a>   Erfolgsquote: 100.0%
-</code></pre></div>
-<h2 id="performance-analyse">Performance-Analyse<a class="headerlink" href="#performance-analyse" title="Permanent link">¶</a></h2>
-<h3 id="parallele-effizienz">Parallele Effizienz<a class="headerlink" href="#parallele-effizienz" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>================================================================================
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>ZUSAMMENFASSUNG DER SIMULATION
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>================================================================================
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>Gesamtlaufzeit: 125.3 Sekunden
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>Durchschnittliche Zeit pro Simulation: 1.05 Sekunden
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>Parallele Effizienz:
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>  Verwendete Worker: 4
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>  Theoretische sequentielle Zeit: 475.8 Sekunden
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>  Speedup: 3.80x
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>  Parallele Effizienz: 95.0%
-</code></pre></div>
-<p><strong>Leistungsmetriken</strong>:<br/>
-- <strong>Speedup</strong>: 475,8 / 125,3 = 3,80×<br/>
-- <strong>Effizienz</strong>: 3,80 / 4 = 95,0 %<br/>
-- <strong>Overhead</strong>: 5 % aufgrund von:<br/>
-  - Prozesserstellung/-abbau.<br/>
-  - Datenserialisierung/-deserialisierung.<br/>
-  - Ergebnistransfer.  </p>
-<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">¶</a></h2>
-<h3 id="1-wahl-der-anzahl-der-worker">1. Wahl der Anzahl der Worker<a class="headerlink" href="#1-wahl-der-anzahl-der-worker" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mp</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="c1"># Faustregel: n_workers = CPU_count - 1</span>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="n">optimal_workers</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="n">parallel</span> <span class="o">=</span> <span class="n">ParallelSimulator</span><span class="p">(</span><span class="n">adm1</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="n">optimal_workers</span><span class="p">)</span>
-</code></pre></div>
-<h3 id="2-balance-zwischen-simulationsdauer-und-anzahl-der-szenarien">2. Balance zwischen Simulationsdauer und Anzahl der Szenarien<a class="headerlink" href="#2-balance-zwischen-simulationsdauer-und-anzahl-der-szenarien" title="Permanent link">¶</a></h3>
+<p><code>run_scenarios</code> prüft zuerst die Schlüssel jedes Szenarios und startet dann einen Pool aus <code>n_workers</code> Prozessen. Das Basismodell selbst wird nicht an die Worker geschickt. Der Simulator schickt stattdessen dessen Konfiguration:</p>
 <ul>
-<li>Kurze Simulationen (&lt; 1 Sekunde): Overhead dominiert → Dauer erhöhen oder sequentiell ausführen.  </li>
-<li>Mittlere Simulationen (1-10 Sekunden): Gute Parallelisierung → Ideal für Parameterstudien.  </li>
-<li>Lange Simulationen (&gt; 60 Sekunden): Speicherintensiv → Anzahl der Worker reduzieren oder Batching verwenden.  </li>
+<li>Flüssigvolumen, Gasvolumen und Temperatur (<code>V_liq</code>, <code>V_gas</code>, <code>T_ad</code>)  </li>
+<li>die Substratparameter des Feedstocks, seine Fütterungsfrequenz und seine <code>Q</code>-Konvention  </li>
+<li>die Kalibrierparameter, die am Basismodell gesetzt sind  </li>
 </ul>
+<p>Jeder Worker baut aus dieser Konfiguration einen eigenen <code>Feedstock</code> und ein eigenes <code>ADM1</code>-Modell, wendet das Szenario darauf an, simuliert <code>duration</code> Tage und gibt ein <code>ScenarioResult</code> zurück. Die Ergebnisse kommen in der Reihenfolge der Szenarienliste zurück.</p>
+<h2 id="beispiel-ausfuhren">Beispiel ausführen<a class="headerlink" href="#beispiel-ausfuhren" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>python<span class="w"> </span>examples/05_parallel_two_stage_simulation.py
+</code></pre></div>
+<p>Das Skript braucht keine Argumente, gibt seine Ergebnisse auf der Konsole aus und schreibt keine Dateien.</p>
+<h2 id="einheiten">Einheiten<a class="headerlink" href="#einheiten" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>Futtermengen</strong> sind Tonnen Frischmasse pro Tag [t FM/d] nach der Standardkonvention des <code>Feedstock</code> (<code>simba_q_convention=True</code>). Das Modell rechnet sie mit der Dichte jedes Substrats in Volumenströme um: 11,4 t FM/d Maissilage sind 10,1 m³/d bei 1129 kg/m³, und 6,1 t FM/d Schweinegülle (1000 kg/m³) sind 6,1 m³/d. Siehe den Abschnitt „Volumetrische ADM1da-Konvention für Q“ in <a href="../../user_guide/adm1_implementation/">ADM1-Implementierung</a>.  </li>
+<li><strong>Gasströme</strong> (<code>Q_gas</code>, <code>Q_ch4</code>, <code>Q_co2</code>) sind trockenes Gas im Normzustand (0 °C, 1,01325 bar) in Nm³/d. Siehe den Abschnitt „Gemeldete Gasströme“ auf derselben Seite.  </li>
+</ul>
+<h2 id="code-durchgang">Code-Durchgang<a class="headerlink" href="#code-durchgang" title="Permanent link">¶</a></h2>
+<h3 id="1-basismodell">1. Basismodell<a class="headerlink" href="#1-basismodell" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">duration</span> <span class="o">=</span> <span class="mf">30.0</span>  <span class="c1"># days</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">([</span><span class="s2">"maize_silage_milk_ripeness"</span><span class="p">,</span> <span class="s2">"swine_manure"</span><span class="p">])</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="n">base_feed</span> <span class="o">=</span> <span class="p">[</span><span class="mf">11.4</span><span class="p">,</span> <span class="mf">6.1</span><span class="p">]</span>  <span class="c1"># t FM/d: maize silage, swine manure</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="n">adm1</span> <span class="o">=</span> <span class="n">ADM1</span><span class="p">(</span><span class="n">feedstock</span><span class="p">,</span> <span class="n">V_liq</span><span class="o">=</span><span class="mf">1200.0</span><span class="p">,</span> <span class="n">V_gas</span><span class="o">=</span><span class="mf">216.0</span><span class="p">,</span> <span class="n">T_ad</span><span class="o">=</span><span class="mf">315.15</span><span class="p">)</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="n">initial_state</span> <span class="o">=</span> <span class="n">get_state_zero_from_csv</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">REPO_ROOT</span> <span class="o">/</span> <span class="s2">"data"</span> <span class="o">/</span> <span class="s2">"initial_states"</span> <span class="o">/</span> <span class="s2">"digester_initial8.csv"</span><span class="p">))</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="c1"># The workers rebuild the model from the configuration of this base model.</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="c1"># The feed is not part of it: every scenario brings its own "Q".</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="n">parallel</span> <span class="o">=</span> <span class="n">ParallelSimulator</span><span class="p">(</span><span class="n">adm1</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li><code>Feedstock</code>: Maissilage und Schweinegülle aus der <a href="../../substrates/library/">Substratbibliothek</a>. Ein Fütterungsvektor hat einen Eintrag je Substrat, in der Reihenfolge dieser Liste.  </li>
+<li><code>ADM1</code>: ein Fermenter mit 1200 m³ Flüssigvolumen und 216 m³ Gasvolumen bei 315,15 K (42 °C).  </li>
+<li><code>initial_state</code>: die 41 Zustandsgrößen aus <code>data/initial_states/digester_initial8.csv</code>. Jedes Szenario startet aus diesem Zustand.  </li>
+<li><code>ParallelSimulator</code>: vier Worker-Prozesse. Ohne <code>n_workers</code> nutzt der Simulator die Zahl der CPU-Kerne minus eins. <code>verbose=True</code> gibt die Fortschrittszeilen aus, die unter <a href="#ausgabe">Ausgabe</a> stehen.  </li>
+</ul>
+<h3 id="2-vergleich-der-futtermengen">2. Vergleich der Futtermengen<a class="headerlink" href="#2-vergleich-der-futtermengen" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">feed_scenarios</span> <span class="o">=</span> <span class="p">[</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="p">(</span><span class="s2">"Low Feed"</span><span class="p">,</span> <span class="p">[</span><span class="mf">8.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]),</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="p">(</span><span class="s2">"Base Feed"</span><span class="p">,</span> <span class="n">base_feed</span><span class="p">),</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="p">(</span><span class="s2">"High Feed"</span><span class="p">,</span> <span class="p">[</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">]),</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="p">(</span><span class="s2">"Very High Feed"</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">]),</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="p">]</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="n">scenarios</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"Q"</span><span class="p">:</span> <span class="n">Q</span><span class="p">}</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">Q</span> <span class="ow">in</span> <span class="n">feed_scenarios</span><span class="p">]</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>    <span class="n">scenarios</span><span class="o">=</span><span class="n">scenarios</span><span class="p">,</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">initial_state</span><span class="p">,</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="p">)</span>
+</code></pre></div>
+<p>Ein Szenario ist ein Dictionary. Diese Schlüssel sind erlaubt:</p>
+<table>
+<thead>
+<tr>
+<th>Schlüssel</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Q</code></td>
+<td>Futtermengen je Substrat [t FM/d]</td>
+</tr>
+<tr>
+<td><code>T_ad</code></td>
+<td>Fermentertemperatur [K]; ersetzt für dieses Szenario die Temperatur des Basismodells</td>
+</tr>
+<tr>
+<td><code>k_dis_PS</code>, <code>k_dis_PF</code>, <code>k_hyd_ch</code>, <code>k_hyd_pr</code>, <code>k_hyd_li</code></td>
+<td>Desintegrations- und Hydrolyseraten</td>
+</tr>
+<tr>
+<td><code>k_m_su</code>, <code>k_m_aa</code>, <code>k_m_fa</code>, <code>k_m_c4</code>, <code>k_m_pro</code>, <code>k_m_ac</code>, <code>k_m_h2</code></td>
+<td>Maximale Aufnahmeraten</td>
+</tr>
+<tr>
+<td><code>k_p</code>, <code>k_L_a</code>, <code>K_H_co2</code>, <code>K_H_ch4</code>, <code>K_H_h2</code></td>
+<td>Gasauslass, Gas-Flüssig-Transfer und Henry-Konstanten</td>
+</tr>
+</tbody>
+</table>
+<p>Jeder andere Schlüssel, zum Beispiel <code>k_dis</code> oder <code>Y_su</code>, löst einen <code>ValueError</code> aus, bevor eine Simulation startet. Ein falsch geschriebener Name würde sonst ignoriert, und jedes Szenario einer Parameterstudie würde dasselbe Ergebnis liefern.</p>
+<p>Szenarien übernehmen keine Fütterung vom Basismodell. Ein Szenario ohne <code>Q</code> wird ohne Fütterung simuliert; deshalb übergeben die Parameterstudie und die Monte-Carlo-Analyse weiter unten <code>Q</code> als festen Parameter.</p>
+<p>Die übrigen Argumente von <code>run_scenarios</code>:</p>
+<ul>
+<li><code>duration</code>: simulierte Zeit je Szenario [d], hier 30 Tage  </li>
+<li><code>initial_state</code>: Startzustand jedes Szenarios  </li>
+<li><code>compute_metrics</code>: berechnet aus dem Endzustand die unter <a href="#ergebnisobjekte">Ergebnisobjekte</a> aufgeführten Werte (Standard <code>True</code>)  </li>
+</ul>
+<h3 id="3-parameterstudie">3. Parameterstudie<a class="headerlink" href="#3-parameterstudie" title="Permanent link">¶</a></h3>
+<p>Eine Rate, die in einem Szenario steht, ersetzt die Rate des Modells unverändert. Das Modell führt <code>k_m_ac</code> mit 8,0 d⁻¹ für 35 °C und korrigiert den Wert auf die Betriebstemperatur; bei den 42 °C dieses Beispiels sind das 11,76 d⁻¹. Auf einen Szenariowert wendet der Simulator keine solche Korrektur an. Das Skript liest deshalb die Rate, mit der das Modell rechnet, und baut die Studie aus Faktoren dieser Rate:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">K_M_AC_SWEEP_FACTORS</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">]</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">k_m_ac_nominal</span> <span class="o">=</span> <span class="n">nominal_rate</span><span class="p">(</span><span class="n">adm1</span><span class="p">,</span> <span class="s2">"k_m_ac"</span><span class="p">)</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   k_m_ac of the model at </span><span class="si">{</span><span class="n">adm1</span><span class="o">.</span><span class="n">T_ad</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">273.15</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> °C: </span><span class="si">{</span><span class="n">k_m_ac_nominal</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> 1/d"</span><span class="p">)</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="n">sweep_config</span> <span class="o">=</span> <span class="n">ParameterSweepConfig</span><span class="p">(</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="n">parameter_name</span><span class="o">=</span><span class="s2">"k_m_ac"</span><span class="p">,</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">factor</span> <span class="o">*</span> <span class="n">k_m_ac_nominal</span> <span class="k">for</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">K_M_AC_SWEEP_FACTORS</span><span class="p">],</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="n">other_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"Q"</span><span class="p">:</span> <span class="n">base_feed</span><span class="p">},</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="p">)</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="n">sweep_results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">parameter_sweep</span><span class="p">(</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    <span class="n">config</span><span class="o">=</span><span class="n">sweep_config</span><span class="p">,</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">initial_state</span><span class="p">,</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="p">)</span>
+</code></pre></div>
+<p><code>nominal_rate</code> ist eine kleine Hilfsfunktion des Skripts. Sie liefert einen Kalibrierwert, falls am Basismodell einer gesetzt ist, und sonst die auf die Temperatur des Basismodells korrigierte Rate:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="n">calibration</span> <span class="o">=</span> <span class="n">adm1</span><span class="o">.</span><span class="n">get_calibration_parameters</span><span class="p">()</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">calibration</span><span class="p">:</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">calibration</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="n">rates</span> <span class="o">=</span> <span class="n">ADMParams</span><span class="o">.</span><span class="n">apply_temperature_corrections</span><span class="p">(</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">ADMParams</span><span class="o">.</span><span class="n">get_kinetic_params</span><span class="p">(),</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="n">ADMParams</span><span class="o">.</span><span class="n">get_temperature_factors</span><span class="p">(),</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="n">adm1</span><span class="o">.</span><span class="n">T_ad</span><span class="p">,</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="p">)</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">rates</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+</code></pre></div>
+<p><code>parameter_sweep</code> erzeugt ein Szenario je Wert: eine Kopie von <code>other_params</code> plus den variierten Parameter. Weitere Schlüsselwortargumente werden an <code>run_scenarios</code> weitergereicht. Das Skript gibt danach eine Zeile je erfolgreichem Szenario aus und nennt das Szenario mit dem höchsten Methanstrom.</p>
+<h3 id="4-monte-carlo-analyse">4. Monte-Carlo-Analyse<a class="headerlink" href="#4-monte-carlo-analyse" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="n">K_M_AC_REL_STD</span> <span class="o">=</span> <span class="mf">0.10</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="n">mc_config</span> <span class="o">=</span> <span class="n">MonteCarloConfig</span><span class="p">(</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>    <span class="n">n_samples</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="n">parameter_distributions</span><span class="o">=</span><span class="p">{</span><span class="s2">"k_m_ac"</span><span class="p">:</span> <span class="p">(</span><span class="n">k_m_ac_nominal</span><span class="p">,</span> <span class="n">K_M_AC_REL_STD</span> <span class="o">*</span> <span class="n">k_m_ac_nominal</span><span class="p">)},</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    <span class="n">fixed_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"Q"</span><span class="p">:</span> <span class="n">base_feed</span><span class="p">},</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="p">)</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="n">mc_results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">monte_carlo</span><span class="p">(</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>    <span class="n">config</span><span class="o">=</span><span class="n">mc_config</span><span class="p">,</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>    <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">initial_state</span><span class="p">,</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="p">)</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="n">summary</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">summarize_results</span><span class="p">(</span><span class="n">mc_results</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li><code>parameter_distributions</code>: Mittelwert und Standardabweichung einer Normalverteilung je Parameter, hier die Rate des Modells und 10 % davon. Andere Verteilungen gibt es nicht, und die Ziehungen werden nicht abgeschnitten; Mittelwert und Standardabweichung sind daher so zu wählen, dass die Werte physikalisch sinnvoll bleiben.  </li>
+<li><code>fixed_params</code>: Schlüssel, die in jeder Stichprobe gleich sind  </li>
+<li><code>seed</code>: setzt den Startwert des Zufallsgenerators von NumPy, sodass jeder Lauf dieselben 50 Werte zieht  </li>
+<li><code>summarize_results</code>: liefert <code>n_scenarios</code>, <code>n_successful</code>, <code>n_failed</code> und <code>success_rate</code> sowie unter <code>metrics</code> für jede Metrik die Statistiken <code>mean</code>, <code>std</code>, <code>min</code>, <code>max</code>, <code>median</code>, <code>q25</code> und <code>q75</code> über die erfolgreichen Szenarien. <code>std</code> ist die Standardabweichung der Grundgesamtheit (<code>np.std</code>).  </li>
+</ul>
+<h2 id="ergebnisobjekte">Ergebnisobjekte<a class="headerlink" href="#ergebnisobjekte" title="Permanent link">¶</a></h2>
+<p>Jedes Szenario liefert ein <code>ScenarioResult</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Inhalt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scenario_id</code></td>
+<td>Position in der Szenarienliste, beginnend bei 0</td>
+</tr>
+<tr>
+<td><code>parameters</code></td>
+<td>Das Szenario-Dictionary</td>
+</tr>
+<tr>
+<td><code>success</code></td>
+<td><code>True</code>, wenn die Simulation durchgelaufen ist</td>
+</tr>
+<tr>
+<td><code>duration</code></td>
+<td>Simulierte Zeit [d]</td>
+</tr>
+<tr>
+<td><code>final_state</code></td>
+<td>Zustandsvektor am Ende (41 Werte)</td>
+</tr>
+<tr>
+<td><code>time_series</code></td>
+<td>Nur mit <code>save_time_series=True</code>: die letzten zehn Werte von <code>Q_gas</code>, <code>Q_ch4</code> und <code>pH</code> (pH auf eine Nachkommastelle gerundet), gespeichert einmal je <code>dt</code>-Schritt</td>
+</tr>
+<tr>
+<td><code>metrics</code></td>
+<td>Aus dem Endzustand berechnete Werte, siehe unten</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td>Ausnahmetyp, Meldung und Traceback eines fehlgeschlagenen Szenarios</td>
+</tr>
+<tr>
+<td><code>execution_time</code></td>
+<td>Laufzeit des Szenarios in seinem Worker [s]</td>
+</tr>
+</tbody>
+</table>
+<p><code>metrics</code> enthält diese Werte:</p>
+<table>
+<thead>
+<tr>
+<th>Schlüssel</th>
+<th>Einheit</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Q_gas</code></td>
+<td>Nm³/d</td>
+<td>Trockenes Biogas</td>
+</tr>
+<tr>
+<td><code>Q_ch4</code></td>
+<td>Nm³/d</td>
+<td>Methan</td>
+</tr>
+<tr>
+<td><code>Q_co2</code></td>
+<td>Nm³/d</td>
+<td>Kohlendioxid</td>
+</tr>
+<tr>
+<td><code>p_gas</code></td>
+<td>bar</td>
+<td>Summe der trockenen Partialdrücke von Wasserstoff, Methan und Kohlendioxid</td>
+</tr>
+<tr>
+<td><code>CH4_content</code></td>
+<td>-</td>
+<td><code>Q_ch4 / Q_gas</code>, der Methananteil des trockenen Gases</td>
+</tr>
+<tr>
+<td><code>pH</code></td>
+<td>-</td>
+<td>pH-Wert aus der Ladungsbilanz</td>
+</tr>
+<tr>
+<td><code>Q_total</code></td>
+<td>t FM/d</td>
+<td>Summe der Futtermengen des Szenarios wie eingegeben</td>
+</tr>
+<tr>
+<td><code>specific_gas_production</code></td>
+<td>Nm³/t FM</td>
+<td><code>Q_gas / Q_total</code></td>
+</tr>
+<tr>
+<td><code>specific_ch4_production</code></td>
+<td>Nm³/t FM</td>
+<td><code>Q_ch4 / Q_total</code></td>
+</tr>
+<tr>
+<td><code>HRT</code></td>
+<td>d</td>
+<td><code>V_liq</code> geteilt durch den Volumenstrom, mit dem das Modell für diese Fütterung rechnet</td>
+</tr>
+</tbody>
+</table>
+<p>Die Einheiten von <code>Q_total</code> und der spezifischen Erträge gelten für die Standardkonvention des <code>Feedstock</code>. VFA, TAC und FOS/TAC sind in den Metriken nicht enthalten.</p>
+<h2 id="ausgabe">Ausgabe<a class="headerlink" href="#ausgabe" title="Permanent link">¶</a></h2>
+<p>Die folgenden Blöcke sind die Ausgabe eines Laufs; <code>...</code> markiert ausgelassene Zeilen. Die Zeilen mit <code>Total time</code> stammen aus diesem Lauf auf einem PC und unterscheiden sich von Rechner zu Rechner und von Lauf zu Lauf. Die simulierten Werte wiederholen sich von Lauf zu Lauf, weil die Monte-Carlo-Ziehungen durch <code>seed=42</code> festgelegt sind.</p>
+<h3 id="vergleich-der-futtermengen">Vergleich der Futtermengen<a class="headerlink" href="#vergleich-der-futtermengen" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>======================================================================
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>PyADM1 Parallel Simulation Example
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>======================================================================
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>1. Building base ADM1 model...  
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>2. Running feed-rate comparison...  
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>Starting parallel simulation with 4 scenarios
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>Using 4 worker processes
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>  Completed 4/4 scenarios
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>Simulation complete:
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>  Total scenarios: 4
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>  Successful: 4
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>  Failed: 0
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>  Total time: 3.6 seconds
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>  Average time per scenario: 0.90 seconds
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>   Feed-rate results (feed in t FM/d, gas flows in Nm³/d, HRT in d):
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>   ------------------------------------------------------------------
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a>   Scenario           Feed     Q_gas     Q_ch4   CH4 %     pH     HRT
+<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a>   Low Feed           12.0    1396.8     739.3    52.9   7.44   108.3
+<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>   Base Feed          17.5    1893.0    1003.7    53.0   7.44    74.1
+<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a>   High Feed          23.0    2393.3    1270.0    53.1   7.43    56.4
+<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a>   Very High Feed     30.0    3053.0    1620.1    53.1   7.42    43.3
+</code></pre></div>
+<ul>
+<li>Der Gasstrom steigt mit der Fütterung, aber unterproportional: Die 2,5-fache Fütterung (12,0 auf 30,0 t FM/d) ergibt das 2,19-fache Gas, und das Gas je Tonne Frischmasse (<code>Q_gas / Q_total</code>) sinkt von 116,4 auf 101,8 Nm³.  </li>
+<li>Der Methangehalt des trockenen Gases bleibt in allen vier Szenarien bei etwa 53 %, und der pH-Wert ändert sich nur von 7,44 auf 7,42.  </li>
+<li>Die Verweilzeit ist länger als <code>V_liq</code> geteilt durch die Fütterung in Tonnen, weil die Silage weniger als 1 m³ je Tonne einnimmt: Die Base-Feed-Fütterung von 17,5 t FM/d ist ein Volumenstrom von 16,2 m³/d, das ergibt 74,1 d.  </li>
+<li>Die Werte beschreiben Tag 30, keinen stationären Zustand. Alle Szenarien starten aus demselben Anfangszustand, und 30 Tage sind kürzer als jede Verweilzeit in der Tabelle.  </li>
+</ul>
+<h3 id="parameterstudie">Parameterstudie<a class="headerlink" href="#parameterstudie" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>3. Parameter sweep over k_m_ac...  
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>   k_m_ac of the model at 42 °C: 11.76 1/d
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>Parameter sweep: k_m_ac
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>  Values: [1.7635371857293733, 3.5270743714587467, 5.878457285764578, 11.756914571529157, 17.635371857293734]
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>Starting parallel simulation with 5 scenarios
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>Using 4 worker processes
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>  Completed 5/5 scenarios
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>Simulation complete:
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>  Total scenarios: 5
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>  Successful: 5
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>  Failed: 0
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>  Total time: 2.6 seconds
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>  Average time per scenario: 0.51 seconds
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>   Sweep results (k_m_ac in 1/d, gas flows in Nm³/d):
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>   ------------------------------------------------------------------
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>   Factor   k_m_ac     Q_gas     Q_ch4   CH4 %     pH
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a>     0.15     1.76    1009.4       9.1     0.9   4.50
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>     0.30     3.53    1855.3     968.7    52.2   7.13
+<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a>     0.50     5.88    1873.4     985.2    52.6   7.36
+<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a>     1.00    11.76    1893.0    1003.7    53.0   7.44
+<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a>     1.50    17.64    1894.3    1005.0    53.1   7.44
+<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a>
+<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a>   Highest methane flow: 1005.0 Nm³/d at k_m_ac = 17.64 1/d (factor 1.50)
+</code></pre></div>
+<ul>
+<li>Bei Faktor 0,15 (1,76 d⁻¹) ist der Fermenter nach 30 Tagen versauert: Der pH-Wert liegt bei 4,50, und Methan macht nur 9,1 der 1009,4 Nm³/d Gas aus (0,9 %).  </li>
+<li>Von Faktor 0,30 bis Faktor 1,00 steigt der Methanstrom um 3,6 %, von 968,7 auf 1003,7 Nm³/d, und der pH-Wert von 7,13 auf 7,44.  </li>
+<li>Faktor 1,00 ist die Rate des Modells; seine Zeile entspricht deshalb der Zeile Base Feed im Vergleich der Futtermengen.  </li>
+<li>Oberhalb der Rate des Modells ändert sich wenig: Faktor 1,50 bringt 1,3 Nm³/d mehr. Der höchste Methanstrom ist deshalb das obere Ende der Studie und kein Optimum in ihrem Inneren.  </li>
+</ul>
+<h3 id="monte-carlo-analyse">Monte-Carlo-Analyse<a class="headerlink" href="#monte-carlo-analyse" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>4. Monte Carlo uncertainty (50 samples)...  
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>Monte Carlo simulation:
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>  Samples: 50
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>  Parameters with uncertainty:
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    k_m_ac: N(11.756914571529157, 1.1756914571529158²)
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>Starting parallel simulation with 50 scenarios
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>Using 4 worker processes
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>  Completed 10/50 scenarios
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>...
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>  Completed 50/50 scenarios
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>Simulation complete:
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>  Total scenarios: 50
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>  Successful: 50
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>  Failed: 0
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>  Total time: 5.0 seconds
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>  Average time per scenario: 0.10 seconds
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>   Success rate: 100.0%
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>   k_m_ac draws [1/d]: 9.45 to 13.93
+<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a>
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a>   Methane production [Nm³/d]:
+<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a>     mean ± std : 1003.4 ± 0.7
+<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a>     min  / max : 1001.7 / 1004.4
+<a href="#__codelineno-10-25" id="__codelineno-10-25" name="__codelineno-10-25"></a>     median     : 1003.6
+<a href="#__codelineno-10-26" id="__codelineno-10-26" name="__codelineno-10-26"></a>
+<a href="#__codelineno-10-27" id="__codelineno-10-27" name="__codelineno-10-27"></a>======================================================================
+<a href="#__codelineno-10-28" id="__codelineno-10-28" name="__codelineno-10-28"></a>Parallel demonstration completed successfully!
+<a href="#__codelineno-10-29" id="__codelineno-10-29" name="__codelineno-10-29"></a>======================================================================
+</code></pre></div>
+<ul>
+<li>Die 50 Ziehungen von <code>k_m_ac</code> liegen zwischen 9,45 und 13,93 d⁻¹. Alle 50 Szenarien sind durchgelaufen.  </li>
+<li>Der Methanstrom beträgt 1003,4 ± 0,7 Nm³/d und liegt zwischen 1001,7 und 1004,4 Nm³/d.  </li>
+<li>Die Standardabweichung des Parameters beträgt 10 % seines Mittelwerts, die des Methanstroms 0,07 % (0,7 / 1003,4). Um die Rate des Modells herum reagiert der Methanstrom nach 30 Tagen nur schwach auf <code>k_m_ac</code>; das passt zum flachen oberen Teil der Parameterstudie.  </li>
+<li>Das Skript gibt nur die Statistik von <code>Q_ch4</code> aus. <code>summary["metrics"]</code> enthält dieselben Statistiken und die Quartile <code>q25</code> und <code>q75</code> für jede Metrik.  </li>
+</ul>
+<h2 id="beispiel-anpassen">Beispiel anpassen<a class="headerlink" href="#beispiel-anpassen" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>Andere Parameter</strong>: Jeder Schlüssel der Tabelle in <a href="#2-vergleich-der-futtermengen">Schritt 2</a> lässt sich in einem Szenario, als <code>parameter_name</code> einer Parameterstudie oder in <code>parameter_distributions</code> verwenden. <code>nominal_rate</code> liefert die Rate des Modells für die Schlüssel <code>k_dis_*</code>, <code>k_hyd_*</code> und <code>k_m_*</code>.  </li>
+<li><strong>Temperatur</strong>: <code>T_ad</code> in Kelvin in ein Szenario aufnehmen, zum Beispiel <code>{"Q": base_feed, "T_ad": 311.15}</code>. Alle Szenarien eines Aufrufs können unterschiedliche Temperaturen haben.  </li>
+<li><strong>Zeitreihen</strong>: <code>save_time_series=True</code> und eine Schrittweite <code>dt</code> in Tagen an <code>run_scenarios</code>, <code>parameter_sweep</code> oder <code>monte_carlo</code> übergeben. Jedes Ergebnis enthält dann die letzten zehn gespeicherten Werte von <code>Q_gas</code>, <code>Q_ch4</code> und <code>pH</code>. Ohne <code>save_time_series=True</code> hat <code>dt</code> keine Wirkung.  </li>
+<li><strong>Kalibriertes Basismodell</strong>: Parameter, die mit <code>adm1.set_calibration_parameters({...})</code> am Basismodell gesetzt sind, gelten für jedes Szenario. Ein Szenariowert für denselben Parameter hat Vorrang.  </li>
+<li><strong>Substrate und Fermentergröße</strong>: die Substratliste des <code>Feedstock</code> und die Argumente von <code>ADM1</code> ändern. Die Fütterungsvektoren folgen der Reihenfolge der Substratliste.  </li>
+<li><strong>Zahl der Worker</strong>: <code>n_workers</code> setzen. Jeder Aufruf von <code>run_scenarios</code> startet einen eigenen Pool. Mit <code>n_workers=1</code> oder einem einzelnen Szenario rechnet der Simulator im Hauptprozess und startet keinen Pool.  </li>
+<li><strong>Fehlgeschlagene Szenarien</strong>: Ein Szenario, das eine Ausnahme auslöst, hält die anderen nicht auf. Sein Ergebnis hat <code>success=False</code> und den Grund in <code>error</code>.  </li>
+</ul>
+<p>Mehrere Parameter lassen sich mit <code>multi_parameter_sweep</code> gleichzeitig variieren; das Skript nutzt diese Methode nicht. Sie simuliert jede Kombination der angegebenen Werte:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">multi_parameter_sweep</span><span class="p">(</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>    <span class="n">parameter_configs</span><span class="o">=</span><span class="p">{</span><span class="s2">"k_m_ac"</span><span class="p">:</span> <span class="p">[</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">],</span> <span class="s2">"T_ad"</span><span class="p">:</span> <span class="p">[</span><span class="mf">311.15</span><span class="p">,</span> <span class="mf">315.15</span><span class="p">]},</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>    <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">initial_state</span><span class="p">,</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>    <span class="n">fixed_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"Q"</span><span class="p">:</span> <span class="n">base_feed</span><span class="p">},</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="p">)</span>
+</code></pre></div>
+<p>Das ergibt 2 × 2 = 4 Szenarien. In der Ergebnisliste ändert sich der letzte Parameter am schnellsten: <code>(3.5, 311.15)</code>, <code>(3.5, 315.15)</code>, <code>(8.0, 311.15)</code>, <code>(8.0, 315.15)</code>.</p>
+<p>In eigenen Skripten gehört der Aufruf wie im Beispiel in eine Funktion <code>main()</code> hinter <code>if __name__ == "__main__":</code>. Die Worker werden mit der Methode <code>spawn</code> gestartet (unter Linux mit <code>forkserver</code>), die das Hauptmodul in jedem Worker erneut importiert; siehe die Python-Dokumentation zu <a href="https://docs.python.org/3/library/multiprocessing.html">multiprocessing</a>. Die Umgebungsvariable <code>PYADM1_MP_START_METHOD</code> wählt eine andere Startmethode.</p>
 <h2 id="ahnliche-beispiele">Ähnliche Beispiele<a class="headerlink" href="#ahnliche-beispiele" title="Permanent link">¶</a></h2>
 <ul>
-<li><a href="../basic_digester/"><code>basic_digester.md</code></a>: Grundlagen der Fermentersimulation.  </li>
-<li><a href="../two_stage_plant/"><code>two_stage_plant.md</code></a>: Konfiguration zweistufiger Anlagen.  </li>
-<li><code>calibration_workflow.md</code>: Parameterkalibrierung mittels paralleler Optimierung.  </li>
+<li><a href="../basic_digester/"><code>basic_digester.md</code></a>: Grundlagen der Fermentersimulation  </li>
+<li><a href="../two_stage_plant/"><code>two_stage_plant.md</code></a>: Konfiguration zweistufiger Anlagen  </li>
+<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/06_parallel_operation_studies.py">examples/06_parallel_operation_studies.py</a>: Drei größere Studien mit demselben Simulator und drei Substraten (Maissilage, Rindergülle, Grassilage): ein Raster aus 54 Fütterungsszenarien über Verweilzeit und Raumbelastung, 66 Substratmischungen bei konstanter Gesamtfütterung und zehn Temperaturen über den Szenario-Schlüssel <code>T_ad</code>. Das Skript speichert je Studie eine Abbildung in <code>output/</code>.  </li>
+<li><a href="../../api/simulation/">Simulation-API</a>: Referenz zu <code>ParallelSimulator</code>, <code>ScenarioResult</code>, <code>ParameterSweepConfig</code> und <code>MonteCarloConfig</code> </li>
 </ul>
 <h2 id="zusammenfassung">Zusammenfassung<a class="headerlink" href="#zusammenfassung" title="Permanent link">¶</a></h2>
-<p>Das Beispiel für parallele Simulation zeigt:</p>
 <ol>
-<li><strong>Effiziente Parameterexploration</strong>: Testen mehrerer Szenarien 3-4× schneller durch parallele Ausführung.  </li>
-<li><strong>Systematische Optimierung</strong>: Parameter-Sweeps identifizieren optimale Betriebsbedingungen.  </li>
-<li><strong>Unsicherheitsquantifizierung</strong>: Die Monte-Carlo-Analyse quantifiziert die Vorhersageunsicherheit.  </li>
-<li><strong>Skalierbare Architektur</strong>: Handhabung von Hunderten von Szenarien mit ordnungsgemäßem Batching und Fehlerbehandlung.  </li>
-<li><strong>Statistische Analyse</strong>: Umfassende Ergebniszusammenfassung und vergleichende Statistiken.  </li>
+<li><strong>Ein Basismodell, viele Szenarien</strong>: Der <code>ParallelSimulator</code> schickt die Konfiguration des Basismodells an Worker-Prozesse, und jedes Szenario ändert darauf die Fütterung, die Temperatur oder Kalibrierparameter.  </li>
+<li><strong>Drei Wege zu Szenarien</strong>: eine ausdrückliche Liste (<code>run_scenarios</code>), ein Parameter über mehrere Werte (<code>parameter_sweep</code>) und Zufallsziehungen aus Normalverteilungen (<code>monte_carlo</code>).  </li>
+<li><strong>Ergebnisse als Zahlen</strong>: Jedes Szenario liefert seinen Endzustand und Metriken wie trockene Gasströme in Nm³/d, Methangehalt und pH-Wert; <code>summarize_results</code> verdichtet sie zu Statistiken.  </li>
 </ol>
 </article>
 </div>
@@ -1788,7 +1858,7 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "navigation.tracking", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+<script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
 <script src="../../assets/mathjax-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>

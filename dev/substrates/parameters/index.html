@@ -1,0 +1,3588 @@
+
+<!doctype html>
+<html lang="de" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Python framework for modeling, simulating, and optimizing agricultural biogas plants">
+      
+      
+        <meta name="author" content="Daniel Gaida">
+      
+      
+        <link rel="canonical" href="https://dgaida.github.io/PyADM1ODE/dev/substrates/parameters/">
+      
+      
+        <link rel="prev" href="../library/">
+      
+      
+        <link rel="next" href="../influence/">
+      
+      
+        
+          <link rel="alternate" href="./" hreflang="de">
+        
+          <link rel="alternate" href="../../en/substrates/parameters/" hreflang="en">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
+    
+    
+      
+        <title>Parameter & Wertebereiche - PyADM1ODE</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#parameter-wertebereiche" class="md-skip">
+          Zum Inhalt
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
+    <a href="../.." title="PyADM1ODE" class="md-header__button md-logo" aria-label="PyADM1ODE" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PyADM1ODE
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Parameter & Wertebereiche
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Sprache wechseln">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="de" class="md-select__link">
+              Deutsch
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../en/substrates/parameters/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Suche" placeholder="Suche" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Suche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Zurücksetzen" aria-label="Zurücksetzen" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Suche wird initialisiert
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/dgaida/PyADM1ODE" title="Zum Repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dgaida/PyADM1ODE
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Hauptnavigation" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../user_guide/installation/" class="md-tabs__link">
+          
+  
+  
+  Erste Schritte
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../user_guide/components/" class="md-tabs__link">
+          
+  
+  
+  Handbuch
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Substrate
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../user_guide/adm1_implementation/" class="md-tabs__link">
+          
+  
+  
+  Modell & Theorie
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../examples/basic_digester/" class="md-tabs__link">
+          
+  
+  
+  Beispiele
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../benchmark/" class="md-tabs__link">
+          
+  
+  
+  Benchmark-Datensatz
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../development/style_guide/" class="md-tabs__link">
+          
+  
+  
+  Entwicklung
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/core/" class="md-tabs__link">
+          
+  
+  
+  API-Referenz
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CHANGELOG/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="PyADM1ODE" class="md-nav__button md-logo" aria-label="PyADM1ODE" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    PyADM1ODE
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/dgaida/PyADM1ODE" title="Zum Repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dgaida/PyADM1ODE
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Erste Schritte
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Erste Schritte
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schnellstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Handbuch
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Handbuch
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Komponenten
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Komponenten
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/components/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Übersicht
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/components/biological/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Biologisch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/components/energy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Energie
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/components/feeding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fütterung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/components/mechanical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mechanisch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/components/sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensoren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Anwendungen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/advanced_features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fortgeschrittene Funktionen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fehlerbehebung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/llm_api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API für LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Substrate
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Substrate
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Übersicht
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../library/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beispiel-Substrate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parameter & Wertebereiche
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parameter & Wertebereiche
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#die-werte-im-uberblick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Die Werte im Überblick
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Die Werte im Überblick">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trockensubstanz-und-zusammensetzung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trockensubstanz und Zusammensetzung
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#abbaubarkeit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Abbaubarkeit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lagerzustand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lagerzustand
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sonstiges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sonstiges
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#realistische-wertebereiche" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Realistische Wertebereiche
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Realistische Wertebereiche">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trockensubstanz-organische-substanz-methanertrag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trockensubstanz, organische Substanz, Methanertrag
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#futtermittelanalyse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Futtermittelanalyse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#garqualitat-von-silagen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gärqualität von Silagen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lagerzustand-von-gulle-und-mist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lagerzustand von Gülle und Mist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quellen-der-wertebereiche" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quellen der Wertebereiche
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#messwert-parameter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Messwert-Parameter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#substratcharakterisierung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Substratcharakterisierung
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dateiformate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dateiformate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#substratkosten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Substratkosten
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../influence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Einfluss der Werte
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Herkunft der Werte
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modell & Theorie
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modell & Theorie
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/adm1_implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADM1-Implementierung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architektur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validierung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referenzen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beispiele
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Beispiele
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/basic_digester/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basis-Fermenter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/two_stage_plant/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Zweistufige Anlage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/parallel_simulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parallele Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmark-Datensatz
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Benchmark-Datensatz
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../benchmark/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Übersicht
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../benchmark/aufbau/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aufbau des Datensatzes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../benchmark/datenpunkt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ein Datenpunkt im Detail
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../benchmark/oracle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wie funktioniert das Oracle?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../benchmark/bewertung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bewertung & Ablauf
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../benchmark/viewer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Viewer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../benchmark/nutzung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datensatz nutzen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entwicklung
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Entwicklung
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/style_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Styleguide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metriken
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API-Referenz
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API-Referenz
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/biological/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Biologisch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/energy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Energie
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/mechanical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mechanisch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/feeding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fütterung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensoren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/configurator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Konfigurator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/simulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/substrates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Substrate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CHANGELOG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#die-werte-im-uberblick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Die Werte im Überblick
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Die Werte im Überblick">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trockensubstanz-und-zusammensetzung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trockensubstanz und Zusammensetzung
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#abbaubarkeit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Abbaubarkeit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lagerzustand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lagerzustand
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sonstiges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sonstiges
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#realistische-wertebereiche" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Realistische Wertebereiche
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Realistische Wertebereiche">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trockensubstanz-organische-substanz-methanertrag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trockensubstanz, organische Substanz, Methanertrag
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#futtermittelanalyse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Futtermittelanalyse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#garqualitat-von-silagen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gärqualität von Silagen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lagerzustand-von-gulle-und-mist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lagerzustand von Gülle und Mist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quellen-der-wertebereiche" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quellen der Wertebereiche
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#messwert-parameter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Messwert-Parameter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#substratcharakterisierung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Substratcharakterisierung
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dateiformate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dateiformate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#substratkosten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Substratkosten
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="parameter-wertebereiche">Parameter &amp; Wertebereiche<a class="headerlink" href="#parameter-wertebereiche" title="Permanent link">&para;</a></h1>
+<p>Eine Substratdatei enthält vier Gruppen von Werten. Diese Seite erklärt, was
+jeder Wert bedeutet, wie er gemessen wird und in welchem Bereich er bei
+landwirtschaftlichen Substraten üblicherweise liegt. Was eine Änderung in der
+Simulation bewirkt, steht auf der Seite <a href="../influence/">Einfluss der Werte</a>.</p>
+<h2 id="die-werte-im-uberblick">Die Werte im Überblick<a class="headerlink" href="#die-werte-im-uberblick" title="Permanent link">&para;</a></h2>
+<h3 id="trockensubstanz-und-zusammensetzung">Trockensubstanz und Zusammensetzung<a class="headerlink" href="#trockensubstanz-und-zusammensetzung" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Wert</th>
+<th>Einheit</th>
+<th>Bedeutung</th>
+<th>Messung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TS</code></td>
+<td>% der Frischmasse</td>
+<td>Trockensubstanz: was nach dem Trocknen bei 105 °C übrig bleibt. Der Rest ist Wasser.</td>
+<td>Trockenschrank</td>
+</tr>
+<tr>
+<td><code>VS</code></td>
+<td>% der TS</td>
+<td>Organische Trockensubstanz (oTS): der Teil der TS, der bei 550 °C verbrennt. Der Rest ist Asche.</td>
+<td>Glühverlust</td>
+</tr>
+<tr>
+<td><code>RP</code></td>
+<td>% der TS</td>
+<td>Rohprotein: Stickstoff × 6,25.</td>
+<td>Kjeldahl</td>
+</tr>
+<tr>
+<td><code>RL</code></td>
+<td>% der TS</td>
+<td>Rohfett.</td>
+<td>Etherextraktion</td>
+</tr>
+<tr>
+<td><code>RF</code></td>
+<td>% der TS</td>
+<td>Rohfaser nach Weender. Nur nötig, wenn <code>NDF</code> und <code>ADL</code> fehlen.</td>
+<td>Weender-Analyse</td>
+</tr>
+<tr>
+<td><code>NDF</code></td>
+<td>% der TS</td>
+<td>Neutral-Detergenzien-Faser: die ganze Zellwand (Cellulose, Hemicellulose, Lignin).</td>
+<td>van Soest</td>
+</tr>
+<tr>
+<td><code>ADF</code></td>
+<td>% der TS</td>
+<td>Säure-Detergenzien-Faser: Cellulose und Lignin. Wird abgelegt, aber nicht verwendet.</td>
+<td>van Soest</td>
+</tr>
+<tr>
+<td><code>ADL</code></td>
+<td>% der TS</td>
+<td>Säure-Detergenzien-Lignin: der nicht abbaubare Teil der Zellwand.</td>
+<td>van Soest</td>
+</tr>
+<tr>
+<td><code>NDICP</code></td>
+<td>% der TS</td>
+<td>Protein, das in der Zellwand gebunden ist. Braucht <code>NDF</code> und <code>ADL</code>.</td>
+<td>Stickstoff im NDF-Rückstand</td>
+</tr>
+</tbody>
+</table>
+<p>Was von der organischen Trockensubstanz nach Protein, Fett und Faser übrig
+bleibt, zählt das Modell als leicht abbaubare Kohlenhydrate (Stärke, Zucker).</p>
+<h3 id="abbaubarkeit">Abbaubarkeit<a class="headerlink" href="#abbaubarkeit" title="Permanent link">&para;</a></h3>
+<p>Mindestens einer dieser drei Werte muss angegeben sein. Sind mehrere angegeben, gilt
+die Reihenfolge <code>D_VS</code>, <code>aXI</code>, <code>BMP</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Wert</th>
+<th>Einheit</th>
+<th>Bedeutung</th>
+<th>Messung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BMP</code></td>
+<td>Nm³ CH₄ je t oTS</td>
+<td>Methanpotenzial: das Methan, das bei vollständigem Abbau entsteht. Das Modell passt den abbaubaren Anteil so an, dass sein Potenzial diesem Wert entspricht.</td>
+<td>Batch-Gärtest (VDI 4630)</td>
+</tr>
+<tr>
+<td><code>D_VS</code></td>
+<td>0…1</td>
+<td>Abbaugrad: der Anteil der oTS, der abbaubar ist.</td>
+<td>Verdaulichkeit, Gärtest</td>
+</tr>
+<tr>
+<td><code>aXI</code></td>
+<td>0…1</td>
+<td>Inerter Anteil des partikulären COD (Standardschema).</td>
+<td>nicht direkt messbar</td>
+</tr>
+<tr>
+<td><code>BMP_recovery</code></td>
+<td>0…1</td>
+<td>Anteil des abbaubaren COD, den der Gärtest als Methan wiederfindet. Vorgabe 1.</td>
+<td>–</td>
+</tr>
+</tbody>
+</table>
+<h3 id="lagerzustand">Lagerzustand<a class="headerlink" href="#lagerzustand" title="Permanent link">&para;</a></h3>
+<p>Der Zustand des Substrats, wie es in den Fermenter gelangt.</p>
+<table>
+<thead>
+<tr>
+<th>Wert</th>
+<th>Einheit</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pH</code></td>
+<td>–</td>
+<td>pH-Wert des Substrats.</td>
+</tr>
+<tr>
+<td><code>NH4</code></td>
+<td>kg N/m³</td>
+<td>Ammoniumstickstoff. Alternativ <code>Snh4</code> in g NH₄/l.</td>
+</tr>
+<tr>
+<td><code>Sac</code>, <code>Spro</code>, <code>Sbu</code>, <code>Sva</code></td>
+<td>g/l</td>
+<td>Essig-, Propion-, Butter- und Valeriansäure. Alternativ <code>FFS</code> als Summe in Essigsäure-Äquivalenten.</td>
+</tr>
+<tr>
+<td><code>KS43</code></td>
+<td>mol/m³</td>
+<td>Hydrogencarbonat.</td>
+</tr>
+<tr>
+<td><code>TAC</code></td>
+<td>mmol/l</td>
+<td>Titrierte Säurekapazität bis pH 4,3. Anders als <code>KS43</code> enthält sie die mittitrierten Säureanionen; der Lader zieht sie ab.</td>
+</tr>
+<tr>
+<td><code>Temp</code></td>
+<td>°C</td>
+<td>Temperatur des Substrats im Lager.</td>
+</tr>
+</tbody>
+</table>
+<p>Milchsäure, die wichtigste Gärsäure einer Silage, hat im Modell keinen eigenen
+Zustand. Sie wird nicht eingetragen; ihr Energiegehalt bleibt in den
+Kohlenhydraten.</p>
+<h3 id="sonstiges">Sonstiges<a class="headerlink" href="#sonstiges" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Wert</th>
+<th>Einheit</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cost</code></td>
+<td>EUR je t Frischmasse</td>
+<td>Preis frei Anlage; siehe <a href="#substratkosten">Substratkosten</a>.</td>
+</tr>
+<tr>
+<td><code>substrate_class</code></td>
+<td>Text</td>
+<td>Vergütungsklasse, zum Beispiel <code>"Rindergülle (EK II)"</code>. Eine Gülle- oder Mistklasse wählt die Vorgaben für Wirtschaftsdünger.</td>
+</tr>
+<tr>
+<td><code>COD_S</code>, <code>SIin</code></td>
+<td>g COD/l</td>
+<td>COD des Filtrats und gelöster inerter COD. Optional.</td>
+</tr>
+<tr>
+<td><code>X_bac</code>, <code>X_meth</code></td>
+<td>kg COD/m³</td>
+<td>Lebende Biomasse im Substrat (Gülle, Mist). Optional.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="realistische-wertebereiche">Realistische Wertebereiche<a class="headerlink" href="#realistische-wertebereiche" title="Permanent link">&para;</a></h2>
+<p>Die Bereiche unten stammen aus veröffentlichten Tabellenwerken und dienen der
+Plausibilitätsprüfung eigener Werte. Sie sind Spannen über viele Betriebe und
+Erntejahre; ein Wert außerhalb ist nicht falsch, sollte aber einen Grund haben.</p>
+<div class="admonition warning">
+<p class="admonition-title">Der Lader prüft Widerspruchsfreiheit, nicht Plausibilität</p>
+<p>Eine Substratdatei mit Werten außerhalb der Bereiche unten wird ohne
+Meldung geladen. Abgelehnt wird nur, was nicht stimmen kann: ein falsch
+geschriebener Parametername, <code>TS</code> oder <code>VS</code> außerhalb von 0–100, ein pH
+außerhalb von 0–14, negative Konzentrationen, <code>RP + RL + NDF</code> über <code>VS</code>
+und Faserwerte, die nicht ineinander liegen (<code>ADL ≤ ADF ≤ NDF</code>). Auf eines
+muss man weiterhin selbst achten: Alle Gehalte stehen in Prozent, nicht
+als Bruch (32,6, nicht 0,326).</p>
+</div>
+<h3 id="trockensubstanz-organische-substanz-methanertrag">Trockensubstanz, organische Substanz, Methanertrag<a class="headerlink" href="#trockensubstanz-organische-substanz-methanertrag" title="Permanent link">&para;</a></h3>
+<p>Spanne und, in Klammern, Mittelwert nach dem Leitfaden Biogas (FNR 2016,
+Tab. 4.1–4.4 und 4.9). CCM und Zwiebeln führt der Leitfaden nicht; ihre Werte
+sind Einzelwerte der Datenbank „Biogasausbeute" der LfL Bayern, der Methanertrag
+ist dort aus Biogasertrag und Methangehalt berechnet.</p>
+<table>
+<thead>
+<tr>
+<th>Substrat</th>
+<th><code>TS</code> [% FM]</th>
+<th><code>VS</code> [% TS]</th>
+<th><code>BMP</code> [Nm³ CH₄/t oTS]</th>
+<th>Wert der Bibliothek (<code>TS</code> / <code>VS</code> / <code>BMP</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Maissilage</td>
+<td>28–35 (33)</td>
+<td>85–98 (95)</td>
+<td>234–364 (340)</td>
+<td>32,6 / 94,0 / 338</td>
+</tr>
+<tr>
+<td>Getreide-Ganzpflanzensilage</td>
+<td>30–35 (33)</td>
+<td>92–98 (95)</td>
+<td>290–350 (329)</td>
+<td>36,8 / 93,3 / 329</td>
+</tr>
+<tr>
+<td>Grassilage</td>
+<td>25–50 (35)</td>
+<td>70–95 (90)</td>
+<td>300–338 (310)</td>
+<td>35,0 / 90,5 / 317</td>
+</tr>
+<tr>
+<td>Grünroggensilage</td>
+<td>(25)</td>
+<td>(90)</td>
+<td>(324)</td>
+<td>25,0 / 90,5 / 320</td>
+</tr>
+<tr>
+<td>Corn-Cob-Mix</td>
+<td>60–65</td>
+<td>98</td>
+<td>etwa 350–370</td>
+<td>65,0 / 98,5 / 380</td>
+</tr>
+<tr>
+<td>Rindergülle</td>
+<td>6–11 (10)</td>
+<td>75–82 (80)</td>
+<td>110–275 (210)</td>
+<td>10,0 / 84,1 / 212</td>
+</tr>
+<tr>
+<td>Schweinegülle</td>
+<td>4–7 (6)</td>
+<td>75–86 (80)</td>
+<td>180–360 (250)</td>
+<td>7,9 / 84,8 / 250</td>
+</tr>
+<tr>
+<td>Rinderfestmist</td>
+<td>20–25 (25)</td>
+<td>68–76 (80)</td>
+<td>130–330 (250)</td>
+<td>25,0 / 84,1 / 249</td>
+</tr>
+<tr>
+<td>Geflügelmist</td>
+<td>(40)</td>
+<td>(75)</td>
+<td>200–360 (280)</td>
+<td>45,0 / 78,0 / 273</td>
+</tr>
+<tr>
+<td>Zwiebeln</td>
+<td>16</td>
+<td>96</td>
+<td>etwa 360</td>
+<td>10,9 / 96,8 / 379</td>
+</tr>
+</tbody>
+</table>
+<p>Beim Rinderfestmist liegt der gedruckte Mittelwert der organischen Substanz
+außerhalb der gedruckten Spanne; die Tabelle gibt den Leitfaden wieder. Der
+Methangehalt des Biogases liegt nach der LfL-Datenbank bei 52–55 % für
+Energiepflanzen und 55–65 % für Wirtschaftsdünger.</p>
+<h3 id="futtermittelanalyse">Futtermittelanalyse<a class="headerlink" href="#futtermittelanalyse" title="Permanent link">&para;</a></h3>
+<p>Kleinster und größter Wert der Datenblätter von Feedipedia (INRAE, CIRAD, AFZ,
+FAO), in Prozent der Trockensubstanz. Für Grünroggensilage die Tabellenwerte
+der Gruber Tabelle (LfL 2024) vom Ährenschieben bis nach der Blüte.</p>
+<table>
+<thead>
+<tr>
+<th>Substrat</th>
+<th><code>RP</code></th>
+<th><code>RL</code></th>
+<th><code>RF</code></th>
+<th><code>NDF</code></th>
+<th><code>ADF</code></th>
+<th><code>ADL</code></th>
+<th>Asche (100 − <code>VS</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Maissilage, 30–35 % TS</td>
+<td>4,7–9,3</td>
+<td>1,3–4,0</td>
+<td>15–26</td>
+<td>38–55</td>
+<td>19–33</td>
+<td>1,9–5,1</td>
+<td>2,1–5,4</td>
+</tr>
+<tr>
+<td>Maissilage, 25–30 % TS</td>
+<td>4,9–9,8</td>
+<td>1,0–3,9</td>
+<td>17–27</td>
+<td>38–63</td>
+<td>21–35</td>
+<td>2,0–7,0</td>
+<td>2,3–5,7</td>
+</tr>
+<tr>
+<td>Getreide-Ganzpflanzensilage (Gerste)</td>
+<td>6,6–12,4</td>
+<td>1,7–3,1</td>
+<td>32–35</td>
+<td>38–56</td>
+<td>23–36</td>
+<td>2,5–7,1</td>
+<td>4,7–17,3</td>
+</tr>
+<tr>
+<td>Grassilage (Wiesenlieschgras)</td>
+<td>9,4–17,2</td>
+<td>–</td>
+<td>28–35</td>
+<td>47–64</td>
+<td>28–42</td>
+<td>3,6–3,8</td>
+<td>5,7–11,2</td>
+</tr>
+<tr>
+<td>Grünroggensilage</td>
+<td>12–15</td>
+<td>3,7–4,5</td>
+<td>26–34</td>
+<td>53–65</td>
+<td>31–38</td>
+<td>–</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Maiskolbensilage (nächst an CCM)</td>
+<td>7,5–10,9</td>
+<td>3,7–4,5</td>
+<td>2,8–7,9</td>
+<td>12–25</td>
+<td>4,5–12</td>
+<td>1,3–2,0</td>
+<td>1,6–3,0</td>
+</tr>
+</tbody>
+</table>
+<p>Mit steigender Reife sinkt bei Mais die Zellwand und steigt die Stärke: Die
+Stärke liegt bei 25–30 % TS zwischen 11 und 37 % der Trockensubstanz, bei
+35–40 % TS zwischen 21 und 42 %. Die Bibliotheksdatei
+<code>maize_silage_milk_ripeness</code> liegt mit 54,6 % <code>NDF</code> am oberen Rand.</p>
+<h3 id="garqualitat-von-silagen">Gärqualität von Silagen<a class="headerlink" href="#garqualitat-von-silagen" title="Permanent link">&para;</a></h3>
+<p>Typische Bereiche gut vergorener Silagen nach Kung &amp; Shaver (2001), in Prozent
+der Trockensubstanz.</p>
+<table>
+<thead>
+<tr>
+<th>Wert</th>
+<th>Maissilage (30–40 % TS)</th>
+<th>Grassilage (30–35 % TS)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pH</td>
+<td>3,7–4,2</td>
+<td>4,3–4,7</td>
+</tr>
+<tr>
+<td>Milchsäure</td>
+<td>4–7</td>
+<td>6–10</td>
+</tr>
+<tr>
+<td>Essigsäure</td>
+<td>1–3</td>
+<td>1–3</td>
+</tr>
+<tr>
+<td>Propionsäure</td>
+<td>&lt; 0,1</td>
+<td>&lt; 0,1</td>
+</tr>
+<tr>
+<td>Buttersäure</td>
+<td>0</td>
+<td>0,5–1,0</td>
+</tr>
+<tr>
+<td>Ammoniak-N [% des Rohproteins]</td>
+<td>5–7</td>
+<td>8–12</td>
+</tr>
+</tbody>
+</table>
+<p>Die Datei erwartet Säuren in g/l Frischmasse. Die Umrechnung:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Säure [g/l] ≈ Säure [% der TS] · TS [% FM] / 10
+</code></pre></div>
+<p>1–3 % Essigsäure in einer Maissilage mit 33 % TS sind also 3,3–10 g/l (<code>Sac</code>).
+Mehr als 0,5 % Buttersäure zeigt eine Fehlgärung an.</p>
+<h3 id="lagerzustand-von-gulle-und-mist">Lagerzustand von Gülle und Mist<a class="headerlink" href="#lagerzustand-von-gulle-und-mist" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Wert</th>
+<th>Rindergülle</th>
+<th>Schweinegülle</th>
+<th>Quelle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pH</td>
+<td>6,3–7,9 (7,3)</td>
+<td>6,5–7,9 (7,1)</td>
+<td>Pizzul et al. 2018</td>
+</tr>
+<tr>
+<td>Ammoniumstickstoff [kg/t]</td>
+<td>0,6–2,7 (2,0)</td>
+<td>1,5–5,2 (2,8)</td>
+<td>Pizzul et al. 2018</td>
+</tr>
+<tr>
+<td>Gesamtstickstoff [kg/t]</td>
+<td>1,5–5,1 (3,9)</td>
+<td>1,7–8,9 (4,6)</td>
+<td>Pizzul et al. 2018</td>
+</tr>
+<tr>
+<td><code>NH4</code> nach Düngerichtwert [kg N/m³]</td>
+<td>1,6–2,1</td>
+<td>3,0–3,4 (Mast), 2,3–2,8 (Zucht)</td>
+<td>LfL Basisdaten 2024</td>
+</tr>
+</tbody>
+</table>
+<p>Für Festmist nennen die Düngerichtwerte der LfL 0,4 kg NH₄-N je Tonne
+(Rindermist, 18,5–23 % TS) und 7–9 kg je Tonne (Hühnermist und -kot,
+52–59 % TS). Diese Werte gelten zum Zeitpunkt der Ausbringung, nach Stall- und
+Lagerverlusten.</p>
+<p>Für die Säurekapazität (<code>KS43</code>, <code>TAC</code>) und die Fettsäuren von Rohgülle fand sich
+keine Quelle mit einer Spanne. Die Werte der Bibliothek (Hydrogencarbonat
+109–112 mol/m³, Fettsäuren 8–10 g/l) beruhen auf je einer frischen Probe; siehe
+<a href="../sources/#lagerzustand">Herkunft der Werte</a>.</p>
+<h3 id="quellen-der-wertebereiche">Quellen der Wertebereiche<a class="headerlink" href="#quellen-der-wertebereiche" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Fachagentur Nachwachsende Rohstoffe (Hrsg.) (2016): Leitfaden Biogas – Von der Gewinnung zur Nutzung, 7. Auflage. Tab. 4.1–4.4, 4.9. <a href="https://www.fnr.de/fileadmin/Mediathek/208/Leitfaden_Biogas_web_V01.pdf">https://www.fnr.de/fileadmin/Mediathek/208/Leitfaden_Biogas_web_V01.pdf</a>  </li>
+<li>Strobl, M., Keymer, U. (2016): Biogasausbeute mobil. Bayerische Landesanstalt für Landwirtschaft. <a href="https://www.lfl.bayern.de/iba/energie/049711/">https://www.lfl.bayern.de/iba/energie/049711/</a>  </li>
+<li>Feedipedia – Animal Feed Resources Information System (INRAE, CIRAD, AFZ, FAO): Datenblätter Maize silage, Ear maize silage, Barley forage, Timothy grass silage. <a href="https://www.feedipedia.org">https://www.feedipedia.org</a>  </li>
+<li>Bayerische Landesanstalt für Landwirtschaft (2024): Gruber Tabelle zur Fütterung der Milchkühe, Zuchtrinder, Schafe, Ziegen, 48. Auflage. <a href="https://www.lfl.bayern.de/mam/cms07/publikationen/daten/informationen/gruber_tabelle_milchvieh-2024_lfl-information.pdf">https://www.lfl.bayern.de/mam/cms07/publikationen/daten/informationen/gruber_tabelle_milchvieh-2024_lfl-information.pdf</a>  </li>
+<li>Kung, L., Shaver, R. (2001): Interpretation and use of silage fermentation analysis reports. Focus on Forage 3(13), University of Wisconsin Extension.  </li>
+<li>Pizzul, L., Rodhe, L., Burzynska, I. et al. (2018): Titration, buffer capacity and acid consumption of animal slurries in Baltic Sea Region countries. Baltic Slurry Acidification, RISE.  </li>
+<li>Bayerische Landesanstalt für Landwirtschaft (2024): Basisdaten Düngung und Nährstoffflüsse, Tabelle 5a. <a href="https://www.lfl.bayern.de/mam/cms07/iab/dateien/bas25_tabelle_5a_20241125_neu.pdf">https://www.lfl.bayern.de/mam/cms07/iab/dateien/bas25_tabelle_5a_20241125_neu.pdf</a>  </li>
+</ul>
+<h2 id="messwert-parameter">Messwert-Parameter<a class="headerlink" href="#messwert-parameter" title="Permanent link">&para;</a></h2>
+<p>Die COD-Fraktionierung oben (<code>aXI</code>, <code>fOTSrf</code>, <code>fsOTS</code>, <code>ffOTS</code>, <code>aSi</code>) folgt
+SIMBA und lässt sich nicht direkt messen. Ein Substrat kann stattdessen über
+Laborwerte beschrieben werden. Die Bibliotheksdateien sind so geschrieben; Namen
+und Einheiten sind die der alten Gummersbach-Substratbibliothek.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1</span><span class="w"> </span><span class="kn">import</span> <span class="n">Feedstock</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.substrates</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_gummersbach_library</span><span class="p">,</span> <span class="n">load_substrate</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">library</span> <span class="o">=</span> <span class="n">load_gummersbach_library</span><span class="p">()</span>                    <span class="c1"># mitgelieferte alte Bibliothek, 10 Substrate</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">([</span><span class="s2">"gummersbach:maize"</span><span class="p">,</span> <span class="s2">"gummersbach:swinemanure"</span><span class="p">])</span>   <span class="c1"># über die ID</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">maize</span> <span class="o">=</span> <span class="n">load_substrate</span><span class="p">(</span><span class="s2">"data/substrates/examples/maize_silage_measured.yaml"</span><span class="p">)</span>
+</code></pre></div>
+<p>Eine Substratdatei wählt das Schema mit <code>schema: measured</code> (YAML, TOML) oder
+<code>&lt;substrate schema="measured"&gt;</code> (XML). Die ältere Schreibweise
+<code>schema: gummersbach</code> wird weiter akzeptiert.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Maissilage (Messwert-Parameter)</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">measured</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nt">substrate_class</span><span class="p">:</span><span class="w"> </span><span class="s">"Mais</span><span class="nv"> </span><span class="s">(GPS)</span><span class="nv"> </span><span class="s">(EK</span><span class="nv"> </span><span class="s">I)"</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nt">TS</span><span class="p">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">31.97</span><span class="w">    </span><span class="c1"># % FM</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nt">VS</span><span class="p">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">96.25</span><span class="w">    </span><span class="c1"># % TS</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nt">RP</span><span class="p">:</span><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">8.69</span><span class="w">    </span><span class="c1"># % TS</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="nt">RL</span><span class="p">:</span><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">3.68</span><span class="w">    </span><span class="c1"># % TS</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="nt">NDF</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">43.64</span><span class="w">    </span><span class="c1"># % TS</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="nt">ADL</span><span class="p">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">2.15</span><span class="w">    </span><span class="c1"># % TS</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="nt">NDICP</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.3</span><span class="w">     </span><span class="c1"># % TS</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="nt">BMP</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">338</span><span class="w">      </span><span class="c1"># Nm³ CH4/t oTS, legt den Inertanteil fest</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="nt">pH</span><span class="p">:</span><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">3.93</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="nt">Sac</span><span class="p">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">1.18</span><span class="w">    </span><span class="c1"># g/l</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="nt">Snh4</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.66</span><span class="w">    </span><span class="c1"># g/l</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="nt">TAC</span><span class="p">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">6.0</span><span class="w">     </span><span class="c1"># mmol/l</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Einheit</th>
+<th>Bedeutung</th>
+<th>Ersetzt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TS</code>, <code>VS</code></td>
+<td>% FM, % TS</td>
+<td>Trockensubstanz und organische Trockensubstanz</td>
+<td><code>TS</code> [kg/t], <code>fRA</code></td>
+</tr>
+<tr>
+<td><code>RF</code>, <code>RP</code>, <code>RL</code></td>
+<td>% TS</td>
+<td>Weender-Analyse; <code>RF</code> ist mit <code>NDF</code> und <code>ADL</code> optional</td>
+<td><code>fRF</code>, <code>fRP</code>, <code>fRFe</code></td>
+</tr>
+<tr>
+<td><code>NDF</code>, <code>ADL</code></td>
+<td>% TS</td>
+<td>Zellwand und Lignin nach van Soest</td>
+<td><code>fOTSrf</code>, <code>fsOTS</code> / <code>ffOTS</code> für Kohlenhydrate</td>
+</tr>
+<tr>
+<td><code>ADF</code></td>
+<td>% TS</td>
+<td>Säure-Detergenzien-Faser; abgelegt, nicht verwendet</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>NDICP</code></td>
+<td>% TS</td>
+<td>In der Zellwand gebundenes Protein; braucht <code>NDF</code> und <code>ADL</code></td>
+<td><code>fsOTS</code> / <code>ffOTS</code> für Protein</td>
+</tr>
+<tr>
+<td><code>D_VS</code></td>
+<td>–</td>
+<td>Abbaugrad der organischen Trockensubstanz</td>
+<td><code>aXI</code>, <code>aSi</code></td>
+</tr>
+<tr>
+<td><code>BMP</code></td>
+<td>Nm³ CH₄/t oTS</td>
+<td>Methanpotenzial eines Batch-Tests; wirkt ohne <code>D_VS</code> und <code>aXI</code></td>
+<td><code>aXI</code> oder <code>D_VS</code></td>
+</tr>
+<tr>
+<td><code>BMP_recovery</code></td>
+<td>–</td>
+<td>Anteil des abbaubaren COD, den der Batch-Test als Methan wiederfindet, Vorgabe 1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>Sac</code>, <code>Spro</code>, <code>Sbu</code>, <code>Sva</code></td>
+<td>g/l</td>
+<td>Einzelne flüchtige Fettsäuren</td>
+<td><code>FFS</code></td>
+</tr>
+<tr>
+<td><code>TAC</code></td>
+<td>mmol/l</td>
+<td>Titrierte Säurekapazität bis pH 4,3</td>
+<td><code>KS43</code></td>
+</tr>
+<tr>
+<td><code>Snh4</code></td>
+<td>g/l</td>
+<td>Ammonium, als NH₄</td>
+<td><code>NH4</code> [kg N/m³]</td>
+</tr>
+<tr>
+<td><code>T</code></td>
+<td>°C</td>
+<td>Lagertemperatur</td>
+<td><code>Temp</code></td>
+</tr>
+<tr>
+<td><code>COD_S</code></td>
+<td>gCOD/l</td>
+<td>COD des Filtrats</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>SIin</code></td>
+<td>gCOD/l</td>
+<td>Gelöster inerter COD</td>
+<td><code>aSi</code></td>
+</tr>
+<tr>
+<td><code>X_bac</code>, <code>X_meth</code></td>
+<td>kgCOD/m³</td>
+<td>Lebende Bakterien und Methanogene (Gülle, Mist)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>substrate_class</code></td>
+<td>Text</td>
+<td>Vergütungsklasse; eine Gülle- oder Mistklasse wählt die Vorgaben für Wirtschaftsdünger</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><code>TS</code>, <code>VS</code>, <code>RP</code>, <code>RL</code> und <code>pH</code> sind Pflicht, alles andere ist optional. Der
+Inertanteil kommt aus <code>D_VS</code>, sonst aus <code>aXI</code>, sonst aus <code>BMP</code>; einer der drei
+muss angegeben sein. Ein falsch geschriebener Parametername führt zu einem
+Fehler. Die Schlüssel des Standardschemas (<code>NH4</code>, <code>KS43</code>, <code>FFS</code>, <code>Temp</code>,
+<code>fOTSrf</code>, <code>aSi</code>, <code>cost</code>) werden in ihren eigenen Einheiten ebenfalls akzeptiert.</p>
+<h2 id="substratcharakterisierung">Substratcharakterisierung<a class="headerlink" href="#substratcharakterisierung" title="Permanent link">&para;</a></h2>
+<p>Das Standardschema nach SIMBA beschreibt ein Substrat über diesen Parametersatz.
+Die Bibliotheksdateien verwenden stattdessen die <a href="#messwert-parameter">Messwert-Parameter</a>,
+aus denen derselbe Satz abgeleitet wird:</p>
+<ul>
+<li><strong>Rohzusammensetzung</strong> — <code>TS</code>, <code>NH4</code>, Biogas- / Biomethanpotenzial <code>BGP</code>, <code>BMP</code>.  </li>
+<li><strong>Weender-Analyse</strong> — Rohfaser-, Rohprotein-, Rohfett- und Asche-Anteile der TS (<code>fRF</code>, <code>fRP</code>, <code>fRFe</code>, <code>fRA</code>).  </li>
+<li><strong>COD-Fraktionierung</strong> — partikulär- und löslich-inerter COD-Anteil (<code>aXI</code>, <code>aSi</code>), abbaubarer Anteil der Rohfaser (<code>fOTSrf</code>), Aufteilung in langsame/schnelle Desintegrationspools (<code>fsOTS</code>, <code>ffOTS</code>).  </li>
+<li><strong>Physikalisch-chemischer Zustand</strong> — Substrattemperatur, <code>pH</code>, Säurekapazität bis pH 4,3 (<code>KS43</code>), VFA als Essigsäure-Äquivalent (<code>FFS</code>).  </li>
+</ul>
+<p>Komponentendichten, Masse-zu-COD-Umrechnungsfaktoren, Methanpotenziale und
+die Säure-Base-Gleichgewichtskonstanten sind als Modelldefaults in
+<code>SubstrateParams</code> hinterlegt und müssen pro Substrat nur dann angegeben
+werden, wenn eine Messung das Überschreiben rechtfertigt.</p>
+<p>Die Seite <a href="../../user_guide/adm1_implementation/">ADM1-Implementierung</a> beschreibt, wie aus
+der Charakterisierung der 38-spaltige ADM1-Zulaufstrom erzeugt wird.</p>
+<h2 id="dateiformate">Dateiformate<a class="headerlink" href="#dateiformate" title="Permanent link">&para;</a></h2>
+<p>Jedes Substrat kann als YAML (kanonisch), XML oder TOML definiert werden.
+Der Loader wählt anhand der Dateiendung das passende Format aus und liefert
+in jedem Fall dasselbe <code>SubstrateParams</code>-Objekt; in
+<a href="https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates/examples"><code>data/substrates/examples/</code></a>
+liegen Side-by-Side-Beispiele desselben Substrats in allen drei Formaten.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.substrates</span><span class="w"> </span><span class="kn">import</span> <span class="n">SubstrateRegistry</span><span class="p">,</span> <span class="n">load_substrate</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># Per ID — erkennt jedes unterstützte Format in data/substrates/</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">reg</span> <span class="o">=</span> <span class="n">SubstrateRegistry</span><span class="p">()</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">maize</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"maize_silage_milk_ripeness"</span><span class="p">)</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># Per expliziten Pfad — die Endung bestimmt den Loader</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">swine</span> <span class="o">=</span> <span class="n">load_substrate</span><span class="p">(</span><span class="s2">"data/substrates/swine_manure.yaml"</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="substratkosten">Substratkosten<a class="headerlink" href="#substratkosten" title="Permanent link">&para;</a></h2>
+<p>Jedes Substrat kann einen Preis <code>cost</code> in EUR pro Tonne Frischmasse frei Anlage
+tragen. Er ist optional und standardmäßig 0. Er wird in der Substratdatei oder
+pro Feedstock gesetzt:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># YAML</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nt">cost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">40.0</span><span class="w">      </span><span class="c1"># EUR/t FM</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># TOML</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">cost</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">40.0</span><span class="w">     </span><span class="c1"># EUR/t FM</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="cm">&lt;!-- XML --&gt;</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nt">&lt;param</span><span class="w"> </span><span class="na">name=</span><span class="s">"cost"</span><span class="w"> </span><span class="na">value=</span><span class="s">"40.0"</span><span class="w"> </span><span class="na">unit=</span><span class="s">"EUR/t_FM"</span><span class="w"> </span><span class="na">description=</span><span class="s">"Price free plant"</span><span class="nt">/&gt;</span>
+</code></pre></div>
+<p>Alle Substrate der Bibliothek tragen einen Richtpreis frei Anlage (deutscher
+Markt, 2022–2025). Energiepflanzen liegen bei etwa 105–125 EUR pro Tonne
+Trockenmasse, ihr Frischmassepreis folgt also dem TS-Gehalt; Gülle trägt nur
+die Transportkosten.</p>
+<table>
+<thead>
+<tr>
+<th>Substrat</th>
+<th><code>cost</code> [EUR/t FM]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Maissilage</td>
+<td>40</td>
+</tr>
+<tr>
+<td>Getreide- / Weizen-GPS</td>
+<td>36 / 35</td>
+</tr>
+<tr>
+<td>Grassilage</td>
+<td>33</td>
+</tr>
+<tr>
+<td>Grünroggensilage</td>
+<td>22</td>
+</tr>
+<tr>
+<td>Corn-Cob-Mix (CCM)</td>
+<td>125</td>
+</tr>
+<tr>
+<td>Hühnertrockenkot</td>
+<td>30</td>
+</tr>
+<tr>
+<td>Rinderfestmist</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Zwiebelabfälle</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Rinder- / Schweinegülle</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>Die regionale und jährliche Streuung ist groß (allein Silomais 30–50 EUR/t FM);
+ersetze den Wert durch den Vertragspreis der Anlage.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">feedstock</span><span class="o">.</span><span class="n">set_substrate_costs</span><span class="p">({</span><span class="s2">"maize_silage_milk_ripeness"</span><span class="p">:</span> <span class="mf">40.0</span><span class="p">,</span> <span class="s2">"swine_manure"</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">})</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">feedstock</span><span class="o">.</span><span class="n">substrate_costs</span>        <span class="c1"># {'maize_silage_milk_ripeness': 40.0, 'swine_manure': 2.0}</span>
+</code></pre></div>
+<p>Die Kosten eines Betriebs lassen sich auf zwei Wegen berechnen.</p>
+<p><strong>Aus beliebigen Fütterungsdaten</strong> — eingestellte Raten, ein Fütterungsprotokoll,
+ein Durchflusssensor oder eine Schätzung. Übergeben wird entweder ein Satz
+Raten, der <code>dt</code> Tage gilt, oder eine Zeitreihe mit einer Zeile pro Intervall:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">feedstock</span><span class="o">.</span><span class="n">calc_substrate_costs</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">dt</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>          <span class="c1"># 30 Tage mit konstanten Raten</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">feedstock</span><span class="o">.</span><span class="n">calc_substrate_costs</span><span class="p">(</span><span class="n">measured_feed</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">24</span><span class="p">)</span>  <span class="c1"># stündliche Sensorwerte</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># {'total': 12300.0, 'by_substrate': {...}, 'mass_t': {...}}</span>
+</code></pre></div>
+<p><strong>Aus der Simulation</strong> — die Anlage summiert in jedem Schritt, was ihre
+Fermenter tatsächlich erhalten haben. Mit einem Dosierer ist das der dosierte
+Strom (einschließlich leerem Lager oder Blockade), nicht die eingestellte Rate:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">plant</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">plant</span><span class="o">.</span><span class="n">get_substrate_costs</span><span class="p">()</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># {'total': ..., 'by_substrate': {...}, 'mass_t': {...}, 'specific_cost': ...}  # EUR/t FM</span>
+</code></pre></div>
+<p>Der Vergleich beider zeigt, wie weit die aufgezeichnete Fütterung von der
+simulierten abweicht. Die Raten haben die Einheit von <code>Q_substrates</code> — Tonnen
+pro Tag mit dem Standard <code>simba_q_convention=True</code>, sonst m³/d (umgerechnet über
+die Substratdichte).</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Zurück zum Seitenanfang
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Daniel Gaida
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/dgaida/PyADM1ODE" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://pypi.org/project/PyADM1ODE/" target="_blank" rel="noopener" title="pypi.org" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6M286.2 444.7a20.4 20.4 0 1 1 0-40.7 20.4 20.4 0 1 1 0 40.7M167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4m-6.6-183.4a20.4 20.4 0 1 1 0 40.8 20.4 20.4 0 1 1 0-40.8"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "navigation.tracking", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../../assets/mathjax-config.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

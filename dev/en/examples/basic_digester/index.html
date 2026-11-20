@@ -13,7 +13,7 @@
 <link href="../../../examples/basic_digester/" hreflang="de" rel="alternate"/>
 <link href="./" hreflang="en" rel="alternate"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.8.0" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.8.2" name="generator"/>
 <title>Basic Digester - PyADM1ODE</title>
 <link href="../../../assets/stylesheets/main.57a0d79d.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.fb2fffe2.min.css" rel="stylesheet"/>
@@ -164,6 +164,15 @@
   
   
   User Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../substrates/">
+          
+  
+  
+  Substrates
 
         </a>
 </li>
@@ -433,18 +442,6 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../user_guide/substrates/">
-<span class="md-ellipsis">
-    
-  
-    Substrates
-  
-
-    
-  </span>
-</a>
-</li>
-<li class="md-nav__item">
 <a class="md-nav__link" href="../../user_guide/applications/">
 <span class="md-ellipsis">
     
@@ -501,7 +498,7 @@
 <span class="md-ellipsis">
     
   
-    Model &amp; Theory
+    Substrates
   
 
     
@@ -510,6 +507,92 @@
 </label>
 <nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
 <label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Substrates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/library/">
+<span class="md-ellipsis">
+    
+  
+    Example Substrates
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/parameters/">
+<span class="md-ellipsis">
+    
+  
+    Parameters &amp; Ranges
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/influence/">
+<span class="md-ellipsis">
+    
+  
+    Influence of the Values
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/sources/">
+<span class="md-ellipsis">
+    
+  
+    Origin of the Values
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Model &amp; Theory
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -570,8 +653,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
-<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
 <span class="md-ellipsis">
     
   
@@ -582,8 +665,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="true" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_5">
+<nav aria-expanded="true" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -659,64 +742,55 @@
 <nav aria-label="Code Walkthrough" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#1-setup-and-imports">
+<a class="md-nav__link" href="#1-substrate-mix">
 <span class="md-ellipsis">
       
-        1. Setup and Imports
+        1. Substrate Mix
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#2-create-feedstock">
+<a class="md-nav__link" href="#2-feedstock-and-plant">
 <span class="md-ellipsis">
       
-        2. Create Feedstock
+        2. Feedstock and Plant
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#3-load-initial-state">
+<a class="md-nav__link" href="#3-digester">
 <span class="md-ellipsis">
       
-        3. Load Initial State
+        3. Digester
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#4-define-substrate-feed">
+<a class="md-nav__link" href="#4-simulation">
 <span class="md-ellipsis">
       
-        4. Define Substrate Feed
+        4. Simulation
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#5-build-plant-with-plantconfigurator">
+<a class="md-nav__link" href="#5-report">
 <span class="md-ellipsis">
       
-        5. Build Plant with PlantConfigurator
+        5. Report
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#6-initialize-and-simulate">
+<a class="md-nav__link" href="#6-saving">
 <span class="md-ellipsis">
       
-        6. Initialize and Simulate
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#7-display-results">
-<span class="md-ellipsis">
-      
-        7. Display Results
+        6. Saving
       
     </span>
 </a>
@@ -725,53 +799,35 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#expected-output">
+<a class="md-nav__link" href="#output">
 <span class="md-ellipsis">
       
-        Expected Output
+        Output
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#process-interpretation">
+<a class="md-nav__link" href="#interpreting-the-output">
 <span class="md-ellipsis">
       
-        Process Interpretation
+        Interpreting the Output
       
     </span>
 </a>
-<nav aria-label="Process Interpretation" class="md-nav">
+<nav aria-label="Interpreting the Output" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#typical-performance-metrics">
+<a class="md-nav__link" href="#more-values-in-the-results">
 <span class="md-ellipsis">
       
-        Typical Performance Metrics
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#process-stability-indicators">
-<span class="md-ellipsis">
-      
-        Process Stability Indicators
+        More Values in the Results
       
     </span>
 </a>
 </li>
 </ul>
 </nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#gas-storage-behavior">
-<span class="md-ellipsis">
-      
-        Gas Storage Behavior
-      
-    </span>
-</a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#configuration-export">
@@ -783,62 +839,13 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#next-steps">
+<a class="md-nav__link" href="#adapting-the-example">
 <span class="md-ellipsis">
       
-        Next Steps
+        Adapting the Example
       
     </span>
 </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#common-issues">
-<span class="md-ellipsis">
-      
-        Common Issues
-      
-    </span>
-</a>
-<nav aria-label="Common Issues" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-initial-state-file-not-found">
-<span class="md-ellipsis">
-      
-        Issue: "Initial state file not found"
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-low-gas-production">
-<span class="md-ellipsis">
-      
-        Issue: Low gas production
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-process-instability-ph-drop">
-<span class="md-ellipsis">
-      
-        Issue: Process instability (pH drop)
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-gas-storage-overpressure-warnings">
-<span class="md-ellipsis">
-      
-        Issue: Gas storage overpressure warnings
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#references">
@@ -850,10 +857,10 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#related-examples">
+<a class="md-nav__link" href="#related-pages">
 <span class="md-ellipsis">
       
-        Related Examples
+        Related Pages
       
     </span>
 </a>
@@ -889,8 +896,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_6" type="checkbox"/>
-<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
 <span class="md-ellipsis">
     
   
@@ -901,8 +908,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_6">
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -999,8 +1006,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
-<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
 <span class="md-ellipsis">
     
   
@@ -1011,8 +1018,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_7">
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -1049,8 +1056,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
-<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
 <span class="md-ellipsis">
     
   
@@ -1061,8 +1068,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_8">
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -1246,64 +1253,55 @@
 <nav aria-label="Code Walkthrough" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#1-setup-and-imports">
+<a class="md-nav__link" href="#1-substrate-mix">
 <span class="md-ellipsis">
       
-        1. Setup and Imports
+        1. Substrate Mix
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#2-create-feedstock">
+<a class="md-nav__link" href="#2-feedstock-and-plant">
 <span class="md-ellipsis">
       
-        2. Create Feedstock
+        2. Feedstock and Plant
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#3-load-initial-state">
+<a class="md-nav__link" href="#3-digester">
 <span class="md-ellipsis">
       
-        3. Load Initial State
+        3. Digester
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#4-define-substrate-feed">
+<a class="md-nav__link" href="#4-simulation">
 <span class="md-ellipsis">
       
-        4. Define Substrate Feed
+        4. Simulation
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#5-build-plant-with-plantconfigurator">
+<a class="md-nav__link" href="#5-report">
 <span class="md-ellipsis">
       
-        5. Build Plant with PlantConfigurator
+        5. Report
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#6-initialize-and-simulate">
+<a class="md-nav__link" href="#6-saving">
 <span class="md-ellipsis">
       
-        6. Initialize and Simulate
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#7-display-results">
-<span class="md-ellipsis">
-      
-        7. Display Results
+        6. Saving
       
     </span>
 </a>
@@ -1312,53 +1310,35 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#expected-output">
+<a class="md-nav__link" href="#output">
 <span class="md-ellipsis">
       
-        Expected Output
+        Output
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#process-interpretation">
+<a class="md-nav__link" href="#interpreting-the-output">
 <span class="md-ellipsis">
       
-        Process Interpretation
+        Interpreting the Output
       
     </span>
 </a>
-<nav aria-label="Process Interpretation" class="md-nav">
+<nav aria-label="Interpreting the Output" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#typical-performance-metrics">
+<a class="md-nav__link" href="#more-values-in-the-results">
 <span class="md-ellipsis">
       
-        Typical Performance Metrics
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#process-stability-indicators">
-<span class="md-ellipsis">
-      
-        Process Stability Indicators
+        More Values in the Results
       
     </span>
 </a>
 </li>
 </ul>
 </nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#gas-storage-behavior">
-<span class="md-ellipsis">
-      
-        Gas Storage Behavior
-      
-    </span>
-</a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#configuration-export">
@@ -1370,62 +1350,13 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#next-steps">
+<a class="md-nav__link" href="#adapting-the-example">
 <span class="md-ellipsis">
       
-        Next Steps
+        Adapting the Example
       
     </span>
 </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#common-issues">
-<span class="md-ellipsis">
-      
-        Common Issues
-      
-    </span>
-</a>
-<nav aria-label="Common Issues" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-initial-state-file-not-found">
-<span class="md-ellipsis">
-      
-        Issue: "Initial state file not found"
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-low-gas-production">
-<span class="md-ellipsis">
-      
-        Issue: Low gas production
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-process-instability-ph-drop">
-<span class="md-ellipsis">
-      
-        Issue: Process instability (pH drop)
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#issue-gas-storage-overpressure-warnings">
-<span class="md-ellipsis">
-      
-        Issue: Gas storage overpressure warnings
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#references">
@@ -1437,10 +1368,10 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#related-examples">
+<a class="md-nav__link" href="#related-pages">
 <span class="md-ellipsis">
       
-        Related Examples
+        Related Pages
       
     </span>
 </a>
@@ -1454,26 +1385,28 @@
 <article class="md-content__inner md-typeset">
 <h1 id="basic-digester-example">Basic Digester Example<a class="headerlink" href="#basic-digester-example" title="Permanent link">¶</a></h1>
 <p><a href="https://colab.research.google.com/github/dgaida/PyADM1ODE/blob/master/examples/colab_01_basic_digester.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
-<p>The <a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py">examples/basic_digester.py</a> example demonstrates the simplest possible PyADM1 configuration: a single digester with substrate feed and integrated gas storage.</p>
+<p>The example
+<a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/01_basic_digester.py"><code>examples/01_basic_digester.py</code></a>
+is the simplest PyADM1ODE configuration: a single digester fed with three
+substrates, together with the gas storage the configurator creates for it.
+The Colab notebook runs a shortened variant (two substrates, a larger
+digester, 5 days), so its numbers differ from the ones on this page.</p>
 <h2 id="system-architecture">System Architecture<a class="headerlink" href="#system-architecture" title="Permanent link">¶</a></h2>
 <pre class="mermaid"><code>graph LR
     %% Substrate input
-    Feed[Substrate Feed&lt;br/&gt;Corn silage: 15 m³/d&lt;br/&gt;Cattle manure: 10 m³/d] --&gt; Digester
+    Feed[Substrate Feed&lt;br/&gt;Maize silage: 11.4 t/d&lt;br/&gt;Swine manure: 6.1 t/d&lt;br/&gt;Cattle manure: 5.0 t/d] --&gt; Digester
 
     %% Main digester
-    Digester[Digester&lt;br/&gt;V_liq: 2000 m³&lt;br/&gt;V_gas: 300 m³&lt;br/&gt;T: 35°C]
+    Digester[Digester&lt;br/&gt;V_liq: 1050 m³&lt;br/&gt;V_gas: 150 m³&lt;br/&gt;T: 42 °C]
 
-    %% Integrated gas storage
-    Digester --&gt;|Biogas production| Storage[Gas Storage&lt;br/&gt;Membrane type&lt;br/&gt;Capacity: 300 m³&lt;br/&gt;P: 0.95-1.05 bar]
+    %% Separate gas storage component
+    Digester --&gt;|Dry biogas&lt;br/&gt;~1960 Nm³/d&lt;br/&gt;CH₄ ~53 %| Storage[Gas Storage&lt;br/&gt;main_digester_storage&lt;br/&gt;Membrane type&lt;br/&gt;Capacity: 150 m³]
 
-    %% Gas output
-    Storage --&gt;|Available biogas| Output[Biogas Output&lt;br/&gt;~1250 m³/d&lt;br/&gt;CH₄: ~60%]
-
-    %% Excess venting
-    Storage -.-&gt;|Excess gas&lt;br/&gt;when full| Vent[Vented to atmosphere&lt;br/&gt;or flare]
+    %% No gas consumer in this example
+    Storage -.-&gt;|Overflow&lt;br/&gt;when full| Vent[Vented&lt;br/&gt;no gas consumer connected]
 
     %% Liquid output
-    Digester --&gt;|Effluent&lt;br/&gt;25 m³/d| Effluent[Digestate Output]
+    Digester --&gt;|Effluent&lt;br/&gt;21.2 m³/d| Effluent[Digestate Output]
 
     %% Styling
     classDef processBox fill:#e1f5fe,stroke:#01579b,stroke-width:2px
@@ -1484,391 +1417,470 @@
     class Digester processBox
     class Storage storageBox
     class Feed inputBox
-    class Output,Effluent,Vent outputBox</code></pre>
+    class Effluent,Vent outputBox</code></pre>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
-<p>The basic digester example shows:<br/>
-- Loading substrate data (feedstock management)<br/>
-- Creating a single-stage biogas plant<br/>
-- Automatic gas storage creation per digester<br/>
-- Initializing from a steady-state CSV file<br/>
-- Running a short simulation (5 days)<br/>
-- Extracting and displaying key process indicators  </p>
-<h2 id="plant-configuration">Plant Configuration<a class="headerlink" href="#plant-configuration" title="Permanent link">¶</a></h2>
-<p>The plant consists of:<br/>
-- <strong>1 Digester</strong> (2000 m³ liquid volume, 300 m³ gas volume)<br/>
-- <strong>1 Gas Storage</strong> (automatically created, attached to digester)<br/>
-- <strong>Substrate Feed</strong>: Corn silage (15 m³/d) + Cattle manure (10 m³/d)  </p>
-<p><strong>Key Point</strong>: The gas storage is automatically created by <code>PlantConfigurator.add_digester()</code> and connected to the digester. This ensures realistic gas buffering and pressure management.</p>
-<h2 id="code-walkthrough">Code Walkthrough<a class="headerlink" href="#code-walkthrough" title="Permanent link">¶</a></h2>
-<h3 id="1-setup-and-imports">1. Setup and Imports<a class="headerlink" href="#1-setup-and-imports" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.configurator.plant_builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">BiogasPlant</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.substrates.feedstock</span><span class="w"> </span><span class="kn">import</span> <span class="n">Feedstock</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.core.adm1</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_state_zero_from_csv</span>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.configurator.plant_configurator</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlantConfigurator</span>
-</code></pre></div>
-<p>The key imports are:<br/>
-- <code>BiogasPlant</code>: Container for all plant components<br/>
-- <code>Feedstock</code>: Manages substrate properties and mixing<br/>
-- <code>PlantConfigurator</code>: High-level helper for adding components (automatically handles gas storage)<br/>
-- <code>get_state_zero_from_csv</code>: Loads the 41-state ADM1da initial state from CSV  </p>
-<h3 id="2-create-feedstock">2. Create Feedstock<a class="headerlink" href="#2-create-feedstock" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">feeding_freq</span> <span class="o">=</span> <span class="mi">48</span>  <span class="c1"># Can change substrate every 48 hours</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">(</span><span class="n">feeding_freq</span><span class="o">=</span><span class="n">feeding_freq</span><span class="p">)</span>
-</code></pre></div>
-<p>The feedstock object loads substrate parameters from the bundled library at
-<a href="https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates"><code>data/substrates/</code></a>
-(YAML, with XML and TOML also accepted — see the
-<a href="../../user_guide/substrates/">Substrates</a> page for the full list) and manages:</p>
+<p>The example shows:</p>
 <ul>
-<li>Substrate composition (Weender analysis)  </li>
-<li>ADM1 parameter calculation  </li>
-<li>Influent stream generation  </li>
+<li>Choosing substrates from the bundled library by ID and giving the mix as a dict <code>{substrate_id: feed rate}</code> </li>
+<li>Building a single-digester plant with <code>PlantConfigurator</code> </li>
+<li>The gas storage that <code>add_digester()</code> creates as a separate component  </li>
+<li>Starting from an initial state derived from the substrate mix, without a state file  </li>
+<li>Simulating 150 days in daily steps  </li>
+<li>Printing biogas, methane, methane content and pH for every tenth day  </li>
+<li>Saving the plant with its final state to JSON  </li>
 </ul>
-<p><strong>Feeding Frequency</strong>: The <code>feeding_freq</code> parameter (48 hours) defines how often the controller can adjust substrate feeds. This is important for optimization and control applications.</p>
-<h3 id="3-load-initial-state">3. Load Initial State<a class="headerlink" href="#3-load-initial-state" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">initial_state_file</span> <span class="o">=</span> <span class="n">data_path</span> <span class="o">/</span> <span class="s2">"digester_initial8.csv"</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="n">adm1_state</span> <span class="o">=</span> <span class="n">get_state_zero_from_csv</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">initial_state_file</span><span class="p">))</span>
-</code></pre></div>
-<p>The initial state CSV contains the 41 ADM1da state variables representing a steady-state condition. This avoids long initialization periods where the model transitions from unrealistic starting values.</p>
-<p><strong>ADM1da State Vector</strong> (41 variables):<br/>
-- Soluble components (0-11): S_su, S_aa, S_fa, S_va, S_bu, S_pro, S_ac, S_h2, S_ch4, S_co2, S_nh4, S_I<br/>
-- Particulate sub-fractions — slow / fast / soluble pools (12-20): X_ps_ch, X_ps_pr, X_ps_li, X_pf_ch, X_pf_pr, X_pf_li, X_s_ch, X_s_pr, X_s_li<br/>
-- Inert + biomass (21-28): X_I, X_su, X_aa, X_fa, X_c4, X_pro, X_ac, X_h2<br/>
-- Ions (29-36): S_cation, S_anion, S_va_ion, S_bu_ion, S_pro_ion, S_ac_ion, S_hco3, S_nh3<br/>
-- Gas phase (37-40): p_h2, p_ch4, p_co2, pTOTAL  </p>
-<h3 id="4-define-substrate-feed">4. Define Substrate Feed<a class="headerlink" href="#4-define-substrate-feed" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Corn silage and manure</span>
-</code></pre></div>
-<p>The feed vector <code>Q_substrates</code> specifies volumetric flow rates [m³/d] for each substrate defined in the XML file. In this example:<br/>
-- Substrate 1 (corn silage): 15 m³/d<br/>
-- Substrate 2 (cattle manure): 10 m³/d<br/>
-- Substrates 3-10: Not used (0 m³/d)  </p>
-<p><strong>Hydraulic retention time (HRT)</strong>: 25 m³/d ÷ 2000 m³ = <strong>0.0125 d⁻¹</strong> or <strong>HRT ≈ 80 days</strong></p>
-<h3 id="5-build-plant-with-plantconfigurator">5. Build Plant with PlantConfigurator<a class="headerlink" href="#5-build-plant-with-plantconfigurator" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">plant</span> <span class="o">=</span> <span class="n">BiogasPlant</span><span class="p">(</span><span class="s2">"Quickstart Plant"</span><span class="p">)</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="n">configurator</span> <span class="o">=</span> <span class="n">PlantConfigurator</span><span class="p">(</span><span class="n">plant</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">)</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_digester</span><span class="p">(</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="n">digester_id</span><span class="o">=</span><span class="s2">"main_digester"</span><span class="p">,</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    <span class="n">V_liq</span><span class="o">=</span><span class="mf">2000.0</span><span class="p">,</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="n">V_gas</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="n">T_ad</span><span class="o">=</span><span class="mf">308.15</span><span class="p">,</span>  <span class="c1"># 35°C mesophilic</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"Main Digester"</span><span class="p">,</span>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>    <span class="n">load_initial_state</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    <span class="n">initial_state_file</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">initial_state_file</span><span class="p">),</span>
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    <span class="n">Q_substrates</span><span class="o">=</span><span class="n">Q_substrates</span><span class="p">,</span>
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="p">)</span>
-</code></pre></div>
-<p><strong>PlantConfigurator</strong> provides a high-level API that:<br/>
-- <strong>Automatically creates and attaches a gas storage to each digester</strong><br/>
-- Handles initialization with proper error checking<br/>
-- Validates component parameters<br/>
-- Manages connections between components  </p>
-<p>The gas storage is created with:<br/>
-- <strong>Type</strong>: Membrane storage (low-pressure, typical for biogas)<br/>
-- <strong>Capacity</strong>: Based on V_gas parameter (300 m³)<br/>
-- <strong>Pressure range</strong>: 0.95-1.05 bar (typical membrane storage)<br/>
-- <strong>Initial fill</strong>: 10% of capacity  </p>
-<p><strong>Design Parameters</strong>:<br/>
-- <code>V_liq=2000.0</code>: Liquid volume [m³] - typical for medium-scale farm plant<br/>
-- <code>V_gas=300.0</code>: Gas headspace [m³] - about 15% of liquid volume<br/>
-- <code>T_ad=308.15</code>: Operating temperature [K] = 35°C (mesophilic range)  </p>
-<h3 id="6-initialize-and-simulate">6. Initialize and Simulate<a class="headerlink" href="#6-initialize-and-simulate" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="n">plant</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="n">results</span> <span class="o">=</span> <span class="n">plant</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="n">duration</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>        <span class="c1"># 5 days</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mf">24.0</span><span class="p">,</span>      <span class="c1"># 1 hour time step</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="n">save_interval</span><span class="o">=</span><span class="mf">1.0</span>    <span class="c1"># Save results daily</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="p">)</span>
-</code></pre></div>
-<p><strong>Simulation Parameters</strong>:<br/>
-- <code>duration</code>: Total simulation time [days]<br/>
-- <code>dt</code>: Integration time step [days]. 1 hour (1/24 day) is standard for ADM1<br/>
-- <code>save_interval</code>: How often to save results [days]. Daily saves reduce memory usage  </p>
-<p><strong>Note</strong>: The simulator uses a BDF (Backward Differentiation Formula) solver optimized for stiff ODEs like ADM1.</p>
-<p><strong>Three-Pass Gas Flow Simulation</strong>:<br/>
-1. <strong>Pass 1</strong>: Digester produces biogas → Gas storage receives<br/>
-2. <strong>Pass 2</strong>: Gas storage updates internal state (pressure, volume)<br/>
-3. <strong>Pass 3</strong>: Gas available for downstream consumers (CHPs, etc.)  </p>
-<h3 id="7-display-results">7. Display Results<a class="headerlink" href="#7-display-results" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>    <span class="n">comp_results</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">"components"</span><span class="p">][</span><span class="s2">"main_digester"</span><span class="p">]</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Day </span><span class="si">{</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Biogas:  </span><span class="si">{</span><span class="n">comp_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'Q_gas'</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;8.1f</span><span class="si">}</span><span class="s2"> m³/d"</span><span class="p">)</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Methane: </span><span class="si">{</span><span class="n">comp_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'Q_ch4'</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;8.1f</span><span class="si">}</span><span class="s2"> m³/d"</span><span class="p">)</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  pH:      </span><span class="si">{</span><span class="n">comp_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'pH'</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;8.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  VFA:     </span><span class="si">{</span><span class="n">comp_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'VFA'</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;8.2f</span><span class="si">}</span><span class="s2"> g/L"</span><span class="p">)</span>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  TAC:     </span><span class="si">{</span><span class="n">comp_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'TAC'</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;8.2f</span><span class="si">}</span><span class="s2"> g/L"</span><span class="p">)</span>
-</code></pre></div>
-<p><strong>Key Process Indicators</strong>:<br/>
-- <strong>Q_gas</strong>: Total biogas production [m³/d]<br/>
-- <strong>Q_ch4</strong>: Methane production [m³/d]<br/>
-- <strong>pH</strong>: Process pH (optimal: 6.8-7.5)<br/>
-- <strong>VFA</strong>: Volatile Fatty Acids [g HAc-eq/L] (optimal: &lt;3 g/L)<br/>
-- <strong>TAC</strong>: Total Alkalinity [g CaCO₃-eq/L] (optimal: &gt;6 g/L)  </p>
-<p><strong>Gas Storage Indicators</strong> (included in digester results):<br/>
-- <strong>stored_volume_m3</strong>: Current gas volume in storage [m³]<br/>
-- <strong>pressure_bar</strong>: Current storage pressure [bar]<br/>
-- <strong>vented_volume_m3</strong>: Gas vented this timestep [m³]<br/>
-- <strong>Q_gas_supplied_m3_per_day</strong>: Gas available for consumers [m³/d]  </p>
-<h2 id="expected-output">Expected Output<a class="headerlink" href="#expected-output" title="Permanent link">¶</a></h2>
-<p>Running this example produces output like:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>======================================================================
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>PyADM1 Quickstart Example (PlantConfigurator version)
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>======================================================================
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>1. Creating feedstock...  
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>2. Loading initial state from CSV...  
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>   Loading from: digester_initial8.csv
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>3. Creating biogas plant...  
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>4. Adding digester with PlantConfigurator...  
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>   - Digester 'main_digester' created  
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>   - Gas storage 'main_digester_storage' automatically created  
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>   - Initial state: Loaded from digester_initial8.csv  
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>5. Initializing plant...  
-<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>6. Running simulation...  
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>   Duration: 5 days
-<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>   Time step: 1 hour
-<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a>   Save interval: 1 day
-<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>
-<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a>======================================================================
-<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a>SIMULATION RESULTS
-<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a>======================================================================
-<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a>
-<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a>Generated 6 daily result snapshots
-<a href="#__codelineno-7-24" id="__codelineno-7-24" name="__codelineno-7-24"></a>
-<a href="#__codelineno-7-25" id="__codelineno-7-25" name="__codelineno-7-25"></a>Day 0.0:
-<a href="#__codelineno-7-26" id="__codelineno-7-26" name="__codelineno-7-26"></a>  Biogas:   1245.3 m³/d
-<a href="#__codelineno-7-27" id="__codelineno-7-27" name="__codelineno-7-27"></a>  Methane:   748.2 m³/d
-<a href="#__codelineno-7-28" id="__codelineno-7-28" name="__codelineno-7-28"></a>  pH:          7.28
-<a href="#__codelineno-7-29" id="__codelineno-7-29" name="__codelineno-7-29"></a>  VFA:         2.34 g/L
-<a href="#__codelineno-7-30" id="__codelineno-7-30" name="__codelineno-7-30"></a>  TAC:         8.45 g/L
-<a href="#__codelineno-7-31" id="__codelineno-7-31" name="__codelineno-7-31"></a>  Storage:
-<a href="#__codelineno-7-32" id="__codelineno-7-32" name="__codelineno-7-32"></a>    - Volume: 30.0 m³ (10% full)  
-<a href="#__codelineno-7-33" id="__codelineno-7-33" name="__codelineno-7-33"></a>    - Pressure: 0.97 bar  
-<a href="#__codelineno-7-34" id="__codelineno-7-34" name="__codelineno-7-34"></a>    - Vented: 0.0 m³  
-<a href="#__codelineno-7-35" id="__codelineno-7-35" name="__codelineno-7-35"></a>
-<a href="#__codelineno-7-36" id="__codelineno-7-36" name="__codelineno-7-36"></a>Day 1.0:
-<a href="#__codelineno-7-37" id="__codelineno-7-37" name="__codelineno-7-37"></a>  Biogas:   1248.7 m³/d
-<a href="#__codelineno-7-38" id="__codelineno-7-38" name="__codelineno-7-38"></a>  Methane:   750.1 m³/d
-<a href="#__codelineno-7-39" id="__codelineno-7-39" name="__codelineno-7-39"></a>  pH:          7.29
-<a href="#__codelineno-7-40" id="__codelineno-7-40" name="__codelineno-7-40"></a>  VFA:         2.32 g/L
-<a href="#__codelineno-7-41" id="__codelineno-7-41" name="__codelineno-7-41"></a>  TAC:         8.47 g/L
-<a href="#__codelineno-7-42" id="__codelineno-7-42" name="__codelineno-7-42"></a>  Storage:
-<a href="#__codelineno-7-43" id="__codelineno-7-43" name="__codelineno-7-43"></a>    - Volume: 82.3 m³ (27% full)  
-<a href="#__codelineno-7-44" id="__codelineno-7-44" name="__codelineno-7-44"></a>    - Pressure: 1.01 bar  
-<a href="#__codelineno-7-45" id="__codelineno-7-45" name="__codelineno-7-45"></a>    - Vented: 0.0 m³  
-<a href="#__codelineno-7-46" id="__codelineno-7-46" name="__codelineno-7-46"></a>
-<a href="#__codelineno-7-47" id="__codelineno-7-47" name="__codelineno-7-47"></a>...
-<a href="#__codelineno-7-48" id="__codelineno-7-48" name="__codelineno-7-48"></a>
-<a href="#__codelineno-7-49" id="__codelineno-7-49" name="__codelineno-7-49"></a>======================================================================
-<a href="#__codelineno-7-50" id="__codelineno-7-50" name="__codelineno-7-50"></a>FINAL SUMMARY
-<a href="#__codelineno-7-51" id="__codelineno-7-51" name="__codelineno-7-51"></a>======================================================================
-<a href="#__codelineno-7-52" id="__codelineno-7-52" name="__codelineno-7-52"></a>Total biogas production:  1251.4 m³/d
-<a href="#__codelineno-7-53" id="__codelineno-7-53" name="__codelineno-7-53"></a>Total methane production: 751.9 m³/d
-<a href="#__codelineno-7-54" id="__codelineno-7-54" name="__codelineno-7-54"></a>Methane content:          60.1%
-<a href="#__codelineno-7-55" id="__codelineno-7-55" name="__codelineno-7-55"></a>Process stability (pH):   7.30
-<a href="#__codelineno-7-56" id="__codelineno-7-56" name="__codelineno-7-56"></a>Gas storage utilization:  35%
-<a href="#__codelineno-7-57" id="__codelineno-7-57" name="__codelineno-7-57"></a>======================================================================
-<a href="#__codelineno-7-58" id="__codelineno-7-58" name="__codelineno-7-58"></a>
-<a href="#__codelineno-7-59" id="__codelineno-7-59" name="__codelineno-7-59"></a>✅ Simulation completed successfully!
-<a href="#__codelineno-7-60" id="__codelineno-7-60" name="__codelineno-7-60"></a>
-<a href="#__codelineno-7-61" id="__codelineno-7-61" name="__codelineno-7-61"></a>💾 Configuration saved to: output/quickstart_config.json
-</code></pre></div>
-<h2 id="process-interpretation">Process Interpretation<a class="headerlink" href="#process-interpretation" title="Permanent link">¶</a></h2>
-<h3 id="typical-performance-metrics">Typical Performance Metrics<a class="headerlink" href="#typical-performance-metrics" title="Permanent link">¶</a></h3>
-<p>For this configuration (25 m³/d feed, HRT ≈ 80 days):</p>
+<h2 id="plant-configuration">Plant Configuration<a class="headerlink" href="#plant-configuration" title="Permanent link">¶</a></h2>
 <table>
 <thead>
 <tr>
-<th>Metric</th>
-<th>Value</th>
-<th>Assessment</th>
+<th>Component</th>
+<th>ID</th>
+<th>Settings</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Biogas production</td>
-<td>~1250 m³/d</td>
-<td>Good</td>
+<td>Digester</td>
+<td><code>main_digester</code></td>
+<td>1050 m³ liquid volume, 150 m³ gas headspace, 42 °C (315.15 K)</td>
 </tr>
 <tr>
-<td>Methane content</td>
-<td>~60%</td>
-<td>Typical for agricultural substrates</td>
-</tr>
-<tr>
-<td>Specific gas yield</td>
-<td>~50 m³/m³ feed</td>
-<td>Good for corn silage + manure mix</td>
-</tr>
-<tr>
-<td>pH</td>
-<td>7.28-7.30</td>
-<td>Optimal (stable)</td>
-</tr>
-<tr>
-<td>VFA</td>
-<td>2.3-2.4 g/L</td>
-<td>Good (well below 3 g/L limit)</td>
-</tr>
-<tr>
-<td>TAC</td>
-<td>8.4-8.5 g CaCO₃/L</td>
-<td>Excellent buffer capacity</td>
-</tr>
-<tr>
-<td>FOS/TAC</td>
-<td>~0.27</td>
-<td>Stable process (&lt; 0.3)</td>
+<td>Gas storage</td>
+<td><code>main_digester_storage</code></td>
+<td>Membrane type, 150 m³ capacity; created by <code>add_digester()</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="process-stability-indicators">Process Stability Indicators<a class="headerlink" href="#process-stability-indicators" title="Permanent link">¶</a></h3>
-<p><strong>pH Stability</strong>: The pH remains around 7.3, indicating:<br/>
-- Good buffer capacity (high TAC)<br/>
-- Balanced VFA production and consumption<br/>
-- No acidification risk  </p>
-<p><strong>VFA/TAC Balance</strong>: VFA at 2.3 g/L with TAC at 8.4 g/L gives FOS/TAC ≈ 0.27:<br/>
-- &lt; 0.3: Stable process<br/>
-- 0.3-0.4: Monitor closely<br/>
-- &gt; 0.4: Risk of acidification  </p>
-<p><strong>Methane Content</strong>: 60% CH₄ is typical for:<br/>
-- Energy crops (corn silage)<br/>
-- Animal manure<br/>
-- Mesophilic digestion  </p>
-<h2 id="gas-storage-behavior">Gas Storage Behavior<a class="headerlink" href="#gas-storage-behavior" title="Permanent link">¶</a></h2>
-<p>The automatically created gas storage:<br/>
-- <strong>Type</strong>: Low-pressure membrane storage<br/>
-- <strong>Capacity</strong>: ~300 m³ (based on V_gas)<br/>
-- <strong>Pressure range</strong>: 0.95-1.05 bar<br/>
-- <strong>Function</strong>: Buffers gas production fluctuations<br/>
-- <strong>Safety</strong>: Vents excess gas when full to prevent overpressure  </p>
-<p><strong>Storage Dynamics</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="s1">'gas_storage'</span><span class="p">:</span> <span class="p">{</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>    <span class="s1">'stored_volume_m3'</span><span class="p">:</span> <span class="mf">150.0</span><span class="p">,</span>      <span class="c1"># Current gas volume</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    <span class="s1">'pressure_bar'</span><span class="p">:</span> <span class="mf">1.01</span><span class="p">,</span>            <span class="c1"># Current pressure</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>    <span class="s1">'vented_volume_m3'</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>         <span class="c1"># Vented this timestep</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    <span class="s1">'utilization'</span><span class="p">:</span> <span class="mf">0.50</span><span class="p">,</span>             <span class="c1"># 50% full</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>    <span class="s1">'Q_gas_supplied_m3_per_day'</span><span class="p">:</span> <span class="mf">1250.0</span>  <span class="c1"># Available for consumers</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="p">}</span>
-</code></pre></div></p>
-<p><strong>When storage fills up</strong>:<br/>
-- Pressure increases from 0.95 to 1.05 bar<br/>
-- At 1.05 bar (full capacity), excess gas is vented<br/>
-- Venting prevents overpressure and equipment damage<br/>
-- In real plants, vented gas goes to flare for safety combustion  </p>
+<p>The substrate feed is the <code>DEFAULT_FEED</code> of the script:</p>
+<table>
+<thead>
+<tr>
+<th>Substrate ID</th>
+<th>Material</th>
+<th>Feed rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>maize_silage_milk_ripeness</code></td>
+<td>Maize silage (milk ripeness)</td>
+<td>11.4 t/d</td>
+</tr>
+<tr>
+<td><code>swine_manure</code></td>
+<td>Pig slurry</td>
+<td>6.1 t/d</td>
+</tr>
+<tr>
+<td><code>cattle_manure</code></td>
+<td>Cattle slurry</td>
+<td>5.0 t/d</td>
+</tr>
+<tr>
+<td>Total</td>
+<td></td>
+<td>22.5 t/d</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Unit of the feed rates</strong>: With the default <code>Feedstock</code> convention
+(<code>simba_q_convention=True</code>) the feed rates are tonnes of fresh matter per day
+(t FM/d). For the two slurries (density 1000 kg/m³) a tonne is a cubic metre;
+the 11.4 t/d of maize silage (density 1129 kg/m³) take up 10.1 m³/d. The
+digester therefore receives
+21.2 m³/d, and the hydraulic retention time is
+1050 m³ ÷ 21.2 m³/d ≈ <strong>49.5 d</strong>. See
+<a href="../../user_guide/adm1_implementation/#volumetric-adm1da-convention-for-q">Volumetric ADM1da convention for Q</a>.</p>
+<p><strong>Gas storage</strong>: The digester has no gas storage of its own; <code>V_gas</code> is only
+the headspace of the ADM1 gas phase. <code>add_digester()</code> adds a separate
+<code>GasStorage</code> component named <code>&lt;digester_id&gt;_storage</code>, here
+<code>main_digester_storage</code>, and connects it to the digester with a gas
+connection. Its capacity is <code>max(50, V_gas)</code>, here 150 m³. The example has no
+CHP or other gas consumer, so nothing is drawn from the storage: it is full
+after the first day and vents the whole production from then on (see
+<a href="#configuration-export">Configuration Export</a>). The component is described
+under <a href="../../user_guide/components/energy/#gas-storage">Gas Storage</a>.</p>
+<h2 id="code-walkthrough">Code Walkthrough<a class="headerlink" href="#code-walkthrough" title="Permanent link">¶</a></h2>
+<p>The excerpts are taken from the script.</p>
+<h3 id="1-substrate-mix">1. Substrate Mix<a class="headerlink" href="#1-substrate-mix" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Default substrate mix [t FM/d] — maize silage + swine + cattle manure.</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="n">DEFAULT_FEED</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    <span class="s2">"maize_silage_milk_ripeness"</span><span class="p">:</span> <span class="mf">11.4</span><span class="p">,</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    <span class="s2">"swine_manure"</span><span class="p">:</span> <span class="mf">6.1</span><span class="p">,</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    <span class="s2">"cattle_manure"</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="p">}</span>
+</code></pre></div>
+<p>Each key is the ID of a substrate file under
+<a href="https://github.com/dgaida/PyADM1ODE/tree/master/data/substrates"><code>data/substrates/</code></a>,
+which is the file name without extension (see
+<a href="../../substrates/library/">Example Substrates</a>). Any number of substrates may
+be listed. <code>main(feed=...)</code> accepts another mapping of the same form and
+splits it into two lists:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">substrate_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">feed</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">feed</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+</code></pre></div>
+<h3 id="2-feedstock-and-plant">2. Feedstock and Plant<a class="headerlink" href="#2-feedstock-and-plant" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1</span><span class="w"> </span><span class="kn">import</span> <span class="n">BiogasPlant</span><span class="p">,</span> <span class="n">Feedstock</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.configurator.plant_configurator</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlantConfigurator</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">(</span><span class="n">substrate_ids</span><span class="p">,</span> <span class="n">feeding_freq</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span> <span class="n">total_simtime</span><span class="o">=</span><span class="mi">160</span><span class="p">)</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="n">plant</span> <span class="o">=</span> <span class="n">BiogasPlant</span><span class="p">(</span><span class="s2">"ADM1 Basic Plant"</span><span class="p">)</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">PlantConfigurator</span><span class="p">(</span><span class="n">plant</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li><code>Feedstock</code> loads the listed substrates and computes the ADM1 influent from their laboratory values. <code>feeding_freq</code> is the time between feeding events in hours, <code>total_simtime</code> the length of its time grid in days.  </li>
+<li><code>BiogasPlant</code> is the container for all components and their connections.  </li>
+<li><code>PlantConfigurator</code> adds components with defaults and connects them.  </li>
+</ul>
+<h3 id="3-digester">3. Digester<a class="headerlink" href="#3-digester" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">cfg</span><span class="o">.</span><span class="n">add_digester</span><span class="p">(</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    <span class="n">digester_id</span><span class="o">=</span><span class="s2">"main_digester"</span><span class="p">,</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="n">V_liq</span><span class="o">=</span><span class="mf">1050.0</span><span class="p">,</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="n">V_gas</span><span class="o">=</span><span class="mf">150.0</span><span class="p">,</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="n">T_ad</span><span class="o">=</span><span class="mf">315.15</span><span class="p">,</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    <span class="n">Q_substrates</span><span class="o">=</span><span class="n">Q_substrates</span><span class="p">,</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="n">k_L_a</span><span class="o">=</span><span class="mf">200.0</span><span class="p">,</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="p">)</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="n">plant</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>V_liq</code></td>
+<td>1050 m³</td>
+<td>Liquid volume</td>
+</tr>
+<tr>
+<td><code>V_gas</code></td>
+<td>150 m³</td>
+<td>Gas headspace</td>
+</tr>
+<tr>
+<td><code>T_ad</code></td>
+<td>315.15 K</td>
+<td>Operating temperature (42 °C)</td>
+</tr>
+<tr>
+<td><code>Q_substrates</code></td>
+<td><code>[11.4, 6.1, 5.0]</code></td>
+<td>Feed rates, in the order of the substrate IDs</td>
+</tr>
+<tr>
+<td><code>k_L_a</code></td>
+<td>200 d⁻¹</td>
+<td>Gas–liquid mass-transfer coefficient</td>
+</tr>
+</tbody>
+</table>
+<p>The volumes and the temperature equal the defaults of <code>add_digester()</code>, and
+200 d⁻¹ is also the model default of <code>k_L_a</code>.</p>
+<p><code>add_digester()</code> does three things:</p>
+<ul>
+<li>It creates the digester and derives its initial state from the feedstock: a pre-inoculated state at pH 7 with active biomass, built for this substrate mix and feed rate. No state file is needed.  </li>
+<li>It creates the gas storage <code>main_digester_storage</code>.  </li>
+<li>It connects digester and storage with a gas connection.  </li>
+</ul>
+<p>It returns the digester and a one-line description of the initial state; the
+script does not use the return value. <code>plant.initialize()</code> initializes every
+component that is not initialized yet.</p>
+<h3 id="4-simulation">4. Simulation<a class="headerlink" href="#4-simulation" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="n">results</span> <span class="o">=</span> <span class="n">plant</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mf">150.0</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">save_interval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li><code>duration</code>: simulated time [d]  </li>
+<li><code>dt</code>: plant time step [d]. In every step the digester is computed first, then the gas storage receives its production. Within the step the digester integrates the ADM1 equations with SciPy's BDF solver and an adaptive step size.  </li>
+<li><code>save_interval</code>: spacing of the saved results [d]  </li>
+</ul>
+<p><code>results</code> holds 150 entries, one per day, with <code>time</code> from 1.0 to 150.0. Each
+entry has the form <code>{"time": ..., "components": {component_id: outputs}}</code>.</p>
+<h3 id="5-report">5. Report<a class="headerlink" href="#5-report" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">])</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="n">dig</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s2">"components"</span><span class="p">][</span><span class="s2">"main_digester"</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="n">q_gas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">c</span><span class="p">[</span><span class="s2">"Q_gas"</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">dig</span><span class="p">])</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="n">q_ch4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">c</span><span class="p">[</span><span class="s2">"Q_ch4"</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">dig</span><span class="p">])</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="n">pH</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">c</span><span class="p">[</span><span class="s2">"pH"</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">dig</span><span class="p">])</span>
+</code></pre></div>
+<p><code>Q_gas</code> and <code>Q_ch4</code> are <strong>dry gas at standard conditions</strong> (0 °C,
+1.01325 bar), in Nm³/d; the water vapour of the headspace is not part of
+them. See
+<a href="../../user_guide/adm1_implementation/#reported-gas-flows">Reported gas flows</a>.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># The first saved result is the end of day 1; then every tenth day and the last.</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">({</span><span class="nb">int</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])}):</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">times</span> <span class="o">-</span> <span class="n">day</span><span class="p">)))</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    <span class="n">ch4p</span> <span class="o">=</span> <span class="n">q_ch4</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">q_gas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mf">100.0</span> <span class="k">if</span> <span class="n">q_gas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="mf">0.0</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">day</span><span class="si">:</span><span class="s2">&gt;5d</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">q_gas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;10.1f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">q_ch4</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;10.1f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">ch4p</span><span class="si">:</span><span class="s2">&gt;6.1f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">pH</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;6.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<p>The table has one row for the end of day 1, for every tenth day and for the
+last day. The column <code>CH4%</code> is <code>Q_ch4 / Q_gas</code>, the methane content of the
+dry gas. There is no result for day 0, because the first one is saved after
+the first step.</p>
+<h3 id="6-saving">6. Saving<a class="headerlink" href="#6-saving" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="n">output_path</span> <span class="o">=</span> <span class="n">REPO_ROOT</span> <span class="o">/</span> <span class="s2">"output"</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="n">output_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="n">plant</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">output_path</span> <span class="o">/</span> <span class="s2">"quickstart_config.json"</span><span class="p">))</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="k">return</span> <span class="n">plant</span><span class="p">,</span> <span class="n">results</span>
+</code></pre></div>
+<h2 id="output">Output<a class="headerlink" href="#output" title="Permanent link">¶</a></h2>
+<p><code>python examples/01_basic_digester.py</code>, run from the repository root, prints
+(rows for days 80 to 130 and the start of the path omitted):</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>Substrate mix:
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>  maize_silage_milk_ripeness           11.40 t FM/d
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>  swine_manure                          6.10 t FM/d
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>  cattle_manure                         5.00 t FM/d
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>  TOTAL                                22.50 t FM/d
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>Simulated 100/150 steps
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>  Day      Biogas     Methane    CH4%      pH
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>--------------------------------------------------
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>    1      1765.6       870.0    49.3    7.38
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>   10      1894.4      1009.7    53.3    7.42
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>   20      1926.0      1026.3    53.3    7.43
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>   30      1943.8      1035.3    53.3    7.45
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>   40      1953.1      1039.5    53.2    7.46
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>   50      1957.4      1040.9    53.2    7.46
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>   60      1959.1      1040.9    53.1    7.46
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>   70      1959.7      1040.5    53.1    7.46
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>...
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a>  140      1959.7      1039.2    53.0    7.45
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>  150      1959.7      1039.2    53.0    7.45
+<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a>Plant configuration saved to ...\PyADM1ODE\output\quickstart_config.json
+</code></pre></div>
+<p>The line <code>Simulated 100/150 steps</code> is a progress message of
+<code>plant.simulate()</code>.</p>
+<h2 id="interpreting-the-output">Interpreting the Output<a class="headerlink" href="#interpreting-the-output" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Quantity</th>
+<th>Value at day 150</th>
+<th>Obtained from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Biogas (dry)</td>
+<td>1959.7 Nm³/d</td>
+<td><code>Q_gas</code></td>
+</tr>
+<tr>
+<td>Methane</td>
+<td>1039.2 Nm³/d</td>
+<td><code>Q_ch4</code></td>
+</tr>
+<tr>
+<td>Methane content of the dry gas</td>
+<td>53.0 %</td>
+<td><code>Q_ch4 / Q_gas</code></td>
+</tr>
+<tr>
+<td>pH</td>
+<td>7.45</td>
+<td><code>pH</code></td>
+</tr>
+<tr>
+<td>Biogas per tonne of fresh matter</td>
+<td>87.1 Nm³/t</td>
+<td>1959.7 Nm³/d ÷ 22.5 t/d</td>
+</tr>
+<tr>
+<td>Methane per tonne of fresh matter</td>
+<td>46.2 Nm³/t</td>
+<td>1039.2 Nm³/d ÷ 22.5 t/d</td>
+</tr>
+</tbody>
+</table>
+<p>Course over the 150 days:</p>
+<ul>
+<li><strong>Start</strong>: The first row (end of day 1) shows 1765.6 Nm³/d of biogas with 49.3 % methane. At day 10 the methane content is 53.3 %.  </li>
+<li><strong>Biogas</strong>: It rises to 1959.7 Nm³/d by day 70 and stays there.  </li>
+<li><strong>Methane</strong>: It reaches 1040.9 Nm³/d at day 50 and settles at 1039.2 Nm³/d. The methane content drifts from 53.3 % to 53.0 %.  </li>
+<li><strong>pH</strong>: It rises from 7.38 to 7.46 and stays between 7.45 and 7.46 from day 30 on.  </li>
+</ul>
+<h3 id="more-values-in-the-results">More Values in the Results<a class="headerlink" href="#more-values-in-the-results" title="Permanent link">¶</a></h3>
+<p>Every saved entry holds the complete output of both components. They can be
+read at the end of <code>main()</code> or from its return value:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="n">last</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">"components"</span><span class="p">]</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="n">digester</span> <span class="o">=</span> <span class="n">last</span><span class="p">[</span><span class="s2">"main_digester"</span><span class="p">]</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="n">storage</span> <span class="o">=</span> <span class="n">last</span><span class="p">[</span><span class="s2">"main_digester_storage"</span><span class="p">]</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">digester</span><span class="p">[</span><span class="s2">"VFA"</span><span class="p">],</span> <span class="n">digester</span><span class="p">[</span><span class="s2">"TAC"</span><span class="p">],</span> <span class="n">digester</span><span class="p">[</span><span class="s2">"HRT"</span><span class="p">])</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">storage</span><span class="p">[</span><span class="s2">"stored_volume_m3"</span><span class="p">],</span> <span class="n">storage</span><span class="p">[</span><span class="s2">"vented_volume_m3"</span><span class="p">])</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Meaning</th>
+<th>Value at day 150</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Q_co2</code></td>
+<td>Carbon dioxide, dry [Nm³/d]</td>
+<td>920.5</td>
+</tr>
+<tr>
+<td><code>VFA</code></td>
+<td>Volatile fatty acids [g HAc-eq/L]</td>
+<td>2.60</td>
+</tr>
+<tr>
+<td><code>TAC</code></td>
+<td>Acid capacity [g CaCO₃/L]</td>
+<td>6.78</td>
+</tr>
+<tr>
+<td><code>TS</code></td>
+<td>Total solids [% FM]</td>
+<td>10.6</td>
+</tr>
+<tr>
+<td><code>HRT</code></td>
+<td>Filtered hydraulic retention time [d]</td>
+<td>47.1</td>
+</tr>
+<tr>
+<td><code>Q_out</code></td>
+<td>Effluent [m³/d]</td>
+<td>21.2</td>
+</tr>
+</tbody>
+</table>
+<p><code>HRT</code> follows a first-order lag towards the 49.5 d given above and has
+reached 47.1 d at day 150.</p>
+<p>Gas flow and pH look settled after 70 days, the acids are not: VFA rises from
+0.24 g/L at the end of day 1 to 1.96 g/L at day 100 and 2.60 g/L at day 150,
+while TAC falls from 7.40 to 6.78 g CaCO₃/L. Within the 150 days the digester
+has therefore not reached a full steady state. Typical operating ranges of
+these indicators are listed under
+<a href="../../user_guide/components/biological/#process-monitoring">Process Monitoring</a>.</p>
 <h2 id="configuration-export">Configuration Export<a class="headerlink" href="#configuration-export" title="Permanent link">¶</a></h2>
-<p>The plant configuration is saved to JSON:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="p">{</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">  </span><span class="nt">"plant_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Quickstart Plant"</span><span class="p">,</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w">  </span><span class="nt">"simulation_time"</span><span class="p">:</span><span class="w"> </span><span class="mf">5.0</span><span class="p">,</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w">  </span><span class="nt">"components"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w">    </span><span class="p">{</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="w">      </span><span class="nt">"component_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"main_digester"</span><span class="p">,</span>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="w">      </span><span class="nt">"component_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"digester"</span><span class="p">,</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w">      </span><span class="nt">"V_liq"</span><span class="p">:</span><span class="w"> </span><span class="mf">2000.0</span><span class="p">,</span>
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="w">      </span><span class="nt">"V_gas"</span><span class="p">:</span><span class="w"> </span><span class="mf">300.0</span><span class="p">,</span>
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a><span class="w">      </span><span class="nt">"T_ad"</span><span class="p">:</span><span class="w"> </span><span class="mf">308.15</span><span class="p">,</span>
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="w">      </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="w">    </span><span class="p">},</span>
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="w">    </span><span class="p">{</span>
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a><span class="w">      </span><span class="nt">"component_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"main_digester_storage"</span><span class="p">,</span>
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a><span class="w">      </span><span class="nt">"component_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"storage"</span><span class="p">,</span>
-<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a><span class="w">      </span><span class="nt">"storage_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"membrane"</span><span class="p">,</span>
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a><span class="w">      </span><span class="nt">"capacity_m3"</span><span class="p">:</span><span class="w"> </span><span class="mf">300.0</span><span class="p">,</span>
-<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a><span class="w">      </span><span class="nt">"p_min_bar"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
-<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a><span class="w">      </span><span class="nt">"p_max_bar"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.05</span>
-<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a><span class="w">    </span><span class="p">}</span>
-<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a><span class="w">  </span><span class="p">],</span>
-<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a><span class="w">  </span><span class="nt">"connections"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a><span class="w">    </span><span class="p">{</span>
-<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a><span class="w">      </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"main_digester"</span><span class="p">,</span>
-<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a><span class="w">      </span><span class="nt">"to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"main_digester_storage"</span><span class="p">,</span>
-<a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gas"</span>
-<a href="#__codelineno-9-27" id="__codelineno-9-27" name="__codelineno-9-27"></a><span class="w">    </span><span class="p">}</span>
-<a href="#__codelineno-9-28" id="__codelineno-9-28" name="__codelineno-9-28"></a><span class="w">  </span><span class="p">]</span>
-<a href="#__codelineno-9-29" id="__codelineno-9-29" name="__codelineno-9-29"></a><span class="p">}</span>
+<p><code>plant.to_json()</code> writes the structure of the plant and its state at the end
+of the run to <code>output/quickstart_config.json</code>. Shortened, the file reads:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="p">{</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w">  </span><span class="nt">"plant_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ADM1 Basic Plant"</span><span class="p">,</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w">  </span><span class="err">...</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="w">  </span><span class="nt">"substrate_use"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w">    </span><span class="nt">"maize_silage_milk_ripeness"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="w">      </span><span class="nt">"mass_t"</span><span class="p">:</span><span class="w"> </span><span class="mf">1710.000000000004</span><span class="p">,</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="w">      </span><span class="nt">"cost"</span><span class="p">:</span><span class="w"> </span><span class="mf">68399.99999999999</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="w">    </span><span class="p">},</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="w">    </span><span class="err">...</span>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="w">  </span><span class="p">},</span>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a><span class="w">  </span><span class="nt">"simulation_time"</span><span class="p">:</span><span class="w"> </span><span class="mf">150.0</span><span class="p">,</span>
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="w">  </span><span class="nt">"components"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a><span class="w">    </span><span class="p">{</span>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a><span class="w">      </span><span class="nt">"component_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"main_digester"</span><span class="p">,</span>
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a><span class="w">      </span><span class="nt">"component_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"digester"</span><span class="p">,</span>
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a><span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"main_digester"</span><span class="p">,</span>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a><span class="w">      </span><span class="nt">"V_liq"</span><span class="p">:</span><span class="w"> </span><span class="mf">1050.0</span><span class="p">,</span>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a><span class="w">      </span><span class="nt">"V_gas"</span><span class="p">:</span><span class="w"> </span><span class="mf">150.0</span><span class="p">,</span>
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a><span class="w">      </span><span class="nt">"T_ad"</span><span class="p">:</span><span class="w"> </span><span class="mf">315.15</span><span class="p">,</span>
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a><span class="w">      </span><span class="err">...</span>
+<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a><span class="w">      </span><span class="nt">"calibration_parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a><span class="w">        </span><span class="nt">"k_L_a"</span><span class="p">:</span><span class="w"> </span><span class="mf">200.0</span>
+<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a><span class="w">      </span><span class="p">},</span>
+<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a><span class="w">      </span><span class="err">...</span>
+<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a><span class="w">      </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a><span class="w">        </span><span class="nt">"adm1_state"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span>
+<a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a><span class="w">        </span><span class="nt">"Q_substrates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-11-28" id="__codelineno-11-28" name="__codelineno-11-28"></a><span class="w">          </span><span class="mf">11.4</span><span class="p">,</span>
+<a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a><span class="w">          </span><span class="mf">6.1</span><span class="p">,</span>
+<a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a><span class="w">          </span><span class="mf">5.0</span>
+<a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a><span class="w">        </span><span class="p">],</span>
+<a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a><span class="w">        </span><span class="nt">"Q_gas"</span><span class="p">:</span><span class="w"> </span><span class="mf">1959.7029555067936</span><span class="p">,</span>
+<a href="#__codelineno-11-33" id="__codelineno-11-33" name="__codelineno-11-33"></a><span class="w">        </span><span class="nt">"Q_ch4"</span><span class="p">:</span><span class="w"> </span><span class="mf">1039.157036397983</span><span class="p">,</span>
+<a href="#__codelineno-11-34" id="__codelineno-11-34" name="__codelineno-11-34"></a><span class="w">        </span><span class="nt">"Q_co2"</span><span class="p">:</span><span class="w"> </span><span class="mf">920.5338387696268</span><span class="p">,</span>
+<a href="#__codelineno-11-35" id="__codelineno-11-35" name="__codelineno-11-35"></a><span class="w">        </span><span class="nt">"pH"</span><span class="p">:</span><span class="w"> </span><span class="mf">7.452384393187586</span><span class="p">,</span>
+<a href="#__codelineno-11-36" id="__codelineno-11-36" name="__codelineno-11-36"></a><span class="w">        </span><span class="nt">"VFA"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.599257770172284</span><span class="p">,</span>
+<a href="#__codelineno-11-37" id="__codelineno-11-37" name="__codelineno-11-37"></a><span class="w">        </span><span class="nt">"TAC"</span><span class="p">:</span><span class="w"> </span><span class="mf">6.775870356966873</span><span class="p">,</span>
+<a href="#__codelineno-11-38" id="__codelineno-11-38" name="__codelineno-11-38"></a><span class="w">        </span><span class="nt">"TS"</span><span class="p">:</span><span class="w"> </span><span class="mf">10.635918532942508</span><span class="p">,</span>
+<a href="#__codelineno-11-39" id="__codelineno-11-39" name="__codelineno-11-39"></a><span class="w">        </span><span class="nt">"HRT"</span><span class="p">:</span><span class="w"> </span><span class="mf">47.13833332586989</span><span class="p">,</span>
+<a href="#__codelineno-11-40" id="__codelineno-11-40" name="__codelineno-11-40"></a><span class="w">        </span><span class="nt">"V_liq"</span><span class="p">:</span><span class="w"> </span><span class="mf">1050.0</span>
+<a href="#__codelineno-11-41" id="__codelineno-11-41" name="__codelineno-11-41"></a><span class="w">      </span><span class="p">},</span>
+<a href="#__codelineno-11-42" id="__codelineno-11-42" name="__codelineno-11-42"></a><span class="w">      </span><span class="nt">"component_class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Digester"</span>
+<a href="#__codelineno-11-43" id="__codelineno-11-43" name="__codelineno-11-43"></a><span class="w">    </span><span class="p">},</span>
+<a href="#__codelineno-11-44" id="__codelineno-11-44" name="__codelineno-11-44"></a><span class="w">    </span><span class="p">{</span>
+<a href="#__codelineno-11-45" id="__codelineno-11-45" name="__codelineno-11-45"></a><span class="w">      </span><span class="nt">"component_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"main_digester_storage"</span><span class="p">,</span>
+<a href="#__codelineno-11-46" id="__codelineno-11-46" name="__codelineno-11-46"></a><span class="w">      </span><span class="nt">"component_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"storage"</span><span class="p">,</span>
+<a href="#__codelineno-11-47" id="__codelineno-11-47" name="__codelineno-11-47"></a><span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"main_digester Gas Storage"</span><span class="p">,</span>
+<a href="#__codelineno-11-48" id="__codelineno-11-48" name="__codelineno-11-48"></a><span class="w">      </span><span class="nt">"storage_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"membrane"</span><span class="p">,</span>
+<a href="#__codelineno-11-49" id="__codelineno-11-49" name="__codelineno-11-49"></a><span class="w">      </span><span class="nt">"capacity_m3"</span><span class="p">:</span><span class="w"> </span><span class="mf">150.0</span><span class="p">,</span>
+<a href="#__codelineno-11-50" id="__codelineno-11-50" name="__codelineno-11-50"></a><span class="w">      </span><span class="err">...</span>
+<a href="#__codelineno-11-51" id="__codelineno-11-51" name="__codelineno-11-51"></a><span class="w">      </span><span class="nt">"stored_volume_m3"</span><span class="p">:</span><span class="w"> </span><span class="mf">150.0</span><span class="p">,</span>
+<a href="#__codelineno-11-52" id="__codelineno-11-52" name="__codelineno-11-52"></a><span class="w">      </span><span class="nt">"ch4_fraction"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5302625700153639</span><span class="p">,</span>
+<a href="#__codelineno-11-53" id="__codelineno-11-53" name="__codelineno-11-53"></a><span class="w">      </span><span class="nt">"co2_fraction"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.4697312655990599</span><span class="p">,</span>
+<a href="#__codelineno-11-54" id="__codelineno-11-54" name="__codelineno-11-54"></a><span class="w">      </span><span class="err">...</span>
+<a href="#__codelineno-11-55" id="__codelineno-11-55" name="__codelineno-11-55"></a><span class="w">      </span><span class="nt">"cumulative_vented_m3"</span><span class="p">:</span><span class="w"> </span><span class="mf">291889.75429776055</span><span class="p">,</span>
+<a href="#__codelineno-11-56" id="__codelineno-11-56" name="__codelineno-11-56"></a><span class="w">      </span><span class="nt">"outputs_data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-11-57" id="__codelineno-11-57" name="__codelineno-11-57"></a><span class="w">        </span><span class="nt">"stored_volume_m3"</span><span class="p">:</span><span class="w"> </span><span class="mf">150.0</span><span class="p">,</span>
+<a href="#__codelineno-11-58" id="__codelineno-11-58" name="__codelineno-11-58"></a><span class="w">        </span><span class="nt">"pressure_bar"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.05</span><span class="p">,</span>
+<a href="#__codelineno-11-59" id="__codelineno-11-59" name="__codelineno-11-59"></a><span class="w">        </span><span class="nt">"utilization"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<a href="#__codelineno-11-60" id="__codelineno-11-60" name="__codelineno-11-60"></a><span class="w">        </span><span class="nt">"vented_volume_m3"</span><span class="p">:</span><span class="w"> </span><span class="mf">1959.7029555067938</span><span class="p">,</span>
+<a href="#__codelineno-11-61" id="__codelineno-11-61" name="__codelineno-11-61"></a><span class="w">        </span><span class="nt">"Q_gas_supplied_m3_per_day"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<a href="#__codelineno-11-62" id="__codelineno-11-62" name="__codelineno-11-62"></a><span class="w">        </span><span class="err">...</span>
+<a href="#__codelineno-11-63" id="__codelineno-11-63" name="__codelineno-11-63"></a><span class="w">      </span><span class="p">},</span>
+<a href="#__codelineno-11-64" id="__codelineno-11-64" name="__codelineno-11-64"></a><span class="w">      </span><span class="err">...</span>
+<a href="#__codelineno-11-65" id="__codelineno-11-65" name="__codelineno-11-65"></a><span class="w">      </span><span class="nt">"component_class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GasStorage"</span>
+<a href="#__codelineno-11-66" id="__codelineno-11-66" name="__codelineno-11-66"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-11-67" id="__codelineno-11-67" name="__codelineno-11-67"></a><span class="w">  </span><span class="p">],</span>
+<a href="#__codelineno-11-68" id="__codelineno-11-68" name="__codelineno-11-68"></a><span class="w">  </span><span class="nt">"connections"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-11-69" id="__codelineno-11-69" name="__codelineno-11-69"></a><span class="w">    </span><span class="p">{</span>
+<a href="#__codelineno-11-70" id="__codelineno-11-70" name="__codelineno-11-70"></a><span class="w">      </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"main_digester"</span><span class="p">,</span>
+<a href="#__codelineno-11-71" id="__codelineno-11-71" name="__codelineno-11-71"></a><span class="w">      </span><span class="nt">"to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"main_digester_storage"</span><span class="p">,</span>
+<a href="#__codelineno-11-72" id="__codelineno-11-72" name="__codelineno-11-72"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gas"</span>
+<a href="#__codelineno-11-73" id="__codelineno-11-73" name="__codelineno-11-73"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-11-74" id="__codelineno-11-74" name="__codelineno-11-74"></a><span class="w">  </span><span class="p">]</span>
+<a href="#__codelineno-11-75" id="__codelineno-11-75" name="__codelineno-11-75"></a><span class="p">}</span>
 </code></pre></div>
-<p>This JSON file can be reloaded to restore the exact plant state:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="n">plant</span> <span class="o">=</span> <span class="n">BiogasPlant</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="s2">"output/quickstart_config.json"</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">)</span>
+<ul>
+<li><code>substrate_use</code> is the fresh matter fed over the run and its cost: 11.4 t/d × 150 d = 1710 t of maize silage.  </li>
+<li><code>state</code> of the digester holds the 41 ADM1 state variables and the indicators of the last step.  </li>
+<li>The storage entry shows where the gas went: the storage is full (150 m³ of 150 m³), supplied nothing (<code>Q_gas_supplied_m3_per_day</code> is 0) and vented the production of the last day (1959.7 m³). Over the run it vented 291 890 m³ (<code>cumulative_vented_m3</code>).  </li>
+</ul>
+<p>The file can be loaded again to continue from the saved state. The feedstock
+is not stored in it and has to be passed in, with the substrates in the same
+order:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1</span><span class="w"> </span><span class="kn">import</span> <span class="n">BiogasPlant</span><span class="p">,</span> <span class="n">Feedstock</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">(</span>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>    <span class="p">[</span><span class="s2">"maize_silage_milk_ripeness"</span><span class="p">,</span> <span class="s2">"swine_manure"</span><span class="p">,</span> <span class="s2">"cattle_manure"</span><span class="p">],</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>    <span class="n">feeding_freq</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>    <span class="n">total_simtime</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="p">)</span>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="n">plant</span> <span class="o">=</span> <span class="n">BiogasPlant</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="s2">"output/quickstart_config.json"</span><span class="p">,</span> <span class="n">feedstock</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">¶</a></h2>
-<p>After running this basic example:</p>
-<ol>
-<li><strong>Try parameter variations</strong>:  </li>
-<li>Adjust substrate feed rates in <code>Q_substrates</code> </li>
-<li>Change digester temperature <code>T_ad</code> </li>
-<li>
-<p>Modify digester volume <code>V_liq</code> </p>
-</li>
-<li>
-<p><strong>Extend simulation duration</strong>:<br/>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="n">results</span> <span class="o">=</span> <span class="n">plant</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">24.0</span><span class="p">)</span>
-</code></pre></div></p>
-</li>
-<li>
-<p><strong>Add energy components</strong>:<br/>
-   See <a href="../two_stage_plant/"><code>two_stage_plant.md</code></a> for CHP and heating integration</p>
-</li>
-<li>
-<p><strong>Implement control</strong>:<br/>
-   Use <code>Simulator.determine_best_feed_by_n_sims()</code> for optimization</p>
-</li>
-</ol>
-<h2 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">¶</a></h2>
-<h3 id="issue-initial-state-file-not-found">Issue: "Initial state file not found"<a class="headerlink" href="#issue-initial-state-file-not-found" title="Permanent link">¶</a></h3>
-<p><strong>Solution</strong>: Ensure <code>data/initial_states/digester_initial8.csv</code> exists, or set <code>load_initial_state=False</code>:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_digester</span><span class="p">(</span>
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>    <span class="n">digester_id</span><span class="o">=</span><span class="s2">"main_digester"</span><span class="p">,</span>
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>    <span class="n">V_liq</span><span class="o">=</span><span class="mf">2000.0</span><span class="p">,</span>
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>    <span class="n">load_initial_state</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># Use default initialization</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>    <span class="n">Q_substrates</span><span class="o">=</span><span class="n">Q_substrates</span><span class="p">,</span>
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="p">)</span>
-</code></pre></div>
-<h3 id="issue-low-gas-production">Issue: Low gas production<a class="headerlink" href="#issue-low-gas-production" title="Permanent link">¶</a></h3>
-<p><strong>Causes</strong>:<br/>
-- HRT too short (increase V_liq or reduce Q_substrates)<br/>
-- Substrate feed too low (increase values in Q_substrates)<br/>
-- Temperature too low (increase T_ad)  </p>
-<p><strong>Example fix</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Increase feed</span>
-</code></pre></div></p>
-<h3 id="issue-process-instability-ph-drop">Issue: Process instability (pH drop)<a class="headerlink" href="#issue-process-instability-ph-drop" title="Permanent link">¶</a></h3>
-<p><strong>Causes</strong>:<br/>
-- Organic overload (reduce Q_substrates)<br/>
-- Insufficient buffer capacity  </p>
-<p><strong>Example fix</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># Add buffer substrate (e.g., lime at index 7)</span>
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="n">Q_substrates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># 1 m³/d lime</span>
-</code></pre></div></p>
-<h3 id="issue-gas-storage-overpressure-warnings">Issue: Gas storage overpressure warnings<a class="headerlink" href="#issue-gas-storage-overpressure-warnings" title="Permanent link">¶</a></h3>
-<p><strong>Symptoms</strong>:<br/>
-- Frequent venting messages<br/>
-- Storage constantly at maximum pressure  </p>
-<p><strong>Solutions</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># Increase gas storage capacity</span>
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="n">configurator</span><span class="o">.</span><span class="n">add_digester</span><span class="p">(</span>
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>    <span class="n">digester_id</span><span class="o">=</span><span class="s2">"main_digester"</span><span class="p">,</span>
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>    <span class="n">V_liq</span><span class="o">=</span><span class="mf">2000.0</span><span class="p">,</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>    <span class="n">V_gas</span><span class="o">=</span><span class="mf">500.0</span><span class="p">,</span>  <span class="c1"># Increased from 300</span>
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>    <span class="n">Q_substrates</span><span class="o">=</span><span class="n">Q_substrates</span><span class="p">,</span>
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="p">)</span>
-</code></pre></div></p>
+<h2 id="adapting-the-example">Adapting the Example<a class="headerlink" href="#adapting-the-example" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>Substrate mix</strong>: Edit <code>DEFAULT_FEED</code> or pass another dict to <code>main(feed=...)</code>. Entries can be added or removed; every key has to be a substrate ID of the <a href="../../substrates/library/">library</a>.  </li>
+<li><strong>Digester</strong>: Change <code>V_liq</code>, <code>V_gas</code> or <code>T_ad</code> in <code>cfg.add_digester(...)</code>. <code>T_ad</code> is given in Kelvin.  </li>
+<li><strong>Duration and time step</strong>: Change <code>duration</code>, <code>dt</code> and <code>save_interval</code> in <code>plant.simulate(...)</code>, for example <code>dt=1.0 / 24.0</code> for hourly plant steps.  </li>
+<li><strong>Further outputs</strong>: Read VFA, TAC or the storage values from <code>results</code>, see <a href="#more-values-in-the-results">More Values in the Results</a>.  </li>
+<li><strong>Gas utilisation</strong>: Add a CHP and a heating system, see <a href="../two_stage_plant/">Two-Stage Plant</a> and <a href="../../user_guide/components/energy/">Energy Components</a>.  </li>
+</ul>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>ADM1 Model</strong>: Batstone et al. (2002). <em>Anaerobic Digestion Model No. 1</em>. IWA Publishing.  </li>
-<li><strong>PyADM1</strong>: Sadrimajd et al. (2021). <em>PyADM1: a Python implementation of ADM1</em>. bioRxiv.  </li>
-<li><strong>Substrate Characterization</strong>: Gaida (2014). <em>Dynamic real-time substrate feed optimization of anaerobic co-digestion plants</em>. PhD thesis, Leiden University.  </li>
-<li><strong>Leitfaden Biogas</strong>: FNR (2016). https://mediathek.fnr.de/leitfaden-biogas.html  </li>
+<li><strong>Batstone, D. J. et al. (2002).</strong> <em>Anaerobic Digestion Model No. 1 (ADM1).</em> IWA Scientific and Technical Report No. 13. IWA Publishing, London.  </li>
+<li><strong>Schlattmann, M. (2011).</strong> <em>Weiterentwicklung des Anaerobic Digestion Model No. 1 (ADM1) zur Anwendung auf landwirtschaftliche Substrate.</em> Dissertation, Technische Universität München. This is the ADM1da model the digester implements.  </li>
+<li>The complete list is on the <a href="../../user_guide/references/">References</a> page.  </li>
 </ul>
-<h2 id="related-examples">Related Examples<a class="headerlink" href="#related-examples" title="Permanent link">¶</a></h2>
+<h2 id="related-pages">Related Pages<a class="headerlink" href="#related-pages" title="Permanent link">¶</a></h2>
 <ul>
-<li><a href="../two_stage_plant/"><code>two_stage_plant.md</code></a>: Two-stage digestion with CHP and heating  </li>
-<li><code>calibration_workflow.md</code>: Parameter estimation from measurement data  </li>
-<li><code>substrate_optimization.py</code>: Optimal feed strategy  </li>
-<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/parallel_two_stage_simulation.py"><code>parallel_two_stage_simulation.py</code></a>: Parallel simulations  </li>
+<li><a href="../two_stage_plant/">Two-Stage Plant</a>: two digesters in series with CHP and heating  </li>
+<li><a href="../parallel_simulation/">Parallel Simulation</a>: many simulations of one digester side by side  </li>
+<li><a href="../../user_guide/components/biological/">Biological Components</a>: parameters and outputs of the digester  </li>
+<li><a href="../../user_guide/components/energy/">Energy Components</a>: gas storage, CHP, heating, flare  </li>
+<li><a href="../../user_guide/adm1_implementation/">ADM1 Implementation</a>: the model behind the digester  </li>
+<li><a href="../../user_guide/troubleshooting/">Troubleshooting</a>: common problems and their solutions  </li>
 </ul>
 </article>
 </div>
@@ -1910,7 +1922,7 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "navigation.tracking", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.c21346df.min.js"></script>
+<script src="../../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
 <script src="../../../assets/mathjax-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>

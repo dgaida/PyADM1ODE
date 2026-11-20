@@ -13,7 +13,7 @@
 <link href="../../../examples/parallel_simulation/" hreflang="de" rel="alternate"/>
 <link href="./" hreflang="en" rel="alternate"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.8.0" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.8.2" name="generator"/>
 <title>Parallel Simulation - PyADM1ODE</title>
 <link href="../../../assets/stylesheets/main.57a0d79d.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.fb2fffe2.min.css" rel="stylesheet"/>
@@ -164,6 +164,15 @@
   
   
   User Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../substrates/">
+          
+  
+  
+  Substrates
 
         </a>
 </li>
@@ -433,18 +442,6 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../user_guide/substrates/">
-<span class="md-ellipsis">
-    
-  
-    Substrates
-  
-
-    
-  </span>
-</a>
-</li>
-<li class="md-nav__item">
 <a class="md-nav__link" href="../../user_guide/applications/">
 <span class="md-ellipsis">
     
@@ -501,7 +498,7 @@
 <span class="md-ellipsis">
     
   
-    Model &amp; Theory
+    Substrates
   
 
     
@@ -510,6 +507,92 @@
 </label>
 <nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
 <label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Substrates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/library/">
+<span class="md-ellipsis">
+    
+  
+    Example Substrates
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/parameters/">
+<span class="md-ellipsis">
+    
+  
+    Parameters &amp; Ranges
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/influence/">
+<span class="md-ellipsis">
+    
+  
+    Influence of the Values
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../substrates/sources/">
+<span class="md-ellipsis">
+    
+  
+    Origin of the Values
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Model &amp; Theory
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -570,8 +653,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
-<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
 <span class="md-ellipsis">
     
   
@@ -582,8 +665,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="true" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_5">
+<nav aria-expanded="true" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -664,29 +747,65 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#key-components">
+<a class="md-nav__link" href="#running-the-example">
 <span class="md-ellipsis">
       
-        Key Components
-      
-    </span>
-</a>
-<nav aria-label="Key Components" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#1-parallelsimulator">
-<span class="md-ellipsis">
-      
-        1. ParallelSimulator
+        Running the Example
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#2-scenarioresult">
+<a class="md-nav__link" href="#units">
 <span class="md-ellipsis">
       
-        2. ScenarioResult
+        Units
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-walkthrough">
+<span class="md-ellipsis">
+      
+        Code Walkthrough
+      
+    </span>
+</a>
+<nav aria-label="Code Walkthrough" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-base-model">
+<span class="md-ellipsis">
+      
+        1. Base Model
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-feed-rate-comparison">
+<span class="md-ellipsis">
+      
+        2. Feed-Rate Comparison
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-parameter-sweep">
+<span class="md-ellipsis">
+      
+        3. Parameter Sweep
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-monte-carlo-analysis">
+<span class="md-ellipsis">
+      
+        4. Monte Carlo Analysis
       
     </span>
 </a>
@@ -695,47 +814,47 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#simulation-types">
+<a class="md-nav__link" href="#result-objects">
 <span class="md-ellipsis">
       
-        Simulation Types
+        Result Objects
       
     </span>
 </a>
-<nav aria-label="Simulation Types" class="md-nav">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#output">
+<span class="md-ellipsis">
+      
+        Output
+      
+    </span>
+</a>
+<nav aria-label="Output" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#basic-parallel-scenarios">
+<a class="md-nav__link" href="#feed-rate-comparison">
 <span class="md-ellipsis">
       
-        Basic Parallel Scenarios
+        Feed-Rate Comparison
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#single-parameter-sweep">
+<a class="md-nav__link" href="#parameter-sweep">
 <span class="md-ellipsis">
       
-        Single-Parameter Sweep
+        Parameter Sweep
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#multi-parameter-sweep">
+<a class="md-nav__link" href="#monte-carlo-analysis">
 <span class="md-ellipsis">
       
-        Multi-Parameter Sweep
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#monte-carlo-simulation">
-<span class="md-ellipsis">
-      
-        Monte Carlo Simulation
+        Monte Carlo Analysis
       
     </span>
 </a>
@@ -744,210 +863,19 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#expected-output">
+<a class="md-nav__link" href="#adapting-the-example">
 <span class="md-ellipsis">
       
-        Expected Output
+        Adapting the Example
       
     </span>
 </a>
-<nav aria-label="Expected Output" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#basic-scenario-comparison">
-<span class="md-ellipsis">
-      
-        Basic Scenario Comparison
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#parameter-sweep-results">
-<span class="md-ellipsis">
-      
-        Parameter Sweep Results
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#monte-carlo-statistics">
-<span class="md-ellipsis">
-      
-        Monte Carlo Statistics
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#performance-analysis">
-<span class="md-ellipsis">
-      
-        Performance Analysis
-      
-    </span>
-</a>
-<nav aria-label="Performance Analysis" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#parallel-efficiency">
-<span class="md-ellipsis">
-      
-        Parallel Efficiency
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#memory-considerations">
-<span class="md-ellipsis">
-      
-        Memory Considerations
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#advanced-usage">
-<span class="md-ellipsis">
-      
-        Advanced Usage
-      
-    </span>
-</a>
-<nav aria-label="Advanced Usage" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#custom-result-processing">
-<span class="md-ellipsis">
-      
-        Custom Result Processing
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#sensitivity-analysis">
-<span class="md-ellipsis">
-      
-        Sensitivity Analysis
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#response-surface-modeling">
-<span class="md-ellipsis">
-      
-        Response Surface Modeling
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#best-practices">
-<span class="md-ellipsis">
-      
-        Best Practices
-      
-    </span>
-</a>
-<nav aria-label="Best Practices" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#1-choose-appropriate-number-of-workers">
-<span class="md-ellipsis">
-      
-        1. Choose Appropriate Number of Workers
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#2-balance-simulation-duration-and-number-of-scenarios">
-<span class="md-ellipsis">
-      
-        2. Balance Simulation Duration and Number of Scenarios
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#3-save-results-incrementally">
-<span class="md-ellipsis">
-      
-        3. Save Results Incrementally
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#4-handle-failed-scenarios-gracefully">
-<span class="md-ellipsis">
-      
-        4. Handle Failed Scenarios Gracefully
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#5-validate-results">
-<span class="md-ellipsis">
-      
-        5. Validate Results
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#troubleshooting">
-<span class="md-ellipsis">
-      
-        Troubleshooting
-      
-    </span>
-</a>
-<nav aria-label="Troubleshooting" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#common-issues">
-<span class="md-ellipsis">
-      
-        Common Issues
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#related-examples">
 <span class="md-ellipsis">
       
         Related Examples
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#references">
-<span class="md-ellipsis">
-      
-        References
       
     </span>
 </a>
@@ -968,8 +896,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_6" type="checkbox"/>
-<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
 <span class="md-ellipsis">
     
   
@@ -980,8 +908,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_6">
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -1078,8 +1006,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
-<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
 <span class="md-ellipsis">
     
   
@@ -1090,8 +1018,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_7">
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -1128,8 +1056,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
-<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
 <span class="md-ellipsis">
     
   
@@ -1140,8 +1068,8 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_8">
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
 <span class="md-nav__icon md-icon"></span>
             
   
@@ -1306,29 +1234,65 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#key-components">
+<a class="md-nav__link" href="#running-the-example">
 <span class="md-ellipsis">
       
-        Key Components
-      
-    </span>
-</a>
-<nav aria-label="Key Components" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#1-parallelsimulator">
-<span class="md-ellipsis">
-      
-        1. ParallelSimulator
+        Running the Example
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#2-scenarioresult">
+<a class="md-nav__link" href="#units">
 <span class="md-ellipsis">
       
-        2. ScenarioResult
+        Units
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-walkthrough">
+<span class="md-ellipsis">
+      
+        Code Walkthrough
+      
+    </span>
+</a>
+<nav aria-label="Code Walkthrough" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-base-model">
+<span class="md-ellipsis">
+      
+        1. Base Model
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-feed-rate-comparison">
+<span class="md-ellipsis">
+      
+        2. Feed-Rate Comparison
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-parameter-sweep">
+<span class="md-ellipsis">
+      
+        3. Parameter Sweep
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-monte-carlo-analysis">
+<span class="md-ellipsis">
+      
+        4. Monte Carlo Analysis
       
     </span>
 </a>
@@ -1337,47 +1301,47 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#simulation-types">
+<a class="md-nav__link" href="#result-objects">
 <span class="md-ellipsis">
       
-        Simulation Types
+        Result Objects
       
     </span>
 </a>
-<nav aria-label="Simulation Types" class="md-nav">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#output">
+<span class="md-ellipsis">
+      
+        Output
+      
+    </span>
+</a>
+<nav aria-label="Output" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#basic-parallel-scenarios">
+<a class="md-nav__link" href="#feed-rate-comparison">
 <span class="md-ellipsis">
       
-        Basic Parallel Scenarios
+        Feed-Rate Comparison
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#single-parameter-sweep">
+<a class="md-nav__link" href="#parameter-sweep">
 <span class="md-ellipsis">
       
-        Single-Parameter Sweep
+        Parameter Sweep
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#multi-parameter-sweep">
+<a class="md-nav__link" href="#monte-carlo-analysis">
 <span class="md-ellipsis">
       
-        Multi-Parameter Sweep
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#monte-carlo-simulation">
-<span class="md-ellipsis">
-      
-        Monte Carlo Simulation
+        Monte Carlo Analysis
       
     </span>
 </a>
@@ -1386,210 +1350,19 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#expected-output">
+<a class="md-nav__link" href="#adapting-the-example">
 <span class="md-ellipsis">
       
-        Expected Output
+        Adapting the Example
       
     </span>
 </a>
-<nav aria-label="Expected Output" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#basic-scenario-comparison">
-<span class="md-ellipsis">
-      
-        Basic Scenario Comparison
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#parameter-sweep-results">
-<span class="md-ellipsis">
-      
-        Parameter Sweep Results
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#monte-carlo-statistics">
-<span class="md-ellipsis">
-      
-        Monte Carlo Statistics
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#performance-analysis">
-<span class="md-ellipsis">
-      
-        Performance Analysis
-      
-    </span>
-</a>
-<nav aria-label="Performance Analysis" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#parallel-efficiency">
-<span class="md-ellipsis">
-      
-        Parallel Efficiency
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#memory-considerations">
-<span class="md-ellipsis">
-      
-        Memory Considerations
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#advanced-usage">
-<span class="md-ellipsis">
-      
-        Advanced Usage
-      
-    </span>
-</a>
-<nav aria-label="Advanced Usage" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#custom-result-processing">
-<span class="md-ellipsis">
-      
-        Custom Result Processing
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#sensitivity-analysis">
-<span class="md-ellipsis">
-      
-        Sensitivity Analysis
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#response-surface-modeling">
-<span class="md-ellipsis">
-      
-        Response Surface Modeling
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#best-practices">
-<span class="md-ellipsis">
-      
-        Best Practices
-      
-    </span>
-</a>
-<nav aria-label="Best Practices" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#1-choose-appropriate-number-of-workers">
-<span class="md-ellipsis">
-      
-        1. Choose Appropriate Number of Workers
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#2-balance-simulation-duration-and-number-of-scenarios">
-<span class="md-ellipsis">
-      
-        2. Balance Simulation Duration and Number of Scenarios
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#3-save-results-incrementally">
-<span class="md-ellipsis">
-      
-        3. Save Results Incrementally
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#4-handle-failed-scenarios-gracefully">
-<span class="md-ellipsis">
-      
-        4. Handle Failed Scenarios Gracefully
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#5-validate-results">
-<span class="md-ellipsis">
-      
-        5. Validate Results
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#troubleshooting">
-<span class="md-ellipsis">
-      
-        Troubleshooting
-      
-    </span>
-</a>
-<nav aria-label="Troubleshooting" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#common-issues">
-<span class="md-ellipsis">
-      
-        Common Issues
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#related-examples">
 <span class="md-ellipsis">
       
         Related Examples
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#references">
-<span class="md-ellipsis">
-      
-        References
       
     </span>
 </a>
@@ -1611,22 +1384,25 @@
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
 <h1 id="parallel-simulation-example">Parallel Simulation Example<a class="headerlink" href="#parallel-simulation-example" title="Permanent link">¶</a></h1>
-<p>The <a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/05_parallel_two_stage_simulation.py">examples/05_parallel_two_stage_simulation.py</a> example demonstrates efficient parallel execution of multiple biogas plant simulation scenarios for parameter optimization, sensitivity analysis, and uncertainty quantification.</p>
+<p>The <a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/05_parallel_two_stage_simulation.py">examples/05_parallel_two_stage_simulation.py</a> example runs many simulations of one digester side by side: a comparison of four feed rates, a sweep over one kinetic parameter and a Monte Carlo analysis. All three use <code>ParallelSimulator</code> from <code>pyadm1.simulation.parallel</code>.</p>
+<p>Despite its file name, the script simulates a single digester (one <code>ADM1</code> model), not a two-stage plant.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
-<p>This example demonstrates:<br/>
-- <strong>Parallel Scenario Execution</strong>: Running multiple simulations concurrently across CPU cores<br/>
-- <strong>Parameter Sweeps</strong>: Systematic exploration of single and multiple parameter variations<br/>
-- <strong>Monte Carlo Analysis</strong>: Uncertainty quantification with parameter distributions<br/>
-- <strong>Statistical Analysis</strong>: Result aggregation and comparative statistics<br/>
-- <strong>Performance Metrics</strong>: Speedup and parallel efficiency measurement  </p>
+<p>The example shows:</p>
+<ul>
+<li><strong>Base model</strong>: one <code>ADM1</code> model with two substrates that serves as the template for every scenario  </li>
+<li><strong>Parallel scenarios</strong>: four feed rates, simulated in four worker processes  </li>
+<li><strong>Parameter sweep</strong>: five values of the maximum acetate uptake rate <code>k_m_ac</code>, given as factors of the rate the model uses  </li>
+<li><strong>Monte Carlo analysis</strong>: 50 random draws of <code>k_m_ac</code> from a normal distribution around that rate  </li>
+<li><strong>Summary statistics</strong>: mean, standard deviation, minimum, maximum and median over the draws  </li>
+</ul>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h2>
 <pre class="mermaid"><code>graph TB
     subgraph "Main Process"
-        Config[Configuration]
-        Results[Result Collection]
+        Config[Scenario list]
+        Results[Result list]
     end
 
-    subgraph "Worker Pool (4 cores)"
+    subgraph "Worker Pool (4 processes)"
         W1[Worker 1]
         W2[Worker 2]
         W3[Worker 3]
@@ -1649,611 +1425,400 @@
     style W2 fill:#fff3e0
     style W3 fill:#fff3e0
     style W4 fill:#fff3e0</code></pre>
-<h2 id="key-components">Key Components<a class="headerlink" href="#key-components" title="Permanent link">¶</a></h2>
-<h3 id="1-parallelsimulator">1. ParallelSimulator<a class="headerlink" href="#1-parallelsimulator" title="Permanent link">¶</a></h3>
-<p>The <code>ParallelSimulator</code> class orchestrates concurrent execution:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.simulation.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParallelSimulator</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="c1"># Create parallel simulator with 4 worker processes</span>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="n">parallel</span> <span class="o">=</span> <span class="n">ParallelSimulator</span><span class="p">(</span><span class="n">adm1_model</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="c1"># Define scenarios</span>
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="n">scenarios</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="p">{</span><span class="s2">"k_dis"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="p">{</span><span class="s2">"k_dis"</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> <span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    <span class="p">{</span><span class="s2">"k_dis"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="p">]</span>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="c1"># Run parallel simulations</span>
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span>
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    <span class="n">scenarios</span><span class="o">=</span><span class="n">scenarios</span><span class="p">,</span>
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    <span class="n">duration</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>  <span class="c1"># 10 days</span>
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">adm1_state</span><span class="p">,</span>
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>    <span class="n">compute_metrics</span><span class="o">=</span><span class="kc">True</span>
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="p">)</span>
+<p><code>run_scenarios</code> first checks the keys of every scenario and then starts a pool of <code>n_workers</code> processes. The base model object itself is not sent to the workers. The simulator sends its configuration instead:</p>
+<ul>
+<li>liquid volume, gas volume and temperature (<code>V_liq</code>, <code>V_gas</code>, <code>T_ad</code>)  </li>
+<li>the substrate parameters of the feedstock, its feeding frequency and its <code>Q</code> convention  </li>
+<li>the calibration parameters that are set on the base model  </li>
+</ul>
+<p>Each worker builds its own <code>Feedstock</code> and <code>ADM1</code> from this configuration, applies the scenario on top, simulates <code>duration</code> days and returns a <code>ScenarioResult</code>. The results come back in the order of the scenario list.</p>
+<h2 id="running-the-example">Running the Example<a class="headerlink" href="#running-the-example" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>python<span class="w"> </span>examples/05_parallel_two_stage_simulation.py
 </code></pre></div>
-<p><strong>Key Features</strong>:<br/>
-- <strong>Multiprocessing</strong>: Uses Python's <code>multiprocessing.Pool</code> for true parallelism<br/>
-- <strong>Automatic Workload Distribution</strong>: Scenarios distributed evenly across workers<br/>
-- <strong>Progress Tracking</strong>: Real-time progress reporting for long-running analyses<br/>
-- <strong>Error Isolation</strong>: Individual scenario failures don't crash entire execution  </p>
-<h3 id="2-scenarioresult">2. ScenarioResult<a class="headerlink" href="#2-scenarioresult" title="Permanent link">¶</a></h3>
-<p>Each simulation returns a <code>ScenarioResult</code> object:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nd">@dataclass</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">ScenarioResult</span><span class="p">:</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="n">scenario_id</span><span class="p">:</span> <span class="nb">int</span>                          <span class="c1"># Unique identifier</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>                <span class="c1"># Parameter values used</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    <span class="n">success</span><span class="p">:</span> <span class="nb">bool</span>                             <span class="c1"># Completion status</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span>                           <span class="c1"># Simulation duration [days]</span>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    <span class="n">final_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>        <span class="c1"># Final ADM1 state vector</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    <span class="n">time_series</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">]]</span>    <span class="c1"># Optional time series data</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    <span class="n">metrics</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>                 <span class="c1"># Performance metrics</span>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    <span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>                      <span class="c1"># Error message if failed</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="n">execution_time</span><span class="p">:</span> <span class="nb">float</span>                     <span class="c1"># Wall clock time [seconds]</span>
+<p>The script takes no arguments, prints its results to the console and writes no files.</p>
+<h2 id="units">Units<a class="headerlink" href="#units" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>Feed rates</strong> are tonnes of fresh matter per day [t FM/d] under the default <code>Feedstock</code> convention (<code>simba_q_convention=True</code>). The model converts them to volume flows with the density of each substrate: 11.4 t FM/d of maize silage are 10.1 m³/d at 1129 kg/m³, and 6.1 t FM/d of swine manure (1000 kg/m³) are 6.1 m³/d. See the section "Volumetric ADM1da convention for Q" in <a href="../../user_guide/adm1_implementation/">ADM1 Implementation</a>.  </li>
+<li><strong>Gas flows</strong> (<code>Q_gas</code>, <code>Q_ch4</code>, <code>Q_co2</code>) are dry gas at standard conditions (0 °C, 1.01325 bar) in Nm³/d. See the section "Reported gas flows" on the same page.  </li>
+</ul>
+<h2 id="code-walkthrough">Code Walkthrough<a class="headerlink" href="#code-walkthrough" title="Permanent link">¶</a></h2>
+<h3 id="1-base-model">1. Base Model<a class="headerlink" href="#1-base-model" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">duration</span> <span class="o">=</span> <span class="mf">30.0</span>  <span class="c1"># days</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="n">feedstock</span> <span class="o">=</span> <span class="n">Feedstock</span><span class="p">([</span><span class="s2">"maize_silage_milk_ripeness"</span><span class="p">,</span> <span class="s2">"swine_manure"</span><span class="p">])</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="n">base_feed</span> <span class="o">=</span> <span class="p">[</span><span class="mf">11.4</span><span class="p">,</span> <span class="mf">6.1</span><span class="p">]</span>  <span class="c1"># t FM/d: maize silage, swine manure</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="n">adm1</span> <span class="o">=</span> <span class="n">ADM1</span><span class="p">(</span><span class="n">feedstock</span><span class="p">,</span> <span class="n">V_liq</span><span class="o">=</span><span class="mf">1200.0</span><span class="p">,</span> <span class="n">V_gas</span><span class="o">=</span><span class="mf">216.0</span><span class="p">,</span> <span class="n">T_ad</span><span class="o">=</span><span class="mf">315.15</span><span class="p">)</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="n">initial_state</span> <span class="o">=</span> <span class="n">get_state_zero_from_csv</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">REPO_ROOT</span> <span class="o">/</span> <span class="s2">"data"</span> <span class="o">/</span> <span class="s2">"initial_states"</span> <span class="o">/</span> <span class="s2">"digester_initial8.csv"</span><span class="p">))</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="c1"># The workers rebuild the model from the configuration of this base model.</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="c1"># The feed is not part of it: every scenario brings its own "Q".</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="n">parallel</span> <span class="o">=</span> <span class="n">ParallelSimulator</span><span class="p">(</span><span class="n">adm1</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<p><strong>Computed Metrics</strong> (when <code>compute_metrics=True</code>):<br/>
-- <code>Q_gas</code>: Total biogas production [m³/d]<br/>
-- <code>Q_ch4</code>: Methane production [m³/d]<br/>
-- <code>Q_co2</code>: CO2 production [m³/d]<br/>
-- <code>CH4_content</code>: Methane fraction [0-1]<br/>
-- <code>pH</code>: pH value [-]<br/>
-- <code>VFA</code>: Volatile fatty acids [g/L]<br/>
-- <code>TAC</code>: Total alkalinity [g CaCO3/L]<br/>
-- <code>FOS_TAC</code>: VFA/TA ratio [-]<br/>
-- <code>HRT</code>: Hydraulic retention time [days]<br/>
-- <code>specific_gas_production</code>: Biogas yield [m³/m³ feed]  </p>
-<h2 id="simulation-types">Simulation Types<a class="headerlink" href="#simulation-types" title="Permanent link">¶</a></h2>
-<h3 id="basic-parallel-scenarios">Basic Parallel Scenarios<a class="headerlink" href="#basic-parallel-scenarios" title="Permanent link">¶</a></h3>
-<p>Run multiple independent scenarios with different configurations:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Define feed rate scenarios</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="n">feed_scenarios</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Low Feed"</span><span class="p">,</span> <span class="s2">"Q_digester_1"</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Base Feed"</span><span class="p">,</span> <span class="s2">"Q_digester_1"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"High Feed"</span><span class="p">,</span> <span class="s2">"Q_digester_1"</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
+<ul>
+<li><code>Feedstock</code>: maize silage and swine manure from the <a href="../../substrates/library/">substrate library</a>. A feed vector has one entry per substrate, in the order of this list.  </li>
+<li><code>ADM1</code>: a digester with 1200 m³ liquid volume and 216 m³ gas volume at 315.15 K (42 °C).  </li>
+<li><code>initial_state</code>: the 41 state variables from <code>data/initial_states/digester_initial8.csv</code>. Every scenario starts from this state.  </li>
+<li><code>ParallelSimulator</code>: four worker processes. Without <code>n_workers</code> the simulator uses the number of CPU cores minus one. <code>verbose=True</code> prints the progress lines shown under <a href="#output">Output</a>.  </li>
+</ul>
+<h3 id="2-feed-rate-comparison">2. Feed-Rate Comparison<a class="headerlink" href="#2-feed-rate-comparison" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">feed_scenarios</span> <span class="o">=</span> <span class="p">[</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="p">(</span><span class="s2">"Low Feed"</span><span class="p">,</span> <span class="p">[</span><span class="mf">8.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]),</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="p">(</span><span class="s2">"Base Feed"</span><span class="p">,</span> <span class="n">base_feed</span><span class="p">),</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="p">(</span><span class="s2">"High Feed"</span><span class="p">,</span> <span class="p">[</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">]),</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="p">(</span><span class="s2">"Very High Feed"</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">]),</span>
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="p">]</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="n">scenarios</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"Q"</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="s2">"Q_digester_1"</span><span class="p">]}</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">feed_scenarios</span><span class="p">]</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    <span class="n">scenarios</span><span class="o">=</span><span class="n">scenarios</span><span class="p">,</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="n">duration</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">adm1_state</span><span class="p">,</span>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>    <span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">24.0</span><span class="p">,</span>  <span class="c1"># 1 hour time step</span>
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>    <span class="n">compute_metrics</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>    <span class="n">save_time_series</span><span class="o">=</span><span class="kc">False</span>  <span class="c1"># Set True for detailed time series</span>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="p">)</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="n">scenarios</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"Q"</span><span class="p">:</span> <span class="n">Q</span><span class="p">}</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">Q</span> <span class="ow">in</span> <span class="n">feed_scenarios</span><span class="p">]</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>    <span class="n">scenarios</span><span class="o">=</span><span class="n">scenarios</span><span class="p">,</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">initial_state</span><span class="p">,</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="p">)</span>
 </code></pre></div>
-<p><strong>Use Cases</strong>:<br/>
-- Comparing different operational strategies<br/>
-- Testing substrate composition variations<br/>
-- Evaluating design alternatives  </p>
-<h3 id="single-parameter-sweep">Single-Parameter Sweep<a class="headerlink" href="#single-parameter-sweep" title="Permanent link">¶</a></h3>
-<p>Systematic exploration of one parameter:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.simulation.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterSweepConfig</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="c1"># Sweep disintegration rate</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="n">sweep_config</span> <span class="o">=</span> <span class="n">ParameterSweepConfig</span><span class="p">(</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="n">parameter_name</span><span class="o">=</span><span class="s2">"k_dis"</span><span class="p">,</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.14</span><span class="p">,</span> <span class="mf">0.18</span><span class="p">,</span> <span class="mf">0.22</span><span class="p">,</span> <span class="mf">0.26</span><span class="p">,</span> <span class="mf">0.30</span><span class="p">],</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="n">other_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]}</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="p">)</span>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">parameter_sweep</span><span class="p">(</span>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    <span class="n">config</span><span class="o">=</span><span class="n">sweep_config</span><span class="p">,</span>
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    <span class="n">duration</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">adm1_state</span><span class="p">,</span>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="n">compute_metrics</span><span class="o">=</span><span class="kc">True</span>
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="p">)</span>
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="c1"># Find optimal value</span>
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="n">ch4_productions</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'Q_ch4'</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">success</span><span class="p">]</span>
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="n">best_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ch4_productions</span><span class="p">)</span>
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="n">optimal_k_dis</span> <span class="o">=</span> <span class="n">sweep_config</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">best_idx</span><span class="p">]</span>
+<p>A scenario is a dictionary. These keys are allowed:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Q</code></td>
+<td>Feed rates per substrate [t FM/d]</td>
+</tr>
+<tr>
+<td><code>T_ad</code></td>
+<td>Digester temperature [K]; replaces the temperature of the base model for this scenario</td>
+</tr>
+<tr>
+<td><code>k_dis_PS</code>, <code>k_dis_PF</code>, <code>k_hyd_ch</code>, <code>k_hyd_pr</code>, <code>k_hyd_li</code></td>
+<td>Disintegration and hydrolysis rates</td>
+</tr>
+<tr>
+<td><code>k_m_su</code>, <code>k_m_aa</code>, <code>k_m_fa</code>, <code>k_m_c4</code>, <code>k_m_pro</code>, <code>k_m_ac</code>, <code>k_m_h2</code></td>
+<td>Maximum uptake rates</td>
+</tr>
+<tr>
+<td><code>k_p</code>, <code>k_L_a</code>, <code>K_H_co2</code>, <code>K_H_ch4</code>, <code>K_H_h2</code></td>
+<td>Gas outlet, gas-liquid transfer and Henry constants</td>
+</tr>
+</tbody>
+</table>
+<p>Any other key, for example <code>k_dis</code> or <code>Y_su</code>, raises a <code>ValueError</code> before a simulation starts. A misspelt name would otherwise be ignored, and every scenario of a sweep would return the same result.</p>
+<p>Scenarios do not inherit a feed from the base model. A scenario without <code>Q</code> is simulated without feed, which is why the sweep and the Monte Carlo analysis below pass <code>Q</code> as a fixed parameter.</p>
+<p>The other arguments of <code>run_scenarios</code>:</p>
+<ul>
+<li><code>duration</code>: simulated time per scenario [d], here 30 days  </li>
+<li><code>initial_state</code>: start state of every scenario  </li>
+<li><code>compute_metrics</code>: computes the values listed under <a href="#result-objects">Result Objects</a> from the final state (default <code>True</code>)  </li>
+</ul>
+<h3 id="3-parameter-sweep">3. Parameter Sweep<a class="headerlink" href="#3-parameter-sweep" title="Permanent link">¶</a></h3>
+<p>A rate given in a scenario replaces the rate of the model as it is. The model keeps <code>k_m_ac</code> at 8.0 d⁻¹ for 35 °C and corrects it to the operating temperature, which gives 11.76 d⁻¹ at the 42 °C of this example. The simulator applies no such correction to a scenario value. The script therefore reads the rate the model uses and builds the sweep from factors of it:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">K_M_AC_SWEEP_FACTORS</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">]</span>
 </code></pre></div>
-<p><strong>Common Parameters to Sweep</strong>:<br/>
-- <strong>Kinetic parameters</strong>: <code>k_dis</code>, <code>k_hyd_ch</code>, <code>k_hyd_pr</code>, <code>k_hyd_li</code><br/>
-- <strong>Yield parameters</strong>: <code>Y_su</code>, <code>Y_aa</code>, <code>Y_fa</code>, <code>Y_c4</code>, <code>Y_pro</code>, <code>Y_ac</code>, <code>Y_h2</code><br/>
-- <strong>Uptake rates</strong>: <code>k_m_su</code>, <code>k_m_aa</code>, <code>k_m_fa</code>, <code>k_m_c4</code>, <code>k_m_pro</code>, <code>k_m_ac</code><br/>
-- <strong>Operational parameters</strong>: Feed rates, temperatures, retention times  </p>
-<h3 id="multi-parameter-sweep">Multi-Parameter Sweep<a class="headerlink" href="#multi-parameter-sweep" title="Permanent link">¶</a></h3>
-<p>Full factorial design exploring parameter interactions:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">parameter_configs</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    <span class="s2">"k_dis"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.14</span><span class="p">,</span> <span class="mf">0.18</span><span class="p">,</span> <span class="mf">0.22</span><span class="p">],</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="s2">"Y_su"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.09</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.11</span><span class="p">],</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="s2">"Q_substrate_0"</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">18</span><span class="p">]</span>  <span class="c1"># Corn silage feed rate</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="p">}</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">multi_parameter_sweep</span><span class="p">(</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="n">parameter_configs</span><span class="o">=</span><span class="n">parameter_configs</span><span class="p">,</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>    <span class="n">duration</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">adm1_state</span><span class="p">,</span>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    <span class="n">fixed_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"Q_substrate_1"</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>  <span class="c1"># Manure fixed at 10 m³/d</span>
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="p">)</span>
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="c1"># Total combinations: 3 × 3 × 3 = 27 scenarios</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">k_m_ac_nominal</span> <span class="o">=</span> <span class="n">nominal_rate</span><span class="p">(</span><span class="n">adm1</span><span class="p">,</span> <span class="s2">"k_m_ac"</span><span class="p">)</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   k_m_ac of the model at </span><span class="si">{</span><span class="n">adm1</span><span class="o">.</span><span class="n">T_ad</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">273.15</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> °C: </span><span class="si">{</span><span class="n">k_m_ac_nominal</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> 1/d"</span><span class="p">)</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="n">sweep_config</span> <span class="o">=</span> <span class="n">ParameterSweepConfig</span><span class="p">(</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="n">parameter_name</span><span class="o">=</span><span class="s2">"k_m_ac"</span><span class="p">,</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">factor</span> <span class="o">*</span> <span class="n">k_m_ac_nominal</span> <span class="k">for</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">K_M_AC_SWEEP_FACTORS</span><span class="p">],</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="n">other_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"Q"</span><span class="p">:</span> <span class="n">base_feed</span><span class="p">},</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="p">)</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="n">sweep_results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">parameter_sweep</span><span class="p">(</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    <span class="n">config</span><span class="o">=</span><span class="n">sweep_config</span><span class="p">,</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">initial_state</span><span class="p">,</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="p">)</span>
 </code></pre></div>
-<p><strong>Analysis</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Find best combination</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">best_result</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    <span class="p">(</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">success</span><span class="p">),</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'Q_ch4'</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="p">)</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Optimal parameters:"</span><span class="p">)</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  k_dis = </span><span class="si">{</span><span class="n">best_result</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">'k_dis'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Y_su = </span><span class="si">{</span><span class="n">best_result</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">'Y_su'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Q_substrate_0 = </span><span class="si">{</span><span class="n">best_result</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">'Q_substrate_0'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m³/d"</span><span class="p">)</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Methane production = </span><span class="si">{</span><span class="n">best_result</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s1">'Q_ch4'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m³/d"</span><span class="p">)</span>
-</code></pre></div></p>
-<h3 id="monte-carlo-simulation">Monte Carlo Simulation<a class="headerlink" href="#monte-carlo-simulation" title="Permanent link">¶</a></h3>
-<p>Uncertainty quantification with parameter distributions:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.simulation.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">MonteCarloConfig</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="n">mc_config</span> <span class="o">=</span> <span class="n">MonteCarloConfig</span><span class="p">(</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>    <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>    <span class="n">parameter_distributions</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>        <span class="s2">"k_dis"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.18</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">),</span>      <span class="c1"># mean=0.18, std=0.03</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>        <span class="s2">"Y_su"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>       <span class="c1"># mean=0.10, std=0.01</span>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>        <span class="s2">"k_hyd_ch"</span><span class="p">:</span> <span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>     <span class="c1"># mean=10.0, std=1.5</span>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>    <span class="p">},</span>
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>    <span class="n">fixed_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"Q"</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>  <span class="c1"># For reproducibility</span>
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="p">)</span>
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">monte_carlo</span><span class="p">(</span>
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>    <span class="n">config</span><span class="o">=</span><span class="n">mc_config</span><span class="p">,</span>
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>    <span class="n">duration</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">adm1_state</span><span class="p">,</span>
-<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>    <span class="n">compute_metrics</span><span class="o">=</span><span class="kc">True</span>
-<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="p">)</span>
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>
-<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="c1"># Summarize uncertainty</span>
-<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a><span class="n">summary</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">summarize_results</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a>
-<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Methane production [m³/d]:"</span><span class="p">)</span>
-<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Mean: </span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'metrics'</span><span class="p">][</span><span class="s1">'Q_ch4'</span><span class="p">][</span><span class="s1">'mean'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Std:  </span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'metrics'</span><span class="p">][</span><span class="s1">'Q_ch4'</span><span class="p">][</span><span class="s1">'std'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  95% CI: [</span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'metrics'</span><span class="p">][</span><span class="s1">'Q_ch4'</span><span class="p">][</span><span class="s1">'q25'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, "</span>
-<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a>      <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'metrics'</span><span class="p">][</span><span class="s1">'Q_ch4'</span><span class="p">][</span><span class="s1">'q75'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+<p><code>nominal_rate</code> is a small helper of the script. It returns a calibration value if one is set on the base model, and otherwise the rate corrected to the temperature of the base model:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="n">calibration</span> <span class="o">=</span> <span class="n">adm1</span><span class="o">.</span><span class="n">get_calibration_parameters</span><span class="p">()</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">calibration</span><span class="p">:</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">calibration</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="n">rates</span> <span class="o">=</span> <span class="n">ADMParams</span><span class="o">.</span><span class="n">apply_temperature_corrections</span><span class="p">(</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">ADMParams</span><span class="o">.</span><span class="n">get_kinetic_params</span><span class="p">(),</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="n">ADMParams</span><span class="o">.</span><span class="n">get_temperature_factors</span><span class="p">(),</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="n">adm1</span><span class="o">.</span><span class="n">T_ad</span><span class="p">,</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="p">)</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">rates</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
 </code></pre></div>
-<p><strong>Probability Distribution Selection</strong>:<br/>
-- <strong>Normal</strong>: Most kinetic parameters (symmetric uncertainty)<br/>
-- <strong>Log-normal</strong>: Always-positive parameters with multiplicative uncertainty<br/>
-- <strong>Uniform</strong>: When only bounds are known<br/>
-- <strong>Triangular</strong>: Expert judgment with most likely value  </p>
-<h2 id="expected-output">Expected Output<a class="headerlink" href="#expected-output" title="Permanent link">¶</a></h2>
-<h3 id="basic-scenario-comparison">Basic Scenario Comparison<a class="headerlink" href="#basic-scenario-comparison" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>================================================================================
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>SCENARIO COMPARISON RESULTS
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>================================================================================
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>Low Feed:
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>  Feed Rate: 18.0 m³/d
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>  Biogas:    723.5 m³/d
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>  Methane:   434.1 m³/d
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>  CH4 %:     60.0%
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>  pH:        7.28
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>  VFA:       1.85 g/L
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>  FOS/TAC:   0.228
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>  HRT:       109.8 days
-<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>  Exec Time: 2.34 seconds
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>
-<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>Base Feed:
-<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a>  Feed Rate: 25.0 m³/d
-<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>  Biogas:    1005.2 m³/d
-<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a>  Methane:   603.1 m³/d
-<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a>  CH4 %:     60.0%
-<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a>  pH:        7.20
-<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a>  VFA:       2.45 g/L
-<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a>  FOS/TAC:   0.289
-<a href="#__codelineno-7-24" id="__codelineno-7-24" name="__codelineno-7-24"></a>  HRT:       79.1 days
-<a href="#__codelineno-7-25" id="__codelineno-7-25" name="__codelineno-7-25"></a>  Exec Time: 2.41 seconds
-<a href="#__codelineno-7-26" id="__codelineno-7-26" name="__codelineno-7-26"></a>
-<a href="#__codelineno-7-27" id="__codelineno-7-27" name="__codelineno-7-27"></a>High Feed:
-<a href="#__codelineno-7-28" id="__codelineno-7-28" name="__codelineno-7-28"></a>  Feed Rate: 32.0 m³/d
-<a href="#__codelineno-7-29" id="__codelineno-7-29" name="__codelineno-7-29"></a>  Biogas:    1265.8 m³/d
-<a href="#__codelineno-7-30" id="__codelineno-7-30" name="__codelineno-7-30"></a>  Methane:   759.5 m³/d
-<a href="#__codelineno-7-31" id="__codelineno-7-31" name="__codelineno-7-31"></a>  CH4 %:     60.0%
-<a href="#__codelineno-7-32" id="__codelineno-7-32" name="__codelineno-7-32"></a>  pH:        7.15
-<a href="#__codelineno-7-33" id="__codelineno-7-33" name="__codelineno-7-33"></a>  VFA:       3.12 g/L
-<a href="#__codelineno-7-34" id="__codelineno-7-34" name="__codelineno-7-34"></a>  FOS/TAC:   0.341
-<a href="#__codelineno-7-35" id="__codelineno-7-35" name="__codelineno-7-35"></a>  HRT:       61.8 days
-<a href="#__codelineno-7-36" id="__codelineno-7-36" name="__codelineno-7-36"></a>  Exec Time: 2.38 seconds
+<p><code>parameter_sweep</code> creates one scenario per value: a copy of <code>other_params</code> plus the swept parameter. Further keyword arguments are passed on to <code>run_scenarios</code>. The script then prints one row per successful scenario and names the one with the highest methane flow.</p>
+<h3 id="4-monte-carlo-analysis">4. Monte Carlo Analysis<a class="headerlink" href="#4-monte-carlo-analysis" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="n">K_M_AC_REL_STD</span> <span class="o">=</span> <span class="mf">0.10</span>
 </code></pre></div>
-<p><strong>Interpretation</strong>:<br/>
-- <strong>Biogas production scales linearly</strong> with feed rate (expected for stable operation)<br/>
-- <strong>pH decreases</strong> with higher loading (more VFA production)<br/>
-- <strong>FOS/TAC increases</strong> but remains below critical threshold (0.4)<br/>
-- <strong>Execution time is similar</strong> across scenarios (same computational complexity)  </p>
-<h3 id="parameter-sweep-results">Parameter Sweep Results<a class="headerlink" href="#parameter-sweep-results" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>================================================================================
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>4. Running parameter sweep (Disintegration Rate k_dis)  
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>================================================================================
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="n">mc_config</span> <span class="o">=</span> <span class="n">MonteCarloConfig</span><span class="p">(</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>    <span class="n">n_samples</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="n">parameter_distributions</span><span class="o">=</span><span class="p">{</span><span class="s2">"k_m_ac"</span><span class="p">:</span> <span class="p">(</span><span class="n">k_m_ac_nominal</span><span class="p">,</span> <span class="n">K_M_AC_REL_STD</span> <span class="o">*</span> <span class="n">k_m_ac_nominal</span><span class="p">)},</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    <span class="n">fixed_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"Q"</span><span class="p">:</span> <span class="n">base_feed</span><span class="p">},</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="p">)</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="n">mc_results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">monte_carlo</span><span class="p">(</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>    <span class="n">config</span><span class="o">=</span><span class="n">mc_config</span><span class="p">,</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>    <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">initial_state</span><span class="p">,</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="p">)</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="n">summary</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">summarize_results</span><span class="p">(</span><span class="n">mc_results</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li><code>parameter_distributions</code>: mean and standard deviation of a normal distribution per parameter, here the rate of the model and 10 % of it. Other distributions are not available, and the draws are not truncated, so choose mean and standard deviation such that the values stay physically meaningful.  </li>
+<li><code>fixed_params</code>: keys that are the same in every sample  </li>
+<li><code>seed</code>: seeds the random generator of NumPy, so every run draws the same 50 values  </li>
+<li><code>summarize_results</code>: returns <code>n_scenarios</code>, <code>n_successful</code>, <code>n_failed</code> and <code>success_rate</code>, and under <code>metrics</code> the statistics <code>mean</code>, <code>std</code>, <code>min</code>, <code>max</code>, <code>median</code>, <code>q25</code> and <code>q75</code> for every metric over the successful scenarios. <code>std</code> is the population standard deviation (<code>np.std</code>).  </li>
+</ul>
+<h2 id="result-objects">Result Objects<a class="headerlink" href="#result-objects" title="Permanent link">¶</a></h2>
+<p>Every scenario returns a <code>ScenarioResult</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scenario_id</code></td>
+<td>Position in the scenario list, starting at 0</td>
+</tr>
+<tr>
+<td><code>parameters</code></td>
+<td>The scenario dictionary</td>
+</tr>
+<tr>
+<td><code>success</code></td>
+<td><code>True</code> if the simulation finished</td>
+</tr>
+<tr>
+<td><code>duration</code></td>
+<td>Simulated time [d]</td>
+</tr>
+<tr>
+<td><code>final_state</code></td>
+<td>State vector at the end (41 values)</td>
+</tr>
+<tr>
+<td><code>time_series</code></td>
+<td>Only with <code>save_time_series=True</code>: the last ten values of <code>Q_gas</code>, <code>Q_ch4</code> and <code>pH</code> (pH rounded to one decimal), stored once per <code>dt</code> step</td>
+</tr>
+<tr>
+<td><code>metrics</code></td>
+<td>Values computed from the final state, see below</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td>Exception type, message and traceback of a failed scenario</td>
+</tr>
+<tr>
+<td><code>execution_time</code></td>
+<td>Wall-clock time of the scenario in its worker [s]</td>
+</tr>
+</tbody>
+</table>
+<p><code>metrics</code> holds these values:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Unit</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Q_gas</code></td>
+<td>Nm³/d</td>
+<td>Dry biogas</td>
+</tr>
+<tr>
+<td><code>Q_ch4</code></td>
+<td>Nm³/d</td>
+<td>Methane</td>
+</tr>
+<tr>
+<td><code>Q_co2</code></td>
+<td>Nm³/d</td>
+<td>Carbon dioxide</td>
+</tr>
+<tr>
+<td><code>p_gas</code></td>
+<td>bar</td>
+<td>Sum of the dry partial pressures of hydrogen, methane and carbon dioxide</td>
+</tr>
+<tr>
+<td><code>CH4_content</code></td>
+<td>-</td>
+<td><code>Q_ch4 / Q_gas</code>, the methane fraction of the dry gas</td>
+</tr>
+<tr>
+<td><code>pH</code></td>
+<td>-</td>
+<td>pH from the charge balance</td>
+</tr>
+<tr>
+<td><code>Q_total</code></td>
+<td>t FM/d</td>
+<td>Sum of the feed rates of the scenario as entered</td>
+</tr>
+<tr>
+<td><code>specific_gas_production</code></td>
+<td>Nm³/t FM</td>
+<td><code>Q_gas / Q_total</code></td>
+</tr>
+<tr>
+<td><code>specific_ch4_production</code></td>
+<td>Nm³/t FM</td>
+<td><code>Q_ch4 / Q_total</code></td>
+</tr>
+<tr>
+<td><code>HRT</code></td>
+<td>d</td>
+<td><code>V_liq</code> divided by the volume flow the model uses for this feed</td>
+</tr>
+</tbody>
+</table>
+<p>The units of <code>Q_total</code> and of the specific yields hold for the default <code>Feedstock</code> convention. The metrics contain no VFA, TAC or FOS/TAC values.</p>
+<h2 id="output">Output<a class="headerlink" href="#output" title="Permanent link">¶</a></h2>
+<p>The blocks below are the output of one run; <code>...</code> marks omitted lines. The <code>Total time</code> lines are from that run on one PC and differ between machines and runs. The simulated values repeat from run to run, because the Monte Carlo draws are fixed by <code>seed=42</code>.</p>
+<h3 id="feed-rate-comparison">Feed-Rate Comparison<a class="headerlink" href="#feed-rate-comparison" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>======================================================================
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>PyADM1 Parallel Simulation Example
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>======================================================================
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>   Testing 6 different k_dis values...
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>1. Building base ADM1 model...  
 <a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>   Parameter Sweep Results:
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>   ------------------------------------------------------------
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>      k_dis |      Q_gas |      Q_ch4 |     pH |      VFA
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>   ------------------------------------------------------------
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>       0.10 |      865.3 |      519.2 |   7.35 |     1.52
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>       0.14 |      925.8 |      555.5 |   7.28 |     1.85
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>       0.18 |      982.4 |      589.4 |   7.22 |     2.18
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>       0.22 |     1005.2 |      603.1 |   7.20 |     2.45
-<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>       0.26 |     1015.6 |      609.4 |   7.18 |     2.68
-<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>       0.30 |     1018.2 |      610.9 |   7.17 |     2.85
-<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>
-<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>   ✓ Optimal k_dis = 0.30 (CH4 = 610.9 m³/d)
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>2. Running feed-rate comparison...  
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>Starting parallel simulation with 4 scenarios
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>Using 4 worker processes
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>  Completed 4/4 scenarios
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>Simulation complete:
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>  Total scenarios: 4
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>  Successful: 4
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>  Failed: 0
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>  Total time: 3.6 seconds
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>  Average time per scenario: 0.90 seconds
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>   Feed-rate results (feed in t FM/d, gas flows in Nm³/d, HRT in d):
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>   ------------------------------------------------------------------
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a>   Scenario           Feed     Q_gas     Q_ch4   CH4 %     pH     HRT
+<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a>   Low Feed           12.0    1396.8     739.3    52.9   7.44   108.3
+<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>   Base Feed          17.5    1893.0    1003.7    53.0   7.44    74.1
+<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a>   High Feed          23.0    2393.3    1270.0    53.1   7.43    56.4
+<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a>   Very High Feed     30.0    3053.0    1620.1    53.1   7.42    43.3
 </code></pre></div>
-<p><strong>Observations</strong>:<br/>
-- <strong>Methane production increases</strong> with k_dis (faster disintegration)<br/>
-- <strong>Diminishing returns</strong> above k_dis = 0.26 (only 1.5 m³/d increase)<br/>
-- <strong>pH decreases slightly</strong> due to faster organic acid production<br/>
-- <strong>Trade-off</strong>: Higher k_dis → more gas but lower pH stability  </p>
-<h3 id="monte-carlo-statistics">Monte Carlo Statistics<a class="headerlink" href="#monte-carlo-statistics" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>================================================================================
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>6. Running Monte Carlo uncertainty analysis  
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>================================================================================
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>   Running 50 Monte Carlo samples...
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>   Monte Carlo Summary Statistics:
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>   ------------------------------------------------------------
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>   Q_gas:
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>      Mean:      1002.45
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>      Std:         58.32
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>      Min:        885.20
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>      Max:       1125.80
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>      Median:     998.60
-<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>      Q25:        965.15
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>      Q75:       1038.22
-<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>
-<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a>   Q_ch4:
-<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>      Mean:       601.47
-<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a>      Std:         35.00
-<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a>      Min:        531.12
-<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a>      Max:        675.48
-<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a>      Median:     599.16
-<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a>      Q25:        579.09
-<a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a>      Q75:        622.93
-<a href="#__codelineno-9-27" id="__codelineno-9-27" name="__codelineno-9-27"></a>
-<a href="#__codelineno-9-28" id="__codelineno-9-28" name="__codelineno-9-28"></a>   pH:
-<a href="#__codelineno-9-29" id="__codelineno-9-29" name="__codelineno-9-29"></a>      Mean:          7.21
-<a href="#__codelineno-9-30" id="__codelineno-9-30" name="__codelineno-9-30"></a>      Std:           0.08
-<a href="#__codelineno-9-31" id="__codelineno-9-31" name="__codelineno-9-31"></a>      Min:           7.05
-<a href="#__codelineno-9-32" id="__codelineno-9-32" name="__codelineno-9-32"></a>      Max:           7.38
-<a href="#__codelineno-9-33" id="__codelineno-9-33" name="__codelineno-9-33"></a>      Median:        7.20
-<a href="#__codelineno-9-34" id="__codelineno-9-34" name="__codelineno-9-34"></a>      Q25:           7.15
-<a href="#__codelineno-9-35" id="__codelineno-9-35" name="__codelineno-9-35"></a>      Q75:           7.26
-<a href="#__codelineno-9-36" id="__codelineno-9-36" name="__codelineno-9-36"></a>
-<a href="#__codelineno-9-37" id="__codelineno-9-37" name="__codelineno-9-37"></a>   Success Rate: 100.0%
+<ul>
+<li>The gas flow rises with the feed, but less than proportionally: 2.5 times the feed (12.0 to 30.0 t FM/d) gives 2.19 times the gas, and the gas per tonne of fresh matter (<code>Q_gas / Q_total</code>) falls from 116.4 to 101.8 Nm³.  </li>
+<li>The methane content of the dry gas stays at about 53 % in all four scenarios, and the pH moves only from 7.44 to 7.42.  </li>
+<li>The retention time is longer than <code>V_liq</code> divided by the feed in tonnes, because the silage takes less than 1 m³ per tonne: the Base Feed of 17.5 t FM/d is a volume flow of 16.2 m³/d, which gives 74.1 d.  </li>
+<li>The values describe day 30, not a steady state. All scenarios start from the same initial state, and 30 days are shorter than every retention time in the table.  </li>
+</ul>
+<h3 id="parameter-sweep">Parameter Sweep<a class="headerlink" href="#parameter-sweep" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>3. Parameter sweep over k_m_ac...  
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>   k_m_ac of the model at 42 °C: 11.76 1/d
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>Parameter sweep: k_m_ac
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>  Values: [1.7635371857293733, 3.5270743714587467, 5.878457285764578, 11.756914571529157, 17.635371857293734]
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>Starting parallel simulation with 5 scenarios
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>Using 4 worker processes
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>  Completed 5/5 scenarios
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>Simulation complete:
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>  Total scenarios: 5
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>  Successful: 5
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>  Failed: 0
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>  Total time: 2.6 seconds
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>  Average time per scenario: 0.51 seconds
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>   Sweep results (k_m_ac in 1/d, gas flows in Nm³/d):
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>   ------------------------------------------------------------------
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>   Factor   k_m_ac     Q_gas     Q_ch4   CH4 %     pH
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a>     0.15     1.76    1009.4       9.1     0.9   4.50
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>     0.30     3.53    1855.3     968.7    52.2   7.13
+<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a>     0.50     5.88    1873.4     985.2    52.6   7.36
+<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a>     1.00    11.76    1893.0    1003.7    53.0   7.44
+<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a>     1.50    17.64    1894.3    1005.0    53.1   7.44
+<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a>
+<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a>   Highest methane flow: 1005.0 Nm³/d at k_m_ac = 17.64 1/d (factor 1.50)
 </code></pre></div>
-<p><strong>Uncertainty Analysis</strong>:<br/>
-- <strong>Coefficient of variation (CV)</strong>:<br/>
-  - Biogas: 58.32 / 1002.45 = 5.8% (moderate uncertainty)<br/>
-  - Methane: 35.00 / 601.47 = 5.8% (same relative uncertainty)<br/>
-  - pH: 0.08 / 7.21 = 1.1% (very stable)<br/>
-- <strong>95% Confidence Interval</strong> (≈ Q25 to Q75):<br/>
-  - Biogas: 965–1038 m³/d (±3.7% from median)<br/>
-  - Methane: 579–623 m³/d (±3.7% from median)<br/>
-- <strong>Interpretation</strong>: Parameter uncertainty has moderate impact on gas production predictions  </p>
-<h2 id="performance-analysis">Performance Analysis<a class="headerlink" href="#performance-analysis" title="Permanent link">¶</a></h2>
-<h3 id="parallel-efficiency">Parallel Efficiency<a class="headerlink" href="#parallel-efficiency" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>================================================================================
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>SIMULATION SUMMARY
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>================================================================================
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>Total execution time: 125.3 seconds
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>Average time per simulation: 1.05 seconds
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>Parallel efficiency:
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>  Workers used: 4
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>  Theoretical sequential time: 475.8 seconds
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>  Speedup: 3.80x
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>  Parallel efficiency: 95.0%
+<ul>
+<li>At factor 0.15 (1.76 d⁻¹) the digester has acidified after 30 days: the pH is 4.50, and methane makes up only 9.1 of the 1009.4 Nm³/d of gas (0.9 %).  </li>
+<li>From factor 0.30 to factor 1.00 the methane flow rises by 3.6 %, from 968.7 to 1003.7 Nm³/d, and the pH from 7.13 to 7.44.  </li>
+<li>Factor 1.00 is the rate of the model, so its row equals the Base Feed row of the feed-rate comparison.  </li>
+<li>Above the rate of the model little changes: factor 1.50 adds 1.3 Nm³/d. The highest methane flow is therefore the upper end of the sweep, not an optimum inside it.  </li>
+</ul>
+<h3 id="monte-carlo-analysis">Monte Carlo Analysis<a class="headerlink" href="#monte-carlo-analysis" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>4. Monte Carlo uncertainty (50 samples)...  
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>Monte Carlo simulation:
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>  Samples: 50
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>  Parameters with uncertainty:
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    k_m_ac: N(11.756914571529157, 1.1756914571529158²)
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>Starting parallel simulation with 50 scenarios
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>Using 4 worker processes
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>  Completed 10/50 scenarios
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>...
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>  Completed 50/50 scenarios
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>Simulation complete:
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>  Total scenarios: 50
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>  Successful: 50
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>  Failed: 0
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>  Total time: 5.0 seconds
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>  Average time per scenario: 0.10 seconds
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>   Success rate: 100.0%
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>   k_m_ac draws [1/d]: 9.45 to 13.93
+<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a>
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a>   Methane production [Nm³/d]:
+<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a>     mean ± std : 1003.4 ± 0.7
+<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a>     min  / max : 1001.7 / 1004.4
+<a href="#__codelineno-10-25" id="__codelineno-10-25" name="__codelineno-10-25"></a>     median     : 1003.6
+<a href="#__codelineno-10-26" id="__codelineno-10-26" name="__codelineno-10-26"></a>
+<a href="#__codelineno-10-27" id="__codelineno-10-27" name="__codelineno-10-27"></a>======================================================================
+<a href="#__codelineno-10-28" id="__codelineno-10-28" name="__codelineno-10-28"></a>Parallel demonstration completed successfully!
+<a href="#__codelineno-10-29" id="__codelineno-10-29" name="__codelineno-10-29"></a>======================================================================
 </code></pre></div>
-<p><strong>Performance Metrics</strong>:<br/>
-- <strong>Speedup</strong>: 475.8 / 125.3 = 3.80×<br/>
-- <strong>Efficiency</strong>: 3.80 / 4 = 95.0%<br/>
-- <strong>Overhead</strong>: 5% due to:<br/>
-  - Process creation/destruction<br/>
-  - Data serialization/deserialization<br/>
-  - Result aggregation  </p>
-<p><strong>Optimal Worker Count</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mp</span>
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="c1"># Rule of thumb: n_workers = CPU_count - 1</span>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="n">optimal_workers</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="n">parallel</span> <span class="o">=</span> <span class="n">ParallelSimulator</span><span class="p">(</span><span class="n">adm1</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="n">optimal_workers</span><span class="p">)</span>
-</code></pre></div></p>
-<p><strong>Scalability</strong>:<br/>
-- <strong>Linear speedup</strong>: Up to CPU core count (ideal: 95%+ efficiency)<br/>
-- <strong>Diminishing returns</strong>: Beyond core count (hyperthreading limited)<br/>
-- <strong>Overhead dominates</strong>: Very short simulations (&lt;1 second)  </p>
-<h3 id="memory-considerations">Memory Considerations<a class="headerlink" href="#memory-considerations" title="Permanent link">¶</a></h3>
-<p>Each worker process creates a <strong>full copy</strong> of the ADM1 model:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="c1"># Memory per worker ≈ 50-100 MB (depends on model complexity)</span>
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="c1"># Total memory = n_workers × memory_per_worker + overhead</span>
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="c1"># For 100 scenarios on 4 cores:</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="c1"># Memory usage ≈ 4 × 75 MB ≈ 300 MB (manageable)</span>
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="c1"># For very large parameter sweeps:</span>
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="k">if</span> <span class="n">n_scenarios</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span>
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>    <span class="c1"># Use batching to limit memory</span>
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>    <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">100</span>
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>    <span class="n">all_results</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">scenarios</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">):</span>
-<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>        <span class="n">batch</span> <span class="o">=</span> <span class="n">scenarios</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">batch_size</span><span class="p">]</span>
-<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>        <span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>        <span class="n">all_results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<ul>
+<li>The 50 draws of <code>k_m_ac</code> lie between 9.45 and 13.93 d⁻¹. All 50 scenarios finished.  </li>
+<li>The methane flow is 1003.4 ± 0.7 Nm³/d and lies between 1001.7 and 1004.4 Nm³/d.  </li>
+<li>The standard deviation of the parameter is 10 % of its mean, that of the methane flow 0.07 % (0.7 / 1003.4). Around the rate of the model the methane flow after 30 days reacts only weakly to <code>k_m_ac</code>, which matches the flat upper part of the sweep.  </li>
+<li>The script prints the statistics of <code>Q_ch4</code> only. <code>summary["metrics"]</code> holds the same statistics, and the quartiles <code>q25</code> and <code>q75</code>, for every metric.  </li>
+</ul>
+<h2 id="adapting-the-example">Adapting the Example<a class="headerlink" href="#adapting-the-example" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>Other parameters</strong>: every key of the table in <a href="#2-feed-rate-comparison">step 2</a> can be used in a scenario, as <code>parameter_name</code> of a sweep or in <code>parameter_distributions</code>. <code>nominal_rate</code> returns the rate of the model for the <code>k_dis_*</code>, <code>k_hyd_*</code> and <code>k_m_*</code> keys.  </li>
+<li><strong>Temperature</strong>: add <code>T_ad</code> in kelvin to a scenario, for example <code>{"Q": base_feed, "T_ad": 311.15}</code>. All scenarios of one call can have different temperatures.  </li>
+<li><strong>Time series</strong>: pass <code>save_time_series=True</code> and a step <code>dt</code> in days to <code>run_scenarios</code>, <code>parameter_sweep</code> or <code>monte_carlo</code>. Each result then carries the last ten stored values of <code>Q_gas</code>, <code>Q_ch4</code> and <code>pH</code>. Without <code>save_time_series=True</code>, <code>dt</code> has no effect.  </li>
+<li><strong>Calibrated base model</strong>: parameters set with <code>adm1.set_calibration_parameters({...})</code> on the base model apply to every scenario. A scenario value for the same parameter takes precedence.  </li>
+<li><strong>Substrates and digester size</strong>: change the substrate list of <code>Feedstock</code> and the arguments of <code>ADM1</code>. The feed vectors follow the order of the substrate list.  </li>
+<li><strong>Number of workers</strong>: set <code>n_workers</code>. Every call of <code>run_scenarios</code> starts its own pool. With <code>n_workers=1</code> or a single scenario the simulator runs in the main process and starts no pool.  </li>
+<li><strong>Failed scenarios</strong>: a scenario that raises an exception does not stop the others. Its result has <code>success=False</code> and the reason in <code>error</code>.  </li>
+</ul>
+<p>Several parameters can be varied at once with <code>multi_parameter_sweep</code>, which the script does not use. It simulates every combination of the given values:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">multi_parameter_sweep</span><span class="p">(</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>    <span class="n">parameter_configs</span><span class="o">=</span><span class="p">{</span><span class="s2">"k_m_ac"</span><span class="p">:</span> <span class="p">[</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">],</span> <span class="s2">"T_ad"</span><span class="p">:</span> <span class="p">[</span><span class="mf">311.15</span><span class="p">,</span> <span class="mf">315.15</span><span class="p">]},</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>    <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>    <span class="n">initial_state</span><span class="o">=</span><span class="n">initial_state</span><span class="p">,</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>    <span class="n">fixed_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"Q"</span><span class="p">:</span> <span class="n">base_feed</span><span class="p">},</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="p">)</span>
 </code></pre></div>
-<h2 id="advanced-usage">Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permanent link">¶</a></h2>
-<h3 id="custom-result-processing">Custom Result Processing<a class="headerlink" href="#custom-result-processing" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">analyze_stability</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="w">    </span><span class="sd">"""Classify scenarios by process stability."""</span>
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>    <span class="n">stable</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>    <span class="n">unstable</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>            <span class="k">continue</span>
-<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>
-<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>        <span class="n">fos_tac</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'FOS_TAC'</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>        <span class="n">pH</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'pH'</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>
-<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>        <span class="c1"># Stability criteria</span>
-<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>        <span class="n">is_stable</span> <span class="o">=</span> <span class="p">(</span>
-<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a>            <span class="mf">0.2</span> <span class="o">&lt;=</span> <span class="n">fos_tac</span> <span class="o">&lt;=</span> <span class="mf">0.4</span> <span class="ow">and</span>
-<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a>            <span class="mf">6.8</span> <span class="o">&lt;=</span> <span class="n">pH</span> <span class="o">&lt;=</span> <span class="mf">7.5</span>
-<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a>        <span class="p">)</span>
-<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a>
-<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a>        <span class="k">if</span> <span class="n">is_stable</span><span class="p">:</span>
-<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a>            <span class="n">stable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a>        <span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a>            <span class="n">unstable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a>
-<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a>    <span class="k">return</span> <span class="n">stable</span><span class="p">,</span> <span class="n">unstable</span>
-<a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a>
-<a href="#__codelineno-13-26" id="__codelineno-13-26" name="__codelineno-13-26"></a><span class="n">stable</span><span class="p">,</span> <span class="n">unstable</span> <span class="o">=</span> <span class="n">analyze_stability</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-<a href="#__codelineno-13-27" id="__codelineno-13-27" name="__codelineno-13-27"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Stable scenarios: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stable</span><span class="p">)</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</code></pre></div>
-<h3 id="sensitivity-analysis">Sensitivity Analysis<a class="headerlink" href="#sensitivity-analysis" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">calculate_sensitivity</span><span class="p">(</span><span class="n">param_name</span><span class="p">,</span> <span class="n">sweep_results</span><span class="p">):</span>
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="w">    </span><span class="sd">"""Calculate parameter sensitivity coefficient."""</span>
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>    <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">sweep_results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">success</span><span class="p">]</span>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>    <span class="n">ch4</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s1">'Q_ch4'</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">sweep_results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">success</span><span class="p">]</span>
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>    <span class="c1"># Linear regression: ΔCH4/Δparam</span>
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">numpy.polynomial</span><span class="w"> </span><span class="kn">import</span> <span class="n">Polynomial</span>
-<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>
-<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">Polynomial</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">ch4</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>    <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">convert</span><span class="p">()</span><span class="o">.</span><span class="n">coef</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># Slope</span>
-<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>
-<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a>    <span class="k">return</span> <span class="n">sensitivity</span>
-<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a>
-<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a><span class="c1"># Compare sensitivities</span>
-<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a><span class="n">k_dis_sens</span> <span class="o">=</span> <span class="n">calculate_sensitivity</span><span class="p">(</span><span class="s1">'k_dis'</span><span class="p">,</span> <span class="n">sweep_results_1</span><span class="p">)</span>
-<a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a><span class="n">Y_su_sens</span> <span class="o">=</span> <span class="n">calculate_sensitivity</span><span class="p">(</span><span class="s1">'Y_su'</span><span class="p">,</span> <span class="n">sweep_results_2</span><span class="p">)</span>
-<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a>
-<a href="#__codelineno-14-18" id="__codelineno-14-18" name="__codelineno-14-18"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Sensitivity of CH4 production:"</span><span class="p">)</span>
-<a href="#__codelineno-14-19" id="__codelineno-14-19" name="__codelineno-14-19"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  k_dis: </span><span class="si">{</span><span class="n">k_dis_sens</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m³/d per unit"</span><span class="p">)</span>
-<a href="#__codelineno-14-20" id="__codelineno-14-20" name="__codelineno-14-20"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Y_su:  </span><span class="si">{</span><span class="n">Y_su_sens</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m³/d per unit"</span><span class="p">)</span>
-</code></pre></div>
-<h3 id="response-surface-modeling">Response Surface Modeling<a class="headerlink" href="#response-surface-modeling" title="Permanent link">¶</a></h3>
-<p>For multi-parameter sweeps, fit response surfaces:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.gaussian_process</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianProcessRegressor</span>
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.gaussian_process.kernels</span><span class="w"> </span><span class="kn">import</span> <span class="n">RBF</span><span class="p">,</span> <span class="n">ConstantKernel</span>
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="c1"># Extract training data</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="n">X</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Parameter combinations</span>
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Methane production</span>
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>
-<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">multi_results</span><span class="p">:</span>
-<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a>        <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">'k_dis'</span><span class="p">],</span> <span class="n">r</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">'Y_su'</span><span class="p">]])</span>
-<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s1">'Q_ch4'</span><span class="p">])</span>
-<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a>
-<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a>
-<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a><span class="c1"># Fit Gaussian Process</span>
-<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a><span class="n">kernel</span> <span class="o">=</span> <span class="n">ConstantKernel</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
-<a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a><span class="n">gp</span> <span class="o">=</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="n">kernel</span><span class="p">,</span> <span class="n">n_restarts_optimizer</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a><span class="n">gp</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a>
-<a href="#__codelineno-15-21" id="__codelineno-15-21" name="__codelineno-15-21"></a><span class="c1"># Predict at new points</span>
-<a href="#__codelineno-15-22" id="__codelineno-15-22" name="__codelineno-15-22"></a><span class="n">k_dis_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.30</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
-<a href="#__codelineno-15-23" id="__codelineno-15-23" name="__codelineno-15-23"></a><span class="n">Y_su_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.12</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
-<a href="#__codelineno-15-24" id="__codelineno-15-24" name="__codelineno-15-24"></a><span class="n">K</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">k_dis_new</span><span class="p">,</span> <span class="n">Y_su_new</span><span class="p">)</span>
-<a href="#__codelineno-15-25" id="__codelineno-15-25" name="__codelineno-15-25"></a>
-<a href="#__codelineno-15-26" id="__codelineno-15-26" name="__codelineno-15-26"></a><span class="n">X_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">K</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">Y</span><span class="o">.</span><span class="n">ravel</span><span class="p">()]</span>
-<a href="#__codelineno-15-27" id="__codelineno-15-27" name="__codelineno-15-27"></a><span class="n">ch4_pred</span><span class="p">,</span> <span class="n">ch4_std</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_pred</span><span class="p">,</span> <span class="n">return_std</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a href="#__codelineno-15-28" id="__codelineno-15-28" name="__codelineno-15-28"></a>
-<a href="#__codelineno-15-29" id="__codelineno-15-29" name="__codelineno-15-29"></a><span class="c1"># Find optimum</span>
-<a href="#__codelineno-15-30" id="__codelineno-15-30" name="__codelineno-15-30"></a><span class="n">opt_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ch4_pred</span><span class="p">)</span>
-<a href="#__codelineno-15-31" id="__codelineno-15-31" name="__codelineno-15-31"></a><span class="n">opt_k_dis</span> <span class="o">=</span> <span class="n">X_pred</span><span class="p">[</span><span class="n">opt_idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<a href="#__codelineno-15-32" id="__codelineno-15-32" name="__codelineno-15-32"></a><span class="n">opt_Y_su</span> <span class="o">=</span> <span class="n">X_pred</span><span class="p">[</span><span class="n">opt_idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<a href="#__codelineno-15-33" id="__codelineno-15-33" name="__codelineno-15-33"></a><span class="n">opt_ch4</span> <span class="o">=</span> <span class="n">ch4_pred</span><span class="p">[</span><span class="n">opt_idx</span><span class="p">]</span>
-<a href="#__codelineno-15-34" id="__codelineno-15-34" name="__codelineno-15-34"></a>
-<a href="#__codelineno-15-35" id="__codelineno-15-35" name="__codelineno-15-35"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Predicted optimum:"</span><span class="p">)</span>
-<a href="#__codelineno-15-36" id="__codelineno-15-36" name="__codelineno-15-36"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  k_dis = </span><span class="si">{</span><span class="n">opt_k_dis</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-15-37" id="__codelineno-15-37" name="__codelineno-15-37"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Y_su = </span><span class="si">{</span><span class="n">opt_Y_su</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-15-38" id="__codelineno-15-38" name="__codelineno-15-38"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  CH4 = </span><span class="si">{</span><span class="n">opt_ch4</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">ch4_std</span><span class="p">[</span><span class="n">opt_idx</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m³/d"</span><span class="p">)</span>
-</code></pre></div>
-<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">¶</a></h2>
-<h3 id="1-choose-appropriate-number-of-workers">1. Choose Appropriate Number of Workers<a class="headerlink" href="#1-choose-appropriate-number-of-workers" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mp</span>
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="c1"># Rule of thumb</span>
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="n">n_workers</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Leave one core for OS</span>
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="c1"># For I/O-bound tasks (rare in biogas simulation)</span>
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="n">n_workers</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">mp</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
-<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>
-<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a><span class="c1"># For memory-limited systems</span>
-<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a><span class="n">available_memory_gb</span> <span class="o">=</span> <span class="mi">16</span>  <span class="c1"># Your system RAM</span>
-<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a><span class="n">memory_per_worker_gb</span> <span class="o">=</span> <span class="mf">0.1</span>
-<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a><span class="n">n_workers</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_workers</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">available_memory_gb</span> <span class="o">/</span> <span class="n">memory_per_worker_gb</span><span class="p">))</span>
-</code></pre></div>
-<h3 id="2-balance-simulation-duration-and-number-of-scenarios">2. Balance Simulation Duration and Number of Scenarios<a class="headerlink" href="#2-balance-simulation-duration-and-number-of-scenarios" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># Short simulations (&lt; 1 second): Overhead dominates</span>
-<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="c1"># → Increase duration or use sequential execution</span>
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="c1"># Medium simulations (1-10 seconds): Good parallelization</span>
-<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="c1"># → Ideal for parameter sweeps</span>
-<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="c1"># Long simulations (&gt; 60 seconds): Memory intensive</span>
-<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="c1"># → Consider reducing n_workers or using batching</span>
-</code></pre></div>
-<h3 id="3-save-results-incrementally">3. Save Results Incrementally<a class="headerlink" href="#3-save-results-incrementally" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
-<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>
-<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a><span class="n">results_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"results/parallel_sweep"</span><span class="p">)</span>
-<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="n">results_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>
-<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a><span class="c1"># Run in batches</span>
-<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">50</span>
-<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a><span class="k">for</span> <span class="n">batch_id</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">scenarios</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">)):</span>
-<a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a>    <span class="n">batch</span> <span class="o">=</span> <span class="n">scenarios</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">batch_size</span><span class="p">]</span>
-<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a>
-<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a>    <span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span>
-<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a>        <span class="n">batch</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">initial_state</span><span class="o">=</span><span class="n">adm1_state</span>
-<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a>    <span class="p">)</span>
-<a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a>
-<a href="#__codelineno-18-16" id="__codelineno-18-16" name="__codelineno-18-16"></a>    <span class="c1"># Save batch results</span>
-<a href="#__codelineno-18-17" id="__codelineno-18-17" name="__codelineno-18-17"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">results_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"batch_</span><span class="si">{</span><span class="n">batch_id</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">.pkl"</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<a href="#__codelineno-18-18" id="__codelineno-18-18" name="__codelineno-18-18"></a>        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-<a href="#__codelineno-18-19" id="__codelineno-18-19" name="__codelineno-18-19"></a>
-<a href="#__codelineno-18-20" id="__codelineno-18-20" name="__codelineno-18-20"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Saved batch </span><span class="si">{</span><span class="n">batch_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-18-21" id="__codelineno-18-21" name="__codelineno-18-21"></a>
-<a href="#__codelineno-18-22" id="__codelineno-18-22" name="__codelineno-18-22"></a><span class="c1"># Load all results later</span>
-<a href="#__codelineno-18-23" id="__codelineno-18-23" name="__codelineno-18-23"></a><span class="n">all_results</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-18-24" id="__codelineno-18-24" name="__codelineno-18-24"></a><span class="k">for</span> <span class="n">batch_file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">results_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"batch_*.pkl"</span><span class="p">)):</span>
-<a href="#__codelineno-18-25" id="__codelineno-18-25" name="__codelineno-18-25"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">batch_file</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<a href="#__codelineno-18-26" id="__codelineno-18-26" name="__codelineno-18-26"></a>        <span class="n">all_results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
-</code></pre></div>
-<h3 id="4-handle-failed-scenarios-gracefully">4. Handle Failed Scenarios Gracefully<a class="headerlink" href="#4-handle-failed-scenarios-gracefully" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># Check for failures</span>
-<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="n">failed</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">success</span><span class="p">]</span>
-<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>
-<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="k">if</span> <span class="n">failed</span><span class="p">:</span>
-<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Warning: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">failed</span><span class="p">)</span><span class="si">}</span><span class="s2"> scenarios failed"</span><span class="p">)</span>
-<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a>
-<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a>    <span class="c1"># Log failures</span>
-<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"failed_scenarios.log"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a>        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">failed</span><span class="p">:</span>
-<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a>            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Scenario </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">scenario_id</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a>            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Parameters: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">parameters</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a>            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-19-13" id="__codelineno-19-13" name="__codelineno-19-13"></a>
-<a href="#__codelineno-19-14" id="__codelineno-19-14" name="__codelineno-19-14"></a>    <span class="c1"># Retry with tighter tolerances</span>
-<a href="#__codelineno-19-15" id="__codelineno-19-15" name="__codelineno-19-15"></a>    <span class="n">retry_scenarios</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">parameters</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">failed</span><span class="p">]</span>
-<a href="#__codelineno-19-16" id="__codelineno-19-16" name="__codelineno-19-16"></a>
-<a href="#__codelineno-19-17" id="__codelineno-19-17" name="__codelineno-19-17"></a>    <span class="c1"># Create new simulator with stricter settings</span>
-<a href="#__codelineno-19-18" id="__codelineno-19-18" name="__codelineno-19-18"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">pyadm1.core.solver</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_solver</span>
-<a href="#__codelineno-19-19" id="__codelineno-19-19" name="__codelineno-19-19"></a>
-<a href="#__codelineno-19-20" id="__codelineno-19-20" name="__codelineno-19-20"></a>    <span class="n">strict_solver</span> <span class="o">=</span> <span class="n">create_solver</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">'BDF'</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span>
-<a href="#__codelineno-19-21" id="__codelineno-19-21" name="__codelineno-19-21"></a>    <span class="n">retry_results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span><span class="n">retry_scenarios</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-</code></pre></div>
-<h3 id="5-validate-results">5. Validate Results<a class="headerlink" href="#5-validate-results" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">validate_results</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
-<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="w">    </span><span class="sd">"""Check for physically unrealistic results."""</span>
-<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>    <span class="n">issues</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a>
-<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a>    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a>            <span class="k">continue</span>
-<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a>
-<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a>        <span class="c1"># Check for unrealistic values</span>
-<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a>        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'Q_ch4'</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a>            <span class="n">issues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Scenario </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">scenario_id</span><span class="si">}</span><span class="s2">: Negative methane"</span><span class="p">)</span>
-<a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a>
-<a href="#__codelineno-20-13" id="__codelineno-20-13" name="__codelineno-20-13"></a>        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'pH'</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'pH'</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">9</span><span class="p">:</span>
-<a href="#__codelineno-20-14" id="__codelineno-20-14" name="__codelineno-20-14"></a>            <span class="n">issues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Scenario </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">scenario_id</span><span class="si">}</span><span class="s2">: pH out of range"</span><span class="p">)</span>
-<a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a>
-<a href="#__codelineno-20-16" id="__codelineno-20-16" name="__codelineno-20-16"></a>        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'CH4_content'</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'CH4_content'</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-<a href="#__codelineno-20-17" id="__codelineno-20-17" name="__codelineno-20-17"></a>            <span class="n">issues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Scenario </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">scenario_id</span><span class="si">}</span><span class="s2">: Invalid CH4 fraction"</span><span class="p">)</span>
-<a href="#__codelineno-20-18" id="__codelineno-20-18" name="__codelineno-20-18"></a>
-<a href="#__codelineno-20-19" id="__codelineno-20-19" name="__codelineno-20-19"></a>    <span class="k">return</span> <span class="n">issues</span>
-<a href="#__codelineno-20-20" id="__codelineno-20-20" name="__codelineno-20-20"></a>
-<a href="#__codelineno-20-21" id="__codelineno-20-21" name="__codelineno-20-21"></a><span class="n">issues</span> <span class="o">=</span> <span class="n">validate_results</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-<a href="#__codelineno-20-22" id="__codelineno-20-22" name="__codelineno-20-22"></a><span class="k">if</span> <span class="n">issues</span><span class="p">:</span>
-<a href="#__codelineno-20-23" id="__codelineno-20-23" name="__codelineno-20-23"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Validation warnings:"</span><span class="p">)</span>
-<a href="#__codelineno-20-24" id="__codelineno-20-24" name="__codelineno-20-24"></a>    <span class="k">for</span> <span class="n">issue</span> <span class="ow">in</span> <span class="n">issues</span><span class="p">:</span>
-<a href="#__codelineno-20-25" id="__codelineno-20-25" name="__codelineno-20-25"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  - </span><span class="si">{</span><span class="n">issue</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</code></pre></div>
-<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
-<h3 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">¶</a></h3>
-<p><strong>Issue</strong>: "Pool workers hanging, no progress"
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="c1"># Solution: Reduce complexity or increase timeout</span>
-<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a><span class="n">parallel</span> <span class="o">=</span> <span class="n">ParallelSimulator</span><span class="p">(</span><span class="n">adm1</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># Fewer workers</span>
-<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span><span class="n">scenarios</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>  <span class="c1"># Shorter duration</span>
-</code></pre></div></p>
-<p><strong>Issue</strong>: "MemoryError during parallel execution"
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="c1"># Solution: Use batching</span>
-<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="n">batch_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">scenarios</span><span class="p">))</span>
-<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="n">all_results</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a>
-<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">scenarios</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">):</span>
-<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a>    <span class="n">batch</span> <span class="o">=</span> <span class="n">scenarios</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">batch_size</span><span class="p">]</span>
-<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a>    <span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a>    <span class="n">all_results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-<a href="#__codelineno-22-9" id="__codelineno-22-9" name="__codelineno-22-9"></a>
-<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a>    <span class="c1"># Force garbage collection</span>
-<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">gc</span>
-<a href="#__codelineno-22-12" id="__codelineno-22-12" name="__codelineno-22-12"></a>    <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
-</code></pre></div></p>
-<p><strong>Issue</strong>: "Inconsistent results across runs"
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="c1"># Solution: Set random seeds for Monte Carlo</span>
-<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="n">mc_config</span> <span class="o">=</span> <span class="n">MonteCarloConfig</span><span class="p">(</span>
-<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a>    <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a>    <span class="n">parameter_distributions</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">},</span>
-<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a>    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>  <span class="c1"># Fixed seed for reproducibility</span>
-<a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a><span class="p">)</span>
-</code></pre></div></p>
-<p><strong>Issue</strong>: "Low parallel efficiency (&lt; 70%)"
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a><span class="c1"># Possible causes:</span>
-<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a><span class="c1"># 1. Simulations too short (overhead dominates)</span>
-<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a><span class="c1"># 2. Too many workers for available cores</span>
-<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a><span class="c1"># 3. I/O bottleneck (disk access)</span>
-<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a>
-<a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a><span class="c1"># Solutions:</span>
-<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a><span class="c1"># 1. Increase simulation duration</span>
-<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a><span class="n">parallel</span> <span class="o">=</span> <span class="n">ParallelSimulator</span><span class="p">(</span><span class="n">adm1</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="n">mp</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a>
-<a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a><span class="c1"># 2. Disable time series saving</span>
-<a href="#__codelineno-24-11" id="__codelineno-24-11" name="__codelineno-24-11"></a><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">run_scenarios</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">save_time_series</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<a href="#__codelineno-24-12" id="__codelineno-24-12" name="__codelineno-24-12"></a>
-<a href="#__codelineno-24-13" id="__codelineno-24-13" name="__codelineno-24-13"></a><span class="c1"># 3. Batch processing instead of parallel</span>
-</code></pre></div></p>
+<p>This gives 2 × 2 = 4 scenarios. In the result list the last parameter changes fastest: <code>(3.5, 311.15)</code>, <code>(3.5, 315.15)</code>, <code>(8.0, 311.15)</code>, <code>(8.0, 315.15)</code>.</p>
+<p>In your own scripts, keep the call inside a <code>main()</code> function behind <code>if __name__ == "__main__":</code>, as the example does. The workers are started with the <code>spawn</code> method (<code>forkserver</code> on Linux), which imports the main module again in every worker; see the Python documentation on <a href="https://docs.python.org/3/library/multiprocessing.html">multiprocessing</a>. The environment variable <code>PYADM1_MP_START_METHOD</code> selects another start method.</p>
 <h2 id="related-examples">Related Examples<a class="headerlink" href="#related-examples" title="Permanent link">¶</a></h2>
 <ul>
 <li><a href="../basic_digester/"><code>basic_digester.md</code></a>: Single digester simulation basics  </li>
 <li><a href="../two_stage_plant/"><code>two_stage_plant.md</code></a>: Two-stage plant configuration  </li>
-<li><code>calibration_workflow.md</code>: Parameter calibration using parallel optimization  </li>
-</ul>
-<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
-<ul>
-<li><strong>Multiprocessing</strong>: Python documentation on <code>multiprocessing</code> module  </li>
-<li><strong>Parallel Computing</strong>: Pacheco, P. (2011). <em>An Introduction to Parallel Programming</em> </li>
-<li><strong>Design of Experiments</strong>: Montgomery, D.C. (2017). <em>Design and Analysis of Experiments</em> </li>
-<li><strong>Uncertainty Quantification</strong>: Sullivan, T.J. (2015). <em>Introduction to Uncertainty Quantification</em> </li>
+<li><a href="https://github.com/dgaida/PyADM1ODE/blob/master/examples/06_parallel_operation_studies.py">examples/06_parallel_operation_studies.py</a>: Three larger studies with the same simulator and three substrates (maize silage, cattle manure, grass silage): a grid of 54 feed scenarios over retention time and organic loading rate, 66 substrate mixes at a constant total feed, and ten temperatures through the scenario key <code>T_ad</code>. It saves one figure per study to <code>output/</code>.  </li>
+<li><a href="../../api/simulation/">Simulation API</a>: Reference of <code>ParallelSimulator</code>, <code>ScenarioResult</code>, <code>ParameterSweepConfig</code> and <code>MonteCarloConfig</code> </li>
 </ul>
 <h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
-<p>The parallel simulation example demonstrates:</p>
 <ol>
-<li><strong>Efficient Parameter Exploration</strong>: Test multiple scenarios 3-4× faster using parallel execution  </li>
-<li><strong>Systematic Optimization</strong>: Parameter sweeps identify optimal operating conditions  </li>
-<li><strong>Uncertainty Quantification</strong>: Monte Carlo analysis quantifies prediction uncertainty  </li>
-<li><strong>Scalable Architecture</strong>: Handle 100s of scenarios with proper batching and error handling  </li>
-<li><strong>Statistical Analysis</strong>: Comprehensive result aggregation and comparative statistics  </li>
+<li><strong>One base model, many scenarios</strong>: <code>ParallelSimulator</code> sends the configuration of the base model to worker processes, and every scenario changes the feed, the temperature or calibration parameters on top of it.  </li>
+<li><strong>Three ways to build scenarios</strong>: an explicit list (<code>run_scenarios</code>), one parameter over several values (<code>parameter_sweep</code>) and random draws from normal distributions (<code>monte_carlo</code>).  </li>
+<li><strong>Results as numbers</strong>: every scenario returns its final state and metrics such as dry gas flows in Nm³/d, methane content and pH; <code>summarize_results</code> condenses them into statistics.  </li>
 </ol>
-<p><strong>Key Takeaway</strong>: Parallel simulation enables rapid exploration of the design and operating space, making it feasible to perform comprehensive sensitivity analysis, optimization, and uncertainty quantification that would be impractical with sequential execution.</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -2294,7 +1859,7 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "navigation.tracking", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.c21346df.min.js"></script>
+<script src="../../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
 <script src="../../../assets/mathjax-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>
