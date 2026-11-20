@@ -131,9 +131,8 @@ def lint_gas_paths(g: Graph) -> list[str]:
                     f"GasStorage '{nd.id}' hat keinen Gas-Abnehmer "
                     f"(CHP/Flare/Boiler/BGAA) -> Gas wird nicht weitergeleitet."
                 )
-        elif nd.ctype == "digester":
-            if not g.out_edges(nd.id, "gas"):
-                warns.append(f"Digester '{nd.id}' hat keine Gas-Kante -> erzeugtes " f"Biogas wird nicht erfasst.")
+        elif nd.ctype == "digester" and not g.out_edges(nd.id, "gas"):
+            warns.append(f"Digester '{nd.id}' hat keine Gas-Kante -> erzeugtes " f"Biogas wird nicht erfasst.")
     return warns
 
 

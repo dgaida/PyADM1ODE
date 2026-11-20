@@ -864,11 +864,10 @@ class BiogasPlant:
             elif ctype == "flare":
                 if num("destruction_efficiency"):
                     lines.append(f"η {float(p['destruction_efficiency']) * 100:.0f} %")
-            elif ctype == "heating":
-                if isinstance(p.get("target_temperature"), (int, float)):
-                    t = p["target_temperature"]
-                    t = t - 273.15 if t > 200 else t
-                    lines.append(f"T {t:.0f} °C")
+            elif ctype == "heating" and isinstance(p.get("target_temperature"), (int, float)):
+                t = p["target_temperature"]
+                t = t - 273.15 if t > 200 else t
+                lines.append(f"T {t:.0f} °C")
             return lines
 
         # Per-node info line; box width adapts to the longest text shown.
