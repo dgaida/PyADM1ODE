@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Miscellaneous Tasks
+
+- Prepare release 0.7.0  
+
+## [0.6.4] - 2026-11-20
+
+### Miscellaneous Tasks
+
+- Auto version and badges [skip ci]  
+
 ### Styling
 
 - Merge nested ifs reported by ruff 0.17 (SIM102)  
